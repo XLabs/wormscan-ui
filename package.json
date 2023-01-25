@@ -4,10 +4,11 @@
 	"private": true,
 	"source": "src/index.html",
 	"scripts": {
-		"build": "parcel build",
+		"build": "parcel build --public-url ./",
 		"start": "parcel",
 		"clean": "rimraf dist && rimraf .parcel-cache",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"deploy": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose"
 	},
 	"devDependencies": {
 		"@parcel/transformer-sass": "2.8.3",
