@@ -1,0 +1,19 @@
+$color-primary: #000f25;
+$color-secondary: #042250;
+$color-red: #ff2b57;
+$color-blue-1: #5865f2;
+$color-blue-2: #002764;
+$color-blue-3: #0078e8;
+$color-white: #fff;
+
+@mixin centered-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+@mixin centered-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

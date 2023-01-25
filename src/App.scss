@@ -1,0 +1,14 @@
+@import "src/globals.scss";
+
+body {
+  margin: 0;
+  background-color: $color-primary;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+
+  border-top: 10px solid $color-red;
+  padding: 24px;
+}
