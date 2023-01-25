@@ -7,7 +7,7 @@ body {
 
 #root {
   display: flex;
-
+  flex-direction: column;
   border-top: 10px solid var(--color-red);
   padding: 24px;
 }

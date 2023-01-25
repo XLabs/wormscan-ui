@@ -1,11 +1,11 @@
 import "./App.scss";
 import { CrossChainChart, Header } from "./components/molecules";
+import { Navigation } from "./navigation";
 
 const App = () => {
   return (
     <div id="root">
-      <Header />
-      <CrossChainChart />
+      <Navigation />
     </div>
   );
 };
