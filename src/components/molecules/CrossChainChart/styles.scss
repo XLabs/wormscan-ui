@@ -7,7 +7,7 @@
   height: 500px;
 
   &-title {
-    color: $color-white;
+    color: var(--color-white);
     font-family: "Inter", sans-serif;
     font-size: 28px;
     font-weight: 600;
@@ -18,7 +18,7 @@
     padding: 12px;
 
     &-item {
-      background-color: $color-blue-2;
+      background-color: var(--color-blue-2);
       border: 0;
       padding: 16px;
 
@@ -27,7 +27,7 @@
       font-size: 16px;
       font-family: "Inter", sans-serif;
       font-weight: 300;
-      color: $color-white;
+      color: var(--color-white);
 
       &:first-child {
         border-top-left-radius: 4px;
@@ -40,7 +40,7 @@
       }
 
       &[data-state="on"] {
-        background-color: $color-blue-3;
+        background-color: var(--color-blue-3);
       }
     }
   }

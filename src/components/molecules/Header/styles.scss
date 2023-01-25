@@ -8,7 +8,7 @@
   &-title {
     @include centered-row;
 
-    color: $color-white;
+    color: var(--color-white);
     font-family: "Chakra Petch", sans-serif;
     font-size: 42px;
     font-weight: 700;
@@ -18,7 +18,7 @@
   &-options {
     @include centered-row;
     font-family: "IBM Plex Sans", sans-serif;
-    color: $color-white;
+    color: var(--color-white);
     gap: 16px;
 
     &-item {
@@ -33,17 +33,17 @@
 
       .discord-icon {
         @include icon;
-        color: $color-blue-1;
+        color: var(--color-blue-1);
       }
 
       .faq-icon {
         @include icon;
-        color: $color-white;
+        color: var(--color-white);
       }
 
       .connect-button {
-        color: $color-primary;
-        background-color: $color-red;
+        color: var(--color-primary);
+        background-color: var(--color-red);
         font-weight: 600;
         border-radius: 32px;
         padding: 8px 12px;

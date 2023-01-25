@@ -2,13 +2,12 @@
 
 body {
   margin: 0;
-  background-color: $color-primary;
+  background-color: var(--color-primary);
 }
 
 #root {
   display: flex;
-  flex-direction: column;
 
-  border-top: 10px solid $color-red;
+  border-top: 10px solid var(--color-red);
   padding: 24px;
 }
