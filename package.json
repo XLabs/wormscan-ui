@@ -8,7 +8,7 @@
 		"start": "parcel",
 		"clean": "rimraf dist && rimraf .parcel-cache",
 		"prepare": "husky install",
-		"deploy": "push-dir --dir=dist --branch=gh-pages --cleanup --verbose"
+		"deploy": "yarn clean && yarn build && push-dir --dir=dist --branch=gh-pages --cleanup --verbose"
 	},
 	"devDependencies": {
 		"@parcel/transformer-sass": "2.8.3",
@@ -25,7 +25,9 @@
 		"@radix-ui/react-icons": "^1.1.1",
 		"@radix-ui/react-toggle-group": "^1.0.2",
 		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
+		"react-dom": "^18.2.0",
+		"react-router-dom": "^6.7.0",
+		"recoil": "^0.7.6"
 	},
 	"alias": {
 		"src": "./src"
