@@ -1,3 +1,6 @@
+# Parcel
+.parcel-cache
+
 # Logs
 logs
 *.log

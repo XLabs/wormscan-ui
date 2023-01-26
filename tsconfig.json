@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "experimentalDecorators": true,
+    "target": "es5",
+    "outDir": "./dist",
+    "lib": ["es5", "es6", "es7", "es2017", "dom", "es2020", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "strictNullChecks": false,
+    "declaration": true,
+    "noUnusedLocals": false,
+    "baseUrl": "."
+  },
+  "include": ["src", "typings.d.ts", "custom.d.ts"]
+}
