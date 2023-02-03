@@ -1,0 +1,61 @@
+@import "src/globals.scss";
+
+.vaa-count {
+  margin-top: 12px;
+  padding: 12px;
+  background: linear-gradient(180deg, #031c43 0%, rgba(0, 0, 0, 0) 138.46%);
+
+  &-title {
+    color: var(--color-white);
+    font-family: "Inter", sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 12px;
+  }
+
+  &-container {
+    @include centered-row;
+    justify-content: center;
+    min-height: 600px;
+
+    &-chart {
+      width: 100%;
+      margin-left: 16px;
+    }
+  }
+
+  &-excluded {
+    @include centered-column;
+    align-items: center;
+
+    &-title {
+      color: var(--color-white);
+      margin-bottom: 8px;
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    &-items {
+      @include centered-row;
+      flex-wrap: wrap;
+    }
+
+    &-item {
+      flex-basis: 33.33%;
+      text-align: center;
+      color: var(--color-white);
+      font-family: "IBM Plex Sans", sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+
+      &.red {
+        color: var(--color-red);
+      }
+      &.grey {
+        color: var(--color-graph-5);
+      }
+    }
+  }
+}
