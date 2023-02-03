@@ -16,8 +16,6 @@ const VAACountChart = () => {
     data: response,
   } = useQuery("vaaCount", () => wormscanClient.getVAAsCount());
 
-  if (error) return null;
-
   const [chartData, setChartData] = useState<(typeof response)["data"]>([]);
   const [excludedChartData, setExcludedChartData] = useState<(typeof response)["data"]>([]);
 
@@ -31,6 +29,8 @@ const VAACountChart = () => {
       );
     }
   }, [response]);
+
+  if (error) return null;
 
   return (
     <div className="vaa-count">
