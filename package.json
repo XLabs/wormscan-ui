@@ -25,14 +25,14 @@
 	"dependencies": {
 		"@radix-ui/react-icons": "^1.1.1",
 		"@radix-ui/react-toggle-group": "^1.0.2",
+		"@xlabs-libs/wormscan-sdk": "XLabs/wormscan-sdk#lib",
 		"apexcharts": "^3.36.3",
 		"react": "^18.2.0",
 		"react-apexcharts": "^1.4.0",
 		"react-dom": "^18.2.0",
 		"react-query": "^3.39.3",
 		"react-router-dom": "^6.7.0",
-		"recoil": "^0.7.6",
-		"wormscan-sdk": "XLabs/wormscan-sdk#lib"
+		"recoil": "^0.7.6"
 	},
 	"alias": {
 		"src": "./src"

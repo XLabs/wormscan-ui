@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { wormscanClient } from "src/App";
 import { Chart } from "./Chart";
-import { ChainID } from "wormscan-sdk";
+import { ChainId } from "@xlabs-libs/wormscan-sdk";
 
 import Loader from "src/components/atoms/Loader";
 import "./styles.scss";
@@ -55,7 +55,7 @@ const VAACountChart = () => {
                       a.count > MIN_VALUE_ON_CHART ? "red" : "grey"
                     }`}
                   >
-                    {ChainID[a.chainId]} ({a.count})
+                    {ChainId[a.chainId]} ({a.count})
                   </span>
                 ))}
               </div>
