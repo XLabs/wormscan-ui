@@ -1,11 +1,18 @@
-import "./App.scss";
-import { CrossChainChart, Header } from "./components/molecules";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { Navigation } from "./navigation";
+import "./App.scss";
+import WormScanSDK from "wormscan-sdk";
+
+export const wormscanClient = new WormScanSDK();
 
 const App = () => {
+  const queryClient = new QueryClient();
+
   return (
     <div id="root">
-      <Navigation />
+      <QueryClientProvider client={queryClient}>
+        <Navigation />
+      </QueryClientProvider>
     </div>
   );
 };

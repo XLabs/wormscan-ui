@@ -1,10 +1,8 @@
-@import "src/globals.scss";
-
 .cross-chain {
   margin-top: 12px;
   padding: 12px;
   background: linear-gradient(180deg, #031c43 0%, rgba(0, 0, 0, 0) 138.46%);
-  height: 500px;
+  height: 350px;
 
   &-title {
     color: var(--color-white);
