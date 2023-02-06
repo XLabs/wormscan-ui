@@ -1,0 +1,31 @@
+name: Build and deploy gh-pages
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build_deploy_gh_page:
+    name: Build and Deploy Github Page
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repos develop branch
+        uses: actions/checkout@v3
+        with:
+          ref: "develop"
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
+      - name: Build and Deploy Github Page
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+          cp ./CNAME ./dist/
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          yarn global add push-dir
+          push-dir --dir=dist --branch=gh-pages --cleanup --verbose
