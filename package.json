@@ -7,8 +7,7 @@
 		"build": "parcel build --public-url ./",
 		"start": "parcel",
 		"clean": "rimraf dist && rimraf .parcel-cache",
-		"prepare": "husky install",
-		"deploy": "yarn clean && yarn build && push-dir --dir=dist --branch=gh-pages --cleanup --verbose"
+		"prepare": "husky install"
 	},
 	"devDependencies": {
 		"@parcel/transformer-sass": "2.8.3",
