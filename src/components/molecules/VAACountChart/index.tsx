@@ -1,20 +1,15 @@
-import { useQuery } from "react-query";
-import { wormscanClient } from "src/App";
 import { Chart } from "./Chart";
 import { ChainId } from "@xlabs-libs/wormscan-sdk";
 
 import Loader from "src/components/atoms/Loader";
 import "./styles.scss";
 import { useEffect, useState } from "react";
+import useGetVAAsCount from "src/hooks/useGetVAAsCount";
 
 const MIN_VALUE_ON_CHART = 2500;
 
 const VAACountChart = () => {
-  const {
-    isLoading,
-    error,
-    data: response,
-  } = useQuery("vaaCount", () => wormscanClient.getVAAsCount());
+  const { isLoading, error, data: response } = useGetVAAsCount();
 
   const [chartData, setChartData] = useState<(typeof response)["data"]>([]);
   const [excludedChartData, setExcludedChartData] = useState<(typeof response)["data"]>([]);
