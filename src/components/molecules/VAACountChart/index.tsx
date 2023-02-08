@@ -6,10 +6,13 @@ import { ChainId } from "@xlabs-libs/wormscan-sdk";
 import Loader from "src/components/atoms/Loader";
 import "./styles.scss";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const MIN_VALUE_ON_CHART = 2500;
 
 const VAACountChart = () => {
+  const { t } = useTranslation();
+
   const {
     isLoading,
     error,
@@ -34,8 +37,7 @@ const VAACountChart = () => {
 
   return (
     <div className="vaa-count">
-      <div className="vaa-count-title">VAAs count by blockchain</div>
-
+      <div className="vaa-count-title">{t("home.title")}</div>
       <div className="vaa-count-container">
         {isLoading ? (
           <Loader />
