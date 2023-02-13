@@ -1,3 +1,5 @@
+// Globals
+
 @mixin centered-row {
   display: flex;
   flex-direction: row;
@@ -8,4 +10,152 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+// Breakpoints
+$tabletBreakpoint: 744px;
+$desktopBreakpoint: 1024px;
+
+@mixin tablet {
+  @media only screen and (min-width: $tabletBreakpoint) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media only screen and (min-width: $desktopBreakpoint) {
+    @content;
+  }
+}
+
+// Typography
+
+@mixin text-h1 {
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 38px;
+  font-weight: 600;
+  letter-spacing: -2%;
+  line-height: 1.5;
+
+  @include tablet {
+    font-size: 40px;
+  }
+
+  @include desktop {
+    font-size: 48px;
+  }
+}
+
+@mixin text-h2 {
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: 0%;
+  line-height: 1.5;
+
+  @include tablet {
+    font-size: 38px;
+  }
+
+  @include desktop {
+    font-size: 40px;
+  }
+}
+
+@mixin text-h3 {
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 0%;
+  line-height: 1.5;
+}
+
+@mixin text-h4 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0%;
+  line-height: 1.5;
+
+  @include tablet {
+    font-size: 32px;
+  }
+}
+
+@mixin text-h5 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0%;
+  line-height: 1.333;
+
+  @include tablet {
+    font-size: 24px;
+  }
+}
+
+@mixin text-p1 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0%;
+  line-height: 1.6;
+}
+
+@mixin text-p2 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0%;
+  line-height: 1.5;
+}
+
+@mixin text-p2-underline {
+  @include text-p2;
+  text-decoration: underline;
+}
+
+@mixin text-p2-bold {
+  @include text-p2;
+  font-weight: 600;
+}
+
+@mixin text-p3 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0%;
+  line-height: 1.714;
+}
+
+@mixin text-button {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0%;
+  line-height: 1.5;
+}
+
+@mixin text-caption1 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0%;
+  line-height: 1.714;
+
+  @include tablet {
+    font-size: 14px;
+  }
+}
+
+@mixin text-caption2 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 24%;
+  line-height: 1.14;
+
+  @include tablet {
+    font-size: 14px;
+  }
 }
