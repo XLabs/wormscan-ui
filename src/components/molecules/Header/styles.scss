@@ -7,55 +7,47 @@
 
   &-title {
     @include centered-row;
+    @include text-h5;
 
     color: var(--color-white);
     font-family: "Chakra Petch", sans-serif;
-    font-size: 42px;
-    font-weight: 700;
-    gap: 8px;
+    letter-spacing: 8px;
+    font-weight: 600;
+    gap: 16px;
   }
 
-  &-options {
+  &-navigation {
     @include centered-row;
     font-family: "IBM Plex Sans", sans-serif;
     color: var(--color-white);
-    gap: 16px;
+
+    & > nav {
+      @include centered-row;
+      gap: 44px;
+    }
 
     &-item {
       @include centered-row;
       cursor: pointer;
       user-select: none;
 
-      @mixin icon {
-        height: 24px;
-        width: 24px;
-      }
-
-      .discord-icon {
-        @include icon;
-        color: var(--color-blue-1);
-      }
-
-      .faq-icon {
-        @include icon;
+      a {
+        @include text-p2-bold;
         color: var(--color-white);
-      }
-
-      .connect-button {
-        color: var(--color-primary);
-        background-color: var(--color-red);
-        font-weight: 600;
-        border-radius: 32px;
-        padding: 8px 12px;
+        text-decoration: none;
       }
     }
+  }
 
-    &-text {
-      font-size: 16px;
-      font-weight: 500;
+  &-actions {
+    margin-left: 74px;
 
-      padding-left: 8px;
-      padding-right: 8px;
+    & .connect-button {
+      @include text-button;
+      color: var(--color-primary);
+      background-color: var(--color-red);
+      border-radius: 32px;
+      padding: 8px 12px;
     }
   }
 }

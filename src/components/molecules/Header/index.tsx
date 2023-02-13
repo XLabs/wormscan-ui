@@ -1,31 +1,39 @@
-import { DiscordLogoIcon, QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import { NavLink } from "react-router-dom";
 import { WormholeIcon } from "src/components/atoms";
 import "./styles.scss";
 
 const Header = () => {
   return (
-    <div className="header">
+    <header className="header">
       <div className="header-title">
-        <WormholeIcon size={54} />
-        <span>EXPLORER</span>
+        <WormholeIcon width={49} height={43} />
+        <span>WORMSCAN</span>
       </div>
 
-      <div className="header-options">
-        <div className="header-options-item">
-          <QuestionMarkCircledIcon className="faq-icon" />
-          <span className="header-options-text">FAQ</span>
-        </div>
+      <div className="header-navigation">
+        <nav>
+          <div className="header-navigation-item">
+            <NavLink to="/">Status</NavLink>
+          </div>
 
-        <div className="header-options-item">
-          <DiscordLogoIcon className="discord-icon" />
-          <span className="header-options-text">DISCORD</span>
-        </div>
+          <div className="header-navigation-item">
+            <NavLink to="/">Bridge</NavLink>
+          </div>
 
-        <div className="header-options-item">
+          <div className="header-navigation-item">
+            <NavLink to="/">Stats</NavLink>
+          </div>
+
+          <div className="header-navigation-item">
+            <NavLink to="/">My history</NavLink>
+          </div>
+        </nav>
+
+        <div className="header-actions">
           <div className="connect-button">Connect Wallet</div>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 
