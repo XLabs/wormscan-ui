@@ -1,4 +1,4 @@
-import { WormholeIcon } from "src/components/atoms";
+import WormholeIcon from "src/icons/WormholeIcon";
 import "./styles.scss";
 
 type Props = {
