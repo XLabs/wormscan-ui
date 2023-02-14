@@ -6,8 +6,8 @@ type Props = {};
 const Home = (props: Props) => {
   return (
     <BaseLayout>
-      <VAACountChart />
       <CrossChainChart />
+      <VAACountChart />
     </BaseLayout>
   );
 };

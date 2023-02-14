@@ -44,8 +44,8 @@
 
     & .connect-button {
       @include text-button;
-      color: var(--color-primary);
-      background-color: var(--color-red);
+      color: var(--color-primary-800);
+      background-color: var(--color-secondary-500);
       border-radius: 32px;
       padding: 8px 12px;
     }
