@@ -1,0 +1,12 @@
+@import "src/globals.scss";
+
+.wormhole-brand {
+  @include centered-row;
+  @include text-h5;
+
+  color: var(--color-white);
+  font-family: "Chakra Petch", sans-serif;
+  letter-spacing: 8px;
+  font-weight: 600;
+  gap: 16px;
+}
