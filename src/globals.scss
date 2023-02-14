@@ -12,6 +12,14 @@
   justify-content: center;
 }
 
+@function giveOpacity($color, $opacity) {
+  @return linear-gradient(
+    to bottom,
+    $color calc(($opacity - 1) * 10000%),
+    transparent calc($opacity * 10000%)
+  );
+}
+
 // Breakpoints
 $tabletBreakpoint: 744px;
 $desktopBreakpoint: 1024px;
@@ -34,7 +42,7 @@ $desktopBreakpoint: 1024px;
   font-family: "Chakra Petch", sans-serif;
   font-size: 38px;
   font-weight: 600;
-  letter-spacing: -2%;
+  letter-spacing: -0.02em;
   line-height: 1.5;
 
   @include tablet {
@@ -50,7 +58,6 @@ $desktopBreakpoint: 1024px;
   font-family: "Chakra Petch", sans-serif;
   font-size: 32px;
   font-weight: 400;
-  letter-spacing: 0%;
   line-height: 1.5;
 
   @include tablet {
@@ -66,7 +73,6 @@ $desktopBreakpoint: 1024px;
   font-family: "Chakra Petch", sans-serif;
   font-size: 32px;
   font-weight: 600;
-  letter-spacing: 0%;
   line-height: 1.5;
 }
 
@@ -74,7 +80,6 @@ $desktopBreakpoint: 1024px;
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 24px;
   font-weight: 400;
-  letter-spacing: 0%;
   line-height: 1.5;
 
   @include tablet {
@@ -86,7 +91,6 @@ $desktopBreakpoint: 1024px;
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 20px;
   font-weight: 400;
-  letter-spacing: 0%;
   line-height: 1.333;
 
   @include tablet {
@@ -98,7 +102,6 @@ $desktopBreakpoint: 1024px;
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 20px;
   font-weight: 400;
-  letter-spacing: 0%;
   line-height: 1.6;
 }
 
@@ -106,7 +109,6 @@ $desktopBreakpoint: 1024px;
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 16px;
   font-weight: 400;
-  letter-spacing: 0%;
   line-height: 1.5;
 }
 
@@ -124,7 +126,6 @@ $desktopBreakpoint: 1024px;
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 14px;
   font-weight: 400;
-  letter-spacing: 0%;
   line-height: 1.714;
 }
 
@@ -132,7 +133,6 @@ $desktopBreakpoint: 1024px;
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 16px;
   font-weight: 600;
-  letter-spacing: 0%;
   line-height: 1.5;
 }
 
@@ -140,7 +140,6 @@ $desktopBreakpoint: 1024px;
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0%;
   line-height: 1.714;
 
   @include tablet {
@@ -152,7 +151,7 @@ $desktopBreakpoint: 1024px;
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: 24%;
+  letter-spacing: 0.24em;
   line-height: 1.14;
 
   @include tablet {

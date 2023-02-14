@@ -2,8 +2,8 @@ import { useQuery } from "react-query";
 import { wormscanClient } from "src/App";
 import { Chart } from "./Chart";
 import { ChainId } from "@xlabs-libs/wormscan-sdk";
+import { Loader } from "src/components/atoms";
 
-import Loader from "src/components/atoms/Loader";
 import "./styles.scss";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";

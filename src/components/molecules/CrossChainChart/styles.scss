@@ -1,3 +1,5 @@
+@import "src/globals.scss";
+
 .cross-chain {
   margin-top: 12px;
   padding: 12px;
@@ -5,27 +7,31 @@
   height: 350px;
 
   &-title {
-    color: var(--color-white);
-    font-family: "Inter", sans-serif;
-    font-size: 28px;
-    font-weight: 600;
+    @include text-h5;
+    color: var(--color-primary-50);
     margin: 12px;
+  }
+
+  &-options {
+    @include centered-row;
   }
 
   &-type {
     padding: 12px;
+    display: inline-flex;
 
     &-item {
-      background-color: var(--color-blue-2);
+      background: giveOpacity(var(--color-primary-800), 0.4);
+      color: var(--color-primary-100);
+
       border: 0;
       padding: 16px;
 
       cursor: pointer;
 
-      font-size: 16px;
+      font-size: 18px;
       font-family: "Inter", sans-serif;
       font-weight: 300;
-      color: var(--color-white);
 
       &:first-child {
         border-top-left-radius: 4px;
@@ -38,7 +44,62 @@
       }
 
       &[data-state="on"] {
-        background-color: var(--color-blue-3);
+        color: var(--color-white);
+        background: var(--color-secondary-500);
+      }
+    }
+  }
+
+  &-filters {
+    display: inline-flex;
+    margin-left: auto;
+    margin-right: 12px;
+
+    &-text {
+      @include text-p1;
+      color: var(--color-primary-50);
+
+      margin-right: 16px;
+      margin-left: 16px;
+    }
+
+    &-trigger {
+      @include centered-row;
+      @include text-p1;
+      width: 150px;
+      color: var(--color-white);
+
+      background: transparent;
+      border: 2px solid var(--color-secondary-500);
+      border-radius: 5px;
+      padding: 0;
+      padding-left: 12px;
+
+      &-triangle {
+        background: var(--color-secondary-500);
+        height: 100%;
+        width: 30px;
+        margin-left: auto;
+      }
+    }
+
+    &-item {
+      @include text-p2;
+      width: 150px;
+
+      color: var(--color-white);
+      background: var(--color-white-05);
+
+      cursor: pointer;
+      user-select: none;
+
+      text-align: center;
+      padding: 4px;
+      &:first-child {
+        padding-top: 8px;
+      }
+      &:last-child {
+        padding-bottom: 8px;
       }
     }
   }
