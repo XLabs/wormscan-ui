@@ -4,6 +4,7 @@
   @include centered-row;
   width: 100%;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   &-navigation {
     @include centered-row;

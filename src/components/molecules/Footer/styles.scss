@@ -1,4 +1,37 @@
 @import "src/globals.scss";
 
 .footer {
+  @include centered-row;
+
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  &-links {
+    @include centered-row;
+
+    gap: 80px;
+
+    &-item {
+      @include centered-row;
+
+      cursor: pointer;
+      user-select: none;
+
+      a {
+        @include text-p3;
+
+        color: var(--color-white);
+        text-decoration: none;
+      }
+    }
+  }
+
+  &-social {
+    @include centered-row;
+    @include text-p3;
+
+    gap: 24px;
+    color: var(--color-white);
+  }
 }
