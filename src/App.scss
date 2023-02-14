@@ -1,7 +1,4 @@
 :root {
-  --color-primary: #000f25;
-  --color-secondary: #042250;
-
   --color-primary-900: #010014;
   --color-primary-800: #080530;
   --color-primary-700: #0f0c48;
@@ -67,7 +64,7 @@
 
 body {
   margin: 0;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-800);
 }
 
 #root {
