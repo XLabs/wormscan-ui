@@ -12,7 +12,7 @@
   justify-content: center;
 }
 
-@function giveOpacity($color, $opacity) {
+@function withOpacity($color, $opacity) {
   @return linear-gradient(
     to bottom,
     $color calc(($opacity - 1) * 10000%),
