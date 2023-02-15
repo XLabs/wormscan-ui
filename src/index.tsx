@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 
-import "./globals.scss";
+import "./index.scss";
+import "./styles/globals.scss";
 import "./i18n";
 import App from "./App";
 

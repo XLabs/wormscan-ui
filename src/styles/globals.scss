@@ -1,0 +1,25 @@
+@import "breakpoints";
+@import "typography";
+@import "button";
+
+// Globals
+
+@mixin centered-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+@mixin centered-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@function withOpacity($color, $opacity) {
+  @return linear-gradient(
+    to bottom,
+    $color calc(($opacity - 1) * 10000%),
+    transparent calc($opacity * 10000%)
+  );
+}

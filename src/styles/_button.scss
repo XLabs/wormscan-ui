@@ -1,0 +1,15 @@
+@mixin button {
+  @include text-button;
+
+  cursor: pointer;
+  border-radius: 32px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+}
+
+@mixin button-secondary {
+  @include button;
+
+  color: var(--color-primary-800);
+  background-color: var(--color-secondary-500);
+}
