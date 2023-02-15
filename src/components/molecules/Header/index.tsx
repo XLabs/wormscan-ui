@@ -27,7 +27,7 @@ const Header = () => {
         </nav>
 
         <div className="header-actions">
-          <div className="connect-button">Connect Wallet</div>
+          <button className="connect-button">Connect Wallet</button>
         </div>
       </div>
     </header>
