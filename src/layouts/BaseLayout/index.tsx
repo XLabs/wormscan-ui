@@ -1,5 +1,5 @@
 import React from "react";
-import { Header } from "src/components/molecules";
+import { Footer, Header } from "src/components/molecules";
 
 type Props = {
   children: React.ReactNode;
@@ -10,6 +10,7 @@ const BaseLayout = ({ children }: Props) => {
     <>
       <Header />
       {children}
+      <Footer />
     </>
   );
 };

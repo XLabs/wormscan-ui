@@ -1,14 +1,11 @@
 import { NavLink } from "react-router-dom";
-import { WormholeIcon } from "src/components/atoms";
+import WormholeBrand from "../WormholeBrand";
 import "./styles.scss";
 
 const Header = () => {
   return (
     <header className="header">
-      <div className="header-title">
-        <WormholeIcon width={49} height={43} />
-        <span>WORMSCAN</span>
-      </div>
+      <WormholeBrand width={49} height={43} />
 
       <div className="header-navigation">
         <nav>
