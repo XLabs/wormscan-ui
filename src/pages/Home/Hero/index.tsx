@@ -3,7 +3,7 @@ import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import "./styles.scss";
 
 const Hero = () => {
-  const { t } = useTranslation("translation", {});
+  const { t } = useTranslation();
 
   return (
     <section className="hero">
