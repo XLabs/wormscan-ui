@@ -1,5 +1,5 @@
 import ApexChart from "react-apexcharts";
-import { ChainId, TVAACount } from "@xlabs-libs/wormscan-sdk";
+import { ChainId, VAACount } from "@xlabs-libs/wormscan-sdk";
 
 const chartColors = [
   "#5c30d8",
@@ -17,13 +17,13 @@ const chartColors = [
 ];
 
 type Props = {
-  chartData: TVAACount[];
+  chartData: VAACount[];
 };
 
 export function Chart({ chartData }: Props) {
   return (
     <ApexChart
-      series={[{ data: chartData.map(a => ({ x: ChainId[a.chainId], y: a.count })) }]}
+      series={[{ data: chartData.map((a: VAACount) => ({ x: ChainId[a.chainId], y: a.count })) }]}
       options={{
         chart: {
           type: "treemap",
