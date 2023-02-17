@@ -10,7 +10,7 @@ const WormholeBrand = ({ width, height }: Props) => {
   return (
     <div className="wormhole-brand">
       <WormholeIcon width={width} height={height} />
-      <span>WORMSCAN</span>
+      <span className="wormhole-brand-text">WORMSCAN</span>
     </div>
   );
 };

@@ -1,0 +1,75 @@
+@import "src/styles/globals.scss";
+
+.hero {
+  @include centered-column;
+
+  width: 100%;
+  align-items: center;
+  padding: 80px 0;
+
+  > &-text {
+    @include text-h3;
+
+    font-family: "IBM Plex Sans", sans-serif;
+    max-width: 408px;
+    text-align: center;
+    margin-bottom: 24px;
+
+    > span {
+      font-family: inherit;
+      color: var(--color-secondary-500);
+    }
+  }
+
+  > &-search {
+    @include centered-row;
+    width: 100%;
+    justify-content: center;
+
+    > &-input {
+      @include centered-row;
+
+      position: relative;
+      justify-content: center;
+      width: 100%;
+      max-width: 548px;
+
+      > input {
+        @include text-p2;
+
+        background-color: transparent;
+        border: 1px solid var(--color-primary-100);
+        border-radius: 50px;
+        width: 100%;
+        height: 56px;
+
+        padding: 16px 40px;
+        color: var(--color-primary-100);
+
+        &::placeholder {
+          color: var(--color-primary-100);
+        }
+
+        &:focus-visible {
+          outline: 1px solid var(--color-primary-100);
+        }
+
+        &:focus-visible + .icon {
+          opacity: 1;
+        }
+      }
+
+      > .icon {
+        position: absolute;
+        top: 50%;
+        right: 40px;
+        transform: translateY(-50%);
+        width: 25px;
+        height: 25px;
+        color: var(--color-secondary-500);
+        opacity: 0.5;
+        transition: opacity 200ms ease-out;
+      }
+    }
+  }
+}
