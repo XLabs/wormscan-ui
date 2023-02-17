@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
-import { wormscanClient } from "src/App";
+import client from "src/api/Client";
 import { Chart } from "./Chart";
-import { ChainId } from "@xlabs-libs/wormscan-sdk";
+import { ChainId, VAACount } from "@xlabs-libs/wormscan-sdk";
 import { Loader } from "src/components/atoms";
 
 import "./styles.scss";
@@ -13,25 +13,24 @@ const MIN_VALUE_ON_CHART = 2500;
 const VAACountChart = () => {
   const { t } = useTranslation();
 
-  const {
-    isLoading,
-    error,
-    data: response,
-  } = useQuery("vaaCount", () => wormscanClient.getVAAsCount());
+  const { isLoading, error, data } = useQuery("vaaCount", () =>
+    client.guardianNetwork.getVAACount(),
+  );
 
-  const [chartData, setChartData] = useState<(typeof response)["data"]>([]);
-  const [excludedChartData, setExcludedChartData] = useState<(typeof response)["data"]>([]);
+  const [chartData, setChartData] = useState<VAACount[]>([]);
+  const [excludedChartData, setExcludedChartData] = useState<VAACount[]>([]);
 
   useEffect(() => {
-    if (response?.data) {
-      const sortedData = response.data.sort((a, b) => b.count - a.count);
-
-      setChartData(sortedData.filter(a => a.chainId !== 26 && a.count > MIN_VALUE_ON_CHART));
+    if (data) {
+      const sortedData = data.sort((a, b) => b.count - a.count);
+      setChartData(
+        sortedData.filter(a => a.chainId !== ChainId.PythNet && a.count > MIN_VALUE_ON_CHART),
+      );
       setExcludedChartData(
-        sortedData.filter(a => a.chainId === 26 || a.count <= MIN_VALUE_ON_CHART),
+        sortedData.filter(a => a.chainId !== ChainId.PythNet || a.count <= MIN_VALUE_ON_CHART),
       );
     }
-  }, [response]);
+  }, [data]);
 
   if (error) return null;
 
