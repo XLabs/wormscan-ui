@@ -62,8 +62,8 @@
       > .icon {
         position: absolute;
         top: 50%;
-        right: 0;
-        transform: translate(-40px, -50%);
+        right: 40px;
+        transform: translateY(-50%);
         width: 25px;
         height: 25px;
         color: var(--color-secondary-500);
