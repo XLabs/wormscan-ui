@@ -11,12 +11,12 @@
     @include text-h3;
 
     font-family: "IBM Plex Sans", sans-serif;
-    line-height: 48px;
     max-width: 408px;
     text-align: center;
     margin-bottom: 24px;
 
     > span {
+      font-family: inherit;
       color: var(--color-secondary-500);
     }
   }
