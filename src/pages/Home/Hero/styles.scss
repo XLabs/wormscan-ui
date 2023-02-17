@@ -26,7 +26,7 @@
     width: 100%;
     justify-content: center;
 
-    & > &-input {
+    > &-input {
       @include centered-row;
 
       position: relative;
@@ -34,7 +34,7 @@
       width: 100%;
       max-width: 548px;
 
-      & > input {
+      > input {
         @include text-p2;
 
         background-color: transparent;
@@ -59,7 +59,7 @@
         }
       }
 
-      & > .icon {
+      > .icon {
         position: absolute;
         top: 50%;
         right: 0;
