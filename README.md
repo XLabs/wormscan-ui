@@ -21,6 +21,12 @@ yarn install
 yarn start
 ```
 
+> **Note**
+>
+> If you want to point to a different environment than production
+> you must create **.env** file with the **WORMSCAN_API_BASE_URL**
+> that you want to use in the root project folder
+
 ### Build app
 
 ```
