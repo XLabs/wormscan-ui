@@ -27,7 +27,7 @@ const VAACountChart = () => {
         sortedData.filter(a => a.chainId !== ChainId.PythNet && a.count > MIN_VALUE_ON_CHART),
       );
       setExcludedChartData(
-        sortedData.filter(a => a.chainId !== ChainId.PythNet || a.count <= MIN_VALUE_ON_CHART),
+        sortedData.filter(a => a.chainId === ChainId.PythNet || a.count <= MIN_VALUE_ON_CHART),
       );
     }
   }, [data]);

@@ -13,10 +13,10 @@
   --color-primary-30: #e4e5ee;
   --color-primary-10: #f3f4fc;
 
-  --color-secondary-500: #ff2a57;
-  --color-secondary-400: #f16179;
-  --color-secondary-300: #f7909f;
-  --color-secondary-200: #ffc8d6;
+  --color-secondary-800: #ff2a57;
+  --color-secondary-700: #f16179;
+  --color-secondary-600: #f7909f;
+  --color-secondary-300: #ffc8d6;
   --color-secondary-100: #ffe9f0;
 
   --color-success-100: #01bbac;
@@ -47,19 +47,6 @@
   --color-white-10: #ffffff19;
   --color-white-05: #ffffff0c;
   --color-white-03: #ffffff07;
-
-  --color-graph-1: #5c30d8;
-  --color-graph-2: #7c4dff;
-  --color-graph-3: #7351d1;
-  --color-graph-4: #9877f4;
-  --color-graph-5: #8c96c6;
-  --color-graph-6: #9ebcda;
-  --color-graph-6: #bfd3e6;
-  --color-graph-7: #79afda;
-  --color-graph-8: #64b5f6;
-  --color-graph-9: #1c7fce;
-  --color-graph-10: #075b9e;
-  --color-graph-11: #004175;
 }
 
 *,
@@ -74,7 +61,7 @@
 body {
   margin: 0;
   color: var(--color-white);
-  background-color: var(--color-primary-800);
+  background-image: url("./assets/Background.svg");
 }
 
 #app {
