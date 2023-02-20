@@ -130,8 +130,6 @@ export const Chart = ({ data }: Props) => {
       return () => {
         window.cancelAnimationFrame(animationFrameId);
       };
-    } else {
-      updateChainsHeight();
     }
   }, [originChainsHeight, destinyChainsHeight]);
 
@@ -142,8 +140,9 @@ export const Chart = ({ data }: Props) => {
       .slice(0, 10);
 
     setDestinations(newDestinationChains);
-    updateChainsHeight();
   }, [selectedChain]);
+
+  useEffect(updateChainsHeight, [destinations]);
 
   return (
     <div className="cross-chain-chart">
