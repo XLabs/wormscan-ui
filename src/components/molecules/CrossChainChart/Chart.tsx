@@ -112,10 +112,6 @@ export const Chart = ({ data }: Props) => {
     );
   };
 
-  useEffect(() => {
-    updateChainsHeight();
-  }, [destinations]);
-
   // chart graph creation effect, runs as an animation
   useEffect(() => {
     if (originChainsHeight.length && destinyChainsHeight.length) {
@@ -134,6 +130,8 @@ export const Chart = ({ data }: Props) => {
       return () => {
         window.cancelAnimationFrame(animationFrameId);
       };
+    } else {
+      updateChainsHeight();
     }
   }, [originChainsHeight, destinyChainsHeight]);
 
@@ -144,6 +142,7 @@ export const Chart = ({ data }: Props) => {
       .slice(0, 10);
 
     setDestinations(newDestinationChains);
+    updateChainsHeight();
   }, [selectedChain]);
 
   return (
