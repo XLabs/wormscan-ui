@@ -6,14 +6,14 @@ const Hero = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="hero">
-      <div className="hero-text">
+    <section className="home-hero">
+      <div className="home-hero-text">
         {t("home.hero.initText")}
         <span> {t("home.hero.endText")}</span>
       </div>
 
-      <div className="hero-search">
-        <div className="hero-search-input">
+      <div className="home-hero-search">
+        <div className="home-hero-search-input">
           <input type="text" placeholder={t("home.search.placeholder")} aria-label="Search" />
           <MagnifyingGlassIcon className="icon" />
         </div>

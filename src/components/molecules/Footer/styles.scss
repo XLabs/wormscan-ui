@@ -33,5 +33,9 @@
 
     gap: 24px;
     color: var(--color-white);
+
+    > svg {
+      color: var(--color-secondary-800);
+    }
   }
 }
