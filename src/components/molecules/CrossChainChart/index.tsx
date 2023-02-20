@@ -91,6 +91,8 @@ const CrossChainChart = () => {
       ) : (
         <Chart data={data} />
       )}
+
+      <div className="cross-chain-message">Chart shows only top ten destinations / assets</div>
     </div>
   );
 };

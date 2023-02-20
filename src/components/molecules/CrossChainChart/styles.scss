@@ -163,8 +163,19 @@
     }
 
     &-graph {
+      width: 50%;
+      height: 650px;
       display: flex;
       justify-content: center;
     }
+  }
+
+  &-message {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+
+    @include text-p3;
+    color: var(--color-primary-100);
   }
 }

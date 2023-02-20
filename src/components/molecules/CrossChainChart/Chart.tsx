@@ -116,7 +116,7 @@ export const Chart = ({ data }: Props) => {
     updateChainsHeight();
   }, [destinations]);
 
-  // chart graph creation effect, runs an animation
+  // chart graph creation effect, runs as an animation
   useEffect(() => {
     if (originChainsHeight.length && destinyChainsHeight.length) {
       const canvas = canvasRef.current;
