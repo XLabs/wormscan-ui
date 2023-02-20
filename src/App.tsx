@@ -5,11 +5,9 @@ const App = () => {
   const queryClient = new QueryClient();
 
   return (
-    <div id="root">
-      <QueryClientProvider client={queryClient}>
-        <Navigation />
-      </QueryClientProvider>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <Navigation />
+    </QueryClientProvider>
   );
 };
 
