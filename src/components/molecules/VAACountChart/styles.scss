@@ -1,9 +1,11 @@
 @import "src/styles/globals.scss";
 
 .vaa-count {
-  margin-top: 12px;
+  margin-top: 24px;
+  margin-bottom: 24px;
   padding: 12px;
-  background: linear-gradient(180deg, #031c43 0%, rgba(0, 0, 0, 0) 138.46%);
+  background: var(--color-white-03);
+  border-radius: 6px;
   color: var(--color-primary-500);
 
   &-title {
@@ -52,10 +54,10 @@
       letter-spacing: -0.02em;
 
       &.red {
-        color: var(--color-secondary-500);
+        color: var(--color-secondary-800);
       }
       &.grey {
-        color: var(--color-graph-5);
+        color: var(--color-primary-50);
       }
     }
   }
