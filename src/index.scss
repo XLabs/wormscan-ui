@@ -64,8 +64,14 @@ body {
   background-image: url("./assets/Background.png");
 }
 
-#root {
+#app {
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   padding: 34px;
+
+  > .content {
+    flex: 1;
+  }
 }

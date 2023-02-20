@@ -9,7 +9,7 @@ const BaseLayout = ({ children }: Props) => {
   return (
     <>
       <Header />
-      {children}
+      <div className="content">{children}</div>
       <Footer />
     </>
   );
