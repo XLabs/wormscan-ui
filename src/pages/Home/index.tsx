@@ -1,6 +1,7 @@
 import { CrossChainChart, VAACountChart } from "src/components/molecules";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { Hero } from "./Hero";
+import { JoinUs } from "./JoinUs";
 
 type Props = {};
 
@@ -10,6 +11,7 @@ const Home = (props: Props) => {
       <Hero />
       <CrossChainChart />
       <VAACountChart />
+      <JoinUs />
     </BaseLayout>
   );
 };

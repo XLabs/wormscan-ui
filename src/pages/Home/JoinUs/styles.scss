@@ -1,0 +1,27 @@
+@import "src/styles/globals.scss";
+
+.home-join {
+  @include centered-column;
+
+  width: 100%;
+  align-items: center;
+  margin-bottom: 80px;
+
+  > &-text {
+    @include text-h3;
+
+    font-family: "IBM Plex Sans", sans-serif;
+    max-width: 408px;
+    text-align: center;
+    margin-bottom: 32px;
+
+    > span {
+      font-family: inherit;
+      color: var(--color-secondary-800);
+    }
+  }
+
+  > &-button {
+    @include button-secondary;
+  }
+}

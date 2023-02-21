@@ -1,6 +1,6 @@
 @import "src/styles/globals.scss";
 
-.hero {
+.home-hero {
   @include centered-column;
 
   width: 100%;
@@ -17,7 +17,7 @@
 
     > span {
       font-family: inherit;
-      color: var(--color-secondary-500);
+      color: var(--color-secondary-800);
     }
   }
 
@@ -67,7 +67,7 @@
         transform: translateY(-50%);
         width: 27px;
         height: 27px;
-        color: var(--color-secondary-500);
+        color: var(--color-secondary-800);
         opacity: 0.5;
         transition: opacity 200ms ease-out;
       }

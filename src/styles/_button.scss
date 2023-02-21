@@ -1,6 +1,8 @@
 @mixin button {
+  @include centered-row;
   @include text-button;
 
+  gap: 8px;
   cursor: pointer;
   border-radius: 32px;
   padding: 8px 12px;

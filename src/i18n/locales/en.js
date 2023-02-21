@@ -10,6 +10,10 @@ export default {
         search: {
           placeholder: "Search by TxHash / Address / ENS",
         },
+        join: {
+          initText: "Do not want to miss our releases?",
+          endText: "join us.",
+        },
       },
     },
     common: {},
