@@ -1,11 +1,10 @@
 @import "src/styles/globals.scss";
 
 .vaa-count {
+  @include card-container;
+
   margin-top: 24px;
   margin-bottom: 80px;
-  padding: 12px;
-  background: var(--color-white-03);
-  border-radius: 6px;
   color: var(--color-primary-500);
 
   &-title {
@@ -13,17 +12,14 @@
     font-family: "Inter", sans-serif;
     font-size: 28px;
     font-weight: 600;
-    margin: 12px;
   }
 
   &-container {
     @include centered-row;
     justify-content: center;
-    min-height: 600px;
 
     &-chart {
       width: 100%;
-      margin-left: 16px;
     }
   }
 

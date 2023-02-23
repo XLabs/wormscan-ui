@@ -1,20 +1,18 @@
 @import "src/styles/globals.scss";
 
 .cross-chain {
-  margin-top: 12px;
-  padding: 12px;
-  padding-bottom: 24px;
-  background: linear-gradient(to bottom, var(--color-white-05), transparent);
-  border-radius: 6px;
+  @include card-container;
 
   &-title {
     @include text-h5;
     color: var(--color-primary-50);
-    margin: 12px;
+    margin-bottom: 24px;
   }
 
   &-options {
     @include centered-row;
+
+    margin-bottom: 24px;
   }
 
   &-loader {
@@ -24,7 +22,6 @@
   }
 
   &-type {
-    padding: 12px;
     display: inline-flex;
 
     &-item {
@@ -62,7 +59,6 @@
     @include centered-row;
     display: inline-flex;
     margin-left: auto;
-    margin-right: 12px;
 
     &-text {
       @include text-p1;

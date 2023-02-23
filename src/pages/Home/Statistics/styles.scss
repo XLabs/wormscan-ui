@@ -1,0 +1,54 @@
+@import "src/styles/globals.scss";
+
+.home-statistics {
+  @include centered-row;
+
+  gap: 24px;
+  margin-bottom: 24px;
+
+  > &-graph {
+    @include card-container;
+    @include centered-row;
+
+    flex: 1;
+    min-height: 256px;
+  }
+
+  > &-data {
+    @include card-container;
+    @include centered-column;
+
+    justify-content: space-between;
+    gap: 24px;
+    flex: 2;
+    min-height: 256px;
+    padding: 24px 40px;
+
+    > hr {
+      border-color: var(--color-white-10);
+    }
+
+    &-row {
+      @include centered-row;
+
+      justify-content: space-between;
+      gap: 24px;
+
+      &-item {
+        @include centered-column;
+        gap: 16px;
+        flex: 1;
+
+        &-title {
+          @include text-p1;
+          color: var(--color-primary-50);
+        }
+
+        &-value {
+          @include text-h5;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
