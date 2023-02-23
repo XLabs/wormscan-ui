@@ -24,7 +24,12 @@ import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
 import TerraIcon from "src/icons/blockchains/terra.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
 
-const ICONS: any = {
+type BlockChainId = Exclude<
+  ChainId,
+  ChainId.Unset | ChainId.Sui | ChainId.PythNet | ChainId.Btc | ChainId.Wormchain
+>;
+
+const ICONS: { [key in BlockChainId]: any } = {
   [ChainId.Acala]: AcalaIcon,
   [ChainId.Algorand]: AlgorandIcon,
   [ChainId.Aptos]: AptosIcon,
@@ -51,7 +56,7 @@ const ICONS: any = {
 };
 
 type Props = {
-  chainId: number;
+  chainId: BlockChainId;
   size?: number;
 };
 
