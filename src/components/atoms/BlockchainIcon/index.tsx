@@ -1,3 +1,5 @@
+import { ChainId } from "@xlabs-libs/wormscan-sdk";
+
 import AcalaIcon from "src/icons/blockchains/acala.svg";
 import AlgorandIcon from "src/icons/blockchains/algorand.svg";
 import AptosIcon from "src/icons/blockchains/aptos.svg";
@@ -21,8 +23,6 @@ import SolanaIcon from "src/icons/blockchains/solana.svg";
 import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
 import TerraIcon from "src/icons/blockchains/terra.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
-
-import { ChainId } from "src/types/ChainId";
 
 const ICONS: any = {
   [ChainId.Acala]: AcalaIcon,
