@@ -8,5 +8,13 @@
   "arrowParens": "avoid",
   "quoteProps": "as-needed",
   "jsxSingleQuote": false,
-  "proseWrap": "preserve"
+  "proseWrap": "preserve",
+  "overrides": [
+    {
+      "files": "*.svg",
+      "options": {
+        "parser": "html"
+      }
+    }
+  ]
 }

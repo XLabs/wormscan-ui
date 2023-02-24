@@ -36,7 +36,7 @@ const VAACountChart = () => {
 
   return (
     <div className="vaa-count">
-      <div className="vaa-count-title">{t("home.title")}</div>
+      <div className="vaa-count-title">{t("home.vaaCount.title")}</div>
       <div className="vaa-count-container">
         {isLoading ? (
           <Loader />
@@ -45,9 +45,7 @@ const VAACountChart = () => {
             <Chart chartData={chartData} />
 
             <div className="vaa-count-excluded">
-              <span className="vaa-count-excluded-title">
-                The following blockchains were excluded from the chart:
-              </span>
+              <span className="vaa-count-excluded-title">{t("home.vaaCount.excluded")}</span>
               <div className="vaa-count-excluded-items">
                 {excludedChartData.map(a => (
                   <span

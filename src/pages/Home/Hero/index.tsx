@@ -14,7 +14,11 @@ const Hero = () => {
 
       <div className="home-hero-search">
         <div className="home-hero-search-input">
-          <input type="text" placeholder={t("home.search.placeholder")} aria-label="Search" />
+          <input
+            type="text"
+            placeholder={t("home.hero.placeholder")}
+            aria-label={t("home.hero.search")}
+          />
           <MagnifyingGlassIcon className="icon" />
         </div>
       </div>

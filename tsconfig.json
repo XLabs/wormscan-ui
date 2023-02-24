@@ -22,5 +22,5 @@
     "noUnusedLocals": false,
     "baseUrl": "."
   },
-  "include": ["src", "typings.d.ts", "custom.d.ts"]
+  "include": ["src", "custom.d.ts"]
 }
