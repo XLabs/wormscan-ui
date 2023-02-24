@@ -1,14 +1,16 @@
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { TriangleDownIcon } from "@radix-ui/react-icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./styles.scss";
 import { Chart } from "./Chart";
 import client from "src/api/Client";
 import { useQuery } from "react-query";
 import { Loader } from "src/components/atoms";
+import { useTranslation } from "react-i18next";
 
 const CrossChainChart = () => {
+  const { t } = useTranslation();
   const [selectedType, setSelectedType] = useState("chains");
   const [selectedApp, setSelectedApp] = useState<number>(0);
   const [selectedTimeRange, setSelectedTimeRange] = useState<number>(0);
@@ -20,7 +22,7 @@ const CrossChainChart = () => {
   if (error) return null;
   return (
     <div className="cross-chain">
-      <div className="cross-chain-title">Cross-chain activity</div>
+      <div className="cross-chain-title">{t("home.crossChain.title")}</div>
 
       <div className="cross-chain-options">
         <ToggleGroup.Root
@@ -30,18 +32,22 @@ const CrossChainChart = () => {
           onValueChange={value => value && setSelectedType(value)}
         >
           <ToggleGroup.Item className="cross-chain-type-item" value="chains">
-            Chains
+            {t("home.crossChain.chains")}
           </ToggleGroup.Item>
           <ToggleGroup.Item className="cross-chain-type-item" value="count">
-            Tx count
+            {t("home.crossChain.count")}
           </ToggleGroup.Item>
         </ToggleGroup.Root>
 
         <div className="cross-chain-filters">
           <DropdownMenu.Root>
-            <span className="cross-chain-filters-text">Apps</span>
+            <span className="cross-chain-filters-text">{t("home.crossChain.apps")}</span>
             <DropdownMenu.Trigger className="cross-chain-filters-trigger">
-              <span>{selectedApp ? `App #${selectedApp}` : "All apps"}</span>
+              <span>
+                {selectedApp
+                  ? `${t("home.crossChain.app")} #${selectedApp}`
+                  : t("home.crossChain.allApps")}
+              </span>
               <TriangleDownIcon className="cross-chain-filters-trigger-triangle" />
             </DropdownMenu.Trigger>
 
@@ -53,7 +59,7 @@ const CrossChainChart = () => {
                     onSelect={() => setSelectedApp(item)}
                     className="cross-chain-filters-item"
                   >
-                    {item ? `App #${item}` : "All apps"}
+                    {item ? `${t("home.crossChain.app")} #${item}` : t("home.crossChain.allApps")}
                   </DropdownMenu.Item>
                 ))}
               </DropdownMenu.Content>
@@ -61,9 +67,13 @@ const CrossChainChart = () => {
           </DropdownMenu.Root>
 
           <DropdownMenu.Root>
-            <span className="cross-chain-filters-text">Time range</span>
+            <span className="cross-chain-filters-text">{t("home.crossChain.timeRange")}</span>
             <DropdownMenu.Trigger className="cross-chain-filters-trigger">
-              <span>{selectedTimeRange ? `Range #${selectedTimeRange}` : "All time"}</span>
+              <span>
+                {selectedTimeRange
+                  ? `${t("home.crossChain.range")} #${selectedTimeRange}`
+                  : t("home.crossChain.allTime")}
+              </span>
               <TriangleDownIcon className="cross-chain-filters-trigger-triangle" />
             </DropdownMenu.Trigger>
 
@@ -75,7 +85,7 @@ const CrossChainChart = () => {
                     onSelect={() => setSelectedTimeRange(item)}
                     className="cross-chain-filters-item"
                   >
-                    {item ? `Range #${item}` : "All time"}
+                    {item ? `${t("home.crossChain.range")} #${item}` : t("home.crossChain.allTime")}
                   </DropdownMenu.Item>
                 ))}
               </DropdownMenu.Content>
@@ -92,7 +102,7 @@ const CrossChainChart = () => {
         <Chart data={data} />
       )}
 
-      <div className="cross-chain-message">Chart shows only top ten destinations / assets</div>
+      <div className="cross-chain-message">{t("home.crossChain.bottomMessage")}</div>
     </div>
   );
 };

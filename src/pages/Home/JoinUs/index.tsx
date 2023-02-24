@@ -12,7 +12,7 @@ const JoinUs = () => {
         <span> {t("home.join.endText")}</span>
       </div>
       <button className="home-join-button">
-        <DiscordIcon /> Join Discord
+        <DiscordIcon /> {t("home.join.discord")}
       </button>
     </section>
   );

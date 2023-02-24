@@ -1,5 +1,5 @@
 import { ChainId } from "@xlabs-libs/wormscan-sdk";
-
+import NoIcon from "src/icons/blockchains/noIcon.svg";
 import AcalaIcon from "src/icons/blockchains/acala.svg";
 import AlgorandIcon from "src/icons/blockchains/algorand.svg";
 import AptosIcon from "src/icons/blockchains/aptos.svg";
@@ -24,12 +24,12 @@ import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
 import TerraIcon from "src/icons/blockchains/terra.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
 
-type BlockChainId = Exclude<
-  ChainId,
-  ChainId.Unset | ChainId.Sui | ChainId.PythNet | ChainId.Btc | ChainId.Wormchain
->;
-
-const ICONS: { [key in BlockChainId]: any } = {
+const ICONS: { [key in ChainId]: any } = {
+  [ChainId.Unset]: NoIcon,
+  [ChainId.Sui]: NoIcon,
+  [ChainId.PythNet]: NoIcon,
+  [ChainId.Btc]: NoIcon,
+  [ChainId.Wormchain]: NoIcon,
   [ChainId.Acala]: AcalaIcon,
   [ChainId.Algorand]: AlgorandIcon,
   [ChainId.Aptos]: AptosIcon,
@@ -56,7 +56,7 @@ const ICONS: { [key in BlockChainId]: any } = {
 };
 
 type Props = {
-  chainId: BlockChainId;
+  chainId: ChainId;
   size?: number;
 };
 
@@ -66,4 +66,4 @@ const BlockchainIcon = ({ chainId, size = 24 }: Props) => {
   return <img src={icon} width={size} height={size} />;
 };
 
-export { BlockchainIcon };
+export default BlockchainIcon;

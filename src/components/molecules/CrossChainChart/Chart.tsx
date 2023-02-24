@@ -1,5 +1,6 @@
 import { ChainId, CrossChainActivity } from "@xlabs-libs/wormscan-sdk";
 import { useEffect, useRef, useState } from "react";
+import { BlockchainIcon } from "src/components/atoms";
 
 interface IOriginChainsHeight {
   itemHeight: number;
@@ -159,8 +160,9 @@ export const Chart = ({ data }: Props) => {
               marginBottom: MARGIN_SIZE,
             }}
           >
-            <span>{ChainId[item.chainId]}</span>
-            <span>({item.percentage.toFixed(2)}%)</span>
+            <BlockchainIcon size={18} chainId={item.chainId} />
+            <span className="chain-name">{ChainId[item.chainId]}</span>
+            <span className="chain-percentage">{item.percentage.toFixed(2)}%</span>
           </div>
         ))}
       </div>
@@ -184,8 +186,9 @@ export const Chart = ({ data }: Props) => {
               marginBottom: MARGIN_SIZE,
             }}
           >
-            <span>{ChainId[item.chainId]}</span>
-            <span>({item.percentage.toFixed(2)}%)</span>
+            <BlockchainIcon size={18} chainId={item.chainId} />
+            <span className="chain-name">{ChainId[item.chainId]}</span>
+            <span className="chain-percentage">{item.percentage.toFixed(2)}%</span>
           </div>
         ))}
       </div>

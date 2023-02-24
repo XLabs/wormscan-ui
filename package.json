@@ -42,6 +42,6 @@
 		"src": "./src"
 	},
 	"lint-staged": {
-		"*.{ts,tsx,js,jsx,scss,css,md}": "prettier --write"
+		"*.{svg,ts,tsx,js,jsx,scss,css,md}": "prettier --write"
 	}
 }
