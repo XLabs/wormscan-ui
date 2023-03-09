@@ -70,4 +70,9 @@ body {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
+
+  > .main-content {
+    flex: 1;
+    padding: 0 60px;
+  }
 }
