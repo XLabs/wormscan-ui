@@ -5,15 +5,14 @@
 
   width: 100%;
   align-items: center;
-  padding: 72px 0;
+  padding: 64px 0;
 
   > &-text {
     @include text-h3;
 
     font-family: "IBM Plex Sans", sans-serif;
-    max-width: 408px;
     text-align: center;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 
     > span {
       font-family: inherit;
@@ -21,10 +20,16 @@
     }
   }
 
+  > form {
+    width: 100%;
+    max-width: 490px;
+  }
+
   > &-search {
     @include centered-row;
 
     width: 100%;
+    height: 48px;
     justify-content: center;
 
     > &-input {
@@ -33,19 +38,19 @@
       position: relative;
       justify-content: center;
       width: 100%;
-      max-width: 548px;
+      height: inherit;
 
       > input {
-        @include text-p1;
+        @include text-p3;
 
         background-color: transparent;
-        border: 1px solid var(--color-primary-100);
-        border-radius: 50px;
+        border: 2px solid var(--color-primary-100);
+        border-radius: 5px 0 0 5px;
         width: 100%;
-        height: 64px;
-        text-align: center;
-        padding: 16px 80px 16px 40px;
-        color: var(--color-primary-100);
+        height: inherit;
+
+        padding: 16px;
+        color: var(--color-primary-10);
 
         &::placeholder {
           color: var(--color-primary-100);
@@ -54,22 +59,27 @@
         &:focus-visible {
           outline: 1px solid var(--color-primary-100);
         }
-
-        &:focus-visible + .icon {
-          opacity: 1;
-        }
       }
+    }
+
+    > button {
+      @include button-secondary;
+
+      height: inherit;
+      width: 50px;
+      border-radius: 0px 5px 5px 0px;
+      border: 2px solid var(--color-primary-100);
+      border-left: none;
+      padding: 0;
 
       > .icon {
-        position: absolute;
-        top: 50%;
-        right: 40px;
-        transform: translateY(-50%);
-        width: 27px;
-        height: 27px;
-        color: var(--color-secondary-800);
-        opacity: 0.5;
-        transition: opacity 200ms ease-out;
+        width: 18px;
+        height: 18px;
+        color: var(--color-white);
+      }
+
+      &:focus-visible {
+        outline: 1px solid var(--color-primary-100);
       }
     }
   }
