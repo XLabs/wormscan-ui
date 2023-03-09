@@ -4,6 +4,8 @@
   @include centered-row;
 
   width: 100%;
+  min-height: 192px;
+  padding: 0 60px;
   justify-content: space-between;
   flex-wrap: wrap;
 
