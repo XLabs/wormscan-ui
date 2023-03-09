@@ -3,11 +3,11 @@ export default {
     translation: {
       home: {
         header: {
-          status: "Status",
-          bridge: "Bridge",
-          stats: "Stats",
-          history: "My history",
-          connect: "Connect Wallet",
+          about: "About",
+          txns: "Txns",
+          analytics: "Analytics",
+          guardians: "Guardians",
+          goBridge: "Go to Bridge",
         },
         footer: {
           faq: "FAQs",

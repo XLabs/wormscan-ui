@@ -13,24 +13,24 @@ const Header = () => {
       <div className="header-navigation">
         <nav>
           <div className="header-navigation-item">
-            <NavLink to="/">{t("home.header.status")}</NavLink>
+            <NavLink to="/">{t("home.header.about")}</NavLink>
           </div>
 
           <div className="header-navigation-item">
-            <NavLink to="/">{t("home.header.bridge")}</NavLink>
+            <NavLink to="/">{t("home.header.txns")}</NavLink>
           </div>
 
           <div className="header-navigation-item">
-            <NavLink to="/">{t("home.header.stats")}</NavLink>
+            <NavLink to="/">{t("home.header.analytics")}</NavLink>
           </div>
 
           <div className="header-navigation-item">
-            <NavLink to="/">{t("home.header.history")}</NavLink>
+            <NavLink to="/">{t("home.header.guardians")}</NavLink>
           </div>
         </nav>
 
         <div className="header-actions">
-          <button className="connect-button">{t("home.header.connect")}</button>
+          <button className="connect-button">{t("home.header.goBridge")}</button>
         </div>
       </div>
     </header>
