@@ -8,7 +8,7 @@ const Header = () => {
 
   return (
     <header className="header">
-      <WormholeBrand width={49} height={43} />
+      <WormholeBrand width={36.75} height={32.25} />
 
       <div className="header-navigation">
         <nav>

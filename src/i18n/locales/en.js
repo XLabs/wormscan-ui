@@ -11,11 +11,11 @@ export default {
         },
         footer: {
           faq: "FAQs",
-          status: "Status",
-          bridge: "Bridge",
-          stats: "Stats",
+          txns: "Txns",
           contact: "Contact us",
-          join: "Join us:",
+          about: "About",
+          analytics: "Analytics",
+          network: "Network",
         },
         hero: {
           text: "Cross-chain Explorer",
