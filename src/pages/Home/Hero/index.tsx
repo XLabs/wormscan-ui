@@ -14,7 +14,7 @@ const Hero = () => {
     <section className="home-hero">
       <div className="home-hero-text">{t("home.hero.text")}</div>
 
-      <form onSubmit={e => handleSearch(e)}>
+      <form onSubmit={handleSearch}>
         <div className="home-hero-search">
           <div className="home-hero-search-input">
             <input
