@@ -18,8 +18,7 @@ export default {
           join: "Join us:",
         },
         hero: {
-          initText: "The Wormhole Explorer has arrived",
-          endText: "to rule them all.",
+          text: "Cross-chain Explorer",
           search: "search",
           placeholder: "Search by TxHash / Address / ENS",
         },
