@@ -1,18 +1,32 @@
 @import "src/styles/globals.scss";
 
 .footer {
-  @include centered-row;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  flex-wrap: wrap;
 
   width: 100%;
   min-height: 192px;
-  padding: 0 60px;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  padding: 40px 60px;
+
+  background-color: rgba(1, 0, 20, 0.25);
+  border-top: 1px solid var(--color-white-10);
+
+  &-copy {
+    &-text {
+      @include text-p3;
+
+      color: var(--color-primary-100);
+      margin-top: 32px;
+    }
+  }
 
   &-links {
-    @include centered-row;
-
-    gap: 80px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 40px;
+    column-gap: 160px;
 
     &-item {
       @include centered-row;
@@ -23,8 +37,9 @@
       a {
         @include text-p3;
 
-        color: var(--color-white);
+        color: var(--color-primary-50);
         text-decoration: none;
+        text-align: center;
       }
     }
   }
