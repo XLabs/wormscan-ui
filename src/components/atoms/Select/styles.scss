@@ -1,0 +1,79 @@
+@import "src/styles/globals.scss";
+
+.select {
+  @include centered-row;
+  min-height: 56px;
+  width: 100%;
+
+  &-trigger {
+    @include centered-row;
+    @include text-p1;
+
+    flex: 1;
+    cursor: pointer;
+    justify-content: space-between;
+    min-height: inherit;
+    gap: 16px;
+    padding: 8px 8px 8px 16px;
+    background-color: var(--color-white-05);
+    border: 2px solid var(--color-white-10);
+    border-radius: 5px;
+    color: var(--color-white);
+
+    &[data-state="open"] {
+      border: 2px solid var(--color-primary-200);
+    }
+
+    &-selection {
+      @include centered-row;
+
+      color: var(--color-secondary-800);
+
+      > svg {
+        height: 26px;
+        width: 26px;
+      }
+    }
+  }
+
+  &-content {
+    padding: 12px 0;
+    border-radius: 8px;
+    background-color: var(--color-primary-900);
+
+    &-scroll-button {
+      @include centered-row;
+
+      height: 20px;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+
+  &-item {
+    @include text-p2;
+    @include centered-row;
+
+    min-height: 40px;
+    color: var(--color-primary-10);
+    padding: 8px 16px;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+
+    &:hover {
+      background-color: var(--color-white-10);
+    }
+
+    &:focus-visible {
+      outline: transparent;
+      background-color: var(--color-white-10);
+    }
+
+    &[data-state="checked"] {
+      background-color: var(--color-secondary-800);
+      color: var(--color-white);
+      font-weight: 600;
+    }
+  }
+}
