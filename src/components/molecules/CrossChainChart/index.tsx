@@ -1,19 +1,35 @@
-import * as ToggleGroup from "@radix-ui/react-toggle-group";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { TriangleDownIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
-import "./styles.scss";
-import { Chart } from "./Chart";
 import client from "src/api/Client";
+import { Chart } from "./Chart";
+import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { useQuery } from "react-query";
-import { Loader } from "src/components/atoms";
+import { Loader, Select } from "src/components/atoms";
 import { useTranslation } from "react-i18next";
+import "./styles.scss";
+
+const APP_LIST = [
+  { label: "All Apps", value: "all" },
+  { label: "App #1", value: "app1" },
+  { label: "App #2", value: "app2" },
+  { label: "App #3", value: "app3" },
+];
+
+const RANGE_LIST = [
+  { label: "All Time", value: "all" },
+  { label: "Range #1", value: "range1" },
+  { label: "Range #2", value: "range2" },
+  { label: "Range #3", value: "range3" },
+  { label: "Range #4", value: "range4" },
+  { label: "Range #5", value: "range5" },
+];
+
+const SELECT_WIDTH = 220;
 
 const CrossChainChart = () => {
   const { t } = useTranslation();
   const [selectedType, setSelectedType] = useState("chains");
-  const [selectedApp, setSelectedApp] = useState<number>(0);
-  const [selectedTimeRange, setSelectedTimeRange] = useState<number>(0);
+  const [selectedApp, setSelectedApp] = useState<string>(APP_LIST[0].value);
+  const [selectedTimeRange, setSelectedTimeRange] = useState<string>(RANGE_LIST[0].value);
 
   const { isLoading, error, data } = useQuery("crossChainResponse", () =>
     client.guardianNetwork.getCrossChainActivity(),
@@ -40,57 +56,27 @@ const CrossChainChart = () => {
         </ToggleGroup.Root>
 
         <div className="cross-chain-filters">
-          <DropdownMenu.Root>
+          <div className="cross-chain-filters-group">
             <span className="cross-chain-filters-text">{t("home.crossChain.apps")}</span>
-            <DropdownMenu.Trigger className="cross-chain-filters-trigger">
-              <span>
-                {selectedApp
-                  ? `${t("home.crossChain.app")} #${selectedApp}`
-                  : t("home.crossChain.allApps")}
-              </span>
-              <TriangleDownIcon className="cross-chain-filters-trigger-triangle" />
-            </DropdownMenu.Trigger>
+            <Select
+              value={selectedApp}
+              onValueChange={value => setSelectedApp(value)}
+              items={APP_LIST}
+              ariaLabel="Select App"
+              style={{ width: SELECT_WIDTH }}
+            />
+          </div>
 
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content>
-                {[0, 1, 2, 3].map(item => (
-                  <DropdownMenu.Item
-                    key={item}
-                    onSelect={() => setSelectedApp(item)}
-                    className="cross-chain-filters-item"
-                  >
-                    {item ? `${t("home.crossChain.app")} #${item}` : t("home.crossChain.allApps")}
-                  </DropdownMenu.Item>
-                ))}
-              </DropdownMenu.Content>
-            </DropdownMenu.Portal>
-          </DropdownMenu.Root>
-
-          <DropdownMenu.Root>
+          <div className="cross-chain-filters-group">
             <span className="cross-chain-filters-text">{t("home.crossChain.timeRange")}</span>
-            <DropdownMenu.Trigger className="cross-chain-filters-trigger">
-              <span>
-                {selectedTimeRange
-                  ? `${t("home.crossChain.range")} #${selectedTimeRange}`
-                  : t("home.crossChain.allTime")}
-              </span>
-              <TriangleDownIcon className="cross-chain-filters-trigger-triangle" />
-            </DropdownMenu.Trigger>
-
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content>
-                {[0, 1, 2, 3].map(item => (
-                  <DropdownMenu.Item
-                    key={item}
-                    onSelect={() => setSelectedTimeRange(item)}
-                    className="cross-chain-filters-item"
-                  >
-                    {item ? `${t("home.crossChain.range")} #${item}` : t("home.crossChain.allTime")}
-                  </DropdownMenu.Item>
-                ))}
-              </DropdownMenu.Content>
-            </DropdownMenu.Portal>
-          </DropdownMenu.Root>
+            <Select
+              value={selectedTimeRange}
+              onValueChange={value => setSelectedTimeRange(value)}
+              items={RANGE_LIST}
+              ariaLabel="Select Time Range"
+              style={{ width: SELECT_WIDTH }}
+            />
+          </div>
         </div>
       </div>
 

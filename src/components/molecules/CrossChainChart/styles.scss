@@ -4,7 +4,7 @@
   @include card-container;
 
   &-title {
-    @include text-h5;
+    @include text-p1;
     color: var(--color-primary-50);
     margin-bottom: 24px;
   }
@@ -12,6 +12,9 @@
   &-options {
     @include centered-row;
 
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
     margin-bottom: 24px;
   }
 
@@ -57,24 +60,28 @@
 
   &-filters {
     @include centered-row;
+
     display: inline-flex;
-    margin-left: auto;
+    gap: 32px;
+
+    &-group {
+      @include centered-row;
+      gap: 16px;
+    }
 
     &-text {
       @include text-p1;
-      color: var(--color-primary-50);
 
+      color: var(--color-primary-50);
       white-space: nowrap;
-      margin-right: 16px;
-      margin-left: 16px;
     }
 
     &-trigger {
       @include centered-row;
       @include text-p1;
+
       width: 150px;
       color: var(--color-white);
-
       background: transparent;
       border: 2px solid var(--color-secondary-800);
       border-radius: 6px;
