@@ -23,8 +23,6 @@ const RANGE_LIST = [
   { label: "Range #5", value: "range5" },
 ];
 
-const SELECT_WIDTH = 220;
-
 const CrossChainChart = () => {
   const { t } = useTranslation();
   const [selectedType, setSelectedType] = useState("chains");
@@ -63,7 +61,7 @@ const CrossChainChart = () => {
               onValueChange={value => setSelectedApp(value)}
               items={APP_LIST}
               ariaLabel="Select App"
-              style={{ width: SELECT_WIDTH }}
+              className="cross-chain-filters-select"
             />
           </div>
 
@@ -74,7 +72,7 @@ const CrossChainChart = () => {
               onValueChange={value => setSelectedTimeRange(value)}
               items={RANGE_LIST}
               ariaLabel="Select Time Range"
-              style={{ width: SELECT_WIDTH }}
+              className="cross-chain-filters-select"
             />
           </div>
         </div>

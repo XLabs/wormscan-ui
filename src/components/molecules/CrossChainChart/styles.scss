@@ -12,6 +12,7 @@
   &-options {
     @include centered-row;
 
+    min-height: 56px;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 16px;
@@ -26,6 +27,7 @@
 
   &-type {
     display: inline-flex;
+    min-height: inherit;
 
     &-item {
       background: withOpacity(var(--color-primary-800), 0.4);
@@ -67,6 +69,10 @@
     &-group {
       @include centered-row;
       gap: 16px;
+    }
+
+    &-select {
+      width: 220px;
     }
 
     &-text {

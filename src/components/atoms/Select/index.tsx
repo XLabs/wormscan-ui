@@ -11,14 +11,15 @@ type Props = {
   value: string;
   onValueChange: (value: string) => void;
   ariaLabel: string;
+  className?: string;
   style?: CSSProperties;
 };
 
-const Select = ({ value, onValueChange, items, ariaLabel, style = {} }: Props) => {
+const Select = ({ value, onValueChange, items, ariaLabel, className = "", style = {} }: Props) => {
   return (
-    <div className="select">
+    <div className={`select ${className}`} style={style}>
       <SelectPrimitive.Root value={value} onValueChange={value => onValueChange(value)}>
-        <SelectPrimitive.Trigger className="select-trigger" aria-label={ariaLabel} style={style}>
+        <SelectPrimitive.Trigger className="select-trigger" aria-label={ariaLabel}>
           <SelectPrimitive.Value aria-label={value} />
           <SelectPrimitive.Icon className="select-trigger-selection">
             <TriangleDownIcon />

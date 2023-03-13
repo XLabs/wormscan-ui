@@ -3,11 +3,13 @@
 .select {
   @include centered-row;
   min-height: 56px;
+  width: 100%;
 
   &-trigger {
     @include centered-row;
     @include text-p1;
 
+    flex: 1;
     cursor: pointer;
     justify-content: space-between;
     min-height: inherit;
