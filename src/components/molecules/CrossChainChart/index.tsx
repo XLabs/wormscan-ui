@@ -1,11 +1,16 @@
 import { useState } from "react";
 import client from "src/api/Client";
 import { Chart } from "./Chart";
-import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { useQuery } from "react-query";
-import { Loader, Select } from "src/components/atoms";
+import { Loader, Select, ToggleGroup } from "src/components/atoms";
+import i18n from "src/i18n";
 import { useTranslation } from "react-i18next";
 import "./styles.scss";
+
+const TYPE_LIST = [
+  { label: i18n.t("home.crossChain.chains"), value: "chains", ariaLabel: "Chains" },
+  { label: i18n.t("home.crossChain.count"), value: "tx-count", ariaLabel: "Transaction Count" },
+];
 
 const APP_LIST = [
   { label: "All Apps", value: "all" },
@@ -25,7 +30,7 @@ const RANGE_LIST = [
 
 const CrossChainChart = () => {
   const { t } = useTranslation();
-  const [selectedType, setSelectedType] = useState("chains");
+  const [selectedType, setSelectedType] = useState<string>(TYPE_LIST[0].value);
   const [selectedApp, setSelectedApp] = useState<string>(APP_LIST[0].value);
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>(RANGE_LIST[0].value);
 
@@ -39,19 +44,12 @@ const CrossChainChart = () => {
       <div className="cross-chain-title">{t("home.crossChain.title")}</div>
 
       <div className="cross-chain-options">
-        <ToggleGroup.Root
-          type="single"
-          className="cross-chain-type"
+        <ToggleGroup
           value={selectedType}
-          onValueChange={value => value && setSelectedType(value)}
-        >
-          <ToggleGroup.Item className="cross-chain-type-item" value="chains">
-            {t("home.crossChain.chains")}
-          </ToggleGroup.Item>
-          <ToggleGroup.Item className="cross-chain-type-item" value="count">
-            {t("home.crossChain.count")}
-          </ToggleGroup.Item>
-        </ToggleGroup.Root>
+          onValueChange={value => setSelectedType(value)}
+          items={TYPE_LIST}
+          ariaLabel="Select type"
+        />
 
         <div className="cross-chain-filters">
           <div className="cross-chain-filters-group">

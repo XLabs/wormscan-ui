@@ -1,0 +1,38 @@
+@import "src/styles/globals.scss";
+
+.toggle-group {
+  @include centered-row;
+
+  min-height: 56px;
+
+  &-root {
+    display: inline-flex;
+    min-height: inherit;
+  }
+
+  &-item {
+    @include text-p2-bold;
+
+    background: withOpacity(var(--color-primary-800), 0.4);
+    border: 1px solid var(--color-white-10);
+    color: var(--color-primary-100);
+    padding: 8px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:first-child {
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+
+    &[data-state="on"] {
+      color: var(--color-white);
+      background: var(--color-secondary-800);
+    }
+  }
+}

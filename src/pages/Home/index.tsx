@@ -10,7 +10,7 @@ const Home = () => {
       <Hero />
       <Statistics />
       <CrossChainChart />
-      <VAACountChart />
+      {/* <VAACountChart /> */}
       <JoinUs />
     </BaseLayout>
   );
