@@ -10,7 +10,6 @@ const Home = () => {
       <Hero />
       <Statistics />
       <CrossChainChart />
-      <VAACountChart />
       <JoinUs />
     </BaseLayout>
   );
