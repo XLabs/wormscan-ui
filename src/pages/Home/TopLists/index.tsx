@@ -194,13 +194,19 @@ const TopLists = () => {
         onValueChange={setSelectedTopChainTimeRange}
       >
         {TOP_CHAIN_DATA?.length > 0 &&
-          TOP_CHAIN_DATA.map(({ from_chain, to_chain, transactions }) => (
-            <TopChainListItem
-              from_chain={from_chain}
-              to_chain={to_chain}
-              transactions={transactions}
-            />
-          ))}
+          TOP_CHAIN_DATA.map(({ from_chain, to_chain, transactions }) => {
+            const { id: fromId } = from_chain;
+            const { id: toId } = to_chain;
+
+            return (
+              <TopChainListItem
+                key={`${fromId}-${toId}`}
+                from_chain={from_chain}
+                to_chain={to_chain}
+                transactions={transactions}
+              />
+            );
+          })}
       </TopList>
 
       <TopList
@@ -215,13 +221,17 @@ const TopLists = () => {
         onValueChange={setSelectedTopAssetTimeRange}
       >
         {TOP_ASSET_DATA?.length > 0 &&
-          TOP_ASSET_DATA.map(({ from_chain, to_asset, transactions }) => (
-            <TopAssetListItem
-              from_chain={from_chain}
-              to_asset={to_asset}
-              transactions={transactions}
-            />
-          ))}
+          TOP_ASSET_DATA.map(({ from_chain, to_asset, transactions }) => {
+            const { symbol } = to_asset;
+            return (
+              <TopAssetListItem
+                key={symbol}
+                from_chain={from_chain}
+                to_asset={to_asset}
+                transactions={transactions}
+              />
+            );
+          })}
       </TopList>
     </section>
   );

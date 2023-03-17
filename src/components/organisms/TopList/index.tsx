@@ -34,7 +34,6 @@ const TopList = ({ title, subtitle, children, filterOptions, value, onValueChang
           items={items}
           ariaLabel={ariaLabel}
           className={className}
-          style={{ width: "fit-content" }}
         />
       </div>
       <div className="top-list-body">{children}</div>
