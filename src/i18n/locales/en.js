@@ -46,6 +46,16 @@ export default {
           title: "VAAs count by blockchain",
           excluded: "The following blockchains were excluded from the chart:",
         },
+        topLists: {
+          chains: {
+            title: "Top 7 Chain pairs",
+            subtitle: "Top chain pairs by number of transfers",
+          },
+          assets: {
+            title: "Top 7 assets",
+            subtitle: "Top assets transferred according to the blockchain by volume",
+          },
+        },
         join: {
           initText: "Do not want to miss our releases?",
           endText: "join us.",

@@ -1,0 +1,38 @@
+@import "src/styles/globals.scss";
+
+.top-chain-list-item {
+  @include centered-row;
+  @include text-p3;
+
+  color: var(--color-primary-10);
+  width: 100%;
+  gap: 40px;
+
+  &-icons {
+    @include centered-row;
+
+    gap: 20px;
+
+    & > svg {
+      transform: scale(1.75);
+      color: var(--color-primary-200);
+    }
+  }
+
+  &-data {
+    @include centered-row;
+
+    flex: 1;
+    gap: 40px;
+    justify-content: space-between;
+
+    > * {
+      flex: 1;
+    }
+  }
+
+  &-transactions {
+    text-align: end;
+    font-weight: 600;
+  }
+}

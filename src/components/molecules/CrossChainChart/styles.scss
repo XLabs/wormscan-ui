@@ -2,6 +2,7 @@
 
 .cross-chain {
   @include card-container;
+  margin-bottom: 24px;
 
   &-title {
     @include text-p1;

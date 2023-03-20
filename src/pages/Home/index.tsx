@@ -1,8 +1,9 @@
-import { CrossChainChart, VAACountChart } from "src/components/molecules";
+import { CrossChainChart } from "src/components/molecules";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { Hero } from "./Hero";
 import { JoinUs } from "./JoinUs";
 import { Statistics } from "./Statistics";
+import { TopLists } from "./TopLists";
 
 const Home = () => {
   return (
@@ -10,6 +11,7 @@ const Home = () => {
       <Hero />
       <Statistics />
       <CrossChainChart />
+      <TopLists />
       <JoinUs />
     </BaseLayout>
   );
