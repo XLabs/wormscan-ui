@@ -34,6 +34,7 @@ const ToggleGroup = ({
       >
         {items.map(({ label, value, ariaLabel = "" }) => (
           <ToggleGroupPrimitive.Item
+            key={value}
             className="toggle-group-item"
             value={value}
             aria-label={ariaLabel}

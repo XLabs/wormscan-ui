@@ -97,7 +97,7 @@ const TOP_ASSET_DATA = [
       name: "Ethereum",
     },
     to_asset: {
-      symbol: "wUSDC",
+      symbol: "wETH",
       contract_address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     },
     transactions: 4091183194,
@@ -108,7 +108,7 @@ const TOP_ASSET_DATA = [
       name: "BNB Smart Chain",
     },
     to_asset: {
-      symbol: "wUSDC",
+      symbol: "wBNB",
       contract_address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     },
     transactions: 5591183194,
@@ -119,7 +119,7 @@ const TOP_ASSET_DATA = [
       name: "Solana",
     },
     to_asset: {
-      symbol: "wUSDC",
+      symbol: "wSOL",
       contract_address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     },
     transactions: 4091183194,
@@ -141,7 +141,7 @@ const TOP_ASSET_DATA = [
       name: "Ethereum",
     },
     to_asset: {
-      symbol: "wUSDC",
+      symbol: "wUSDT",
       contract_address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     },
     transactions: 4091183194,
@@ -152,7 +152,7 @@ const TOP_ASSET_DATA = [
       name: "BNB Smart Chain",
     },
     to_asset: {
-      symbol: "wUSDC",
+      symbol: "wALGO",
       contract_address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     },
     transactions: 5591183194,
@@ -163,7 +163,7 @@ const TOP_ASSET_DATA = [
       name: "Ethereum",
     },
     to_asset: {
-      symbol: "wUSDC",
+      symbol: "wAVA",
       contract_address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     },
     transactions: 4091183194,
@@ -222,10 +222,12 @@ const TopLists = () => {
       >
         {TOP_ASSET_DATA?.length > 0 &&
           TOP_ASSET_DATA.map(({ from_chain, to_asset, transactions }) => {
+            const { id: fromId } = from_chain;
             const { symbol } = to_asset;
+
             return (
               <TopAssetListItem
-                key={symbol}
+                key={`${fromId}-${symbol}`}
                 from_chain={from_chain}
                 to_asset={to_asset}
                 transactions={transactions}
