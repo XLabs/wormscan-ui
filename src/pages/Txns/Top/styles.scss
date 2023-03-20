@@ -1,0 +1,9 @@
+@import "src/styles/globals.scss";
+
+.txns-top {
+  margin-top: 48px;
+
+  &-title {
+    @include text-h5;
+  }
+}

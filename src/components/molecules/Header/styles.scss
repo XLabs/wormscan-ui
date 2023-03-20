@@ -10,6 +10,10 @@
   background-color: rgba(1, 0, 20, 0.2);
   border-bottom: 1px solid var(--color-white-10);
 
+  a {
+    text-decoration: none;
+  }
+
   &-navigation {
     @include centered-row;
     font-family: "IBM Plex Sans", sans-serif;

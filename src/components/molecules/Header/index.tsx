@@ -8,7 +8,9 @@ const Header = () => {
 
   return (
     <header className="header">
-      <WormholeBrand width={36.75} height={32.25} />
+      <NavLink to="/">
+        <WormholeBrand width={36.75} height={32.25} />
+      </NavLink>
 
       <div className="header-navigation">
         <nav>
@@ -17,7 +19,7 @@ const Header = () => {
           </div>
 
           <div className="header-navigation-item">
-            <NavLink to="/">{t("home.header.txns")}</NavLink>
+            <NavLink to="/txns">{t("home.header.txns")}</NavLink>
           </div>
 
           <div className="header-navigation-item">
