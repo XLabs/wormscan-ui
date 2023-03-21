@@ -62,6 +62,13 @@ export default {
           discord: "Join Discord",
         },
       },
+      txns: {
+        top: {
+          title: "Transactions - Txns",
+          search: "search",
+          placeholder: "Search by TxHash / Address / ENS",
+        },
+      },
     },
     common: {},
   },
