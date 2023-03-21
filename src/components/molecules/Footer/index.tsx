@@ -13,7 +13,9 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-copy">
-        <WormholeBrand width={36.75} height={32.25} />
+        <NavLink to="/">
+          <WormholeBrand width={36.75} height={32.25} />
+        </NavLink>
         <div className="footer-copy-text">&copy; {year} Wormscan.</div>
       </div>
 
@@ -23,7 +25,7 @@ const Footer = () => {
         </div>
 
         <div className="footer-links-item">
-          <NavLink to="/">{t("home.footer.txns")}</NavLink>
+          <NavLink to="/txns">{t("home.footer.txns")}</NavLink>
         </div>
 
         <div className="footer-links-item">

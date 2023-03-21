@@ -18,4 +18,4 @@ const JoinUs = () => {
   );
 };
 
-export { JoinUs };
+export default JoinUs;
