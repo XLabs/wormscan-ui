@@ -69,7 +69,11 @@ export default {
           placeholder: "Search by TxHash / Address / ENS",
         },
       },
+      common: {
+        assets: "assets",
+        messages: "messages",
+        nfts: "nfts",
+      },
     },
-    common: {},
   },
 };
