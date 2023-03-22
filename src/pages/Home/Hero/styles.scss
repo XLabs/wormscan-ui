@@ -83,7 +83,7 @@
       @include button-secondary;
 
       height: inherit;
-      width: 50px;
+      min-width: 50px;
       border-radius: 0px 5px 5px 0px;
       border: 2px solid var(--color-white-10);
       border-left: none;

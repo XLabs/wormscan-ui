@@ -1,9 +1,17 @@
 @import "src/styles/globals.scss";
 
 .txns-top {
+  @include centered-row;
+
   margin-top: 48px;
+  width: 100%;
+  justify-content: space-between;
 
   &-title {
     @include text-h5;
+  }
+
+  &-search-bar {
+    max-width: 424px;
   }
 }
