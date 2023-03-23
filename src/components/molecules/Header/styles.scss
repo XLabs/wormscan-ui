@@ -4,11 +4,15 @@
   @include centered-row;
   width: 100%;
   min-height: 88px;
-  padding: 0 60px;
   justify-content: space-between;
   flex-wrap: wrap;
   background-color: rgba(1, 0, 20, 0.2);
   border-bottom: 1px solid var(--color-white-10);
+  padding: 16px;
+
+  @include desktop {
+    padding: 0 60px;
+  }
 
   a {
     text-decoration: none;
@@ -17,6 +21,10 @@
   &-navigation {
     @include centered-row;
     font-family: "IBM Plex Sans", sans-serif;
+    display: none;
+    @include desktop {
+      display: flex;
+    }
 
     & > nav {
       @include centered-row;
@@ -24,15 +32,59 @@
     }
 
     &-item {
-      @include centered-row;
+      align-items: flex-start;
+      padding-left: 32px;
+      @include centered-column;
+
+      margin: 32px 0px;
+      @include desktop {
+        @include centered-row;
+        margin: 0px;
+      }
+
       cursor: pointer;
       user-select: none;
 
       a {
-        @include text-p2-bold;
+        @include text-p2;
+        @include desktop {
+          @include text-p2-bold;
+        }
         color: var(--color-primary-50);
         text-decoration: none;
       }
+    }
+  }
+
+  &-navigation-mobile {
+    @include centered-column;
+
+    @include desktop {
+      display: none;
+    }
+
+    &-nav {
+      position: absolute;
+      top: 88px;
+      left: 8px;
+      right: 8px;
+      height: calc(100vh - 88px);
+      border-radius: 8px;
+      z-index: 2;
+      background-color: var(--color-primary-900);
+      box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.75);
+    }
+
+    &-btn {
+      padding: 4px;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+    }
+
+    .go-bridge {
+      margin-left: -6px;
+      @include button-secondary;
     }
   }
 

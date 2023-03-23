@@ -1,7 +1,11 @@
 @import "src/styles/globals.scss";
 
 .home-statistics {
-  @include centered-row;
+  @include centered-column;
+  @include tablet {
+    @include centered-row;
+    align-items: stretch;
+  }
 
   gap: 24px;
   margin-bottom: 24px;
@@ -11,7 +15,7 @@
     @include centered-row;
 
     flex: 1;
-    min-height: 256px;
+    min-height: 140px;
   }
 
   > &-data {
@@ -22,26 +26,45 @@
     gap: 24px;
     flex: 2;
     min-height: 256px;
-    padding: 24px 40px;
 
-    > hr {
-      border-color: var(--color-white-10);
+    padding: 16px;
+    @include tablet {
+      padding: 24px 40px;
     }
 
-    &-row {
-      @include centered-row;
+    &-title {
+      color: var(--color-primary-50);
+      @include text-p1;
+    }
 
-      justify-content: space-between;
-      gap: 24px;
+    &-container {
+      @include centered-row;
+      flex-wrap: wrap;
+      flex: 1;
+
+      hr {
+        width: 100%;
+        border-color: var(--color-white-10);
+        display: none;
+        @include desktop {
+          display: block;
+        }
+      }
 
       &-item {
         @include centered-column;
-        gap: 16px;
-        flex: 1;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        width: 50%;
+        @include desktop {
+          width: 33%;
+        }
 
         &-title {
           @include text-p1;
-          color: var(--color-primary-50);
+          color: var(--color-primary-100);
+          font-size: 16px;
+          margin-bottom: 16px;
         }
 
         &-value {

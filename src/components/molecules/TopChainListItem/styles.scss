@@ -19,6 +19,13 @@
     }
   }
 
+  &-chain {
+    display: none;
+    @include tablet {
+      display: flex;
+    }
+  }
+
   &-data {
     @include centered-row;
 

@@ -1,3 +1,5 @@
+@import "src/styles/globals.scss";
+
 :root {
   --color-primary-900: #010014;
   --color-primary-800: #080530;
@@ -58,6 +60,10 @@
   font-family: "IBM Plex Sans", sans-serif;
 }
 
+html {
+  background-color: var(--color-primary-900);
+}
+
 body {
   margin: 0;
   color: var(--color-white);
@@ -73,6 +79,9 @@ body {
 
   > .main-content {
     flex: 1;
-    padding: 0 60px;
+    padding: 0 16px;
+    @include tablet {
+      padding: 0 60px;
+    }
   }
 }

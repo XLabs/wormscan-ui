@@ -27,8 +27,8 @@ const TopChainListItem = ({ from_chain, to_chain, transactions }: Props) => {
         <BlockchainIcon size={25} chainId={toId} />
       </div>
       <div className="top-chain-list-item-data">
-        <div className="top-chain-list-item-from-chain">{fromName}</div>
-        <div className="top-chain-list-item-to-chain">{toName}</div>
+        <div className="top-chain-list-item-chain">{fromName}</div>
+        <div className="top-chain-list-item-chain">{toName}</div>
         <div className="top-chain-list-item-transactions">{formatNumber(transactions)}</div>
       </div>
     </div>

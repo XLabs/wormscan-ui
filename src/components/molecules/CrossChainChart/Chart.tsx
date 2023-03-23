@@ -86,8 +86,8 @@ export const Chart = ({ data }: Props) => {
 
       const grad = ctx.createLinearGradient(0, START, CHART_SIZE, END);
       grad.addColorStop(0, "rgb(44,51,110)");
-      grad.addColorStop(halfStop, "rgb(54,51,110)");
-      grad.addColorStop(1, "rgb(69,51,110)");
+      grad.addColorStop(halfStop, "rgb(64,51,110)");
+      grad.addColorStop(1, "rgb(84,51,110)");
 
       ctx.strokeStyle = grad;
       ctx.fillStyle = grad;
