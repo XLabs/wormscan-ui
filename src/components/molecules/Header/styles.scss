@@ -32,8 +32,10 @@
     }
 
     &-item {
-      align-items: center;
+      align-items: flex-start;
+      padding-left: 32px;
       @include centered-column;
+
       margin: 32px 0px;
       @include desktop {
         @include centered-row;
@@ -66,7 +68,7 @@
       top: 88px;
       left: 8px;
       right: 8px;
-      height: 340px;
+      height: calc(100vh - 88px);
       border-radius: 8px;
       z-index: 2;
       background-color: var(--color-primary-900);
@@ -81,6 +83,7 @@
     }
 
     .go-bridge {
+      margin-left: -6px;
       @include button-secondary;
     }
   }
