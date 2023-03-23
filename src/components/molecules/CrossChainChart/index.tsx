@@ -53,7 +53,7 @@ const CrossChainChart = () => {
 
         <div className="cross-chain-filters">
           <div className="cross-chain-filters-group">
-            <div className="cross-chain-filters-text">{t("home.crossChain.apps")}</div>
+            <span className="cross-chain-filters-text">{t("home.crossChain.apps")}</span>
             <Select
               value={selectedApp}
               onValueChange={value => setSelectedApp(value)}
@@ -64,7 +64,7 @@ const CrossChainChart = () => {
           </div>
 
           <div className="cross-chain-filters-group">
-            <div className="cross-chain-filters-text">{t("home.crossChain.timeRange")}</div>
+            <span className="cross-chain-filters-text">{t("home.crossChain.timeRange")}</span>
             <Select
               value={selectedTimeRange}
               onValueChange={value => setSelectedTimeRange(value)}
