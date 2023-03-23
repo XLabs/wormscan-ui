@@ -23,12 +23,12 @@ export default {
           placeholder: "Search by TxHash / Address / ENS",
         },
         statistics: {
-          connectedChains: "Connected chains",
-          allVolume: "All time volume",
-          tvl: "Total TVL",
-          messageVolume: "Message volume",
-          assetsTransfer: "Assets transfer",
-          validators: "Validators",
+          allVolume: "Total Volume",
+          allTxn: "Total Txn",
+          dayTxn: "24h Txns",
+          tvl: "TVL",
+          dayMessage: "24h Messages",
+          messageVolume: "24h Volume (USD)",
         },
         crossChain: {
           title: "Cross-chain activity",

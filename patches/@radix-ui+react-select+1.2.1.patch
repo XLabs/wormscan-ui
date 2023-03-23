@@ -1,0 +1,45 @@
+diff --git a/node_modules/@radix-ui/react-select/dist/index.module.js b/node_modules/@radix-ui/react-select/dist/index.module.js
+index 723653e..e752b2f 100644
+--- a/node_modules/@radix-ui/react-select/dist/index.module.js
++++ b/node_modules/@radix-ui/react-select/dist/index.module.js
+@@ -194,23 +194,24 @@ const $cc7e05a45900e73f$export$3ac1e88a1c0b9f1 = /*#__PURE__*/ $01b9c$forwardRef
+             // because we are preventing default in `onPointerDown` so effectively
+             // this only runs for a label "click"
+             event.currentTarget.focus();
++            handleOpen();
+         }),
+-        onPointerDown: $01b9c$composeEventHandlers(triggerProps.onPointerDown, (event)=>{
+-            // prevent implicit pointer capture
+-            // https://www.w3.org/TR/pointerevents3/#implicit-pointer-capture
+-            const target = event.target;
+-            if (target.hasPointerCapture(event.pointerId)) target.releasePointerCapture(event.pointerId);
+-             // only call handler if it's the left button (mousedown gets triggered by all mouse buttons)
+-            // but not when the control key is pressed (avoiding MacOS right click)
+-            if (event.button === 0 && event.ctrlKey === false) {
+-                handleOpen();
+-                context.triggerPointerDownPosRef.current = {
+-                    x: Math.round(event.pageX),
+-                    y: Math.round(event.pageY)
+-                }; // prevent trigger from stealing focus from the active item after opening.
+-                event.preventDefault();
+-            }
+-        }),
++        // onPointerDown: $01b9c$composeEventHandlers(triggerProps.onPointerDown, (event)=>{
++        //     // prevent implicit pointer capture
++        //     // https://www.w3.org/TR/pointerevents3/#implicit-pointer-capture
++        //     const target = event.target;
++        //     if (target.hasPointerCapture(event.pointerId)) target.releasePointerCapture(event.pointerId);
++        //      // only call handler if it's the left button (mousedown gets triggered by all mouse buttons)
++        //     // but not when the control key is pressed (avoiding MacOS right click)
++        //     if (event.button === 0 && event.ctrlKey === false) {
++        //         handleOpen();
++        //         context.triggerPointerDownPosRef.current = {
++        //             x: Math.round(event.pageX),
++        //             y: Math.round(event.pageY)
++        //         }; // prevent trigger from stealing focus from the active item after opening.
++        //         event.preventDefault();
++        //     }
++        // }),
+         onKeyDown: $01b9c$composeEventHandlers(triggerProps.onKeyDown, (event)=>{
+             const isTypingAhead = searchRef.current !== '';
+             const isModifierKey = event.ctrlKey || event.altKey || event.metaKey;

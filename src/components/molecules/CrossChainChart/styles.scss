@@ -16,7 +16,7 @@
     min-height: 56px;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 24px;
     margin-bottom: 24px;
   }
 
@@ -27,18 +27,31 @@
   }
 
   &-filters {
-    @include centered-row;
+    @include centered-column;
+    width: 100%;
+    @include tablet {
+      @include centered-row;
+      width: inherit;
+    }
 
     display: inline-flex;
     gap: 32px;
 
     &-group {
       @include centered-row;
-      gap: 16px;
+
+      flex-wrap: wrap;
+      width: 100%;
+      @include tablet {
+        flex-wrap: nowrap;
+        width: inherit;
+      }
     }
 
     &-select {
-      width: 220px;
+      @include tablet {
+        width: 220px;
+      }
     }
 
     &-text {
@@ -79,10 +92,18 @@
           font-size: 14px;
           font-weight: 400;
           letter-spacing: -0.02em;
+          display: none;
+          @include tablet {
+            display: block;
+          }
         }
         .chain-name {
           font-weight: 600;
           font-size: 16px;
+          display: none;
+          @include tablet {
+            display: block;
+          }
         }
 
         &[data-selected="true"] {
