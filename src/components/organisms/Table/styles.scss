@@ -1,0 +1,62 @@
+@import "src/styles/globals.scss";
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  > thead {
+    @include text-caption2;
+
+    height: 48px;
+    text-align: left;
+    color: var(--color-primary-50);
+    background: var(--color-white-05);
+
+    > tr {
+      height: inherit;
+      margin: 15px;
+
+      > th {
+        padding: 8px 16px;
+
+        &:first-child {
+          padding-left: 32px;
+        }
+
+        &:last-child {
+          padding-right: 32px;
+        }
+      }
+    }
+  }
+
+  > tbody {
+    @include text-p3;
+
+    height: 80px;
+    text-align: left;
+    color: var(--color-primary-50);
+
+    > tr {
+      height: inherit;
+      margin: 15px;
+      border-bottom: 1px solid var(--color-white-10);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      > td {
+        padding: 8px 16px;
+
+        &:first-child {
+          padding-left: 32px;
+        }
+
+        &:last-child {
+          padding-right: 32px;
+        }
+      }
+    }
+  }
+}
