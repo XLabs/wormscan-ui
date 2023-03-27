@@ -8,4 +8,12 @@
     padding: 0 16px;
     color: var(--color-primary-50);
   }
+
+  .table {
+    display: none;
+
+    @include desktop {
+      display: block;
+    }
+  }
 }
