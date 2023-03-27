@@ -12,11 +12,15 @@ const Footer = () => {
 
   return (
     <footer className="footer">
-      <div className="footer-copy">
+      <div className="footer-brand">
         <NavLink to="/">
           <WormholeBrand width={36.75} height={32.25} />
         </NavLink>
-        <div className="footer-copy-text">&copy; {year} Wormscan.</div>
+      </div>
+
+      <div className="footer-social">
+        <DiscordIcon />
+        <TwitterIcon />
       </div>
 
       <div className="footer-links">
@@ -45,10 +49,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="footer-social">
-        <DiscordIcon />
-        <TwitterIcon />
-      </div>
+      <div className="footer-copy">&copy; {year} Wormscan.</div>
     </footer>
   );
 };
