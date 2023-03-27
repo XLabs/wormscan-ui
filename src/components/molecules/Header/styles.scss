@@ -1,17 +1,63 @@
 @import "src/styles/globals.scss";
 
+@keyframes open {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
 .header {
   @include centered-row;
   width: 100%;
-  min-height: 88px;
+  min-height: 64px;
   justify-content: space-between;
   flex-wrap: wrap;
   background-color: rgba(1, 0, 20, 0.2);
   border-bottom: 1px solid var(--color-white-10);
-  padding: 16px;
+  padding: 8px 16px;
+
+  .wormhole-brand {
+    gap: 8px;
+
+    > svg {
+      width: 28px;
+    }
+
+    &-text {
+      font-size: 14px;
+      letter-spacing: 6px;
+    }
+
+    @include desktop {
+      gap: 16px;
+
+      > svg {
+        width: 36.75px;
+      }
+
+      &-text {
+        font-size: 20px;
+        letter-spacing: 8px;
+      }
+    }
+  }
 
   @include desktop {
     padding: 0 60px;
+    min-height: 88px;
+  }
+
+  &-open-mobile-menu-btn {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+
+    @include desktop {
+      display: none;
+    }
   }
 
   a {
@@ -20,8 +66,10 @@
 
   &-navigation {
     @include centered-row;
-    font-family: "IBM Plex Sans", sans-serif;
+
     display: none;
+    font-family: "IBM Plex Sans", sans-serif;
+
     @include desktop {
       display: flex;
     }
@@ -33,10 +81,8 @@
 
     &-item {
       align-items: flex-start;
-      padding-left: 32px;
       @include centered-column;
 
-      margin: 32px 0px;
       @include desktop {
         @include centered-row;
         margin: 0px;
@@ -57,33 +103,66 @@
   }
 
   &-navigation-mobile {
-    @include centered-column;
+    position: fixed;
+    top: 0;
+
+    transform: translateX(100%);
+    width: calc(100% - 16px);
+    min-height: 100vh;
+    min-height: 100svh;
+    background-color: var(--color-primary-900);
+    background-image: url("../../../assets/background-mobile-menu.svg");
+    background-size: cover;
+    z-index: 100;
+    border-left: 2px solid var(--color-white-10);
+    animation: open 0.5s forwards;
 
     @include desktop {
       display: none;
     }
 
+    &-top {
+      @include centered-row;
+
+      justify-content: space-between;
+      padding: 8px 16px;
+      min-height: 64px;
+      border-bottom: 2px solid var(--color-white-10);
+      margin-bottom: 52px;
+
+      .wormhole-brand {
+        gap: 8px;
+
+        > svg {
+          width: 28px;
+        }
+
+        &-text {
+          font-size: 14px;
+          letter-spacing: 6px;
+        }
+      }
+    }
+
     &-nav {
-      position: absolute;
-      top: 88px;
-      left: 8px;
-      right: 8px;
-      height: calc(100vh - 88px);
-      border-radius: 8px;
-      z-index: 2;
-      background-color: var(--color-primary-900);
-      box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.75);
+      @include centered-column;
+
+      padding-left: 48px;
+      gap: 32px;
+
+      > nav {
+        @include centered-column;
+        gap: 32px;
+      }
     }
 
     &-btn {
-      padding: 4px;
       cursor: pointer;
       width: 24px;
       height: 24px;
     }
 
     .go-bridge {
-      margin-left: -6px;
       @include button-secondary;
     }
   }

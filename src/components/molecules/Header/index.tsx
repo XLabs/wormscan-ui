@@ -3,13 +3,21 @@ import { NavLink } from "react-router-dom";
 import WormholeBrand from "../WormholeBrand";
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 import "./styles.scss";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Header = () => {
   const { t } = useTranslation();
-
   const [expandItems, setExpandItems] = useState(false);
-  const handleSetExpand = () => setExpandItems(val => !val);
+
+  useEffect(() => {
+    if (expandItems) {
+      document.body.style.overflow = "hidden";
+      document.body.style.width = "calc(100% - 15px)";
+    } else {
+      document.body.style.overflow = "unset";
+      document.body.style.width = "auto";
+    }
+  }, [expandItems]);
 
   const renderOptions = () => (
     <nav>
@@ -31,13 +39,18 @@ const Header = () => {
     </nav>
   );
 
-  const Icon = expandItems ? Cross1Icon : HamburgerMenuIcon;
-
   return (
     <header className="header">
       <NavLink to="/">
         <WormholeBrand width={36.75} height={32.25} />
       </NavLink>
+
+      <HamburgerMenuIcon
+        onClick={() => setExpandItems(true)}
+        className="header-open-mobile-menu-btn"
+        width={20}
+        height={20}
+      />
 
       {/* DESKTOP OPTIONS */}
       <div className="header-navigation">
@@ -49,15 +62,20 @@ const Header = () => {
       </div>
 
       {/* MOBILE HAMBURGUER MENU */}
-      <div className="header-navigation-mobile">
-        <Icon
-          onClick={handleSetExpand}
-          className="header-navigation-mobile-btn"
-          width={20}
-          height={20}
-        />
+      {expandItems && (
+        <div className="header-navigation-mobile">
+          <div className="header-navigation-mobile-top">
+            <NavLink to="/">
+              <WormholeBrand width={36.75} height={32.25} />
+            </NavLink>
+            <Cross1Icon
+              onClick={() => setExpandItems(false)}
+              className="header-navigation-mobile-btn"
+              width={20}
+              height={20}
+            />
+          </div>
 
-        {expandItems && (
           <div className="header-navigation-mobile-nav">
             {renderOptions()}
 
@@ -65,8 +83,8 @@ const Header = () => {
               <button className="go-bridge">{t("home.header.goBridge")}</button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </header>
   );
 };

@@ -1,5 +1,8 @@
 {
   "cSpell.words": [
     "Txns"
+  ],
+  "githubPullRequests.ignoredPullRequestBranches": [
+    "develop"
   ]
 }

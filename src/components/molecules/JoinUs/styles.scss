@@ -7,9 +7,18 @@
   align-items: center;
   margin-top: 124px;
   margin-bottom: 100px;
+  padding: 0 16px;
+
+  @include tablet {
+    padding: 0 60px;
+  }
 
   > &-text {
-    @include text-h3;
+    @include text-h4;
+
+    @include tablet {
+      font-weight: 600;
+    }
 
     font-family: "IBM Plex Sans", sans-serif;
     max-width: 408px;
