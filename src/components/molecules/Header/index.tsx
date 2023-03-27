@@ -20,7 +20,7 @@ const Header = () => {
   const [expandMobileMenu, setExpandMobileMenu] = useState<boolean>(false);
   const handleSetExpand = () => {
     setExpandMobileMenu(state => {
-      setOverflowHidden(state);
+      setOverflowHidden(!state);
       return !state;
     });
   };
