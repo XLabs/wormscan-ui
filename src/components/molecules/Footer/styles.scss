@@ -1,62 +1,68 @@
 @import "src/styles/globals.scss";
 
 .footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  flex-wrap: wrap;
-  min-height: 192px;
+  display: grid;
+  grid-template-areas:
+    "brand"
+    "social"
+    "links"
+    "copy";
+  gap: 40px;
   width: 100%;
-
-  flex-direction: column;
-  padding: 20px;
-  @include tablet {
-    flex-direction: row;
-    padding: 40px 60px;
-  }
-
+  min-height: 192px;
+  padding: 40px 16px;
   background-color: rgba(1, 0, 20, 0.25);
   border-top: 1px solid var(--color-white-10);
 
-  &-copy {
+  @include desktop {
+    grid-template-areas:
+      "brand links social"
+      "copy links social";
+    padding: 40px 60px;
+  }
+
+  &-brand {
+    grid-area: brand;
+
     a {
       text-decoration: none;
     }
+  }
 
-    &-text {
-      @include text-p3;
+  &-social {
+    @include centered-row;
 
-      color: var(--color-primary-100);
+    grid-area: social;
+    gap: 60px;
+    width: 100%;
 
-      margin-bottom: 16px;
-      margin-top: 16px;
-      @include tablet {
-        margin-top: 32px;
-        margin-bottom: 0px;
-      }
+    > svg {
+      color: var(--color-secondary-800);
+    }
+
+    @include desktop {
+      justify-content: flex-end;
+      align-items: start;
+      gap: 24px;
     }
   }
 
   &-links {
-    display: flex;
-    flex-direction: row;
-    flex: 1;
-    width: 100%;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+    grid-area: links;
+
+    @include desktop {
+      grid-template-columns: 1fr 1fr 1fr;
+      margin-bottom: 0;
+    }
 
     &-item {
       @include centered-row;
-      justify-content: center;
 
-      width: 50%;
-      margin-top: 16px;
-      margin-bottom: 16px;
-      @include tablet {
-        width: 33%;
-        margin-top: 0px;
-        margin-bottom: 32px;
-      }
-
+      justify-content: start;
       cursor: pointer;
       user-select: none;
 
@@ -70,22 +76,10 @@
     }
   }
 
-  &-social {
-    @include centered-row;
-    justify-content: space-around;
-
-    width: 100%;
-    @include tablet {
-      width: auto;
-    }
-
+  &-copy {
     @include text-p3;
 
-    gap: 24px;
-    color: var(--color-white);
-
-    > svg {
-      color: var(--color-secondary-800);
-    }
+    grid-area: copy;
+    color: var(--color-primary-100);
   }
 }
