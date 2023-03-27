@@ -1,26 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
 import WormholeBrand from "../WormholeBrand";
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 import "./styles.scss";
 
+const setOverflowHidden = (hidden: boolean) => {
+  if (hidden) {
+    document.body.style.overflow = "hidden";
+    document.body.style.width = "calc(100% - 15px)";
+  } else {
+    document.body.style.overflow = "unset";
+    document.body.style.width = "auto";
+  }
+};
+
 const Header = () => {
   const { t } = useTranslation();
   const [expandMobileMenu, setExpandMobileMenu] = useState<boolean>(false);
   const handleSetExpand = () => {
     setExpandMobileMenu(state => {
-      if (state) {
-        document.body.style.overflow = "unset";
-        document.body.style.width = "auto";
-      } else {
-        document.body.style.overflow = "hidden";
-        document.body.style.width = "calc(100% - 15px)";
-      }
-
+      setOverflowHidden(state);
       return !state;
     });
   };
+
+  useEffect(() => {
+    return () => setOverflowHidden(false);
+  }, []);
 
   const renderOptions = () => (
     <nav>
