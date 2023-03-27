@@ -1,14 +1,5 @@
 @import "src/styles/globals.scss";
 
-@keyframes open {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
-}
-
 .header {
   @include centered-row;
   width: 100%;
@@ -115,7 +106,14 @@
     background-size: cover;
     z-index: 100;
     border-left: 2px solid var(--color-white-10);
-    animation: open 0.5s forwards;
+
+    &--open {
+      animation: open 0.5s forwards;
+    }
+
+    &--close {
+      animation: close 0.5s forwards;
+    }
 
     @include desktop {
       display: none;
@@ -173,5 +171,23 @@
     & .connect-button {
       @include button-secondary;
     }
+  }
+}
+
+@keyframes open {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes close {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
   }
 }

@@ -1,23 +1,26 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
 import WormholeBrand from "../WormholeBrand";
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 import "./styles.scss";
-import { useState, useEffect } from "react";
 
 const Header = () => {
   const { t } = useTranslation();
-  const [expandItems, setExpandItems] = useState(false);
+  const [mobileMenuState, setMobileMenuState] = useState<"open" | "close" | null>(null);
+  const handleSetExpand = () => {
+    setMobileMenuState(state => {
+      if (state === "open") {
+        document.body.style.overflow = "unset";
+        document.body.style.width = "auto";
+      } else {
+        document.body.style.overflow = "hidden";
+        document.body.style.width = "calc(100% - 15px)";
+      }
 
-  useEffect(() => {
-    if (expandItems) {
-      document.body.style.overflow = "hidden";
-      document.body.style.width = "calc(100% - 15px)";
-    } else {
-      document.body.style.overflow = "unset";
-      document.body.style.width = "auto";
-    }
-  }, [expandItems]);
+      return state === "open" ? "close" : "open";
+    });
+  };
 
   const renderOptions = () => (
     <nav>
@@ -46,7 +49,7 @@ const Header = () => {
       </NavLink>
 
       <HamburgerMenuIcon
-        onClick={() => setExpandItems(true)}
+        onClick={handleSetExpand}
         className="header-open-mobile-menu-btn"
         width={20}
         height={20}
@@ -61,30 +64,28 @@ const Header = () => {
         </div>
       </div>
 
-      {/* MOBILE HAMBURGUER MENU */}
-      {expandItems && (
-        <div className="header-navigation-mobile">
-          <div className="header-navigation-mobile-top">
-            <NavLink to="/">
-              <WormholeBrand width={36.75} height={32.25} />
-            </NavLink>
-            <Cross1Icon
-              onClick={() => setExpandItems(false)}
-              className="header-navigation-mobile-btn"
-              width={20}
-              height={20}
-            />
-          </div>
+      {/* MOBILE HAMBURGER MENU */}
+      <div className={`header-navigation-mobile header-navigation-mobile--${mobileMenuState}`}>
+        <div className="header-navigation-mobile-top">
+          <NavLink to="/">
+            <WormholeBrand width={36.75} height={32.25} />
+          </NavLink>
+          <Cross1Icon
+            onClick={handleSetExpand}
+            className="header-navigation-mobile-btn"
+            width={20}
+            height={20}
+          />
+        </div>
 
-          <div className="header-navigation-mobile-nav">
-            {renderOptions()}
+        <div className="header-navigation-mobile-nav">
+          {renderOptions()}
 
-            <div className="header-navigation-item">
-              <button className="go-bridge">{t("home.header.goBridge")}</button>
-            </div>
+          <div className="header-navigation-item">
+            <button className="go-bridge">{t("home.header.goBridge")}</button>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 };
