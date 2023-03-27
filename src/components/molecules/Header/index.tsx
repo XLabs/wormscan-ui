@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "src/components/atoms";
 import WormholeBrand from "../WormholeBrand";
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 import "./styles.scss";
