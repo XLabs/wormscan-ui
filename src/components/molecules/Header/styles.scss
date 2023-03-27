@@ -98,6 +98,7 @@
     top: 0;
 
     transform: translateX(100%);
+    transition: all 0.5s ease-out;
     width: calc(100% - 16px);
     min-height: 100vh;
     min-height: 100svh;
@@ -108,11 +109,11 @@
     border-left: 2px solid var(--color-white-10);
 
     &--open {
-      animation: open 0.5s forwards;
+      transform: translateX(0%);
     }
 
     &--close {
-      animation: close 0.5s forwards;
+      transform: translateX(100%);
     }
 
     @include desktop {
@@ -171,23 +172,5 @@
     & .connect-button {
       @include button-secondary;
     }
-  }
-}
-
-@keyframes open {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
-}
-
-@keyframes close {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(100%);
   }
 }

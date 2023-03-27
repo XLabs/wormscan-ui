@@ -7,10 +7,10 @@ import "./styles.scss";
 
 const Header = () => {
   const { t } = useTranslation();
-  const [mobileMenuState, setMobileMenuState] = useState<"open" | "close" | null>(null);
+  const [expandMobileMenu, setExpandMobileMenu] = useState<boolean>(false);
   const handleSetExpand = () => {
-    setMobileMenuState(state => {
-      if (state === "open") {
+    setExpandMobileMenu(state => {
+      if (state) {
         document.body.style.overflow = "unset";
         document.body.style.width = "auto";
       } else {
@@ -18,7 +18,7 @@ const Header = () => {
         document.body.style.width = "calc(100% - 15px)";
       }
 
-      return state === "open" ? "close" : "open";
+      return !state;
     });
   };
 
@@ -65,7 +65,11 @@ const Header = () => {
       </div>
 
       {/* MOBILE HAMBURGER MENU */}
-      <div className={`header-navigation-mobile header-navigation-mobile--${mobileMenuState}`}>
+      <div
+        className={`header-navigation-mobile header-navigation-mobile--${
+          expandMobileMenu ? "open" : "close"
+        }`}
+      >
         <div className="header-navigation-mobile-top">
           <NavLink to="/">
             <WormholeBrand width={36.75} height={32.25} />
