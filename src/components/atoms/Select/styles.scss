@@ -2,7 +2,7 @@
 
 .select {
   @include centered-row;
-  min-height: 56px;
+  height: 40px;
   width: 100%;
 
   &-trigger {
@@ -12,9 +12,10 @@
     flex: 1;
     cursor: pointer;
     justify-content: space-between;
-    min-height: inherit;
+    height: inherit;
+    width: inherit;
     gap: 16px;
-    padding: 8px 8px 8px 16px;
+    padding: 4px 8px 4px 16px;
     background-color: var(--color-white-05);
     border: 2px solid var(--color-white-10);
     border-radius: 5px;
@@ -54,7 +55,8 @@
     @include text-p2;
     @include centered-row;
 
-    min-height: 40px;
+    height: inherit;
+    width: inherit;
     color: var(--color-primary-10);
     padding: 8px 16px;
     cursor: pointer;

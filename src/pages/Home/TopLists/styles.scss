@@ -1,12 +1,16 @@
 @import "src/styles/globals.scss";
 
 .home-top-lists {
-  @include centered-row;
+  @include centered-column;
 
   justify-content: space-between;
   align-items: stretch;
   flex-wrap: wrap;
   gap: 24px;
+
+  @include tablet {
+    flex-direction: row;
+  }
 
   &-select {
     width: fit-content;
