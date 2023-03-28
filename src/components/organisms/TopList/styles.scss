@@ -5,19 +5,27 @@
 
   flex: 1;
   width: 100%;
-  // flex-basis: 640px;
 
   &-header {
     @include centered-row;
 
+    flex-wrap: wrap;
     align-items: start;
     justify-content: space-between;
     gap: 8px;
     margin-bottom: 32px;
+
+    @include tablet {
+      flex-wrap: nowrap;
+    }
   }
 
   &-texts {
-    flex: 1;
+    margin-bottom: 8px;
+
+    @include tablet {
+      flex: 1;
+    }
   }
 
   &-title {
