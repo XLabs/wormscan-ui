@@ -1099,9 +1099,9 @@
   resolved "https://registry.yarnpkg.com/@types/scheduler/-/scheduler-0.16.2.tgz#1a62f89525723dde24ba1b01b092bf5df8ad4d39"
   integrity sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==
 
-"@xlabs-libs/wormscan-sdk@github:xlabs/wormscan-sdk#lib":
+"@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk#lib":
   version "0.0.2"
-  resolved "https://codeload.github.com/xlabs/wormscan-sdk/tar.gz/a8aa535124332741fb27e53903ec4de1a2327c5a"
+  resolved "https://github.com/xlabs/wormscan-sdk#a8aa535124332741fb27e53903ec4de1a2327c5a"
   dependencies:
     axios "^1.2.5"
 
