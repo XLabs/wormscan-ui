@@ -24,44 +24,74 @@ import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
 import TerraIcon from "src/icons/blockchains/terra.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
 
-const ICONS: { [key in ChainId]: any } = {
-  [ChainId.Unset]: NoIcon,
-  [ChainId.Sui]: NoIcon,
-  [ChainId.PythNet]: NoIcon,
-  [ChainId.Btc]: NoIcon,
-  [ChainId.Wormchain]: NoIcon,
-  [ChainId.Acala]: AcalaIcon,
-  [ChainId.Algorand]: AlgorandIcon,
-  [ChainId.Aptos]: AptosIcon,
-  [ChainId.Arbitrum]: ArbitrumIcon,
-  [ChainId.Aurora]: AuroraIcon,
-  [ChainId.Avalanche]: AvalancheIcon,
-  [ChainId.BSC]: BSCIcon,
-  [ChainId.Celo]: CeloIcon,
-  [ChainId.Ethereum]: EthereumIcon,
-  [ChainId.Fantom]: FantomIcon,
-  [ChainId.Injective]: InjectiveIcon,
-  [ChainId.Karura]: KaruraIcon,
-  [ChainId.Klaytn]: KlaytnIcon,
-  [ChainId.Moonbeam]: MoonbeamIcon,
-  [ChainId.Near]: NearIcon,
-  [ChainId.Neon]: NeonIcon,
-  [ChainId.Oasis]: OasisIcon,
-  [ChainId.Optimism]: OptimismIcon,
-  [ChainId.Polygon]: PolygonIcon,
-  [ChainId.Solana]: SolanaIcon,
-  [ChainId.Terra]: TerraClassicIcon,
-  [ChainId.Terra2]: TerraIcon,
-  [ChainId.Xpla]: XplaIcon,
+import NoDarkIcon from "src/icons/blockchains/dark/noIcon.svg";
+import AcalaDarkIcon from "src/icons/blockchains/dark/acala.svg";
+import AlgorandDarkIcon from "src/icons/blockchains/dark/algorand.svg";
+import AptosDarkIcon from "src/icons/blockchains/dark/aptos.svg";
+import ArbitrumDarkIcon from "src/icons/blockchains/dark/arbitrum.svg";
+import AuroraDarkIcon from "src/icons/blockchains/dark/aurora.svg";
+import AvalancheDarkIcon from "src/icons/blockchains/dark/avax.svg";
+import BSCDarkIcon from "src/icons/blockchains/dark/bsc.svg";
+import CeloDarkIcon from "src/icons/blockchains/dark/celo.svg";
+import EthereumDarkIcon from "src/icons/blockchains/dark/eth.svg";
+import FantomDarkIcon from "src/icons/blockchains/dark/fantom.svg";
+import InjectiveDarkIcon from "src/icons/blockchains/dark/injective.svg";
+import KaruraDarkIcon from "src/icons/blockchains/dark/karura.svg";
+import KlaytnDarkIcon from "src/icons/blockchains/dark/klaytn.svg";
+import MoonbeamDarkIcon from "src/icons/blockchains/dark/moonbeam.svg";
+import NearDarkIcon from "src/icons/blockchains/dark/near.svg";
+import NeonDarkIcon from "src/icons/blockchains/dark/neon.svg";
+import OasisDarkIcon from "src/icons/blockchains/dark/oasis.svg";
+import OptimismDarkIcon from "src/icons/blockchains/dark/optimism.svg";
+import PolygonDarkIcon from "src/icons/blockchains/dark/polygon.svg";
+import SolanaDarkIcon from "src/icons/blockchains/dark/solana.svg";
+import TerraClassicDarkIcon from "src/icons/blockchains/dark/terra-classic.svg";
+import TerraDarkIcon from "src/icons/blockchains/dark/terra.svg";
+import XplaDarkIcon from "src/icons/blockchains/dark/xpla.svg";
+
+const getIcon = ({ chainId, dark = false }: { chainId: ChainId; dark?: boolean }) => {
+  const ICONS: { [key in ChainId]: any } = {
+    [ChainId.Unset]: dark ? NoDarkIcon : NoIcon,
+    [ChainId.Sui]: dark ? NoDarkIcon : NoIcon,
+    [ChainId.PythNet]: dark ? NoDarkIcon : NoIcon,
+    [ChainId.Btc]: dark ? NoDarkIcon : NoIcon,
+    [ChainId.Wormchain]: dark ? NoDarkIcon : NoIcon,
+    [ChainId.Acala]: dark ? AcalaDarkIcon : AcalaIcon,
+    [ChainId.Algorand]: dark ? AlgorandDarkIcon : AlgorandIcon,
+    [ChainId.Aptos]: dark ? AptosDarkIcon : AptosIcon,
+    [ChainId.Arbitrum]: dark ? ArbitrumDarkIcon : ArbitrumIcon,
+    [ChainId.Aurora]: dark ? AuroraDarkIcon : AuroraIcon,
+    [ChainId.Avalanche]: dark ? AvalancheDarkIcon : AvalancheIcon,
+    [ChainId.BSC]: dark ? BSCDarkIcon : BSCIcon,
+    [ChainId.Celo]: dark ? CeloDarkIcon : CeloIcon,
+    [ChainId.Ethereum]: dark ? EthereumDarkIcon : EthereumIcon,
+    [ChainId.Fantom]: dark ? FantomDarkIcon : FantomIcon,
+    [ChainId.Injective]: dark ? InjectiveDarkIcon : InjectiveIcon,
+    [ChainId.Karura]: dark ? KaruraDarkIcon : KaruraIcon,
+    [ChainId.Klaytn]: dark ? KlaytnDarkIcon : KlaytnIcon,
+    [ChainId.Moonbeam]: dark ? MoonbeamDarkIcon : MoonbeamIcon,
+    [ChainId.Near]: dark ? NearDarkIcon : NearIcon,
+    [ChainId.Neon]: dark ? NeonDarkIcon : NeonIcon,
+    [ChainId.Oasis]: dark ? OasisDarkIcon : OasisIcon,
+    [ChainId.Optimism]: dark ? OptimismDarkIcon : OptimismIcon,
+    [ChainId.Polygon]: dark ? PolygonDarkIcon : PolygonIcon,
+    [ChainId.Solana]: dark ? SolanaDarkIcon : SolanaIcon,
+    [ChainId.Terra]: dark ? TerraClassicDarkIcon : TerraClassicIcon,
+    [ChainId.Terra2]: dark ? TerraDarkIcon : TerraIcon,
+    [ChainId.Xpla]: dark ? XplaDarkIcon : XplaIcon,
+  };
+
+  return ICONS[chainId];
 };
 
 type Props = {
   chainId: ChainId;
   size?: number;
+  dark?: boolean;
 };
 
-const BlockchainIcon = ({ chainId, size = 24 }: Props) => {
-  const icon = ICONS[chainId];
+const BlockchainIcon = ({ chainId, size = 24, dark = false }: Props) => {
+  const icon = getIcon({ chainId, dark });
 
   return <img src={icon} width={size} height={size} />;
 };
