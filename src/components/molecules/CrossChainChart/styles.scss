@@ -91,18 +91,21 @@
         padding-right: 16px;
 
         .chain-percentage {
-          font-size: 14px;
-          font-weight: 400;
-          letter-spacing: -0.02em;
+          @include text-p3;
+
           display: none;
+          line-height: normal;
+
           @include tablet {
             display: block;
           }
         }
         .chain-name {
-          font-weight: 600;
-          font-size: 16px;
+          @include text-p2-bold;
+
           display: none;
+          line-height: normal;
+
           @include tablet {
             display: block;
           }
