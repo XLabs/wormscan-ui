@@ -896,7 +896,7 @@
     "@radix-ui/react-use-callback-ref" "1.0.0"
     "@radix-ui/react-use-controllable-state" "1.0.0"
 
-"@radix-ui/react-select@^1.2.1":
+"@radix-ui/react-select@1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-select/-/react-select-1.2.1.tgz#0c8fadc9a134709036add7c9c7c8581e17962040"
   integrity sha512-GULRMITaOHNj79BZvQs3iZO0+f2IgI8g5HDhMi7Bnc13t7IlG86NFtOCfTLme4PNZdEtU+no+oGgcl6IFiphpQ==
