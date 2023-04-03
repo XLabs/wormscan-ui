@@ -160,7 +160,7 @@ export const Chart = ({ data }: Props) => {
               marginBottom: MARGIN_SIZE,
             }}
           >
-            <BlockchainIcon size={18} chainId={item.chainId} />
+            <BlockchainIcon dark={true} size={24} chainId={item.chainId} />
             <span className="chain-name">{ChainId[item.chainId]}</span>
             <span className="chain-percentage">{item.percentage.toFixed(2)}%</span>
           </div>
@@ -186,7 +186,7 @@ export const Chart = ({ data }: Props) => {
               marginBottom: MARGIN_SIZE,
             }}
           >
-            <BlockchainIcon size={18} chainId={item.chainId} />
+            <BlockchainIcon dark={true} size={24} chainId={item.chainId} />
             <span className="chain-name">{ChainId[item.chainId]}</span>
             <span className="chain-percentage">{item.percentage.toFixed(2)}%</span>
           </div>
