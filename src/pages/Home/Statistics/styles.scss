@@ -9,28 +9,37 @@
 
   gap: 24px;
   margin-bottom: 24px;
+  min-height: 256px;
 
-  > &-graph {
-    @include card-container;
-    @include centered-row;
-
-    flex: 2;
-    min-height: 140px;
+  &-title {
+    color: var(--color-primary-50);
+    @include text-p1;
   }
 
-  > &-data {
+  &-history {
+    @include card-container;
+    @include centered-column;
+
+    flex: 2;
+
+    &-options {
+      @include centered-row;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    &-date {
+      color: var(--color-primary-100);
+    }
+  }
+
+  &-data {
     @include card-container;
     @include centered-column;
 
     justify-content: space-between;
     gap: 24px;
     flex: 3;
-    min-height: 256px;
-
-    &-title {
-      color: var(--color-primary-50);
-      @include text-p1;
-    }
 
     &-container {
       @include centered-row;

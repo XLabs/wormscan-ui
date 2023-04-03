@@ -1,0 +1,13 @@
+@import "src/styles/globals.scss";
+
+.trans-history {
+  &-loader {
+    @include centered-row;
+    justify-content: center;
+    height: 200px;
+  }
+
+  &-chart {
+    height: 200px;
+  }
+}
