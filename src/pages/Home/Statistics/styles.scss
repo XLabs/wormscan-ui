@@ -30,6 +30,10 @@
 
     &-date {
       color: var(--color-primary-100);
+      margin-top: 8px;
+      @include tablet {
+        margin-top: 0px;
+      }
     }
   }
 
