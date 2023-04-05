@@ -18,6 +18,10 @@
     flex-wrap: wrap;
     gap: 24px;
     margin-bottom: 24px;
+
+    &-items {
+      min-height: 56px;
+    }
   }
 
   &-loader {

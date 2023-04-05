@@ -11,6 +11,7 @@ type Props = {
   onValueChange: (value: string) => void;
   ariaLabel: string;
   separatedOptions?: boolean;
+  className?: string;
 };
 
 const ToggleGroup = ({
@@ -19,8 +20,9 @@ const ToggleGroup = ({
   items,
   ariaLabel,
   separatedOptions = false,
+  className = "",
 }: Props) => (
-  <div className="toggle-group">
+  <div className={`toggle-group ${className}`}>
     <ToggleGroupPrimitive.Root
       type="single"
       className="toggle-group-root"

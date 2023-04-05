@@ -49,6 +49,7 @@ const CrossChainChart = () => {
           onValueChange={value => setSelectedType(value)}
           items={TYPE_LIST}
           ariaLabel="Select type"
+          className="cross-chain-options-items"
         />
 
         <div className="cross-chain-filters">
