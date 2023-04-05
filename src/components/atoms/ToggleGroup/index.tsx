@@ -1,4 +1,3 @@
-import { CSSProperties } from "react";
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
 import "./styles.scss";
 
@@ -11,8 +10,8 @@ type Props = {
   value: string;
   onValueChange: (value: string) => void;
   ariaLabel: string;
+  separatedOptions?: boolean;
   className?: string;
-  style?: CSSProperties;
 };
 
 const ToggleGroup = ({
@@ -20,31 +19,29 @@ const ToggleGroup = ({
   onValueChange,
   items,
   ariaLabel,
+  separatedOptions = false,
   className = "",
-  style = {},
-}: Props) => {
-  return (
-    <div className={`toggle-group ${className}`} style={style}>
-      <ToggleGroupPrimitive.Root
-        type="single"
-        className="toggle-group-root"
-        value={value}
-        onValueChange={value => value && onValueChange(value)}
-        aria-label={ariaLabel}
-      >
-        {items.map(({ label, value, ariaLabel = "" }) => (
-          <ToggleGroupPrimitive.Item
-            key={value}
-            className="toggle-group-item"
-            value={value}
-            aria-label={ariaLabel}
-          >
-            {label}
-          </ToggleGroupPrimitive.Item>
-        ))}
-      </ToggleGroupPrimitive.Root>
-    </div>
-  );
-};
+}: Props) => (
+  <div className={`toggle-group ${className}`}>
+    <ToggleGroupPrimitive.Root
+      type="single"
+      className="toggle-group-root"
+      value={value}
+      onValueChange={value => value && onValueChange(value)}
+      aria-label={ariaLabel}
+    >
+      {items.map(({ label, value, ariaLabel = "" }) => (
+        <ToggleGroupPrimitive.Item
+          key={value}
+          className={`toggle-group-item ${separatedOptions ? "separated" : ""}`}
+          value={value}
+          aria-label={ariaLabel}
+        >
+          {label}
+        </ToggleGroupPrimitive.Item>
+      ))}
+    </ToggleGroupPrimitive.Root>
+  </div>
+);
 
 export default ToggleGroup;

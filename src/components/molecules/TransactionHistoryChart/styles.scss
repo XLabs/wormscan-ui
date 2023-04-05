@@ -1,0 +1,36 @@
+@import "src/styles/globals.scss";
+
+.trans-history {
+  &-loader {
+    @include centered-row;
+    justify-content: center;
+    height: 200px;
+  }
+
+  &-chart {
+    margin-top: 5px;
+    transform: translateY(10px);
+    height: 200px;
+  }
+
+  .apexcharts-xaxis-texts-g text {
+    &:nth-child(2),
+    &:nth-child(8),
+    &:nth-child(14),
+    &:nth-child(20) {
+      display: none;
+
+      @include tablet {
+        display: block;
+      }
+
+      @include desktop {
+        display: none;
+      }
+
+      @include bigDesktop {
+        display: block;
+      }
+    }
+  }
+}
