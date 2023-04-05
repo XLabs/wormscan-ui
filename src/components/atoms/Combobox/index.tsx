@@ -1,4 +1,4 @@
-import { ChangeEvent, FocusEvent, CSSProperties, useState } from "react";
+import { ChangeEvent, CSSProperties, useState } from "react";
 import {
   Combobox as ComboboxPrimitive,
   ComboboxInput,
@@ -32,19 +32,22 @@ const Combobox = ({
   className = "",
   style = {},
 }: Props) => {
-  const [text, setText] = useState("");
+  const [text, setText] = useState(() => items.find(item => item.value === value).label);
+  const [filterValue, setFilterValue] = useState("");
 
   const filteredItems = items.filter(item => {
-    return item.label.toLowerCase().includes(text.toLowerCase());
+    return item.label.toLowerCase().includes(filterValue.toLowerCase());
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
+    setFilterValue(e.target.value);
   };
 
   const handleSelect = (value: string) => {
     const item = items.find(item => item.label === value);
     setText(item.label);
+    setFilterValue(item.label);
     onValueChange(item.value);
   };
 
