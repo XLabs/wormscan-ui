@@ -1,9 +1,37 @@
 @import "src/styles/globals.scss";
 
-.select {
+.combobox {
   @include centered-row;
   height: 56px;
   width: 100%;
+
+  &-input {
+    &-wrapper {
+      @include centered-row;
+
+      position: relative;
+      height: inherit;
+      width: inherit;
+
+      &:focus-within {
+        > svg {
+          transform: translate(0, -50%) scale(-1);
+        }
+      }
+    }
+
+    &-icon {
+      @include centered-row;
+
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translate(0, -50%);
+      height: 26px;
+      width: 26px;
+      color: var(--color-secondary-800);
+    }
+  }
 
   &-trigger {
     @include centered-row;
@@ -15,14 +43,19 @@
     height: inherit;
     width: inherit;
     gap: 16px;
-    padding: 4px 8px 4px 16px;
+    padding: 4px 36px 4px 16px;
     background-color: var(--color-white-03);
     border: 2px solid var(--color-white-10);
     border-radius: 5px;
     color: var(--color-white);
+    outline: transparent;
 
-    &[data-state="open"] {
-      border: 1px solid var(--color-primary-200);
+    &::placeholder {
+      color: var(--color-primary-100);
+    }
+
+    &[data-reach-combobox-input][data-state="suggesting"] {
+      border: 2px solid var(--color-primary-200);
     }
 
     &-selection {
@@ -38,9 +71,25 @@
   }
 
   &-content {
+    margin-block: 8px;
     padding: 8px 0;
-    border-radius: 5px;
+    border-radius: 8px;
     background-color: var(--color-primary-900);
+    max-height: 216px;
+    overflow: auto;
+    overflow: overlay;
+
+    &::-webkit-scrollbar {
+      width: 12px;
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border: 4px solid rgba(0, 0, 0, 0);
+      background-clip: padding-box;
+      border-radius: 8px;
+      background-color: var(--color-secondary-600);
+    }
 
     &-scroll-button {
       @include centered-row;
@@ -56,7 +105,7 @@
     @include centered-row;
 
     height: 40px;
-    width: 100%;
+    width: inherit;
     color: var(--color-primary-10);
     padding: 8px 16px;
     cursor: pointer;
@@ -72,7 +121,7 @@
       background-color: var(--color-white-10);
     }
 
-    &[data-state="checked"] {
+    &--selected {
       background-color: var(--color-secondary-800);
       color: var(--color-white);
       font-weight: 600;

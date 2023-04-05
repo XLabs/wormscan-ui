@@ -2,7 +2,7 @@ import { useState } from "react";
 import client from "src/api/Client";
 import { Chart } from "./Chart";
 import { useQuery } from "react-query";
-import { Loader, Select, ToggleGroup } from "src/components/atoms";
+import { Loader, Select, ToggleGroup, Combobox } from "src/components/atoms";
 import i18n from "src/i18n";
 import { useTranslation } from "react-i18next";
 import "./styles.scss";
@@ -17,6 +17,12 @@ const APP_LIST = [
   { label: "App #1", value: "app1" },
   { label: "App #2", value: "app2" },
   { label: "App #3", value: "app3" },
+  { label: "App #4", value: "app4" },
+  { label: "App #5", value: "app5" },
+  { label: "App #6", value: "app6" },
+  { label: "App #7", value: "app7" },
+  { label: "App #8", value: "app8" },
+  { label: "App #9", value: "app9" },
 ];
 
 const RANGE_LIST = [
@@ -55,11 +61,13 @@ const CrossChainChart = () => {
         <div className="cross-chain-filters">
           <div className="cross-chain-filters-group">
             <span className="cross-chain-filters-text">{t("home.crossChain.apps")}</span>
-            <Select
+
+            <Combobox
               value={selectedApp}
               onValueChange={value => setSelectedApp(value)}
               items={APP_LIST}
-              ariaLabel="Select App"
+              ariaLabel="Search app"
+              placeholder="Search app"
               className="cross-chain-filters-select"
             />
           </div>

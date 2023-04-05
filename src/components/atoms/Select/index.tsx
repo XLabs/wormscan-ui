@@ -1,4 +1,4 @@
-import { forwardRef, CSSProperties } from "react";
+import { forwardRef, CSSProperties, useRef } from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { ChevronDownIcon, ChevronUpIcon, TriangleDownIcon } from "@radix-ui/react-icons";
 import "./styles.scss";
@@ -26,18 +26,19 @@ const Select = ({ value, onValueChange, items, ariaLabel, className = "", style 
           </SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
 
-        <SelectPrimitive.Portal>
+        <SelectPrimitive.Portal className="select-portal">
           <SelectPrimitive.Content className="select-content">
             <SelectPrimitive.ScrollUpButton className="select-content-scroll-button">
               <ChevronUpIcon />
             </SelectPrimitive.ScrollUpButton>
 
             <SelectPrimitive.Viewport className="select-viewport">
-              {items.map(({ label, value }) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
+              {items?.length > 0 &&
+                items.map(({ label, value }) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
             </SelectPrimitive.Viewport>
 
             <SelectPrimitive.ScrollDownButton className="select-content-scroll-button">
