@@ -1,61 +1,58 @@
-import { forwardRef, CSSProperties } from "react";
-import * as SelectPrimitive from "@radix-ui/react-select";
-import { ChevronDownIcon, ChevronUpIcon, TriangleDownIcon } from "@radix-ui/react-icons";
+import { TriangleDownIcon } from "@radix-ui/react-icons";
+import SelectPrimitive, { components } from "react-select";
 import "./styles.scss";
 
 type Props = {
+  name: string;
   items: {
     label: string;
     value: string;
   }[];
-  value: string;
-  onValueChange: (value: string) => void;
+  value: any;
+  onValueChange: (value: any) => void;
   ariaLabel: string;
   className?: string;
-  style?: CSSProperties;
+  placeholder?: string;
+  isSearchable?: boolean;
+  isClearable?: boolean;
 };
 
-const Select = ({ value, onValueChange, items, ariaLabel, className = "", style = {} }: Props) => {
+const Select = ({
+  name,
+  value,
+  onValueChange,
+  items,
+  ariaLabel,
+  className = "",
+  placeholder = "Select...",
+  isSearchable = false,
+  isClearable = false,
+}: Props) => {
   return (
-    <div className={`select ${className}`} style={style}>
-      <SelectPrimitive.Root value={value} onValueChange={value => onValueChange(value)}>
-        <SelectPrimitive.Trigger className="select-trigger" aria-label={ariaLabel}>
-          <SelectPrimitive.Value aria-label={value} />
-          <SelectPrimitive.Icon className="select-trigger-selection">
+    <SelectPrimitive
+      // menuIsOpen
+      name={name}
+      classNamePrefix="select"
+      className={`select ${className}`}
+      aria-label={ariaLabel}
+      placeholder={placeholder}
+      isSearchable={isSearchable}
+      isClearable={isClearable}
+      options={items}
+      value={value}
+      onChange={value => onValueChange(value)}
+      noOptionsMessage={() => "No options"}
+      components={{
+        IndicatorSeparator: () => null,
+        DropdownIndicator: props => (
+          <components.DropdownIndicator {...props}>
             <TriangleDownIcon />
-          </SelectPrimitive.Icon>
-        </SelectPrimitive.Trigger>
-
-        <SelectPrimitive.Portal>
-          <SelectPrimitive.Content className="select-content">
-            <SelectPrimitive.ScrollUpButton className="select-content-scroll-button">
-              <ChevronUpIcon />
-            </SelectPrimitive.ScrollUpButton>
-
-            <SelectPrimitive.Viewport className="select-viewport">
-              {items.map(({ label, value }) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectPrimitive.Viewport>
-
-            <SelectPrimitive.ScrollDownButton className="select-content-scroll-button">
-              <ChevronDownIcon />
-            </SelectPrimitive.ScrollDownButton>
-          </SelectPrimitive.Content>
-        </SelectPrimitive.Portal>
-      </SelectPrimitive.Root>
-    </div>
+          </components.DropdownIndicator>
+        ),
+      }}
+      unstyled
+    />
   );
 };
-
-const SelectItem = forwardRef(({ children, className, ...props }: any, forwardedRef) => {
-  return (
-    <SelectPrimitive.Item className="select-item" {...props} ref={forwardedRef}>
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-    </SelectPrimitive.Item>
-  );
-});
 
 export default Select;

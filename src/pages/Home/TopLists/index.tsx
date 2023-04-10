@@ -173,12 +173,8 @@ const TOP_ASSET_DATA = [
 const TopLists = () => {
   const { t } = useTranslation();
 
-  const [selectedTopChainTimeRange, setSelectedTopChainTimeRange] = useState<string>(
-    RANGE_LIST[0].value,
-  );
-  const [selectedTopAssetTimeRange, setSelectedTopAssetTimeRange] = useState<string>(
-    RANGE_LIST[0].value,
-  );
+  const [selectedTopChainTimeRange, setSelectedTopChainTimeRange] = useState(RANGE_LIST[0]);
+  const [selectedTopAssetTimeRange, setSelectedTopAssetTimeRange] = useState(RANGE_LIST[0]);
 
   return (
     <section className="home-top-lists">

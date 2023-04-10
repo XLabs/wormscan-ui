@@ -21,18 +21,17 @@ const APP_LIST = [
 
 const RANGE_LIST = [
   { label: "All Time", value: "all" },
-  { label: "Range #1", value: "range1" },
-  { label: "Range #2", value: "range2" },
-  { label: "Range #3", value: "range3" },
-  { label: "Range #4", value: "range4" },
-  { label: "Range #5", value: "range5" },
+  { label: "Last 7 days", value: "7" },
+  { label: "Last 30 days", value: "30" },
+  { label: "Last 90 days", value: "90" },
+  { label: "Last 365 days", value: "365" },
 ];
 
 const CrossChainChart = () => {
   const { t } = useTranslation();
-  const [selectedType, setSelectedType] = useState<string>(TYPE_LIST[0].value);
-  const [selectedApp, setSelectedApp] = useState<string>(APP_LIST[0].value);
-  const [selectedTimeRange, setSelectedTimeRange] = useState<string>(RANGE_LIST[0].value);
+  const [selectedType, setSelectedType] = useState(TYPE_LIST[0].value);
+  const [selectedApp, setSelectedApp] = useState(APP_LIST[0]);
+  const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
 
   const { isLoading, error, data } = useQuery("crossChainResponse", () =>
     client.guardianNetwork.getCrossChainActivity(),
@@ -56,19 +55,23 @@ const CrossChainChart = () => {
           <div className="cross-chain-filters-group">
             <span className="cross-chain-filters-text">{t("home.crossChain.apps")}</span>
             <Select
+              name="app"
               value={selectedApp}
-              onValueChange={value => setSelectedApp(value)}
+              onValueChange={(value: any) => setSelectedApp(value)}
               items={APP_LIST}
               ariaLabel="Select App"
               className="cross-chain-filters-select"
+              placeholder="Search app"
+              isSearchable
             />
           </div>
 
           <div className="cross-chain-filters-group">
             <span className="cross-chain-filters-text">{t("home.crossChain.timeRange")}</span>
             <Select
+              name="timeRange"
               value={selectedTimeRange}
-              onValueChange={value => setSelectedTimeRange(value)}
+              onValueChange={(value: any) => setSelectedTimeRange(value)}
               items={RANGE_LIST}
               ariaLabel="Select Time Range"
               className="cross-chain-filters-select"

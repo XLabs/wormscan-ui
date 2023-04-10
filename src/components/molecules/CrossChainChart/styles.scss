@@ -32,12 +32,8 @@
 
   &-filters {
     @include centered-column;
-    width: 100%;
-    @include tablet {
-      @include centered-row;
-      width: inherit;
-    }
 
+    width: 100%;
     display: inline-flex;
     gap: 32px;
 
@@ -48,23 +44,28 @@
       width: 100%;
       gap: 16px;
 
-      @include tablet {
+      @include desktop {
         flex-wrap: nowrap;
         width: inherit;
       }
     }
 
     &-select {
-      @include tablet {
+      @include desktop {
         width: 220px;
       }
     }
 
     &-text {
-      @include text-p1;
+      @include text-p2;
 
-      color: var(--color-primary-50);
+      color: var(--color-primary-90);
       white-space: nowrap;
+    }
+
+    @include desktop {
+      @include centered-row;
+      width: inherit;
     }
   }
 
