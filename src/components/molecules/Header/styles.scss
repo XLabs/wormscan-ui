@@ -87,8 +87,13 @@
         @include desktop {
           @include text-p2-bold;
         }
+
         color: var(--color-primary-50);
         text-decoration: none;
+
+        &:hover {
+          color: var(--color-secondary-700);
+        }
       }
     }
   }
