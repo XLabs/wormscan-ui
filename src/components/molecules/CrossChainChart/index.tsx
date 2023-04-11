@@ -63,6 +63,7 @@ const CrossChainChart = () => {
               className="cross-chain-filters-select"
               placeholder="Search app"
               isSearchable
+              noOptionsMessage="App not found"
             />
           </div>
 

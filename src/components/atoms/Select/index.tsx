@@ -15,6 +15,7 @@ type Props = {
   placeholder?: string;
   isSearchable?: boolean;
   isClearable?: boolean;
+  noOptionsMessage?: string;
 };
 
 const Select = ({
@@ -27,6 +28,7 @@ const Select = ({
   placeholder = "Select...",
   isSearchable = false,
   isClearable = false,
+  noOptionsMessage = "No Options",
 }: Props) => {
   return (
     <SelectPrimitive
@@ -41,7 +43,7 @@ const Select = ({
       options={items}
       value={value}
       onChange={value => onValueChange(value)}
-      noOptionsMessage={() => "No options"}
+      noOptionsMessage={() => noOptionsMessage}
       components={{
         IndicatorSeparator: () => null,
         DropdownIndicator: props => (
