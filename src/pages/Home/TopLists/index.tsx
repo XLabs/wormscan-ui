@@ -5,9 +5,9 @@ import { TopList } from "src/components/organisms";
 import "./styles.scss";
 
 const RANGE_LIST = [
+  { label: "7 days", value: "7" },
+  { label: "15 days", value: "15" },
   { label: "30 days", value: "30" },
-  { label: "60 days", value: "60" },
-  { label: "90 days", value: "90" },
 ];
 
 const TOP_CHAIN_DATA = [

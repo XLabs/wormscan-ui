@@ -38,14 +38,6 @@ const Header = () => {
       <div className="header-navigation-item">
         <NavLink to="/txns">{t("home.header.txns")}</NavLink>
       </div>
-
-      <div className="header-navigation-item">
-        <NavLink to="/">{t("home.header.analytics")}</NavLink>
-      </div>
-
-      <div className="header-navigation-item">
-        <NavLink to="/">{t("home.header.guardians")}</NavLink>
-      </div>
     </nav>
   );
 
