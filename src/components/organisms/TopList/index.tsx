@@ -13,8 +13,8 @@ type Props = {
     ariaLabel?: string;
     className?: string;
   };
-  value: string;
-  onValueChange: (value: string) => void;
+  value: any;
+  onValueChange: (value: any) => void;
 };
 
 const TopList = ({ title, subtitle, children, filterOptions, value, onValueChange }: Props) => {
@@ -30,7 +30,7 @@ const TopList = ({ title, subtitle, children, filterOptions, value, onValueChang
 
         <Select
           value={value}
-          onValueChange={value => onValueChange(value)}
+          onValueChange={(value: any) => onValueChange(value)}
           items={items}
           ariaLabel={ariaLabel}
           className={className}

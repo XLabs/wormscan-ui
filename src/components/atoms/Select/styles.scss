@@ -5,42 +5,56 @@
   height: 56px;
   width: 100%;
 
-  &-trigger {
+  &__control {
     @include centered-row;
-    @include text-p1;
+    @include text-p2;
 
     flex: 1;
-    cursor: pointer;
+    cursor: pointer !important;
     justify-content: space-between;
     height: inherit;
     width: inherit;
     gap: 16px;
     padding: 4px 8px 4px 16px;
-    background-color: var(--color-white-05);
+    background-color: var(--color-white-03);
     border: 2px solid var(--color-white-10);
     border-radius: 5px;
     color: var(--color-white);
 
-    &[data-state="open"] {
+    &--menu-is-open {
       border: 2px solid var(--color-primary-200);
-    }
 
-    &-selection {
-      @include centered-row;
-
-      color: var(--color-secondary-800);
-
-      > svg {
-        height: 26px;
-        width: 26px;
+      > .select__indicators {
+        transform: scale(-1);
       }
     }
   }
 
-  &-content {
-    padding: 12px 0;
+  &__placeholder {
+    color: var(--color-primary-100);
+  }
+
+  &__indicators {
+    @include centered-row;
+
+    color: var(--color-secondary-800);
+
+    svg {
+      height: 26px;
+      width: 26px;
+    }
+  }
+
+  &__menu {
+    margin-top: 8px;
+  }
+
+  &__menu-list {
+    padding: 8px 0;
     border-radius: 8px;
     background-color: var(--color-primary-900);
+    overflow: auto;
+    overflow: overlay;
 
     &-scroll-button {
       @include centered-row;
@@ -49,9 +63,21 @@
       justify-content: center;
       text-align: center;
     }
+
+    &::-webkit-scrollbar {
+      width: 12px;
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border: 4px solid transparent;
+      background-clip: padding-box;
+      border-radius: 8px;
+      background-color: var(--color-secondary-600);
+    }
   }
 
-  &-item {
+  &__option {
     @include text-p2;
     @include centered-row;
 
@@ -59,7 +85,7 @@
     width: inherit;
     color: var(--color-primary-10);
     padding: 8px 16px;
-    cursor: pointer;
+    cursor: pointer !important;
     user-select: none;
     border: 1px solid transparent;
 
@@ -72,7 +98,7 @@
       background-color: var(--color-white-10);
     }
 
-    &[data-state="checked"] {
+    &--is-selected {
       background-color: var(--color-secondary-800);
       color: var(--color-white);
       font-weight: 600;
