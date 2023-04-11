@@ -22,7 +22,11 @@ jobs:
 
       - name: Build and Deploy Github Page
         run: |
-          yarn install --frozen-lockfile
+          rm -rf .parcel-cache
+          rm -rf dist/
+          rm -rf node_modules/
+          yarn cache clean
+          yarn install
           NODE_ENV=development yarn build
           cp ./CNAME ./dist/
           git config --global user.name "${GITHUB_ACTOR}"
