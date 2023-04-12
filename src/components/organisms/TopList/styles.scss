@@ -7,31 +7,24 @@
   width: 100%;
 
   &-header {
-    @include centered-row;
-
-    flex-wrap: wrap;
-    align-items: start;
-    justify-content: space-between;
+    @include centered-column;
     gap: 8px;
     margin-bottom: 32px;
-
-    @include tablet {
-      flex-wrap: nowrap;
-    }
   }
 
-  &-texts {
-    margin-bottom: 8px;
+  &-title-container {
+    @include centered-row;
 
-    @include tablet {
-      flex: 1;
-    }
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 8px;
   }
 
   &-title {
     @include text-p1;
 
-    margin-bottom: 8px;
     color: var(--color-primary-50);
   }
 
