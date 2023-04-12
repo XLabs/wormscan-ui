@@ -58,7 +58,7 @@ export default {
         },
         join: {
           initText: "Do not want to miss our releases?",
-          endText: "join us.",
+          endText: "Join us.",
           discord: "Join Discord",
         },
       },

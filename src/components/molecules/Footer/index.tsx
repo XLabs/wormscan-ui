@@ -25,7 +25,7 @@ const Footer = () => {
 
       <div className="footer-links">
         <div className="footer-links-item">
-          <NavLink to="/">{t("home.footer.faq")}</NavLink>
+          <NavLink to="/">{t("home.footer.about")}</NavLink>
         </div>
 
         <div className="footer-links-item">
@@ -34,18 +34,6 @@ const Footer = () => {
 
         <div className="footer-links-item">
           <NavLink to="/">{t("home.footer.contact")}</NavLink>
-        </div>
-
-        <div className="footer-links-item">
-          <NavLink to="/">{t("home.footer.about")}</NavLink>
-        </div>
-
-        <div className="footer-links-item">
-          <NavLink to="/">{t("home.footer.analytics")}</NavLink>
-        </div>
-
-        <div className="footer-links-item">
-          <NavLink to="/">{t("home.footer.network")}</NavLink>
         </div>
       </div>
 
