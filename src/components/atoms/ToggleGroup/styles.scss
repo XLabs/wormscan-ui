@@ -11,42 +11,102 @@
   }
 
   &-item {
-    @include text-p2-bold;
+    @include text-p2;
 
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
 
-    background: withOpacity(var(--color-primary-800), 0.4);
+    background-clip: padding-box;
+    background-color: var(--color-black-25);
     border: 1px solid var(--color-white-10);
     color: var(--color-primary-100);
     padding: 8px 16px;
+
     cursor: pointer;
     white-space: nowrap;
 
-    &:first-child {
-      border-top-left-radius: 8px;
-      border-bottom-left-radius: 8px;
+    &:hover {
+      color: var(--color-white);
+      background-color: var(--color-white-10);
     }
 
-    &:last-child {
-      border-top-right-radius: 8px;
-      border-bottom-right-radius: 8px;
+    &:active {
+      color: var(--color-white);
+      background-color: var(--color-secondary-800);
+      border-color: var(--color-secondary-800);
+    }
+
+    &.grouped {
+      &:active::before {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        top: -3.5;
+        left: -3.5;
+        right: -3.5;
+        bottom: -3.5;
+        border: 3px solid #ff2a5780;
+      }
+
+      &:first-child {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+        border-right: none;
+
+        &::before {
+          border-top-left-radius: 10px;
+          border-bottom-left-radius: 10px;
+          border-right: none;
+        }
+
+        &:active::before {
+          right: 0;
+        }
+      }
+
+      &:last-child {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border-left: none;
+
+        &::before {
+          border-top-right-radius: 10px;
+          border-bottom-right-radius: 10px;
+          border-left: none;
+        }
+
+        &:active::before {
+          left: 0;
+        }
+      }
     }
 
     &[data-state="on"] {
       color: var(--color-white);
-      background: var(--color-secondary-800);
+      background-color: var(--color-secondary-800);
     }
 
     &.separated {
-      margin-right: 16px;
-      border-radius: 8px;
-      font-size: 16px;
+      @include text-p2;
+
       height: 32px;
       width: 56px;
+      border-radius: 8px;
+      border: 1px solid var(--color-white-10);
 
-      &:last-child {
-        margin-right: 0px;
+      &:active::before {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        inset: -3;
+        border: 3px solid #ff2a5780;
+        border-radius: 10px;
+      }
+
+      & + & {
+        margin-left: 16px;
       }
     }
   }
