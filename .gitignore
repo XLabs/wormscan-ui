@@ -1,3 +1,12 @@
+# Yarn files (non zero installs)
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
 # Yalc
 .yalc
 yalc.lock
