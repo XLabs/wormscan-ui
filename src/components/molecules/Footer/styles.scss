@@ -4,65 +4,77 @@
   display: grid;
   grid-template-areas:
     "brand"
-    "social"
     "links"
+    "social"
     "copy";
-  gap: 40px;
+  column-gap: 32px;
+  row-gap: 40px;
   width: 100%;
-  min-height: 192px;
-  padding: 40px 16px;
+  min-height: 128px;
+  padding: 16px;
+  padding-top: 32px;
   background-color: rgba(1, 0, 20, 0.25);
   border-top: 1px solid var(--color-white-10);
 
   @include desktop {
+    row-gap: 8px;
     grid-template-areas:
       "brand links social"
       "copy links social";
-    padding: 40px 60px;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 24px 60px;
   }
 
   &-brand {
+    margin: 0 auto;
     grid-area: brand;
+    margin-bottom: 16px;
 
     a {
       text-decoration: none;
+    }
+
+    @include desktop {
+      width: 100%;
+      margin: auto;
     }
   }
 
   &-social {
     @include centered-row;
 
+    justify-content: center;
     grid-area: social;
-    gap: 60px;
+    gap: 32px;
     width: 100%;
+    margin-bottom: 16px;
 
     > svg {
       color: var(--color-secondary-800);
+
+      &:hover {
+        color: var(--color-secondary-700);
+      }
     }
 
     @include desktop {
       justify-content: flex-end;
-      align-items: start;
+      align-items: center;
       gap: 24px;
+      margin-bottom: 0;
     }
   }
 
   &-links {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+    grid-template-columns: auto auto auto;
     gap: 40px;
-    margin-bottom: 40px;
     grid-area: links;
-
-    @include desktop {
-      grid-template-columns: 1fr 1fr 1fr;
-      margin-bottom: 0;
-    }
 
     &-item {
       @include centered-row;
 
-      justify-content: start;
       cursor: pointer;
       user-select: none;
 
@@ -79,7 +91,12 @@
   &-copy {
     @include text-p3;
 
+    text-align: center;
     grid-area: copy;
     color: var(--color-primary-100);
+
+    @include desktop {
+      text-align: start;
+    }
   }
 }
