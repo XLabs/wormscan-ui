@@ -14,7 +14,6 @@
     @include text-p2;
 
     position: relative;
-    z-index: 2;
     display: flex;
     align-items: center;
 
@@ -43,11 +42,13 @@
         content: "";
         position: absolute;
         z-index: 1;
-        top: -3.5;
-        left: -3.5;
-        right: -3.5;
-        bottom: -3.5;
+        top: -3px;
+        left: -1px;
+        right: -1px;
+        bottom: -3px;
         border: 3px solid #ff2a5780;
+        border-left: none;
+        border-right: none;
       }
 
       &:first-child {
@@ -58,10 +59,8 @@
         &::before {
           border-top-left-radius: 10px;
           border-bottom-left-radius: 10px;
-          border-right: none;
-        }
-
-        &:active::before {
+          border-left: 3px solid #ff2a5780;
+          left: -3px;
           right: 0;
         }
       }
@@ -74,10 +73,8 @@
         &::before {
           border-top-right-radius: 10px;
           border-bottom-right-radius: 10px;
-          border-left: none;
-        }
-
-        &:active::before {
+          border-right: 3px solid #ff2a5780;
+          right: -3px;
           left: 0;
         }
       }
@@ -100,7 +97,7 @@
         content: "";
         position: absolute;
         z-index: 1;
-        inset: -3;
+        inset: -3px;
         border: 3px solid #ff2a5780;
         border-radius: 10px;
       }
