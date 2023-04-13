@@ -182,6 +182,7 @@ const TopLists = () => {
         title={t("home.topLists.chains.title")}
         subtitle={t("home.topLists.chains.subtitle")}
         filterOptions={{
+          name: "topChainTimeRange",
           items: RANGE_LIST,
           ariaLabel: "Select Time Range",
           className: "home-top-lists-select",
@@ -209,6 +210,7 @@ const TopLists = () => {
         title={t("home.topLists.assets.title")}
         subtitle={t("home.topLists.assets.subtitle")}
         filterOptions={{
+          name: "topAssetTimeRange",
           items: RANGE_LIST,
           ariaLabel: "Select Time Range",
           className: "home-top-lists-select",

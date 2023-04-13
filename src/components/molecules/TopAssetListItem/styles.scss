@@ -6,40 +6,58 @@
 
   color: var(--color-primary-10);
   width: 100%;
-  gap: 40px;
+  gap: 32px;
 
-  &-icons {
+  > .arrow-icon {
+    transform: scale(1.75);
+    color: var(--color-primary-200);
+  }
+
+  &-from {
     @include centered-row;
 
-    gap: 20px;
+    @include tablet {
+      flex: 1;
+    }
 
-    & > svg {
-      transform: scale(1.75);
-      color: var(--color-primary-200);
+    &-chain {
+      margin-left: 20px;
+      display: none;
+
+      @include tablet {
+        display: block;
+      }
     }
   }
 
-  &-from-chain,
-  &-to-asset {
+  &-to {
+    @include centered-row;
+
+    @include tablet {
+      flex: 1;
+    }
+
+    &-asset {
+      margin-left: 20px;
+      display: none;
+
+      @include tablet {
+        display: block;
+      }
+    }
+  }
+
+  &-chain {
     display: none;
+
     @include tablet {
       display: flex;
     }
   }
 
-  &-data {
-    @include centered-row;
-
-    flex: 1;
-    gap: 40px;
-    justify-content: space-between;
-
-    > * {
-      flex: 1;
-    }
-  }
-
   &-transactions {
+    flex: 1;
+
     text-align: end;
     font-weight: 600;
   }

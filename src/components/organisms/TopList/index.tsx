@@ -10,6 +10,7 @@ type Props = {
       label: string;
       value: string;
     }[];
+    name?: string;
     ariaLabel?: string;
     className?: string;
   };
@@ -18,23 +19,23 @@ type Props = {
 };
 
 const TopList = ({ title, subtitle, children, filterOptions, value, onValueChange }: Props) => {
-  const { items, ariaLabel, className } = filterOptions;
+  const { name, items, ariaLabel, className } = filterOptions;
 
   return (
     <div className="top-list">
       <div className="top-list-header">
-        <div className="top-list-texts">
+        <div className="top-list-title-container">
           <h3 className="top-list-title">{title}</h3>
-          <h4 className="top-list-subtitle">{subtitle}</h4>
+          <Select
+            name={name}
+            value={value}
+            onValueChange={(value: any) => onValueChange(value)}
+            items={items}
+            ariaLabel={ariaLabel}
+            className={className}
+          />
         </div>
-
-        <Select
-          value={value}
-          onValueChange={(value: any) => onValueChange(value)}
-          items={items}
-          ariaLabel={ariaLabel}
-          className={className}
-        />
+        <h4 className="top-list-subtitle">{subtitle}</h4>
       </div>
       <div className="top-list-body">{children}</div>
     </div>

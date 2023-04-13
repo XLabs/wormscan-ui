@@ -21,16 +21,16 @@ const TopChainListItem = ({ from_chain, to_chain, transactions }: Props) => {
 
   return (
     <div className="top-chain-list-item">
-      <div className="top-chain-list-item-icons">
+      <div className="top-chain-list-item-from">
         <BlockchainIcon size={25} chainId={fromId} />
-        <ArrowRightIcon className="icon" />
+        <div className="top-chain-list-item-from-chain">{fromName}</div>
+      </div>
+      <ArrowRightIcon className="arrow-icon" />
+      <div className="top-chain-list-item-to">
         <BlockchainIcon size={25} chainId={toId} />
+        <div className="top-chain-list-item-to-chain">{toName}</div>
       </div>
-      <div className="top-chain-list-item-data">
-        <div className="top-chain-list-item-chain">{fromName}</div>
-        <div className="top-chain-list-item-chain">{toName}</div>
-        <div className="top-chain-list-item-transactions">{formatNumber(transactions)}</div>
-      </div>
+      <div className="top-chain-list-item-transactions">{formatNumber(transactions)}</div>
     </div>
   );
 };
