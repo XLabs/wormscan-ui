@@ -1455,13 +1455,13 @@ __metadata:
   linkType: hard
 
 "@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk#lib":
-  version: 0.0.2
-  resolution: "@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk.git#commit=a8aa535124332741fb27e53903ec4de1a2327c5a"
+  version: 0.0.3
+  resolution: "@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk.git#commit=ae5bb89d149a0234b471f150b778bbaa832b3144"
   dependencies:
     axios: ^1.2.5
   peerDependencies:
     axios: ^1.2.5
-  checksum: ad748d7592e855211e13893263e12d6678dcb91c9f213582c46dfef904a2bd93182690c0015e0572dbd3ea01964e30f298f795392af7755af7df9652fcde74ee
+  checksum: aa6406cef422f17729526e4395588dbc973add20662413e7e3e1e7ec45511a08bb521e502a64492e3b8f3122db3ff33052606dc8090b6033c20b65b8998e5a31
   languageName: node
   linkType: hard
 
@@ -1622,13 +1622,13 @@ __metadata:
   linkType: hard
 
 "axios@npm:^1.2.5":
-  version: 1.3.4
-  resolution: "axios@npm:1.3.4"
+  version: 1.3.5
+  resolution: "axios@npm:1.3.5"
   dependencies:
     follow-redirects: ^1.15.0
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
-  checksum: 7440edefcf8498bc3cdf39de00443e8101f249972c83b739c6e880d9d669fea9486372dbe8739e88b3bf8bb1ad15f6106693f206f078f4516fe8fd47b1c3093c
+  checksum: 4d6bcf933b1cdff86d4993752aaeeeedc4a7f7a4b1c942847f6884bb13fc6106610ff826b076acf0b08d8ced55dee9344bb9a11f3624c3e70ab1da1a40bb5506
   languageName: node
   linkType: hard
 
