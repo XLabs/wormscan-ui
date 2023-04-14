@@ -21,6 +21,17 @@
 
     &-items {
       min-height: 56px;
+      width: 100%;
+
+      .toggle-group-item {
+        flex: 1;
+      }
+    }
+
+    @include desktop {
+      &-items {
+        width: auto;
+      }
     }
   }
 

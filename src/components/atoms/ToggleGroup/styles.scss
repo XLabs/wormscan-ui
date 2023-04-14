@@ -8,18 +8,20 @@
   &-root {
     display: inline-flex;
     min-height: inherit;
+    width: inherit;
   }
 
   &-item {
-    @include text-p2;
+    @include text-p2-bold;
 
     position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
 
     background-clip: padding-box;
     background-color: var(--color-black-25);
-    border: 1px solid var(--color-white-10);
+    border: 2px solid var(--color-white-10);
     color: var(--color-primary-100);
     padding: 8px 16px;
 
@@ -91,7 +93,7 @@
       height: 32px;
       width: 56px;
       border-radius: 8px;
-      border: 1px solid var(--color-white-10);
+      border: 2px solid var(--color-white-10);
 
       &:active::before {
         content: "";
