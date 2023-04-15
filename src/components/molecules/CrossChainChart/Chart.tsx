@@ -1,6 +1,8 @@
 import { ChainId, CrossChainActivity } from "@xlabs-libs/wormscan-sdk";
 import { useEffect, useRef, useState } from "react";
 import { BlockchainIcon } from "src/components/atoms";
+import { formatCurrency } from "src/utils/number";
+import { useWindowSize } from "src/utils/useWindowSize";
 
 interface IOriginChainsHeight {
   itemHeight: number;
@@ -85,9 +87,9 @@ export const Chart = ({ data }: Props) => {
       if (halfStop < 0.01) halfStop = 0.01;
 
       const grad = ctx.createLinearGradient(0, START, CHART_SIZE, END);
-      grad.addColorStop(0, "rgb(44,51,110)");
-      grad.addColorStop(halfStop, "rgb(64,51,110)");
-      grad.addColorStop(1, "rgb(84,51,110)");
+      grad.addColorStop(0, "rgb(49, 52, 124)");
+      grad.addColorStop(halfStop, "rgb(44, 45, 116)");
+      grad.addColorStop(1, "rgb(74, 34, 105)");
 
       ctx.strokeStyle = grad;
       ctx.fillStyle = grad;
@@ -99,15 +101,16 @@ export const Chart = ({ data }: Props) => {
 
   // update arrays containing height of items on both sides of the graphics
   const updateChainsHeight = () => {
+    console.log("isDesktop", isDesktop);
     setOriginChainsHeight(
       Array.from(originChainsRef.current.children).map(item => ({
-        itemHeight: item.getBoundingClientRect().height,
+        itemHeight: Math.round(item.getBoundingClientRect().height),
         selected: item.getAttribute("data-selected") === "true",
       })),
     );
     setDestinyChainsHeight(
       Array.from(destinyChainsRef.current.children).map(item => ({
-        itemHeight: item.getBoundingClientRect().height,
+        itemHeight: Math.round(item.getBoundingClientRect().height),
         percentage: item.getAttribute("data-percentage"),
       })),
     );
@@ -143,7 +146,21 @@ export const Chart = ({ data }: Props) => {
     setDestinations(newDestinationChains);
   }, [selectedChain]);
 
-  useEffect(updateChainsHeight, [destinations]);
+  const size = useWindowSize();
+  const [isDesktop, setIsDesktop] = useState(size.width >= 1024);
+
+  useEffect(() => {
+    if (size.width >= 1024 && !isDesktop) setIsDesktop(true);
+    else if (size.width < 1024 && isDesktop) setIsDesktop(false);
+  }, [size]);
+
+  // re-render canvas when destinations or isDesktop changes.
+  useEffect(updateChainsHeight, [destinations, isDesktop]);
+
+  // TODO: Delete this method and use the money value that will come on the
+  //       API response (endpoint still not there, mocking for now)
+  const fakeValue = [2410230, 2010526, 1999421, 1060214, 312048, 95021, 84012, 52451, 45279, 31258];
+  const fakeValue2 = [1232355, 1094201, 700240, 600102, 419267, 196241, 85612, 71263, 30211, 21085];
 
   return (
     <div className="cross-chain-chart">
@@ -160,9 +177,12 @@ export const Chart = ({ data }: Props) => {
               marginBottom: MARGIN_SIZE,
             }}
           >
-            <BlockchainIcon dark={true} size={24} chainId={item.chainId} />
+            <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chainId} />
             <span className="chain-name">{ChainId[item.chainId]}</span>
-            <span className="chain-percentage">{item.percentage.toFixed(2)}%</span>
+            <div className="chain-freespace" />
+            <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
+            <span className="chain-separator onlyBig">|</span>
+            <span className="chain-infoTxt onlyBig">${formatCurrency(fakeValue[idx], 0)}</span>
           </div>
         ))}
       </div>
@@ -186,9 +206,12 @@ export const Chart = ({ data }: Props) => {
               marginBottom: MARGIN_SIZE,
             }}
           >
-            <BlockchainIcon dark={true} size={24} chainId={item.chainId} />
+            <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chainId} />
             <span className="chain-name">{ChainId[item.chainId]}</span>
-            <span className="chain-percentage">{item.percentage.toFixed(2)}%</span>
+            <div className="chain-freespace" />
+            <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
+            <span className="chain-separator onlyBig">|</span>
+            <span className="chain-infoTxt onlyBig">${formatCurrency(fakeValue2[idx], 0)}</span>
           </div>
         ))}
       </div>
