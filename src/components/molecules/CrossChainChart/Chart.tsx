@@ -101,7 +101,6 @@ export const Chart = ({ data }: Props) => {
 
   // update arrays containing height of items on both sides of the graphics
   const updateChainsHeight = () => {
-    console.log("isDesktop", isDesktop);
     setOriginChainsHeight(
       Array.from(originChainsRef.current.children).map(item => ({
         itemHeight: Math.round(item.getBoundingClientRect().height),
@@ -122,6 +121,12 @@ export const Chart = ({ data }: Props) => {
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
 
+      // prevent pixelated canvas on high quality resolution devices
+      canvas.width = CHART_SIZE * window.devicePixelRatio;
+      canvas.height = CHART_SIZE * window.devicePixelRatio;
+      context.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+      // run animated canvas
       let frameCount = 0;
       let animationFrameId: number;
       const render = () => {
