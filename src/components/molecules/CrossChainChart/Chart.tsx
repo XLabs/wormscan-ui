@@ -2,7 +2,7 @@ import { ChainId, CrossChainActivity } from "@xlabs-libs/wormscan-sdk";
 import { useEffect, useRef, useState } from "react";
 import { BlockchainIcon } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
-import { useWindowSize } from "src/utils/useWindowSize";
+import { useWindowSize } from "src/utils/hooks/useWindowSize";
 
 interface IOriginChainsHeight {
   itemHeight: number;
