@@ -103,13 +103,13 @@ export const Chart = ({ data }: Props) => {
   const updateChainsHeight = () => {
     setOriginChainsHeight(
       Array.from(originChainsRef.current.children).map(item => ({
-        itemHeight: Math.round(item.getBoundingClientRect().height),
+        itemHeight: item.getBoundingClientRect().height,
         selected: item.getAttribute("data-selected") === "true",
       })),
     );
     setDestinyChainsHeight(
       Array.from(destinyChainsRef.current.children).map(item => ({
-        itemHeight: Math.round(item.getBoundingClientRect().height),
+        itemHeight: item.getBoundingClientRect().height,
         percentage: item.getAttribute("data-percentage"),
       })),
     );
