@@ -86,14 +86,15 @@ const getIcon = ({ chainId, dark = false }: { chainId: ChainId; dark?: boolean }
 
 type Props = {
   chainId: ChainId;
+  className?: string;
   size?: number;
   dark?: boolean;
 };
 
-const BlockchainIcon = ({ chainId, size = 24, dark = false }: Props) => {
+const BlockchainIcon = ({ chainId, size = 24, dark = false, className = "" }: Props) => {
   const icon = getIcon({ chainId, dark });
 
-  return <img src={icon} width={size} height={size} />;
+  return <img src={icon} width={size} height={size} className={className} />;
 };
 
 export default BlockchainIcon;

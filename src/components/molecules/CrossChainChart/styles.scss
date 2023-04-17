@@ -82,53 +82,118 @@
 
   &-chart {
     @include centered-row;
-    justify-content: center;
+    justify-content: space-between;
     width: 100%;
+    position: relative;
 
     &-side {
-      width: 25%;
+      width: 45%;
+      z-index: 2;
       height: 650px;
       @include centered-column;
       align-items: center;
+      @include desktop {
+        width: 25%;
+      }
 
       &-item {
-        @include centered-row;
-        justify-content: center;
-
-        background: withOpacity(var(--color-primary-100), 0.2);
         color: var(--color-white);
         user-select: none;
-
         width: 100%;
-        min-height: 18px;
+        min-height: 30px;
 
+        @include centered-column;
         gap: 8px;
-        padding-left: 16px;
-        padding-right: 16px;
+        border-left: 16px solid var(--color-information-100);
+        padding-left: 12px;
+        padding-right: 12px;
 
-        .chain-percentage {
-          @include text-p3;
+        @include desktop {
+          @include centered-row;
+          background: withOpacity(var(--color-primary-100), 0.2);
+          gap: 12px;
+          border-left: 0;
+          min-height: 20px;
+        }
+        @include bigDesktop {
+          gap: 14px;
+          padding-left: 14px;
+          padding-right: 14px;
+        }
 
+        .percentage {
           display: none;
-          line-height: normal;
-
-          @include tablet {
+          margin-left: 8px;
+          margin-top: -10px;
+          @include desktop {
+            display: block;
+            margin-left: 0px;
+            margin-top: 0px;
+          }
+        }
+        .onlyBig {
+          display: none;
+          @include bigDesktop {
             display: block;
           }
         }
-        .chain-name {
-          @include text-p2-bold;
+
+        .chain-freespace {
+          margin-left: auto;
 
           display: none;
-          line-height: normal;
-
-          @include tablet {
+          @include desktop {
             display: block;
           }
+        }
+
+        .chain-infoTxt {
+          @include text-p3;
+          font-weight: 300;
+
+          line-height: normal;
+        }
+
+        .chain-icon {
+          display: none;
+          @include desktop {
+            display: block;
+          }
+        }
+
+        .chain-name {
+          @include text-p2-bold;
+          line-height: normal;
+
+          font-size: 16px;
+          opacity: 0.35;
+          margin-left: 8px;
+          font-weight: 500;
+          @include desktop {
+            font-size: 18px;
+            opacity: 1;
+            margin-left: 0px;
+            font-weight: 600;
+          }
+        }
+
+        .chain-separator {
+          color: var(--color-primary-200);
         }
 
         &[data-selected="true"] {
-          border-right: 4px solid var(--color-information-100);
+          .percentage {
+            font-weight: 500;
+            display: block;
+          }
+          .chain-name {
+            opacity: 1;
+          }
+
+          @include desktop {
+            border-right: 4px solid var(--color-information-100);
+            background: withOpacity(var(--color-primary-300), 0.5);
+          }
         }
 
         &.left {
@@ -136,16 +201,39 @@
         }
 
         &.right {
-          border-left: 4px solid var(--color-information-100);
+          .chain-name {
+            opacity: 1;
+            margin-right: -4px;
+          }
+
+          align-items: flex-end;
+          border-left: 0px;
+          border-right: 8px solid var(--color-information-100);
+          @include desktop {
+            align-items: center;
+            border-left: 4px solid var(--color-information-100);
+            border-right: 0px;
+          }
         }
       }
     }
 
     &-graph {
-      width: 50%;
       height: 650px;
       display: flex;
       justify-content: center;
+
+      position: absolute;
+      width: 100%;
+      right: 0px;
+      left: 0px;
+
+      @include desktop {
+        position: relative;
+        width: 50%;
+        right: 0px;
+        left: 0px;
+      }
     }
   }
 

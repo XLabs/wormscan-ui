@@ -44,6 +44,8 @@ const Select = ({
       value={value}
       onChange={value => onValueChange(value)}
       noOptionsMessage={() => noOptionsMessage}
+      menuPortalTarget={document.body}
+      styles={{ menuPortal: base => ({ ...base, zIndex: 1000 }) }}
       components={{
         IndicatorSeparator: () => null,
         DropdownIndicator: props => (
