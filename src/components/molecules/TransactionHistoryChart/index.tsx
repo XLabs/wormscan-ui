@@ -1,139 +1,151 @@
 import client from "src/api/Client";
-import { useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { Loader } from "src/components/atoms";
 import "./styles.scss";
 import ReactApexChart from "react-apexcharts";
+import { DateRange } from "@xlabs-libs/wormscan-sdk";
+import { useEffect, useState } from "react";
 
-const mockedResponse = {
-  txs: [
-    41, 26, 110, 24, 49, 32, 80, 24, 59, 18, 50, 63, 105, 70, 81, 50, 50, 55, 45, 50, 70, 20, 23,
-    45,
-  ],
+type Props = {
+  range: DateRange;
 };
 
-const TransactionHistoryChart = () => {
-  const { isLoading, error, data } = useQuery("crossChainResponse", () =>
-    client.guardianNetwork.getCrossChainActivity(),
+const TransactionHistoryChart = ({ range }: Props) => {
+  const [seriesData, setSeriesData] = useState([0]);
+  const [seriesLabels, setSeriesLabels] = useState([""]);
+  const [totalTxs, setTotalTxs] = useState("");
+
+  const { isLoading, isError, mutate } = useMutation(
+    "lastTxsResponse",
+    () => client.guardianNetwork.getLastTxs(range),
+    {
+      onSuccess: response => {
+        const totalAmount = response.reduce((prev, curr) => prev + curr.count, 0);
+
+        setTotalTxs(
+          `Last ${range === "day" ? "24hs" : range}: ${totalAmount.toLocaleString()} txns`,
+        );
+        setSeriesData(response.map(item => item.count));
+        setSeriesLabels(
+          response.map((item, idx) => {
+            const date = new Date(item.time);
+
+            if (range === "day") {
+              return [1, 4, 7, 10, 13, 16, 19, 22].includes(idx) ? `${date.getHours()}:00` : "";
+            }
+
+            if (range === "week") {
+              return `${date.toLocaleString("en-us", { weekday: "short" })}`;
+            }
+
+            if (range === "month") {
+              return [1, 4, 7, 10, 13, 16, 19, 22, 25, 28].includes(idx)
+                ? `${date.getMonth()}/${date.getDate()}`
+                : "";
+            }
+          }),
+        );
+      },
+    },
   );
 
-  if (error) return null;
+  // when range changes, we fetch the new range
+  useEffect(mutate, [range]);
+
+  if (isError) return null;
   return (
-    <div className="trans-history">
-      {isLoading ? (
-        <div className="trans-history-loader">
-          <Loader />
-        </div>
-      ) : (
-        <div className="trans-history-chart">
-          <ReactApexChart
-            type="area"
-            height={200}
-            series={[
-              {
-                name: "Test",
-                data: mockedResponse.txs,
-              },
-            ]}
-            options={{
-              fill: {
-                type: "gradient",
-                gradient: {
-                  type: "vertical",
-                  shade: "light",
-                  inverseColors: false,
-                  opacityFrom: 1,
-                  opacityTo: 0,
-                  stops: [0, 75, 100],
-                  colorStops: [
-                    {
-                      offset: 0,
-                      color: "#09FECB",
-                    },
-                    {
-                      offset: 75,
-                      color: "#09FECB25",
-                    },
-                    {
-                      offset: 100,
-                      color: "transparent",
-                    },
-                  ],
+    <>
+      <span className="home-statistics-history-date">{isLoading ? "" : totalTxs}</span>
+      <div className="trans-history" data-range={range}>
+        {isLoading ? (
+          <div className="trans-history-loader">
+            <Loader />
+          </div>
+        ) : (
+          <div className="trans-history-chart">
+            <ReactApexChart
+              type="area"
+              height={200}
+              series={[
+                {
+                  name: "LastTxsData",
+                  data: seriesData,
                 },
-              },
-              labels: [
-                "", // 00:00
-                "01:00",
-                "", // 02:00
-                "", // 03:00
-                "04:00",
-                "", // 05:00
-                "", // 06:00
-                "07:00",
-                "", // 08:00
-                "", // 09:00
-                "10:00",
-                "", // 11:00
-                "", // 12:00
-                "13:00",
-                "", // 14:00
-                "", // 15:00
-                "16:00",
-                "", // 17:00
-                "", // 18:00
-                "19:00",
-                "", // 20:00
-                "", // 21:00
-                "22:00",
-                "", // 23:00
-              ],
-              chart: {
-                zoom: { enabled: false },
-                toolbar: { show: false },
-              },
-              grid: {
-                show: false,
-              },
-              tooltip: { enabled: false },
-              stroke: {
-                curve: "smooth",
-                width: 2,
-                colors: ["#28DFDF"],
-              },
-              dataLabels: { enabled: false },
-              yaxis: {
-                tickAmount: 4,
-                labels: {
-                  formatter: val => `${val}K`,
-                  style: {
-                    colors: "#BFCFE7",
-                    fontFamily: "IBM Plex Sans",
-                    fontSize: "14px",
+              ]}
+              options={{
+                fill: {
+                  type: "gradient",
+                  gradient: {
+                    type: "vertical",
+                    shade: "light",
+                    inverseColors: false,
+                    opacityFrom: 1,
+                    opacityTo: 0,
+                    stops: [0, 75, 100],
+                    colorStops: [
+                      {
+                        offset: 0,
+                        color: "#09FECB",
+                      },
+                      {
+                        offset: 75,
+                        color: "#09FECB25",
+                      },
+                      {
+                        offset: 100,
+                        color: "transparent",
+                      },
+                    ],
                   },
                 },
-                axisBorder: {
-                  show: true,
-                  width: 1,
-                  color: "#FFFFFF25",
+                labels: seriesLabels,
+                chart: {
+                  zoom: { enabled: false },
+                  toolbar: { show: false },
                 },
-              },
-              xaxis: {
-                labels: {
-                  hideOverlappingLabels: false,
-                  rotate: 180,
-                  style: {
-                    colors: "#BFCFE7",
-                    fontFamily: "IBM Plex Sans",
-                    fontSize: "14px",
+                grid: {
+                  show: false,
+                },
+                tooltip: { enabled: false },
+                stroke: {
+                  curve: "smooth",
+                  width: 2,
+                  colors: ["#28DFDF"],
+                },
+                dataLabels: { enabled: false },
+                yaxis: {
+                  tickAmount: 4,
+                  labels: {
+                    style: {
+                      colors: "#BFCFE7",
+                      fontFamily: "IBM Plex Sans",
+                      fontSize: "14px",
+                    },
+                  },
+                  axisBorder: {
+                    show: true,
+                    width: 1,
+                    color: "#FFFFFF25",
                   },
                 },
-                axisTicks: { show: false },
-                axisBorder: { show: true, strokeWidth: 4, color: "#FFFFFF25" },
-              },
-            }}
-          />
-        </div>
-      )}
-    </div>
+                xaxis: {
+                  labels: {
+                    hideOverlappingLabels: false,
+                    style: {
+                      colors: "#BFCFE7",
+                      fontFamily: "IBM Plex Sans",
+                      fontSize: "14px",
+                    },
+                  },
+                  axisTicks: { show: false },
+                  axisBorder: { show: true, strokeWidth: 4, color: "#FFFFFF25" },
+                },
+              }}
+            />
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
