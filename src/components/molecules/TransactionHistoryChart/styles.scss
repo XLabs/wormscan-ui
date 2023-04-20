@@ -5,6 +5,7 @@
     @include centered-row;
     justify-content: center;
     height: 200px;
+    margin-top: 5px;
   }
 
   &-chart {
@@ -13,23 +14,32 @@
     height: 200px;
   }
 
-  .apexcharts-xaxis-texts-g text {
-    &:nth-child(2),
-    &:nth-child(8),
-    &:nth-child(14),
-    &:nth-child(20) {
-      display: none;
+  &-text {
+    color: var(--color-primary-100);
+    position: absolute;
+  }
 
-      @include tablet {
-        display: block;
-      }
-
-      @include desktop {
+  &[data-range="day"],
+  &[data-range="month"] {
+    .apexcharts-xaxis-texts-g text {
+      &:nth-child(2),
+      &:nth-child(8),
+      &:nth-child(14),
+      &:nth-child(20),
+      &:nth-child(26) {
         display: none;
-      }
 
-      @include bigDesktop {
-        display: block;
+        @include tablet {
+          display: block;
+        }
+
+        @include desktop {
+          display: none;
+        }
+
+        @include bigDesktop {
+          display: block;
+        }
       }
     }
   }

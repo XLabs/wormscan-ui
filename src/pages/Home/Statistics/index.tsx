@@ -3,12 +3,13 @@ import { useTranslation } from "react-i18next";
 import { ToggleGroup } from "src/components/atoms";
 import { TransactionHistoryChart } from "src/components/molecules";
 import { formatCurrency } from "src/utils/number";
+import { DateRange } from "@xlabs-libs/wormscan-sdk";
 import "./styles.scss";
 
 const RANGE_LIST = [
-  { label: "1D", value: "1D", ariaLabel: "One day" },
-  { label: "1W", value: "1W", ariaLabel: "One week" },
-  { label: "1M", value: "1M", ariaLabel: "One month" },
+  { label: "1D", value: "day", ariaLabel: "One day" },
+  { label: "1W", value: "week", ariaLabel: "One week" },
+  { label: "1M", value: "month", ariaLabel: "One month" },
 ];
 
 const Statistics = () => {
@@ -29,9 +30,7 @@ const Statistics = () => {
           />
         </div>
 
-        <span className="home-statistics-history-date">Feb 28, 250.000 txns</span>
-
-        <TransactionHistoryChart />
+        <TransactionHistoryChart range={selectedRange as DateRange} />
       </div>
 
       <div className="home-statistics-data">
