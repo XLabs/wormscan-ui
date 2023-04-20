@@ -5,12 +5,18 @@
     @include centered-row;
     justify-content: center;
     height: 200px;
+    margin-top: 5px;
   }
 
   &-chart {
     margin-top: 5px;
     transform: translateY(10px);
     height: 200px;
+  }
+
+  &-text {
+    color: var(--color-primary-100);
+    position: absolute;
   }
 
   &[data-range="day"],

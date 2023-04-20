@@ -21,6 +21,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
     {
       onSuccess: response => {
         const totalAmount = response.reduce((prev, curr) => prev + curr.count, 0);
+        const excludedLabelsIdxs = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28];
 
         setTotalTxs(
           `Last ${range === "day" ? "24hs" : range}: ${totalAmount.toLocaleString()} txns`,
@@ -31,7 +32,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
             const date = new Date(item.time);
 
             if (range === "day") {
-              return [1, 4, 7, 10, 13, 16, 19, 22].includes(idx) ? `${date.getHours()}:00` : "";
+              return excludedLabelsIdxs.includes(idx) ? `${date.getHours()}:00` : "";
             }
 
             if (range === "week") {
@@ -39,9 +40,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
             }
 
             if (range === "month") {
-              return [1, 4, 7, 10, 13, 16, 19, 22, 25, 28].includes(idx)
-                ? `${date.getMonth()}/${date.getDate()}`
-                : "";
+              return excludedLabelsIdxs.includes(idx) ? `${date.getMonth()}/${date.getDate()}` : "";
             }
           }),
         );
@@ -54,14 +53,14 @@ const TransactionHistoryChart = ({ range }: Props) => {
 
   if (isError) return null;
   return (
-    <>
-      <span className="home-statistics-history-date">{isLoading ? "" : totalTxs}</span>
-      <div className="trans-history" data-range={range}>
-        {isLoading ? (
-          <div className="trans-history-loader">
-            <Loader />
-          </div>
-        ) : (
+    <div className="trans-history" data-range={range}>
+      {isLoading ? (
+        <div className="trans-history-loader">
+          <Loader />
+        </div>
+      ) : (
+        <>
+          <span className="trans-history-text">{isLoading ? "" : totalTxs}</span>
           <div className="trans-history-chart">
             <ReactApexChart
               type="area"
@@ -143,9 +142,9 @@ const TransactionHistoryChart = ({ range }: Props) => {
               }}
             />
           </div>
-        )}
-      </div>
-    </>
+        </>
+      )}
+    </div>
   );
 };
 
