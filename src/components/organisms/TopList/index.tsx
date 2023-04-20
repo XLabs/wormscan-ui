@@ -22,7 +22,7 @@ const TopList = ({ title, subtitle, children, filterOptions, value, onValueChang
   const { name, items, ariaLabel, className } = filterOptions;
 
   return (
-    <div className="top-list">
+    <div className="top-list" data-testid="top-list">
       <div className="top-list-header">
         <div className="top-list-title-container">
           <h3 className="top-list-title">{title}</h3>

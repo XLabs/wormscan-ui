@@ -7,10 +7,12 @@
     "build": "parcel build --public-url ./",
     "start": "parcel",
     "clean": "rimraf dist && rimraf .parcel-cache",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test:e2e": "yarn playwright test"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "2.8.3",
+    "@playwright/test": "1.32.3",
     "@types/node": "^18.13.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",

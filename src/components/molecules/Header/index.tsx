@@ -15,6 +15,12 @@ const setOverflowHidden = (hidden: boolean) => {
   }
 };
 
+const LogoLink = () => (
+  <NavLink to="/" data-testid="header-logo-link">
+    <WormholeBrand width={36.75} height={32.25} />
+  </NavLink>
+);
+
 const Header = () => {
   const { t } = useTranslation();
   const [expandMobileMenu, setExpandMobileMenu] = useState<boolean>(false);
@@ -30,9 +36,9 @@ const Header = () => {
   }, []);
 
   const renderOptions = () => (
-    <nav>
+    <nav data-testid="header-nav">
       <div className="header-navigation-item">
-        <NavLink to="/">{t("home.header.about")}</NavLink>
+        <NavLink to="/about">{t("home.header.about")}</NavLink>
       </div>
 
       <div className="header-navigation-item">
@@ -42,10 +48,8 @@ const Header = () => {
   );
 
   return (
-    <header className="header">
-      <NavLink to="/">
-        <WormholeBrand width={36.75} height={32.25} />
-      </NavLink>
+    <header className="header" data-testid="header">
+      <LogoLink />
 
       <HamburgerMenuIcon
         onClick={handleSetExpand}
@@ -70,9 +74,7 @@ const Header = () => {
         }`}
       >
         <div className="header-navigation-mobile-top">
-          <NavLink to="/">
-            <WormholeBrand width={36.75} height={32.25} />
-          </NavLink>
+          <LogoLink />
           <Cross1Icon
             onClick={handleSetExpand}
             className="header-navigation-mobile-btn"
@@ -85,7 +87,9 @@ const Header = () => {
           {renderOptions()}
 
           <div className="header-navigation-item">
-            <button className="go-bridge">{t("home.header.goBridge")}</button>
+            <button className="go-bridge" data-testid="go-bridge-button">
+              {t("home.header.goBridge")}
+            </button>
           </div>
         </div>
       </div>

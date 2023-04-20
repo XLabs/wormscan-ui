@@ -39,7 +39,7 @@ const CrossChainChart = () => {
 
   if (error) return null;
   return (
-    <div className="cross-chain">
+    <div className="cross-chain" data-testid="cross-chain-card">
       <div className="cross-chain-title">{t("home.crossChain.title")}</div>
 
       <div className="cross-chain-options">
