@@ -11,7 +11,7 @@ const JoinUs = () => {
         {t("home.join.initText")}
         <span> {t("home.join.endText")}</span>
       </div>
-      <button className="home-join-button">
+      <button className="home-join-button" data-testid="join-discord-button">
         <DiscordIcon /> {t("home.join.discord")}
       </button>
     </section>

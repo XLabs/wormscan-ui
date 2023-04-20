@@ -17,7 +17,7 @@ const Statistics = () => {
   const [selectedRange, setSelectedRange] = useState(RANGE_LIST[0].value);
 
   return (
-    <section className="home-statistics">
+    <section className="home-statistics" data-testid="transaction-history-card">
       <div className="home-statistics-history">
         <div className="home-statistics-history-options">
           <div className="home-statistics-title">Transaction History</div>
@@ -33,7 +33,7 @@ const Statistics = () => {
         <TransactionHistoryChart range={selectedRange as DateRange} />
       </div>
 
-      <div className="home-statistics-data">
+      <div className="home-statistics-data" data-testid="score-card">
         <div className="home-statistics-title">Wormhole stats</div>
 
         <div className="home-statistics-data-container">

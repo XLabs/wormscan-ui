@@ -11,9 +11,9 @@ const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="footer">
+    <footer className="footer" data-testid="footer">
       <div className="footer-brand">
-        <NavLink to="/">
+        <NavLink to="/" data-testid="footer-logo-link">
           <WormholeBrand width={36.75} height={32.25} />
         </NavLink>
       </div>
@@ -23,9 +23,9 @@ const Footer = () => {
         <TwitterIcon />
       </div>
 
-      <div className="footer-links">
+      <div className="footer-links" data-testid="footer-nav">
         <div className="footer-links-item">
-          <NavLink to="/">{t("home.footer.about")}</NavLink>
+          <NavLink to="/about">{t("home.footer.about")}</NavLink>
         </div>
 
         <div className="footer-links-item">
@@ -33,7 +33,7 @@ const Footer = () => {
         </div>
 
         <div className="footer-links-item">
-          <NavLink to="/">{t("home.footer.contact")}</NavLink>
+          <NavLink to="/contact">{t("home.footer.contact")}</NavLink>
         </div>
       </div>
 
