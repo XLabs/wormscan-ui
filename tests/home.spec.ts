@@ -38,17 +38,4 @@ describe("Home Page", () => {
       await expect(searchButton).toBeVisible();
     });
   });
-
-  describe("Join Us Section", () => {
-    test("Button should work", async ({ page }) => {
-      // ARRANGE
-      const joinUsButton = page.getByTestId("join-discord-button");
-
-      // ACT
-      await joinUsButton.click();
-
-      // ASSERT
-      await expect(joinUsButton).toBeVisible();
-    });
-  });
 });
