@@ -1,0 +1,62 @@
+@import "src/styles/globals.scss";
+
+.home-statistics {
+  &-loader {
+    @include centered-row;
+    justify-content: center;
+    height: 100%;
+  }
+
+  &-data {
+    @include card-container;
+    @include centered-column;
+
+    justify-content: space-between;
+    gap: 24px;
+    flex: 3;
+
+    &-container {
+      @include centered-row;
+
+      justify-content: space-between;
+      flex-wrap: wrap;
+      flex: 1;
+      column-gap: 16px;
+      row-gap: 40px;
+
+      hr {
+        width: 100%;
+        border-color: var(--color-white-10);
+        display: none;
+
+        @include desktop {
+          display: block;
+        }
+      }
+
+      &-item {
+        @include centered-column;
+
+        flex: calc(50% - 16px);
+
+        @include desktop {
+          flex: calc(33.33% - 16px);
+        }
+
+        &-title {
+          @include text-p1;
+
+          color: var(--color-primary-100);
+          font-size: 16px;
+          margin-bottom: 16px;
+        }
+
+        &-value {
+          @include text-h5;
+
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

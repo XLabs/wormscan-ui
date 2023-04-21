@@ -8,7 +8,7 @@ type Props = {
     ariaLabel?: string;
   }[];
   value: string;
-  onValueChange: (value: string) => void;
+  onValueChange: (value: any) => void;
   ariaLabel: string;
   separatedOptions?: boolean;
   className?: string;
