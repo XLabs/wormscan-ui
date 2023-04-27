@@ -189,7 +189,12 @@
           .chain-name {
             opacity: 1;
           }
-
+          &.left {
+            background: linear-gradient(90deg, rgba(15, 12, 72, 0.71) 9.64%, rgba(15, 12, 72, 0) 95.18%);
+            @include desktop {
+              background: none;
+            }
+          }
           @include desktop {
             border-right: 4px solid var(--color-information-100);
             background: withOpacity(var(--color-primary-300), 0.5);
@@ -209,10 +214,12 @@
           align-items: flex-end;
           border-left: 0px;
           border-right: 8px solid var(--color-information-100);
+          background: linear-gradient(90deg, rgba(15, 12, 72, 0) 9.64%, rgba(15, 12, 72, 0.71) 95.18%);
           @include desktop {
             align-items: center;
             border-left: 4px solid var(--color-information-100);
             border-right: 0px;
+            background: none;
           }
         }
       }
@@ -239,10 +246,23 @@
 
   &-message {
     display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
+    margin-top: 24px;
+    flex-direction: column;
 
     @include text-p3;
     color: var(--color-primary-100);
+    @include desktop {
+      justify-content: space-between;
+      flex-direction: row;
+    }
+  }
+
+  &-header-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    color: var(--color-primary-100);
+    @include text-p3;
   }
 }

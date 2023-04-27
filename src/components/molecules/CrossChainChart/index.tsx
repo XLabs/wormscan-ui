@@ -89,7 +89,10 @@ const CrossChainChart = () => {
         <Chart data={data} />
       )}
 
-      <div className="cross-chain-message">{t("home.crossChain.bottomMessage")}</div>
+      <div className="cross-chain-message">
+        <div>{t("home.crossChain.portalActivity")}</div>
+        <div>{t("home.crossChain.bottomMessage")}</div>
+      </div>
     </div>
   );
 };
