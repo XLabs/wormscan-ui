@@ -190,6 +190,7 @@
             opacity: 1;
           }
           &.left {
+            // TODO: use color variable here
             background: linear-gradient(90deg, rgba(15, 12, 72, 0.71) 9.64%, rgba(15, 12, 72, 0) 95.18%);
             @include desktop {
               background: withOpacity(var(--color-primary-300), 0.5);
@@ -213,6 +214,7 @@
           align-items: flex-end;
           border-left: 0px;
           border-right: 8px solid var(--color-information-100);
+          // TODO: use color variable here
           background: linear-gradient(90deg, rgba(15, 12, 72, 0) 9.64%, rgba(15, 12, 72, 0.71) 95.18%);
           @include desktop {
             align-items: center;
