@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { BlockchainIcon } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
+import { useTranslation } from "react-i18next";
 
 interface IOriginChainsHeight {
   itemHeight: number;
@@ -31,6 +32,7 @@ export const Chart = ({ data }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const originChainsRef = useRef<HTMLDivElement>(null);
   const destinyChainsRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   // DRAWING GRAPH FUNCTION
   const draw = (ctx: CanvasRenderingContext2D, frameCount: number) => {
@@ -167,7 +169,11 @@ export const Chart = ({ data }: Props) => {
   const fakeValue = [2410230, 2010526, 1999421, 1060214, 312048, 95021, 84012, 52451, 45279, 31258];
   const fakeValue2 = [1232355, 1094201, 700240, 600102, 419267, 196241, 85612, 71263, 30211, 21085];
 
-  return (
+  return (<>
+    <div className="cross-chain-header-container cross-chain-header-title">
+      <div>{t("home.crossChain.source")}</div>
+      <div>{t("home.crossChain.destination")}</div>
+    </div>
     <div className="cross-chain-chart">
       <div className="cross-chain-chart-side" ref={originChainsRef}>
         {chartData.map((item, idx) => (
@@ -196,8 +202,7 @@ export const Chart = ({ data }: Props) => {
         className="cross-chain-chart-graph"
         ref={canvasRef}
         height={CHART_SIZE}
-        width={CHART_SIZE}
-      />
+        width={CHART_SIZE} />
 
       <div className="cross-chain-chart-side" ref={destinyChainsRef}>
         {destinations.map((item, idx) => (
@@ -221,5 +226,5 @@ export const Chart = ({ data }: Props) => {
         ))}
       </div>
     </div>
-  );
+  </>);
 };
