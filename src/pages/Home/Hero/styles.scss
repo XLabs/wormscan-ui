@@ -7,7 +7,7 @@
   align-items: center;
   padding: 64px 0;
 
-  > &-text {
+  & > &-text {
     @include text-h3;
 
     font-family: "IBM Plex Sans", sans-serif;
@@ -25,7 +25,7 @@
     max-width: 490px;
   }
 
-  > &-search {
+  &-search {
     $sc: &;
     @include centered-row;
 
@@ -46,7 +46,7 @@
       }
     }
 
-    > &-input {
+    &-input {
       @include centered-row;
 
       position: relative;

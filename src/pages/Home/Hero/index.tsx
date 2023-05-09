@@ -8,7 +8,7 @@ import "./styles.scss";
 const Hero = () => {
   const { t } = useTranslation();
 
-  const { isLoading, error, mutate } = useMutation(
+  const { mutate: mutateFindVAAByAddress } = useMutation(
     "findVAAByAddress",
     ({ address }: { address: string }) =>
       client.search.findVAAByAddress({
@@ -23,6 +23,20 @@ const Hero = () => {
     },
   );
 
+  const { mutate: mutateFindVAAByTxHash } = useMutation(
+    "findVAAByTxHash",
+    ({ txHash }: { txHash: string }) =>
+      client.guardianNetwork.getVAAbyTxHash({
+        txHash,
+        parsedPayload: true,
+      }),
+    {
+      onSuccess: vaa => {
+        console.log({ vaa });
+      },
+    },
+  );
+
   interface FormData {
     address: { value: string };
   }
@@ -31,7 +45,14 @@ const Hero = () => {
     e.preventDefault();
 
     const { address } = e.target as typeof e.target & FormData;
-    address.value && mutate({ address: address.value });
+    let { value } = address;
+    if (value) {
+      value = value.trim();
+      mutateFindVAAByAddress({ address: value });
+      mutateFindVAAByTxHash({
+        txHash: value,
+      });
+    }
   };
 
   return (
