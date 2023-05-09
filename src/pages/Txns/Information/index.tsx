@@ -7,7 +7,6 @@ import "./styles.scss";
 const TXNS_TAB_HEADERS = [
   i18n.t("common.assets").toUpperCase(),
   i18n.t("common.messages").toUpperCase(),
-  i18n.t("common.nfts").toUpperCase(),
 ];
 
 interface TransactionOutput {
@@ -100,7 +99,6 @@ const Information = () => {
             <Table columns={columns} data={data} />
           </>,
           "Message Content",
-          "NFT Content",
         ]}
       />
     </section>
