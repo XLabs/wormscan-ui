@@ -20,7 +20,7 @@ export default {
         hero: {
           text: "Cross-chain Explorer",
           search: "search",
-          placeholder: "Search by TxHash / Address / ENS",
+          placeholder: "Search by TxHash / Address",
         },
         statistics: {
           allVolume: "Total Volume",
@@ -32,7 +32,7 @@ export default {
         },
         crossChain: {
           title: "Cross-chain activity",
-          chains: "Chains",
+          volume: "Volume",
           count: "Tx count",
           app: "App",
           source: "Source",
@@ -67,9 +67,9 @@ export default {
       },
       txns: {
         top: {
-          title: "Transactions - Txns",
+          title: "Transactions",
           search: "search",
-          placeholder: "Search by TxHash / Address / ENS",
+          placeholder: "Search by TxHash / Address",
         },
       },
       common: {

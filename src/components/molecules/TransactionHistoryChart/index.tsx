@@ -115,6 +115,15 @@ const TransactionHistoryChart = ({ range }: Props) => {
                 yaxis: {
                   tickAmount: 4,
                   labels: {
+                    formatter: (val: number): string => {
+                      if (val >= 1000000) {
+                        return (val / 1000000).toFixed(1) + "M";
+                      } else if (val >= 1000) {
+                        return (val / 1000).toFixed(0) + "K";
+                      } else {
+                        return `${val}`;
+                      }
+                    },
                     style: {
                       colors: "#BFCFE7",
                       fontFamily: "IBM Plex Sans",
