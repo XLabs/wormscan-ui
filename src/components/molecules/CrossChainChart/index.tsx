@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import "./styles.scss";
 
 const TYPE_LIST = [
-  { label: i18n.t("home.crossChain.volume"), value: "chains", ariaLabel: "Chains" },
+  { label: i18n.t("home.crossChain.volume"), value: "volume", ariaLabel: "Volume" },
   { label: i18n.t("home.crossChain.count"), value: "tx-count", ariaLabel: "Transaction Count" },
 ];
 
