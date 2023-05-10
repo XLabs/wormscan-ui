@@ -1,6 +1,7 @@
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { Home } from "src/pages/Home";
-import { Txns } from "src/pages/Txns";
+import { Tx } from "src/pages/Tx";
+import { Txs } from "src/pages/Txs";
 
 type Props = {};
 
@@ -9,7 +10,8 @@ const Navigation = (props: Props) => {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/txns" element={<Txns />} />
+        <Route path="/txs" element={<Txs />} />
+        <Route path="/tx" element={<Tx />} />
       </Routes>
     </Router>
   );

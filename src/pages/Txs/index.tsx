@@ -2,7 +2,7 @@ import { BaseLayout } from "src/layouts/BaseLayout";
 import { Information } from "./Information";
 import { Top } from "./Top";
 
-const Txns = () => {
+const Txs = () => {
   return (
     <BaseLayout>
       <Top />
@@ -11,4 +11,4 @@ const Txns = () => {
   );
 };
 
-export { Txns };
+export { Txs };

@@ -11,13 +11,13 @@ const Top = () => {
   };
 
   return (
-    <section className="txns-top">
-      <h1 className="txns-top-title">{t("txns.top.title")}</h1>
+    <section className="txs-top">
+      <h1 className="txs-top-title">{t("txs.top.title")}</h1>
       <SearchBar
-        className="txns-top-search-bar"
+        className="txs-top-search-bar"
         onSubmit={handleSearch}
-        placeholder={t("txns.top.placeholder")}
-        arialLabel={t("txns.top.search")}
+        placeholder={t("txs.top.placeholder")}
+        arialLabel={t("txs.top.search")}
       />
     </section>
   );
