@@ -72,10 +72,20 @@ export default {
           placeholder: "Search by TxHash / Address",
         },
       },
+      tx: {
+        top: {
+          title: "Transaction",
+          search: "search",
+          placeholder: "Search by TxHash / Address",
+        },
+      },
       common: {
         assets: "assets",
         messages: "messages",
         nfts: "nfts",
+        overview: "overview",
+        details: "details",
+        rawData: "raw data",
       },
     },
   },
