@@ -1,9 +1,11 @@
 import { CopyIcon } from "@radix-ui/react-icons";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 import { SearchBar } from "src/components/molecules";
 import "./styles.scss";
 
 const Top = () => {
+  const { txHash } = useParams();
   const { t } = useTranslation();
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -23,7 +25,7 @@ const Top = () => {
         />
       </div>
       <div className="tx-top-txId">
-        ID: 7754EFD799B47044A907EE98F235C1A95051316AFBC6944AF4DD54292C641169 <CopyIcon />
+        ID: {txHash} <CopyIcon />
       </div>
     </section>
   );

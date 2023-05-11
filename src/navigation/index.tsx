@@ -11,7 +11,7 @@ const Navigation = (props: Props) => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/txs" element={<Txs />} />
-        <Route path="/tx" element={<Tx />} />
+        <Route path="/tx/:txHash" element={<Tx />} />
       </Routes>
     </Router>
   );

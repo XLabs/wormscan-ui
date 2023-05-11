@@ -1,11 +1,13 @@
 import { FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import client from "src/api/Client";
 import "./styles.scss";
 
 const Hero = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const { mutate: mutateFindVAAByAddress } = useMutation(
@@ -33,6 +35,8 @@ const Hero = () => {
     {
       onSuccess: vaa => {
         console.log({ vaa });
+        const { txHash } = vaa || {};
+        txHash && navigate(`/tx/${txHash}`);
       },
     },
   );
