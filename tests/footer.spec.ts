@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
 import { describe } from "node:test";
 
-// const links = ["#/", "#/about", "#/txns", "#/contact"];
-const links = ["#/", "#/txns"]; // TODO: Add rest of links
+// const links = ["#/", "#/about", "#/txs", "#/contact"];
+const links = ["#/", "#/txs"]; // TODO: Add rest of links
 
 describe("Footer", () => {
   test.beforeEach(async ({ page, baseURL }) => {

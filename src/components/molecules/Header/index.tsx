@@ -42,7 +42,7 @@ const Header = () => {
       </div>
 
       <div className="header-navigation-item">
-        <NavLink to="/txns">{t("home.header.txns")}</NavLink>
+        <NavLink to="/txs">{t("home.header.txs")}</NavLink>
       </div>
     </nav>
   );

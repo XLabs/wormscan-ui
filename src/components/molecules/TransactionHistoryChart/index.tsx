@@ -24,7 +24,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
         const excludedLabelsIdxs = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28];
 
         setTotalTxs(
-          `Last ${range === "day" ? "24hs" : range}: ${totalAmount.toLocaleString()} txns`,
+          `Last ${range === "day" ? "24hs" : range}: ${totalAmount.toLocaleString()} txs`,
         );
         setSeriesData(response.map(item => item.count));
         setSeriesLabels(

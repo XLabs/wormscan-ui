@@ -94,7 +94,9 @@ type Props = {
 const BlockchainIcon = ({ chainId, size = 24, dark = false, className = "" }: Props) => {
   const icon = getIcon({ chainId, dark });
 
-  return <img src={icon} width={size} height={size} className={className} />;
+  return (
+    <img src={icon} width={size} height={size} className={className} style={{ display: "block" }} />
+  );
 };
 
 export default BlockchainIcon;

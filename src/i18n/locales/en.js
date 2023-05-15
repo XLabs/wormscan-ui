@@ -4,14 +4,14 @@ export default {
       home: {
         header: {
           about: "About",
-          txns: "Txns",
+          txs: "Txs",
           analytics: "Analytics",
           guardians: "Guardians",
           goBridge: "Go to Bridge",
         },
         footer: {
           faq: "FAQs",
-          txns: "Txns",
+          txs: "Txs",
           contact: "Contact us",
           about: "About",
           analytics: "Analytics",
@@ -25,7 +25,7 @@ export default {
         statistics: {
           allVolume: "Total Volume",
           allTxn: "Total Txn",
-          dayTxn: "24h Txns",
+          dayTxn: "24h Txs",
           tvl: "TVL",
           dayMessage: "24h Messages",
           messageVolume: "24h Volume (USD)",
@@ -65,9 +65,16 @@ export default {
           discord: "Join Discord",
         },
       },
-      txns: {
+      txs: {
         top: {
           title: "Transactions",
+          search: "search",
+          placeholder: "Search by TxHash / Address",
+        },
+      },
+      tx: {
+        top: {
+          title: "Transaction",
           search: "search",
           placeholder: "Search by TxHash / Address",
         },
@@ -76,6 +83,9 @@ export default {
         assets: "assets",
         messages: "messages",
         nfts: "nfts",
+        overview: "overview",
+        details: "details",
+        rawData: "raw data",
       },
     },
   },
