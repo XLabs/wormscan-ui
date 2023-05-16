@@ -20,8 +20,11 @@
       flex: 1;
     }
 
+    &-icon + &-chain {
+      margin-left: 16px;
+    }
+
     &-chain {
-      margin-left: 20px;
       display: none;
 
       @include tablet {
@@ -37,8 +40,11 @@
       flex: 1;
     }
 
+    &-icon + &-chain {
+      margin-left: 16px;
+    }
+
     &-chain {
-      margin-left: 20px;
       display: none;
 
       @include tablet {
@@ -52,5 +58,9 @@
 
     text-align: end;
     font-weight: 600;
+
+    @include tablet {
+      max-width: 100px;
+    }
   }
 }

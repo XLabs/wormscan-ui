@@ -1,37 +1,38 @@
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
+import { getChainName } from "src/utils/wormhole";
 import "./styles.scss";
 
 type Props = {
-  from_chain: {
-    id: number;
-    name: string;
-  };
-  to_asset: {
-    symbol: string;
-    contract_address: string;
-  };
-  transactions: number;
+  from_chain: number;
+  token_logo: string;
+  symbol: string;
+  volume: string;
 };
 
-const TopAssetListItem = ({ from_chain, to_asset, transactions }: Props) => {
-  const { id: fromId, name: fromName } = from_chain;
-  const { symbol } = to_asset;
-  const assetId = Math.floor(Math.random() * 15);
-
+const TopAssetListItem = ({ from_chain, token_logo, symbol, volume }: Props) => {
   return (
     <div className="top-asset-list-item">
       <div className="top-chain-list-item-from">
-        <BlockchainIcon size={25} chainId={fromId} />
-        <div className="top-asset-list-item-from-chain">{fromName}</div>
+        <BlockchainIcon size={25} chainId={from_chain} className="top-asset-list-item-from-icon" />
+        <div className="top-asset-list-item-from-chain">
+          {getChainName({ chainId: from_chain })}
+        </div>
       </div>
       <ArrowRightIcon className="arrow-icon" />
       <div className="top-chain-list-item-to">
-        <BlockchainIcon size={25} chainId={assetId} />
+        {token_logo && (
+          <img
+            src={token_logo}
+            alt={`${symbol} icon`}
+            width="25"
+            className="top-asset-list-item-to-icon"
+          />
+        )}
         <div className="top-asset-list-item-to-asset">{symbol}</div>
       </div>
-      <div className="top-asset-list-item-transactions">${formatCurrency(transactions)}</div>
+      <div className="top-asset-list-item-transactions">${formatCurrency(Number(volume))}</div>
     </div>
   );
 };

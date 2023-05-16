@@ -1,180 +1,66 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { TopAssetListItem, TopChainListItem } from "src/components/molecules";
 import { TopList } from "src/components/organisms";
+import client from "src/api/Client";
 import "./styles.scss";
+import { useQuery } from "react-query";
+import { Loader } from "src/components/atoms";
 
-const RANGE_LIST = [
-  { label: "7 days", value: "7" },
-  { label: "15 days", value: "15" },
-  { label: "30 days", value: "30" },
-];
-
-const TOP_CHAIN_DATA = [
-  {
-    from_chain: {
-      id: 2,
-      name: "Ethereum",
-    },
-    to_chain: {
-      id: 4,
-      name: "BNB Smart Chain",
-    },
-    transactions: 2603,
-  },
-  {
-    from_chain: {
-      id: 2,
-      name: "Ethereum",
-    },
-    to_chain: {
-      id: 5,
-      name: "Polygon",
-    },
-    transactions: 2603,
-  },
-  {
-    from_chain: {
-      id: 1,
-      name: "Solana",
-    },
-    to_chain: {
-      id: 2,
-      name: "Ethereum",
-    },
-    transactions: 2603,
-  },
-  {
-    from_chain: {
-      id: 5,
-      name: "Polygon",
-    },
-    to_chain: {
-      id: 2,
-      name: "Ethereum",
-    },
-    transactions: 2603,
-  },
-  {
-    from_chain: {
-      id: 4,
-      name: "BNB Smart Chain",
-    },
-    to_chain: {
-      id: 2,
-      name: "Ethereum",
-    },
-    transactions: 2603,
-  },
-  {
-    from_chain: {
-      id: 1,
-      name: "Solana",
-    },
-    to_chain: {
-      id: 5,
-      name: "Polygon",
-    },
-    transactions: 2603,
-  },
-  {
-    from_chain: {
-      id: 5,
-      name: "Polygon",
-    },
-    to_chain: {
-      id: 1,
-      name: "Solana",
-    },
-    transactions: 2603,
-  },
-];
-
-const TOP_ASSET_DATA = [
-  {
-    from_chain: {
-      id: 2,
-      name: "Ethereum",
-    },
-    to_asset: {
-      symbol: "wETH",
-      contract_address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
-    },
-    transactions: 4091183194,
-  },
-  {
-    from_chain: {
-      id: 4,
-      name: "BNB Smart Chain",
-    },
-    to_asset: {
-      symbol: "wBNB",
-      contract_address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
-    },
-    transactions: 5591183194,
-  },
-  {
-    from_chain: {
-      id: 1,
-      name: "Solana",
-    },
-    to_asset: {
-      symbol: "wSOL",
-      contract_address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
-    },
-    transactions: 4091183194,
-  },
-  {
-    from_chain: {
-      id: 5,
-      name: "Polygon",
-    },
-    to_asset: {
-      symbol: "wUSDC",
-      contract_address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
-    },
-    transactions: 5591183194,
-  },
-  {
-    from_chain: {
-      id: 2,
-      name: "Ethereum",
-    },
-    to_asset: {
-      symbol: "wUSDT",
-      contract_address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
-    },
-    transactions: 4091183194,
-  },
-  {
-    from_chain: {
-      id: 4,
-      name: "BNB Smart Chain",
-    },
-    to_asset: {
-      symbol: "wALGO",
-      contract_address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
-    },
-    transactions: 5591183194,
-  },
-  {
-    from_chain: {
-      id: 2,
-      name: "Ethereum",
-    },
-    to_asset: {
-      symbol: "wAVA",
-      contract_address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
-    },
-    transactions: 4091183194,
-  },
+const RANGE_LIST: { label: string; value: "7d" | "15d" | "30d" }[] = [
+  { label: "7 days", value: "7d" },
+  { label: "15 days", value: "15d" },
+  { label: "30 days", value: "30d" },
 ];
 
 const TopLists = () => {
   const { t } = useTranslation();
-
   const [selectedTopChainTimeRange, setSelectedTopChainTimeRange] = useState(RANGE_LIST[0]);
   const [selectedTopAssetTimeRange, setSelectedTopAssetTimeRange] = useState(RANGE_LIST[0]);
+
+  const {
+    isFetching: isFetchingTokens,
+    isLoading: isLoadingTokens,
+    error: errorTokens,
+    data: dataTokens,
+  } = useQuery(
+    "womrholeMarketTokens",
+    async () => {
+      const response = await window.fetch(process.env.WORMHOLE_MARKET_TOKENS_URL);
+      return await response.json();
+    },
+    {
+      staleTime: Infinity,
+      retry: false,
+    },
+  );
+
+  const {
+    isFetching: isFetchingChainPairs,
+    error: errorChainPairs,
+    data: dataChainPairs,
+  } = useQuery(
+    ["chainPairsByTransfers", selectedTopChainTimeRange.value],
+    () =>
+      client.guardianNetwork.getChainPairsByTransfers({
+        timeSpan: selectedTopChainTimeRange.value,
+      }),
+    {
+      refetchOnWindowFocus: false,
+    },
+  );
+
+  const {
+    isFetching: isFetchingAssets,
+    error: errorAssets,
+    data: dataAssets,
+  } = useQuery(
+    ["assetsByVolume", selectedTopAssetTimeRange.value],
+    () => client.guardianNetwork.getAssetsByVolume({ timeSpan: selectedTopAssetTimeRange.value }),
+    {
+      refetchOnWindowFocus: false,
+    },
+  );
 
   return (
     <section className="home-top-lists">
@@ -190,20 +76,25 @@ const TopLists = () => {
         value={selectedTopChainTimeRange}
         onValueChange={setSelectedTopChainTimeRange}
       >
-        {TOP_CHAIN_DATA?.length > 0 &&
-          TOP_CHAIN_DATA.map(({ from_chain, to_chain, transactions }) => {
-            const { id: fromId } = from_chain;
-            const { id: toId } = to_chain;
-
+        {isFetchingChainPairs ? (
+          <>
+            <div className="home-top-lists-loader">
+              <Loader />
+            </div>
+          </>
+        ) : (
+          dataChainPairs?.length > 0 &&
+          dataChainPairs.map(({ emitterChain, destinationChain, numberOfTransfers }) => {
             return (
               <TopChainListItem
-                key={`${fromId}-${toId}`}
-                from_chain={from_chain}
-                to_chain={to_chain}
-                transactions={transactions}
+                key={`${emitterChain}-${destinationChain}`}
+                from_chain={emitterChain}
+                to_chain={destinationChain}
+                transactions={numberOfTransfers}
               />
             );
-          })}
+          })
+        )}
       </TopList>
 
       <TopList
@@ -218,20 +109,34 @@ const TopLists = () => {
         value={selectedTopAssetTimeRange}
         onValueChange={setSelectedTopAssetTimeRange}
       >
-        {TOP_ASSET_DATA?.length > 0 &&
-          TOP_ASSET_DATA.map(({ from_chain, to_asset, transactions }) => {
-            const { id: fromId } = from_chain;
-            const { symbol } = to_asset;
+        {isFetchingAssets ? (
+          <>
+            <div className="home-top-lists-loader">
+              <Loader />
+            </div>
+          </>
+        ) : (
+          dataAssets?.length > 0 &&
+          dataAssets.map(({ emitterChain, symbol, tokenChain, tokenAddress, volume }) => {
+            let tokenLogoURL: string = "";
+
+            if (dataTokens?.tokens) {
+              // remove leading zeros from token address
+              const tokenAddressParsed: string = "0x" + tokenAddress.replace(/^0+/, "");
+              tokenLogoURL = dataTokens.tokens[tokenChain][tokenAddressParsed]?.logo;
+            }
 
             return (
               <TopAssetListItem
-                key={`${fromId}-${symbol}`}
-                from_chain={from_chain}
-                to_asset={to_asset}
-                transactions={transactions}
+                key={`${emitterChain}-${symbol}`}
+                from_chain={emitterChain}
+                token_logo={tokenLogoURL}
+                symbol={symbol}
+                volume={volume}
               />
             );
-          })}
+          })
+        )}
       </TopList>
     </section>
   );

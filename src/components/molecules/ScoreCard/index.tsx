@@ -37,7 +37,7 @@ const ScoreCard = () => {
               {t("home.statistics.tvl")}
             </div>
             <div className="home-statistics-data-container-item-value">
-              ${tvl ? formatCurrency(tvl, 0) : "-"}
+              ${tvl ? formatCurrency(Number(tvl), 0) : "-"}
             </div>
           </div>
 
@@ -46,7 +46,7 @@ const ScoreCard = () => {
               {t("home.statistics.allVolume")}
             </div>
             <div className="home-statistics-data-container-item-value">
-              ${total_volume ? formatCurrency(total_volume, 0) : "-"}
+              ${total_volume ? formatCurrency(Number(total_volume), 0) : "-"}
             </div>
           </div>
 
@@ -55,7 +55,7 @@ const ScoreCard = () => {
               {t("home.statistics.allTxn")}
             </div>
             <div className="home-statistics-data-container-item-value">
-              {total_tx_count ? formatNumber(total_tx_count, 0) : "-"}
+              {total_tx_count ? formatNumber(Number(total_tx_count), 0) : "-"}
             </div>
           </div>
 
@@ -66,7 +66,7 @@ const ScoreCard = () => {
               {t("home.statistics.messageVolume")}
             </div>
             <div className="home-statistics-data-container-item-value">
-              ${volume24h ? formatCurrency(volume24h, 0) : "-"}
+              ${volume24h ? formatCurrency(Number(volume24h), 0) : "-"}
             </div>
           </div>
 
@@ -75,7 +75,7 @@ const ScoreCard = () => {
               {t("home.statistics.dayTxn")}
             </div>
             <div className="home-statistics-data-container-item-value">
-              {tx_count24h ? formatNumber(tx_count24h, 0) : "-"}
+              {tx_count24h ? formatNumber(Number(tx_count24h), 0) : "-"}
             </div>
           </div>
 
@@ -84,7 +84,7 @@ const ScoreCard = () => {
               {t("home.statistics.dayMessage")}
             </div>
             <div className="home-statistics-data-container-item-value">
-              {messages24h ? formatNumber(messages24h, 0) : "-"}
+              {messages24h ? formatNumber(Number(messages24h), 0) : "-"}
             </div>
           </div>
         </div>

@@ -5,6 +5,10 @@
   padding: 20px 16px;
 
   @include desktop {
+    padding: 20px;
+  }
+
+  @include bigDesktop {
     padding: 24px;
   }
 }

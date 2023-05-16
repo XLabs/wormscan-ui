@@ -3,6 +3,8 @@
 .top-list {
   @include card-container;
 
+  display: flex;
+  flex-direction: column;
   flex: 1;
   width: 100%;
 
@@ -36,7 +38,9 @@
 
   &-body {
     @include centered-column;
+    justify-content: start;
 
+    flex: 1;
     gap: 32px;
   }
 }
