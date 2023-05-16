@@ -37,7 +37,7 @@ const ScoreCard = () => {
               {t("home.statistics.tvl")}
             </div>
             <div className="home-statistics-data-container-item-value">
-              ${tvl ? formatCurrency(Number(tvl)) : "-"}
+              ${tvl ? formatCurrency(Number(tvl), 0) : "-"}
             </div>
           </div>
 
@@ -46,7 +46,7 @@ const ScoreCard = () => {
               {t("home.statistics.allVolume")}
             </div>
             <div className="home-statistics-data-container-item-value">
-              ${total_volume ? formatCurrency(Number(total_volume)) : "-"}
+              ${total_volume ? formatCurrency(Number(total_volume), 0) : "-"}
             </div>
           </div>
 
@@ -66,7 +66,7 @@ const ScoreCard = () => {
               {t("home.statistics.messageVolume")}
             </div>
             <div className="home-statistics-data-container-item-value">
-              ${volume24h ? formatCurrency(Number(volume24h)) : "-"}
+              ${volume24h ? formatCurrency(Number(volume24h), 0) : "-"}
             </div>
           </div>
 
