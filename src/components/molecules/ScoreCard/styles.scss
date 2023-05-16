@@ -14,6 +14,7 @@
     justify-content: space-between;
     gap: 24px;
     flex: 3;
+    min-width: 580px;
 
     &-container {
       @include centered-row;
