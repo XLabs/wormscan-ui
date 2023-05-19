@@ -32,7 +32,7 @@ const TopAssetListItem = ({ from_chain, token_logo, symbol, volume }: Props) => 
         )}
         <div className="top-asset-list-item-to-asset">{symbol}</div>
       </div>
-      <div className="top-asset-list-item-transactions">${formatCurrency(Number(volume))}</div>
+      <div className="top-asset-list-item-transactions">${formatCurrency(Number(volume), 0)}</div>
     </div>
   );
 };
