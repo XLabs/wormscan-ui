@@ -20,19 +20,21 @@ const TransactionHistoryChart = ({ range }: Props) => {
     () => client.guardianNetwork.getLastTxs(range),
     {
       onSuccess: response => {
-        const totalAmount = response.reduce((prev, curr) => prev + curr.count, 0);
-        const excludedLabelsIdxs = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28];
+        const responseReversed = response.reverse();
+        const totalAmount = responseReversed.reduce((prev, curr) => prev + curr.count, 0);
+        const includedLabelIdxDay = [1, 4, 7, 10, 13, 16, 19, 22];
+        const includedLabelIdxMonth = [1, 5, 9, 13, 17, 21, 25, 29];
 
         setTotalTxs(
           `Last ${range === "day" ? "24hs" : range}: ${totalAmount.toLocaleString()} txs`,
         );
-        setSeriesData(response.map(item => item.count));
+        setSeriesData(responseReversed.map(item => item.count));
         setSeriesLabels(
-          response.map((item, idx) => {
+          responseReversed.map((item, idx) => {
             const date = new Date(item.time);
 
             if (range === "day") {
-              return excludedLabelsIdxs.includes(idx) ? `${date.getHours()}:00` : "";
+              return includedLabelIdxDay.includes(idx) ? `${date.getHours()}:00` : "";
             }
 
             if (range === "week") {
@@ -40,7 +42,9 @@ const TransactionHistoryChart = ({ range }: Props) => {
             }
 
             if (range === "month") {
-              return excludedLabelsIdxs.includes(idx) ? `${date.getMonth()}/${date.getDate()}` : "";
+              return includedLabelIdxMonth.includes(idx)
+                ? ` ${date.toLocaleString("en-us", { month: "short", day: "numeric" })} `
+                : "";
             }
           }),
         );
@@ -60,11 +64,10 @@ const TransactionHistoryChart = ({ range }: Props) => {
         </div>
       ) : (
         <>
-          <span className="trans-history-text">{isLoading ? "" : totalTxs}</span>
           <div className="trans-history-chart">
             <ReactApexChart
               type="area"
-              height={200}
+              height={220}
               series={[
                 {
                   name: "LastTxsData",
@@ -72,6 +75,16 @@ const TransactionHistoryChart = ({ range }: Props) => {
                 },
               ]}
               options={{
+                title: {
+                  text: totalTxs,
+                  align: "left",
+                  style: {
+                    color: "#6a6da0",
+                    fontFamily: "IBM Plex Sans",
+                    fontSize: "16px",
+                    fontWeight: 400,
+                  },
+                },
                 fill: {
                   type: "gradient",
                   gradient: {
