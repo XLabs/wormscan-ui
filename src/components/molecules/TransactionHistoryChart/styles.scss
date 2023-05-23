@@ -4,14 +4,12 @@
   &-loader {
     @include centered-row;
     justify-content: center;
-    height: 200px;
-    margin-top: 5px;
+    height: 220px;
   }
 
   &-chart {
-    margin-top: 5px;
-    transform: translateY(10px);
-    height: 200px;
+    // transform: translateY(10px);
+    height: 220px;
   }
 
   &-text {
