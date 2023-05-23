@@ -79,7 +79,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                   text: totalTxs,
                   align: "left",
                   style: {
-                    color: "#6a6da0",
+                    color: "var(--color-primary-100)",
                     fontFamily: "IBM Plex Sans",
                     fontSize: "16px",
                     fontWeight: 400,
@@ -138,7 +138,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                       }
                     },
                     style: {
-                      colors: "#BFCFE7",
+                      colors: "var(--color-primary-50)",
                       fontFamily: "IBM Plex Sans",
                       fontSize: "14px",
                     },
@@ -153,7 +153,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                   labels: {
                     hideOverlappingLabels: false,
                     style: {
-                      colors: "#BFCFE7",
+                      colors: "var(--color-primary-50)",
                       fontFamily: "IBM Plex Sans",
                       fontSize: "14px",
                     },
