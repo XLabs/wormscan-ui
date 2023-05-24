@@ -1,10 +1,10 @@
-import client from "src/api/Client";
+import { useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import { Loader } from "src/components/atoms";
-import "./styles.scss";
 import ReactApexChart from "react-apexcharts";
 import { DateRange } from "@xlabs-libs/wormscan-sdk";
-import { useEffect, useState } from "react";
+import client from "src/api/Client";
+import "./styles.scss";
 
 type Props = {
   range: DateRange;
@@ -14,6 +14,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
   const [seriesData, setSeriesData] = useState([0]);
   const [seriesLabels, setSeriesLabels] = useState([""]);
   const [totalTxs, setTotalTxs] = useState("");
+  const tickAmount = range === "month" ? 4 : 5;
 
   const { isLoading, isError, mutate } = useMutation(
     "lastTxsResponse",
@@ -22,29 +23,29 @@ const TransactionHistoryChart = ({ range }: Props) => {
       onSuccess: response => {
         const responseReversed = response.reverse();
         const totalAmount = responseReversed.reduce((prev, curr) => prev + curr.count, 0);
-        const includedLabelIdxDay = [1, 4, 7, 10, 13, 16, 19, 22];
-        const includedLabelIdxMonth = [1, 5, 9, 13, 17, 21, 25, 29];
 
         setTotalTxs(
           `Last ${range === "day" ? "24hs" : range}: ${totalAmount.toLocaleString()} txs`,
         );
         setSeriesData(responseReversed.map(item => item.count));
         setSeriesLabels(
-          responseReversed.map((item, idx) => {
+          responseReversed.map(item => {
             const date = new Date(item.time);
 
             if (range === "day") {
-              return includedLabelIdxDay.includes(idx) ? `${date.getHours()}:00` : "";
+              return date.toLocaleString("en-us", {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: false,
+              });
             }
 
             if (range === "week") {
-              return `${date.toLocaleString("en-us", { weekday: "short" })}`;
+              return date.toLocaleString("en-us", { weekday: "short" });
             }
 
             if (range === "month") {
-              return includedLabelIdxMonth.includes(idx)
-                ? ` ${date.toLocaleString("en-us", { month: "short", day: "numeric" })} `
-                : "";
+              return date.toLocaleString("en-us", { month: "short", day: "numeric" });
             }
           }),
         );
@@ -157,10 +158,25 @@ const TransactionHistoryChart = ({ range }: Props) => {
                       fontFamily: "IBM Plex Sans",
                       fontSize: "14px",
                     },
+                    rotate: 0,
                   },
+                  tickAmount,
+                  tickPlacement: "on",
                   axisTicks: { show: false },
                   axisBorder: { show: true, strokeWidth: 4, color: "#FFFFFF25" },
                 },
+                responsive: [
+                  {
+                    breakpoint: 1200,
+                    options: {
+                      xaxis: {
+                        labels: {
+                          rotate: -45,
+                        },
+                      },
+                    },
+                  },
+                ],
               }}
             />
           </div>
