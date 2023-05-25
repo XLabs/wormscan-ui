@@ -1,7 +1,9 @@
-import { ExternalLinkIcon, CopyIcon } from "@radix-ui/react-icons";
+import { CopyIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon } from "src/components/atoms";
+import CopyToClipboard from "src/components/molecules/CopyToClipboard";
 import WalletIcon from "src/icons/walletIcon.svg";
 import WormIcon from "src/icons/WormIcon.svg";
+import RelayIcon from "src/icons/RelayIcon.svg";
 import "./styles.scss";
 
 type Props = {};
@@ -14,7 +16,7 @@ const Overview = (props: Props) => {
           <div className="tx-overview-graph-step-name">SOURCE CHAIN</div>
           <div className="tx-overview-graph-step-iconWrapper">
             <div className="tx-overview-graph-step-iconContainer">
-              <img src={WalletIcon} alt="" height={25} />
+              <BlockchainIcon chainId={6} size={32} />
             </div>
           </div>
           <div>
@@ -28,7 +30,10 @@ const Overview = (props: Props) => {
           <div>
             <div className="tx-overview-graph-step-title">Source wallet</div>
             <div className="tx-overview-graph-step-description">
-              <a href="#">0x9262...46b3</a> <CopyIcon />
+              <a href="#">0x9262...46b3</a>{" "}
+              <CopyToClipboard toCopy="0x9262...46b3">
+                <CopyIcon />
+              </CopyToClipboard>
             </div>
           </div>
         </div>
@@ -37,7 +42,7 @@ const Overview = (props: Props) => {
           <div className="tx-overview-graph-step-name">EMITTER CONTRACT</div>
           <div className="tx-overview-graph-step-iconWrapper">
             <div className="tx-overview-graph-step-iconContainer">
-              <img src={WormIcon} alt="" height={25} />
+              <img src={WormIcon} alt="" height={32} />
             </div>
           </div>
           <div>
@@ -47,7 +52,10 @@ const Overview = (props: Props) => {
           <div>
             <div className="tx-overview-graph-step-title">Contract Address</div>
             <div className="tx-overview-graph-step-description">
-              <a href="#">0x9262...46b3</a> <CopyIcon />
+              <a href="#">0x9262...46b3</a>{" "}
+              <CopyToClipboard toCopy="0x9262...46b3">
+                <CopyIcon />
+              </CopyToClipboard>
             </div>
           </div>
           <div></div>
@@ -70,7 +78,10 @@ const Overview = (props: Props) => {
           <div>
             <div className="tx-overview-graph-step-title">VAA ID</div>
             <div className="tx-overview-graph-step-description">
-              5/0000...0003 <CopyIcon />
+              5/0000...0003{" "}
+              <CopyToClipboard toCopy="5/0000...0003">
+                <CopyIcon />
+              </CopyToClipboard>
             </div>
           </div>
           <div></div>
@@ -81,7 +92,7 @@ const Overview = (props: Props) => {
           <div className="tx-overview-graph-step-name">RELAYING</div>
           <div className="tx-overview-graph-step-iconWrapper">
             <div className="tx-overview-graph-step-iconContainer">
-              <img src={WalletIcon} alt="" height={25} />
+              <img src={RelayIcon} alt="" height={32} />
             </div>
           </div>
           <div>
@@ -91,13 +102,19 @@ const Overview = (props: Props) => {
           <div>
             <div className="tx-overview-graph-step-title">Contract Address</div>
             <div className="tx-overview-graph-step-description">
-              <a href="#">0x9262...46b3</a> <CopyIcon />
+              <a href="#">0x9262...46b3</a>{" "}
+              <CopyToClipboard toCopy="0x9262...46b3">
+                <CopyIcon />
+              </CopyToClipboard>
             </div>
           </div>
           <div>
             <div className="tx-overview-graph-step-title">Redeem Tx</div>
             <div className="tx-overview-graph-step-description">
-              <a href="#">0x9262...46b3</a> <CopyIcon />
+              <a href="#">0x9262...46b3</a>{" "}
+              <CopyToClipboard toCopy="0x9262...46b3">
+                <CopyIcon />
+              </CopyToClipboard>
             </div>
           </div>
         </div>
@@ -106,7 +123,7 @@ const Overview = (props: Props) => {
           <div className="tx-overview-graph-step-name">DESTINATION CHAIN</div>
           <div className="tx-overview-graph-step-iconWrapper">
             <div className="tx-overview-graph-step-iconContainer">
-              <img src={WalletIcon} alt="" height={25} />
+              <BlockchainIcon chainId={4} size={32} />
             </div>
           </div>
           <div>
@@ -120,7 +137,10 @@ const Overview = (props: Props) => {
           <div>
             <div className="tx-overview-graph-step-title">Source wallet</div>
             <div className="tx-overview-graph-step-description">
-              <a href="#">0x9262...46b3</a> <CopyIcon />
+              <a href="#">0x9262...46b3</a>{" "}
+              <CopyToClipboard toCopy="0x9262...46b3">
+                <CopyIcon />
+              </CopyToClipboard>
             </div>
           </div>
         </div>

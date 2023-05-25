@@ -66,8 +66,12 @@
         gap: 8px;
         color: var(--color-white);
 
-        & > svg {
-          color: var(--color-primary-90);
+        & > .copy-to-clipboard {
+          display: flex;
+
+          & > svg {
+            color: var(--color-primary-90);
+          }
         }
 
         & > a {
@@ -109,7 +113,7 @@
         background-color: var(--color-primary-900);
 
         > img {
-          max-height: 25px;
+          max-height: 32px;
         }
       }
 

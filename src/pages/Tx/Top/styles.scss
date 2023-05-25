@@ -2,10 +2,9 @@
 
 .tx-top {
   @include centered-column;
-  gap: 16px;
 
-  margin-top: 48px;
-  margin-bottom: 32px;
+  gap: 16px;
+  margin: 32px 0;
 
   &-header {
     @include centered-row;
@@ -30,5 +29,9 @@
     gap: 8px;
     align-items: center;
     color: var(--color-primary-90);
+
+    & .copy-to-clipboard {
+      display: flex;
+    }
   }
 }
