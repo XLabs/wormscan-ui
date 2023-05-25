@@ -1,6 +1,8 @@
 @import "src/styles/globals.scss";
 
 .tx-information {
+  margin-bottom: 32px;
+
   &-table-results {
     @include text-p3;
 

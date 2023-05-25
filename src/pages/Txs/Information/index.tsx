@@ -90,12 +90,12 @@ const Information = () => {
   );
 
   return (
-    <section className="txns-information">
+    <section className="txs-information">
       <Tabs
         headers={TXNS_TAB_HEADERS}
         contents={[
           <>
-            <div className="txns-information-table-results">23,346,643 Results</div>
+            <div className="txs-information-table-results">23,346,643 Results</div>
             <Table columns={columns} data={data} />
           </>,
           "Message Content",

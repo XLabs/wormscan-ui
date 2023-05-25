@@ -1,4 +1,4 @@
-import { CrossChainChart } from "src/components/molecules";
+import { CrossChainChart, JoinUs } from "src/components/molecules";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { Hero } from "./Hero";
 import { Statistics } from "./Statistics";
@@ -11,6 +11,7 @@ const Home = () => {
       <Statistics />
       <CrossChainChart />
       <TopLists />
+      <JoinUs />
     </BaseLayout>
   );
 };
