@@ -25,7 +25,7 @@ const Top = () => {
         />
       </div>
       <div className="tx-top-txId">
-        ID: {txHash} <CopyIcon />
+        HASH: {txHash} <CopyIcon />
       </div>
     </section>
   );

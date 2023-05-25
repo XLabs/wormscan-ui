@@ -55,7 +55,7 @@
       height: inherit;
 
       > input {
-        @include text-p3;
+        @include text-p2;
 
         background-color: transparent;
         border: 2px solid var(--color-white-10);

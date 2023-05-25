@@ -1,6 +1,6 @@
 @import "src/styles/globals.scss";
 
-.txns-information {
+.tx-information {
   &-table-results {
     @include text-p3;
 
@@ -9,11 +9,41 @@
     color: var(--color-primary-50);
   }
 
-  .table {
-    display: none;
+  &-top-info {
+    display: flex;
+    align-items: center;
+    gap: 72px;
+    padding: 24px;
+    background-color: var(--color-white-05);
+    min-height: 95px;
+    margin-bottom: 40px;
 
-    @include desktop {
-      display: table;
+    @include bigDesktop {
+      padding: 16px 112px 24px;
+    }
+
+    > * {
+      display: flex;
+      gap: 24px;
+    }
+
+    & .key {
+      @include text-p2;
+
+      color: var(--color-primary-90);
+    }
+
+    & .value {
+      @include text-p2;
+
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-white);
+
+      &.green {
+        color: var(--color-success-100);
+      }
     }
   }
 }
