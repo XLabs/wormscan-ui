@@ -1,7 +1,8 @@
 import { Tabs } from "src/components/organisms";
 import i18n from "src/i18n";
 import Overview from "./Overview/index";
-import { CheckCircledIcon } from "@radix-ui/react-icons";
+import { ArrowRightIcon, CheckCircledIcon } from "@radix-ui/react-icons";
+import { BlockchainIcon } from "src/components/atoms";
 import "./styles.scss";
 
 const TXNS_TAB_HEADERS = [
@@ -30,6 +31,18 @@ const Information = () => {
               <div>
                 <div className="key">Fee:</div>
                 <div className="value">1 AVAX</div>
+              </div>
+              <div>
+                <div className="key">Chains:</div>
+                <div className="chains">
+                  <div className="chains-container">
+                    <BlockchainIcon size={20} chainId={1} />
+                  </div>
+                  <ArrowRightIcon className="arrow-icon" />
+                  <div className="chains-container">
+                    <BlockchainIcon size={20} chainId={2} />
+                  </div>
+                </div>
               </div>
             </div>
             <Overview />

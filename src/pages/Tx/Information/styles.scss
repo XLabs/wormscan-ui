@@ -12,9 +12,11 @@
   }
 
   &-top-info {
-    display: flex;
-    align-items: center;
-    gap: 72px;
+    @include centered-row;
+
+    flex-wrap: wrap;
+    column-gap: 72px;
+    row-gap: 16px;
     padding: 24px;
     background-color: var(--color-white-05);
     min-height: 95px;
@@ -25,7 +27,8 @@
     }
 
     > * {
-      display: flex;
+      @include centered-row;
+
       gap: 24px;
     }
 
@@ -37,14 +40,34 @@
 
     & .value {
       @include text-p2;
+      @include centered-row;
 
-      display: flex;
-      align-items: center;
       gap: 8px;
       color: var(--color-white);
 
       &.green {
         color: var(--color-success-100);
+      }
+    }
+
+    & .chains {
+      @include centered-row;
+
+      gap: 12px;
+
+      &-container {
+        @include centered-column;
+
+        align-items: center;
+        background-color: var(--color-primary-800);
+        border-radius: 50%;
+        height: 32px;
+        width: 32px;
+      }
+
+      > .arrow-icon {
+        transform: scale(1.75);
+        color: var(--color-primary-200);
       }
     }
   }
