@@ -17,21 +17,32 @@
       width: 28px;
     }
 
-    &-text {
+    &-title {
       font-size: 14px;
       letter-spacing: 6px;
     }
 
+    &-subtitle {
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+
     @include desktop {
-      gap: 16px;
+      gap: 12px;
 
       > svg {
         width: 36.75px;
       }
 
-      &-text {
+      &-title {
         font-size: 20px;
         letter-spacing: 8px;
+      }
+
+      &-subtitle {
+        @include text-p3;
+
+        letter-spacing: 1px;
       }
     }
   }

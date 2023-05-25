@@ -17,7 +17,7 @@ const setOverflowHidden = (hidden: boolean) => {
 
 const LogoLink = () => (
   <NavLink to="/" data-testid="header-logo-link">
-    <WormholeBrand width={36.75} height={32.25} />
+    <WormholeBrand width={28} height={26} />
   </NavLink>
 );
 

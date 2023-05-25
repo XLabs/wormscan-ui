@@ -4,13 +4,28 @@
   @include centered-row;
   @include text-p1;
 
-  gap: 16px;
+  gap: 12px;
+  line-height: 1;
+  align-items: start;
 
   &-text {
+    @include centered-column;
+    justify-content: center;
+  }
+
+  &-title {
     color: var(--color-white);
     font-family: "Chakra Petch", sans-serif;
     letter-spacing: 8px;
     font-weight: 600;
     text-decoration: none;
+  }
+
+  &-subtitle {
+    @include text-p3;
+
+    text-decoration: none;
+    color: var(--color-primary-90);
+    letter-spacing: 1px;
   }
 }
