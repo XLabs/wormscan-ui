@@ -16,7 +16,7 @@ const CopyToClipboard = ({ children, tooltip, toCopy }: Props) => {
 
     const timeout = setTimeout(() => {
       setOpen(false);
-    }, 1000);
+    }, 1500);
 
     return () => {
       clearTimeout(timeout);
