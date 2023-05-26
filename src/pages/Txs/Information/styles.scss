@@ -1,11 +1,12 @@
 @import "src/styles/globals.scss";
 
-.txns-information {
+.txs-information {
+  margin-bottom: 32px;
+
   &-table-results {
     @include text-p3;
 
-    margin-bottom: 24px;
-    padding: 0 16px;
+    padding: 24px;
     color: var(--color-primary-50);
   }
 

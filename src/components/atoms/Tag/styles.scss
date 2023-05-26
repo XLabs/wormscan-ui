@@ -1,0 +1,18 @@
+@import "src/styles/globals.scss";
+
+.tag {
+  @include text-p3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 4px;
+
+  background-color: var(--color-white);
+  color: var(--color-black);
+
+  &.blue {
+    background-color: var(--color-information-30);
+    color: var(--color-information-500);
+  }
+}

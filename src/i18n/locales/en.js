@@ -74,7 +74,7 @@ export default {
       },
       tx: {
         top: {
-          title: "Transaction",
+          title: "Transaction detail",
           search: "search",
           placeholder: "Search by TxHash / Address",
         },

@@ -1,6 +1,8 @@
 @import "src/styles/globals.scss";
 
-.txns-information {
+.tx-information {
+  margin-bottom: 32px;
+
   &-table-results {
     @include text-p3;
 
@@ -9,11 +11,64 @@
     color: var(--color-primary-50);
   }
 
-  .table {
-    display: none;
+  &-top-info {
+    @include centered-row;
 
-    @include desktop {
-      display: table;
+    flex-wrap: wrap;
+    column-gap: 72px;
+    row-gap: 16px;
+    padding: 24px;
+    background-color: var(--color-white-05);
+    min-height: 95px;
+    margin-bottom: 40px;
+
+    @include bigDesktop {
+      padding: 16px 112px 24px;
+    }
+
+    > * {
+      @include centered-row;
+
+      gap: 24px;
+    }
+
+    & .key {
+      @include text-p2;
+
+      color: var(--color-primary-90);
+    }
+
+    & .value {
+      @include text-p2;
+      @include centered-row;
+
+      gap: 8px;
+      color: var(--color-white);
+
+      &.green {
+        color: var(--color-success-100);
+      }
+    }
+
+    & .chains {
+      @include centered-row;
+
+      gap: 12px;
+
+      &-container {
+        @include centered-column;
+
+        align-items: center;
+        background-color: var(--color-primary-800);
+        border-radius: 50%;
+        height: 32px;
+        width: 32px;
+      }
+
+      > .arrow-icon {
+        transform: scale(1.75);
+        color: var(--color-primary-200);
+      }
     }
   }
 }
