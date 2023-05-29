@@ -20,7 +20,7 @@
     row-gap: 8px;
     grid-template-areas:
       "brand links social"
-      "copy links social";
+      "brand links copy";
     grid-template-columns: 1fr 1fr 1fr;
     padding: 24px 60px;
   }
@@ -96,7 +96,7 @@
     color: var(--color-primary-100);
 
     @include desktop {
-      text-align: start;
+      text-align: end;
     }
   }
 }

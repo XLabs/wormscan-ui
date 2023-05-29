@@ -3,7 +3,6 @@ import { NavLink } from "src/components/atoms";
 import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
 import WormholeBrand from "../WormholeBrand";
-
 import "./styles.scss";
 
 const Footer = () => {
