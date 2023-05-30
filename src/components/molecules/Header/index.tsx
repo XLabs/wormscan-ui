@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { NavLink } from "src/components/atoms";
 import WormholeBrand from "../WormholeBrand";
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
+import i18n from "src/i18n";
+import Search from "./Search";
 import "./styles.scss";
 
 const setOverflowHidden = (hidden: boolean) => {
@@ -21,8 +23,21 @@ const LogoLink = () => (
   </NavLink>
 );
 
+const HeaderLinks = () => (
+  <nav data-testid="header-nav">
+    <div className="header-navigation-item">
+      <NavLink to="/about">{i18n.t("home.header.about")}</NavLink>
+    </div>
+
+    <div className="header-navigation-item">
+      <NavLink to="/txs">{i18n.t("home.header.txs")}</NavLink>
+    </div>
+  </nav>
+);
+
 const Header = () => {
   const { t } = useTranslation();
+
   const [expandMobileMenu, setExpandMobileMenu] = useState<boolean>(false);
   const handleSetExpand = () => {
     setExpandMobileMenu(state => {
@@ -35,32 +50,14 @@ const Header = () => {
     return () => setOverflowHidden(false);
   }, []);
 
-  const renderOptions = () => (
-    <nav data-testid="header-nav">
-      <div className="header-navigation-item">
-        <NavLink to="/about">{t("home.header.about")}</NavLink>
-      </div>
-
-      <div className="header-navigation-item">
-        <NavLink to="/txs">{t("home.header.txs")}</NavLink>
-      </div>
-    </nav>
-  );
-
   return (
     <header className="header" data-testid="header">
       <LogoLink />
-
-      <HamburgerMenuIcon
-        onClick={handleSetExpand}
-        className="header-open-mobile-menu-btn"
-        width={20}
-        height={20}
-      />
+      <Search />
 
       {/* DESKTOP OPTIONS */}
       <div className="header-navigation">
-        {renderOptions()}
+        <HeaderLinks />
 
         <div className="header-actions">
           <button className="connect-button">{t("home.header.goBridge")}</button>
@@ -68,6 +65,15 @@ const Header = () => {
       </div>
 
       {/* MOBILE HAMBURGER MENU */}
+      <div className="header-hamburger">
+        <HamburgerMenuIcon
+          onClick={handleSetExpand}
+          className="header-open-mobile-menu-btn"
+          width={20}
+          height={20}
+        />
+      </div>
+
       <div
         className={`header-navigation-mobile header-navigation-mobile--${
           expandMobileMenu ? "open" : "close"
@@ -84,7 +90,7 @@ const Header = () => {
         </div>
 
         <div className="header-navigation-mobile-nav">
-          {renderOptions()}
+          <HeaderLinks />
 
           <div className="header-navigation-item">
             <button className="go-bridge" data-testid="go-bridge-button">

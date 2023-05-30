@@ -4,7 +4,7 @@ import i18n from "src/i18n";
 import { Column } from "react-table";
 import "./styles.scss";
 
-const TXNS_TAB_HEADERS = [
+const TXS_TAB_HEADERS = [
   i18n.t("common.assets").toUpperCase(),
   i18n.t("common.messages").toUpperCase(),
 ];
@@ -92,7 +92,7 @@ const Information = () => {
   return (
     <section className="txs-information">
       <Tabs
-        headers={TXNS_TAB_HEADERS}
+        headers={TXS_TAB_HEADERS}
         contents={[
           <>
             <div className="txs-information-table-results">23,346,643 Results</div>

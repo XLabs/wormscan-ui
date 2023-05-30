@@ -8,6 +8,10 @@ export default {
           analytics: "Analytics",
           guardians: "Guardians",
           goBridge: "Go to Bridge",
+          search: {
+            placeholder: "Search by TxHash / Address",
+            ariaLabel: "search",
+          },
         },
         footer: {
           faq: "FAQs",
@@ -19,8 +23,6 @@ export default {
         },
         hero: {
           text: "Cross-chain Explorer",
-          search: "search",
-          placeholder: "Search by TxHash / Address",
         },
         statistics: {
           allVolume: "Total Volume",
@@ -68,15 +70,11 @@ export default {
       txs: {
         top: {
           title: "Transactions",
-          search: "search",
-          placeholder: "Search by TxHash / Address",
         },
       },
       tx: {
         top: {
           title: "Transaction detail",
-          search: "search",
-          placeholder: "Search by TxHash / Address",
         },
       },
       common: {

@@ -1,16 +1,32 @@
 @import "src/styles/globals.scss";
 
 .header {
-  @include centered-row;
+  display: grid;
+  grid-template-areas:
+    "brand hamburger"
+    "search search";
+  align-items: center;
   width: 100%;
   min-height: 64px;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  gap: 16px;
   background-color: rgba(1, 0, 20, 0.2);
   border-bottom: 1px solid var(--color-white-10);
-  padding: 8px 16px;
+  padding: 16px;
+
+  @include tablet {
+    padding: 16 60px;
+  }
+
+  @include desktop {
+    grid-template-areas: "brand search search links";
+
+    padding: 16px 60px;
+    min-height: 96px;
+  }
 
   .wormhole-brand {
+    grid-area: brand;
+
     gap: 8px;
 
     > svg {
@@ -47,33 +63,47 @@
     }
   }
 
-  @include desktop {
-    padding: 0 60px;
-    min-height: 88px;
-  }
-
-  &-open-mobile-menu-btn {
-    cursor: pointer;
-    width: 24px;
-    height: 24px;
+  &-hamburger {
+    grid-area: hamburger;
+    display: flex;
+    justify-content: end;
 
     @include desktop {
       display: none;
     }
   }
 
+  &-open-mobile-menu-btn {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+  }
+
   a {
     text-decoration: none;
+  }
+
+  &-search-bar {
+    grid-area: search;
+    width: 100%;
+
+    @include desktop {
+      max-width: 482px;
+    }
   }
 
   &-navigation {
     @include centered-row;
 
+    justify-content: end;
     display: none;
     font-family: "IBM Plex Sans", sans-serif;
 
     @include desktop {
-      display: flex;
+      @include centered-row;
+
+      min-width: 290px;
+      gap: 44px;
     }
 
     & > nav {
@@ -179,8 +209,7 @@
   }
 
   &-actions {
-    margin-left: 74px;
-
+    grid-area: links;
     & .connect-button {
       @include button-secondary;
     }

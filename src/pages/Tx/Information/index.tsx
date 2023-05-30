@@ -5,7 +5,7 @@ import { ArrowRightIcon, CheckCircledIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon } from "src/components/atoms";
 import "./styles.scss";
 
-const TXNS_TAB_HEADERS = [
+const TX_TAB_HEADERS = [
   i18n.t("common.overview").toUpperCase(),
   i18n.t("common.rawData").toUpperCase(),
 ];
@@ -14,7 +14,7 @@ const Information = () => {
   return (
     <section className="tx-information">
       <Tabs
-        headers={TXNS_TAB_HEADERS}
+        headers={TX_TAB_HEADERS}
         contents={[
           <>
             <div className="tx-information-top-info">
