@@ -5,8 +5,10 @@ import { Top } from "./Top";
 const Txs = () => {
   return (
     <BaseLayout>
-      <Top />
-      <Information />
+      <div className="txs-page">
+        <Top />
+        <Information />
+      </div>
     </BaseLayout>
   );
 };

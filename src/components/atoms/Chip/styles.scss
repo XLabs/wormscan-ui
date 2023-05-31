@@ -1,0 +1,19 @@
+@import "src/styles/globals.scss";
+
+.chip {
+  @include text-p3;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 40px;
+
+  background-color: var(--color-white);
+  color: var(--color-black);
+
+  &.green {
+    background-color: var(--color-success-15);
+    color: var(--color-success-100);
+  }
+}

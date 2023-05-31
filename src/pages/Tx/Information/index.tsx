@@ -1,53 +1,57 @@
 import { Tabs } from "src/components/organisms";
 import i18n from "src/i18n";
 import Overview from "./Overview/index";
-import { ArrowRightIcon, CheckCircledIcon } from "@radix-ui/react-icons";
-import { BlockchainIcon } from "src/components/atoms";
+
+import { GlobalTxOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
+import { minutesBetweenDates } from "src/utils/date";
+import Summary from "./Summary";
 import "./styles.scss";
+import RawData from "./RawData";
 
 const TX_TAB_HEADERS = [
   i18n.t("common.overview").toUpperCase(),
   i18n.t("common.rawData").toUpperCase(),
 ];
 
-const Information = () => {
+interface Props {
+  VAAData: Omit<VAADetail, "vaa"> & { vaa: any };
+  globalTxData: GlobalTxOutput;
+}
+
+const Information = ({ VAAData, globalTxData }: Props) => {
+  const { payload } = VAAData || {};
+  const { fee } = payload || {};
+  const { originTx, destinationTx } = globalTxData || {};
+  const { chainId: originChainId, timestamp: originTimestamp } = originTx || {};
+  const { chainId: destinationChainId, timestamp: destinationTimestamp } = destinationTx || {};
+  const transactionTimeInMinutes = minutesBetweenDates(
+    new Date(originTimestamp),
+    new Date(destinationTimestamp),
+  );
+
   return (
     <section className="tx-information">
       <Tabs
         headers={TX_TAB_HEADERS}
         contents={[
           <>
-            <div className="tx-information-top-info">
-              <div>
-                <div className="key">Status:</div>
-                <div className="value green">
-                  SUCCESS <CheckCircledIcon />
-                </div>
-              </div>
-              <div>
-                <div className="key">Transaction Time:</div>
-                <div className="value">10 MIN</div>
-              </div>
-              <div>
-                <div className="key">Fee:</div>
-                <div className="value">1 AVAX</div>
-              </div>
-              <div>
-                <div className="key">Chains:</div>
-                <div className="chains">
-                  <div className="chains-container">
-                    <BlockchainIcon size={20} chainId={1} />
-                  </div>
-                  <ArrowRightIcon className="arrow-icon" />
-                  <div className="chains-container">
-                    <BlockchainIcon size={20} chainId={2} />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <Overview />
+            <Summary
+              transactionTimeInMinutes={transactionTimeInMinutes}
+              fee={fee}
+              originChainId={originChainId}
+              destinationChainId={destinationChainId}
+            />
+            <Overview VAAData={VAAData} globalTxData={globalTxData} />
           </>,
-          "Raw Data",
+          <>
+            <Summary
+              transactionTimeInMinutes={transactionTimeInMinutes}
+              fee={fee}
+              originChainId={originChainId}
+              destinationChainId={destinationChainId}
+            />
+            <RawData VAAData={VAAData} />
+          </>,
         ]}
       />
     </section>

@@ -6,6 +6,7 @@ import client from "src/api/Client";
 import "./styles.scss";
 import { useQuery } from "react-query";
 import { Loader } from "src/components/atoms";
+import { removeLeadingZeros } from "src/utils/string";
 
 const RANGE_LIST: { label: string; value: "7d" | "15d" | "30d" }[] = [
   { label: "7 days", value: "7d" },
@@ -122,7 +123,7 @@ const TopLists = () => {
 
             if (dataTokens?.tokens) {
               // remove leading zeros from token address
-              const tokenAddressParsed: string = "0x" + tokenAddress.replace(/^0+/, "");
+              const tokenAddressParsed: string = "0x" + removeLeadingZeros(tokenAddress);
               tokenLogoURL = dataTokens.tokens[tokenChain][tokenAddressParsed]?.logo;
             }
 
