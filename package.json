@@ -38,7 +38,6 @@
     "url": "^0.11.0"
   },
   "dependencies": {
-    "@certusone/wormhole-sdk": "0.9.18",
     "@radix-ui/react-icons": "1.1.1",
     "@radix-ui/react-tabs": "1.0.3",
     "@radix-ui/react-toggle-group": "1.0.2",

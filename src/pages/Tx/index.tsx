@@ -7,7 +7,7 @@ import { Information } from "./Information";
 import { Top } from "./Top";
 import { useParams } from "react-router-dom";
 import { VAADetail } from "@xlabs-libs/wormscan-sdk";
-import { parseVaa } from "@certusone/wormhole-sdk";
+import { parseVaa } from "src/sdk/wormhole/wormhole";
 import { Buffer } from "buffer";
 import "./styles.scss";
 import { getGuardianSet } from "../../conts";
@@ -74,9 +74,10 @@ const Tx = () => {
     const vaaBuffer = Buffer.from(vaa, "base64");
     const parsedVaa = parseVaa(vaaBuffer);
 
-    const { emitterAddress, guardianSignatures, hash, sequence } = parsedVaa || {};
+    // const { emitterAddress, guardianSignatures, hash, sequence } = parsedVaa || {};
+    const { emitterAddress, guardianSignatures, sequence } = parsedVaa || {};
     const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
-    const parsedHash = Buffer.from(hash).toString("hex");
+    // const parsedHash = Buffer.from(hash).toString("hex");
     const parsedSequence = Number(sequence);
     const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
       index,
@@ -90,7 +91,7 @@ const Tx = () => {
         ...parsedVaa,
         emitterAddress: parsedEmitterAddress,
         guardianSignatures: parsedGuardianSignatures,
-        hash: parsedHash,
+        // hash: parsedHash,
         sequence: parsedSequence,
       },
     };
