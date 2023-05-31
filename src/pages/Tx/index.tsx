@@ -95,8 +95,6 @@ const Tx = () => {
       },
     };
 
-    console.log("SignedVAA Parsed", parsedVAAData);
-
     setParsedVAAData(parsedVAAData);
   }, [vaa]);
 
