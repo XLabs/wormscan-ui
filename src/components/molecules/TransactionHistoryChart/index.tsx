@@ -17,7 +17,6 @@ const TransactionHistoryChart = ({ range }: Props) => {
   const tickAmount = range === "month" ? 4 : 5;
 
   const { isLoading, isError, mutate } = useMutation(
-    "lastTxsResponse",
     () => client.guardianNetwork.getLastTxs(range),
     {
       onSuccess: response => {

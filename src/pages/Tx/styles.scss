@@ -1,0 +1,10 @@
+@import "src/styles/globals.scss";
+
+.tx-page {
+  &-loader {
+    @include centered-row;
+    justify-content: center;
+    height: 100%;
+    min-height: 220px;
+  }
+}

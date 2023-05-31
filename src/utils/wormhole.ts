@@ -193,8 +193,8 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
 };
 
-export const getChainName = ({ chainId }: { chainId: ChainId }) => {
-  return WORMHOLE_CHAINS[chainId].name;
+export const getChainName = ({ chainId }: { chainId: ChainId }): string => {
+  return WORMHOLE_CHAINS[chainId].name || "";
 };
 
 export const getChainIcon = ({ chainId, dark = false }: { chainId: ChainId; dark?: boolean }) => {
