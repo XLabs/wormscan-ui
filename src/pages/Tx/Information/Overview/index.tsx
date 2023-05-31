@@ -1,14 +1,13 @@
 import { CopyIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon } from "src/components/atoms";
 import CopyToClipboard from "src/components/molecules/CopyToClipboard";
-import WormIcon from "src/icons/WormIcon.svg";
-import RelayIcon from "src/icons/RelayIcon.svg";
+import WormIcon from "src/icons/wormIcon.svg";
+import RelayIcon from "src/icons/relayIcon.svg";
 import { GlobalTxOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { getChainName } from "src/utils/wormhole";
 import { shortAddress } from "src/utils/string";
 import { removeLeadingZeros } from "../../../../utils/string";
 import "./styles.scss";
-import Tooltip from "../../../../components/atoms/Tooltip/index";
 
 type Props = {
   VAAData: Omit<VAADetail, "vaa"> & { vaa: any };
