@@ -4,7 +4,7 @@
   "private": true,
   "source": "src/index.html",
   "scripts": {
-    "build": "parcel build --public-url ./",
+    "build": "parcel build --no-scope-hoist --public-url ./",
     "start": "parcel",
     "clean": "rimraf dist && rimraf .parcel-cache",
     "prepare": "husky install",
