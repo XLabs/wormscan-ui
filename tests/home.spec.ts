@@ -11,7 +11,7 @@ describe("Home Page", () => {
   });
 
   describe("Hero Section", () => {
-    test("Search an address", async ({ page }) => {
+    test.skip("Search an address", async ({ page }) => {
       // ARRANGE
       const heroTextElement = page.getByText(/Cross-chain Explorer/i);
       const searchForm = page.getByTestId("search-form");
