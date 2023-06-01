@@ -33,14 +33,9 @@
       width: 28px;
     }
 
-    &-title {
+    &-text {
       font-size: 14px;
       letter-spacing: 6px;
-    }
-
-    &-subtitle {
-      font-size: 10px;
-      letter-spacing: 1px;
     }
 
     @include desktop {
@@ -50,15 +45,9 @@
         width: 36.75px;
       }
 
-      &-title {
-        font-size: 20px;
-        letter-spacing: 8px;
-      }
-
-      &-subtitle {
-        @include text-p3;
-
-        letter-spacing: 1px;
+      &-text {
+        font-size: 18px;
+        letter-spacing: 7px;
       }
     }
   }
@@ -86,10 +75,6 @@
   &-search-bar {
     grid-area: search;
     width: 100%;
-
-    @include desktop {
-      max-width: 482px;
-    }
   }
 
   &-navigation {
@@ -138,6 +123,7 @@
   &-navigation-mobile {
     position: fixed;
     top: 0;
+    right: 0;
 
     transform: translateX(100%);
     transition: all 0.5s ease-out;

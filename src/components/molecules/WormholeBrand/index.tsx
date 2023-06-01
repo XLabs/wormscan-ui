@@ -11,8 +11,8 @@ const WormholeBrand = ({ width, height }: Props) => {
     <div className="wormhole-brand">
       <WormholeIcon width={width} height={height} />
       <div className="wormhole-brand-text">
-        <span className="wormhole-brand-title">WORMSCAN</span>
-        <div className="wormhole-brand-subtitle">Wormhole Explorer</div>
+        <span className="wormhole-brand-title">WORMHOLE</span>
+        <div className="wormhole-brand-subtitle">SCAN</div>
       </div>
     </div>
   );
