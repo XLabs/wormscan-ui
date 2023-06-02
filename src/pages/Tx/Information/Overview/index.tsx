@@ -4,7 +4,7 @@ import CopyToClipboard from "src/components/molecules/CopyToClipboard";
 import WormIcon from "src/icons/wormIcon.svg";
 import RelayIcon from "src/icons/relayIcon.svg";
 import { GlobalTxOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
-import { getChainName } from "src/utils/wormhole";
+import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress } from "src/utils/string";
 import { removeLeadingZeros } from "../../../../utils/string";
 import "./styles.scss";
@@ -26,9 +26,10 @@ const Overview = ({ VAAData, globalTxData }: Props) => {
     chainId: destinationChainId,
     timestamp: destinationTimestamp,
     from: relayerAddress,
-    txHash: redeemTx,
+    txHash: rawRedeemTx,
     to: destinationAddress,
   } = destinationTx || {};
+  const redeemTx = String(rawRedeemTx).startsWith("0x") ? rawRedeemTx : "0x" + rawRedeemTx;
   const originDate = new Date(originTimestamp).toLocaleString("en-US", {
     year: "numeric",
     month: "short",
@@ -93,7 +94,16 @@ const Overview = ({ VAAData, globalTxData }: Props) => {
           <div>
             <div className="tx-overview-graph-step-title">Contract Address</div>
             <div className="tx-overview-graph-step-description">
-              <a href="#">{shortAddress(emitterAddress)}</a>{" "}
+              <a
+                href={getExplorerLink({
+                  chainId: originChainId,
+                  value: emitterAddress,
+                  base: "address",
+                })}
+                target="_blank"
+              >
+                {shortAddress(emitterAddress)}
+              </a>{" "}
               <CopyToClipboard toCopy={emitterAddress}>
                 <CopyIcon />
               </CopyToClipboard>
@@ -145,7 +155,16 @@ const Overview = ({ VAAData, globalTxData }: Props) => {
           <div>
             <div className="tx-overview-graph-step-title">Contract Address</div>
             <div className="tx-overview-graph-step-description">
-              <a href="#">{shortAddress(relayerAddress)}</a>{" "}
+              <a
+                href={getExplorerLink({
+                  chainId: destinationChainId,
+                  value: relayerAddress,
+                  base: "address",
+                })}
+                target="_blank"
+              >
+                {shortAddress(relayerAddress)}
+              </a>{" "}
               <CopyToClipboard toCopy={relayerAddress}>
                 <CopyIcon />
               </CopyToClipboard>
@@ -154,7 +173,15 @@ const Overview = ({ VAAData, globalTxData }: Props) => {
           <div>
             <div className="tx-overview-graph-step-title">Redeem Tx</div>
             <div className="tx-overview-graph-step-description">
-              <a href="#">{shortAddress(redeemTx)}</a>{" "}
+              <a
+                href={getExplorerLink({
+                  chainId: destinationChainId,
+                  value: redeemTx,
+                })}
+                target="_blank"
+              >
+                {shortAddress(redeemTx)}
+              </a>{" "}
               <CopyToClipboard toCopy={redeemTx}>
                 <CopyIcon />
               </CopyToClipboard>
@@ -184,7 +211,16 @@ const Overview = ({ VAAData, globalTxData }: Props) => {
           <div>
             <div className="tx-overview-graph-step-title">Destination wallet</div>
             <div className="tx-overview-graph-step-description">
-              <a href="#">{shortAddress(destinationAddress)}</a>{" "}
+              <a
+                href={getExplorerLink({
+                  chainId: destinationChainId,
+                  value: destinationAddress,
+                  base: "address",
+                })}
+                target="_blank"
+              >
+                {shortAddress(destinationAddress)}
+              </a>{" "}
               <CopyToClipboard toCopy={destinationAddress}>
                 <CopyIcon />
               </CopyToClipboard>
