@@ -21,13 +21,16 @@ const Top = ({ txHash, payloadType }: Props) => {
     <section className="tx-top">
       <div className="tx-top-header">
         <h1 className="tx-top-header-title">{t("tx.top.title")}</h1>
-        {txType[payloadType] && <Tag className="blue">{txType[payloadType]}</Tag>}
+        {txType[payloadType] && <Tag color="blue">{txType[payloadType]}</Tag>}
       </div>
       <div className="tx-top-txId">
-        HASH: {txHash}
-        <CopyToClipboard toCopy={txHash}>
-          <CopyIcon />
-        </CopyToClipboard>
+        <div>HASH:</div>
+        <div className="tx-top-txId-container">
+          {txHash}
+          <CopyToClipboard toCopy={txHash}>
+            <CopyIcon />
+          </CopyToClipboard>
+        </div>
       </div>
     </section>
   );

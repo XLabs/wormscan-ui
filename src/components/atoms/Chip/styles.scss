@@ -16,4 +16,14 @@
     background-color: var(--color-success-15);
     color: var(--color-success-100);
   }
+
+  &.orange {
+    background-color: var(--color-alert-30);
+    color: var(--color-alert-100);
+  }
+
+  &.red {
+    background-color: var(--color-error-30);
+    color: var(--color-error-100);
+  }
 }

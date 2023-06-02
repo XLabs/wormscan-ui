@@ -7,8 +7,8 @@ type Props = {
   className?: string;
 };
 
-const Tag = ({ children, className }: Props) => {
-  return <div className={`tag ${className}`}>{children}</div>;
+const Tag = ({ children, color, className }: Props) => {
+  return <div className={`tag ${color} ${className}`}>{children}</div>;
 };
 
 export default Tag;
