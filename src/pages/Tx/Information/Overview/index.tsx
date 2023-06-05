@@ -7,14 +7,16 @@ import { GlobalTxOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress } from "src/utils/string";
 import { removeLeadingZeros } from "../../../../utils/string";
+import { colorStatus, TxStatus } from "..";
 import "./styles.scss";
 
 type Props = {
   VAAData: Omit<VAADetail, "vaa"> & { vaa: any };
   globalTxData: GlobalTxOutput;
+  txStatus: TxStatus;
 };
 
-const Overview = ({ VAAData, globalTxData }: Props) => {
+const Overview = ({ VAAData, globalTxData, txStatus }: Props) => {
   const { emitterAddr, payload, vaa } = VAAData || {};
   const { guardianSignatures } = vaa || {};
   const { amount, fee } = payload || {};
@@ -55,19 +57,26 @@ const Overview = ({ VAAData, globalTxData }: Props) => {
           <div className="tx-overview-graph-step-name">SOURCE CHAIN</div>
           <div className="tx-overview-graph-step-iconWrapper">
             <div className="tx-overview-graph-step-iconContainer">
-              <BlockchainIcon chainId={originChainId} size={32} />
+              {originChainId && <BlockchainIcon chainId={originChainId} size={32} />}
             </div>
           </div>
           <div>
             <div className="tx-overview-graph-step-title">Sent from</div>
             <div className="tx-overview-graph-step-description">
-              {getChainName({ chainId: originChainId }).toUpperCase()}
+              {originChainId && getChainName({ chainId: originChainId }).toUpperCase()}
             </div>
           </div>
           <div>
-            <div className="tx-overview-graph-step-title">Amount</div>
-            <div className="tx-overview-graph-step-description">{amount} SYMBOL ($XX.X USD)</div>
+            {amount && (
+              <>
+                <div className="tx-overview-graph-step-title">Amount</div>
+                <div className="tx-overview-graph-step-description">
+                  {amount} SYMBOL ($XX.X USD)
+                </div>
+              </>
+            )}
           </div>
+
           <div>
             {/* API does not provide this data */}
             {/* <div className="tx-overview-graph-step-title">Source wallet</div>
@@ -101,6 +110,7 @@ const Overview = ({ VAAData, globalTxData }: Props) => {
                   base: "address",
                 })}
                 target="_blank"
+                rel="noreferrer"
               >
                 {shortAddress(emitterAddress)}
               </a>{" "}
@@ -112,7 +122,7 @@ const Overview = ({ VAAData, globalTxData }: Props) => {
           <div></div>
         </div>
 
-        <div className="tx-overview-graph-step green">
+        <div className={`tx-overview-graph-step ${colorStatus[txStatus]}`}>
           <div className="tx-overview-graph-step-name">SIGNED VAA</div>
           <div className="tx-overview-graph-step-iconWrapper">
             <div className="tx-overview-graph-step-signaturesContainer">
@@ -141,92 +151,126 @@ const Overview = ({ VAAData, globalTxData }: Props) => {
           <div></div>
         </div>
 
-        <div className="tx-overview-graph-step green">
+        <div className={`tx-overview-graph-step ${colorStatus[txStatus]}`}>
           <div className="tx-overview-graph-step-name">RELAYING</div>
           <div className="tx-overview-graph-step-iconWrapper">
             <div className="tx-overview-graph-step-iconContainer">
               <img src={RelayIcon} alt="" height={32} />
             </div>
           </div>
-          <div>
-            <div className="tx-overview-graph-step-title">Time</div>
-            <div className="tx-overview-graph-step-description">{destinationDate}</div>
-          </div>
-          <div>
-            <div className="tx-overview-graph-step-title">Contract Address</div>
-            <div className="tx-overview-graph-step-description">
-              <a
-                href={getExplorerLink({
-                  chainId: destinationChainId,
-                  value: relayerAddress,
-                  base: "address",
-                })}
-                target="_blank"
-              >
-                {shortAddress(relayerAddress)}
-              </a>{" "}
-              <CopyToClipboard toCopy={relayerAddress}>
-                <CopyIcon />
-              </CopyToClipboard>
-            </div>
-          </div>
-          <div>
-            <div className="tx-overview-graph-step-title">Redeem Tx</div>
-            <div className="tx-overview-graph-step-description">
-              <a
-                href={getExplorerLink({
-                  chainId: destinationChainId,
-                  value: redeemTx,
-                })}
-                target="_blank"
-              >
-                {shortAddress(redeemTx)}
-              </a>{" "}
-              <CopyToClipboard toCopy={redeemTx}>
-                <CopyIcon />
-              </CopyToClipboard>
-            </div>
-          </div>
+          {txStatus === "SUCCESSFUL" && (
+            <>
+              <div>
+                <div className="tx-overview-graph-step-title">Time</div>
+                <div className="tx-overview-graph-step-description">{destinationDate}</div>
+              </div>
+              <div>
+                <div className="tx-overview-graph-step-title">Contract Address</div>
+                <div className="tx-overview-graph-step-description">
+                  <a
+                    href={getExplorerLink({
+                      chainId: destinationChainId,
+                      value: relayerAddress,
+                      base: "address",
+                    })}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {shortAddress(relayerAddress)}
+                  </a>{" "}
+                  <CopyToClipboard toCopy={relayerAddress}>
+                    <CopyIcon />
+                  </CopyToClipboard>
+                </div>
+              </div>
+              <div>
+                <div className="tx-overview-graph-step-title">Redeem Tx</div>
+                <div className="tx-overview-graph-step-description">
+                  <a
+                    href={getExplorerLink({
+                      chainId: destinationChainId,
+                      value: redeemTx,
+                    })}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {shortAddress(redeemTx)}
+                  </a>{" "}
+                  <CopyToClipboard toCopy={redeemTx}>
+                    <CopyIcon />
+                  </CopyToClipboard>
+                </div>
+              </div>
+            </>
+          )}
+          {txStatus === "ONGOING" && (
+            <>
+              <div>
+                <div className={`tx-overview-graph-step-description ${colorStatus[txStatus]}`}>
+                  Waiting for Relay
+                </div>
+              </div>
+              <div></div>
+              <div></div>
+            </>
+          )}
+          {txStatus === "FAILED" && (
+            <>
+              <div>
+                <div className={`tx-overview-graph-step-description ${colorStatus[txStatus]}`}>
+                  Error
+                </div>
+              </div>
+              <div></div>
+              <div></div>
+            </>
+          )}
         </div>
 
-        <div className="tx-overview-graph-step green">
-          <div className="tx-overview-graph-step-name">DESTINATION CHAIN</div>
-          <div className="tx-overview-graph-step-iconWrapper">
-            <div className="tx-overview-graph-step-iconContainer">
-              <BlockchainIcon chainId={destinationChainId} size={32} />
+        {destinationTx && (
+          <>
+            <div className="tx-overview-graph-step green">
+              <div className="tx-overview-graph-step-name">DESTINATION CHAIN</div>
+              <div className="tx-overview-graph-step-iconWrapper">
+                <div className="tx-overview-graph-step-iconContainer">
+                  {destinationChainId && <BlockchainIcon chainId={destinationChainId} size={32} />}
+                </div>
+              </div>
+              <div>
+                <div className="tx-overview-graph-step-title">Sent to</div>
+                <div className="tx-overview-graph-step-description">
+                  {destinationChainId &&
+                    getChainName({ chainId: destinationChainId }).toUpperCase()}
+                </div>
+              </div>
+              <div>
+                <div className="tx-overview-graph-step-title">Amount</div>
+                <div className="tx-overview-graph-step-description">
+                  {amount - fee} SYMBOL ($XX.X USD)
+                </div>
+              </div>
+              <div>
+                <div className="tx-overview-graph-step-title">Destination wallet</div>
+                <div className="tx-overview-graph-step-description">
+                  <a
+                    href={getExplorerLink({
+                      chainId: destinationChainId,
+                      value: destinationAddress,
+                      base: "address",
+                    })}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {shortAddress(destinationAddress)}
+                  </a>{" "}
+                  <CopyToClipboard toCopy={destinationAddress}>
+                    <CopyIcon />
+                  </CopyToClipboard>
+                </div>
+              </div>
             </div>
-          </div>
-          <div>
-            <div className="tx-overview-graph-step-title">Sent to</div>
-            <div className="tx-overview-graph-step-description">
-              {getChainName({ chainId: destinationChainId }).toUpperCase()}
-            </div>
-          </div>
-          <div>
-            <div className="tx-overview-graph-step-title">Amount</div>
-            <div className="tx-overview-graph-step-description">
-              {amount - fee} SYMBOL ($XX.X USD)
-            </div>
-          </div>
-          <div>
-            <div className="tx-overview-graph-step-title">Destination wallet</div>
-            <div className="tx-overview-graph-step-description">
-              <a
-                href={getExplorerLink({
-                  chainId: destinationChainId,
-                  value: destinationAddress,
-                  base: "address",
-                })}
-                target="_blank"
-              >
-                {shortAddress(destinationAddress)}
-              </a>{" "}
-              <CopyToClipboard toCopy={destinationAddress}>
-                <CopyIcon />
-              </CopyToClipboard>
-            </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

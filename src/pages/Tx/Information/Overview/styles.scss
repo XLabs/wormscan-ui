@@ -9,11 +9,11 @@
     display: flex;
     flex-direction: column;
     justify-content: start;
-    padding: 16px 24px 48px 24px;
+    padding: 16px 24px 32px 24px;
     min-width: 1000px;
 
     @include bigDesktop {
-      padding: 16px 112px 24px;
+      padding: 16px 112px 32px;
     }
 
     &-step + &-step {
@@ -43,6 +43,14 @@
         --color: var(--color-success-100);
       }
 
+      &.orange {
+        --color: var(--color-alert-100);
+      }
+
+      &.red {
+        --color: var(--color-error-100);
+      }
+
       &-name {
         @include text-p3;
 
@@ -65,6 +73,14 @@
         align-items: center;
         gap: 8px;
         color: var(--color-white);
+
+        &.orange {
+          color: var(--color-alert-100);
+        }
+
+        &.red {
+          color: var(--color-error-100);
+        }
 
         & > .copy-to-clipboard {
           display: flex;
@@ -120,7 +136,7 @@
       &-signaturesContainer {
         --d: 6deg; /* distance between dashes */
         --n: 19; /* number of dashes */
-        --c: var(--color-primary-200); /* color of dashes */
+        --c: var(--color-success-100); /* color of dashes */
         --b: 8px; /* control the thickness of border*/
         --m: 0deg; /* the masked part */
         --r: 20deg; /* rotation */
@@ -165,8 +181,8 @@
           mask-composite: exclude;
 
           &::after {
-            --c: var(--color-success-100); /* color of dashes */
-            --m: calc(360deg - 225deg); /* the masked part */
+            --c: var(--color-primary-200); /* color of dashes */
+            --m: calc(360deg - 115deg); /* the masked part */
 
             content: "";
             position: absolute;

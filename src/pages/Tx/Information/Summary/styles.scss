@@ -1,15 +1,21 @@
 @import "src/styles/globals.scss";
 
 .tx-information-summary {
-  @include centered-row;
+  @include centered-column;
 
-  flex-wrap: wrap;
   column-gap: 72px;
-  row-gap: 16px;
+  row-gap: 32px;
   padding: 24px;
   background-color: var(--color-white-05);
   min-height: 95px;
   margin-bottom: 24px;
+
+  @include desktop {
+    @include centered-row;
+
+    justify-content: start;
+    row-gap: 16px;
+  }
 
   @include bigDesktop {
     padding: 16px 112px 24px;
@@ -34,8 +40,12 @@
     gap: 8px;
     color: var(--color-white);
 
-    &.green {
-      color: var(--color-success-100);
+    &.orange {
+      color: var(--color-alert-100);
+    }
+
+    &.red {
+      color: var(--color-error-100);
     }
   }
 
@@ -52,6 +62,10 @@
       border-radius: 50%;
       height: 32px;
       width: 32px;
+
+      &.disabled {
+        opacity: 0.25;
+      }
     }
 
     > .arrow-icon {

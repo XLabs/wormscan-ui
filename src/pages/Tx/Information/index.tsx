@@ -1,33 +1,82 @@
+import { useCallback } from "react";
 import { Tabs } from "src/components/organisms";
 import i18n from "src/i18n";
 import Overview from "./Overview/index";
-
 import { GlobalTxOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { minutesBetweenDates } from "src/utils/date";
 import Summary from "./Summary";
-import "./styles.scss";
 import RawData from "./RawData";
+import "./styles.scss";
 
 const TX_TAB_HEADERS = [
   i18n.t("common.overview").toUpperCase(),
   i18n.t("common.rawData").toUpperCase(),
 ];
 
+export type TxStatus = "SUCCESSFUL" | "ONGOING" | "FAILED";
 interface Props {
   VAAData: Omit<VAADetail, "vaa"> & { vaa: any };
   globalTxData: GlobalTxOutput;
 }
 
+export const colorStatus = {
+  SUCCESSFUL: "green",
+  ONGOING: "orange",
+  FAILED: "red",
+};
+
+const getTxStatus = (originStatus: string, destinationStatus: string) => {
+  if (!destinationStatus) {
+    return "ONGOING";
+  }
+
+  if (
+    originStatus === "confirmed" &&
+    (destinationStatus === "failed" || destinationStatus === "unknown")
+  ) {
+    return "FAILED";
+  }
+
+  return "SUCCESSFUL";
+};
+
 const Information = ({ VAAData, globalTxData }: Props) => {
   const { payload } = VAAData || {};
   const { fee } = payload || {};
   const { originTx, destinationTx } = globalTxData || {};
-  const { chainId: originChainId, timestamp: originTimestamp } = originTx || {};
-  const { chainId: destinationChainId, timestamp: destinationTimestamp } = destinationTx || {};
+  const {
+    chainId: originChainId,
+    timestamp: originTimestamp,
+    status: originStatus,
+  } = originTx || {};
+  const {
+    chainId: destinationChainId,
+    timestamp: destinationTimestamp,
+    status: destinationStatus,
+  } = destinationTx || {};
   const transactionTimeInMinutes = minutesBetweenDates(
     new Date(originTimestamp),
     new Date(destinationTimestamp),
   );
+
+  const TopSummary = useCallback(() => {
+    return (
+      <Summary
+        transactionTimeInMinutes={transactionTimeInMinutes}
+        fee={fee}
+        originChainId={originChainId}
+        destinationChainId={destinationChainId}
+        summaryStatus={getTxStatus(originStatus, destinationStatus)}
+      />
+    );
+  }, [
+    destinationChainId,
+    fee,
+    originChainId,
+    originStatus,
+    destinationStatus,
+    transactionTimeInMinutes,
+  ]);
 
   return (
     <section className="tx-information">
@@ -35,21 +84,15 @@ const Information = ({ VAAData, globalTxData }: Props) => {
         headers={TX_TAB_HEADERS}
         contents={[
           <>
-            <Summary
-              transactionTimeInMinutes={transactionTimeInMinutes}
-              fee={fee}
-              originChainId={originChainId}
-              destinationChainId={destinationChainId}
+            <TopSummary />
+            <Overview
+              VAAData={VAAData}
+              globalTxData={globalTxData}
+              txStatus={getTxStatus(originStatus, destinationStatus)}
             />
-            <Overview VAAData={VAAData} globalTxData={globalTxData} />
           </>,
           <>
-            <Summary
-              transactionTimeInMinutes={transactionTimeInMinutes}
-              fee={fee}
-              originChainId={originChainId}
-              destinationChainId={destinationChainId}
-            />
+            <TopSummary />
             <RawData VAAData={VAAData} />
           </>,
         ]}

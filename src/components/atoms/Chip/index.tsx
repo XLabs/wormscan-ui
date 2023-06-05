@@ -7,8 +7,8 @@ type Props = {
   className?: string;
 };
 
-const Chip = ({ children, className }: Props) => {
-  return <div className={`chip ${className}`}>{children}</div>;
+const Chip = ({ children, color, className }: Props) => {
+  return <div className={`chip ${color} ${className}`}>{children}</div>;
 };
 
 export default Chip;

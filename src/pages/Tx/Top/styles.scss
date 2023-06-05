@@ -23,12 +23,38 @@
 
   &-txId {
     @include text-p3;
+    @include centered-column;
 
-    display: flex;
-    gap: 8px;
-    align-items: center;
+    @include desktop {
+      @include centered-row;
+
+      justify-content: start;
+      gap: 8px;
+    }
+
     color: var(--color-primary-100);
     word-break: break-all;
+
+    &-container {
+      @include centered-row;
+
+      line-height: 1.4;
+      gap: 24px;
+
+      svg {
+        height: 25px;
+        width: 25px;
+      }
+
+      @include tablet {
+        gap: 8px;
+
+        svg {
+          height: unset;
+          width: unset;
+        }
+      }
+    }
 
     & .copy-to-clipboard {
       display: flex;
