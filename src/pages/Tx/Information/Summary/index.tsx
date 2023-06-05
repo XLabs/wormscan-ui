@@ -5,11 +5,11 @@ import { colorStatus, TxStatus } from "..";
 import "./styles.scss";
 
 type Props = {
-  transactionTimeInMinutes: number;
-  fee: number;
-  originChainId: number;
-  destinationChainId: number;
   summaryStatus: TxStatus;
+  originChainId: number;
+  destinationChainId?: number;
+  transactionTimeInMinutes?: number;
+  fee?: number;
 };
 
 const Summary = ({
@@ -47,14 +47,14 @@ const Summary = ({
         <div className="key">Chains:</div>
         <div className="chains">
           <div className="chains-container">
-            {originChainId && <BlockchainIcon size={20} chainId={originChainId} />}
+            <BlockchainIcon size={20} chainId={originChainId || 0} />
           </div>
           <ArrowRightIcon className="arrow-icon" />
-          <div className={`chains-container ${!Boolean(destinationChainId) && "disabled"}`}>
+          <div className={`chains-container ${!destinationChainId && "disabled"}`}>
             <BlockchainIcon
               size={20}
               chainId={destinationChainId || 0}
-              dark={!Boolean(destinationChainId)}
+              dark={!destinationChainId}
             />
           </div>
         </div>

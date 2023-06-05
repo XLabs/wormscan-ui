@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback } from "react";
 import { Tabs } from "src/components/organisms";
 import i18n from "src/i18n";
 import Overview from "./Overview/index";
@@ -26,7 +26,7 @@ export const colorStatus = {
 };
 
 const getTxStatus = (originStatus: string, destinationStatus: string) => {
-  if (!Boolean(destinationStatus)) {
+  if (!destinationStatus) {
     return "ONGOING";
   }
 
@@ -59,18 +59,24 @@ const Information = ({ VAAData, globalTxData }: Props) => {
     new Date(destinationTimestamp),
   );
 
-  const TopSummary = () =>
-    useMemo(() => {
-      return (
-        <Summary
-          transactionTimeInMinutes={transactionTimeInMinutes}
-          fee={fee}
-          originChainId={originChainId}
-          destinationChainId={destinationChainId}
-          summaryStatus={getTxStatus(originStatus, destinationStatus)}
-        />
-      );
-    }, []);
+  const TopSummary = useCallback(() => {
+    return (
+      <Summary
+        transactionTimeInMinutes={transactionTimeInMinutes}
+        fee={fee}
+        originChainId={originChainId}
+        destinationChainId={destinationChainId}
+        summaryStatus={getTxStatus(originStatus, destinationStatus)}
+      />
+    );
+  }, [
+    destinationChainId,
+    fee,
+    originChainId,
+    originStatus,
+    destinationStatus,
+    transactionTimeInMinutes,
+  ]);
 
   return (
     <section className="tx-information">
