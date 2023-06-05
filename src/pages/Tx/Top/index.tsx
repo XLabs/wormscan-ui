@@ -24,7 +24,7 @@ const Top = ({ txHash, payloadType }: Props) => {
         {txType[payloadType] && <Tag color="blue">{txType[payloadType]}</Tag>}
       </div>
       <div className="tx-top-txId">
-        <div>HASH:</div>
+        <div>Tx Hash:</div>
         <div className="tx-top-txId-container">
           {txHash}
           <CopyToClipboard toCopy={txHash}>

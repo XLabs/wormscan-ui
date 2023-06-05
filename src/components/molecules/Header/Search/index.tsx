@@ -5,9 +5,7 @@ import { useNavigate } from "react-router-dom";
 import client from "src/api/Client";
 import SearchBar from "../../SearchBar";
 
-type Props = {};
-
-const Search = (props: Props) => {
+const Search = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 

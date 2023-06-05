@@ -3,25 +3,53 @@ import { BlockchainIcon } from "src/components/atoms";
 import CopyToClipboard from "src/components/molecules/CopyToClipboard";
 import WormIcon from "src/icons/wormIcon.svg";
 import RelayIcon from "src/icons/relayIcon.svg";
-import { GlobalTxOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
+import {
+  GetTokenOutput,
+  GetTokenPriceOutput,
+  GlobalTxOutput,
+  VAADetail,
+} from "@xlabs-libs/wormscan-sdk";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress } from "src/utils/string";
 import { removeLeadingZeros } from "../../../../utils/string";
 import { colorStatus, TxStatus } from "..";
+import { formatUnits } from "src/utils/crypto";
+import { formatCurrency } from "src/utils/number";
+import { CSSProperties } from "react";
 import "./styles.scss";
 
 type Props = {
   VAAData: Omit<VAADetail, "vaa"> & { vaa: any };
   globalTxData: GlobalTxOutput;
   txStatus: TxStatus;
+  tokenDataResponse: {
+    tokenDataIsLoading: boolean;
+    tokenDataError: unknown;
+    tokenData: GetTokenOutput;
+  };
+  tokenPriceResponse: {
+    tokenPriceIsLoading: boolean;
+    tokenPriceError: unknown;
+    tokenPrice: GetTokenPriceOutput;
+  };
 };
 
-const Overview = ({ VAAData, globalTxData, txStatus }: Props) => {
+const Overview = ({
+  VAAData,
+  globalTxData,
+  txStatus,
+  tokenDataResponse,
+  tokenPriceResponse,
+}: Props) => {
   const { emitterAddr, payload, vaa } = VAAData || {};
   const { guardianSignatures } = vaa || {};
   const { amount, fee } = payload || {};
   const emitterAddress: string = "0x" + removeLeadingZeros(emitterAddr);
   const guardianSignaturesCount = guardianSignatures?.length || 0;
+  const signatureContainerMaskDegree = Math.abs(360 - (360 - guardianSignaturesCount * 18.9));
+  const signatureStyles: CSSProperties & { "--m2": string } = {
+    "--m2": `calc(${signatureContainerMaskDegree}deg)`,
+  };
   const { id: VAAId, originTx, destinationTx } = globalTxData || {};
   const { chainId: originChainId, timestamp: originTimestamp } = originTx || {};
   const {
@@ -40,7 +68,6 @@ const Overview = ({ VAAData, globalTxData, txStatus }: Props) => {
     minute: "2-digit",
     hour12: false,
   });
-
   const destinationDate = new Date(destinationTimestamp).toLocaleString("en-US", {
     year: "numeric",
     month: "short",
@@ -49,6 +76,16 @@ const Overview = ({ VAAData, globalTxData, txStatus }: Props) => {
     minute: "2-digit",
     hour12: false,
   });
+  const { symbol, decimals } = tokenDataResponse?.tokenData || {};
+  const { usd } = tokenPriceResponse?.tokenPrice || {};
+
+  const amountSentParsed = formatUnits(amount, decimals);
+  const amountSent = formatCurrency(Number(amountSentParsed));
+  const amountSentUSD = usd && formatCurrency(Number(amountSentParsed) * usd);
+
+  const amountReceivedParsed = formatUnits(amount - fee, decimals);
+  const amountReceived = formatCurrency(Number(amountReceivedParsed));
+  const amountReceivedUSD = usd && formatCurrency(Number(amountReceivedParsed) * usd);
 
   return (
     <div className="tx-overview">
@@ -71,7 +108,7 @@ const Overview = ({ VAAData, globalTxData, txStatus }: Props) => {
               <>
                 <div className="tx-overview-graph-step-title">Amount</div>
                 <div className="tx-overview-graph-step-description">
-                  {amount} SYMBOL ($XX.X USD)
+                  {amountSent} {symbol} ({amountSentUSD || "-"} USD)
                 </div>
               </>
             )}
@@ -125,7 +162,7 @@ const Overview = ({ VAAData, globalTxData, txStatus }: Props) => {
         <div className={`tx-overview-graph-step ${colorStatus[txStatus]}`}>
           <div className="tx-overview-graph-step-name">SIGNED VAA</div>
           <div className="tx-overview-graph-step-iconWrapper">
-            <div className="tx-overview-graph-step-signaturesContainer">
+            <div className="tx-overview-graph-step-signaturesContainer" style={signatureStyles}>
               <div className="tx-overview-graph-step-signaturesContainer-circle"></div>
               <div className="tx-overview-graph-step-signaturesContainer-text">
                 <div className="tx-overview-graph-step-signaturesContainer-text-number">
@@ -246,7 +283,7 @@ const Overview = ({ VAAData, globalTxData, txStatus }: Props) => {
               <div>
                 <div className="tx-overview-graph-step-title">Amount</div>
                 <div className="tx-overview-graph-step-description">
-                  {amount - fee} SYMBOL ($XX.X USD)
+                  {amountReceived} {symbol} ({amountReceivedUSD || "-"} USD)
                 </div>
               </div>
               <div>

@@ -1,6 +1,8 @@
 import { ArrowRightIcon, CheckCircledIcon } from "@radix-ui/react-icons";
+import { GetTokenOutput } from "@xlabs-libs/wormscan-sdk";
 import { BlockchainIcon } from "src/components/atoms";
 import Chip from "src/components/atoms/Chip";
+import { formatUnits } from "src/utils/crypto";
 import { colorStatus, TxStatus } from "..";
 import "./styles.scss";
 
@@ -10,6 +12,11 @@ type Props = {
   destinationChainId?: number;
   transactionTimeInMinutes?: number;
   fee?: number;
+  tokenDataResponse: {
+    tokenDataIsLoading: boolean;
+    tokenDataError: unknown;
+    tokenData: GetTokenOutput;
+  };
 };
 
 const Summary = ({
@@ -18,8 +25,10 @@ const Summary = ({
   originChainId,
   destinationChainId,
   summaryStatus,
+  tokenDataResponse,
 }: Props) => {
   const isError = summaryStatus === "FAILED";
+  const { symbol, decimals } = tokenDataResponse?.tokenData || {};
 
   return (
     <div className="tx-information-summary">
@@ -41,7 +50,7 @@ const Summary = ({
       )}
       <div>
         <div className="key">Fee:</div>
-        <div className="value">{fee != null ? `${fee} SYMBOL` : "-"}</div>
+        <div className="value">{fee != null ? `${formatUnits(fee, decimals)} ${symbol}` : "-"}</div>
       </div>
       <div>
         <div className="key">Chains:</div>
