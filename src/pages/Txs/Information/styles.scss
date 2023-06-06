@@ -16,5 +16,62 @@
     @include desktop {
       display: table;
     }
+
+    & a {
+      color: var(--color-information-100);
+      text-decoration: none;
+    }
+
+    & svg {
+      color: var(--color-primary-90);
+    }
+
+    &.assets {
+      .tx-hash {
+        @include centered-row;
+
+        gap: 12px;
+      }
+
+      .tx-from,
+      .tx-to {
+        @include centered-row;
+
+        gap: 12px;
+
+        &-address {
+          @include centered-row;
+
+          gap: 12px;
+        }
+      }
+
+      .tx-status {
+        display: flex;
+        gap: 12;
+        align-items: center;
+        color: var(--color);
+
+        & path {
+          fill: var(--color);
+        }
+
+        &.blue {
+          --color: var(--color-information-100);
+        }
+
+        &.green {
+          --color: var(--color-success-100);
+        }
+
+        &.orange {
+          --color: var(--color-alert-100);
+        }
+
+        &.red {
+          --color: var(--color-error-100);
+        }
+      }
+    }
   }
 }

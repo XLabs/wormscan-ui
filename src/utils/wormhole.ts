@@ -49,6 +49,9 @@ import SolanaDarkIcon from "src/icons/blockchains/dark/solana.svg";
 import TerraClassicDarkIcon from "src/icons/blockchains/dark/terra-classic.svg";
 import TerraDarkIcon from "src/icons/blockchains/dark/terra.svg";
 import XplaDarkIcon from "src/icons/blockchains/dark/xpla.svg";
+import { isEVMChain } from "@certusone/wormhole-sdk";
+import { removeLeadingZeros } from "./string";
+import { parseAddress, parseTx } from "./crypto";
 
 export type NETWORK = "mainnet" | "testnet" | "devnet";
 export type ExplorerBaseURLInput = {
@@ -428,26 +431,38 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
 };
 
 export const getChainName = ({ chainId }: { chainId: ChainId }): string => {
-  return WORMHOLE_CHAINS[chainId].name || "";
+  return WORMHOLE_CHAINS[chainId]?.name || "";
 };
 
 export const getChainIcon = ({ chainId, dark = false }: { chainId: ChainId; dark?: boolean }) => {
   if (dark) {
-    return WORMHOLE_CHAINS[chainId].darkIcon;
+    return WORMHOLE_CHAINS[chainId || 0]?.darkIcon;
   }
 
-  return WORMHOLE_CHAINS[chainId].icon;
+  return WORMHOLE_CHAINS[chainId || 0]?.icon;
 };
 
 export const getExplorerLink = ({
   chainId,
   value,
   base,
+  isNativeAddress = false,
 }: {
   chainId: ChainId;
   value: string;
   base?: "tx" | "address";
+  isNativeAddress?: boolean;
 }): string => {
   const network = "mainnet";
-  return WORMHOLE_CHAINS[chainId]?.getExplorerBaseURL({ network, value, base }) || "";
+  let parsedValue = value;
+
+  if (!isNativeAddress) {
+    if (base === "address") {
+      parsedValue = parseAddress({ value: value, chainId: chainId });
+    }
+
+    parsedValue = parseTx({ value: value, chainId: chainId });
+  }
+
+  return WORMHOLE_CHAINS[chainId]?.getExplorerBaseURL({ network, value: parsedValue, base }) || "";
 };
