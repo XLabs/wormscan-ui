@@ -18,6 +18,10 @@ import { formatCurrency } from "src/utils/number";
 import { CSSProperties } from "react";
 import "./styles.scss";
 
+// 360 degree / 19 total signatures
+// A fraction of 360 degrees (360 / 19) = 18.9 est.
+const FRACTION_DEGREE = 18.9;
+
 type Props = {
   VAAData: Omit<VAADetail, "vaa"> & { vaa: any };
   globalTxData: GlobalTxOutput;
@@ -46,7 +50,9 @@ const Overview = ({
   const { amount, fee } = payload || {};
   const emitterAddress: string = "0x" + removeLeadingZeros(emitterAddr);
   const guardianSignaturesCount = guardianSignatures?.length || 0;
-  const signatureContainerMaskDegree = Math.abs(360 - (360 - guardianSignaturesCount * 18.9));
+  const signatureContainerMaskDegree = Math.abs(
+    360 - (360 - guardianSignaturesCount * FRACTION_DEGREE),
+  );
   const signatureStyles: CSSProperties & { "--m2": string } = {
     "--m2": `calc(${signatureContainerMaskDegree}deg)`,
   };
