@@ -9,7 +9,7 @@ import "./styles.scss";
 
 const TYPE_LIST = [
   { label: i18n.t("home.crossChain.volume"), value: "volume", ariaLabel: "Volume" },
-  { label: i18n.t("home.crossChain.count"), value: "tx-count", ariaLabel: "Transaction Count" },
+  { label: i18n.t("home.crossChain.count"), value: "tx-count", ariaLabel: "Transactions" },
 ];
 
 const APP_LIST = [

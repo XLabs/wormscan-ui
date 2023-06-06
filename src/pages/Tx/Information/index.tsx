@@ -6,6 +6,8 @@ import { GlobalTxOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { minutesBetweenDates } from "src/utils/date";
 import Summary from "./Summary";
 import RawData from "./RawData";
+import { useGetTokenData } from "src/utils/hooks/useGetTokenData";
+import { useGetTokenPrice } from "src/utils/hooks/useGetTokenPrice";
 import "./styles.scss";
 
 const TX_TAB_HEADERS = [
@@ -42,7 +44,7 @@ const getTxStatus = (originStatus: string, destinationStatus: string) => {
 
 const Information = ({ VAAData, globalTxData }: Props) => {
   const { payload } = VAAData || {};
-  const { fee } = payload || {};
+  const { fee, tokenAddress, tokenChain } = payload || {};
   const { originTx, destinationTx } = globalTxData || {};
   const {
     chainId: originChainId,
@@ -59,6 +61,26 @@ const Information = ({ VAAData, globalTxData }: Props) => {
     new Date(destinationTimestamp),
   );
 
+  const tokenDataResponse = useGetTokenData({
+    tokenChain,
+    tokenAddress,
+  });
+  const { tokenData } = tokenDataResponse || {};
+  const { coingeckoId } = tokenData || {};
+  // dd-mm-yyyy === "es"
+  const formattedOriginTimeStamp = new Date(originTimestamp)
+    .toLocaleString("es", {
+      year: "numeric",
+      month: "2-digit",
+      day: "numeric",
+    })
+    .replaceAll("/", "-");
+
+  const tokenPriceResponse = useGetTokenPrice({
+    coingeckoId,
+    date: formattedOriginTimeStamp,
+  });
+
   const TopSummary = useCallback(() => {
     return (
       <Summary
@@ -67,6 +89,7 @@ const Information = ({ VAAData, globalTxData }: Props) => {
         originChainId={originChainId}
         destinationChainId={destinationChainId}
         summaryStatus={getTxStatus(originStatus, destinationStatus)}
+        tokenDataResponse={tokenDataResponse}
       />
     );
   }, [
@@ -76,6 +99,7 @@ const Information = ({ VAAData, globalTxData }: Props) => {
     originStatus,
     destinationStatus,
     transactionTimeInMinutes,
+    tokenDataResponse,
   ]);
 
   return (
@@ -89,6 +113,8 @@ const Information = ({ VAAData, globalTxData }: Props) => {
               VAAData={VAAData}
               globalTxData={globalTxData}
               txStatus={getTxStatus(originStatus, destinationStatus)}
+              tokenDataResponse={tokenDataResponse}
+              tokenPriceResponse={tokenPriceResponse}
             />
           </>,
           <>

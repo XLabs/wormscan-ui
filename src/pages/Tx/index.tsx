@@ -96,7 +96,7 @@ const Tx = () => {
     };
 
     setParsedVAAData(parsedVAAData);
-  }, [vaa]);
+  }, [vaa, VAAData, guardianSetIndex]);
 
   return (
     <BaseLayout>

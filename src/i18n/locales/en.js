@@ -35,7 +35,7 @@ export default {
         crossChain: {
           title: "Cross-chain activity",
           volume: "Volume",
-          count: "Tx count",
+          count: "Transactions",
           app: "App",
           source: "Source",
           destination: "Destination",

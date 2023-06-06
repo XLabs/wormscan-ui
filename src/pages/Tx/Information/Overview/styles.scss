@@ -139,6 +139,7 @@
         --c: var(--color-success-100); /* color of dashes */
         --b: 8px; /* control the thickness of border*/
         --m: 0deg; /* the masked part */
+        --m2: calc(360deg - 115deg); /* the masked part **not selected** */
         --r: 20deg; /* rotation */
 
         display: flex;
@@ -182,7 +183,6 @@
 
           &::after {
             --c: var(--color-primary-200); /* color of dashes */
-            --m: calc(360deg - 115deg); /* the masked part */
 
             content: "";
             position: absolute;
@@ -196,7 +196,7 @@
               var(--c) 0 calc(360deg / var(--n) - var(--d)),
               transparent 0 calc(360deg / var(--n))
             );
-            -webkit-mask: conic-gradient(#fff 0 var(--m), transparent 0 360deg),
+            -webkit-mask: conic-gradient(#fff 0 var(--m2), transparent 0 360deg),
               radial-gradient(
                 farthest-side,
                 transparent calc(100% - var(--b) - 1px),
@@ -204,7 +204,7 @@
                 transparent
               );
             -webkit-mask-composite: destination-out;
-            mask: conic-gradient(#fff 0 var(--m), transparent 0 360deg),
+            mask: conic-gradient(#fff 0 var(--m2), transparent 0 360deg),
               radial-gradient(
                 farthest-side,
                 transparent calc(100% - var(--b) - 1px),
