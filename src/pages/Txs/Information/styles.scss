@@ -3,6 +3,13 @@
 .txs-information {
   margin-bottom: 32px;
 
+  &-loader {
+    @include centered-row;
+    justify-content: center;
+    height: 100%;
+    min-height: 220px;
+  }
+
   &-table-results {
     @include text-p3;
 

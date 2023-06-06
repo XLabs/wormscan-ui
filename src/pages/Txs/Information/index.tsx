@@ -8,7 +8,7 @@ import { useQuery } from "react-query";
 import { Order } from "@xlabs-libs/wormscan-sdk";
 import { parseAddress, parseTx, shortAddress } from "src/utils/crypto";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import { BlockchainIcon } from "src/components/atoms";
+import { BlockchainIcon, Loader } from "src/components/atoms";
 import CopyToClipboard from "src/components/molecules/CopyToClipboard";
 import { CopyIcon } from "@radix-ui/react-icons";
 import { formatUnits } from "src/utils/crypto";
@@ -99,16 +99,6 @@ const Information = () => {
             chainId: toChain as ChainId,
           });
           const timestampDate = new Date(timestamp);
-
-          // console.log(
-          //   "TESTING",
-          //   parseAddress({
-          //     value: "0x9dadb5473a1672fbc8f2441d1d1522ac06f67880",
-          //     chainId: 10,
-          //   }),
-          // );
-
-          // console.log({ parseTxHash, parsedEmitterAddress, parsedToAddress });
           return {
             txHash:
               (
@@ -202,16 +192,22 @@ const Information = () => {
 
   return (
     <section className="txs-information">
-      <Tabs
-        headers={TXS_TAB_HEADERS}
-        contents={[
-          <>
-            <div className="txs-information-table-results">(?) Results</div>
-            <Table columns={columns} data={parsedVAAsData} className="assets" />
-          </>,
-          "Message Content",
-        ]}
-      />
+      {VAAsDataIsLoading ? (
+        <div className="txs-information-loader">
+          <Loader />
+        </div>
+      ) : (
+        <Tabs
+          headers={TXS_TAB_HEADERS}
+          contents={[
+            <>
+              <div className="txs-information-table-results">(?) Results</div>
+              <Table columns={columns} data={parsedVAAsData} className="assets" />
+            </>,
+            "Message Content",
+          ]}
+        />
+      )}
     </section>
   );
 };
