@@ -5,21 +5,34 @@
 
   width: 100%;
   align-items: center;
-  margin-top: 124px;
-  margin-bottom: 100px;
+  margin-top: 76px;
+  margin-bottom: 76px;
   padding: 0 16px;
 
   @include tablet {
-    padding: 0 60px;
+    padding: 0px 60px;
   }
 
-  & > &-text {
+  &-text-container {
+    @include centered-column;
+
+    padding: 48px 12px 24px;
+    background: url("../../../assets/rings.svg") no-repeat;
+    background-position: top right;
+    align-items: center;
+
+    @include tablet {
+      padding: 48px 0px 24px;
+    }
+  }
+
+  &-text {
     @include text-h4;
 
     font-family: "IBM Plex Sans", sans-serif;
     max-width: 292px;
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 
     @include tablet {
       font-weight: 600;
@@ -32,7 +45,7 @@
     }
   }
 
-  & > &-button {
+  &-button {
     @include button-secondary;
   }
 }

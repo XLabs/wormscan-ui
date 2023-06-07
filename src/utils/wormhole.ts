@@ -1,6 +1,6 @@
 import { ChainId } from "@xlabs-libs/wormscan-sdk";
 
-import NoIcon from "src/icons/blockchains/noIcon.svg";
+// import NoIcon from "src/icons/blockchains/noIcon.svg";
 import AcalaIcon from "src/icons/blockchains/acala.svg";
 import AlgorandIcon from "src/icons/blockchains/algorand.svg";
 import AptosIcon from "src/icons/blockchains/aptos.svg";
@@ -63,7 +63,7 @@ export type ExplorerBaseURLInput = {
 const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Unset]: {
     name: "Unset",
-    icon: NoIcon,
+    icon: NoDarkIcon,
     darkIcon: NoDarkIcon,
     explorer: {
       testnet: "",
@@ -76,7 +76,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Sui]: {
     name: "Sui",
-    icon: NoIcon,
+    icon: NoDarkIcon,
     darkIcon: NoDarkIcon,
     explorer: {
       testnet: "https://suiexplorer.com",
@@ -90,7 +90,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.PythNet]: {
     name: "PythNet",
-    icon: NoIcon,
+    icon: NoDarkIcon,
     darkIcon: NoDarkIcon,
     explorer: {
       testnet: "",
@@ -103,7 +103,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Btc]: {
     name: "Btc",
-    icon: NoIcon,
+    icon: NoDarkIcon,
     darkIcon: NoDarkIcon,
     explorer: {
       testnet: "",
@@ -116,7 +116,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Wormchain]: {
     name: "Wormchain",
-    icon: NoIcon,
+    icon: NoDarkIcon,
     darkIcon: NoDarkIcon,
     explorer: {
       testnet: "",
@@ -435,11 +435,13 @@ export const getChainName = ({ chainId }: { chainId: ChainId }): string => {
 };
 
 export const getChainIcon = ({ chainId, dark = false }: { chainId: ChainId; dark?: boolean }) => {
+  if (!WORMHOLE_CHAINS[chainId]) return WORMHOLE_CHAINS[0]?.darkIcon;
+
   if (dark) {
-    return WORMHOLE_CHAINS[chainId || 0]?.darkIcon;
+    return WORMHOLE_CHAINS[chainId]?.darkIcon;
   }
 
-  return WORMHOLE_CHAINS[chainId || 0]?.icon;
+  return WORMHOLE_CHAINS[chainId]?.icon;
 };
 
 export const getExplorerLink = ({

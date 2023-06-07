@@ -5,6 +5,7 @@ import ReactApexChart from "react-apexcharts";
 import { DateRange } from "@xlabs-libs/wormscan-sdk";
 import client from "src/api/Client";
 import "./styles.scss";
+import { numberToSuffix } from "src/utils/number";
 
 type Props = {
   range: DateRange;
@@ -67,7 +68,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
           <div className="trans-history-chart">
             <ReactApexChart
               type="area"
-              height={220}
+              height={"100%"}
               series={[
                 {
                   name: "LastTxsData",
@@ -128,15 +129,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                 yaxis: {
                   tickAmount: 4,
                   labels: {
-                    formatter: (val: number): string => {
-                      if (val >= 1000000) {
-                        return (val / 1000000).toFixed(1) + "M";
-                      } else if (val >= 1000) {
-                        return (val / 1000).toFixed(0) + "K";
-                      } else {
-                        return `${val}`;
-                      }
-                    },
+                    formatter: numberToSuffix,
                     style: {
                       colors: "var(--color-primary-50)",
                       fontFamily: "IBM Plex Sans",

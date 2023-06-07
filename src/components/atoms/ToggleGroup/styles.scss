@@ -3,11 +3,10 @@
 .toggle-group {
   @include centered-row;
 
-  height: 56px;
-
   &-root {
     display: inline-flex;
     min-height: inherit;
+    height: inherit;
     width: inherit;
   }
 
