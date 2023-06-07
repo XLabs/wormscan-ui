@@ -20,7 +20,17 @@
       flex: 1;
     }
 
-    &-icon + &-chain {
+    &-icon-container {
+      @include centered-row;
+      justify-content: center;
+
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: var(--color-primary-800);
+    }
+
+    &-icon-container + &-chain {
       margin-left: 16px;
     }
 
@@ -44,7 +54,17 @@
       flex: 1;
     }
 
-    &-icon + &-asset {
+    &-icon-container {
+      @include centered-row;
+      justify-content: center;
+
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: var(--color-primary-800);
+    }
+
+    &-icon-container + &-asset {
       margin-left: 16px;
     }
 
