@@ -32,7 +32,7 @@ const ScoreCard = () => {
         </div>
       ) : (
         <div className="home-statistics-data-container">
-          <div className="home-statistics-data-container-item">
+          <div className="home-statistics-data-container-item end">
             <div className="home-statistics-data-container-item-title">
               {t("home.statistics.tvl")}
             </div>
@@ -41,7 +41,7 @@ const ScoreCard = () => {
             </div>
           </div>
 
-          <div className="home-statistics-data-container-item">
+          <div className="home-statistics-data-container-item end">
             <div className="home-statistics-data-container-item-title">
               {t("home.statistics.allVolume")}
             </div>
@@ -50,7 +50,7 @@ const ScoreCard = () => {
             </div>
           </div>
 
-          <div className="home-statistics-data-container-item">
+          <div className="home-statistics-data-container-item end">
             <div className="home-statistics-data-container-item-title">
               {t("home.statistics.allTxn")}
             </div>
@@ -61,7 +61,7 @@ const ScoreCard = () => {
 
           <hr />
 
-          <div className="home-statistics-data-container-item">
+          <div className="home-statistics-data-container-item start">
             <div className="home-statistics-data-container-item-title">
               {t("home.statistics.messageVolume")}
             </div>
@@ -70,7 +70,7 @@ const ScoreCard = () => {
             </div>
           </div>
 
-          <div className="home-statistics-data-container-item">
+          <div className="home-statistics-data-container-item start">
             <div className="home-statistics-data-container-item-title">
               {t("home.statistics.dayTxn")}
             </div>
@@ -79,7 +79,7 @@ const ScoreCard = () => {
             </div>
           </div>
 
-          <div className="home-statistics-data-container-item">
+          <div className="home-statistics-data-container-item start">
             <div className="home-statistics-data-container-item-title">
               {t("home.statistics.dayMessage")}
             </div>

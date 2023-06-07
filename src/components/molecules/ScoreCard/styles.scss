@@ -12,7 +12,7 @@
     @include centered-column;
 
     justify-content: space-between;
-    gap: 24px;
+    gap: 8px;
     flex: 3;
 
     @include desktop {
@@ -22,11 +22,16 @@
     &-container {
       @include centered-row;
 
-      justify-content: space-between;
+      justify-content: center;
       flex-wrap: wrap;
       flex: 1;
       column-gap: 16px;
-      row-gap: 40px;
+      row-gap: 32px;
+
+      @include desktop {
+        padding: 0 32px;
+        row-gap: 20px;
+      }
 
       hr {
         width: 100%;
@@ -45,6 +50,14 @@
 
         @include desktop {
           flex: calc(33.33% - 16px);
+
+          &.start {
+            align-self: flex-start;
+          }
+
+          &.end {
+            align-self: flex-end;
+          }
         }
 
         &-title {
@@ -52,7 +65,7 @@
 
           color: var(--color-primary-100);
           font-size: 16px;
-          margin-bottom: 16px;
+          margin-bottom: 8px;
         }
 
         &-value {
