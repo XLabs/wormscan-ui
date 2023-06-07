@@ -67,7 +67,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
           <div className="trans-history-chart">
             <ReactApexChart
               type="area"
-              height={220}
+              height={"100%"}
               series={[
                 {
                   name: "LastTxsData",
