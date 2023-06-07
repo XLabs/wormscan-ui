@@ -28,4 +28,10 @@
     font-weight: 600;
     text-decoration: none;
   }
+
+  @include desktop {
+    &-image {
+      height: 30px;
+    }
+  }
 }

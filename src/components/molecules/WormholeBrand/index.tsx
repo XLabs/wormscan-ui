@@ -1,19 +1,23 @@
 import WormholeIcon from "src/icons/WormholeIcon";
+import BrandImage from "src/assets/brand.svg";
 import "./styles.scss";
 
 type Props = {
-  width: number;
-  height: number;
+  onlyIcon?: boolean;
+  width?: number;
+  height?: number;
 };
 
-const WormholeBrand = ({ width, height }: Props) => {
+const WormholeBrand = ({ width = 36.75, height = 32.25, onlyIcon }: Props) => {
   return (
     <div className="wormhole-brand">
-      <WormholeIcon width={width} height={height} />
-      <div className="wormhole-brand-text">
-        <span className="wormhole-brand-title">WORMHOLE</span>
-        <div className="wormhole-brand-subtitle">SCAN</div>
-      </div>
+      {onlyIcon ? (
+        <WormholeIcon width={width} height={height} />
+      ) : (
+        <>
+          <img src={BrandImage} alt="Wormhole Scan logo" className="wormhole-brand-image" />
+        </>
+      )}
     </div>
   );
 };

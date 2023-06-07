@@ -23,12 +23,22 @@
     justify-content: start;
 
     flex: 2;
-    gap: 16px;
+    gap: 24px;
+
+    @include desktop {
+      gap: 16px;
+    }
 
     &-options {
       @include centered-row;
 
-      gap: 8px;
+      column-gap: 8px;
+      row-gap: 20px;
+
+      @include desktop {
+        gap: 16px;
+      }
+
       justify-content: space-between;
       flex-wrap: wrap;
     }

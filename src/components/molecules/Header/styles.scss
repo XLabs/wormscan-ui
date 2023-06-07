@@ -11,7 +11,7 @@
   gap: 16px;
   background-color: rgba(1, 0, 20, 0.2);
   border-bottom: 1px solid var(--color-white-10);
-  padding: 16px;
+  padding: 16px 16px 24px;
 
   @include tablet {
     padding: 16 60px;
@@ -26,29 +26,10 @@
 
   .wormhole-brand {
     grid-area: brand;
-
-    gap: 8px;
-
-    > svg {
-      width: 28px;
-    }
-
-    &-text {
-      font-size: 14px;
-      letter-spacing: 6px;
-    }
+    padding: 16px 0;
 
     @include desktop {
-      gap: 12px;
-
-      > svg {
-        width: 36.75px;
-      }
-
-      &-text {
-        font-size: 18px;
-        letter-spacing: 7px;
-      }
+      padding: 0;
     }
   }
 
@@ -60,12 +41,18 @@
     @include desktop {
       display: none;
     }
+
+    &-container {
+      @include centered-row;
+
+      cursor: pointer;
+      padding: 16px;
+    }
   }
 
   &-open-mobile-menu-btn {
-    cursor: pointer;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
   }
 
   a {
@@ -156,19 +143,6 @@
       min-height: 64px;
       border-bottom: 2px solid var(--color-white-10);
       margin-bottom: 52px;
-
-      .wormhole-brand {
-        gap: 8px;
-
-        > svg {
-          width: 28px;
-        }
-
-        &-text {
-          font-size: 14px;
-          letter-spacing: 6px;
-        }
-      }
     }
 
     &-nav {
@@ -183,10 +157,17 @@
       }
     }
 
+    &-container {
+      @include centered-row;
+
+      cursor: pointer;
+      padding: 16px;
+    }
+
     &-btn {
       cursor: pointer;
-      width: 24px;
-      height: 24px;
+      width: 20px;
+      height: 20px;
     }
 
     .go-bridge {
