@@ -3408,13 +3408,13 @@ __metadata:
   linkType: hard
 
 "@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk#lib":
-  version: 0.0.8
-  resolution: "@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk.git#commit=46d1578bdcab8781b105043cb5d42258457410f2"
+  version: 0.0.9
+  resolution: "@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk.git#commit=28b2a556780b155fde9ccd644fdb753631ded6cb"
   dependencies:
     axios: ^1.2.5
   peerDependencies:
     axios: ^1.2.5
-  checksum: 17cc48191f1d3725db2e0a4fe475c6ffb1f4335684d7bb455ac7fdf9b1fb7e06562000e8a4e4b9010aa5f9d44f370ae0d5e840015ac38b0d73e14a15290d8148
+  checksum: 4a8e025f4cdd3d1acd43e862e5460d530db4cf7b04dc9c53707265414e64e9e6edbbb38620c4d81de459b6717cd04e9ea06207542425504e8d1983235295bb63
   languageName: node
   linkType: hard
 
@@ -4989,9 +4989,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.411":
-  version: 1.4.420
-  resolution: "electron-to-chromium@npm:1.4.420"
-  checksum: b69e760d17551bfed194961529cc7d47bddbbdfbe5c7e3ed49d4b43cec38314718d8bdb2abd1be66f3588470946cd9db39be4e1f2fa6e986cb486c187fdf66b8
+  version: 1.4.422
+  resolution: "electron-to-chromium@npm:1.4.422"
+  checksum: c88cb8f39f8bc0352eca99dd355c1db84299ed6ea02448c157c9acb9cbbc2d7f2089a989ebebc4b886543e4683ffae50a5c305d4fe6b20f9fce7162abb7bf6f1
   languageName: node
   linkType: hard
 

@@ -10,12 +10,12 @@ import {
   VAADetail,
 } from "@xlabs-libs/wormscan-sdk";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import { shortAddress } from "src/utils/string";
 import { removeLeadingZeros } from "../../../../utils/string";
 import { colorStatus, TxStatus } from "..";
-import { formatUnits } from "src/utils/crypto";
+import { shortAddress, formatUnits } from "src/utils/crypto";
 import { formatCurrency } from "src/utils/number";
 import { CSSProperties } from "react";
+import { ChainId, isEVMChain } from "@certusone/wormhole-sdk";
 import "./styles.scss";
 
 // 360 degree / 19 total signatures
@@ -45,10 +45,12 @@ const Overview = ({
   tokenDataResponse,
   tokenPriceResponse,
 }: Props) => {
-  const { emitterAddr, payload, vaa } = VAAData || {};
+  const { emitterAddr, emitterChainId, payload, vaa } = VAAData || {};
   const { guardianSignatures } = vaa || {};
   const { amount, fee } = payload || {};
-  const emitterAddress: string = "0x" + removeLeadingZeros(emitterAddr);
+  const emitterAddress: string = isEVMChain(emitterChainId)
+    ? "0x" + removeLeadingZeros(emitterAddr)
+    : emitterAddr;
   const guardianSignaturesCount = guardianSignatures?.length || 0;
   const signatureContainerMaskDegree = Math.abs(
     360 - (360 - guardianSignaturesCount * FRACTION_DEGREE),
@@ -65,7 +67,11 @@ const Overview = ({
     txHash: rawRedeemTx,
     to: destinationAddress,
   } = destinationTx || {};
-  const redeemTx = String(rawRedeemTx).startsWith("0x") ? rawRedeemTx : "0x" + rawRedeemTx;
+  const redeemTx = isEVMChain(destinationChainId as ChainId)
+    ? String(rawRedeemTx).startsWith("0x")
+      ? rawRedeemTx
+      : "0x" + rawRedeemTx
+    : rawRedeemTx;
   const originDate = new Date(originTimestamp).toLocaleString("en-US", {
     year: "numeric",
     month: "short",

@@ -17,13 +17,13 @@ const Table = <T extends object>({ columns, data, className }: Props<T>) => {
   return (
     <table {...getTableProps()} className={`table ${className}`}>
       <thead className="table-head">
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => {
+        {headerGroups.map((headerGroup, index) => (
+          <tr key={index} {...headerGroup.getHeaderGroupProps()}>
+            {headerGroup.headers.map((column, index) => {
               const style: CSSProperties = (column as any).style;
 
               return (
-                <th {...column.getHeaderProps()} style={{ ...style }}>
+                <th key={index} {...column.getHeaderProps()} style={{ ...style }}>
                   {column.render("Header")}
                 </th>
               );
@@ -32,14 +32,14 @@ const Table = <T extends object>({ columns, data, className }: Props<T>) => {
         ))}
       </thead>
       <tbody {...getTableBodyProps()} className="table-body">
-        {rows.map(row => {
+        {rows.map((row, index) => {
           prepareRow(row);
           return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map(cell => {
+            <tr key={index} {...row.getRowProps()}>
+              {row.cells.map((cell, index) => {
                 const style: CSSProperties = (cell.column as any).style;
                 return (
-                  <td {...cell.getCellProps()} style={{ ...style }}>
+                  <td key={index} {...cell.getCellProps()} style={{ ...style }}>
                     {cell.render("Cell")}
                   </td>
                 );

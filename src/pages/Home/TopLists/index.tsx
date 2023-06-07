@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TopAssetListItem, TopChainListItem } from "src/components/molecules";
 import { TopList } from "src/components/organisms";
@@ -7,6 +7,7 @@ import "./styles.scss";
 import { useQuery } from "react-query";
 import { Loader } from "src/components/atoms";
 import { removeLeadingZeros } from "src/utils/string";
+import { ChainId, isEVMChain } from "@certusone/wormhole-sdk";
 
 const RANGE_LIST: { label: string; value: "7d" | "15d" | "30d" }[] = [
   { label: "7 days", value: "7d" },
@@ -119,11 +120,14 @@ const TopLists = () => {
         ) : (
           dataAssets?.length > 0 &&
           dataAssets.map(({ emitterChain, symbol, tokenChain, tokenAddress, volume }) => {
-            let tokenLogoURL: string = "";
+            let tokenLogoURL = "";
 
             if (dataTokens?.tokens) {
               // remove leading zeros from token address
-              const tokenAddressParsed: string = "0x" + removeLeadingZeros(tokenAddress);
+              let tokenAddressParsed: string = removeLeadingZeros(tokenAddress);
+              tokenAddressParsed = isEVMChain(tokenChain as ChainId)
+                ? "0x" + tokenAddressParsed
+                : tokenAddressParsed;
               tokenLogoURL = dataTokens.tokens[tokenChain][tokenAddressParsed]?.logo;
             }
 
