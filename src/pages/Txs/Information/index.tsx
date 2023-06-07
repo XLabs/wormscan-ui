@@ -100,52 +100,50 @@ const Information = () => {
           });
           const timestampDate = new Date(timestamp);
           return {
-            txHash:
-              (
-                <div className="tx-hash">
-                  <a
-                    href={getExplorerLink({
-                      chainId: emitterChainId,
-                      value: parseTxHash,
-                      isNativeAddress: true,
-                    })}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {shortAddress(parseTxHash)}
-                  </a>
-                  <CopyToClipboard toCopy={parseTxHash}>
-                    <CopyIcon />
-                  </CopyToClipboard>
-                </div>
-              ) || "-",
-            from:
-              (
-                <div className="tx-from">
-                  <BlockchainIcon chainId={emitterChainId} size={24} />
-                  <div>
-                    {getChainName({ chainId: emitterChainId })}
-                    <div className="tx-from-address">
-                      <a
-                        href={getExplorerLink({
-                          chainId: emitterChainId,
-                          value: parsedEmitterAddress,
-                          base: "address",
-                          isNativeAddress: true,
-                        })}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {shortAddress(parsedEmitterAddress)}
-                      </a>
+            txHash: (
+              <div className="tx-hash">
+                <a
+                  href={getExplorerLink({
+                    chainId: emitterChainId,
+                    value: parseTxHash,
+                    isNativeAddress: true,
+                  })}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {shortAddress(parseTxHash)}
+                </a>
+                <CopyToClipboard toCopy={parseTxHash}>
+                  <CopyIcon />
+                </CopyToClipboard>
+              </div>
+            ),
+            from: (
+              <div className="tx-from">
+                <BlockchainIcon chainId={emitterChainId} size={24} />
+                <div>
+                  {getChainName({ chainId: emitterChainId })}
+                  <div className="tx-from-address">
+                    <a
+                      href={getExplorerLink({
+                        chainId: emitterChainId,
+                        value: parsedEmitterAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {shortAddress(parsedEmitterAddress)}
+                    </a>
 
-                      <CopyToClipboard toCopy={parsedEmitterAddress}>
-                        <CopyIcon />
-                      </CopyToClipboard>
-                    </div>
+                    <CopyToClipboard toCopy={parsedEmitterAddress}>
+                      <CopyIcon />
+                    </CopyToClipboard>
                   </div>
                 </div>
-              ) || "-",
+              </div>
+            ),
             to: (
               <div className="tx-to">
                 {toChain ? (
