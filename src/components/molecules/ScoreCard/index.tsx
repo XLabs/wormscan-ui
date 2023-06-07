@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import client from "src/api/Client";
 import { Loader } from "src/components/atoms";
-import { formatCurrency, formatNumber } from "src/utils/number";
+import { formatCurrency, formatNumber, numberToSuffix } from "src/utils/number";
 import "./styles.scss";
 
 const ScoreCard = () => {
@@ -37,7 +37,7 @@ const ScoreCard = () => {
               {t("home.statistics.tvl")}
             </div>
             <div className="home-statistics-data-container-item-value">
-              ${tvl ? formatCurrency(Number(tvl), 0) : "-"}
+              ${tvl ? numberToSuffix(Number(tvl)) : "-"}
             </div>
           </div>
 
@@ -46,7 +46,7 @@ const ScoreCard = () => {
               {t("home.statistics.allVolume")}
             </div>
             <div className="home-statistics-data-container-item-value">
-              ${total_volume ? formatCurrency(Number(total_volume), 0) : "-"}
+              ${total_volume ? numberToSuffix(Number(total_volume)) : "-"}
             </div>
           </div>
 
@@ -55,7 +55,7 @@ const ScoreCard = () => {
               {t("home.statistics.allTxn")}
             </div>
             <div className="home-statistics-data-container-item-value">
-              {total_tx_count ? formatNumber(Number(total_tx_count), 0) : "-"}
+              {total_tx_count ? numberToSuffix(Number(total_tx_count)) : "-"}
             </div>
           </div>
 
