@@ -31,7 +31,17 @@
 
   @include desktop {
     &-image {
-      height: 30px;
+      height: 34px;
+    }
+  }
+
+  &-image {
+    &.small {
+      height: 24px;
+    }
+
+    &.regular {
+      height: 34px;
     }
   }
 }

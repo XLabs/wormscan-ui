@@ -15,11 +15,10 @@ export default {
         },
         footer: {
           faq: "FAQs",
-          txs: "Txs",
-          contact: "Contact us",
+          home: "Home",
           about: "About",
-          analytics: "Analytics",
-          network: "Network",
+          txs: "Txs",
+          joinUs: "Join us",
         },
         hero: {
           text: "Cross-chain Explorer",
