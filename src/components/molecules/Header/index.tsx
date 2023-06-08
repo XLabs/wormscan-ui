@@ -19,7 +19,7 @@ const setOverflowHidden = (hidden: boolean) => {
 
 const LogoLink = () => (
   <NavLink to="/" data-testid="header-logo-link">
-    <WormholeBrand width={36.75} height={32.25} />
+    <WormholeBrand />
   </NavLink>
 );
 
@@ -66,12 +66,9 @@ const Header = () => {
 
       {/* MOBILE HAMBURGER MENU */}
       <div className="header-hamburger">
-        <HamburgerMenuIcon
-          onClick={handleSetExpand}
-          className="header-open-mobile-menu-btn"
-          width={20}
-          height={20}
-        />
+        <div className="header-hamburger-container" onClick={handleSetExpand}>
+          <HamburgerMenuIcon className="header-open-mobile-menu-btn" />
+        </div>
       </div>
 
       <div
@@ -81,12 +78,9 @@ const Header = () => {
       >
         <div className="header-navigation-mobile-top">
           <LogoLink />
-          <Cross1Icon
-            onClick={handleSetExpand}
-            className="header-navigation-mobile-btn"
-            width={20}
-            height={20}
-          />
+          <div className="header-navigation-mobile-container" onClick={handleSetExpand}>
+            <Cross1Icon className="header-navigation-mobile-btn" />
+          </div>
         </div>
 
         <div className="header-navigation-mobile-nav">

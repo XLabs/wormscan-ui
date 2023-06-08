@@ -11,32 +11,37 @@ const Footer = () => {
 
   return (
     <footer className="footer" data-testid="footer">
-      <div className="footer-brand">
-        <NavLink to="/" data-testid="footer-logo-link">
-          <WormholeBrand width={36.75} height={32.25} />
-        </NavLink>
-      </div>
-
-      <div className="footer-social">
-        <DiscordIcon />
-        <TwitterIcon />
-      </div>
-
-      <div className="footer-links" data-testid="footer-nav">
-        <div className="footer-links-item">
-          <NavLink to="/about">{t("home.footer.about")}</NavLink>
+      <div className="footer-container">
+        <div className="footer-brand">
+          <NavLink to="/" data-testid="footer-logo-link">
+            <WormholeBrand size="regular" />
+          </NavLink>
         </div>
 
-        <div className="footer-links-item">
-          <NavLink to="/txs">{t("home.footer.txs")}</NavLink>
+        <div className="footer-social">
+          <div className="footer-social-text">{t("home.footer.joinUs")}:</div>
+          <div className="footer-social-icons">
+            <DiscordIcon />
+            <TwitterIcon />
+          </div>
         </div>
 
-        <div className="footer-links-item">
-          <NavLink to="/contact">{t("home.footer.contact")}</NavLink>
+        <div className="footer-links" data-testid="footer-nav">
+          <div className="footer-links-item">
+            <NavLink to="/">{t("home.footer.home")}</NavLink>
+          </div>
+
+          <div className="footer-links-item">
+            <NavLink to="/about">{t("home.footer.about")}</NavLink>
+          </div>
+
+          <div className="footer-links-item">
+            <NavLink to="/txs">{t("home.footer.txs")}</NavLink>
+          </div>
         </div>
+
+        <div className="footer-copy">&copy;{year} Wormholescan | Wormhole Explorer</div>
       </div>
-
-      <div className="footer-copy">&copy; {year} Wormscan.</div>
     </footer>
   );
 };
