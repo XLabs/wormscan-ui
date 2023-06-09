@@ -69,7 +69,7 @@ export const Chart = ({ data, selectedType }: Props) => {
 
       counter = 0;
       // we have top 10 blockchains so we need 10 graphs
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < Math.min(10, destinyChainsHeight.length); i++) {
         // drawing graph
         const START = START_POINT + counter;
         const END = END_POINTS[i] + i * MARGIN_SIZE * 2;
