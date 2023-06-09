@@ -36,3 +36,8 @@ export const timeAgo = (date: Date) => {
 
   return Math.floor(seconds) + " seconds ago";
 };
+
+export const daysAgoDate = (daysAgo: number) => {
+  const today = new Date();
+  return new Date(today.getTime() - Number(daysAgo) * 24 * 60 * 60 * 1000);
+};

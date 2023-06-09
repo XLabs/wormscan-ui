@@ -1,4 +1,4 @@
-import { ChainId, CrossChainActivity } from "@xlabs-libs/wormscan-sdk";
+import { ChainId, CrossChainActivity, CrossChainBy } from "@xlabs-libs/wormscan-sdk";
 import { useEffect, useRef, useState } from "react";
 import { BlockchainIcon } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
@@ -18,13 +18,16 @@ interface IDestinyChainsHeight {
 const CHART_SIZE = 650;
 const MARGIN_SIZE = 2;
 
-type Props = { data: CrossChainActivity };
+type Props = {
+  data: CrossChainActivity;
+  selectedType: CrossChainBy;
+};
 
-export const Chart = ({ data }: Props) => {
-  const filteredData = data.sort((a, b) => b["num-txs"] - a["num-txs"]).slice(0, 10);
+export const Chart = ({ data, selectedType }: Props) => {
+  const filteredData = data.sort((a, b) => b.volume - a.volume).slice(0, 10);
   const [chartData] = useState(filteredData);
 
-  const [selectedChain, setSelectedChain] = useState(chartData[0].chainId);
+  const [selectedChain, setSelectedChain] = useState(chartData[0].chain);
   const [destinations, setDestinations] = useState([]);
   const [originChainsHeight, setOriginChainsHeight] = useState<IOriginChainsHeight[]>([]);
   const [destinyChainsHeight, setDestinyChainsHeight] = useState<IDestinyChainsHeight[]>([]);
@@ -146,8 +149,8 @@ export const Chart = ({ data }: Props) => {
 
   useEffect(() => {
     const newDestinationChains = chartData
-      .find(item => item.chainId === selectedChain)
-      .destination.sort((a, b) => b["num-txs"] - a["num-txs"])
+      .find(item => item.chain === selectedChain)
+      .destinations.sort((a, b) => b.volume - a.volume)
       .slice(0, 10);
 
     setDestinations(newDestinationChains);
@@ -164,67 +167,69 @@ export const Chart = ({ data }: Props) => {
   // re-render canvas when destinations or isDesktop changes.
   useEffect(updateChainsHeight, [destinations, isDesktop]);
 
-  // TODO: Delete this method and use the money value that will come on the
-  //       API response (endpoint still not there, mocking for now)
-  const fakeValue = [2410230, 2010526, 1999421, 1060214, 312048, 95021, 84012, 52451, 45279, 31258];
-  const fakeValue2 = [1232355, 1094201, 700240, 600102, 419267, 196241, 85612, 71263, 30211, 21085];
-
-  return (<>
-    <div className="cross-chain-header-container cross-chain-header-title">
-      <div>{t("home.crossChain.source")}</div>
-      <div>{t("home.crossChain.destination")}</div>
-    </div>
-    <div className="cross-chain-chart">
-      <div className="cross-chain-chart-side" ref={originChainsRef}>
-        {chartData.map((item, idx) => (
-          <div
-            key={item.chainId}
-            className="cross-chain-chart-side-item left"
-            onClick={() => setSelectedChain(item.chainId)}
-            data-selected={selectedChain === item.chainId}
-            style={{
-              height: (item.percentage * CHART_SIZE) / 100,
-              marginTop: idx === 0 ? 0 : MARGIN_SIZE,
-              marginBottom: MARGIN_SIZE,
-            }}
-          >
-            <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chainId} />
-            <span className="chain-name">{ChainId[item.chainId]}</span>
-            <div className="chain-freespace" />
-            <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
-            <span className="chain-separator onlyBig">|</span>
-            <span className="chain-infoTxt onlyBig">${formatCurrency(fakeValue[idx], 0)}</span>
-          </div>
-        ))}
+  return (
+    <>
+      <div className="cross-chain-header-container cross-chain-header-title">
+        <div>{t("home.crossChain.source")}</div>
+        <div>{t("home.crossChain.destination")}</div>
       </div>
+      <div className="cross-chain-chart">
+        <div className="cross-chain-chart-side" ref={originChainsRef}>
+          {chartData.map((item, idx) => (
+            <div
+              key={item.chain}
+              className="cross-chain-chart-side-item left"
+              onClick={() => setSelectedChain(item.chain)}
+              data-selected={selectedChain === item.chain}
+              style={{
+                height: (item.percentage * CHART_SIZE) / 100,
+                marginTop: idx === 0 ? 0 : MARGIN_SIZE,
+                marginBottom: MARGIN_SIZE,
+              }}
+            >
+              <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chain} />
+              <span className="chain-name">{ChainId[item.chain]}</span>
+              <div className="chain-freespace" />
+              <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
+              <span className="chain-separator onlyBig">|</span>
+              <span className="chain-infoTxt onlyBig">
+                {selectedType === "tx" ? item.volume : "$" + formatCurrency(+item.volume, 0)}
+              </span>
+            </div>
+          ))}
+        </div>
 
-      <canvas
-        className="cross-chain-chart-graph"
-        ref={canvasRef}
-        height={CHART_SIZE}
-        width={CHART_SIZE} />
+        <canvas
+          className="cross-chain-chart-graph"
+          ref={canvasRef}
+          height={CHART_SIZE}
+          width={CHART_SIZE}
+        />
 
-      <div className="cross-chain-chart-side" ref={destinyChainsRef}>
-        {destinations.map((item, idx) => (
-          <div
-            key={item.chainId}
-            className="cross-chain-chart-side-item right"
-            data-percentage={item.percentage}
-            style={{
-              height: (item.percentage * CHART_SIZE) / 100,
-              marginTop: idx === 0 ? 0 : MARGIN_SIZE,
-              marginBottom: MARGIN_SIZE,
-            }}
-          >
-            <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chainId} />
-            <span className="chain-name">{ChainId[item.chainId]}</span>
-            <div className="chain-freespace" />
-            <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
-            <span className="chain-separator onlyBig">|</span>
-            <span className="chain-infoTxt onlyBig">${formatCurrency(fakeValue2[idx], 0)}</span>
-          </div>
-        ))}
+        <div className="cross-chain-chart-side" ref={destinyChainsRef}>
+          {destinations.map((item, idx) => (
+            <div
+              key={item.chain}
+              className="cross-chain-chart-side-item right"
+              data-percentage={item.percentage}
+              style={{
+                height: (item.percentage * CHART_SIZE) / 100,
+                marginTop: idx === 0 ? 0 : MARGIN_SIZE,
+                marginBottom: MARGIN_SIZE,
+              }}
+            >
+              <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chain} />
+              <span className="chain-name">{ChainId[item.chain] ?? "Unset"}</span>
+              <div className="chain-freespace" />
+              <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
+              <span className="chain-separator onlyBig">|</span>
+              <span className="chain-infoTxt onlyBig">
+                {selectedType === "tx" ? item.volume : "$" + formatCurrency(+item.volume, 0)}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  </>);
+    </>
+  );
 };
