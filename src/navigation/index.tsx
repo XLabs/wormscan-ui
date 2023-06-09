@@ -3,9 +3,7 @@ import { Home } from "src/pages/Home";
 import { Tx } from "src/pages/Tx";
 import { Txs } from "src/pages/Txs";
 
-type Props = {};
-
-const Navigation = (props: Props) => {
+const Navigation = () => {
   return (
     <Router>
       <Routes>

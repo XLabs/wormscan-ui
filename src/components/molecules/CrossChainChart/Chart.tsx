@@ -1,5 +1,5 @@
 import { ChainId, CrossChainActivity, CrossChainBy } from "@xlabs-libs/wormscan-sdk";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BlockchainIcon } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
@@ -38,71 +38,74 @@ export const Chart = ({ data, selectedType }: Props) => {
   const { t } = useTranslation();
 
   // DRAWING GRAPH FUNCTION
-  const draw = (ctx: CanvasRenderingContext2D, frameCount: number) => {
-    // selected blockchain
-    let selectedIdx: number;
-    const selected = originChainsHeight.find((item, idx) => {
-      selectedIdx = idx;
-      return !!item.selected;
-    });
+  const draw = useCallback(
+    (ctx: CanvasRenderingContext2D, frameCount: number) => {
+      // selected blockchain
+      let selectedIdx: number;
+      const selected = originChainsHeight.find((item, idx) => {
+        selectedIdx = idx;
+        return !!item.selected;
+      });
 
-    // start point: the Y position from where to start the graphs (count previous items heights)
-    const START_POINT = originChainsHeight.slice(0, selectedIdx).reduce(
-      (prev, curr) => ({
-        itemHeight: prev.itemHeight + curr.itemHeight + MARGIN_SIZE * 2,
-      }),
-      { itemHeight: 0 },
-    ).itemHeight;
+      // start point: the Y position from where to start the graphs (count previous items heights)
+      const START_POINT = originChainsHeight.slice(0, selectedIdx).reduce(
+        (prev, curr) => ({
+          itemHeight: prev.itemHeight + curr.itemHeight + MARGIN_SIZE * 2,
+        }),
+        { itemHeight: 0 },
+      ).itemHeight;
 
-    // end points: the Y position where to go for each graph (count previous items heights)
-    const END_POINTS: number[] = [];
-    let counter = 0;
-    destinyChainsHeight.forEach(item => {
-      END_POINTS.push(counter);
-      counter += item.itemHeight;
-    });
+      // end points: the Y position where to go for each graph (count previous items heights)
+      const END_POINTS: number[] = [];
+      let counter = 0;
+      destinyChainsHeight.forEach(item => {
+        END_POINTS.push(counter);
+        counter += item.itemHeight;
+      });
 
-    // empty the canvas
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.beginPath();
+      // empty the canvas
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.beginPath();
 
-    counter = 0;
-    // we have top 10 blockchains so we need 10 graphs
-    for (let i = 0; i < 10; i++) {
-      // drawing graph
-      const START = START_POINT + counter;
-      const END = END_POINTS[i] + i * MARGIN_SIZE * 2;
+      counter = 0;
+      // we have top 10 blockchains so we need 10 graphs
+      for (let i = 0; i < 10; i++) {
+        // drawing graph
+        const START = START_POINT + counter;
+        const END = END_POINTS[i] + i * MARGIN_SIZE * 2;
 
-      ctx.moveTo(0, START);
-      ctx.bezierCurveTo(CHART_SIZE / 2, START, CHART_SIZE / 2, END, CHART_SIZE, END);
+        ctx.moveTo(0, START);
+        ctx.bezierCurveTo(CHART_SIZE / 2, START, CHART_SIZE / 2, END, CHART_SIZE, END);
 
-      const excess = (selected.itemHeight * +destinyChainsHeight[i].percentage) / 100;
-      const START2 = START + excess - MARGIN_SIZE * 2;
-      counter += excess;
+        const excess = (selected.itemHeight * +destinyChainsHeight[i].percentage) / 100;
+        const START2 = START + excess - MARGIN_SIZE * 2;
+        counter += excess;
 
-      const DESTINY_CHAIN_HEIGHT = destinyChainsHeight[i].itemHeight;
-      const END2 = END + DESTINY_CHAIN_HEIGHT;
+        const DESTINY_CHAIN_HEIGHT = destinyChainsHeight[i].itemHeight;
+        const END2 = END + DESTINY_CHAIN_HEIGHT;
 
-      ctx.lineTo(CHART_SIZE, END2);
-      ctx.bezierCurveTo(CHART_SIZE / 2, END2, CHART_SIZE / 2, START2, 0, START2);
-      ctx.lineTo(0, START);
+        ctx.lineTo(CHART_SIZE, END2);
+        ctx.bezierCurveTo(CHART_SIZE / 2, END2, CHART_SIZE / 2, START2, 0, START2);
+        ctx.lineTo(0, START);
 
-      // painting graph
-      let halfStop = frameCount <= 100 ? frameCount / 100 : 1 - (frameCount - 100) / 100;
-      if (halfStop < 0.01) halfStop = 0.01;
+        // painting graph
+        let halfStop = frameCount <= 100 ? frameCount / 100 : 1 - (frameCount - 100) / 100;
+        if (halfStop < 0.01) halfStop = 0.01;
 
-      const grad = ctx.createLinearGradient(0, START, CHART_SIZE, END);
-      grad.addColorStop(0, "rgb(49, 52, 124)");
-      grad.addColorStop(halfStop, "rgb(44, 45, 116)");
-      grad.addColorStop(1, "rgb(74, 34, 105)");
+        const grad = ctx.createLinearGradient(0, START, CHART_SIZE, END);
+        grad.addColorStop(0, "rgb(49, 52, 124)");
+        grad.addColorStop(halfStop, "rgb(44, 45, 116)");
+        grad.addColorStop(1, "rgb(74, 34, 105)");
 
-      ctx.strokeStyle = grad;
-      ctx.fillStyle = grad;
+        ctx.strokeStyle = grad;
+        ctx.fillStyle = grad;
 
-      ctx.stroke();
-      ctx.fill();
-    }
-  };
+        ctx.stroke();
+        ctx.fill();
+      }
+    },
+    [destinyChainsHeight, originChainsHeight],
+  );
 
   // update arrays containing height of items on both sides of the graphics
   const updateChainsHeight = () => {
@@ -145,7 +148,7 @@ export const Chart = ({ data, selectedType }: Props) => {
         window.cancelAnimationFrame(animationFrameId);
       };
     }
-  }, [originChainsHeight, destinyChainsHeight]);
+  }, [originChainsHeight, destinyChainsHeight, draw]);
 
   useEffect(() => {
     const newDestinationChains = chartData
@@ -154,7 +157,7 @@ export const Chart = ({ data, selectedType }: Props) => {
       .slice(0, 10);
 
     setDestinations(newDestinationChains);
-  }, [selectedChain]);
+  }, [chartData, selectedChain]);
 
   const size = useWindowSize();
   const [isDesktop, setIsDesktop] = useState(size.width >= 1024);
@@ -162,7 +165,7 @@ export const Chart = ({ data, selectedType }: Props) => {
   useEffect(() => {
     if (size.width >= 1024 && !isDesktop) setIsDesktop(true);
     else if (size.width < 1024 && isDesktop) setIsDesktop(false);
-  }, [size]);
+  }, [isDesktop, size]);
 
   // re-render canvas when destinations or isDesktop changes.
   useEffect(updateChainsHeight, [destinations, isDesktop]);
