@@ -1,43 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import client from "src/api/Client";
 import { Chart } from "./Chart";
-import { useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { Loader, Select, ToggleGroup } from "src/components/atoms";
 import i18n from "src/i18n";
 import { useTranslation } from "react-i18next";
 import "./styles.scss";
+import { daysAgoDate } from "src/utils/date";
+import { CrossChainBy } from "@xlabs-libs/wormscan-sdk";
 
 const TYPE_LIST = [
-  { label: i18n.t("home.crossChain.volume"), value: "volume", ariaLabel: "Volume" },
-  { label: i18n.t("home.crossChain.count"), value: "tx-count", ariaLabel: "Transactions" },
-];
-
-const APP_LIST = [
-  { label: "All Apps", value: "all" },
-  { label: "App #1", value: "app1" },
-  { label: "App #2", value: "app2" },
-  { label: "App #3", value: "app3" },
+  { label: i18n.t("home.crossChain.volume"), value: "notional", ariaLabel: "Volume" },
+  { label: i18n.t("home.crossChain.count"), value: "tx", ariaLabel: "Transactions" },
 ];
 
 const RANGE_LIST = [
-  { label: "All Time", value: "all" },
   { label: "Last 7 days", value: "7" },
   { label: "Last 30 days", value: "30" },
   { label: "Last 90 days", value: "90" },
   { label: "Last 365 days", value: "365" },
+  { label: "All Time", value: "all" },
 ];
 
 const CrossChainChart = () => {
   const { t } = useTranslation();
-  const [selectedType, setSelectedType] = useState(TYPE_LIST[0].value);
-  const [selectedApp, setSelectedApp] = useState(APP_LIST[0]);
+
+  const [selectedType, setSelectedType] = useState<CrossChainBy>("notional");
   const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
 
-  const { isLoading, error, data } = useQuery("crossChainResponse", () =>
-    client.guardianNetwork.getCrossChainActivity(),
+  const { isLoading, error, data, mutate } = useMutation("crossChainResponse", () =>
+    client.guardianNetwork.getCrossChainActivity({
+      by: selectedType,
+      startTime: daysAgoDate(selectedTimeRange.value === "all" ? 1750 : +selectedTimeRange.value),
+    }),
   );
+  useEffect(mutate, [selectedTimeRange, selectedType]);
 
-  if (error) return null;
+  if (error || (data && data.length === 0)) return null;
   return (
     <div className="cross-chain" data-testid="cross-chain-card">
       <div className="cross-chain-title">{t("home.crossChain.title")}</div>
@@ -53,21 +52,6 @@ const CrossChainChart = () => {
 
         <div className="cross-chain-filters">
           <div className="cross-chain-filters-group">
-            <span className="cross-chain-filters-text">{t("home.crossChain.apps")}</span>
-            <Select
-              name="app"
-              value={selectedApp}
-              onValueChange={(value: any) => setSelectedApp(value)}
-              items={APP_LIST}
-              ariaLabel="Select App"
-              className="cross-chain-filters-select"
-              placeholder="Search app"
-              isSearchable
-              noOptionsMessage="App not found"
-            />
-          </div>
-
-          <div className="cross-chain-filters-group">
             <span className="cross-chain-filters-text">{t("home.crossChain.timeRange")}</span>
             <Select
               name="timeRange"
@@ -81,12 +65,12 @@ const CrossChainChart = () => {
         </div>
       </div>
 
-      {isLoading ? (
+      {isLoading || !data ? (
         <div className="cross-chain-loader">
           <Loader />
         </div>
       ) : (
-        <Chart data={data} />
+        <Chart data={data} selectedType={selectedType} />
       )}
 
       <div className="cross-chain-message">
