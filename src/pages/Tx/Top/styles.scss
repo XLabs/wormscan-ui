@@ -46,6 +46,10 @@
         width: 25px;
       }
 
+      > a {
+        color: var(--color-information-100);
+      }
+
       @include tablet {
         gap: 8px;
 

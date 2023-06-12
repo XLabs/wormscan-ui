@@ -71,7 +71,7 @@ html {
 body {
   margin: 0;
   color: var(--color-white);
-  background-image: url("./assets/bg.webp");
+  background: url("./assets/bg.webp") no-repeat center center fixed;
   background-size: cover;
 }
 

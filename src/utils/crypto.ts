@@ -48,20 +48,15 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
   let parsedValue = value;
 
   try {
-    if (isEVMChain(chainId)) {
-      if (String(parsedValue).startsWith("0x")) {
-        parsedValue = parsedValue.slice(2);
-      }
-
-      parsedValue = removeLeadingZeros(parsedValue);
-      parsedValue = "0x" + parsedValue;
+    if (chainId !== CHAIN_ID_SUI && chainId !== CHAIN_ID_APTOS) {
+      parsedValue = tryHexToNativeString(value, chainId);
     }
 
     if (chainId === CHAIN_ID_SOLANA) {
       // TODO: parse solana tx
     }
   } catch (e: unknown) {
-    console.log(e);
+    // console.log(e);
   }
 
   return parsedValue;
