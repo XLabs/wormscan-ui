@@ -4,6 +4,7 @@ import { BlockchainIcon } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { useTranslation } from "react-i18next";
+import { BREAKPOINTS } from "src/consts";
 
 interface IOriginChainsHeight {
   itemHeight: number;
@@ -160,7 +161,7 @@ export const Chart = ({ data, selectedType }: Props) => {
   }, [chartData, selectedChain]);
 
   const size = useWindowSize();
-  const [isDesktop, setIsDesktop] = useState(size.width >= 1024);
+  const [isDesktop, setIsDesktop] = useState(size.width >= BREAKPOINTS.desktop);
 
   useEffect(() => {
     if (size.width >= 1024 && !isDesktop) setIsDesktop(true);

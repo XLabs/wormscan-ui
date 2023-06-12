@@ -25,6 +25,28 @@
     @include centered-row;
 
     gap: 24px;
+
+    > * {
+      flex: 2;
+    }
+    > *:last-child {
+      flex: 3;
+    }
+
+    @include tablet {
+      > * {
+        flex: 1;
+      }
+      > *:last-child {
+        flex: 5;
+      }
+    }
+
+    @include desktop {
+      > * {
+        flex: unset;
+      }
+    }
   }
 
   & .key {

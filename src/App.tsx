@@ -3,7 +3,13 @@ import { RecoilRoot } from "recoil";
 import { Navigation } from "./navigation";
 
 const App = () => {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+  });
 
   return (
     <RecoilRoot>
