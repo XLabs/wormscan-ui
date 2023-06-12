@@ -18,6 +18,7 @@ import { CSSProperties } from "react";
 import { ChainId, isEVMChain } from "@certusone/wormhole-sdk";
 import "./styles.scss";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
+import { BREAKPOINTS } from "src/consts";
 
 // 360 degree / 19 total signatures
 // A fraction of 360 degrees (360 / 19) = 18.9 est.
@@ -47,7 +48,7 @@ const Overview = ({
   tokenPriceResponse,
 }: Props) => {
   const size = useWindowSize();
-  const isMobile = size.width < 768;
+  const isMobile = size.width < BREAKPOINTS.tablet;
   const { emitterAddr, emitterChainId, payload, vaa } = VAAData || {};
   const { guardianSignatures } = vaa || {};
   const { amount, fee, tokenAddress, tokenChain } = payload || {};
