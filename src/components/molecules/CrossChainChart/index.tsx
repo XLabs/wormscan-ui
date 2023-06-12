@@ -28,13 +28,16 @@ const CrossChainChart = () => {
   const [selectedType, setSelectedType] = useState<CrossChainBy>("notional");
   const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
 
-  const { isLoading, error, data, mutate } = useMutation("crossChainResponse", () =>
-    client.guardianNetwork.getCrossChainActivity({
-      by: selectedType,
-      startTime: daysAgoDate(selectedTimeRange.value === "all" ? 1750 : +selectedTimeRange.value),
-    }),
+  const { isLoading, error, data, mutate } = useMutation(
+    "crossChainResponse",
+    () =>
+      client.guardianNetwork.getCrossChainActivity({
+        by: selectedType,
+        startTime: daysAgoDate(selectedTimeRange.value === "all" ? 1750 : +selectedTimeRange.value),
+      }),
+    { retry: 2 },
   );
-  useEffect(mutate, [selectedTimeRange, selectedType]);
+  useEffect(mutate, [selectedTimeRange, selectedType, mutate]);
 
   if (error || (data && data.length === 0)) return null;
   return (
