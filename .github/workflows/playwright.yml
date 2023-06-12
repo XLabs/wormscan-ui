@@ -4,6 +4,9 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
+# disable job until tests are needed and done ---
+if: false
+# --- ---
 jobs:
   test:
     timeout-minutes: 60

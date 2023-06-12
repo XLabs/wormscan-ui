@@ -193,7 +193,7 @@ export const Chart = ({ data, selectedType }: Props) => {
             >
               <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chain} />
               <span className="chain-name">{ChainId[item.chain]}</span>
-              <div className="chain-freespace" />
+              {!isDesktop && <span className="mobile-separator">|</span>}
               <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
               <span className="chain-separator onlyBig">|</span>
               <span className="chain-infoTxt onlyBig">
@@ -224,7 +224,7 @@ export const Chart = ({ data, selectedType }: Props) => {
             >
               <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chain} />
               <span className="chain-name">{ChainId[item.chain] ?? "Unset"}</span>
-              <div className="chain-freespace" />
+              {!isDesktop && <span className="mobile-separator">|</span>}
               <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
               <span className="chain-separator onlyBig">|</span>
               <span className="chain-infoTxt onlyBig">
