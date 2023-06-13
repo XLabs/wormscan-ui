@@ -221,6 +221,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.BSC]: {
     name: "Binance Smart Chain",
+    acronym: "BSC",
     icon: BSCIcon,
     darkIcon: BSCDarkIcon,
     explorer: {
@@ -461,7 +462,14 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
 };
 
-export const getChainName = ({ chainId }: { chainId: ChainId }): string => {
+export const getChainName = ({
+  chainId,
+  acronym = false,
+}: {
+  chainId: ChainId;
+  acronym?: boolean;
+}): string => {
+  if (acronym) return WORMHOLE_CHAINS[chainId]?.acronym || WORMHOLE_CHAINS[chainId]?.name || "";
   return WORMHOLE_CHAINS[chainId]?.name || "";
 };
 
