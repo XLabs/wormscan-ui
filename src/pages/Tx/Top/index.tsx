@@ -16,7 +16,7 @@ interface Props {
 const txType: { [key: number]: string } = {
   1: "Transfer",
   2: "Attestation",
-  3: "Transfer",
+  3: "Transfer with payload",
 };
 const Top = ({ txHash, emitterChainId, payloadType }: Props) => {
   const { t } = useTranslation();
