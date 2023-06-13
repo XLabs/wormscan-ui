@@ -15,17 +15,10 @@ const TX_TAB_HEADERS = [
   i18n.t("common.rawData").toUpperCase(),
 ];
 
-export type TxStatus = "SUCCESSFUL" | "ONGOING" | "FAILED";
 interface Props {
   VAAData: Omit<VAADetail, "vaa"> & { vaa: any };
   globalTxData: GlobalTxOutput;
 }
-
-export const colorStatus = {
-  SUCCESSFUL: "green",
-  ONGOING: "orange",
-  FAILED: "red",
-};
 
 const getTxStatus = (originStatus: string, destinationStatus: string) => {
   if (!destinationStatus) {

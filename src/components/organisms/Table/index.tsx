@@ -6,9 +6,10 @@ type Props<T extends object> = {
   columns: Column<T>[];
   data: T[];
   className?: string;
+  onRowClick?: (row: any) => void;
 };
 
-const Table = <T extends object>({ columns, data, className }: Props<T>) => {
+const Table = <T extends object>({ columns, data, className, onRowClick }: Props<T>) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
@@ -35,7 +36,12 @@ const Table = <T extends object>({ columns, data, className }: Props<T>) => {
         {rows.map((row, index) => {
           prepareRow(row);
           return (
-            <tr key={index} {...row.getRowProps()}>
+            /* tslint:disable-next-line */
+            <tr
+              key={index}
+              {...row.getRowProps()}
+              onClick={() => onRowClick && onRowClick(row.original)}
+            >
               {row.cells.map((cell, index) => {
                 const style: CSSProperties = (cell.column as any).style;
                 return (

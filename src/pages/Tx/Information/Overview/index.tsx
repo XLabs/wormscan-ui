@@ -11,14 +11,15 @@ import {
 } from "@xlabs-libs/wormscan-sdk";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { removeLeadingZeros } from "../../../../utils/string";
-import { colorStatus, TxStatus } from "..";
+import { TxStatus } from "src/types";
 import { shortAddress, formatUnits } from "src/utils/crypto";
 import { formatCurrency } from "src/utils/number";
 import { CSSProperties } from "react";
 import { ChainId, isEVMChain } from "@certusone/wormhole-sdk";
-import "./styles.scss";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { BREAKPOINTS } from "src/consts";
+import { colorStatus } from "src/conts";
+import "./styles.scss";
 
 // 360 degree / 19 total signatures
 // A fraction of 360 degrees (360 / 19) = 18.9 est.
