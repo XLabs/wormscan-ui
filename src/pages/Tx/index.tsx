@@ -7,13 +7,14 @@ import { Information } from "./Information";
 import { Top } from "./Top";
 import { useParams } from "react-router-dom";
 import { VAADetail } from "@xlabs-libs/wormscan-sdk";
-import { parseVaa } from "@certusone/wormhole-sdk";
+import { ChainId, parseVaa } from "@certusone/wormhole-sdk";
 import { Buffer } from "buffer";
 import "./styles.scss";
 import { getGuardianSet } from "../../conts";
 
 const Tx = () => {
   const { txHash } = useParams();
+  const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [VAAId, setVAAId] = useState<string>("");
   const [parsedVAAData, setParsedVAAData] = useState<
     (Omit<VAADetail, "vaa"> & { vaa: any }) | undefined
@@ -74,7 +75,7 @@ const Tx = () => {
     const vaaBuffer = Buffer.from(vaa, "base64");
     const parsedVaa = parseVaa(vaaBuffer);
 
-    const { emitterAddress, guardianSignatures, hash, sequence } = parsedVaa || {};
+    const { emitterAddress, emitterChain, guardianSignatures, hash, sequence } = parsedVaa || {};
     const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
     const parsedHash = Buffer.from(hash).toString("hex");
     const parsedSequence = Number(sequence);
@@ -96,6 +97,7 @@ const Tx = () => {
     };
 
     setParsedVAAData(parsedVAAData);
+    setEmitterChainId(emitterChain as ChainId);
   }, [vaa, VAAData, guardianSetIndex]);
 
   return (
@@ -107,7 +109,7 @@ const Tx = () => {
           </div>
         ) : (
           <>
-            <Top txHash={txHash} payloadType={payloadType} />
+            <Top txHash={txHash} emitterChainId={emitterChainId} payloadType={payloadType} />
             <Information VAAData={parsedVAAData} globalTxData={globalTxData} />
           </>
         )}

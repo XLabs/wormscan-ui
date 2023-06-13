@@ -2,8 +2,9 @@ import { ArrowRightIcon, CheckCircledIcon } from "@radix-ui/react-icons";
 import { GetTokenOutput } from "@xlabs-libs/wormscan-sdk";
 import { BlockchainIcon } from "src/components/atoms";
 import Chip from "src/components/atoms/Chip";
+import { colorStatus } from "src/conts";
+import { TxStatus } from "src/types";
 import { formatUnits } from "src/utils/crypto";
-import { colorStatus, TxStatus } from "..";
 import "./styles.scss";
 
 type Props = {

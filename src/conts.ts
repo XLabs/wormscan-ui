@@ -1,3 +1,5 @@
+import { TxStatus } from "./types";
+
 export const getGuardianSet = (version: number) => {
   const v1 = [
     {
@@ -106,6 +108,9 @@ export const getGuardianSet = (version: number) => {
   return [];
 };
 
-export const getExplorer = () => {
-  // TODO: get explorer web by ChainId
+export const colorStatus: any = {
+  SUCCESSFUL: "green",
+  COMPLETED: "green",
+  ONGOING: "orange",
+  FAILED: "red",
 };

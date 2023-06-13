@@ -1,21 +1,29 @@
+import { ChainId } from "@certusone/wormhole-sdk";
 import { CopyIcon } from "@radix-ui/react-icons";
 import { useTranslation } from "react-i18next";
 import Tag from "src/components/atoms/Tag";
 import CopyToClipboard from "src/components/molecules/CopyToClipboard";
+import { parseTx } from "src/utils/crypto";
+import { getExplorerLink } from "src/utils/wormhole";
 import "./styles.scss";
 
 interface Props {
   txHash: string;
+  emitterChainId: ChainId;
   payloadType: number;
 }
 
 const txType: { [key: number]: string } = {
   1: "Transfer",
   2: "Attestation",
-  3: "Transfer",
+  3: "Transfer with payload",
 };
-const Top = ({ txHash, payloadType }: Props) => {
+const Top = ({ txHash, emitterChainId, payloadType }: Props) => {
   const { t } = useTranslation();
+  const parseTxHash = parseTx({
+    value: txHash,
+    chainId: emitterChainId,
+  });
 
   return (
     <section className="tx-top">
@@ -26,7 +34,17 @@ const Top = ({ txHash, payloadType }: Props) => {
       <div className="tx-top-txId">
         <div>Tx Hash:</div>
         <div className="tx-top-txId-container">
-          {txHash}
+          <a
+            href={getExplorerLink({
+              chainId: emitterChainId,
+              value: parseTxHash,
+              isNativeAddress: true,
+            })}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {parseTxHash}
+          </a>
           <CopyToClipboard toCopy={txHash}>
             <CopyIcon />
           </CopyToClipboard>

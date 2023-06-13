@@ -36,7 +36,7 @@ export const parseAddress = ({ value, chainId }: { value: string; chainId: Chain
       parsedValue = tryHexToNativeString(value, chainId);
     }
   } catch (e: unknown) {
-    console.log(e);
+    // console.log(e);
   }
 
   return parsedValue;
@@ -61,7 +61,7 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
       // TODO: parse solana tx
     }
   } catch (e: unknown) {
-    console.log(e);
+    // console.log(e);
   }
 
   return parsedValue;
