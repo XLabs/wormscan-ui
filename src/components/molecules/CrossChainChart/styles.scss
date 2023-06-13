@@ -105,12 +105,15 @@
         display: grid;
         grid-auto-flow: column;
         align-items: center;
-        grid-template-columns: 86px 6px 47px;
+        border-left: 16px solid var(--color-information-60);
 
-        border-left: 16px solid var(--color-information-100);
+        grid-template-columns: 70px 60px;
 
+        @media only screen and (min-width: 425px) {
+          grid-template-columns: 85px 30px 40px;
+        }
         @media only screen and (min-width: 510px) {
-          grid-template-columns: 90px 10px 75px;
+          grid-template-columns: 90px 30px 60px;
         }
 
         @include tablet {
@@ -125,7 +128,7 @@
           min-height: 20px;
         }
         @include bigDesktop {
-          grid-template-columns: 1.2fr 3.6fr 2fr 0.2fr 4.3fr;
+          grid-template-columns: 1.2fr 3.6fr 2fr 0.2fr 4fr;
         }
 
         .percentage {
@@ -162,9 +165,13 @@
           @include text-p2-bold;
           line-height: normal;
 
-          font-size: 16px;
+          font-size: 14px;
+          @include tablet {
+            font-size: 16px;
+          }
           opacity: 0.35;
           font-weight: 500;
+
           @include desktop {
             font-size: 18px;
             opacity: 1;
@@ -188,16 +195,19 @@
 
         &[data-selected="true"] {
           .percentage {
-            font-weight: 500;
             display: block;
           }
           .mobile-separator {
-            display: block;
+            @media only screen and (min-width: 425px) {
+              display: block;
+            }
           }
           .chain-name {
             opacity: 1;
           }
           &.left {
+            border-left: 16px solid var(--color-information-100);
+
             // TODO: use color variable here
             background: linear-gradient(
               90deg,
@@ -205,6 +215,7 @@
               rgba(15, 12, 72, 0) 95.18%
             );
             @include desktop {
+              border-left: 0px;
               background: withOpacity(var(--color-primary-300), 0.5);
             }
           }
@@ -215,6 +226,13 @@
 
         &.left {
           cursor: pointer;
+
+          .chain-name {
+            margin-left: 5px;
+            @include desktop {
+              margin-left: 0px;
+            }
+          }
         }
 
         &.right {
@@ -222,10 +240,20 @@
             display: block;
           }
           .mobile-separator {
-            display: block;
+            @media only screen and (min-width: 425px) {
+              display: block;
+            }
           }
           .chain-name {
             opacity: 1;
+            font-weight: 300;
+            text-align: right;
+            @include tablet {
+              text-align: left;
+            }
+            @include desktop {
+              font-weight: inherit;
+            }
           }
 
           justify-content: end;

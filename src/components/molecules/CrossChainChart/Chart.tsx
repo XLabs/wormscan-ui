@@ -17,7 +17,7 @@ interface IDestinyChainsHeight {
 
 // CHART CONSTANTS
 const CHART_SIZE = 650;
-const MARGIN_SIZE = 2;
+const MARGIN_SIZE_CANVAS = 2;
 
 type Props = {
   data: CrossChainActivity;
@@ -38,6 +38,11 @@ export const Chart = ({ data, selectedType }: Props) => {
   const destinyChainsRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
 
+  const size = useWindowSize();
+  const [isDesktop, setIsDesktop] = useState(size.width >= BREAKPOINTS.desktop);
+
+  const MARGIN_SIZE_ELEMENTS = isDesktop ? 2 : 4;
+
   // DRAWING GRAPH FUNCTION
   const draw = useCallback(
     (ctx: CanvasRenderingContext2D, frameCount: number) => {
@@ -51,7 +56,7 @@ export const Chart = ({ data, selectedType }: Props) => {
       // start point: the Y position from where to start the graphs (count previous items heights)
       const START_POINT = originChainsHeight.slice(0, selectedIdx).reduce(
         (prev, curr) => ({
-          itemHeight: prev.itemHeight + curr.itemHeight + MARGIN_SIZE * 2,
+          itemHeight: prev.itemHeight + curr.itemHeight + MARGIN_SIZE_ELEMENTS * 2,
         }),
         { itemHeight: 0 },
       ).itemHeight;
@@ -73,13 +78,13 @@ export const Chart = ({ data, selectedType }: Props) => {
       for (let i = 0; i < Math.min(10, destinyChainsHeight.length); i++) {
         // drawing graph
         const START = START_POINT + counter;
-        const END = END_POINTS[i] + i * MARGIN_SIZE * 2;
+        const END = END_POINTS[i] + i * MARGIN_SIZE_ELEMENTS * 2;
 
         ctx.moveTo(0, START);
         ctx.bezierCurveTo(CHART_SIZE / 2, START, CHART_SIZE / 2, END, CHART_SIZE, END);
 
         const excess = (selected.itemHeight * +destinyChainsHeight[i].percentage) / 100;
-        const START2 = START + excess - MARGIN_SIZE * 2;
+        const START2 = START + excess - MARGIN_SIZE_CANVAS * 2;
         counter += excess;
 
         const DESTINY_CHAIN_HEIGHT = destinyChainsHeight[i].itemHeight;
@@ -105,7 +110,7 @@ export const Chart = ({ data, selectedType }: Props) => {
         ctx.fill();
       }
     },
-    [destinyChainsHeight, originChainsHeight],
+    [MARGIN_SIZE_ELEMENTS, destinyChainsHeight, originChainsHeight],
   );
 
   // update arrays containing height of items on both sides of the graphics
@@ -160,9 +165,6 @@ export const Chart = ({ data, selectedType }: Props) => {
     setDestinations(newDestinationChains);
   }, [chartData, selectedChain]);
 
-  const size = useWindowSize();
-  const [isDesktop, setIsDesktop] = useState(size.width >= BREAKPOINTS.desktop);
-
   useEffect(() => {
     if (size.width >= 1024 && !isDesktop) setIsDesktop(true);
     else if (size.width < 1024 && isDesktop) setIsDesktop(false);
@@ -187,8 +189,8 @@ export const Chart = ({ data, selectedType }: Props) => {
               data-selected={selectedChain === item.chain}
               style={{
                 height: (item.percentage * CHART_SIZE) / 100,
-                marginTop: idx === 0 ? 0 : MARGIN_SIZE,
-                marginBottom: MARGIN_SIZE,
+                marginTop: idx === 0 ? 0 : MARGIN_SIZE_ELEMENTS,
+                marginBottom: MARGIN_SIZE_ELEMENTS,
               }}
             >
               <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chain} />
@@ -218,8 +220,8 @@ export const Chart = ({ data, selectedType }: Props) => {
               data-percentage={item.percentage}
               style={{
                 height: (item.percentage * CHART_SIZE) / 100,
-                marginTop: idx === 0 ? 0 : MARGIN_SIZE,
-                marginBottom: MARGIN_SIZE,
+                marginTop: idx === 0 ? 0 : MARGIN_SIZE_ELEMENTS,
+                marginBottom: MARGIN_SIZE_ELEMENTS,
               }}
             >
               <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chain} />
