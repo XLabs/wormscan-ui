@@ -91,6 +91,7 @@
       z-index: 2;
       height: 650px;
       @include centered-column;
+      justify-content: flex-start;
       align-items: center;
       @include desktop {
         width: 25%;
@@ -115,7 +116,6 @@
         @media only screen and (min-width: 510px) {
           grid-template-columns: 90px 30px 60px;
         }
-
         @include tablet {
           grid-template-columns: 100px 10px 80px;
         }

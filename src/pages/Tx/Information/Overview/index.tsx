@@ -17,8 +17,7 @@ import { formatCurrency } from "src/utils/number";
 import { CSSProperties } from "react";
 import { ChainId, isEVMChain } from "@certusone/wormhole-sdk";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
-import { BREAKPOINTS } from "src/consts";
-import { colorStatus } from "src/conts";
+import { BREAKPOINTS, colorStatus } from "src/consts";
 import "./styles.scss";
 
 // 360 degree / 19 total signatures

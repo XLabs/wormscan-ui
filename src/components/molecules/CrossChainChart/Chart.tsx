@@ -25,7 +25,7 @@ type Props = {
 };
 
 export const Chart = ({ data, selectedType }: Props) => {
-  const filteredData = data.sort((a, b) => b.volume - a.volume).slice(0, 10);
+  const filteredData = processData(data);
   const [chartData] = useState(filteredData);
 
   const [selectedChain, setSelectedChain] = useState(chartData[0].chain);
@@ -194,7 +194,7 @@ export const Chart = ({ data, selectedType }: Props) => {
               }}
             >
               <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chain} />
-              <span className="chain-name">{ChainId[item.chain]}</span>
+              <span className="chain-name">{getChainName(item.chain)}</span>
               {!isDesktop && <span className="mobile-separator">|</span>}
               <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
               <span className="chain-separator onlyBig">|</span>
@@ -225,7 +225,7 @@ export const Chart = ({ data, selectedType }: Props) => {
               }}
             >
               <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chain} />
-              <span className="chain-name">{ChainId[item.chain] ?? "Unset"}</span>
+              <span className="chain-name">{getChainName(item.chain)}</span>
               {!isDesktop && <span className="mobile-separator">|</span>}
               <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
               <span className="chain-separator onlyBig">|</span>
@@ -238,4 +238,60 @@ export const Chart = ({ data, selectedType }: Props) => {
       </div>
     </>
   );
+};
+
+const OTHERS_FAKE_CHAIN_ID = 123123123 as ChainId;
+const getChainName = (id: ChainId) => {
+  if (id === OTHERS_FAKE_CHAIN_ID) return "Others";
+  return ChainId[id] ?? "Unset";
+};
+
+const processData = (data: CrossChainActivity) => {
+  const newData = data.sort((a, b) => b.percentage - a.percentage);
+
+  // if more than 10 elements, create "Others" section
+  if (newData.length > 10) {
+    let percentage = 0;
+    let volume = 0;
+    const destinations: any = {};
+
+    newData.slice(10).forEach(item => {
+      // sum the percentage and volume of every other chain
+      percentage += item.percentage;
+      volume += +item.volume;
+
+      // create an object that sums the volume for the same destiny chain
+      item.destinations.forEach(destination => {
+        destinations[destination.chain] = {
+          volume: (destinations[destination.chain]?.volume ?? 0) + Number(destination.volume),
+        };
+      });
+    });
+
+    // transform the object with destination volumes summed up into an array of chains
+    let newDestinations = [];
+    for (const [chain, value] of Object.entries(destinations) as any) {
+      newDestinations.push({
+        chain,
+        volume: value.volume,
+      });
+    }
+
+    // add percentages to that array of destination chains
+    let totalVolume = 0;
+    newDestinations.forEach(dest => {
+      totalVolume += dest.volume;
+    });
+    newDestinations = newDestinations.map(dest => ({
+      chain: dest.chain,
+      volume: dest.volume,
+      percentage: (dest.volume / totalVolume) * 100,
+    }));
+
+    // sort the array and use only the first 10 elements
+    newDestinations = newDestinations.sort((a: any, b: any) => b.volume - a.volume).slice(0, 10);
+    newData[9] = { chain: OTHERS_FAKE_CHAIN_ID, percentage, volume, destinations: newDestinations };
+  }
+
+  return newData.slice(0, 10);
 };

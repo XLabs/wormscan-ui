@@ -9,8 +9,8 @@ import { useParams } from "react-router-dom";
 import { VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { ChainId, parseVaa } from "@certusone/wormhole-sdk";
 import { Buffer } from "buffer";
+import { getGuardianSet } from "../../consts";
 import "./styles.scss";
-import { getGuardianSet } from "../../conts";
 
 const Tx = () => {
   const { txHash } = useParams();

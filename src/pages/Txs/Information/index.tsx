@@ -14,7 +14,7 @@ import { CopyIcon } from "@radix-ui/react-icons";
 import { formatCurrency } from "src/utils/number";
 import { timeAgo } from "src/utils/date";
 import { ChainId } from "@certusone/wormhole-sdk";
-import { colorStatus } from "src/conts";
+import { colorStatus } from "src/consts";
 import { useIntersectionObserver } from "src/utils/hooks/useIntersectionObserver";
 import "./styles.scss";
 import { useNavigate } from "react-router-dom";
