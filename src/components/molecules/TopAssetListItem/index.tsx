@@ -2,6 +2,7 @@ import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
 import { getChainName } from "src/utils/wormhole";
+import noIconToken from "src/icons/tokens/noIcon.svg";
 import "./styles.scss";
 
 type Props = {
@@ -24,21 +25,21 @@ const TopAssetListItem = ({ from_chain, token_logo, symbol, volume }: Props) => 
         </div>
 
         <div className="top-asset-list-item-from-chain">
-          {getChainName({ chainId: from_chain })}
+          {getChainName({ chainId: from_chain, acronym: true })}
         </div>
       </div>
-      <ArrowRightIcon className="arrow-icon" />
+      <div>
+        <ArrowRightIcon className="arrow-icon" />
+      </div>
       <div className="top-asset-list-item-to">
-        {token_logo && (
-          <div className="top-asset-list-item-to-icon-container">
-            <img
-              src={token_logo}
-              alt={`${symbol} icon`}
-              width="25"
-              className="top-asset-list-item-to-icon"
-            />
-          </div>
-        )}
+        <div className="top-asset-list-item-to-icon-container">
+          <img
+            src={token_logo || noIconToken}
+            alt={`${symbol} icon`}
+            width="25"
+            className="top-asset-list-item-to-icon"
+          />
+        </div>
 
         <div className="top-asset-list-item-to-asset">{symbol}</div>
       </div>

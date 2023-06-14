@@ -14,6 +14,8 @@ import "./styles.scss";
 
 const Tx = () => {
   const { txHash } = useParams();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [hasError, setHasError] = useState<boolean>(false);
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [VAAId, setVAAId] = useState<string>("");
   const [parsedVAAData, setParsedVAAData] = useState<
@@ -24,11 +26,11 @@ const Tx = () => {
   const emitter = vaaIdSplit?.[1];
   const seq = Number(vaaIdSplit?.[2]);
 
-  const {
-    isLoading: VAADataIsLoading,
-    error: VAAError,
-    data: VAAData,
-  } = useQuery(
+  useEffect(() => {
+    setIsLoading(true);
+  }, [txHash]);
+
+  const { data: VAAData } = useQuery(
     ["getVAA", txHash],
     () =>
       client.guardianNetwork.getVAAbyTxHash({
@@ -43,15 +45,12 @@ const Tx = () => {
         const { id } = vaa || {};
         id && setVAAId(id);
       },
+      onError: () => setHasError(true),
     },
   );
 
-  const {
-    isLoading: globalTxIsLoading,
-    error: globalTxError,
-    data: globalTxData,
-  } = useQuery(
-    ["globalTx"],
+  const { data: globalTxData } = useQuery(
+    ["globalTx", VAAId],
     () =>
       client.guardianNetwork.getGlobalTx({
         chainId,
@@ -61,7 +60,11 @@ const Tx = () => {
           parsedPayload: true,
         },
       }),
-    { enabled: Boolean(VAAId) },
+    {
+      enabled: Boolean(VAAId),
+      onSuccess: () => setIsLoading(false),
+      onError: () => setHasError(true),
+    },
   );
 
   const { vaa, payload, guardianSetIndex } = VAAData || {};
@@ -103,7 +106,7 @@ const Tx = () => {
   return (
     <BaseLayout>
       <div className="tx-page">
-        {VAADataIsLoading || globalTxIsLoading || !Boolean(parsedVAAData) ? (
+        {isLoading ? (
           <div className="tx-page-loader">
             <Loader />
           </div>
