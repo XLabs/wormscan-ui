@@ -1,5 +1,3 @@
-import { TxStatus } from "./types";
-
 export const BREAKPOINTS = {
   mobile: 320,
   tablet: 768,
@@ -8,6 +6,7 @@ export const BREAKPOINTS = {
 };
 
 export const getGuardianSet = (version: number) => {
+  // https://raw.githubusercontent.com/wormhole-foundation/wormhole-networks/master/mainnetv2/guardianset/v1.prototxt
   const v1 = [
     {
       pubkey: "0x58CC3AE5C097b213cE3c81979e1B9f9570746AA5",
@@ -87,32 +86,22 @@ export const getGuardianSet = (version: number) => {
     },
   ];
 
+  // https://raw.githubusercontent.com/wormhole-foundation/wormhole-networks/master/mainnetv2/guardianset/v2.prototxt
   const v2 = [...v1];
   v2[7] = {
     pubkey: "0x66B9590e1c41e0B226937bf9217D1d67Fd4E91F5",
     name: "FTX",
   };
 
-  const v3 = v2;
+  // https://raw.githubusercontent.com/wormhole-foundation/wormhole-networks/master/mainnetv2/guardianset/v3.prototxt
+  const v3 = [...v2];
   v3[7] = {
     pubkey: "0x15e7cAF07C4e3DC8e7C469f92C8Cd88FB8005a20",
     name: "xLabs",
   };
 
-  if (version === 1) {
-    // https://raw.githubusercontent.com/wormhole-foundation/wormhole-networks/master/mainnetv2/guardianset/v1.prototxt
-    return v1;
-  }
-  // https://raw.githubusercontent.com/wormhole-foundation/wormhole-networks/master/mainnetv2/guardianset/v2.prototxt
-  if (version === 2) {
-    return v2;
-  }
-  // https://raw.githubusercontent.com/wormhole-foundation/wormhole-networks/master/mainnetv2/guardianset/v3.prototxt
-  if (version === 3) {
-    return v3;
-  }
-
-  return [];
+  const versions: any = { 1: v1, 2: v2, 3: v3 };
+  return versions[version] || [];
 };
 
 export const colorStatus: any = {
