@@ -71,11 +71,11 @@ html {
 body {
   margin: 0;
   color: var(--color-white);
-  background: url("./assets/bg-mobile.webp") no-repeat center center fixed;
+  background-image: url("./assets/bg-mobile.webp");
   background-size: cover;
 
   @include desktop {
-    background: url("./assets/bg.webp") no-repeat center center fixed;
+    background-image: url("./assets/bg.webp");
   }
 }
 
