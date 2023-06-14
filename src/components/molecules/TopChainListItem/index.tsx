@@ -23,16 +23,20 @@ const TopChainListItem = ({ from_chain, to_chain, transactions }: Props) => {
         </div>
 
         <div className="top-chain-list-item-from-chain">
-          {getChainName({ chainId: from_chain })}
+          {getChainName({ chainId: from_chain, acronym: true })}
         </div>
       </div>
-      <ArrowRightIcon className="arrow-icon" />
+      <div>
+        <ArrowRightIcon className="arrow-icon" />
+      </div>
       <div className="top-chain-list-item-to">
         <div className="top-chain-list-item-to-icon-container">
           <BlockchainIcon size={25} chainId={to_chain} className="top-chain-list-item-to-icon" />
         </div>
 
-        <div className="top-chain-list-item-to-chain">{getChainName({ chainId: to_chain })}</div>
+        <div className="top-chain-list-item-to-chain">
+          {getChainName({ chainId: to_chain, acronym: true })}
+        </div>
       </div>
       <div className="top-chain-list-item-transactions">
         {formatNumber(Number(transactions), 0)}

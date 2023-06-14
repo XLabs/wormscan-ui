@@ -23,7 +23,8 @@ const CopyToClipboard = ({ children, tooltip, toCopy }: Props) => {
     };
   }, [open]);
 
-  const copyText = async () => {
+  const copyText = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     await navigator.clipboard.writeText(toCopy);
     openTooltip();
   };

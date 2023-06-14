@@ -4,20 +4,30 @@
   @include centered-row;
   @include text-p3;
 
+  align-items: end;
   color: var(--color-primary-10);
   width: 100%;
-  gap: 32px;
+  gap: 20px;
 
-  > .arrow-icon {
+  @include tablet {
+    align-items: center;
+  }
+
+  .arrow-icon {
     transform: scale(1.75);
     color: var(--color-primary-200);
   }
 
   &-from {
-    @include centered-row;
+    @include centered-column;
+
+    flex: 1;
+    row-gap: 8px;
+    column-gap: 16px;
+    justify-content: flex-start;
 
     @include tablet {
-      flex: 1;
+      @include centered-row;
     }
 
     &-icon-container {
@@ -28,30 +38,19 @@
       height: 32px;
       border-radius: 50%;
       background-color: var(--color-primary-800);
-    }
-
-    &-icon-container + &-chain {
-      margin-left: 16px;
-    }
-
-    &-chain {
-      display: none;
-
-      @include tablet {
-        display: block;
-      }
-    }
-
-    &-chain:only-child {
-      display: block;
     }
   }
 
   &-to {
-    @include centered-row;
+    @include centered-column;
+
+    flex: 1;
+    row-gap: 8px;
+    column-gap: 16px;
+    justify-content: flex-start;
 
     @include tablet {
-      flex: 1;
+      @include centered-row;
     }
 
     &-icon-container {
@@ -62,22 +61,6 @@
       height: 32px;
       border-radius: 50%;
       background-color: var(--color-primary-800);
-    }
-
-    &-icon-container + &-chain {
-      margin-left: 16px;
-    }
-
-    &-chain {
-      display: none;
-
-      @include tablet {
-        display: block;
-      }
-    }
-
-    &-chain:only-child {
-      display: block;
     }
   }
 
