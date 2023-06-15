@@ -32,10 +32,6 @@ const Footer = () => {
           </div>
 
           <div className="footer-links-item">
-            <NavLink to="/about">{t("home.footer.about")}</NavLink>
-          </div>
-
-          <div className="footer-links-item">
             <NavLink to="/txs">{t("home.footer.txs")}</NavLink>
           </div>
         </div>

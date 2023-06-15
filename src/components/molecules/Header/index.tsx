@@ -26,10 +26,6 @@ const LogoLink = () => (
 const HeaderLinks = () => (
   <nav data-testid="header-nav">
     <div className="header-navigation-item">
-      <NavLink to="/about">{i18n.t("home.header.about")}</NavLink>
-    </div>
-
-    <div className="header-navigation-item">
       <NavLink to="/txs">{i18n.t("home.header.txs")}</NavLink>
     </div>
   </nav>

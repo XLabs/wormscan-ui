@@ -110,6 +110,8 @@
     padding: 0 32px;
 
     @include desktop {
+      grid-template-columns: auto auto;
+      justify-content: center;
       padding: 0;
     }
 
