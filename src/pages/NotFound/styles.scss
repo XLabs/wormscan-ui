@@ -1,0 +1,47 @@
+@import "src/styles/globals.scss";
+
+.not-found-page {
+  flex: 1;
+  display: block;
+  background-image: url("../../assets/bg-mobile-404.svg");
+  background-repeat: no-repeat;
+  background-position: left 50px;
+
+  @include tablet {
+    background-image: url("../../assets/bg-404.svg");
+  }
+
+  &-container {
+    max-width: 425px;
+    padding: 128px 16px;
+
+    @include desktop {
+      margin-left: 200px;
+    }
+  }
+
+  &-title {
+    @include text-h2;
+
+    color: var(--color-primary-30);
+    margin-bottom: 8px;
+  }
+
+  &-body {
+    @include text-p1;
+
+    margin-bottom: 48px;
+    color: var(--color-primary-50);
+
+    > p + p {
+      margin-top: 48px;
+    }
+  }
+
+  &-button {
+    @include button-secondary;
+
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
