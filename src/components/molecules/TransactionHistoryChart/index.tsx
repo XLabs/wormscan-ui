@@ -4,8 +4,8 @@ import { Loader } from "src/components/atoms";
 import ReactApexChart from "react-apexcharts";
 import { DateRange } from "@xlabs-libs/wormscan-sdk";
 import client from "src/api/Client";
-import "./styles.scss";
 import { numberToSuffix } from "src/utils/number";
+import "./styles.scss";
 
 type Props = {
   range: DateRange;
@@ -119,7 +119,15 @@ const TransactionHistoryChart = ({ range }: Props) => {
                 grid: {
                   show: false,
                 },
-                tooltip: { enabled: false },
+                tooltip: {
+                  enabled: true,
+                  x: {
+                    show: false,
+                  },
+                  marker: {
+                    show: false,
+                  },
+                },
                 stroke: {
                   curve: "smooth",
                   width: 2,

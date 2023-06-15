@@ -93,19 +93,6 @@
         }
       }
 
-      &-iconWrapper {
-        min-width: 50px;
-        margin-left: 25px;
-
-        @include tablet {
-          margin-left: 0px;
-        }
-
-        @include desktop {
-          min-width: unset;
-        }
-      }
-
       &.blue {
         --color: red;
       }
@@ -172,6 +159,17 @@
         width: 100%;
         display: flex;
         justify-content: center;
+
+        min-width: 50px;
+        margin-left: 25px;
+
+        @include tablet {
+          margin-left: 0px;
+        }
+
+        @include desktop {
+          min-width: unset;
+        }
       }
 
       &:not(:last-child) {
@@ -220,8 +218,18 @@
         height: 155px;
         border-radius: 50%;
         border: 10px solid transparent;
-        background-color: #151632;
         background-clip: padding-box;
+
+        &::before {
+          content: "";
+          position: absolute;
+          width: 135px;
+          height: 135px;
+          display: block;
+          border-radius: 50%;
+          background-color: #151632;
+          z-index: -1;
+        }
 
         &-circle {
           position: absolute;
