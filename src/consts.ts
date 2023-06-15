@@ -5,7 +5,12 @@ export const BREAKPOINTS = {
   bigDesktop: 1440,
 };
 
-export const getGuardianSet = (version: number) => {
+type GuardianSet = {
+  pubkey: string;
+  name: string;
+};
+
+export const getGuardianSet = (version: number): GuardianSet[] => {
   // https://raw.githubusercontent.com/wormhole-foundation/wormhole-networks/master/mainnetv2/guardianset/v1.prototxt
   const v1 = [
     {
@@ -100,7 +105,7 @@ export const getGuardianSet = (version: number) => {
     name: "xLabs",
   };
 
-  const versions: any = { 1: v1, 2: v2, 3: v3 };
+  const versions: Record<number, GuardianSet[]> = { 1: v1, 2: v2, 3: v3 };
   return versions[version] || [];
 };
 
