@@ -115,3 +115,6 @@ export const colorStatus: any = {
   ONGOING: "orange",
   FAILED: "red",
 };
+
+export const TWITTER_URL = "https://twitter.com/wormholecrypto";
+export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";

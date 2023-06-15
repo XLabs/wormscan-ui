@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import client from "src/api/Client";
 import SearchBar from "../../SearchBar";
+import { useRef } from "react";
 
 const Search = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const searchString = useRef("");
+  const errorsCount = useRef(0);
+
+  const goSearchNotFound = () => {
+    errorsCount.current += 1;
+    if (errorsCount.current >= 2) {
+      navigate(`/search-not-found/${searchString.current}`);
+    }
+  };
 
   const { mutate: mutateFindVAAByAddress } = useMutation(
     "findVAAByAddress",
@@ -20,6 +30,11 @@ const Search = () => {
         const { data } = response || {};
         const { vaas } = data || {};
         console.log({ vaas });
+        // TODO: pass address to search by address
+        navigate(`/txs`);
+      },
+      onError: _ => {
+        goSearchNotFound();
       },
     },
   );
@@ -37,7 +52,10 @@ const Search = () => {
       onSuccess: vaa => {
         console.log({ vaa });
         const { txHash } = vaa || {};
-        txHash && navigate(`/tx/${txHash}`);
+        txHash ? navigate(`/tx/${txHash}`) : goSearchNotFound();
+      },
+      onError: _ => {
+        goSearchNotFound();
       },
     },
   );
@@ -53,6 +71,8 @@ const Search = () => {
     let { value } = search;
     if (value) {
       value = value.trim();
+      errorsCount.current = 0;
+      searchString.current = value;
       mutateFindVAAByAddress({ address: value });
       mutateFindVAAByTxHash({
         txHash: value,

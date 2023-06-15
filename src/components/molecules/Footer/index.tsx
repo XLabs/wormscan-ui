@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { NavLink } from "src/components/atoms";
+import { DISCORD_URL, TWITTER_URL } from "src/consts";
 import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
 import WormholeBrand from "../WormholeBrand";
@@ -21,8 +22,12 @@ const Footer = () => {
         <div className="footer-social">
           <div className="footer-social-text">{t("home.footer.joinUs")}:</div>
           <div className="footer-social-icons">
-            <DiscordIcon />
-            <TwitterIcon />
+            <a href={DISCORD_URL} target="_blank" rel="noreferrer">
+              <DiscordIcon />
+            </a>
+            <a href={TWITTER_URL} target="_blank" rel="noreferrer">
+              <TwitterIcon />
+            </a>
           </div>
         </div>
 

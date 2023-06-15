@@ -43,5 +43,10 @@
 
     padding-left: 32px;
     padding-right: 32px;
+
+    @include desktop {
+      padding-left: 56px;
+      padding-right: 56px;
+    }
   }
 }
