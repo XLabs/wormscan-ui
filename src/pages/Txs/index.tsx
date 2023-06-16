@@ -26,6 +26,8 @@ export interface TransactionOutput {
   time: Date | string;
 }
 
+export const PAGE_SIZE = 50;
+
 const Txs = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -46,7 +48,7 @@ const Txs = () => {
     },
     pagination: {
       page: currentPage - 1,
-      pageSize: 50,
+      pageSize: PAGE_SIZE,
       sortOrder: Order.DESC,
     },
   };

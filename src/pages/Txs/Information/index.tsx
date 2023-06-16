@@ -2,7 +2,7 @@ import { Table, Tabs } from "src/components/organisms";
 import i18n from "src/i18n";
 import { Column } from "react-table";
 import { useNavigate } from "react-router-dom";
-import { TransactionOutput } from "..";
+import { PAGE_SIZE, TransactionOutput } from "..";
 import Pagination from "src/components/atoms/Pagination";
 import "./styles.scss";
 import { Dispatch, SetStateAction } from "react";
@@ -100,6 +100,7 @@ const Information = ({
                   data={parsedTxsData}
                   className="txs"
                   onRowClick={onRowClick}
+                  emptyMessage="No txs found."
                 />
               )}
 
@@ -111,6 +112,7 @@ const Information = ({
                   goNextPage={() => goNextPage(currentPage)}
                   // goLastPage={() => goLastPage()}
                   disabled={isPaginationLoading}
+                  disableNextButton={parsedTxsData.length <= 0 || parsedTxsData.length < PAGE_SIZE}
                 />
               </div>
             </>,
