@@ -14,6 +14,8 @@ import { formatCurrency } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { Information } from "./Information";
 import { Top } from "./Top";
+import "./styles.scss";
+
 export interface TransactionOutput {
   id: string;
   txHash: React.ReactNode;
@@ -24,13 +26,17 @@ export interface TransactionOutput {
   time: Date | string;
 }
 
+export const PAGE_SIZE = 50;
+
 const Txs = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const address = searchParams.get("address");
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isPaginationLoading, setIsPaginationLoading] = useState<boolean>(false);
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
   const [parsedTxsData, setParsedTxsData] = useState<TransactionOutput[] | undefined>(undefined);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
     setIsLoading(true);
@@ -41,8 +47,8 @@ const Txs = () => {
       ...(address && { address }),
     },
     pagination: {
-      page: 0,
-      pageSize: 50,
+      page: currentPage - 1,
+      pageSize: PAGE_SIZE,
       sortOrder: Order.DESC,
     },
   };
@@ -55,7 +61,7 @@ const Txs = () => {
     ["getTxs", getTransactionInput],
     () => client.search.getTransactions(getTransactionInput),
     {
-      refetchInterval: 10000,
+      refetchInterval: () => (currentPage === 1 ? 10000 : false),
       onError: () => {
         navigate(`/search-not-found/${address || ""}`);
       },
@@ -198,21 +204,32 @@ const Txs = () => {
         setParsedTxsData(tempRows);
         setAddressChainId(destinationChainId as ChainId);
         setIsLoading(false);
+        setIsPaginationLoading(false);
       },
     },
   );
+
+  const onChangePagination = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <BaseLayout>
       <div className="txs-page">
         {isLoading ? (
-          <div className="tx-page-loader">
+          <div className="txs-page-loader">
             <Loader />
           </div>
         ) : (
           <>
             <Top address={address} addressChainId={addressChainId} />
-            <Information parsedTxsData={parsedTxsData} />
+            <Information
+              parsedTxsData={parsedTxsData}
+              currentPage={currentPage}
+              onChangePagination={onChangePagination}
+              isPaginationLoading={isPaginationLoading}
+              setIsPaginationLoading={setIsPaginationLoading}
+            />
           </>
         )}
       </div>

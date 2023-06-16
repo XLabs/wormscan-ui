@@ -23,6 +23,11 @@
   }
 }
 
+.gif-loader {
+  width: 48px;
+  height: 48px;
+}
+
 @keyframes spinner-rotation {
   0% {
     transform: rotate(0deg);

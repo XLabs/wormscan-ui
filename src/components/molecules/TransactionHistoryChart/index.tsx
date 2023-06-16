@@ -124,6 +124,9 @@ const TransactionHistoryChart = ({ range }: Props) => {
                   x: {
                     show: false,
                   },
+                  y: {
+                    formatter: val => String(val),
+                  },
                   marker: {
                     show: false,
                   },

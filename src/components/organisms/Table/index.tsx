@@ -7,54 +7,65 @@ type Props<T extends object> = {
   data: T[];
   className?: string;
   onRowClick?: (row: any) => void;
+  emptyMessage?: string;
 };
 
-const Table = <T extends object>({ columns, data, className, onRowClick }: Props<T>) => {
+const Table = <T extends object>({
+  columns,
+  data,
+  className,
+  onRowClick,
+  emptyMessage = "No items found.",
+}: Props<T>) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
   });
 
   return (
-    <table {...getTableProps()} className={`table ${className}`}>
-      <thead className="table-head">
-        {headerGroups.map((headerGroup, index) => (
-          <tr key={index} {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column, index) => {
-              const style: CSSProperties = (column as any).style;
+    <>
+      <table {...getTableProps()} className={`table ${className}`}>
+        <thead className="table-head">
+          {headerGroups.map((headerGroup, index) => (
+            <tr key={index} {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column, index) => {
+                const style: CSSProperties = (column as any).style;
 
-              return (
-                <th key={index} {...column.getHeaderProps()} style={{ ...style }}>
-                  {column.render("Header")}
-                </th>
-              );
-            })}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()} className="table-body">
-        {rows.map((row, index) => {
-          prepareRow(row);
-          return (
-            /* tslint:disable-next-line */
-            <tr
-              key={index}
-              {...row.getRowProps()}
-              onClick={() => onRowClick && onRowClick(row.original)}
-            >
-              {row.cells.map((cell, index) => {
-                const style: CSSProperties = (cell.column as any).style;
                 return (
-                  <td key={index} {...cell.getCellProps()} style={{ ...style }}>
-                    {cell.render("Cell")}
-                  </td>
+                  <th key={index} {...column.getHeaderProps()} style={{ ...style }}>
+                    {column.render("Header")}
+                  </th>
                 );
               })}
             </tr>
-          );
-        })}
-      </tbody>
-    </table>
+          ))}
+        </thead>
+        {rows?.length > 0 && (
+          <tbody {...getTableBodyProps()} className="table-body">
+            {rows.map((row, index) => {
+              prepareRow(row);
+              return (
+                <tr
+                  key={index}
+                  {...row.getRowProps()}
+                  onClick={() => onRowClick && onRowClick(row.original)}
+                >
+                  {row.cells.map((cell, index) => {
+                    const style: CSSProperties = (cell.column as any).style;
+                    return (
+                      <td key={index} {...cell.getCellProps()} style={{ ...style }}>
+                        {cell.render("Cell")}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        )}
+      </table>
+      {rows?.length <= 0 && <div className="table-body-empty">{emptyMessage}</div>}
+    </>
   );
 };
 

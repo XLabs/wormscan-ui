@@ -48,10 +48,6 @@
         cursor: pointer;
       }
 
-      &:last-child {
-        border-bottom: none;
-      }
-
       > td {
         padding: 8px 16px;
 
@@ -65,4 +61,13 @@
       }
     }
   }
+}
+
+.table-body-empty {
+  @include centered-row;
+  @include text-p2;
+
+  justify-content: center;
+  padding: 16px;
+  color: var(--color-primary-50);
 }
