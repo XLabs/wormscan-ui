@@ -71,7 +71,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
               height={"100%"}
               series={[
                 {
-                  name: "LastTxsData",
+                  name: "Transactions",
                   data: seriesData,
                 },
               ]}

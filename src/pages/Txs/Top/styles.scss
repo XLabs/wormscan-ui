@@ -1,21 +1,67 @@
 @import "src/styles/globals.scss";
 
 .txs-top {
-  @include centered-row;
+  @include centered-column;
 
-  flex-wrap: wrap;
-  gap: 24px;
+  gap: 16px;
+  margin: 32px 0;
 
-  margin-top: 48px;
-  margin-bottom: 32px;
-  width: 100%;
-  justify-content: space-between;
+  &-header {
+    @include centered-row;
+    flex-wrap: wrap;
+    gap: 24px;
+    width: 100%;
 
-  &-title {
-    @include text-h5;
+    &-title {
+      @include text-h5;
+    }
+
+    &-search-bar {
+      max-width: 424px;
+    }
   }
 
-  &-search-bar {
-    max-width: 424px;
+  &-txId {
+    @include text-p3;
+    @include centered-column;
+
+    @include desktop {
+      @include centered-row;
+
+      justify-content: start;
+      gap: 8px;
+    }
+
+    color: var(--color-primary-100);
+    word-break: break-all;
+
+    &-container {
+      @include centered-row;
+
+      line-height: 1.4;
+      gap: 24px;
+
+      svg {
+        height: 25px;
+        width: 25px;
+      }
+
+      > a {
+        color: var(--color-information-100);
+      }
+
+      @include tablet {
+        gap: 8px;
+
+        svg {
+          height: unset;
+          width: unset;
+        }
+      }
+    }
+
+    & .copy-to-clipboard {
+      display: flex;
+    }
   }
 }

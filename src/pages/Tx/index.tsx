@@ -5,7 +5,7 @@ import { Loader } from "src/components/atoms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { Information } from "./Information";
 import { Top } from "./Top";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { ChainId, parseVaa } from "@certusone/wormhole-sdk";
 import { Buffer } from "buffer";
@@ -13,9 +13,9 @@ import { getGuardianSet } from "../../consts";
 import "./styles.scss";
 
 const Tx = () => {
+  const navigate = useNavigate();
   const { txHash } = useParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [hasError, setHasError] = useState<boolean>(false);
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [VAAId, setVAAId] = useState<string>("");
   const [parsedVAAData, setParsedVAAData] = useState<
@@ -45,7 +45,7 @@ const Tx = () => {
         const { id } = vaa || {};
         id && setVAAId(id);
       },
-      onError: () => setHasError(true),
+      onError: () => navigate(`/search-not-found/${txHash}`),
     },
   );
 
@@ -63,7 +63,7 @@ const Tx = () => {
     {
       enabled: Boolean(VAAId),
       onSuccess: () => setIsLoading(false),
-      onError: () => setHasError(true),
+      onError: () => navigate(`/search-not-found/${txHash}`),
     },
   );
 
