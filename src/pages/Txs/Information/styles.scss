@@ -18,7 +18,9 @@
   }
 
   .tabs {
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: visible;
+    height: 100%;
   }
 
   .table {
@@ -78,5 +80,11 @@
         }
       }
     }
+  }
+
+  .txs-pagination {
+    display: flex;
+    justify-content: center;
+    margin: 75px 0 48px;
   }
 }

@@ -21,10 +21,15 @@ const Search = () => {
 
   const { mutate: mutateFindVAAByAddress } = useMutation(
     "findVAAByAddress",
-    ({ address }: { address: string }) =>
-      client.search.findVAAByAddress({
-        address,
-      }),
+    ({ address }: { address: string }) => {
+      try {
+        return client.search.findVAAByAddress({
+          address,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
     {
       onSuccess: (response, { address }) => {
         const { data } = response || {};
