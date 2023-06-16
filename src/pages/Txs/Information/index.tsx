@@ -6,7 +6,7 @@ import { TransactionOutput } from "..";
 import "./styles.scss";
 
 const TXS_TAB_HEADERS = [
-  i18n.t("common.txs").toUpperCase(),
+  i18n.t("common.transfers").toUpperCase(),
   // i18n.t("common.messages").toUpperCase(),
 ];
 
@@ -56,6 +56,7 @@ const Information = ({ parsedTxsData }: Props) => {
       <section className="txs-information">
         <Tabs
           headers={TXS_TAB_HEADERS}
+          className="txs-information-tabs"
           contents={[
             <>
               {/* <div className="txs-information-table-results">(?) Results</div> */}

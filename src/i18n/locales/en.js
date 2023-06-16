@@ -84,6 +84,7 @@ export default {
         details: "details",
         rawData: "raw data",
         txs: "transactions",
+        transfers: "transfers",
       },
     },
   },
