@@ -26,12 +26,11 @@ const Search = () => {
         address,
       }),
     {
-      onSuccess: response => {
+      onSuccess: (response, { address }) => {
         const { data } = response || {};
         const { vaas } = data || {};
         console.log({ vaas });
-        // TODO: pass address to search by address
-        navigate(`/txs`);
+        navigate(`/txs?address=${address}`);
       },
       onError: _ => {
         goSearchNotFound();

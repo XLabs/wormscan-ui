@@ -80,10 +80,6 @@
         width: 70px;
         height: 50px;
 
-        @include desktop {
-          width: auto;
-        }
-
         > div {
           position: absolute;
           width: inherit;

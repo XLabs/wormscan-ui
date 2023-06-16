@@ -6,6 +6,7 @@ import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 import i18n from "src/i18n";
 import Search from "./Search";
 import "./styles.scss";
+import { PORTAL_BRIDGE_URL } from "src/consts";
 
 const setOverflowHidden = (hidden: boolean) => {
   if (hidden) {
@@ -56,7 +57,9 @@ const Header = () => {
         <HeaderLinks />
 
         <div className="header-actions">
-          <button className="connect-button">{t("home.header.goBridge")}</button>
+          <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noreferrer">
+            <button className="connect-button">{t("home.header.goBridge")}</button>
+          </a>
         </div>
       </div>
 
@@ -83,9 +86,11 @@ const Header = () => {
           <HeaderLinks />
 
           <div className="header-navigation-item">
-            <button className="go-bridge" data-testid="go-bridge-button">
-              {t("home.header.goBridge")}
-            </button>
+            <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noreferrer">
+              <button className="go-bridge" data-testid="go-bridge-button">
+                {t("home.header.goBridge")}
+              </button>
+            </a>
           </div>
         </div>
       </div>

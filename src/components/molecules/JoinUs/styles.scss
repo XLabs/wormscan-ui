@@ -24,6 +24,10 @@
     @include tablet {
       padding: 48px 0px 24px;
     }
+
+    & a {
+      text-decoration: none;
+    }
   }
 
   &-text {

@@ -116,5 +116,6 @@ export const colorStatus: any = {
   FAILED: "red",
 };
 
+export const PORTAL_BRIDGE_URL = "https://www.portalbridge.com";
 export const TWITTER_URL = "https://twitter.com/wormholecrypto";
 export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";
