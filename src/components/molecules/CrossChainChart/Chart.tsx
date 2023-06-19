@@ -18,6 +18,7 @@ interface IDestinyChainsHeight {
 // CHART CONSTANTS
 const CHART_SIZE = 650;
 const MARGIN_SIZE_CANVAS = 2;
+let DEVICE_PIXEL_RATIO = Math.floor(window.devicePixelRatio);
 
 type Props = {
   data: CrossChainActivity;
@@ -40,6 +41,7 @@ export const Chart = ({ data, selectedType }: Props) => {
 
   const size = useWindowSize();
   const [isDesktop, setIsDesktop] = useState(size.width >= BREAKPOINTS.desktop);
+  if (size.width < BREAKPOINTS.tablet) DEVICE_PIXEL_RATIO = 1;
 
   const MARGIN_SIZE_ELEMENTS = isDesktop ? 2 : 4;
 
@@ -136,9 +138,9 @@ export const Chart = ({ data, selectedType }: Props) => {
       const context = canvas.getContext("2d");
 
       // prevent pixelated canvas on high quality resolution devices
-      canvas.width = CHART_SIZE * window.devicePixelRatio;
-      canvas.height = CHART_SIZE * window.devicePixelRatio;
-      context.scale(window.devicePixelRatio, window.devicePixelRatio);
+      canvas.width = Math.floor(CHART_SIZE * DEVICE_PIXEL_RATIO);
+      canvas.height = Math.floor(CHART_SIZE * DEVICE_PIXEL_RATIO);
+      context.scale(DEVICE_PIXEL_RATIO, DEVICE_PIXEL_RATIO);
 
       // run animated canvas
       let frameCount = 0;
