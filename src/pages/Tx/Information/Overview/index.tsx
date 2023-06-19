@@ -240,7 +240,7 @@ const Overview = ({
             </div>
           </div>
           <div className="tx-overview-graph-step-data-container">
-            {txStatus === "SUCCESSFUL" && (
+            {txStatus === "COMPLETED" && (
               <>
                 <div>
                   <div className="tx-overview-graph-step-title">Time</div>

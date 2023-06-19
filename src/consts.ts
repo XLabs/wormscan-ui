@@ -114,6 +114,7 @@ export const colorStatus: any = {
   COMPLETED: "green",
   ONGOING: "orange",
   FAILED: "red",
+  ERROR: "red",
 };
 
 export const PORTAL_BRIDGE_URL = "https://www.portalbridge.com";

@@ -1,1 +1,1 @@
-export type TxStatus = "SUCCESSFUL" | "COMPLETED" | "ONGOING" | "FAILED";
+export type TxStatus = "COMPLETED" | "ONGOING" | "FAILED" | "ERROR";

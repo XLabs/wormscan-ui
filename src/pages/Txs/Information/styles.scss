@@ -58,26 +58,6 @@
         gap: 12;
         align-items: center;
         color: var(--color);
-
-        & path {
-          fill: var(--color);
-        }
-
-        &.blue {
-          --color: var(--color-information-100);
-        }
-
-        &.green {
-          --color: var(--color-success-100);
-        }
-
-        &.orange {
-          --color: var(--color-alert-100);
-        }
-
-        &.red {
-          --color: var(--color-error-100);
-        }
       }
     }
   }

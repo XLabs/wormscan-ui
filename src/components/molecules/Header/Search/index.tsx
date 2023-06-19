@@ -49,7 +49,7 @@ const Search = () => {
       client.guardianNetwork.getVAAbyTxHash({
         query: {
           txHash,
-          parsedPayload: true,
+          parsedPayload: false,
         },
       }),
     {
