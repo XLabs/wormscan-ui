@@ -40,7 +40,11 @@ const Pagination = ({
       <button onClick={goNextPage} disabled={disabled || disableNextButton || isLastPage}>
         &gt;
       </button>
-      <button onClick={goLastPage} disabled={disabled || true || isLastPage}>
+      <button
+        className="pagination-last-page"
+        onClick={goLastPage}
+        disabled={disabled || true || isLastPage}
+      >
         &gt;&gt;
       </button>
     </div>

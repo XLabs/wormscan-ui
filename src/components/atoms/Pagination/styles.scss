@@ -51,4 +51,8 @@
   &-current {
     color: var(--color-white);
   }
+
+  &-last-page {
+    pointer-events: none;
+  }
 }
