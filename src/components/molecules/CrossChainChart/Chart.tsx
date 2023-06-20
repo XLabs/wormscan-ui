@@ -18,7 +18,9 @@ interface IDestinyChainsHeight {
 // CHART CONSTANTS
 const CHART_SIZE = 650;
 const MARGIN_SIZE_CANVAS = 2;
-let DEVICE_PIXEL_RATIO = Math.floor(window.devicePixelRatio);
+const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+const isAndroid = /android/i.test(userAgent);
+const DEVICE_PIXEL_RATIO = isAndroid ? 1 : Math.floor(window.devicePixelRatio);
 
 type Props = {
   data: CrossChainActivity;
@@ -41,7 +43,6 @@ export const Chart = ({ data, selectedType }: Props) => {
 
   const size = useWindowSize();
   const [isDesktop, setIsDesktop] = useState(size.width >= BREAKPOINTS.desktop);
-  if (size.width < BREAKPOINTS.tablet) DEVICE_PIXEL_RATIO = 1;
 
   const MARGIN_SIZE_ELEMENTS = isDesktop ? 2 : 4;
 
