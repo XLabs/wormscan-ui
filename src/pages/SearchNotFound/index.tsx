@@ -1,11 +1,12 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import SearchNotFoundImage from "src/assets/search-not-found.svg";
-import "./styles.scss";
 import { DISCORD_URL } from "src/consts";
+import "./styles.scss";
 
 const SearchNotFound = () => {
-  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const q = searchParams.get("q");
   const navigate = useNavigate();
 
   const goHome = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -27,7 +28,7 @@ const SearchNotFound = () => {
                 search string because we can&apos;t find any items that match:{" "}
               </p>
               <div className="search-not-found-page-body-id">
-                <strong>{id || "empty string"}</strong>
+                <strong>{q || "empty string"}</strong>
               </div>
             </div>
             <div className="search-not-found-page-support">

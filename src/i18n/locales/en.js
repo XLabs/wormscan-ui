@@ -9,7 +9,7 @@ export default {
           guardians: "Guardians",
           goBridge: "Go to Bridge",
           search: {
-            placeholder: "Search by TxHash / Address",
+            placeholder: "Search by TxHash / Address / VAA ID",
             ariaLabel: "search",
           },
         },

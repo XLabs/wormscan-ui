@@ -9,14 +9,18 @@ import { useRef } from "react";
 const Search = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const searchType = useRef<"vaaId" | "other">("other");
   const searchString = useRef("");
   const errorsCount = useRef(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const goSearchNotFound = () => {
+    const searchNotFoundURL = `/search-not-found?q=${searchString.current}`;
+    if (searchType.current === "vaaId") return navigate(searchNotFoundURL);
+
     errorsCount.current += 1;
     if (errorsCount.current >= 2) {
-      navigate(`/search-not-found/${searchString.current}`);
+      navigate(searchNotFoundURL);
     }
   };
 
@@ -32,7 +36,7 @@ const Search = () => {
       }
     },
     {
-      onSuccess: (response, { address }) => {
+      onSuccess: (_, { address }) => {
         navigate(`/txs?address=${address}`);
       },
       onError: _ => {
@@ -67,6 +71,36 @@ const Search = () => {
     },
   );
 
+  const { mutate: mutateFindVAAById } = useMutation(
+    "findVAAById",
+    ({ id }: { id: string }) => {
+      const splitId = id.split("/");
+      const chainId = Number(splitId[0]);
+      const emitter = String(splitId[1]);
+      const seq = Number(splitId[2]);
+
+      return client.guardianNetwork.getVAA({
+        chainId,
+        emitter,
+        seq,
+      });
+    },
+    {
+      onSuccess: vaa => {
+        if ("txHash" in vaa) {
+          const { txHash } = vaa || {};
+          txHash ? navigate(`/tx/${txHash}`) : goSearchNotFound();
+        }
+      },
+      onError: _ => {
+        goSearchNotFound();
+      },
+      onSettled: () => {
+        setIsLoading(false);
+      },
+    },
+  );
+
   interface FormData {
     search: { value: string };
   }
@@ -80,12 +114,24 @@ const Search = () => {
       value = value.trim();
       errorsCount.current = 0;
       searchString.current = value;
+      searchType.current = "other";
 
       setIsLoading(true);
-      mutateFindVAAByAddress({ address: value });
-      mutateFindVAAByTxHash({
-        txHash: value,
-      });
+
+      // Check if is probably a VAA ID
+      const splitId = value.split("/");
+      if (splitId.length === 3) {
+        searchType.current = "vaaId";
+        mutateFindVAAById({
+          id: value,
+        });
+      } else {
+        // Check by address and txHash
+        mutateFindVAAByAddress({ address: value });
+        mutateFindVAAByTxHash({
+          txHash: value,
+        });
+      }
     }
   };
 
