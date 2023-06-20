@@ -1,4 +1,4 @@
-import { CheckCircledIcon, CopyIcon } from "@radix-ui/react-icons";
+import { CopyIcon } from "@radix-ui/react-icons";
 import { ChainId, Order } from "@xlabs-libs/wormscan-sdk";
 import { useEffect, useState } from "react";
 import { useInfiniteQuery } from "react-query";
@@ -6,7 +6,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import client from "src/api/Client";
 import { BlockchainIcon, Loader } from "src/components/atoms";
 import CopyToClipboard from "src/components/molecules/CopyToClipboard";
-import { colorStatus } from "src/consts";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { parseAddress, parseTx, shortAddress } from "src/utils/crypto";
 import { timeAgo } from "src/utils/date";
@@ -14,6 +13,8 @@ import { formatCurrency } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { Information } from "./Information";
 import { Top } from "./Top";
+import StatusBadge from "src/components/molecules/StatusBadge";
+import { TxStatus } from "../../types";
 import "./styles.scss";
 
 export interface TransactionOutput {
@@ -186,10 +187,8 @@ const Txs = () => {
                       </div>
                     ),
                     status: (
-                      <div
-                        className={`tx-status ${colorStatus[String(status).toLocaleUpperCase()]}`}
-                      >
-                        {String(status).toLocaleUpperCase()} <CheckCircledIcon />
+                      <div className="tx-status">
+                        <StatusBadge status={status as TxStatus} />
                       </div>
                     ),
                     amount: tokenAmount ? formatCurrency(Number(tokenAmount)) + " " + symbol : "-",

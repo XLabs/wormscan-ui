@@ -32,7 +32,7 @@ const getTxStatus = (originStatus: string, destinationStatus: string) => {
     return "FAILED";
   }
 
-  return "SUCCESSFUL";
+  return "COMPLETED";
 };
 
 const Information = ({ VAAData, globalTxData }: Props) => {

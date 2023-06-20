@@ -4,9 +4,9 @@ import { Column } from "react-table";
 import { useNavigate } from "react-router-dom";
 import { PAGE_SIZE, TransactionOutput } from "..";
 import Pagination from "src/components/atoms/Pagination";
-import "./styles.scss";
 import { Dispatch, SetStateAction } from "react";
 import { Loader } from "src/components/atoms";
+import "./styles.scss";
 
 const TXS_TAB_HEADERS = [
   i18n.t("common.transfers").toUpperCase(),
@@ -81,43 +81,54 @@ const Information = ({
     onChangePagination(nextPage);
   };
 
+  const PaginationComponent = ({ className }: { className?: string }) => {
+    return (
+      <Pagination
+        currentPage={currentPage}
+        goFirstPage={() => goFirstPage()}
+        goPrevPage={() => goPrevPage(currentPage)}
+        goNextPage={() => goNextPage(currentPage)}
+        // goLastPage={() => goLastPage()}
+        disabled={isPaginationLoading}
+        disableNextButton={parsedTxsData.length <= 0 || parsedTxsData.length < PAGE_SIZE}
+        className={className}
+      />
+    );
+  };
+
   return (
     <>
       <section className="txs-information">
-        <Tabs
-          headers={TXS_TAB_HEADERS}
-          className="txs-information-tabs"
-          contents={[
-            <>
-              {/* <div className="txs-information-table-results">(?) Results</div> */}
-              {isPaginationLoading ? (
-                <div className="txs-page-loader">
-                  <Loader />
-                </div>
-              ) : (
-                <Table
-                  columns={columns}
-                  data={parsedTxsData}
-                  className="txs"
-                  onRowClick={onRowClick}
-                  emptyMessage="No txs found."
-                />
-              )}
-
-              <div className="txs-pagination">
-                <Pagination
-                  currentPage={currentPage}
-                  goFirstPage={() => goFirstPage()}
-                  goPrevPage={() => goPrevPage(currentPage)}
-                  goNextPage={() => goNextPage(currentPage)}
-                  // goLastPage={() => goLastPage()}
-                  disabled={isPaginationLoading}
-                  disableNextButton={parsedTxsData.length <= 0 || parsedTxsData.length < PAGE_SIZE}
-                />
+        <>
+          {/* <div className="txs-information-table-results">(?) Results</div> */}
+          <div>
+            <div className="txs-information-top">
+              <div className="txs-information-top-title">
+                {i18n.t("common.transfers").toUpperCase()}
               </div>
-            </>,
-          ]}
-        />
+              <div>
+                <PaginationComponent className="txs-information-top-pagination" />
+              </div>
+            </div>
+          </div>
+          {isPaginationLoading ? (
+            <div className="txs-page-loader">
+              <Loader />
+            </div>
+          ) : (
+            <Table
+              columns={columns}
+              data={parsedTxsData}
+              className="txs"
+              onRowClick={onRowClick}
+              emptyMessage="No txs found."
+            />
+          )}
+
+          <div className="txs-pagination">
+            <PaginationComponent />
+          </div>
+        </>
       </section>
     </>
   );

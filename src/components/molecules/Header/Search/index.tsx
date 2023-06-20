@@ -11,6 +11,7 @@ const Search = () => {
   const { t } = useTranslation();
   const searchString = useRef("");
   const errorsCount = useRef(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const goSearchNotFound = () => {
     errorsCount.current += 1;
@@ -32,13 +33,13 @@ const Search = () => {
     },
     {
       onSuccess: (response, { address }) => {
-        const { data } = response || {};
-        const { vaas } = data || {};
-        console.log({ vaas });
         navigate(`/txs?address=${address}`);
       },
       onError: _ => {
         goSearchNotFound();
+      },
+      onSettled: () => {
+        setIsLoading(false);
       },
     },
   );
@@ -49,17 +50,19 @@ const Search = () => {
       client.guardianNetwork.getVAAbyTxHash({
         query: {
           txHash,
-          parsedPayload: true,
+          parsedPayload: false,
         },
       }),
     {
       onSuccess: vaa => {
-        console.log({ vaa });
         const { txHash } = vaa || {};
         txHash ? navigate(`/tx/${txHash}`) : goSearchNotFound();
       },
       onError: _ => {
         goSearchNotFound();
+      },
+      onSettled: () => {
+        setIsLoading(false);
       },
     },
   );
@@ -77,6 +80,8 @@ const Search = () => {
       value = value.trim();
       errorsCount.current = 0;
       searchString.current = value;
+
+      setIsLoading(true);
       mutateFindVAAByAddress({ address: value });
       mutateFindVAAByTxHash({
         txHash: value,
@@ -91,6 +96,7 @@ const Search = () => {
       name="search"
       placeholder={t("home.header.search.placeholder")}
       ariaLabel={t("home.header.search.ariaLabel")}
+      isLoading={isLoading}
     />
   );
 };

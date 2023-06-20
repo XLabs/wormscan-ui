@@ -1,7 +1,7 @@
 import { ArrowRightIcon, CheckCircledIcon } from "@radix-ui/react-icons";
 import { GetTokenOutput } from "@xlabs-libs/wormscan-sdk";
 import { BlockchainIcon } from "src/components/atoms";
-import Chip from "src/components/atoms/Chip";
+import StatusBadge from "src/components/molecules/StatusBadge";
 import { colorStatus } from "src/consts";
 import { TxStatus } from "src/types";
 import { formatUnits } from "src/utils/crypto";
@@ -36,9 +36,7 @@ const Summary = ({
       <div>
         <div className="key">Status:</div>
         <div className="value">
-          <Chip color={colorStatus[summaryStatus]}>
-            {summaryStatus} <CheckCircledIcon />
-          </Chip>
+          <StatusBadge status={summaryStatus} />
         </div>
       </div>
       {!isError && (

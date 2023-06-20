@@ -18,6 +18,9 @@ interface IDestinyChainsHeight {
 // CHART CONSTANTS
 const CHART_SIZE = 650;
 const MARGIN_SIZE_CANVAS = 2;
+const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+const isAndroid = /android/i.test(userAgent);
+const DEVICE_PIXEL_RATIO = isAndroid ? 1 : Math.floor(window.devicePixelRatio);
 
 type Props = {
   data: CrossChainActivity;
@@ -136,9 +139,9 @@ export const Chart = ({ data, selectedType }: Props) => {
       const context = canvas.getContext("2d");
 
       // prevent pixelated canvas on high quality resolution devices
-      canvas.width = CHART_SIZE * window.devicePixelRatio;
-      canvas.height = CHART_SIZE * window.devicePixelRatio;
-      context.scale(window.devicePixelRatio, window.devicePixelRatio);
+      canvas.width = Math.floor(CHART_SIZE * DEVICE_PIXEL_RATIO);
+      canvas.height = Math.floor(CHART_SIZE * DEVICE_PIXEL_RATIO);
+      context.scale(DEVICE_PIXEL_RATIO, DEVICE_PIXEL_RATIO);
 
       // run animated canvas
       let frameCount = 0;

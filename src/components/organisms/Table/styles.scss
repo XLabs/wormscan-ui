@@ -21,11 +21,21 @@
         font-weight: 500;
 
         &:first-child {
-          padding-left: 32px;
+          padding-left: 16px;
         }
 
         &:last-child {
-          padding-right: 32px;
+          padding-right: 16px;
+        }
+
+        @include desktop {
+          &:first-child {
+            padding-left: 32px;
+          }
+
+          &:last-child {
+            padding-right: 32px;
+          }
         }
       }
     }
@@ -52,11 +62,21 @@
         padding: 8px 16px;
 
         &:first-child {
-          padding-left: 32px;
+          padding-left: 16px;
         }
 
         &:last-child {
-          padding-right: 32px;
+          padding-right: 16px;
+        }
+
+        @include desktop {
+          &:first-child {
+            padding-left: 32px;
+          }
+
+          &:last-child {
+            padding-right: 32px;
+          }
         }
       }
     }
