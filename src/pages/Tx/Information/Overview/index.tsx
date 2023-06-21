@@ -19,6 +19,7 @@ import { ChainId, isEVMChain } from "@certusone/wormhole-sdk";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { BREAKPOINTS, colorStatus } from "src/consts";
 import "./styles.scss";
+import { parseTx, parseAddress } from "../../../../utils/crypto";
 
 // 360 degree / 19 total signatures
 // A fraction of 360 degrees (360 / 19) = 18.9 est.
@@ -52,9 +53,10 @@ const Overview = ({
   const { emitterAddr, emitterChainId, payload, vaa } = VAAData || {};
   const { guardianSignatures } = vaa || {};
   const { amount, fee, tokenAddress, tokenChain } = payload || {};
-  const emitterAddress: string = isEVMChain(emitterChainId)
-    ? "0x" + removeLeadingZeros(emitterAddr)
-    : emitterAddr;
+  const parsedEmitterAddress = parseAddress({
+    value: emitterAddr,
+    chainId: emitterChainId as ChainId,
+  });
   const guardianSignaturesCount = guardianSignatures?.length || 0;
   const signatureContainerMaskDegree = Math.abs(
     360 - (360 - guardianSignaturesCount * FRACTION_DEGREE),
@@ -63,19 +65,32 @@ const Overview = ({
     "--m2": `calc(${signatureContainerMaskDegree}deg)`,
   };
   const { id: VAAId, originTx, destinationTx } = globalTxData || {};
-  const { chainId: originChainId, timestamp: originTimestamp } = originTx || {};
+  const {
+    chainId: originChainId,
+    timestamp: originTimestamp,
+    from: originAddress,
+  } = originTx || {};
+
+  const parsedOriginAddress = parseAddress({
+    value: originAddress,
+    chainId: originChainId as ChainId,
+  });
   const {
     chainId: destinationChainId,
     timestamp: destinationTimestamp,
     from: relayerAddress,
-    txHash: rawRedeemTx,
+    txHash: redeemTx,
     to: destinationAddress,
   } = destinationTx || {};
-  const redeemTx = isEVMChain(destinationChainId as ChainId)
-    ? String(rawRedeemTx).startsWith("0x")
-      ? rawRedeemTx
-      : "0x" + rawRedeemTx
-    : rawRedeemTx;
+  const parsedRelayerAddress = parseAddress({
+    value: relayerAddress,
+    chainId: destinationChainId as ChainId,
+  });
+  const parsedRedeemTx = parseTx({ value: redeemTx, chainId: destinationChainId as ChainId });
+  const parsedDestinationAddress = parseAddress({
+    value: destinationAddress,
+    chainId: destinationChainId as ChainId,
+  });
   const originDate = new Date(originTimestamp).toLocaleString("en-US", {
     year: "numeric",
     month: "short",
@@ -125,7 +140,7 @@ const Overview = ({
                 {originChainId && getChainName({ chainId: originChainId }).toUpperCase()}
               </div>
             </div>
-            <div>
+            <div style={{ order: amount ? 1 : 2 }}>
               {amount && (
                 <>
                   <div className="tx-overview-graph-step-title">Amount</div>
@@ -147,15 +162,29 @@ const Overview = ({
                 </>
               )}
             </div>
-            <div>
-              {/* API does not provide this data */}
-              {/* <div className="tx-overview-graph-step-title">Source wallet</div>
-            <div className="tx-overview-graph-step-description">
-              <a href="#">(?)</a>{" "}
-              <CopyToClipboard toCopy="(?)">
-                <CopyIcon />
-              </CopyToClipboard>
-            </div> */}
+            <div style={{ order: amount ? 2 : 1 }}>
+              {parsedOriginAddress && (
+                <>
+                  <div className="tx-overview-graph-step-title">Source wallet</div>
+                  <div className="tx-overview-graph-step-description">
+                    <a
+                      href={getExplorerLink({
+                        chainId: originChainId,
+                        value: parsedOriginAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {shortAddress(parsedOriginAddress)}
+                    </a>{" "}
+                    <CopyToClipboard toCopy={parsedOriginAddress}>
+                      <CopyIcon />
+                    </CopyToClipboard>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -180,15 +209,16 @@ const Overview = ({
                 <a
                   href={getExplorerLink({
                     chainId: originChainId,
-                    value: emitterAddress,
+                    value: parsedEmitterAddress,
                     base: "address",
+                    isNativeAddress: true,
                   })}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {shortAddress(emitterAddress)}
+                  {shortAddress(parsedEmitterAddress)}
                 </a>{" "}
-                <CopyToClipboard toCopy={emitterAddress}>
+                <CopyToClipboard toCopy={parsedEmitterAddress}>
                   <CopyIcon />
                 </CopyToClipboard>
               </div>
@@ -252,15 +282,16 @@ const Overview = ({
                     <a
                       href={getExplorerLink({
                         chainId: destinationChainId,
-                        value: relayerAddress,
+                        value: parsedRelayerAddress,
                         base: "address",
+                        isNativeAddress: true,
                       })}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      {shortAddress(relayerAddress)}
+                      {shortAddress(parsedRelayerAddress)}
                     </a>{" "}
-                    <CopyToClipboard toCopy={relayerAddress}>
+                    <CopyToClipboard toCopy={parsedRelayerAddress}>
                       <CopyIcon />
                     </CopyToClipboard>
                   </div>
@@ -271,14 +302,15 @@ const Overview = ({
                     <a
                       href={getExplorerLink({
                         chainId: destinationChainId,
-                        value: redeemTx,
+                        value: parsedRedeemTx,
+                        isNativeAddress: true,
                       })}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      {shortAddress(redeemTx)}
+                      {shortAddress(parsedRedeemTx)}
                     </a>{" "}
-                    <CopyToClipboard toCopy={redeemTx}>
+                    <CopyToClipboard toCopy={parsedRedeemTx}>
                       <CopyIcon />
                     </CopyToClipboard>
                   </div>
@@ -329,27 +361,32 @@ const Overview = ({
                       getChainName({ chainId: destinationChainId }).toUpperCase()}
                   </div>
                 </div>
-                <div>
-                  <div className="tx-overview-graph-step-title">Amount</div>
-                  <div className="tx-overview-graph-step-description">
-                    {amountReceived} {symbol} ({amountReceivedUSD || "-"} USD)
-                  </div>
+                <div style={{ order: amount ? 1 : 2 }}>
+                  {amount && (
+                    <>
+                      <div className="tx-overview-graph-step-title">Amount</div>
+                      <div className="tx-overview-graph-step-description">
+                        {amountReceived} {symbol} ({amountReceivedUSD || "-"} USD)
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div>
+                <div style={{ order: amount ? 2 : 1 }}>
                   <div className="tx-overview-graph-step-title">Destination wallet</div>
                   <div className="tx-overview-graph-step-description">
                     <a
                       href={getExplorerLink({
                         chainId: destinationChainId,
-                        value: destinationAddress,
+                        value: parsedDestinationAddress,
                         base: "address",
+                        isNativeAddress: true,
                       })}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      {shortAddress(destinationAddress)}
+                      {shortAddress(parsedDestinationAddress)}
                     </a>{" "}
-                    <CopyToClipboard toCopy={destinationAddress}>
+                    <CopyToClipboard toCopy={parsedDestinationAddress}>
                       <CopyIcon />
                     </CopyToClipboard>
                   </div>

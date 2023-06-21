@@ -68,18 +68,22 @@ const Txs = () => {
       },
       onSuccess: data => {
         const tempRows: TransactionOutput[] = [];
-        // TODO: Check if address is origin / destination address (waiting BE to fix)
-        // API limitation
-        // Here we capture `destination chain id` because we can only get the `destination address` from the txsData
+        const originAddress = data?.pages?.[0]?.[0]?.originAddress;
+        const originChainId = data?.pages?.[0]?.[0]?.originChain;
         const destinationChainId = data?.pages?.[0]?.[0]?.destinationChain;
+        const addressChainId =
+          String(address).toLowerCase() === String(originAddress).toLowerCase()
+            ? originChainId
+            : destinationChainId;
+
         const { pages } = data || {};
         pages?.length > 0
           ? pages?.forEach(page => {
               page?.length > 0 &&
                 page?.forEach(tx => {
                   const {
-                    id,
                     txHash,
+                    originAddress,
                     originChain,
                     destinationAddress,
                     destinationChain,
@@ -88,16 +92,12 @@ const Txs = () => {
                     symbol,
                     status,
                   } = tx || {};
-                  // Here we are using the emitterAddress as the `FROM (Origin Address)`
-                  // TODO: Change to the real Origin Address / source wallet
-                  const emitterAddress = id.split("/")[1];
-
                   const parseTxHash = parseTx({
                     value: txHash,
                     chainId: originChain as ChainId,
                   });
-                  const parsedEmitterAddress = parseAddress({
-                    value: emitterAddress,
+                  const parsedOriginAddress = parseAddress({
+                    value: originAddress,
                     chainId: originChain as ChainId,
                   });
                   const parsedToAddress = parseAddress({
@@ -109,21 +109,27 @@ const Txs = () => {
                     id: txHash,
                     txHash: (
                       <div className="tx-hash">
-                        <a
-                          href={getExplorerLink({
-                            chainId: originChain,
-                            value: parseTxHash,
-                            isNativeAddress: true,
-                          })}
-                          target="_blank"
-                          rel="noreferrer"
-                          onClick={stopBubbling}
-                        >
-                          {shortAddress(parseTxHash)}
-                        </a>
-                        <CopyToClipboard toCopy={parseTxHash}>
-                          <CopyIcon />
-                        </CopyToClipboard>
+                        {parseTxHash ? (
+                          <>
+                            <a
+                              href={getExplorerLink({
+                                chainId: originChain,
+                                value: parseTxHash,
+                                isNativeAddress: true,
+                              })}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={stopBubbling}
+                            >
+                              {shortAddress(parseTxHash)}
+                            </a>
+                            <CopyToClipboard toCopy={parseTxHash}>
+                              <CopyIcon />
+                            </CopyToClipboard>
+                          </>
+                        ) : (
+                          "-"
+                        )}
                       </div>
                     ),
                     from: (
@@ -131,25 +137,27 @@ const Txs = () => {
                         <BlockchainIcon chainId={originChain} size={24} />
                         <div>
                           {getChainName({ chainId: originChain })}
-                          <div className="tx-from-address">
-                            <a
-                              href={getExplorerLink({
-                                chainId: originChain,
-                                value: parsedEmitterAddress,
-                                base: "address",
-                                isNativeAddress: true,
-                              })}
-                              target="_blank"
-                              rel="noreferrer"
-                              onClick={stopBubbling}
-                            >
-                              {shortAddress(parsedEmitterAddress)}
-                            </a>
+                          {parsedOriginAddress && (
+                            <div className="tx-from-address">
+                              <a
+                                href={getExplorerLink({
+                                  chainId: originChain,
+                                  value: parsedOriginAddress,
+                                  base: "address",
+                                  isNativeAddress: true,
+                                })}
+                                target="_blank"
+                                rel="noreferrer"
+                                onClick={stopBubbling}
+                              >
+                                {shortAddress(parsedOriginAddress)}
+                              </a>
 
-                            <CopyToClipboard toCopy={parsedEmitterAddress}>
-                              <CopyIcon />
-                            </CopyToClipboard>
-                          </div>
+                              <CopyToClipboard toCopy={parsedOriginAddress}>
+                                <CopyIcon />
+                              </CopyToClipboard>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ),
@@ -201,7 +209,7 @@ const Txs = () => {
           : [];
 
         setParsedTxsData(tempRows);
-        setAddressChainId(destinationChainId as ChainId);
+        setAddressChainId(addressChainId as ChainId);
         setIsLoading(false);
         setIsPaginationLoading(false);
       },
