@@ -15,11 +15,11 @@ const TYPE_LIST = [
 ];
 
 const RANGE_LIST = [
-  { label: "Last 7 days", value: "7" },
-  { label: "Last 30 days", value: "30" },
-  { label: "Last 90 days", value: "90" },
-  { label: "Last 365 days", value: "365" },
-  { label: "All Time", value: "all" },
+  { label: "Last 7 days", value: "7d" },
+  { label: "Last 30 days", value: "30d" },
+  { label: "Last 90 days", value: "90d" },
+  { label: "Last 365 days", value: "1y" },
+  { label: "All Time", value: "all-time" },
 ];
 
 const CrossChainChart = () => {
@@ -33,7 +33,7 @@ const CrossChainChart = () => {
     () =>
       client.guardianNetwork.getCrossChainActivity({
         by: selectedType,
-        startTime: daysAgoDate(selectedTimeRange.value === "all" ? 1750 : +selectedTimeRange.value),
+        timeSpan: selectedTimeRange.value,
       }),
     { retry: 2 },
   );
