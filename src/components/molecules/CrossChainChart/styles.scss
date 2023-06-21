@@ -4,6 +4,10 @@
   @include card-container;
   margin-bottom: 24px;
 
+  &-relative {
+    position: relative;
+  }
+
   &-title {
     @include text-p1;
     color: var(--color-primary-50);
@@ -291,6 +295,104 @@
         right: 0px;
         left: 0px;
       }
+    }
+  }
+
+  &-sticky {
+    display: block;
+    position: sticky;
+    overflow: hidden;
+
+    bottom: -12px;
+    margin-top: 10px;
+    margin-bottom: -10px;
+
+    width: calc(100% + 64px);
+    margin-left: -32px;
+    z-index: 2;
+
+    @include tablet {
+      width: calc(100% + 32px);
+      margin-left: -16px;
+    }
+
+    @include desktop {
+      display: none;
+    }
+
+    &-container {
+      border-radius: 16px;
+      border: 1px solid var(--color-primary-200);
+      cursor: pointer;
+
+      background-color: #1a1a2c;
+      padding-left: 24px;
+      padding-right: 24px;
+      transition: all 0.4s ease-out;
+    }
+
+    &-line {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+
+      &-draw {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        height: 4px;
+        width: 36px;
+        border-radius: 2px;
+        background-color: var(--color-white-20);
+      }
+    }
+
+    &-subtitle {
+      color: var(--color-primary-100);
+      font-size: 14px;
+      font-weight: 400;
+      margin-bottom: 6px;
+    }
+
+    &-info {
+      @include centered-row;
+
+      &.spaced {
+        margin-top: 12px;
+        margin-bottom: 12px;
+      }
+
+      .chain-icon {
+        transform: translateY(2px);
+      }
+
+      &-source {
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      &-destination {
+        font-size: 18px;
+        font-weight: 600;
+        margin-left: 12px;
+      }
+
+      &-value {
+        margin-left: auto;
+        font-size: 14px;
+        font-weight: 400;
+      }
+    }
+
+    &-destinations {
+      transition: all 0.4s ease-out;
+    }
+
+    &-separator {
+      height: 1px;
+      width: 100%;
+      background-color: var(--color-white-10);
+      margin-top: 12px;
+      margin-bottom: 12px;
     }
   }
 

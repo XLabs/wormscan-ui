@@ -5,6 +5,7 @@ import { formatCurrency } from "src/utils/number";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { useTranslation } from "react-i18next";
 import { BREAKPOINTS } from "src/consts";
+import { StickyInfo } from "./StickyInfo";
 
 interface IOriginChainsHeight {
   itemHeight: number;
@@ -26,12 +27,17 @@ type Props = {
   data: CrossChainActivity;
   selectedType: CrossChainBy;
 };
+export type Info = { percentage: number; volume: number };
 
 export const Chart = ({ data, selectedType }: Props) => {
   const filteredData = processData(data);
   const [chartData] = useState(filteredData);
 
   const [selectedChain, setSelectedChain] = useState(chartData[0].chain);
+  const [selectedInfo, setSelectedInfo] = useState<Info>({
+    percentage: chartData[0].percentage,
+    volume: chartData[0].volume,
+  });
   const [destinations, setDestinations] = useState([]);
   const [originChainsHeight, setOriginChainsHeight] = useState<IOriginChainsHeight[]>([]);
   const [destinyChainsHeight, setDestinyChainsHeight] = useState<IDestinyChainsHeight[]>([]);
@@ -164,8 +170,13 @@ export const Chart = ({ data, selectedType }: Props) => {
       .find(item => item.chain === selectedChain)
       .destinations.sort((a, b) => b.volume - a.volume)
       .slice(0, 10);
+    const selected = chartData.find(a => a.chain === selectedChain);
 
     setDestinations(newDestinationChains);
+    setSelectedInfo({
+      percentage: selected.percentage,
+      volume: selected.volume,
+    });
   }, [chartData, selectedChain]);
 
   useEffect(() => {
@@ -177,7 +188,7 @@ export const Chart = ({ data, selectedType }: Props) => {
   useEffect(updateChainsHeight, [destinations, isDesktop]);
 
   return (
-    <>
+    <div className="cross-chain-relative">
       <div className="cross-chain-header-container cross-chain-header-title">
         <div>{t("home.crossChain.source")}</div>
         <div>{t("home.crossChain.destination")}</div>
@@ -207,14 +218,12 @@ export const Chart = ({ data, selectedType }: Props) => {
             </div>
           ))}
         </div>
-
         <canvas
           className="cross-chain-chart-graph"
           ref={canvasRef}
           height={CHART_SIZE}
           width={CHART_SIZE}
         />
-
         <div className="cross-chain-chart-side" ref={destinyChainsRef}>
           {destinations.map((item, idx) => (
             <div
@@ -239,7 +248,14 @@ export const Chart = ({ data, selectedType }: Props) => {
           ))}
         </div>
       </div>
-    </>
+
+      <StickyInfo
+        chainName={getChainName(selectedChain)}
+        selectedInfo={selectedInfo}
+        selectedType={selectedType}
+        destinations={destinations}
+      />
+    </div>
   );
 };
 
