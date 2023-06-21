@@ -188,7 +188,7 @@ export const Chart = ({ data, selectedType }: Props) => {
   useEffect(updateChainsHeight, [destinations, isDesktop]);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div className="cross-chain-relative">
       <div className="cross-chain-header-container cross-chain-header-title">
         <div>{t("home.crossChain.source")}</div>
         <div>{t("home.crossChain.destination")}</div>

@@ -4,6 +4,10 @@
   @include card-container;
   margin-bottom: 24px;
 
+  &-relative {
+    position: relative;
+  }
+
   &-title {
     @include text-p1;
     color: var(--color-primary-50);
