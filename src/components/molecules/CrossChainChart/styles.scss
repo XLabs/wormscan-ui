@@ -159,6 +159,7 @@
 
         .chain-icon {
           justify-self: center;
+          transform: translateY(-1.5px);
           display: none;
           @include desktop {
             display: block;

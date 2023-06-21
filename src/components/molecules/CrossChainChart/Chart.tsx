@@ -207,7 +207,7 @@ export const Chart = ({ data, selectedType }: Props) => {
                 marginBottom: MARGIN_SIZE_ELEMENTS,
               }}
             >
-              <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chain} />
+              <BlockchainIcon className="chain-icon" dark={true} size={19} chainId={item.chain} />
               <span className="chain-name">{getChainName(item.chain)}</span>
               {!isDesktop && <span className="mobile-separator">|</span>}
               <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
@@ -236,7 +236,7 @@ export const Chart = ({ data, selectedType }: Props) => {
                 marginBottom: MARGIN_SIZE_ELEMENTS,
               }}
             >
-              <BlockchainIcon className="chain-icon" dark={true} size={24} chainId={item.chain} />
+              <BlockchainIcon className="chain-icon" dark={true} size={19} chainId={item.chain} />
               <span className="chain-name">{getChainName(item.chain)}</span>
               {!isDesktop && <span className="mobile-separator">|</span>}
               <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
