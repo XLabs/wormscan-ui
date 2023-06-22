@@ -41,7 +41,6 @@ const Tx = () => {
       }),
     {
       onSuccess: vaa => {
-        console.log({ vaa });
         const { id } = vaa || {};
         id && setVAAId(id);
       },

@@ -46,12 +46,10 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
   if (!value) return "";
 
   let parsedValue = value;
-  console.log(value, chainId, isEVMChain(chainId));
 
   try {
     if (isEVMChain(chainId)) {
       parsedValue = "0x" + parsedValue;
-      console.log({ parsedValue });
     }
   } catch (e: unknown) {
     // console.log(e);
