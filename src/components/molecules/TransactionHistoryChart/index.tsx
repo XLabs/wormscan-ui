@@ -33,19 +33,19 @@ const TransactionHistoryChart = ({ range }: Props) => {
             const date = new Date(item.time);
 
             if (range === "day") {
-              return date.toLocaleString("en-us", {
-                hour: "numeric",
-                minute: "numeric",
-                hour12: false,
+              return date.toLocaleString("en", {
+                hourCycle: "h23",
+                hour: "2-digit",
+                minute: "2-digit",
               });
             }
 
             if (range === "week") {
-              return date.toLocaleString("en-us", { weekday: "short" });
+              return date.toLocaleString("en", { weekday: "short" });
             }
 
             if (range === "month") {
-              return date.toLocaleString("en-us", { month: "short", day: "numeric" });
+              return date.toLocaleString("en", { month: "short", day: "numeric" });
             }
           }),
         );
@@ -54,7 +54,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
   );
 
   // when range changes, we fetch the new range
-  useEffect(mutate, [range]);
+  useEffect(mutate, [range, mutate]);
 
   if (isError) return null;
   return (
