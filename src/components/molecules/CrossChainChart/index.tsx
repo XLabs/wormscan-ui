@@ -29,7 +29,6 @@ const CrossChainChart = () => {
   const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
 
   const { isLoading, error, data, mutate } = useMutation(
-    "crossChainResponse",
     () =>
       client.guardianNetwork.getCrossChainActivity({
         by: selectedType,
