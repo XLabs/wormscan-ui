@@ -1,8 +1,9 @@
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { Loader } from "src/components/atoms";
 import "./styles.scss";
 
 type Props = {
+  value: string;
+  onValueChange: React.Dispatch<React.SetStateAction<string>>;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
   name: string;
   className?: string;
@@ -13,6 +14,8 @@ type Props = {
 
 const SearchBar = ({
   onSubmit,
+  value,
+  onValueChange,
   name,
   className = "",
   placeholder = "",
@@ -23,7 +26,14 @@ const SearchBar = ({
     <div className={`search-bar ${className}`}>
       <form onSubmit={onSubmit} data-testid="search-form">
         <div className="search-bar-input">
-          <input type="text" name={name} placeholder={placeholder} aria-label={ariaLabel} />
+          <input
+            type="text"
+            value={value}
+            onChange={e => onValueChange(e.target.value)}
+            name={name}
+            placeholder={placeholder}
+            aria-label={ariaLabel}
+          />
         </div>
         <button type="submit">
           {isLoading ? <span className="loader"></span> : <MagnifyingGlassIcon className="icon" />}

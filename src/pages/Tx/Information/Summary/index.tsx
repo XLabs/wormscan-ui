@@ -49,7 +49,9 @@ const Summary = ({
       )}
       <div>
         <div className="key">Fee:</div>
-        <div className="value">{fee != null ? `${formatUnits(fee, decimals)} ${symbol}` : "-"}</div>
+        <div className="value">
+          {fee != null ? `${formatUnits(fee, decimals)} ${symbol && symbol}` : "-"}
+        </div>
       </div>
       <div>
         <div className="key">Chains:</div>

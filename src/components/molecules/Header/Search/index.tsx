@@ -13,6 +13,7 @@ const Search = () => {
   const searchString = useRef("");
   const errorsCount = useRef(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchValue, setSearchValue] = useState("");
 
   const goSearchNotFound = () => {
     const searchNotFoundURL = `/search-not-found?q=${searchString.current}`;
@@ -132,13 +133,17 @@ const Search = () => {
           txHash: value,
         });
       }
+
+      setSearchValue("");
     }
   };
 
   return (
     <SearchBar
-      className="header-search-bar"
+      value={searchValue}
+      onValueChange={setSearchValue}
       onSubmit={handleSearch}
+      className="header-search-bar"
       name="search"
       placeholder={t("home.header.search.placeholder")}
       ariaLabel={t("home.header.search.ariaLabel")}
