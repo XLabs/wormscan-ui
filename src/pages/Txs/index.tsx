@@ -82,7 +82,6 @@ const Txs = () => {
               page?.length > 0 &&
                 page?.forEach(tx => {
                   const {
-                    id,
                     txHash,
                     originAddress,
                     originChain,
@@ -93,13 +92,6 @@ const Txs = () => {
                     symbol,
                     status,
                   } = tx || {};
-                  // Here we are using the emitterAddress as the `TO (Destination Address)`
-                  // TODO: Change to the real Destination Address when the API is ready
-                  const emitterAddress = id?.split("/")[1] || " -";
-                  const parsedEmitterAddress = parseAddress({
-                    value: emitterAddress,
-                    chainId: originChain as ChainId,
-                  });
 
                   const parseTxHash = parseTx({
                     value: txHash,
@@ -109,7 +101,7 @@ const Txs = () => {
                     value: originAddress,
                     chainId: originChain as ChainId,
                   });
-                  const parsedToAddress = parseAddress({
+                  const parsedDestinationAddress = parseAddress({
                     value: destinationAddress,
                     chainId: destinationChain as ChainId,
                   });
@@ -172,16 +164,16 @@ const Txs = () => {
                     ),
                     to: (
                       <div className="tx-to">
-                        {originChain ? (
+                        {destinationChain ? (
                           <>
-                            <BlockchainIcon chainId={originChain} size={24} />
+                            <BlockchainIcon chainId={destinationChain} size={24} />
                             <div>
-                              {getChainName({ chainId: originChain })}
+                              {getChainName({ chainId: destinationChain })}
                               <div className="tx-from-address">
                                 <a
                                   href={getExplorerLink({
-                                    chainId: originChain,
-                                    value: parsedEmitterAddress,
+                                    chainId: destinationChain,
+                                    value: parsedDestinationAddress,
                                     base: "address",
                                     isNativeAddress: true,
                                   })}
@@ -189,10 +181,10 @@ const Txs = () => {
                                   rel="noreferrer"
                                   onClick={stopBubbling}
                                 >
-                                  {shortAddress(parsedEmitterAddress)}
+                                  {shortAddress(parsedDestinationAddress)}
                                 </a>
 
-                                <CopyToClipboard toCopy={parsedEmitterAddress}>
+                                <CopyToClipboard toCopy={parsedDestinationAddress}>
                                   <CopyIcon />
                                 </CopyToClipboard>
                               </div>

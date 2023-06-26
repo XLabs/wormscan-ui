@@ -49,6 +49,9 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
 
   try {
     if (isEVMChain(chainId)) {
+      if (String(parsedValue).startsWith("0x")) {
+        return parsedValue;
+      }
       parsedValue = "0x" + parsedValue;
     }
   } catch (e: unknown) {
