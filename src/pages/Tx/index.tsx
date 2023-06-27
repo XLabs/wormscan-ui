@@ -12,6 +12,8 @@ import { Buffer } from "buffer";
 import { getGuardianSet } from "../../consts";
 import "./styles.scss";
 
+const STALE_TIME = 1000 * 10;
+
 const Tx = () => {
   const navigate = useNavigate();
   const { txHash } = useParams();
@@ -40,13 +42,20 @@ const Tx = () => {
         },
       }),
     {
-      onSuccess: vaa => {
-        const { id } = vaa || {};
-        id && setVAAId(id);
-      },
       onError: () => navigate(`/search-not-found/${txHash}`),
+      staleTime: STALE_TIME,
     },
   );
+
+  useEffect(() => {
+    if (!VAAData) return;
+
+    const { id } = VAAData || {};
+    id && setVAAId(id);
+  }, [VAAData]);
+
+  const { vaa, payload, guardianSetIndex } = VAAData || {};
+  const { payloadType } = payload || {};
 
   const { data: globalTxData } = useQuery(
     ["globalTx", VAAId],
@@ -65,9 +74,6 @@ const Tx = () => {
       onError: () => navigate(`/search-not-found/${txHash}`),
     },
   );
-
-  const { vaa, payload, guardianSetIndex } = VAAData || {};
-  const { payloadType } = payload || {};
 
   useEffect(() => {
     if (!vaa) return;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import client from "src/api/Client";
 import SearchBar from "../../SearchBar";
@@ -14,6 +14,7 @@ const Search = () => {
   const errorsCount = useRef(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState("");
+  const queryClient = useQueryClient();
 
   const goSearchNotFound = () => {
     const searchNotFoundURL = `/search-not-found?q=${searchString.current}`;
@@ -26,7 +27,6 @@ const Search = () => {
   };
 
   const { mutate: mutateFindVAAByAddress } = useMutation(
-    "findVAAByAddress",
     ({ address }: { address: string }) => {
       try {
         return client.search.findVAAByAddress({
@@ -50,18 +50,22 @@ const Search = () => {
   );
 
   const { mutate: mutateFindVAAByTxHash } = useMutation(
-    "findVAAByTxHash",
     ({ txHash }: { txHash: string }) =>
       client.guardianNetwork.getVAAbyTxHash({
         query: {
           txHash,
-          parsedPayload: false,
+          parsedPayload: true,
         },
       }),
     {
       onSuccess: vaa => {
         const { txHash } = vaa || {};
-        txHash ? navigate(`/tx/${txHash}`) : goSearchNotFound();
+        if (txHash) {
+          queryClient.setQueryData(["getVAA", txHash], vaa);
+          navigate(`/tx/${txHash}`);
+        } else {
+          goSearchNotFound();
+        }
       },
       onError: _ => {
         goSearchNotFound();
@@ -73,7 +77,6 @@ const Search = () => {
   );
 
   const { mutate: mutateFindVAAById } = useMutation(
-    "findVAAById",
     ({ id }: { id: string }) => {
       const splitId = id.split("/");
       const chainId = Number(splitId[0]);
@@ -84,13 +87,22 @@ const Search = () => {
         chainId,
         emitter,
         seq,
+        query: {
+          parsedPayload: true,
+        },
       });
     },
     {
       onSuccess: vaa => {
         if ("txHash" in vaa) {
           const { txHash } = vaa || {};
-          txHash ? navigate(`/tx/${txHash}`) : goSearchNotFound();
+
+          if (txHash) {
+            queryClient.setQueryData(["getVAA", txHash], vaa);
+            navigate(`/tx/${txHash}`);
+          } else {
+            goSearchNotFound();
+          }
         }
       },
       onError: _ => {
