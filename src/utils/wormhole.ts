@@ -24,6 +24,7 @@ import SolanaIcon from "src/icons/blockchains/solana.svg";
 import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
 import TerraIcon from "src/icons/blockchains/terra.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
+import SeiIcon from "src/icons/blockchains/sei.svg";
 
 import NoDarkIcon from "src/icons/blockchains/dark/noIcon.svg";
 import AcalaDarkIcon from "src/icons/blockchains/dark/acala.svg";
@@ -49,8 +50,8 @@ import SolanaDarkIcon from "src/icons/blockchains/dark/solana.svg";
 import TerraClassicDarkIcon from "src/icons/blockchains/dark/terra-classic.svg";
 import TerraDarkIcon from "src/icons/blockchains/dark/terra.svg";
 import XplaDarkIcon from "src/icons/blockchains/dark/xpla.svg";
-import { isEVMChain } from "@certusone/wormhole-sdk";
-import { removeLeadingZeros } from "./string";
+import SeiDarkIcon from "src/icons/blockchains/dark/sei.svg";
+
 import { parseAddress, parseTx } from "./crypto";
 
 export type NETWORK = "mainnet" | "testnet" | "devnet";
@@ -458,6 +459,20 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
       if (base === "token") return this.explorer?.[network] + "/token/" + value;
       return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.Sei]: {
+    name: "Sei",
+    icon: SeiIcon,
+    darkIcon: SeiDarkIcon,
+    explorer: {
+      testnet: "https://sei.explorers.guru",
+      mainnet: "https://sei.explorers.guru",
+    },
+    getExplorerBaseURL: function ({ network = "mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/account/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      return this.explorer?.[network] + "/transaction/" + value;
     },
   },
 };
