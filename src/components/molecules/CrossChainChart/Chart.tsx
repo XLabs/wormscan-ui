@@ -19,9 +19,6 @@ interface IDestinyChainsHeight {
 // CHART CONSTANTS
 const CHART_SIZE = 650;
 const MARGIN_SIZE_CANVAS = 2;
-const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-const isAndroid = /android/i.test(userAgent);
-const DEVICE_PIXEL_RATIO = isAndroid ? 1 : Math.floor(window.devicePixelRatio);
 
 type Props = {
   data: CrossChainActivity;
@@ -51,10 +48,11 @@ export const Chart = ({ data, selectedType }: Props) => {
   const [isDesktop, setIsDesktop] = useState(size.width >= BREAKPOINTS.desktop);
 
   const MARGIN_SIZE_ELEMENTS = isDesktop ? 2 : 4;
+  const devicePixelRatio = window.devicePixelRatio * 2;
 
   // DRAWING GRAPH FUNCTION
   const draw = useCallback(
-    (ctx: CanvasRenderingContext2D, frameCount: number) => {
+    (ctx: CanvasRenderingContext2D) => {
       // selected blockchain
       let selectedIdx: number;
       const selected = originChainsHeight.find((item, idx) => {
@@ -104,12 +102,9 @@ export const Chart = ({ data, selectedType }: Props) => {
         ctx.lineTo(0, START);
 
         // painting graph
-        let halfStop = frameCount <= 100 ? frameCount / 100 : 1 - (frameCount - 100) / 100;
-        if (halfStop < 0.01) halfStop = 0.01;
-
         const grad = ctx.createLinearGradient(0, START, CHART_SIZE, END);
         grad.addColorStop(0, "rgb(49, 52, 124)");
-        grad.addColorStop(halfStop, "rgb(44, 45, 116)");
+        grad.addColorStop(0.2, "rgb(44, 45, 116)");
         grad.addColorStop(1, "rgb(74, 34, 105)");
 
         ctx.strokeStyle = grad;
@@ -145,25 +140,13 @@ export const Chart = ({ data, selectedType }: Props) => {
       const context = canvas.getContext("2d");
 
       // prevent pixelated canvas on high quality resolution devices
-      canvas.width = Math.floor(CHART_SIZE * DEVICE_PIXEL_RATIO);
-      canvas.height = Math.floor(CHART_SIZE * DEVICE_PIXEL_RATIO);
-      context.scale(DEVICE_PIXEL_RATIO, DEVICE_PIXEL_RATIO);
+      canvas.width = Math.floor(CHART_SIZE * devicePixelRatio);
+      canvas.height = Math.floor(CHART_SIZE * devicePixelRatio);
+      context.scale(devicePixelRatio, devicePixelRatio);
 
-      // run animated canvas
-      let frameCount = 0;
-      let animationFrameId: number;
-      const render = () => {
-        frameCount++;
-        if (frameCount >= 599) frameCount = 0;
-        draw(context, frameCount / 3);
-        animationFrameId = window.requestAnimationFrame(render);
-      };
-      render();
-      return () => {
-        window.cancelAnimationFrame(animationFrameId);
-      };
+      draw(context);
     }
-  }, [originChainsHeight, destinyChainsHeight, draw]);
+  }, [destinyChainsHeight.length, devicePixelRatio, draw, originChainsHeight.length]);
 
   useEffect(() => {
     const newDestinationChains = chartData
