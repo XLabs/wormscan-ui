@@ -2,26 +2,36 @@
 
 .header {
   display: grid;
+  grid-template-columns: repeat(2, 1fr);
   grid-template-areas:
-    "brand network network hamburger"
-    "search search search search";
+    "brand actions"
+    "search search";
   align-items: center;
   width: 100%;
   min-height: 64px;
-  gap: 16px;
+  row-gap: 20px;
+  column-gap: 4px;
   background-color: rgba(1, 0, 20, 0.2);
   border-bottom: 1px solid var(--color-white-10);
   padding: 16px 16px 24px;
 
   @include tablet {
     padding: 16 60px;
+    gap: 16px;
   }
 
   @include desktop {
-    grid-template-areas: "brand search search network network links";
+    grid-template-columns: auto;
+    grid-template-areas: "brand search actions";
 
     padding: 16px 60px;
     min-height: 96px;
+    gap: 8px;
+  }
+
+  @include bigDesktop {
+    grid-template-areas: "brand search actions";
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .wormhole-brand {
@@ -46,7 +56,7 @@
       @include centered-row;
 
       cursor: pointer;
-      padding: 16px;
+      padding: 8px;
     }
   }
 
@@ -66,7 +76,6 @@
 
   &-network {
     &-container {
-      grid-area: network;
       display: flex;
       justify-content: end;
     }
@@ -77,6 +86,32 @@
 
       @include desktop {
         height: 42px;
+      }
+    }
+  }
+
+  &-actions {
+    @include centered-row;
+
+    grid-area: actions;
+
+    display: flex;
+    justify-content: end;
+    gap: 8px;
+
+    @include desktop {
+      gap: 16px;
+    }
+
+    @include bigDesktop {
+      gap: 48px;
+    }
+
+    & .connect-button {
+      display: none;
+
+      @include desktop {
+        @include button-secondary;
       }
     }
   }
@@ -177,7 +212,7 @@
       @include centered-row;
 
       cursor: pointer;
-      padding: 16px;
+      padding: 8px;
     }
 
     &-btn {
@@ -187,13 +222,6 @@
     }
 
     .go-bridge {
-      @include button-secondary;
-    }
-  }
-
-  &-actions {
-    grid-area: links;
-    & .connect-button {
       @include button-secondary;
     }
   }

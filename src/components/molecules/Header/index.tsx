@@ -88,7 +88,7 @@ const Header = ({ network }: Props) => {
     <header className="header" data-testid="header">
       <LogoLink />
       <Search />
-      <div className="header-network-container">
+      <div className="header-actions">
         <Select
           name={"networkSelect"}
           value={selectedNetwork}
@@ -97,23 +97,22 @@ const Header = ({ network }: Props) => {
           ariaLabel={"Select Network"}
           className="header-network-select"
         />
-      </div>
 
-      {/* DESKTOP OPTIONS */}
-      <div className="header-navigation">
-        <HeaderLinks />
+        <div className="header-navigation">
+          <HeaderLinks />
+        </div>
 
-        <div className="header-actions">
+        <div>
           <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noreferrer">
             <button className="connect-button">{t("home.header.goBridge")}</button>
           </a>
         </div>
-      </div>
 
-      {/* MOBILE HAMBURGER MENU */}
-      <div className="header-hamburger">
-        <div className="header-hamburger-container" onClick={handleSetExpand}>
-          <HamburgerMenuIcon className="header-open-mobile-menu-btn" />
+        {/* MOBILE HAMBURGER MENU */}
+        <div className="header-hamburger">
+          <div className="header-hamburger-container" onClick={handleSetExpand}>
+            <HamburgerMenuIcon className="header-open-mobile-menu-btn" />
+          </div>
         </div>
       </div>
 
