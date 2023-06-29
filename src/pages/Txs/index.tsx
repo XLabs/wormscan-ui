@@ -1,9 +1,9 @@
 import { CopyIcon } from "@radix-ui/react-icons";
 import { ChainId, Order } from "@xlabs-libs/wormscan-sdk";
 import { useEffect, useState } from "react";
-import { useInfiniteQuery } from "react-query";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import client from "src/api/Client";
+import { useQuery } from "react-query";
+import { useSearchParams } from "react-router-dom";
+import { getClient } from "src/api/Client";
 import { BlockchainIcon, Loader } from "src/components/atoms";
 import CopyToClipboard from "src/components/molecules/CopyToClipboard";
 import { BaseLayout } from "src/layouts/BaseLayout";
@@ -14,8 +14,9 @@ import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import StatusBadge from "src/components/molecules/StatusBadge";
-import { TxStatus } from "../../types";
+import { NETWORK, TxStatus } from "../../types";
 import "./styles.scss";
+import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 
 export interface TransactionOutput {
   id: string;
@@ -28,11 +29,13 @@ export interface TransactionOutput {
 }
 
 export const PAGE_SIZE = 50;
+const REFETCH_TIME = 1000 * 10;
 
 const Txs = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateCustom();
   const [searchParams] = useSearchParams();
   const address = searchParams.get("address");
+  const network = searchParams.get("network") as NETWORK;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isPaginationLoading, setIsPaginationLoading] = useState<boolean>(false);
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
@@ -42,6 +45,13 @@ const Txs = () => {
   useEffect(() => {
     setIsLoading(true);
   }, [address]);
+
+  useEffect(() => {
+    if (!network) return;
+
+    setIsLoading(true);
+    setCurrentPage(1);
+  }, [network]);
 
   const getTransactionInput = {
     query: {
@@ -58,154 +68,150 @@ const Txs = () => {
     e.stopPropagation();
   };
 
-  useInfiniteQuery(
+  useQuery(
     ["getTxs", getTransactionInput],
-    () => client.search.getTransactions(getTransactionInput),
+    () => getClient().search.getTransactions(getTransactionInput),
     {
-      refetchInterval: () => (currentPage === 1 ? 10000 : false),
+      refetchInterval: () => (currentPage === 1 ? REFETCH_TIME : false),
       onError: () => {
-        navigate(`/search-not-found/${address || ""}`);
+        navigate(`/search-not-found?q=${address || "Txs"}`);
       },
-      onSuccess: data => {
+      onSuccess: txs => {
         const tempRows: TransactionOutput[] = [];
-        const originAddress = data?.pages?.[0]?.[0]?.originAddress;
-        const originChainId = data?.pages?.[0]?.[0]?.originChain;
-        const destinationChainId = data?.pages?.[0]?.[0]?.destinationChain;
+        const originAddress = txs?.[0]?.originAddress;
+        const originChainId = txs?.[0]?.originChain;
+        const destinationChainId = txs?.[0]?.destinationChain;
         const addressChainId =
           String(address).toLowerCase() === String(originAddress).toLowerCase()
             ? originChainId
             : destinationChainId;
 
-        const { pages } = data || {};
-        pages?.length > 0
-          ? pages?.forEach(page => {
-              page?.length > 0 &&
-                page?.forEach(tx => {
-                  const {
-                    txHash,
-                    originAddress,
-                    originChain,
-                    destinationAddress,
-                    destinationChain,
-                    timestamp,
-                    tokenAmount,
-                    symbol,
-                    status,
-                  } = tx || {};
+        txs?.length > 0
+          ? txs?.forEach(tx => {
+              const {
+                txHash,
+                originAddress,
+                originChain,
+                destinationAddress,
+                destinationChain,
+                timestamp,
+                tokenAmount,
+                symbol,
+                status,
+              } = tx || {};
 
-                  const parseTxHash = parseTx({
-                    value: txHash,
-                    chainId: originChain as ChainId,
-                  });
-                  const parsedOriginAddress = parseAddress({
-                    value: originAddress,
-                    chainId: originChain as ChainId,
-                  });
-                  const parsedDestinationAddress = parseAddress({
-                    value: destinationAddress,
-                    chainId: destinationChain as ChainId,
-                  });
-                  const timestampDate = new Date(timestamp);
-                  const row = {
-                    id: txHash,
-                    txHash: (
-                      <div className="tx-hash">
-                        {parseTxHash ? (
-                          <>
+              const parseTxHash = parseTx({
+                value: txHash,
+                chainId: originChain as ChainId,
+              });
+              const parsedOriginAddress = parseAddress({
+                value: originAddress,
+                chainId: originChain as ChainId,
+              });
+              const parsedDestinationAddress = parseAddress({
+                value: destinationAddress,
+                chainId: destinationChain as ChainId,
+              });
+              const timestampDate = new Date(timestamp);
+              const row = {
+                id: txHash,
+                txHash: (
+                  <div className="tx-hash">
+                    {parseTxHash ? (
+                      <>
+                        <a
+                          href={getExplorerLink({
+                            chainId: originChain,
+                            value: parseTxHash,
+                            isNativeAddress: true,
+                          })}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={stopBubbling}
+                        >
+                          {shortAddress(parseTxHash)}
+                        </a>
+                        <CopyToClipboard toCopy={parseTxHash}>
+                          <CopyIcon />
+                        </CopyToClipboard>
+                      </>
+                    ) : (
+                      "-"
+                    )}
+                  </div>
+                ),
+                from: (
+                  <div className="tx-from">
+                    <BlockchainIcon chainId={originChain} size={24} />
+                    <div>
+                      {getChainName({ chainId: originChain })}
+                      {parsedOriginAddress && (
+                        <div className="tx-from-address">
+                          <a
+                            href={getExplorerLink({
+                              chainId: originChain,
+                              value: parsedOriginAddress,
+                              base: "address",
+                              isNativeAddress: true,
+                            })}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={stopBubbling}
+                          >
+                            {shortAddress(parsedOriginAddress)}
+                          </a>
+
+                          <CopyToClipboard toCopy={parsedOriginAddress}>
+                            <CopyIcon />
+                          </CopyToClipboard>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ),
+                to: (
+                  <div className="tx-to">
+                    {destinationChain ? (
+                      <>
+                        <BlockchainIcon chainId={destinationChain} size={24} />
+                        <div>
+                          {getChainName({ chainId: destinationChain })}
+                          <div className="tx-from-address">
                             <a
                               href={getExplorerLink({
-                                chainId: originChain,
-                                value: parseTxHash,
+                                chainId: destinationChain,
+                                value: parsedDestinationAddress,
+                                base: "address",
                                 isNativeAddress: true,
                               })}
                               target="_blank"
                               rel="noreferrer"
                               onClick={stopBubbling}
                             >
-                              {shortAddress(parseTxHash)}
+                              {shortAddress(parsedDestinationAddress)}
                             </a>
-                            <CopyToClipboard toCopy={parseTxHash}>
+
+                            <CopyToClipboard toCopy={parsedDestinationAddress}>
                               <CopyIcon />
                             </CopyToClipboard>
-                          </>
-                        ) : (
-                          "-"
-                        )}
-                      </div>
-                    ),
-                    from: (
-                      <div className="tx-from">
-                        <BlockchainIcon chainId={originChain} size={24} />
-                        <div>
-                          {getChainName({ chainId: originChain })}
-                          {parsedOriginAddress && (
-                            <div className="tx-from-address">
-                              <a
-                                href={getExplorerLink({
-                                  chainId: originChain,
-                                  value: parsedOriginAddress,
-                                  base: "address",
-                                  isNativeAddress: true,
-                                })}
-                                target="_blank"
-                                rel="noreferrer"
-                                onClick={stopBubbling}
-                              >
-                                {shortAddress(parsedOriginAddress)}
-                              </a>
-
-                              <CopyToClipboard toCopy={parsedOriginAddress}>
-                                <CopyIcon />
-                              </CopyToClipboard>
-                            </div>
-                          )}
+                          </div>
                         </div>
-                      </div>
-                    ),
-                    to: (
-                      <div className="tx-to">
-                        {destinationChain ? (
-                          <>
-                            <BlockchainIcon chainId={destinationChain} size={24} />
-                            <div>
-                              {getChainName({ chainId: destinationChain })}
-                              <div className="tx-from-address">
-                                <a
-                                  href={getExplorerLink({
-                                    chainId: destinationChain,
-                                    value: parsedDestinationAddress,
-                                    base: "address",
-                                    isNativeAddress: true,
-                                  })}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  onClick={stopBubbling}
-                                >
-                                  {shortAddress(parsedDestinationAddress)}
-                                </a>
+                      </>
+                    ) : (
+                      "-"
+                    )}
+                  </div>
+                ),
+                status: (
+                  <div className="tx-status">
+                    <StatusBadge status={status as TxStatus} />
+                  </div>
+                ),
+                amount: tokenAmount ? formatCurrency(Number(tokenAmount)) + " " + symbol : "-",
+                time: (timestampDate && timeAgo(timestampDate)) || "-",
+              };
 
-                                <CopyToClipboard toCopy={parsedDestinationAddress}>
-                                  <CopyIcon />
-                                </CopyToClipboard>
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                          "-"
-                        )}
-                      </div>
-                    ),
-                    status: (
-                      <div className="tx-status">
-                        <StatusBadge status={status as TxStatus} />
-                      </div>
-                    ),
-                    amount: tokenAmount ? formatCurrency(Number(tokenAmount)) + " " + symbol : "-",
-                    time: (timestampDate && timeAgo(timestampDate)) || "-",
-                  };
-
-                  tempRows.push(row);
-                });
+              tempRows.push(row);
             })
           : [];
 

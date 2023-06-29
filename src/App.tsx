@@ -2,15 +2,15 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { RecoilRoot } from "recoil";
 import { Navigation } from "./navigation";
 
-const App = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-      },
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
     },
-  });
+  },
+});
 
+const App = () => {
   return (
     <RecoilRoot>
       <QueryClientProvider client={queryClient}>

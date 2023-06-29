@@ -1,0 +1,16 @@
+@import "src/styles/globals.scss";
+
+.banner {
+  @include centered-row;
+
+  justify-content: center;
+  height: 40px;
+  width: 100%;
+  background: var(--color-information-100);
+
+  &-content {
+    @include text-p2-bold;
+
+    color: var(--color-white-80);
+  }
+}

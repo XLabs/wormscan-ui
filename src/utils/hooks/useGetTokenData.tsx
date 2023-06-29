@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import client from "src/api/Client";
+import { getClient } from "src/api/Client";
 
 interface Props {
   tokenChain: number;
@@ -17,7 +17,7 @@ export function useGetTokenData({ tokenChain, tokenAddress }: Props) {
   } = useQuery(
     ["getTokenData", tokenAddress],
     () =>
-      client.search.getToken({
+      getClient().search.getToken({
         chainId: tokenChain,
         tokenAddress: parseTokenAddress,
       }),

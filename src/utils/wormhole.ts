@@ -53,8 +53,8 @@ import XplaDarkIcon from "src/icons/blockchains/dark/xpla.svg";
 import SeiDarkIcon from "src/icons/blockchains/dark/sei.svg";
 
 import { parseAddress, parseTx } from "./crypto";
+import { NETWORK } from "src/types";
 
-export type NETWORK = "mainnet" | "testnet" | "devnet";
 export type ExplorerBaseURLInput = {
   network: NETWORK;
   value: string;

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQueryClient } from "react-query";
-import { useNavigate } from "react-router-dom";
-import client from "src/api/Client";
+import { getClient } from "src/api/Client";
 import SearchBar from "../../SearchBar";
 import { useRef } from "react";
+import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 
 const Search = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateCustom();
   const { t } = useTranslation();
   const searchType = useRef<"vaaId" | "other">("other");
   const searchString = useRef("");
@@ -29,7 +29,7 @@ const Search = () => {
   const { mutate: mutateFindVAAByAddress } = useMutation(
     ({ address }: { address: string }) => {
       try {
-        return client.search.findVAAByAddress({
+        return getClient().search.findVAAByAddress({
           address,
         });
       } catch (error) {
@@ -51,7 +51,7 @@ const Search = () => {
 
   const { mutate: mutateFindVAAByTxHash } = useMutation(
     ({ txHash }: { txHash: string }) =>
-      client.guardianNetwork.getVAAbyTxHash({
+      getClient().guardianNetwork.getVAAbyTxHash({
         query: {
           txHash,
           parsedPayload: true,
@@ -83,7 +83,7 @@ const Search = () => {
       const emitter = String(splitId[1]);
       const seq = Number(splitId[2]);
 
-      return client.guardianNetwork.getVAA({
+      return getClient().guardianNetwork.getVAA({
         chainId,
         emitter,
         seq,

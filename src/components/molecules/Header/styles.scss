@@ -3,8 +3,8 @@
 .header {
   display: grid;
   grid-template-areas:
-    "brand hamburger"
-    "search search";
+    "brand network network hamburger"
+    "search search search search";
   align-items: center;
   width: 100%;
   min-height: 64px;
@@ -18,7 +18,7 @@
   }
 
   @include desktop {
-    grid-template-areas: "brand search search links";
+    grid-template-areas: "brand search search network network links";
 
     padding: 16px 60px;
     min-height: 96px;
@@ -64,6 +64,23 @@
     width: 100%;
   }
 
+  &-network {
+    &-container {
+      grid-area: network;
+      display: flex;
+      justify-content: end;
+    }
+
+    &-select {
+      height: 36px;
+      width: fit-content;
+
+      @include desktop {
+        height: 42px;
+      }
+    }
+  }
+
   &-navigation {
     @include centered-row;
 
@@ -74,7 +91,6 @@
     @include desktop {
       @include centered-row;
 
-      min-width: 290px;
       gap: 44px;
     }
 
