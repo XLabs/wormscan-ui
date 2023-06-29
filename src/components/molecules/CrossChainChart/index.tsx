@@ -34,7 +34,7 @@ const CrossChainChart = () => {
         by: selectedType,
         timeSpan: selectedTimeRange.value,
       }),
-    // { cacheTime: 0 },
+    { cacheTime: 0 },
   );
 
   if (isError || (data && data.length === 0)) return null;
