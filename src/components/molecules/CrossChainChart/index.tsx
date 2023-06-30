@@ -7,6 +7,7 @@ import i18n from "src/i18n";
 import { useTranslation } from "react-i18next";
 import { CrossChainBy } from "@xlabs-libs/wormscan-sdk";
 import "./styles.scss";
+import ErrorPlaceholder from "../ErrorPlaceholder";
 
 const TYPE_LIST = [
   { label: i18n.t("home.crossChain.volume"), value: "notional", ariaLabel: "Volume" },
@@ -37,8 +38,6 @@ const CrossChainChart = () => {
     { cacheTime: 0 },
   );
 
-  if (isError || (data && data.length === 0)) return null;
-
   return (
     <div className="cross-chain" data-testid="cross-chain-card">
       <div className="cross-chain-title">{t("home.crossChain.title")}</div>
@@ -68,11 +67,15 @@ const CrossChainChart = () => {
       </div>
 
       {isLoading || isFetching ? (
-        <div className="cross-chain-loader">
-          <Loader />
-        </div>
+        <Loader />
       ) : (
-        <Chart data={data} selectedType={selectedType} />
+        <>
+          {isError ? (
+            <ErrorPlaceholder errorType="sankey" />
+          ) : (
+            <Chart data={data} selectedType={selectedType} />
+          )}
+        </>
       )}
 
       <div className="cross-chain-message">

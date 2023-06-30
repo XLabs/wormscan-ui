@@ -231,9 +231,7 @@ const Txs = () => {
     <BaseLayout>
       <div className="txs-page">
         {isLoading ? (
-          <div className="txs-page-loader">
-            <Loader />
-          </div>
+          <Loader />
         ) : (
           <>
             <Top address={address} addressChainId={addressChainId} />
