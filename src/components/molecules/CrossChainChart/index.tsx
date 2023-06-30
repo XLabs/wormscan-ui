@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getClient } from "src/api/Client";
 import { Chart } from "./Chart";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { Loader, Select, ToggleGroup } from "src/components/atoms";
 import i18n from "src/i18n";
 import { useTranslation } from "react-i18next";
 import { CrossChainBy } from "@xlabs-libs/wormscan-sdk";
-import "./styles.scss";
 import ErrorPlaceholder from "../ErrorPlaceholder";
+import "./styles.scss";
 
 const TYPE_LIST = [
   { label: i18n.t("home.crossChain.volume"), value: "notional", ariaLabel: "Volume" },

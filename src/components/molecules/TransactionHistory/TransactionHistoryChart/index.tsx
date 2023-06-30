@@ -5,7 +5,7 @@ import ReactApexChart from "react-apexcharts";
 import { DateRange } from "@xlabs-libs/wormscan-sdk";
 import { getClient } from "src/api/Client";
 import { numberToSuffix } from "src/utils/number";
-import ErrorPlaceholder from "../ErrorPlaceholder";
+import ErrorPlaceholder from "../../ErrorPlaceholder";
 import "./styles.scss";
 
 type Props = {

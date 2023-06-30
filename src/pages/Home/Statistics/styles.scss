@@ -11,36 +11,4 @@
   margin-top: 24px;
   margin-bottom: 24px;
   min-height: 330px;
-
-  &-title {
-    color: var(--color-primary-50);
-    @include text-p1;
-  }
-
-  &-history {
-    @include card-container;
-    @include centered-column;
-    justify-content: start;
-
-    flex: 2;
-    gap: 24px;
-
-    @include desktop {
-      gap: 16px;
-    }
-
-    &-options {
-      @include centered-row;
-
-      column-gap: 8px;
-      row-gap: 20px;
-
-      @include desktop {
-        gap: 16px;
-      }
-
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-  }
 }
