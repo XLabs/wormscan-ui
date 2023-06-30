@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import client from "src/api/Client";
+import { getClient } from "src/api/Client";
 import { Chart } from "./Chart";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { Loader, Select, ToggleGroup } from "src/components/atoms";
 import i18n from "src/i18n";
 import { useTranslation } from "react-i18next";
-import { daysAgoDate } from "src/utils/date";
 import { CrossChainBy } from "@xlabs-libs/wormscan-sdk";
 import "./styles.scss";
 
@@ -28,17 +27,18 @@ const CrossChainChart = () => {
   const [selectedType, setSelectedType] = useState<CrossChainBy>("notional");
   const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
 
-  const { isLoading, error, data, mutate } = useMutation(
+  const { data, isError, isLoading, isFetching } = useQuery(
+    ["getLastTxs", selectedType, selectedTimeRange.value],
     () =>
-      client.guardianNetwork.getCrossChainActivity({
+      getClient().guardianNetwork.getCrossChainActivity({
         by: selectedType,
         timeSpan: selectedTimeRange.value,
       }),
-    { retry: 2 },
+    { cacheTime: 0 },
   );
-  useEffect(mutate, [selectedTimeRange, selectedType, mutate]);
 
-  if (error || (data && data.length === 0)) return null;
+  if (isError || (data && data.length === 0)) return null;
+
   return (
     <div className="cross-chain" data-testid="cross-chain-card">
       <div className="cross-chain-title">{t("home.crossChain.title")}</div>
@@ -67,7 +67,7 @@ const CrossChainChart = () => {
         </div>
       </div>
 
-      {isLoading || !data ? (
+      {isLoading || isFetching ? (
         <div className="cross-chain-loader">
           <Loader />
         </div>

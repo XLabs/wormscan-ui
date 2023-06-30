@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TopAssetListItem, TopChainListItem } from "src/components/molecules";
 import { TopList } from "src/components/organisms";
-import client from "src/api/Client";
+import { getClient } from "src/api/Client";
 import { useQuery } from "react-query";
 import { Loader } from "src/components/atoms";
 import { removeLeadingZeros } from "src/utils/string";
@@ -44,7 +44,7 @@ const TopLists = () => {
   } = useQuery(
     ["chainPairsByTransfers", selectedTopChainTimeRange.value],
     () =>
-      client.guardianNetwork.getChainPairsByTransfers({
+      getClient().guardianNetwork.getChainPairsByTransfers({
         timeSpan: selectedTopChainTimeRange.value,
       }),
     {
@@ -58,7 +58,8 @@ const TopLists = () => {
     data: dataAssets,
   } = useQuery(
     ["assetsByVolume", selectedTopAssetTimeRange.value],
-    () => client.guardianNetwork.getAssetsByVolume({ timeSpan: selectedTopAssetTimeRange.value }),
+    () =>
+      getClient().guardianNetwork.getAssetsByVolume({ timeSpan: selectedTopAssetTimeRange.value }),
     {
       refetchOnWindowFocus: false,
     },
@@ -128,12 +129,12 @@ const TopLists = () => {
               tokenAddressParsed = isEVMChain(tokenChain as ChainId)
                 ? "0x" + tokenAddressParsed
                 : tokenAddressParsed;
-              tokenLogoURL = dataTokens.tokens[tokenChain][tokenAddressParsed]?.logo;
+              tokenLogoURL = dataTokens?.tokens?.[tokenChain]?.[tokenAddressParsed]?.logo;
             }
 
             return (
               <TopAssetListItem
-                key={`${emitterChain}-${symbol}`}
+                key={`${emitterChain}-${tokenChain}-${symbol}`}
                 from_chain={emitterChain}
                 token_logo={tokenLogoURL}
                 symbol={symbol}

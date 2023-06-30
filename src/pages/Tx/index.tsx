@@ -1,22 +1,26 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import client from "src/api/Client";
+import { getClient } from "src/api/Client";
 import { Loader } from "src/components/atoms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { Information } from "./Information";
 import { Top } from "./Top";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { ChainId, parseVaa } from "@certusone/wormhole-sdk";
 import { Buffer } from "buffer";
 import { getGuardianSet } from "../../consts";
+import { NETWORK } from "src/types";
+import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import "./styles.scss";
 
 const STALE_TIME = 1000 * 10;
 
 const Tx = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateCustom();
   const { txHash } = useParams();
+  const [searchParams] = useSearchParams();
+  const network = searchParams.get("network") as NETWORK;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [VAAId, setVAAId] = useState<string>("");
@@ -32,10 +36,16 @@ const Tx = () => {
     setIsLoading(true);
   }, [txHash]);
 
+  useEffect(() => {
+    if (!network) return;
+
+    setIsLoading(true);
+  }, [network]);
+
   const { data: VAAData } = useQuery(
     ["getVAA", txHash],
     () =>
-      client.guardianNetwork.getVAAbyTxHash({
+      getClient().guardianNetwork.getVAAbyTxHash({
         query: {
           txHash,
           parsedPayload: true,
@@ -60,7 +70,7 @@ const Tx = () => {
   const { data: globalTxData } = useQuery(
     ["globalTx", VAAId],
     () =>
-      client.guardianNetwork.getGlobalTx({
+      getClient().guardianNetwork.getGlobalTx({
         chainId,
         emitter,
         seq,

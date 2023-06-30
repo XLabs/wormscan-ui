@@ -1,11 +1,11 @@
-import { Table, Tabs } from "src/components/organisms";
+import { Table } from "src/components/organisms";
 import i18n from "src/i18n";
 import { Column } from "react-table";
-import { useNavigate } from "react-router-dom";
 import { PAGE_SIZE, TransactionOutput } from "..";
 import Pagination from "src/components/atoms/Pagination";
 import { Dispatch, SetStateAction } from "react";
 import { Loader } from "src/components/atoms";
+import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import "./styles.scss";
 
 const TXS_TAB_HEADERS = [
@@ -57,7 +57,7 @@ const Information = ({
   isPaginationLoading,
   setIsPaginationLoading,
 }: Props) => {
-  const navigate = useNavigate();
+  const navigate = useNavigateCustom();
 
   const onRowClick = (row: TransactionOutput) => {
     const { id: txHash } = row || {};

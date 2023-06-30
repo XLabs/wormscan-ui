@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import client from "src/api/Client";
+import { getClient } from "src/api/Client";
 
 interface Props {
   coingeckoId: string;
@@ -20,7 +20,7 @@ export function useGetTokenPrice({ coingeckoId, date }: Props) {
   } = useQuery(
     ["getTokenPrice", coingeckoId, date],
     () =>
-      client.search.getTokenPrice({
+      getClient().search.getTokenPrice({
         coingeckoId,
         query: {
           date,

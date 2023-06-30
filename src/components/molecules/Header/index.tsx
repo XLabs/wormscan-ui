@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { NavLink } from "src/components/atoms";
+import { NavLink, Select } from "src/components/atoms";
 import WormholeBrand from "../WormholeBrand";
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 import i18n from "src/i18n";
 import Search from "./Search";
-import "./styles.scss";
 import { PORTAL_BRIDGE_URL } from "src/consts";
+import { changeNetwork } from "src/api/Client";
+import { NETWORK } from "src/types";
+import { useSearchParams } from "react-router-dom";
+import "./styles.scss";
 
 const setOverflowHidden = (hidden: boolean) => {
   if (hidden) {
@@ -32,8 +35,27 @@ const HeaderLinks = () => (
   </nav>
 );
 
-const Header = () => {
+type Props = {
+  network: NETWORK;
+};
+
+type NetworkSelectProps = { label: string; value: NETWORK };
+
+const NETWORK_LIST: NetworkSelectProps[] = [
+  { label: "Mainnet", value: "mainnet" },
+  { label: "Testnet", value: "testnet" },
+];
+
+const getCurrentNetworkItem = (network: NETWORK): NetworkSelectProps => {
+  return NETWORK_LIST.find(item => item.value === network) || NETWORK_LIST[0];
+};
+
+const Header = ({ network }: Props) => {
   const { t } = useTranslation();
+  const [, setSearchParams] = useSearchParams();
+  const [selectedNetwork, setSelectedNetwork] = useState<NetworkSelectProps>(
+    getCurrentNetworkItem(network),
+  );
 
   const [expandMobileMenu, setExpandMobileMenu] = useState<boolean>(false);
   const handleSetExpand = () => {
@@ -47,26 +69,50 @@ const Header = () => {
     return () => setOverflowHidden(false);
   }, []);
 
+  useEffect(() => {
+    if (!network) return;
+
+    changeNetwork(network);
+  }, [network]);
+
+  const onClickChangeNetwork = (network: NETWORK) => {
+    setSearchParams({ network });
+  };
+
+  const onChangeNetworkSelect = (network: NetworkSelectProps) => {
+    setSelectedNetwork(network);
+    onClickChangeNetwork(network.value);
+  };
+
   return (
     <header className="header" data-testid="header">
       <LogoLink />
       <Search />
+      <div className="header-actions">
+        <Select
+          name={"networkSelect"}
+          value={selectedNetwork}
+          onValueChange={(value: NetworkSelectProps) => onChangeNetworkSelect(value)}
+          items={NETWORK_LIST}
+          ariaLabel={"Select Network"}
+          className="header-network-select"
+        />
 
-      {/* DESKTOP OPTIONS */}
-      <div className="header-navigation">
-        <HeaderLinks />
+        <div className="header-navigation">
+          <HeaderLinks />
+        </div>
 
-        <div className="header-actions">
+        <div>
           <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noreferrer">
             <button className="connect-button">{t("home.header.goBridge")}</button>
           </a>
         </div>
-      </div>
 
-      {/* MOBILE HAMBURGER MENU */}
-      <div className="header-hamburger">
-        <div className="header-hamburger-container" onClick={handleSetExpand}>
-          <HamburgerMenuIcon className="header-open-mobile-menu-btn" />
+        {/* MOBILE HAMBURGER MENU */}
+        <div className="header-hamburger">
+          <div className="header-hamburger-container" onClick={handleSetExpand}>
+            <HamburgerMenuIcon className="header-open-mobile-menu-btn" />
+          </div>
         </div>
       </div>
 

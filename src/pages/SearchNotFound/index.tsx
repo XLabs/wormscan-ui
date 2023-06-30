@@ -1,13 +1,14 @@
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import SearchNotFoundImage from "src/assets/search-not-found.svg";
 import { DISCORD_URL } from "src/consts";
+import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import "./styles.scss";
 
 const SearchNotFound = () => {
   const [searchParams] = useSearchParams();
   const q = searchParams.get("q");
-  const navigate = useNavigate();
+  const navigate = useNavigateCustom();
 
   const goHome = (e: React.MouseEvent<HTMLButtonElement>) => {
     navigate("/");

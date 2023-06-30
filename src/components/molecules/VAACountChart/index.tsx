@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import client from "src/api/Client";
+import { getClient } from "src/api/Client";
 import { Chart } from "./Chart";
 import { ChainId, VAACount } from "@xlabs-libs/wormscan-sdk";
 import { Loader } from "src/components/atoms";
@@ -14,7 +14,7 @@ const VAACountChart = () => {
   const { t } = useTranslation();
 
   const { isLoading, error, data } = useQuery("vaaCount", () =>
-    client.guardianNetwork.getVAACount(),
+    getClient().guardianNetwork.getVAACount(),
   );
 
   const [chartData, setChartData] = useState<VAACount[]>([]);

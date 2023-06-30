@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import client from "src/api/Client";
+import { getClient } from "src/api/Client";
 import { Loader } from "src/components/atoms";
 import { formatCurrency, formatNumber, numberToSuffix } from "src/utils/number";
 import "./styles.scss";
@@ -12,7 +12,7 @@ const ScoreCard = () => {
     isLoading,
     error,
     data: scoreData,
-  } = useQuery("scoresResponse", () => client.guardianNetwork.getScores());
+  } = useQuery("scoresResponse", () => getClient().guardianNetwork.getScores());
 
   const {
     tvl,

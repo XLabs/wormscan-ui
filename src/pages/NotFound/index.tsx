@@ -1,9 +1,9 @@
-import { useNavigate } from "react-router-dom";
 import { BaseLayout } from "src/layouts/BaseLayout";
+import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import "./styles.scss";
 
 const NotFound = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateCustom();
 
   const goHome = (e: React.MouseEvent<HTMLButtonElement>) => {
     navigate("/");

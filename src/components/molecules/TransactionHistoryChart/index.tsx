@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { Loader } from "src/components/atoms";
 import ReactApexChart from "react-apexcharts";
 import { DateRange } from "@xlabs-libs/wormscan-sdk";
-import client from "src/api/Client";
+import { getClient } from "src/api/Client";
 import { numberToSuffix } from "src/utils/number";
 import "./styles.scss";
 
@@ -17,49 +17,48 @@ const TransactionHistoryChart = ({ range }: Props) => {
   const [totalTxs, setTotalTxs] = useState("");
   const tickAmount = range === "month" ? 4 : 5;
 
-  const { isLoading, isError, mutate } = useMutation(
-    () => client.guardianNetwork.getLastTxs(range),
-    {
-      onSuccess: response => {
-        const responseReversed = response.reverse();
-        const totalAmount = responseReversed.reduce((prev, curr) => prev + curr.count, 0);
-
-        setTotalTxs(
-          `Last ${range === "day" ? "24hs" : range}: ${totalAmount.toLocaleString()} txs`,
-        );
-        setSeriesData(responseReversed.map(item => item.count));
-        setSeriesLabels(
-          responseReversed.map(item => {
-            const date = new Date(item.time);
-
-            if (range === "day") {
-              return date.toLocaleString("en", {
-                hourCycle: "h23",
-                hour: "2-digit",
-                minute: "2-digit",
-              });
-            }
-
-            if (range === "week") {
-              return date.toLocaleString("en", { weekday: "short" });
-            }
-
-            if (range === "month") {
-              return date.toLocaleString("en", { month: "short", day: "numeric" });
-            }
-          }),
-        );
-      },
-    },
+  const { data, isError, isLoading, isFetching } = useQuery(
+    ["getLastTxs", range],
+    () => getClient().guardianNetwork.getLastTxs(range),
+    { cacheTime: 0 },
   );
 
-  // when range changes, we fetch the new range
-  useEffect(mutate, [range, mutate]);
+  useEffect(() => {
+    if (!data) return;
+
+    const responseReversed = data.reverse();
+    const totalAmount = responseReversed.reduce((prev, curr) => prev + curr.count, 0);
+
+    setTotalTxs(`Last ${range === "day" ? "24hs" : range}: ${totalAmount.toLocaleString()} txs`);
+    setSeriesData(responseReversed.map(item => item.count));
+    setSeriesLabels(
+      responseReversed.map(item => {
+        const date = new Date(item.time);
+
+        if (range === "day") {
+          return date.toLocaleString("en", {
+            hourCycle: "h23",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        }
+
+        if (range === "week") {
+          return date.toLocaleString("en", { weekday: "short" });
+        }
+
+        if (range === "month") {
+          return date.toLocaleString("en", { month: "short", day: "numeric" });
+        }
+      }),
+    );
+  }, [data, range]);
 
   if (isError) return null;
+
   return (
     <div className="trans-history" data-range={range}>
-      {isLoading ? (
+      {isLoading || isFetching ? (
         <div className="trans-history-loader">
           <Loader />
         </div>
