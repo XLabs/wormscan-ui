@@ -2,9 +2,9 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "es2015",
     "outDir": "./dist",
-    "lib": ["es5", "es6", "es7", "es2017", "dom", "es2020", "esnext"],
+    "lib": ["es2015", "es6", "es7", "es2017", "dom", "es2020", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

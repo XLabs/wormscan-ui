@@ -76,7 +76,10 @@ const Header = ({ network }: Props) => {
   }, [network]);
 
   const onClickChangeNetwork = (network: NETWORK) => {
-    setSearchParams({ network });
+    setSearchParams(prev => {
+      prev.set("network", network);
+      return prev;
+    });
   };
 
   const onChangeNetworkSelect = (network: NetworkSelectProps) => {
