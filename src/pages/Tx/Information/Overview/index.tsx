@@ -49,11 +49,12 @@ const Overview = ({
 }: Props) => {
   const size = useWindowSize();
   const isMobile = size.width < BREAKPOINTS.tablet;
-  const { emitterAddr, emitterChainId, payload, vaa } = VAAData || {};
+  const { emitterNativeAddr, emitterChainId, payload, vaa } = VAAData || {};
+
   const { guardianSignatures } = vaa || {};
   const { amount, fee, tokenAddress, tokenChain } = payload || {};
   const parsedEmitterAddress = parseAddress({
-    value: emitterAddr,
+    value: emitterNativeAddr,
     chainId: emitterChainId as ChainId,
   });
   const guardianSignaturesCount = guardianSignatures?.length || 0;
