@@ -146,17 +146,19 @@ const Overview = ({
                   <div className="tx-overview-graph-step-title">Amount</div>
                   <div className="tx-overview-graph-step-description">
                     {amountSent}{" "}
-                    <a
-                      href={getExplorerLink({
-                        chainId: tokenChain,
-                        value: tokenAddress,
-                        base: "token",
-                      })}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {symbol}
-                    </a>
+                    {symbol && (
+                      <a
+                        href={getExplorerLink({
+                          chainId: tokenChain,
+                          value: tokenAddress,
+                          base: "token",
+                        })}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {symbol}
+                      </a>
+                    )}
                     ({amountSentUSD || "-"} USD)
                   </div>
                 </>
