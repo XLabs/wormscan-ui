@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getClient } from "src/api/Client";
 import { Chart } from "./Chart";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { Loader, Select, ToggleGroup } from "src/components/atoms";
 import i18n from "src/i18n";
 import { useTranslation } from "react-i18next";
 import { CrossChainBy } from "@xlabs-libs/wormscan-sdk";
+import ErrorPlaceholder from "../ErrorPlaceholder";
 import "./styles.scss";
 
 const TYPE_LIST = [
@@ -37,8 +38,6 @@ const CrossChainChart = () => {
     { cacheTime: 0 },
   );
 
-  if (isError || (data && data.length === 0)) return null;
-
   return (
     <div className="cross-chain" data-testid="cross-chain-card">
       <div className="cross-chain-title">{t("home.crossChain.title")}</div>
@@ -68,11 +67,15 @@ const CrossChainChart = () => {
       </div>
 
       {isLoading || isFetching ? (
-        <div className="cross-chain-loader">
-          <Loader />
-        </div>
+        <Loader />
       ) : (
-        <Chart data={data} selectedType={selectedType} />
+        <>
+          {isError ? (
+            <ErrorPlaceholder errorType="sankey" />
+          ) : (
+            <Chart data={data} selectedType={selectedType} />
+          )}
+        </>
       )}
 
       <div className="cross-chain-message">

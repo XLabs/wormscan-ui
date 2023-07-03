@@ -112,9 +112,7 @@ const Information = ({
             </div>
           </div>
           {isPaginationLoading ? (
-            <div className="txs-page-loader">
-              <Loader />
-            </div>
+            <Loader />
           ) : (
             <Table
               columns={columns}

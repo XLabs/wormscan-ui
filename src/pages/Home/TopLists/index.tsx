@@ -8,6 +8,7 @@ import { Loader } from "src/components/atoms";
 import { removeLeadingZeros } from "src/utils/string";
 import { ChainId, isEVMChain } from "@certusone/wormhole-sdk";
 import "./styles.scss";
+import ErrorPlaceholder from "src/components/molecules/ErrorPlaceholder";
 
 const RANGE_LIST: { label: string; value: "7d" | "15d" | "30d" }[] = [
   { label: "7 days", value: "7d" },
@@ -23,7 +24,7 @@ const TopLists = () => {
   const {
     isFetching: isFetchingTokens,
     isLoading: isLoadingTokens,
-    error: errorTokens,
+    isError: isErrorTokens,
     data: dataTokens,
   } = useQuery(
     "womrholeMarketTokens",
@@ -38,8 +39,9 @@ const TopLists = () => {
   );
 
   const {
+    isLoading: isLoadingChainPairs,
     isFetching: isFetchingChainPairs,
-    error: errorChainPairs,
+    isError: isErrorChainPairs,
     data: dataChainPairs,
   } = useQuery(
     ["chainPairsByTransfers", selectedTopChainTimeRange.value],
@@ -53,8 +55,9 @@ const TopLists = () => {
   );
 
   const {
+    isLoading: isLoadingAssets,
     isFetching: isFetchingAssets,
-    error: errorAssets,
+    isError: isErrorAssets,
     data: dataAssets,
   } = useQuery(
     ["assetsByVolume", selectedTopAssetTimeRange.value],
@@ -79,24 +82,26 @@ const TopLists = () => {
         value={selectedTopChainTimeRange}
         onValueChange={setSelectedTopChainTimeRange}
       >
-        {isFetchingChainPairs ? (
-          <>
-            <div className="home-top-lists-loader">
-              <Loader />
-            </div>
-          </>
+        {isLoadingChainPairs || isFetchingChainPairs ? (
+          <Loader />
         ) : (
-          dataChainPairs?.length > 0 &&
-          dataChainPairs.map(({ emitterChain, destinationChain, numberOfTransfers }) => {
-            return (
-              <TopChainListItem
-                key={`${emitterChain}-${destinationChain}`}
-                from_chain={emitterChain}
-                to_chain={destinationChain}
-                transactions={numberOfTransfers}
-              />
-            );
-          })
+          <>
+            {isErrorChainPairs ? (
+              <ErrorPlaceholder />
+            ) : (
+              dataChainPairs?.length > 0 &&
+              dataChainPairs.map(({ emitterChain, destinationChain, numberOfTransfers }) => {
+                return (
+                  <TopChainListItem
+                    key={`${emitterChain}-${destinationChain}`}
+                    from_chain={emitterChain}
+                    to_chain={destinationChain}
+                    transactions={numberOfTransfers}
+                  />
+                );
+              })
+            )}
+          </>
         )}
       </TopList>
 
@@ -112,36 +117,38 @@ const TopLists = () => {
         value={selectedTopAssetTimeRange}
         onValueChange={setSelectedTopAssetTimeRange}
       >
-        {isFetchingAssets ? (
-          <>
-            <div className="home-top-lists-loader">
-              <Loader />
-            </div>
-          </>
+        {isLoadingAssets || isFetchingAssets ? (
+          <Loader />
         ) : (
-          dataAssets?.length > 0 &&
-          dataAssets.map(({ emitterChain, symbol, tokenChain, tokenAddress, volume }) => {
-            let tokenLogoURL = "";
+          <>
+            {isErrorAssets ? (
+              <ErrorPlaceholder />
+            ) : (
+              dataAssets?.length > 0 &&
+              dataAssets.map(({ emitterChain, symbol, tokenChain, tokenAddress, volume }) => {
+                let tokenLogoURL = "";
 
-            if (dataTokens?.tokens) {
-              // remove leading zeros from token address
-              let tokenAddressParsed: string = removeLeadingZeros(tokenAddress);
-              tokenAddressParsed = isEVMChain(tokenChain as ChainId)
-                ? "0x" + tokenAddressParsed
-                : tokenAddressParsed;
-              tokenLogoURL = dataTokens?.tokens?.[tokenChain]?.[tokenAddressParsed]?.logo;
-            }
+                if (dataTokens?.tokens) {
+                  // remove leading zeros from token address
+                  let tokenAddressParsed: string = removeLeadingZeros(tokenAddress);
+                  tokenAddressParsed = isEVMChain(tokenChain as ChainId)
+                    ? "0x" + tokenAddressParsed
+                    : tokenAddressParsed;
+                  tokenLogoURL = dataTokens?.tokens?.[tokenChain]?.[tokenAddressParsed]?.logo;
+                }
 
-            return (
-              <TopAssetListItem
-                key={`${emitterChain}-${tokenChain}-${symbol}`}
-                from_chain={emitterChain}
-                token_logo={tokenLogoURL}
-                symbol={symbol}
-                volume={volume}
-              />
-            );
-          })
+                return (
+                  <TopAssetListItem
+                    key={`${emitterChain}-${tokenChain}-${symbol}`}
+                    from_chain={emitterChain}
+                    token_logo={tokenLogoURL}
+                    symbol={symbol}
+                    volume={volume}
+                  />
+                );
+              })
+            )}
+          </>
         )}
       </TopList>
     </section>

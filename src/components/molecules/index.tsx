@@ -5,6 +5,6 @@ export { default as JoinUs } from "./JoinUs";
 export { default as SearchBar } from "./SearchBar";
 export { default as TopAssetListItem } from "./TopAssetListItem";
 export { default as TopChainListItem } from "./TopChainListItem";
-export { default as TransactionHistoryChart } from "./TransactionHistoryChart";
+export { default as TransactionHistoryChart } from "./TransactionHistory/TransactionHistoryChart";
 export { default as VAACountChart } from "./VAACountChart";
 export { default as WormholeBrand } from "./WormholeBrand";

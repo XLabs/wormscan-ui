@@ -122,9 +122,7 @@ const Tx = () => {
     <BaseLayout>
       <div className="tx-page">
         {isLoading ? (
-          <div className="tx-page-loader">
-            <Loader />
-          </div>
+          <Loader />
         ) : (
           <>
             <Top txHash={txHash} emitterChainId={emitterChainId} payloadType={payloadType} />

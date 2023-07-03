@@ -1,3 +1,18 @@
+@import "src/styles/globals.scss";
+
+.loader-container {
+  @include centered-column;
+
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 48px 16px;
+
+  img {
+    display: block;
+  }
+}
+
 .spinner-loader {
   width: 48px;
   height: 48px;
