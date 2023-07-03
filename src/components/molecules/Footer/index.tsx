@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { NavLink } from "src/components/atoms";
-import { DISCORD_URL, TWITTER_URL } from "src/consts";
+import { DISCORD_URL, TWITTER_URL, XLABS_URL } from "src/consts";
 import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
 import WormholeBrand from "../WormholeBrand";
@@ -41,7 +41,15 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="footer-copy">&copy;{year} Wormholescan | Wormhole Explorer</div>
+        <div className="footer-copy">
+          <div className="footer-copy-brand">&copy;{year} Wormholescan</div>
+          <div className="footer-copy-project">Wormhole Explorer</div>
+          <div className="footer-copy-powered">
+            <a href={XLABS_URL} target="_blank" rel="noreferrer">
+              Powered by xlabs.xyz
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   );

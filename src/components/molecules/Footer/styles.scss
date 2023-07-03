@@ -3,14 +3,14 @@
 .footer {
   @include centered-row;
 
-  min-height: 168px;
-  padding: 16px;
-  padding-top: 48px;
+  min-height: 570px;
+  padding: 48px 16px 24px;
   background-color: rgba(1, 0, 20, 0.25);
   border-top: 1px solid var(--color-white-10);
 
   @include desktop {
     padding: 36px 60px 24px;
+    min-height: 168px;
   }
 
   &-container {
@@ -38,6 +38,9 @@
   }
 
   &-brand {
+    @include centered-row;
+
+    justify-content: center;
     grid-area: brand;
     padding: 0 32px;
 
@@ -49,22 +52,23 @@
       width: 100%;
       margin: auto;
       padding: 0;
+      justify-content: start;
     }
   }
 
   &-social {
-    @include centered-row;
+    @include centered-column;
 
-    justify-content: space-between;
+    align-items: center;
     grid-area: social;
-    gap: 32px;
-    width: 100%;
+    gap: 24px;
     padding: 0 32px;
 
     @include desktop {
+      @include centered-row;
+
       justify-content: flex-end;
-      align-items: center;
-      gap: 40x;
+      gap: 40px;
       margin-bottom: 0;
       padding: 0;
     }
@@ -72,7 +76,6 @@
     &-text {
       @include text-p3;
 
-      flex: 2;
       color: var(--color-primary-100);
 
       @include desktop {
@@ -83,7 +86,6 @@
     &-icons {
       @include centered-row;
 
-      flex: 3;
       gap: 56px;
 
       svg {
@@ -103,8 +105,8 @@
 
   &-links {
     display: grid;
-    justify-content: space-between;
-    grid-template-columns: auto auto auto;
+    justify-content: center;
+    grid-template-columns: auto auto;
     gap: 72px;
     grid-area: links;
     padding: 0 32px;
@@ -113,6 +115,7 @@
       grid-template-columns: auto auto;
       justify-content: center;
       padding: 0;
+      gap: 120px;
     }
 
     &-item {
@@ -133,14 +136,58 @@
   }
 
   &-copy {
-    @include text-p3;
+    @include centered-column;
+    @include text-caption1;
 
+    font-weight: 400;
+    font-size: 14px;
     text-align: center;
     grid-area: copy;
     color: var(--color-white-30);
 
     @include desktop {
-      text-align: center;
+      @include centered-row;
+
+      justify-content: space-between;
+      font-size: 12px;
+    }
+
+    &-brand {
+      order: 1;
+
+      @include desktop {
+        order: 3;
+      }
+    }
+
+    &-project {
+      order: 2;
+    }
+
+    &-powered {
+      order: 3;
+      margin-top: 80px;
+      color: var(--color-white-40);
+      font-size: 12px;
+
+      & a {
+        text-decoration: none;
+        color: var(--color-white-40);
+
+        &:hover,
+        &:active {
+          color: var(--color-information-100);
+        }
+      }
+
+      @include desktop {
+        order: 1;
+        margin: 0;
+
+        & a {
+          color: var(--color-white-30);
+        }
+      }
     }
   }
 }
