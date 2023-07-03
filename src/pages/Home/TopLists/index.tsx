@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TopAssetListItem, TopChainListItem } from "src/components/molecules";
+import { TopAssetListItem, TopChainListItem, ErrorPlaceholder } from "src/components/molecules";
 import { TopList } from "src/components/organisms";
 import { getClient } from "src/api/Client";
 import { useQuery } from "react-query";
@@ -8,7 +8,6 @@ import { Loader } from "src/components/atoms";
 import { removeLeadingZeros } from "src/utils/string";
 import { ChainId, isEVMChain } from "@certusone/wormhole-sdk";
 import "./styles.scss";
-import ErrorPlaceholder from "src/components/molecules/ErrorPlaceholder";
 
 const RANGE_LIST: { label: string; value: "7d" | "15d" | "30d" }[] = [
   { label: "7 days", value: "7d" },

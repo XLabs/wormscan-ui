@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
 import { Loader } from "src/components/atoms";
 import { formatCurrency, formatNumber, numberToSuffix } from "src/utils/number";
-import ErrorPlaceholder from "../ErrorPlaceholder/index";
+import { ErrorPlaceholder } from "src/components/molecules";
 import "./styles.scss";
 
 const ScoreCard = () => {

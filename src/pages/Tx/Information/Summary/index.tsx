@@ -50,7 +50,7 @@ const Summary = ({
       <div>
         <div className="key">Fee:</div>
         <div className="value">
-          {fee != null ? `${formatUnits(fee, decimals)} ${symbol && symbol}` : "-"}
+          {fee != null ? `${formatUnits(fee, decimals)} ${symbol || ""}` : "-"}
         </div>
       </div>
       <div>
