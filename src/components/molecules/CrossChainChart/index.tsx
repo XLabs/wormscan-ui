@@ -6,7 +6,7 @@ import { Loader, Select, ToggleGroup } from "src/components/atoms";
 import i18n from "src/i18n";
 import { useTranslation } from "react-i18next";
 import { CrossChainBy } from "@xlabs-libs/wormscan-sdk";
-import ErrorPlaceholder from "../ErrorPlaceholder";
+import { ErrorPlaceholder } from "src/components/molecules";
 import "./styles.scss";
 
 const TYPE_LIST = [

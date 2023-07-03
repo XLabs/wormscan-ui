@@ -84,6 +84,11 @@
       height: 36px;
       width: fit-content;
 
+      &--active {
+        background-color: var(--color-white-10);
+        border-radius: 5px;
+      }
+
       @include desktop {
         height: 42px;
       }

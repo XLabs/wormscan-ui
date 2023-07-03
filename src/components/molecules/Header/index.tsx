@@ -98,7 +98,9 @@ const Header = ({ network }: Props) => {
           onValueChange={(value: NetworkSelectProps) => onChangeNetworkSelect(value)}
           items={NETWORK_LIST}
           ariaLabel={"Select Network"}
-          className="header-network-select"
+          className={`header-network-select ${
+            selectedNetwork.value !== "mainnet" && "header-network-select--active"
+          }`}
         />
 
         <div className="header-navigation">

@@ -120,3 +120,4 @@ export const colorStatus: any = {
 export const PORTAL_BRIDGE_URL = "https://www.portalbridge.com";
 export const TWITTER_URL = "https://twitter.com/wormholecrypto";
 export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";
+export const XLABS_URL = "https://www.xlabs.xyz";

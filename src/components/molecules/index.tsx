@@ -8,3 +8,4 @@ export { default as TopChainListItem } from "./TopChainListItem";
 export { default as TransactionHistoryChart } from "./TransactionHistory/TransactionHistoryChart";
 export { default as VAACountChart } from "./VAACountChart";
 export { default as WormholeBrand } from "./WormholeBrand";
+export { default as ErrorPlaceholder } from "./ErrorPlaceholder";
