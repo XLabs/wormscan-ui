@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { getClient } from "src/api/Client";
+import { useEffect, useState } from "react";
+import { getClient, getCurrentNetwork } from "src/api/Client";
 import { Chart } from "./Chart";
 import { useQuery } from "react-query";
 import { Loader, Select, ToggleGroup } from "src/components/atoms";
@@ -9,8 +9,12 @@ import { CrossChainBy } from "@xlabs-libs/wormscan-sdk";
 import { ErrorPlaceholder } from "src/components/molecules";
 import "./styles.scss";
 
-const TYPE_LIST = [
+const MAINNET_TYPE_LIST = [
   { label: i18n.t("home.crossChain.volume"), value: "notional", ariaLabel: "Volume" },
+  { label: i18n.t("home.crossChain.count"), value: "tx", ariaLabel: "Transactions" },
+];
+
+const TESTNET_TYPE_LIST = [
   { label: i18n.t("home.crossChain.count"), value: "tx", ariaLabel: "Transactions" },
 ];
 
@@ -23,10 +27,21 @@ const RANGE_LIST = [
 ];
 
 const CrossChainChart = () => {
+  const currentNetwork = getCurrentNetwork();
   const { t } = useTranslation();
 
+  const [TYPE_LIST, setTypeList] = useState(MAINNET_TYPE_LIST);
   const [selectedType, setSelectedType] = useState<CrossChainBy>("notional");
   const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
+
+  useEffect(() => {
+    if (currentNetwork === "mainnet") {
+      setTypeList(MAINNET_TYPE_LIST);
+    } else {
+      setSelectedType("tx");
+      setTypeList(TESTNET_TYPE_LIST);
+    }
+  }, [currentNetwork]);
 
   const { data, isError, isLoading, isFetching } = useQuery(
     ["getLastTxs", selectedType, selectedTimeRange.value],

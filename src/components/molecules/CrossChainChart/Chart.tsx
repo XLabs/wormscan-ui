@@ -6,6 +6,7 @@ import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { useTranslation } from "react-i18next";
 import { BREAKPOINTS } from "src/consts";
 import { StickyInfo } from "./StickyInfo";
+import { getCurrentNetwork } from "src/api/Client";
 
 interface IOriginChainsHeight {
   itemHeight: number;
@@ -133,13 +134,12 @@ export const Chart = ({ data, selectedType }: Props) => {
     );
   };
 
-  // chart graph creation effect, runs as an animation
+  // chart graph creation effect
   useEffect(() => {
     if (originChainsHeight.length && destinyChainsHeight.length) {
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
 
-      // prevent pixelated canvas on high quality resolution devices
       canvas.width = Math.floor(CHART_SIZE * devicePixelRatio);
       canvas.height = Math.floor(CHART_SIZE * devicePixelRatio);
       context.scale(devicePixelRatio, devicePixelRatio);
@@ -170,6 +170,9 @@ export const Chart = ({ data, selectedType }: Props) => {
   // re-render canvas when destinations or isDesktop changes.
   useEffect(updateChainsHeight, [destinations, isDesktop]);
 
+  const getAmount = (vol: string | number) =>
+    selectedType === "tx" ? vol : "$" + formatCurrency(+vol, 0);
+
   return (
     <div className="cross-chain-relative">
       <div className="cross-chain-header-container cross-chain-header-title">
@@ -190,14 +193,15 @@ export const Chart = ({ data, selectedType }: Props) => {
                 marginBottom: MARGIN_SIZE_ELEMENTS,
               }}
             >
+              <div data-selected={selectedChain === item.chain} className="volume-info">
+                {getAmount(item.volume)}
+              </div>
               <BlockchainIcon className="chain-icon" dark={true} size={19} chainId={item.chain} />
               <span className="chain-name">{getChainName(item.chain)}</span>
               {!isDesktop && <span className="mobile-separator">|</span>}
               <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
               <span className="chain-separator onlyBig">|</span>
-              <span className="chain-infoTxt onlyBig">
-                {selectedType === "tx" ? item.volume : "$" + formatCurrency(+item.volume, 0)}
-              </span>
+              <span className="chain-infoTxt onlyBig">{getAmount(item.volume)}</span>
             </div>
           ))}
         </div>
@@ -219,14 +223,15 @@ export const Chart = ({ data, selectedType }: Props) => {
                 marginBottom: MARGIN_SIZE_ELEMENTS,
               }}
             >
+              <div data-selected={true} className="volume-info">
+                {getAmount(item.volume)}
+              </div>
               <BlockchainIcon className="chain-icon" dark={true} size={19} chainId={item.chain} />
               <span className="chain-name">{getChainName(item.chain)}</span>
               {!isDesktop && <span className="mobile-separator">|</span>}
               <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
               <span className="chain-separator onlyBig">|</span>
-              <span className="chain-infoTxt onlyBig">
-                {selectedType === "tx" ? item.volume : "$" + formatCurrency(+item.volume, 0)}
-              </span>
+              <span className="chain-infoTxt onlyBig">{getAmount(item.volume)}</span>
             </div>
           ))}
         </div>
