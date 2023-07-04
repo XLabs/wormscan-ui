@@ -193,7 +193,7 @@ export const Chart = ({ data, selectedType }: Props) => {
                 marginBottom: MARGIN_SIZE_ELEMENTS,
               }}
             >
-              <div data-selected={selectedChain === item.chain} className="volume-tooltip">
+              <div data-selected={selectedChain === item.chain} className="volume-info">
                 {getAmount(item.volume)}
               </div>
               <BlockchainIcon className="chain-icon" dark={true} size={19} chainId={item.chain} />
@@ -223,7 +223,7 @@ export const Chart = ({ data, selectedType }: Props) => {
                 marginBottom: MARGIN_SIZE_ELEMENTS,
               }}
             >
-              <div data-selected={true} className="volume-tooltip">
+              <div data-selected={true} className="volume-info">
                 {getAmount(item.volume)}
               </div>
               <BlockchainIcon className="chain-icon" dark={true} size={19} chainId={item.chain} />
