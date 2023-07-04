@@ -111,6 +111,7 @@
         grid-auto-flow: column;
         align-items: center;
         border-left: 16px solid var(--color-information-60);
+        position: relative;
 
         grid-template-columns: 70px 60px;
 
@@ -229,8 +230,31 @@
           }
         }
 
+        .volume-tooltip {
+          display: none;
+          position: absolute;
+          z-index: 2;
+          padding-left: 8px;
+          padding-right: 8px;
+          font-size: 14px;
+          height: 20px;
+
+          @include desktop {
+            &[data-selected="true"] {
+              display: block;
+            }
+          }
+          @include bigDesktop {
+            display: none !important;
+          }
+        }
+
         &.left {
           cursor: pointer;
+
+          .volume-tooltip {
+            left: 100%;
+          }
 
           .chain-name {
             margin-left: 5px;
@@ -243,6 +267,9 @@
         &.right {
           .percentage {
             display: block;
+          }
+          .volume-tooltip {
+            right: 100%;
           }
           .mobile-separator {
             @media only screen and (min-width: 425px) {
