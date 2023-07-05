@@ -73,7 +73,7 @@ export default {
       },
       tx: {
         top: {
-          title: "Transaction detail",
+          title: "Tx detail",
         },
       },
       common: {

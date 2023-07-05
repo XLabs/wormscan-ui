@@ -109,6 +109,12 @@ export const getGuardianSet = (version: number): GuardianSet[] => {
   return versions[version] || [];
 };
 
+export const txType: { [key: number]: string } = {
+  1: "Transfer",
+  2: "Attestation",
+  3: "Transfer with payload",
+};
+
 export const colorStatus: any = {
   SUCCESSFUL: "green",
   COMPLETED: "green",

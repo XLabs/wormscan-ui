@@ -37,7 +37,7 @@ const getTxStatus = (originStatus: string, destinationStatus: string) => {
 
 const Information = ({ VAAData, globalTxData }: Props) => {
   const { payload } = VAAData || {};
-  const { fee, tokenAddress, tokenChain, toChain } = payload || {};
+  const { fee, tokenAddress, tokenChain, toChain, payloadType } = payload || {};
   const { originTx, destinationTx } = globalTxData || {};
   const {
     chainId: originChainId,
@@ -82,6 +82,7 @@ const Information = ({ VAAData, globalTxData }: Props) => {
         destinationChainId={toChain}
         summaryStatus={getTxStatus(originStatus, destinationStatus)}
         tokenDataResponse={tokenDataResponse}
+        payloadType={payloadType}
       />
     );
   }, [
@@ -92,6 +93,7 @@ const Information = ({ VAAData, globalTxData }: Props) => {
     destinationStatus,
     transactionTimeInMinutes,
     tokenDataResponse,
+    payloadType,
   ]);
 
   return (

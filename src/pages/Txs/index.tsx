@@ -116,7 +116,7 @@ const Txs = () => {
                   <div className="tx-hash">
                     {parseTxHash ? (
                       <>
-                        <Link to={`/tx/${txHash}`} target="_blank">
+                        <Link to={`/tx/${txHash}`} asNavLink={false} target="_blank">
                           {shortAddress(parseTxHash)}
                         </Link>
                         <CopyToClipboard toCopy={parseTxHash}>

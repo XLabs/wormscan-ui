@@ -2,7 +2,7 @@ import { ArrowRightIcon, CheckCircledIcon } from "@radix-ui/react-icons";
 import { GetTokenOutput } from "@xlabs-libs/wormscan-sdk";
 import { BlockchainIcon } from "src/components/atoms";
 import StatusBadge from "src/components/molecules/StatusBadge";
-import { colorStatus } from "src/consts";
+import { colorStatus, txType } from "src/consts";
 import { TxStatus } from "src/types";
 import { formatUnits } from "src/utils/crypto";
 import "./styles.scss";
@@ -18,6 +18,7 @@ type Props = {
     tokenDataError: unknown;
     tokenData: GetTokenOutput;
   };
+  payloadType: number;
 };
 
 const Summary = ({
@@ -27,9 +28,10 @@ const Summary = ({
   destinationChainId,
   summaryStatus,
   tokenDataResponse,
+  payloadType,
 }: Props) => {
-  const isError = summaryStatus === "FAILED";
   const { symbol, decimals } = tokenDataResponse?.tokenData || {};
+  const hasDestinationChain = txType[payloadType] && payloadType !== 2;
 
   return (
     <div className="tx-information-summary">
@@ -56,19 +58,23 @@ const Summary = ({
         </div>
       )}
       <div>
-        <div className="key">Chains:</div>
+        <div className="key">{hasDestinationChain ? "Chains:" : "Chain:"}</div>
         <div className="chains">
           <div className="chains-container">
             <BlockchainIcon size={20} chainId={originChainId || 0} />
           </div>
-          <ArrowRightIcon className="arrow-icon" />
-          <div className={`chains-container ${!destinationChainId && "disabled"}`}>
-            <BlockchainIcon
-              size={20}
-              chainId={destinationChainId || 0}
-              dark={!destinationChainId}
-            />
-          </div>
+          {hasDestinationChain && (
+            <>
+              <ArrowRightIcon className="arrow-icon" />
+              <div className={`chains-container ${!destinationChainId && "disabled"}`}>
+                <BlockchainIcon
+                  size={20}
+                  chainId={destinationChainId || 0}
+                  dark={!destinationChainId}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
