@@ -199,13 +199,13 @@
       }
 
       &-signaturesContainer {
-        --d: 6deg; /* distance between dashes */
+        --d: 5deg; /* distance between dashes */
         --n: 13; /* number of dashes */
         --c: var(--color-success-100); /* color of dashes */
         --b: 8px; /* control the thickness of border*/
         --m: 0deg; /* the masked part */
         --m2: calc(360deg); /* the masked part **not selected** */
-        --r: -11deg; /* rotation */
+        --r: -5deg; /* rotation */
 
         display: flex;
         justify-content: center;

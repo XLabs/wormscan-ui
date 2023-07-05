@@ -37,7 +37,7 @@ const getTxStatus = (originStatus: string, destinationStatus: string) => {
 
 const Information = ({ VAAData, globalTxData }: Props) => {
   const { payload } = VAAData || {};
-  const { fee, tokenAddress, tokenChain } = payload || {};
+  const { fee, tokenAddress, tokenChain, toChain } = payload || {};
   const { originTx, destinationTx } = globalTxData || {};
   const {
     chainId: originChainId,
@@ -45,14 +45,13 @@ const Information = ({ VAAData, globalTxData }: Props) => {
     status: originStatus,
   } = originTx || {};
   const {
-    chainId: destinationChainId,
     timestamp: destinationTimestamp,
     status: destinationStatus,
+    txHash: redeemTx,
   } = destinationTx || {};
-  const transactionTimeInMinutes = minutesBetweenDates(
-    new Date(originTimestamp),
-    new Date(destinationTimestamp),
-  );
+  const transactionTimeInMinutes = redeemTx
+    ? minutesBetweenDates(new Date(originTimestamp), new Date(destinationTimestamp))
+    : undefined;
 
   const tokenDataResponse = useGetTokenData({
     tokenChain,
@@ -80,13 +79,13 @@ const Information = ({ VAAData, globalTxData }: Props) => {
         transactionTimeInMinutes={transactionTimeInMinutes}
         fee={fee}
         originChainId={originChainId}
-        destinationChainId={destinationChainId}
+        destinationChainId={toChain}
         summaryStatus={getTxStatus(originStatus, destinationStatus)}
         tokenDataResponse={tokenDataResponse}
       />
     );
   }, [
-    destinationChainId,
+    toChain,
     fee,
     originChainId,
     originStatus,

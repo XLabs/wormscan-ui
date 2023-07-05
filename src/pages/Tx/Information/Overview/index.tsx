@@ -52,7 +52,7 @@ const Overview = ({
   const { emitterNativeAddr, emitterChainId, payload, vaa } = VAAData || {};
 
   const { guardianSignatures } = vaa || {};
-  const { amount, fee, tokenAddress, tokenChain } = payload || {};
+  const { amount, fee, tokenAddress, tokenChain, toChain, toAddress } = payload || {};
   const parsedEmitterAddress = parseAddress({
     value: emitterNativeAddr,
     chainId: emitterChainId as ChainId,
@@ -82,14 +82,10 @@ const Overview = ({
     txHash: redeemTx,
     to: destinationAddress,
   } = destinationTx || {};
-  const parsedRelayerAddress = parseAddress({
-    value: relayerAddress,
-    chainId: destinationChainId as ChainId,
-  });
   const parsedRedeemTx = parseTx({ value: redeemTx, chainId: destinationChainId as ChainId });
   const parsedDestinationAddress = parseAddress({
-    value: destinationAddress,
-    chainId: destinationChainId as ChainId,
+    value: toAddress,
+    chainId: toChain as ChainId,
   });
   const originDate = new Date(originTimestamp).toLocaleString("en-US", {
     year: "numeric",
@@ -229,7 +225,7 @@ const Overview = ({
           </div>
         </div>
 
-        <div className={`tx-overview-graph-step ${colorStatus[txStatus]}`}>
+        <div className={`tx-overview-graph-step ${colorStatus["COMPLETED"]}`}>
           <div className="tx-overview-graph-step-name">
             <div>SIGNED VAA</div>
           </div>
@@ -262,140 +258,98 @@ const Overview = ({
           </div>
         </div>
 
-        <div className={`tx-overview-graph-step ${colorStatus[txStatus]}`}>
-          <div className="tx-overview-graph-step-name">
-            <div>RELAYING</div>
-          </div>
-          <div className="tx-overview-graph-step-iconWrapper">
-            <div className="tx-overview-graph-step-iconContainer">
-              <img src={RelayIcon} alt="" height={32} />
+        {redeemTx && (
+          <div className={`tx-overview-graph-step ${colorStatus["COMPLETED"]}`}>
+            <div className="tx-overview-graph-step-name">
+              <div>RELAYING</div>
             </div>
-          </div>
-          <div className="tx-overview-graph-step-data-container">
-            {txStatus === "COMPLETED" && (
-              <>
-                <div>
-                  <div className="tx-overview-graph-step-title">Time</div>
-                  <div className="tx-overview-graph-step-description">{destinationDateParsed}</div>
-                </div>
-                <div>
-                  <div className="tx-overview-graph-step-title">Contract Address</div>
-                  <div className="tx-overview-graph-step-description">
-                    <a
-                      href={getExplorerLink({
-                        chainId: destinationChainId,
-                        value: parsedRelayerAddress,
-                        base: "address",
-                        isNativeAddress: true,
-                      })}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {shortAddress(parsedRelayerAddress)}
-                    </a>{" "}
-                    <CopyToClipboard toCopy={parsedRelayerAddress}>
-                      <CopyIcon />
-                    </CopyToClipboard>
-                  </div>
-                </div>
-                <div>
-                  <div className="tx-overview-graph-step-title">Redeem Tx</div>
-                  <div className="tx-overview-graph-step-description">
-                    <a
-                      href={getExplorerLink({
-                        chainId: destinationChainId,
-                        value: parsedRedeemTx,
-                        isNativeAddress: true,
-                      })}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {shortAddress(parsedRedeemTx)}
-                    </a>{" "}
-                    <CopyToClipboard toCopy={parsedRedeemTx}>
-                      <CopyIcon />
-                    </CopyToClipboard>
-                  </div>
-                </div>
-              </>
-            )}
-            {txStatus === "ONGOING" && (
-              <>
-                <div>
-                  <div className={`tx-overview-graph-step-description ${colorStatus[txStatus]}`}>
-                    Waiting for Relay
-                  </div>
-                </div>
-                <div></div>
-                <div></div>
-              </>
-            )}
-            {txStatus === "FAILED" && (
-              <>
-                <div>
-                  <div className={`tx-overview-graph-step-description ${colorStatus[txStatus]}`}>
-                    Error
-                  </div>
-                </div>
-                <div></div>
-                <div></div>
-              </>
-            )}
-          </div>
-        </div>
+            <div className="tx-overview-graph-step-iconWrapper">
+              <div className="tx-overview-graph-step-iconContainer">
+                <img src={RelayIcon} alt="" height={32} />
+              </div>
+            </div>
+            <div className="tx-overview-graph-step-data-container">
+              <div>
+                <div className="tx-overview-graph-step-title">Time</div>
+                <div className="tx-overview-graph-step-description">{destinationDateParsed}</div>
+              </div>
 
-        {destinationTx && (
-          <>
-            <div className="tx-overview-graph-step green">
-              <div className="tx-overview-graph-step-name">
-                <div>{isMobile ? "DEST. CHAIN" : "DESTINATION CHAIN"}</div>
-              </div>
-              <div className="tx-overview-graph-step-iconWrapper">
-                <div className="tx-overview-graph-step-iconContainer">
-                  {destinationChainId && <BlockchainIcon chainId={destinationChainId} size={32} />}
+              <div>
+                <div className="tx-overview-graph-step-title">Redeem Tx</div>
+                <div className="tx-overview-graph-step-description">
+                  <a
+                    href={getExplorerLink({
+                      chainId: destinationChainId,
+                      value: parsedRedeemTx,
+                      isNativeAddress: true,
+                    })}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {shortAddress(parsedRedeemTx)}
+                  </a>{" "}
+                  <CopyToClipboard toCopy={parsedRedeemTx}>
+                    <CopyIcon />
+                  </CopyToClipboard>
                 </div>
               </div>
-              <div className="tx-overview-graph-step-data-container">
-                <div>
-                  <div className="tx-overview-graph-step-title">Sent to</div>
-                  <div className="tx-overview-graph-step-description">
-                    {destinationChainId &&
-                      getChainName({ chainId: destinationChainId }).toUpperCase()}
-                  </div>
-                </div>
-                <div style={{ order: amount ? 1 : 2 }}>
-                  {amount && (
-                    <>
-                      <div className="tx-overview-graph-step-title">Amount</div>
-                      <div className="tx-overview-graph-step-description">
-                        {amountReceived} {symbol} ({amountReceivedUSD || "-"} USD)
-                      </div>
-                    </>
-                  )}
-                </div>
-                <div style={{ order: amount ? 2 : 1 }}>
-                  <div className="tx-overview-graph-step-title">Destination wallet</div>
-                  <div className="tx-overview-graph-step-description">
-                    <a
-                      href={getExplorerLink({
-                        chainId: destinationChainId,
-                        value: parsedDestinationAddress,
-                        base: "address",
-                        isNativeAddress: true,
-                      })}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {shortAddress(parsedDestinationAddress)}
-                    </a>{" "}
-                    <CopyToClipboard toCopy={parsedDestinationAddress}>
-                      <CopyIcon />
-                    </CopyToClipboard>
-                  </div>
-                </div>
+              <div></div>
+            </div>
+          </div>
+        )}
+
+        {toChain && (
+          <div className="tx-overview-graph-step green">
+            <div className="tx-overview-graph-step-name">
+              <div>{isMobile ? "DEST. CHAIN" : "DESTINATION CHAIN"}</div>
+            </div>
+            <div className="tx-overview-graph-step-iconWrapper">
+              <div className="tx-overview-graph-step-iconContainer">
+                {toChain && <BlockchainIcon chainId={toChain} size={32} />}
               </div>
             </div>
-          </>
+            <div className="tx-overview-graph-step-data-container">
+              <div>
+                <div className="tx-overview-graph-step-title">Sent to</div>
+                <div className="tx-overview-graph-step-description">
+                  {toChain && getChainName({ chainId: toChain }).toUpperCase()}
+                </div>
+              </div>
+              {/* <div style={{ order: amount ? 1 : 2 }}>
+      {amount && (
+        <>
+          <div className="tx-overview-graph-step-title">Amount</div>
+          <div className="tx-overview-graph-step-description">
+            {amountReceived} {symbol} ({amountReceivedUSD || "-"} USD)
+          </div>
+        </>
+      )}
+    </div> */}
+
+              {/* <div style={{ order: amount ? 2 : 1 }}> */}
+              <div>
+                <div className="tx-overview-graph-step-title">Destination wallet</div>
+                <div className="tx-overview-graph-step-description">
+                  <a
+                    href={getExplorerLink({
+                      chainId: destinationChainId,
+                      value: parsedDestinationAddress,
+                      base: "address",
+                      isNativeAddress: true,
+                    })}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {shortAddress(parsedDestinationAddress)}
+                  </a>{" "}
+                  <CopyToClipboard toCopy={parsedDestinationAddress}>
+                    <CopyIcon />
+                  </CopyToClipboard>
+                </div>
+              </div>
+              <div></div>
+            </div>
+          </div>
         )}
       </div>
     </div>

@@ -39,7 +39,7 @@ const Summary = ({
           <StatusBadge status={summaryStatus} />
         </div>
       </div> */}
-      {!isError && (
+      {transactionTimeInMinutes && (
         <div>
           <div className="key">Tx Time:</div>
           <div className={`value ${colorStatus[summaryStatus]}`}>
@@ -47,12 +47,14 @@ const Summary = ({
           </div>
         </div>
       )}
-      <div>
-        <div className="key">Fee:</div>
-        <div className="value">
-          {fee != null ? `${formatUnits(fee, decimals)} ${symbol || ""}` : "-"}
+      {Boolean(fee) && (
+        <div>
+          <div className="key">Fee:</div>
+          <div className="value">
+            {typeof fee === "number" ? `${formatUnits(fee, decimals)} ${symbol || ""}` : fee}
+          </div>
         </div>
-      </div>
+      )}
       <div>
         <div className="key">Chains:</div>
         <div className="chains">
