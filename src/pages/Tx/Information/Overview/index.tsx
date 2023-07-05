@@ -21,8 +21,8 @@ import { parseTx, parseAddress } from "../../../../utils/crypto";
 import "./styles.scss";
 
 // 360 degree / 19 total signatures
-// A fraction of 360 degrees (360 / 19) = 18.9 est.
-const FRACTION_DEGREE = 18.9;
+// A fraction of 360 degrees (360 / 13) = 27.7 est.
+const FRACTION_DEGREE = 27.7;
 
 type Props = {
   VAAData: Omit<VAADetail, "vaa"> & { vaa: any };
@@ -238,7 +238,7 @@ const Overview = ({
               <div className="tx-overview-graph-step-signaturesContainer-circle"></div>
               <div className="tx-overview-graph-step-signaturesContainer-text">
                 <div className="tx-overview-graph-step-signaturesContainer-text-number">
-                  {guardianSignaturesCount}/19
+                  {guardianSignaturesCount}/13
                 </div>
                 <div className="tx-overview-graph-step-signaturesContainer-text-description">
                   Signatures
