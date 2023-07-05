@@ -3,6 +3,7 @@ import { CopyIcon } from "@radix-ui/react-icons";
 import { useTranslation } from "react-i18next";
 import Tag from "src/components/atoms/Tag";
 import CopyToClipboard from "src/components/molecules/CopyToClipboard";
+import { txType } from "src/consts";
 import { parseTx } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
 import "./styles.scss";
@@ -13,11 +14,6 @@ interface Props {
   payloadType: number;
 }
 
-const txType: { [key: number]: string } = {
-  1: "Transfer",
-  2: "Attestation",
-  3: "Transfer with payload",
-};
 const Top = ({ txHash, emitterChainId, payloadType }: Props) => {
   const { t } = useTranslation();
   const parseTxHash = parseTx({
@@ -41,7 +37,7 @@ const Top = ({ txHash, emitterChainId, payloadType }: Props) => {
               isNativeAddress: true,
             })}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             {parseTxHash}
           </a>

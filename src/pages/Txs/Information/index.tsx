@@ -26,10 +26,10 @@ const columns: Column<TransactionOutput>[] | any = [
     Header: "TO",
     accessor: "to",
   },
-  {
-    Header: "STATUS",
-    accessor: "status",
-  },
+  // {
+  //   Header: "STATUS",
+  //   accessor: "status",
+  // },
   {
     Header: "AMOUNT",
     accessor: "amount",
@@ -58,11 +58,6 @@ const Information = ({
   setIsPaginationLoading,
 }: Props) => {
   const navigate = useNavigateCustom();
-
-  const onRowClick = (row: TransactionOutput) => {
-    const { id: txHash } = row || {};
-    txHash && navigate(`/tx/${txHash}`);
-  };
 
   const goFirstPage = () => {
     setIsPaginationLoading(true);
@@ -118,7 +113,6 @@ const Information = ({
               columns={columns}
               data={parsedTxsData}
               className="txs"
-              onRowClick={onRowClick}
               emptyMessage="No txs found."
             />
           )}

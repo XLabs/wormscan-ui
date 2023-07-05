@@ -17,6 +17,7 @@ import StatusBadge from "src/components/molecules/StatusBadge";
 import { NETWORK, TxStatus } from "../../types";
 import "./styles.scss";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import Link from "src/components/atoms/Link";
 
 export interface TransactionOutput {
   id: string;
@@ -62,10 +63,6 @@ const Txs = () => {
       pageSize: PAGE_SIZE,
       sortOrder: Order.DESC,
     },
-  };
-
-  const stopBubbling = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.stopPropagation();
   };
 
   useQuery(
@@ -119,18 +116,9 @@ const Txs = () => {
                   <div className="tx-hash">
                     {parseTxHash ? (
                       <>
-                        <a
-                          href={getExplorerLink({
-                            chainId: originChain,
-                            value: parseTxHash,
-                            isNativeAddress: true,
-                          })}
-                          target="_blank"
-                          rel="noreferrer"
-                          onClick={stopBubbling}
-                        >
+                        <Link to={`/tx/${txHash}`} asNavLink={false} target="_blank">
                           {shortAddress(parseTxHash)}
-                        </a>
+                        </Link>
                         <CopyToClipboard toCopy={parseTxHash}>
                           <CopyIcon />
                         </CopyToClipboard>
@@ -155,8 +143,7 @@ const Txs = () => {
                               isNativeAddress: true,
                             })}
                             target="_blank"
-                            rel="noreferrer"
-                            onClick={stopBubbling}
+                            rel="noopener noreferrer"
                           >
                             {shortAddress(parsedOriginAddress)}
                           </a>
@@ -185,8 +172,7 @@ const Txs = () => {
                                 isNativeAddress: true,
                               })}
                               target="_blank"
-                              rel="noreferrer"
-                              onClick={stopBubbling}
+                              rel="noopener noreferrer"
                             >
                               {shortAddress(parsedDestinationAddress)}
                             </a>

@@ -35,7 +35,7 @@ const SearchNotFound = () => {
             <div className="search-not-found-page-support">
               <p>If you think this is a problem with us, </p>
               <div>
-                <a href={DISCORD_URL} target="_blank" rel="noreferrer">
+                <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer">
                   please tell us.
                 </a>
               </div>
