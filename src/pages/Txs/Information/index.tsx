@@ -26,10 +26,10 @@ const columns: Column<TransactionOutput>[] | any = [
     Header: "TO",
     accessor: "to",
   },
-  {
-    Header: "STATUS",
-    accessor: "status",
-  },
+  // {
+  //   Header: "STATUS",
+  //   accessor: "status",
+  // },
   {
     Header: "AMOUNT",
     accessor: "amount",

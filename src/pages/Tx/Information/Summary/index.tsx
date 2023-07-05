@@ -33,12 +33,12 @@ const Summary = ({
 
   return (
     <div className="tx-information-summary">
-      <div>
+      {/* <div>
         <div className="key">Status:</div>
         <div className="value">
           <StatusBadge status={summaryStatus} />
         </div>
-      </div>
+      </div> */}
       {!isError && (
         <div>
           <div className="key">Tx Time:</div>
