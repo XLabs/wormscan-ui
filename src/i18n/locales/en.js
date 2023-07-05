@@ -68,7 +68,7 @@ export default {
       },
       txs: {
         top: {
-          title: "Token Bridge Transactions",
+          title: "Token Bridge Txs",
         },
       },
       tx: {

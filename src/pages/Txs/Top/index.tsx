@@ -35,7 +35,7 @@ const Top = ({ address, addressChainId }: Props) => {
                 base: "address",
               })}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               {parsedAddress}
             </a>

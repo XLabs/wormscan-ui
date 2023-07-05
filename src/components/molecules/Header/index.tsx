@@ -108,7 +108,7 @@ const Header = ({ network }: Props) => {
         </div>
 
         <div>
-          <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noreferrer">
+          <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
             <button className="connect-button">{t("home.header.goBridge")}</button>
           </a>
         </div>
@@ -137,7 +137,7 @@ const Header = ({ network }: Props) => {
           <HeaderLinks />
 
           <div className="header-navigation-item">
-            <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noreferrer">
+            <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
               <button className="go-bridge" data-testid="go-bridge-button">
                 {t("home.header.goBridge")}
               </button>

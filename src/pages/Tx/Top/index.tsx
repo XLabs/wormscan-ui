@@ -41,7 +41,7 @@ const Top = ({ txHash, emitterChainId, payloadType }: Props) => {
               isNativeAddress: true,
             })}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             {parseTxHash}
           </a>

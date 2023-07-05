@@ -150,7 +150,7 @@ const Overview = ({
                           base: "token",
                         })}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                       >
                         {symbol}
                       </a>
@@ -173,7 +173,7 @@ const Overview = ({
                         isNativeAddress: true,
                       })}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                     >
                       {shortAddress(parsedOriginAddress)}
                     </a>{" "}
@@ -212,7 +212,7 @@ const Overview = ({
                     isNativeAddress: true,
                   })}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
                   {shortAddress(parsedEmitterAddress)}
                 </a>{" "}
@@ -284,7 +284,7 @@ const Overview = ({
                       isNativeAddress: true,
                     })}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
                     {shortAddress(parsedRedeemTx)}
                   </a>{" "}
@@ -338,7 +338,7 @@ const Overview = ({
                       isNativeAddress: true,
                     })}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
                     {shortAddress(parsedDestinationAddress)}
                   </a>{" "}

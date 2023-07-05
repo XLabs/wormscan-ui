@@ -22,10 +22,10 @@ const Footer = () => {
         <div className="footer-social">
           <div className="footer-social-text">{t("home.footer.joinUs")}:</div>
           <div className="footer-social-icons">
-            <a href={DISCORD_URL} target="_blank" rel="noreferrer">
+            <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer">
               <DiscordIcon />
             </a>
-            <a href={TWITTER_URL} target="_blank" rel="noreferrer">
+            <a href={TWITTER_URL} target="_blank" rel="noopener noreferrer">
               <TwitterIcon />
             </a>
           </div>
@@ -45,7 +45,7 @@ const Footer = () => {
           <div className="footer-copy-brand">&copy;{year} Wormholescan</div>
           <div className="footer-copy-project">Wormhole Explorer</div>
           <div className="footer-copy-powered">
-            <a href={XLABS_URL} target="_blank" rel="noreferrer">
+            <a href={XLABS_URL} target="_blank" rel="noopener noreferrer">
               Powered by xlabs.xyz
             </a>
           </div>

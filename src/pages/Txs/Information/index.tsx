@@ -59,11 +59,6 @@ const Information = ({
 }: Props) => {
   const navigate = useNavigateCustom();
 
-  const onRowClick = (row: TransactionOutput) => {
-    const { id: txHash } = row || {};
-    txHash && navigate(`/tx/${txHash}`);
-  };
-
   const goFirstPage = () => {
     setIsPaginationLoading(true);
     onChangePagination(1);
@@ -118,7 +113,6 @@ const Information = ({
               columns={columns}
               data={parsedTxsData}
               className="txs"
-              onRowClick={onRowClick}
               emptyMessage="No txs found."
             />
           )}
