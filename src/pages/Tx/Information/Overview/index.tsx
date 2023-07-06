@@ -177,7 +177,7 @@ const Overview = ({
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {shortAddress(parsedOriginAddress)}
+                      {shortAddress(parsedOriginAddress).toUpperCase()}
                     </a>{" "}
                     <CopyToClipboard toCopy={parsedOriginAddress}>
                       <CopyIcon />
@@ -216,7 +216,7 @@ const Overview = ({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {shortAddress(parsedEmitterAddress)}
+                  {shortAddress(parsedEmitterAddress).toUpperCase()}
                 </a>{" "}
                 <CopyToClipboard toCopy={parsedEmitterAddress}>
                   <CopyIcon />
@@ -288,7 +288,7 @@ const Overview = ({
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {shortAddress(parsedRedeemTx)}
+                    {shortAddress(parsedRedeemTx).toUpperCase()}
                   </a>{" "}
                   <CopyToClipboard toCopy={parsedRedeemTx}>
                     <CopyIcon />
@@ -342,7 +342,7 @@ const Overview = ({
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {shortAddress(parsedDestinationAddress)}
+                    {shortAddress(parsedDestinationAddress).toUpperCase()}
                   </a>{" "}
                   <CopyToClipboard toCopy={parsedDestinationAddress}>
                     <CopyIcon />
