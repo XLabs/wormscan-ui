@@ -19,10 +19,7 @@ import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { BREAKPOINTS, colorStatus } from "src/consts";
 import { parseTx, parseAddress } from "../../../../utils/crypto";
 import "./styles.scss";
-
-// 360 degree / 19 total signatures
-// A fraction of 360 degrees (360 / 13) = 27.7 est.
-const FRACTION_DEGREE = 27.7;
+import { getCurrentNetwork } from "src/api/Client";
 
 type Props = {
   VAAData: Omit<VAADetail, "vaa"> & { vaa: any };
@@ -47,6 +44,10 @@ const Overview = ({
   tokenDataResponse,
   tokenPriceResponse,
 }: Props) => {
+  const currentNetwork = getCurrentNetwork();
+  const totalGuardiansNeeded = currentNetwork === "mainnet" ? 13 : 1;
+  const fractionDegree = 360 / totalGuardiansNeeded;
+
   const size = useWindowSize();
   const isMobile = size.width < BREAKPOINTS.tablet;
   const { emitterNativeAddr, emitterChainId, payload, vaa } = VAAData || {};
@@ -59,10 +60,11 @@ const Overview = ({
   });
   const guardianSignaturesCount = guardianSignatures?.length || 0;
   const signatureContainerMaskDegree = Math.abs(
-    360 - (360 - guardianSignaturesCount * FRACTION_DEGREE),
+    360 - (360 - guardianSignaturesCount * fractionDegree),
   );
-  const signatureStyles: CSSProperties & { "--m2": string } = {
+  const signatureStyles: CSSProperties & { "--m2": string; "--n": number } = {
     "--m2": `calc(${signatureContainerMaskDegree}deg)`,
+    "--n": totalGuardiansNeeded, // number of dashes
   };
   const { id: VAAId, originTx, destinationTx } = globalTxData || {};
   const {
@@ -234,7 +236,7 @@ const Overview = ({
               <div className="tx-overview-graph-step-signaturesContainer-circle"></div>
               <div className="tx-overview-graph-step-signaturesContainer-text">
                 <div className="tx-overview-graph-step-signaturesContainer-text-number">
-                  {guardianSignaturesCount}/13
+                  {guardianSignaturesCount}/{totalGuardiansNeeded}
                 </div>
                 <div className="tx-overview-graph-step-signaturesContainer-text-description">
                   Signatures
