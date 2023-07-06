@@ -72,6 +72,7 @@ const Header = ({ network }: Props) => {
   useEffect(() => {
     if (!network) return;
 
+    setSelectedNetwork(getCurrentNetworkItem(network));
     changeNetwork(network);
   }, [network]);
 
