@@ -46,7 +46,7 @@ const Overview = ({
 }: Props) => {
   const currentNetwork = getCurrentNetwork();
   const totalGuardiansNeeded = currentNetwork === "mainnet" ? 13 : 1;
-  const FRACTION_DEGREE = 360 / totalGuardiansNeeded;
+  const fractionDegree = 360 / totalGuardiansNeeded;
 
   const size = useWindowSize();
   const isMobile = size.width < BREAKPOINTS.tablet;
@@ -60,7 +60,7 @@ const Overview = ({
   });
   const guardianSignaturesCount = guardianSignatures?.length || 0;
   const signatureContainerMaskDegree = Math.abs(
-    360 - (360 - guardianSignaturesCount * FRACTION_DEGREE),
+    360 - (360 - guardianSignaturesCount * fractionDegree),
   );
   const signatureStyles: CSSProperties & { "--m2": string; "--n": number } = {
     "--m2": `calc(${signatureContainerMaskDegree}deg)`,
