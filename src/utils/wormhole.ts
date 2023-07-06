@@ -54,6 +54,7 @@ import SeiDarkIcon from "src/icons/blockchains/dark/sei.svg";
 
 import { parseAddress, parseTx } from "./crypto";
 import { NETWORK } from "src/types";
+import { getCurrentNetwork } from "src/api/Client";
 
 export type ExplorerBaseURLInput = {
   network: NETWORK;
@@ -412,11 +413,14 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       mainnet: "https://solscan.io",
     },
     getExplorerBaseURL: function ({ network = "mainnet", value, base }: ExplorerBaseURLInput) {
+      // Wormhole uses Solana's devnet as their 'testnet'
+      const solNetwork = network === "mainnet" ? "mainnet" : "devnet";
+
       if (base === "address")
-        return this.explorer?.[network] + "/account/" + value + "?cluster=" + network;
+        return this.explorer?.[network] + "/account/" + value + "?cluster=" + solNetwork;
       if (base === "token")
-        return this.explorer?.[network] + "/token/" + value + "?cluster=" + network;
-      return this.explorer?.[network] + "/tx/" + value + "?cluster=" + network;
+        return this.explorer?.[network] + "/token/" + value + "?cluster=" + solNetwork;
+      return this.explorer?.[network] + "/tx/" + value + "?cluster=" + solNetwork;
     },
   },
   [ChainId.Terra]: {
@@ -509,7 +513,7 @@ export const getExplorerLink = ({
   base?: "tx" | "address" | "token";
   isNativeAddress?: boolean;
 }): string => {
-  const network = "mainnet";
+  const network = getCurrentNetwork();
   let parsedValue = value;
 
   if (!isNativeAddress) {
