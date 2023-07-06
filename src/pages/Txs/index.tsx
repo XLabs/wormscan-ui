@@ -117,7 +117,7 @@ const Txs = () => {
                     {parseTxHash ? (
                       <>
                         <Link to={`/tx/${txHash}`} asNavLink={false} target="_blank">
-                          {shortAddress(parseTxHash)}
+                          {shortAddress(parseTxHash).toUpperCase()}
                         </Link>
                         <CopyToClipboard toCopy={parseTxHash}>
                           <CopyIcon />
@@ -145,7 +145,7 @@ const Txs = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            {shortAddress(parsedOriginAddress)}
+                            {shortAddress(parsedOriginAddress).toUpperCase()}
                           </a>
 
                           <CopyToClipboard toCopy={parsedOriginAddress}>
@@ -174,7 +174,7 @@ const Txs = () => {
                               target="_blank"
                               rel="noopener noreferrer"
                             >
-                              {shortAddress(parsedDestinationAddress)}
+                              {shortAddress(parsedDestinationAddress).toUpperCase()}
                             </a>
 
                             <CopyToClipboard toCopy={parsedDestinationAddress}>
