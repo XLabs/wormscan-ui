@@ -235,4 +235,4 @@ const Txs = () => {
   );
 };
 
-export { Txs };
+export default Txs;

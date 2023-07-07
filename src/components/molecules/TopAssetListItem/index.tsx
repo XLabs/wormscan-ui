@@ -36,8 +36,10 @@ const TopAssetListItem = ({ from_chain, token_logo, symbol, volume }: Props) => 
           <img
             src={token_logo || noIconToken}
             alt={`${symbol} icon`}
+            height="25"
             width="25"
             className="top-asset-list-item-to-icon"
+            loading="lazy"
           />
         </div>
 

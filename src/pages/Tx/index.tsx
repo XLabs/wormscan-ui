@@ -134,4 +134,4 @@ const Tx = () => {
   );
 };
 
-export { Tx };
+export default Tx;

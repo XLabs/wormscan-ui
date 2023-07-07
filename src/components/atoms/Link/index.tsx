@@ -4,7 +4,7 @@ import { parseTo } from "src/utils/route";
 import "./style.scss";
 
 const Link = (props: LinkProps & { asNavLink?: boolean }) => {
-  const { to, asNavLink = true } = props;
+  const { to, asNavLink = true, ...rest } = props;
   const goTop = (asNavLink: boolean) => asNavLink && window.scrollTo(0, 0);
   const [searchParams] = useSearchParams();
   const network = searchParams.get("network") as NETWORK;
@@ -12,7 +12,7 @@ const Link = (props: LinkProps & { asNavLink?: boolean }) => {
   return (
     <RouterLink
       className="link"
-      {...props}
+      {...rest}
       to={parseTo(to, network)}
       onClick={() => goTop(asNavLink)}
     >

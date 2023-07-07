@@ -21,7 +21,7 @@ const ErrorPlaceholder = ({
   return (
     <div className="error-placeholder">
       <div className="error-placeholder-image">
-        <img src={ERROR_IMAGES[errorType]} alt=""></img>
+        <img src={ERROR_IMAGES[errorType]} alt="" loading="lazy" width="100" height="78"></img>
       </div>
       <div className="error-placeholder-text">{errorText}</div>
     </div>

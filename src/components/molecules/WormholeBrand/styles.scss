@@ -29,18 +29,24 @@
     text-decoration: none;
   }
 
-  @include desktop {
-    &-image {
-      height: 34px;
-    }
-  }
-
   &-image {
+    width: auto;
+    height: 24px;
+
     &.small {
+      width: auto;
       height: 24px;
     }
 
     &.regular {
+      width: auto;
+      height: 34px;
+    }
+  }
+
+  @include desktop {
+    &-image {
+      width: auto;
       height: 34px;
     }
   }

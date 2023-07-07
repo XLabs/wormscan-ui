@@ -20,14 +20,14 @@
   <meta property="og:locale" content="en_US" />
   <meta property="og:url" content="https://wormholescan.io/" />
   <meta property="og:site_name" content="https://wormholescan.io/" />
-  <meta property="og:image" content="og_image.png" />
+  <meta property="og:image" content="https://wormholescan.io/og_image.png" />
   <meta property="og:image:width" content="600" />
   <meta property="og:image:height" content="600" />
 
   <meta name="twitter:title" content="Wormholescan | Wormhole Explorer">
   <meta name="twitter:description"
     content="Wormholescan is a block Explorer and analytics platform for Wormhole. It enables users to search, visualize and analyze all activity related to Wormhole. Additionally, it provides robust APIs for builders to seamlessly integrate this functionality into their applications.">
-  <meta name="twitter:image" content="og_image.png">
+  <meta name="twitter:image" content="https://wormholescan.io/og_image.png">
   <meta name="twitter:image:alt" content="Wormholescan | Wormhole Explorer">
   <meta name="twitter:site" content="https://wormholescan.io/">
   <meta name="twitter:card" content="summary">
@@ -47,6 +47,8 @@
 </head>
 
 <body style="min-width: 360px">
+  <!-- Hacky way to add robots.txt into the /dist -->
+  <a style="display: none" href="./robots.txt" aria-label="robots"></a>
   <div id="app"></div>
 </body>
 

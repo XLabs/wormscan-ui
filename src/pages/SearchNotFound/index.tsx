@@ -21,7 +21,7 @@ const SearchNotFound = () => {
           <div className="search-not-found-page-content">
             <h1 className="search-not-found-page-title">Search not found</h1>
             <div className="search-not-found-page-image-mobile">
-              <img src={SearchNotFoundImage} alt="" />
+              <img src={SearchNotFoundImage} alt="" loading="lazy" />
             </div>
             <div className="search-not-found-page-body">
               <p>
@@ -48,7 +48,7 @@ const SearchNotFound = () => {
           </div>
 
           <div className="search-not-found-page-image-desktop">
-            <img src={SearchNotFoundImage} alt="" />
+            <img src={SearchNotFoundImage} alt="" loading="lazy" />
           </div>
         </div>
       </div>
@@ -56,4 +56,4 @@ const SearchNotFound = () => {
   );
 };
 
-export { SearchNotFound };
+export default SearchNotFound;

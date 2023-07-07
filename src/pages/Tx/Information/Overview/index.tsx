@@ -195,7 +195,7 @@ const Overview = ({
           </div>
           <div className="tx-overview-graph-step-iconWrapper">
             <div className="tx-overview-graph-step-iconContainer">
-              <img src={WormIcon} alt="" height={32} />
+              <img src={WormIcon} alt="" height={32} loading="lazy" />
             </div>
           </div>
           <div className="tx-overview-graph-step-data-container">
@@ -267,7 +267,7 @@ const Overview = ({
             </div>
             <div className="tx-overview-graph-step-iconWrapper">
               <div className="tx-overview-graph-step-iconContainer">
-                <img src={RelayIcon} alt="" height={32} />
+                <img src={RelayIcon} alt="" height={32} loading="lazy" />
               </div>
             </div>
             <div className="tx-overview-graph-step-data-container">
