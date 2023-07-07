@@ -337,6 +337,17 @@
     }
   }
 
+  .chain-others {
+    width: max(25%, 200px);
+    background-color: #00005070;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    transition: opacity 0.25s ease-out;
+  }
+
   &-sticky {
     display: block;
     position: sticky;
@@ -437,7 +448,7 @@
 
   &-message {
     display: flex;
-    margin-top: 24px;
+    margin-top: 12px;
     flex-direction: column;
 
     @include text-p3;

@@ -27,8 +27,8 @@ type Props = {
 export type Info = { percentage: number; volume: number };
 
 export const Chart = ({ data, selectedType }: Props) => {
-  const filteredData = processData(data);
-  const [chartData] = useState(filteredData);
+  const [isShowingOthers, setIsShowingOthers] = useState(false);
+  const [chartData, setChartData] = useState(processData(data, false));
 
   const [selectedChain, setSelectedChain] = useState(chartData[0].chain);
   const [selectedInfo, setSelectedInfo] = useState<Info>({
@@ -148,6 +148,13 @@ export const Chart = ({ data, selectedType }: Props) => {
   }, [destinyChainsHeight.length, devicePixelRatio, draw, originChainsHeight.length]);
 
   useEffect(() => {
+    const selectedItem = chartData.find(item => item.chain === selectedChain);
+
+    if (!selectedItem) {
+      setSelectedChain(chartData[0].chain);
+      return;
+    }
+
     const newDestinationChains = chartData
       .find(item => item.chain === selectedChain)
       .destinations.sort((a, b) => b.volume - a.volume)
@@ -236,6 +243,28 @@ export const Chart = ({ data, selectedType }: Props) => {
         </div>
       </div>
 
+      <div
+        style={{
+          opacity: selectedChain === OTHERS_FAKE_CHAIN_ID || isShowingOthers ? 1 : 0,
+          cursor: selectedChain === OTHERS_FAKE_CHAIN_ID || isShowingOthers ? "pointer" : "default",
+        }}
+        onClick={() => {
+          if (selectedChain === OTHERS_FAKE_CHAIN_ID) {
+            setChartData(processData(data, true));
+            setIsShowingOthers(true);
+          }
+          if (isShowingOthers) {
+            setIsShowingOthers(false);
+            const processedData = processData(data, false);
+            setChartData(processedData);
+            setSelectedChain(processedData[9].chain);
+          }
+        }}
+        className="chain-others"
+      >
+        {isShowingOthers ? "Back to top 10 chains" : "Show other chain details"}
+      </div>
+
       <StickyInfo
         chainName={getChainName(selectedChain)}
         selectedInfo={selectedInfo}
@@ -252,11 +281,11 @@ const getChainName = (id: ChainId) => {
   return ChainId[id] ?? "Unset";
 };
 
-const processData = (data: CrossChainActivity) => {
-  const newData = data.sort((a, b) => b.percentage - a.percentage);
+const processData = (data: CrossChainActivity, showOthers: boolean) => {
+  const newData = [...data].sort((a, b) => b.percentage - a.percentage);
 
   // if more than 10 elements, create "Others" section
-  if (newData.length > 10) {
+  if (!showOthers && newData.length > 10) {
     let percentage = 0;
     let volume = 0;
     const destinations: any = {};
@@ -297,7 +326,11 @@ const processData = (data: CrossChainActivity) => {
     // sort the array and use only the first 10 elements
     newDestinations = newDestinations.sort((a: any, b: any) => b.volume - a.volume).slice(0, 10);
     newData[9] = { chain: OTHERS_FAKE_CHAIN_ID, percentage, volume, destinations: newDestinations };
+
+    return newData.slice(0, 10);
   }
 
-  return newData.slice(0, 10);
+  if (showOthers) {
+    return newData.slice(10);
+  }
 };
