@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { NavLink } from "src/components/atoms";
+import Link from "src/components/atoms/Link";
 import { DISCORD_URL, TWITTER_URL, XLABS_URL } from "src/consts";
 import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
@@ -48,6 +49,12 @@ const Footer = () => {
 
           <div className="footer-links-item">
             <NavLink to="/txs">{t("home.footer.txs")}</NavLink>
+          </div>
+
+          <div className="footer-links-item">
+            <a href="https://doc.wormscan.io/" target="_blank" rel="noopener noreferrer">
+              {t("home.footer.apiDoc")}
+            </a>
           </div>
         </div>
 
