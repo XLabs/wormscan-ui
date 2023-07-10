@@ -5,7 +5,14 @@ import "./styles.scss";
 // const Loader = () => <span className="spinner-loader" />;
 const Loader = () => (
   <div className="loader-container">
-    <img className="gif-loader" src={LoaderGif} alt="spinner-loader" />
+    <img
+      className="gif-loader"
+      src={LoaderGif}
+      alt="spinner-loader"
+      loading="lazy"
+      height="48"
+      width="48"
+    />
   </div>
 );
 

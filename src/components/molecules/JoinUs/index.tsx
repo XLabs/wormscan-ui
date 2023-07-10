@@ -13,7 +13,7 @@ const JoinUs = () => {
           {t("home.join.initText")}
           <span> {t("home.join.endText")}</span>
         </div>
-        <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer">
+        <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer" aria-label="Discord link">
           <button className="home-join-button" data-testid="join-discord-button">
             <DiscordIcon /> {t("home.join.discord")}
           </button>

@@ -74,6 +74,7 @@ body {
   color: var(--color-white);
   background-image: url("./assets/bg-mobile.webp");
   background-size: cover;
+  min-width: 360px;
 
   @include desktop {
     background-image: url("./assets/bg.webp");

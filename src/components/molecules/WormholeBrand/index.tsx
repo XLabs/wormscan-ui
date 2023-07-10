@@ -20,6 +20,9 @@ const WormholeBrand = ({ width = 36.75, height = 32.25, onlyIcon, size = "auto" 
             src={BrandImage}
             alt="Wormhole Scan logo"
             className={`wormhole-brand-image ${size}`}
+            loading="lazy"
+            width="187"
+            height="34"
           />
         </>
       )}
