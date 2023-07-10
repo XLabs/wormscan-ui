@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { NavLink } from "src/components/atoms";
-import Link from "src/components/atoms/Link";
 import { DISCORD_URL, TWITTER_URL, XLABS_URL } from "src/consts";
 import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
