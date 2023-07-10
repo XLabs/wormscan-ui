@@ -19,6 +19,7 @@ export default {
           about: "About",
           txs: "Txs",
           joinUs: "Join us",
+          apiDoc: "API Doc",
         },
         hero: {
           text: "Cross-chain Explorer",
@@ -57,11 +58,11 @@ export default {
           },
           assets: {
             title: "Top 7 assets",
-            subtitle: "Top assets transferred according to the blockchain by volume",
+            subtitle: "Top assets transferred by volume to each blockchain",
           },
         },
         join: {
-          initText: "Do not want to miss our releases?",
+          initText: "Don't want to miss our releases? ",
           endText: "Join us.",
           discord: "Join Discord",
         },

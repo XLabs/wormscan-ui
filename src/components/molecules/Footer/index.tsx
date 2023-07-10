@@ -49,6 +49,12 @@ const Footer = () => {
           <div className="footer-links-item">
             <NavLink to="/txs">{t("home.footer.txs")}</NavLink>
           </div>
+
+          <div className="footer-links-item">
+            <a href="https://doc.wormscan.io/" target="_blank" rel="noopener noreferrer">
+              {t("home.footer.apiDoc")}
+            </a>
+          </div>
         </div>
 
         <div className="footer-copy">

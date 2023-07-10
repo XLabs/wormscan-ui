@@ -106,15 +106,19 @@
   &-links {
     display: grid;
     justify-content: center;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto auto auto;
     gap: 72px;
     grid-area: links;
     padding: 0 32px;
 
     @include desktop {
-      grid-template-columns: auto auto;
+      grid-template-columns: auto auto auto;
       justify-content: center;
       padding: 0;
+      gap: 96px;
+    }
+
+    @include bigDesktop {
       gap: 120px;
     }
 
@@ -131,6 +135,10 @@
         color: var(--color-primary-50);
         text-decoration: none;
         text-align: center;
+
+        &:hover {
+          color: var(--color-secondary-700);
+        }
       }
     }
   }
