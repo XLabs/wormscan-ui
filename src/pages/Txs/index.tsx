@@ -1,9 +1,9 @@
 import { CopyIcon } from "@radix-ui/react-icons";
 import { ChainId, Order } from "@xlabs-libs/wormscan-sdk";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
-import { getClient } from "src/api/Client";
+import { getClient, getCurrentNetwork } from "src/api/Client";
 import { BlockchainIcon, Loader } from "src/components/atoms";
 import CopyToClipboard from "src/components/molecules/CopyToClipboard";
 import { BaseLayout } from "src/layouts/BaseLayout";
@@ -15,9 +15,9 @@ import { Information } from "./Information";
 import { Top } from "./Top";
 import StatusBadge from "src/components/molecules/StatusBadge";
 import { NETWORK, TxStatus } from "../../types";
-import "./styles.scss";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import Link from "src/components/atoms/Link";
+import "./styles.scss";
 
 export interface TransactionOutput {
   id: string;
@@ -34,25 +34,38 @@ const REFETCH_TIME = 1000 * 10;
 
 const Txs = () => {
   const navigate = useNavigateCustom();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const address = searchParams.get("address");
-  const network = searchParams.get("network") as NETWORK;
+  const network = (searchParams.get("network") as NETWORK) || "mainnet";
+  const page = Number(searchParams.get("page"));
+  const currentPage = page >= 1 ? page : 1;
+  const currentNetwork = useRef(network);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isPaginationLoading, setIsPaginationLoading] = useState<boolean>(false);
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
   const [parsedTxsData, setParsedTxsData] = useState<TransactionOutput[] | undefined>(undefined);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const setCurrentPage = useCallback(
+    (pageNumber: number) => {
+      setSearchParams(prev => {
+        prev.set("page", String(pageNumber));
+        return prev;
+      });
+    },
+    [setSearchParams],
+  );
 
   useEffect(() => {
     setIsLoading(true);
   }, [address]);
 
   useEffect(() => {
-    if (!network) return;
+    if (currentNetwork.current === getCurrentNetwork()) return;
 
+    currentNetwork.current = network;
     setIsLoading(true);
     setCurrentPage(1);
-  }, [network]);
+  }, [network, setCurrentPage]);
 
   const getTransactionInput = {
     query: {
