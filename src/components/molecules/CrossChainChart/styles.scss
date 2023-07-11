@@ -105,14 +105,12 @@
         color: var(--color-white);
         user-select: none;
         width: 100%;
-        min-height: 30px;
-
+        min-height: 42px;
         display: grid;
         grid-auto-flow: column;
         align-items: center;
         border-left: 16px solid var(--color-information-60);
         position: relative;
-
         grid-template-columns: 70px 60px;
 
         @media only screen and (min-width: 425px) {
@@ -127,7 +125,6 @@
 
         @include desktop {
           grid-template-columns: 1.5fr 5fr 1fr;
-
           background: withOpacity(var(--color-primary-100), 0.2);
           border-left: 0;
           min-height: 20px;
@@ -138,8 +135,14 @@
 
         .percentage {
           display: none;
+
           @include desktop {
             display: block;
+            padding-right: 8px;
+          }
+
+          @include bigDesktop {
+            padding-right: 16px;
           }
         }
         .onlyBig {
@@ -199,6 +202,29 @@
           }
         }
 
+        &.left {
+          cursor: pointer;
+
+          .volume-info {
+            left: 100%;
+          }
+
+          .chain-name {
+            margin-left: 5px;
+            @include desktop {
+              margin-left: 0px;
+            }
+          }
+
+          @include desktop {
+            border-right: 4px solid transparent;
+
+            &:hover {
+              background: withOpacity(var(--color-primary-300), 0.5);
+            }
+          }
+        }
+
         &[data-selected="true"] {
           .percentage {
             display: block;
@@ -246,21 +272,6 @@
           }
           @include bigDesktop {
             display: none !important;
-          }
-        }
-
-        &.left {
-          cursor: pointer;
-
-          .volume-info {
-            left: 100%;
-          }
-
-          .chain-name {
-            margin-left: 5px;
-            @include desktop {
-              margin-left: 0px;
-            }
           }
         }
 

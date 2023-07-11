@@ -6,7 +6,6 @@ import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { useTranslation } from "react-i18next";
 import { BREAKPOINTS } from "src/consts";
 import { StickyInfo } from "./StickyInfo";
-import { getCurrentNetwork } from "src/api/Client";
 
 interface IOriginChainsHeight {
   itemHeight: number;
@@ -48,6 +47,7 @@ export const Chart = ({ data, selectedType }: Props) => {
   const size = useWindowSize();
   const [isDesktop, setIsDesktop] = useState(size.width >= BREAKPOINTS.desktop);
 
+  const minHeight = 42;
   const MARGIN_SIZE_ELEMENTS = isDesktop ? 2 : 4;
   const devicePixelRatio = window.devicePixelRatio * 2;
 
@@ -188,7 +188,7 @@ export const Chart = ({ data, selectedType }: Props) => {
               onClick={() => setSelectedChain(item.chain)}
               data-selected={selectedChain === item.chain}
               style={{
-                height: (item.percentage * CHART_SIZE) / 100,
+                height: Math.max(minHeight, (item.percentage * CHART_SIZE) / 100),
                 marginTop: idx === 0 ? 0 : MARGIN_SIZE_ELEMENTS,
                 marginBottom: MARGIN_SIZE_ELEMENTS,
               }}
@@ -218,7 +218,7 @@ export const Chart = ({ data, selectedType }: Props) => {
               className="cross-chain-chart-side-item right"
               data-percentage={item.percentage}
               style={{
-                height: (item.percentage * CHART_SIZE) / 100,
+                height: Math.max(minHeight, (item.percentage * CHART_SIZE) / 100),
                 marginTop: idx === 0 ? 0 : MARGIN_SIZE_ELEMENTS,
                 marginBottom: MARGIN_SIZE_ELEMENTS,
               }}
