@@ -1,48 +1,38 @@
-<svg width="130" height="100" viewBox="0 0 130 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="130"
+  height="100"
+  fill="none"
+  xmlns:v="https://vecta.io/nano"
+>
   <rect
     x="1"
     y="1"
     width="128"
     height="98"
     rx="3"
-    fill="white"
-    fill-opacity="0.03"
-    stroke="#4D508E"
+    fill="#fff"
+    fill-opacity=".03"
+    stroke="#4d508e"
     stroke-width="2"
   />
-  <circle cx="109" cy="13" r="1" fill="#4D508E" />
-  <circle cx="113" cy="13" r="1" fill="#4D508E" />
-  <circle cx="117" cy="13" r="1" fill="#4D508E" />
-  <path d="M20 25L20 37" stroke="#0078E8" stroke-width="2" stroke-linecap="round" />
-  <path d="M20 42L20 50" stroke="#4D508E" stroke-width="2" stroke-linecap="round" />
-  <path d="M20 54L20 58" stroke="#4D508E" stroke-width="2" stroke-linecap="round" />
-  <path d="M20 62L20 66" stroke="#4D508E" stroke-width="2" stroke-linecap="round" />
-  <path d="M20 70L20 74" stroke="#4D508E" stroke-width="2" stroke-linecap="round" />
-  <path d="M20 78L20 82" stroke="#4D508E" stroke-width="2" stroke-linecap="round" />
-  <path d="M20 70L20 74" stroke="#4D508E" stroke-width="2" stroke-linecap="round" />
-  <path d="M110 48L110 54" stroke="#4D508E" stroke-width="2" stroke-linecap="round" />
-  <path d="M103 61L103 65" stroke="#F5F7F9" stroke-width="2" stroke-linecap="round" />
-  <path d="M103 68L103 68.5" stroke="#F5F7F9" stroke-width="2" stroke-linecap="round" />
-  <path d="M110 58L110 62" stroke="#4D508E" stroke-width="2" stroke-linecap="round" />
-  <path d="M110 66L110 70" stroke="#4D508E" stroke-width="2" stroke-linecap="round" />
-  <path d="M110 82L110 86" stroke="#4D508E" stroke-width="2" stroke-linecap="round" />
-  <path d="M110 74L110 78" stroke="#4D508E" stroke-width="2" stroke-linecap="round" />
-  <path
-    d="M20.5 37C54 37 55.5 85.5 103.5 85.5"
-    stroke="#0078E8"
-    stroke-width="2"
-    stroke-linecap="round"
-  />
-  <path
-    d="M20.5 25C54 25 64 47.5 103.5 48.5026"
-    stroke="#0078E8"
-    stroke-width="2"
-    stroke-linecap="round"
-  />
-  <path
-    d="M116 78L108.105 70.1022M110.35 64.6774C110.35 66.7136 109.541 68.6664 108.102 70.1062C106.662 71.546 104.71 72.3548 102.675 72.3548C100.639 72.3548 98.6872 71.546 97.2479 70.1062C95.8086 68.6664 95 66.7136 95 64.6774C95 62.6412 95.8086 60.6885 97.2479 59.2487C98.6872 57.8089 100.639 57 102.675 57C104.71 57 106.662 57.8089 108.102 59.2487C109.541 60.6885 110.35 62.6412 110.35 64.6774Z"
-    stroke="#F5F7F9"
-    stroke-width="2"
-    stroke-linecap="round"
-  />
+  <g fill="#4d508e">
+    <circle cx="109" cy="13" r="1" />
+    <circle cx="113" cy="13" r="1" />
+    <circle cx="117" cy="13" r="1" />
+  </g>
+  <g stroke-width="2" stroke-linecap="round">
+    <path d="M20 25v12" stroke="#0078e8" />
+    <g stroke="#4d508e">
+      <path d="M20 42v8m0 4v4m0 4v4m0 4v4m0 4v4" />
+      <path d="M20 70v4m90-26v6" />
+    </g>
+    <path d="M103 61v4m0 3v.5" stroke="#f5f7f9" />
+    <path d="M110 58v4m0 4v4m0 12v4m0-12v4" stroke="#4d508e" />
+    <path d="M20.5 37c33.5 0 35 48.5 83 48.5M20.5 25c33.5 0 43.5 22.5 83 23.503" stroke="#0078e8" />
+    <path
+      d="M116 78l-7.895-7.898m2.245-5.425a7.68 7.68 0 0 1-2.248 5.429c-1.44 1.44-3.392 2.249-5.427 2.249s-3.988-.809-5.427-2.249a7.68 7.68 0 0 1 0-10.858c1.439-1.44 3.391-2.249 5.427-2.249s3.987.809 5.427 2.249a7.68 7.68 0 0 1 2.248 5.429z"
+      stroke="#f5f7f9"
+    />
+  </g>
 </svg>

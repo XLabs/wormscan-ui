@@ -1,30 +1,20 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  fill="none"
+  xmlns:v="https://vecta.io/nano"
+>
   <rect width="24" height="24" rx="12" fill="#080530" />
-  <mask
-    id="mask0_1131_18506"
-    style="mask-type: alpha"
-    maskUnits="userSpaceOnUse"
-    x="4"
-    y="4"
-    width="16"
-    height="16"
-  >
-    <rect x="4" y="4" width="16" height="16" fill="#D9D9D9" />
+  <mask id="A" maskUnits="userSpaceOnUse" x="4" y="4" width="16" height="16" mask-type="alpha">
+    <path fill="#d9d9d9" d="M4 4h16v16H4z" />
   </mask>
-  <g mask="url(#mask0_1131_18506)">
-    <path d="M12.2002 4.05273L7.1543 12.1054L12.2002 9.89485V4.05273Z" fill="white" />
-    <path
-      d="M12.2002 9.89551L7.1543 12.106L12.2002 14.9481V9.89551Z"
-      fill="white"
-      fill-opacity="0.9"
-    />
-    <path d="M17.2461 12.1054L12.2002 4.05273V9.89485L17.2461 12.1054Z" fill="#EAEAEA" />
-    <path
-      d="M12.2002 14.9481L17.2461 12.106L12.2002 9.89551V14.9481Z"
-      fill="white"
-      fill-opacity="0.8"
-    />
-    <path d="M7.1543 13L12.2002 19.8421V15.8948L7.1543 13Z" fill="white" />
-    <path d="M12.2002 15.8948V19.8421L17.2461 13L12.2002 15.8948Z" fill="#EAEAEA" />
+  <g mask="url(#A)">
+    <path d="M12.2 4.053l-5.046 8.053L12.2 9.895V4.053z" fill="#fff" />
+    <path d="M12.2 9.896l-5.046 2.21 5.046 2.842V9.896z" fill="#fff" fill-opacity=".9" />
+    <path d="M17.246 12.105L12.2 4.053v5.842l5.046 2.211z" fill="#eaeaea" />
+    <path d="M12.2 14.948l5.046-2.842-5.046-2.21v5.053z" fill="#fff" fill-opacity=".8" />
+    <path d="M7.154 13l5.046 6.842v-3.947L7.154 13z" fill="#fff" />
+    <path d="M12.2 15.895v3.947L17.246 13 12.2 15.895z" fill="#eaeaea" />
   </g>
 </svg>

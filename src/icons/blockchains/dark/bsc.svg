@@ -1,26 +1,18 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  fill="none"
+  xmlns:v="https://vecta.io/nano"
+>
   <rect width="24" height="24" rx="12" fill="#080530" />
-  <mask
-    id="mask0_1131_18505"
-    style="mask-type: alpha"
-    maskUnits="userSpaceOnUse"
-    x="4"
-    y="4"
-    width="16"
-    height="16"
-  >
-    <rect x="4" y="4" width="16" height="16" fill="#D9D9D9" />
-  </mask>
-  <g mask="url(#mask0_1131_18505)"></g>
-  <g clip-path="url(#clip0_1131_18505)">
+  <g clip-path="url(#A)">
     <path
-      d="M15.8373 11.9978L17.4166 13.5787L19 11.9978L17.4207 10.4209L15.8373 11.9978ZM12 8.16152L9.29045 10.8701L7.70932 9.29199L12 5L16.2935 9.29199L14.7114 10.8701L12 8.16152ZM6.57906 10.4209L8.15881 11.9978L6.57951 13.5764L5 11.9978L6.57906 10.4209ZM12 15.8376L14.7065 13.129L16.2868 14.708L11.9981 19L7.70932 14.708L9.28861 13.129L12 15.8376ZM12 13.5787L10.4184 11.9978L12 10.4209L13.5816 11.9978L12 13.5787Z"
-      fill="white"
+      d="M15.837 11.998l1.579 1.581L19 11.998l-1.579-1.577-1.583 1.577zM12 8.162L9.29 10.87 7.709 9.292 12 5l4.294 4.292-1.582 1.578L12 8.162zm-5.421 2.259l1.58 1.577-1.579 1.579L5 11.998l1.579-1.577zM12 15.838l2.707-2.709 1.58 1.579L11.998 19l-4.289-4.292 1.579-1.579L12 15.838zm0-2.259l-1.582-1.581L12 10.421l1.582 1.577L12 13.579z"
+      fill="#fff"
     />
   </g>
   <defs>
-    <clipPath id="clip0_1131_18505">
-      <rect width="14" height="14" fill="white" transform="translate(5 5)" />
-    </clipPath>
+    <clipPath id="A"><path fill="#fff" transform="translate(5 5)" d="M0 0h14v14H0z" /></clipPath>
   </defs>
 </svg>

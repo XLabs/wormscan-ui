@@ -6,7 +6,6 @@ import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { useTranslation } from "react-i18next";
 import { BREAKPOINTS } from "src/consts";
 import { StickyInfo } from "./StickyInfo";
-import { getCurrentNetwork } from "src/api/Client";
 
 interface IOriginChainsHeight {
   itemHeight: number;
