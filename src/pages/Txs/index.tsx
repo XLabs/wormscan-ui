@@ -1,5 +1,5 @@
 import { CopyIcon } from "@radix-ui/react-icons";
-import { ChainId, Order, GetTransactionsOutput } from "@xlabs-libs/wormscan-sdk";
+import { ChainId, GetTransactionsOutput, Order } from "@xlabs-libs/wormscan-sdk";
 import { useCallback, useEffect, useState, useRef } from "react";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
@@ -84,7 +84,7 @@ const Txs = () => {
       onError: () => {
         navigate(`/search-not-found?q=${address || "Txs"}`);
       },
-      onSuccess: txs => {
+      onSuccess: (txs: GetTransactionsOutput[]) => {
         const tempRows: TransactionOutput[] = [];
         const { standardizedProperties: firstStandardizedProperties, globalTx: firstGlobalTx } =
           txs?.[0] || {};
@@ -116,13 +116,14 @@ const Txs = () => {
                 toChain: stdToChain,
                 toAddress: stdToAddress,
               } = standardizedProperties || {};
-              const { originTx } = globalTx || {};
-              const { chainId: globalChainId, from: globalFrom } = originTx || {};
+              const { originTx, destinationTx } = globalTx || {};
+              const { chainId: globalFromChainId, from: globalFrom } = originTx || {};
+              const { chainId: globalToChainId, from: globalTo } = destinationTx || {};
 
-              const fromChain = stdFromChain || globalChainId || emitterChain;
+              const fromChain = stdFromChain || globalFromChainId || emitterChain;
               const fromAddress = stdFromAddress || globalFrom;
-              const toChain = stdToChain;
-              const toAddress = stdToAddress;
+              const toChain = stdToChain || globalToChainId;
+              const toAddress = stdToAddress || globalTo;
 
               const parseTxHash = parseTx({
                 value: txHash,

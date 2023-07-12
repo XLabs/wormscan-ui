@@ -6,11 +6,11 @@ import RelayIcon from "src/icons/relayIcon.svg";
 import {
   GetTokenOutput,
   GetTokenPriceOutput,
+  GetTransactionsOutput,
   GlobalTxOutput,
   VAADetail,
 } from "@xlabs-libs/wormscan-sdk";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import { TxStatus } from "src/types";
 import { shortAddress, formatUnits } from "src/utils/crypto";
 import { formatCurrency } from "src/utils/number";
 import { ChainId } from "@certusone/wormhole-sdk";
@@ -22,65 +22,95 @@ import "./styles.scss";
 
 type Props = {
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
-  globalTxData: GlobalTxOutput;
-  txStatus: TxStatus;
-  tokenDataResponse: {
-    tokenDataIsLoading: boolean;
-    tokenDataError: unknown;
-    tokenData: GetTokenOutput;
-  };
-  tokenPriceResponse: {
-    tokenPriceIsLoading: boolean;
-    tokenPriceError: unknown;
-    tokenPrice: GetTokenPriceOutput;
-  };
+  txData: GetTransactionsOutput;
 };
 
-const Overview = ({
-  VAAData,
-  globalTxData,
-  txStatus,
-  tokenDataResponse,
-  tokenPriceResponse,
-}: Props) => {
+const Overview = ({ VAAData, txData }: Props) => {
   const currentNetwork = getCurrentNetwork();
   const totalGuardiansNeeded = currentNetwork === "mainnet" ? 13 : 1;
   const size = useWindowSize();
   const isMobile = size.width < BREAKPOINTS.tablet;
-  const { emitterNativeAddr, emitterChainId, payload, decodedVaa } = VAAData || {};
+  const { decodedVaa } = VAAData || {};
   const { guardianSignatures } = decodedVaa || {};
-  const { amount, fee, tokenAddress, tokenChain, toChain, toAddress, payloadType } = payload || {};
+  const guardianSignaturesCount = guardianSignatures?.length || 0;
+  const signatureContainerMaskDegree = Math.abs(
+    360 - (360 - guardianSignaturesCount * fractionDegree),
+  );
+  const signatureStyles: CSSProperties & { "--m2": string; "--n": number } = {
+    "--m2": `calc(${signatureContainerMaskDegree}deg)`,
+    "--n": totalGuardiansNeeded,
+  };
+
+  const {
+    id: VAAId,
+    timestamp,
+    tokenAmount,
+    usdAmount,
+    symbol,
+    emitterChain,
+    emitterNativeAddress,
+    standardizedProperties,
+    globalTx,
+    payload,
+  } = txData || {};
+
+  const {
+    payloadType,
+    tokenChain: payloadTokenChain,
+    tokenAddress: payloadTokenAddress,
+  } = payload || {};
+  const { originTx, destinationTx } = globalTx || {};
   const isAttestation = txType[payloadType] === "Attestation";
 
-  const parsedEmitterAddress = parseAddress({
-    value: emitterNativeAddr,
-    chainId: emitterChainId as ChainId,
-  });
-  const guardianSignaturesCount = guardianSignatures?.length || 0;
-  const { id: VAAId, originTx, destinationTx } = globalTxData || {};
   const {
-    chainId: originChainId,
-    timestamp: originTimestamp,
-    from: originAddress,
+    fromChain: stdFromChain,
+    fromAddress: stdFromAddress,
+    toChain: stdToChain,
+    toAddress: stdToAddress,
+    tokenChain: stdTokenChain,
+    tokenAddress: stdTokenAddress,
+  } = standardizedProperties || {};
+
+  const {
+    chainId: globalFromChainId,
+    from: globalFrom,
+    timestamp: globalFromTimestamp,
   } = originTx || {};
 
-  const parsedOriginAddress = parseAddress({
-    value: originAddress,
-    chainId: originChainId as ChainId,
-  });
   const {
-    chainId: destinationChainId,
-    timestamp: destinationTimestamp,
-    from: relayerAddress,
-    txHash: redeemTx,
-    to: destinationAddress,
+    chainId: globalToChainId,
+    from: globalTo,
+    timestamp: globalToTimestamp,
+    txHash: globalToRedeemTx,
   } = destinationTx || {};
-  const parsedRedeemTx = parseTx({ value: redeemTx, chainId: destinationChainId as ChainId });
+
+  const fromChain = stdFromChain || globalFromChainId || emitterChain;
+  const fromAddress = stdFromAddress || globalFrom;
+  const toChain = stdToChain || globalToChainId;
+  const toAddress = stdToAddress || globalTo;
+  const startDate = timestamp || globalFromTimestamp;
+  const endDate = globalToTimestamp;
+  const tokenChain = stdTokenChain || payloadTokenChain;
+  const tokenAddress = stdTokenAddress || payloadTokenAddress;
+
+  const parsedOriginAddress = parseAddress({
+    value: fromAddress,
+    chainId: fromChain as ChainId,
+  });
+
+  const parsedEmitterAddress = parseAddress({
+    value: emitterNativeAddress,
+    chainId: emitterChain as ChainId,
+  });
+
   const parsedDestinationAddress = parseAddress({
     value: toAddress,
     chainId: toChain as ChainId,
   });
-  const originDate = new Date(originTimestamp).toLocaleString("en-US", {
+
+  const parsedRedeemTx = parseTx({ value: globalToRedeemTx, chainId: toChain as ChainId });
+
+  const originDate = new Date(startDate).toLocaleString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -88,7 +118,7 @@ const Overview = ({
     minute: "2-digit",
     hour12: false,
   });
-  const destinationDate = new Date(destinationTimestamp).toLocaleString("en-US", {
+  const destinationDate = new Date(endDate).toLocaleString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -96,16 +126,9 @@ const Overview = ({
     minute: "2-digit",
     hour12: false,
   });
-  const { symbol, decimals } = tokenDataResponse?.tokenData || {};
-  const { usd } = tokenPriceResponse?.tokenPrice || {};
 
-  const amountSentParsed = formatUnits(amount, decimals);
-  const amountSent = formatCurrency(Number(amountSentParsed));
-  const amountSentUSD = usd && formatCurrency(Number(amountSentParsed) * usd);
-
-  const amountReceivedParsed = formatUnits(amount - fee, decimals);
-  const amountReceived = formatCurrency(Number(amountReceivedParsed));
-  const amountReceivedUSD = usd && formatCurrency(Number(amountReceivedParsed) * usd);
+  const amountSent = formatCurrency(Number(tokenAmount));
+  const amountSentUSD = formatCurrency(Number(usdAmount));
 
   const originDateParsed = originDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
   const destinationDateParsed = destinationDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
@@ -119,7 +142,7 @@ const Overview = ({
           </div>
           <div className="tx-overview-graph-step-iconWrapper">
             <div className="tx-overview-graph-step-iconContainer">
-              {originChainId && <BlockchainIcon chainId={originChainId} size={32} />}
+              {fromChain && <BlockchainIcon chainId={fromChain} size={32} />}
             </div>
           </div>
           <div
@@ -128,14 +151,14 @@ const Overview = ({
             <div>
               <div className="tx-overview-graph-step-title">Sent from</div>
               <div className="tx-overview-graph-step-description">
-                {originChainId && getChainName({ chainId: originChainId }).toUpperCase()}
+                {fromChain && getChainName({ chainId: fromChain }).toUpperCase()}
               </div>
             </div>
             {isAttestation ? (
               <>
                 <div>
                   <div className="tx-overview-graph-step-title">Decimals</div>
-                  <div className="tx-overview-graph-step-description">{decimals}</div>
+                  <div className="tx-overview-graph-step-description">TODO: buscar decimales</div>
                 </div>
                 <div></div>
                 <div>
@@ -149,8 +172,8 @@ const Overview = ({
               </>
             ) : (
               <>
-                <div style={{ order: amount ? 1 : 2 }}>
-                  {amount && (
+                <div style={{ order: tokenAmount ? 1 : 2 }}>
+                  {tokenAmount && (
                     <>
                       <div className="tx-overview-graph-step-title">Amount</div>
                       <div className="tx-overview-graph-step-description">
@@ -173,14 +196,14 @@ const Overview = ({
                     </>
                   )}
                 </div>
-                <div style={{ order: amount ? 2 : 1 }}>
+                <div style={{ order: tokenAmount ? 2 : 1 }}>
                   {parsedOriginAddress && (
                     <>
                       <div className="tx-overview-graph-step-title">Source wallet</div>
                       <div className="tx-overview-graph-step-description">
                         <a
                           href={getExplorerLink({
-                            chainId: originChainId,
+                            chainId: fromChain,
                             value: parsedOriginAddress,
                             base: "address",
                             isNativeAddress: true,
@@ -222,7 +245,7 @@ const Overview = ({
                 <div className="tx-overview-graph-step-description">
                   <a
                     href={getExplorerLink({
-                      chainId: originChainId,
+                      chainId: fromChain,
                       value: parsedEmitterAddress,
                       base: "address",
                       isNativeAddress: true,
@@ -272,7 +295,7 @@ const Overview = ({
           </div>
         </div>
 
-        {redeemTx && (
+        {globalToRedeemTx && (
           <div className={`tx-overview-graph-step ${colorStatus["COMPLETED"]}`}>
             <div className="tx-overview-graph-step-name">
               <div>RELAYING</div>
@@ -293,7 +316,7 @@ const Overview = ({
                 <div className="tx-overview-graph-step-description">
                   <a
                     href={getExplorerLink({
-                      chainId: destinationChainId,
+                      chainId: toChain,
                       value: parsedRedeemTx,
                       isNativeAddress: true,
                     })}
@@ -328,24 +351,12 @@ const Overview = ({
                   {toChain && getChainName({ chainId: toChain }).toUpperCase()}
                 </div>
               </div>
-              {/* <div style={{ order: amount ? 1 : 2 }}>
-      {amount && (
-        <>
-          <div className="tx-overview-graph-step-title">Amount</div>
-          <div className="tx-overview-graph-step-description">
-            {amountReceived} {symbol} ({amountReceivedUSD || "-"} USD)
-          </div>
-        </>
-      )}
-    </div> */}
-
-              {/* <div style={{ order: amount ? 2 : 1 }}> */}
               <div>
                 <div className="tx-overview-graph-step-title">Destination wallet</div>
                 <div className="tx-overview-graph-step-description">
                   <a
                     href={getExplorerLink({
-                      chainId: destinationChainId,
+                      chainId: toChain,
                       value: parsedDestinationAddress,
                       base: "address",
                       isNativeAddress: true,

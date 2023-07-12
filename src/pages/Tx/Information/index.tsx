@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { Tabs } from "src/components/organisms";
 import i18n from "src/i18n";
 import Overview from "./Overview/index";
-import { GlobalTxOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
+import { GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { minutesBetweenDates } from "src/utils/date";
 import Summary from "./Summary";
 import RawData from "./RawData";
@@ -17,7 +17,7 @@ const TX_TAB_HEADERS = [
 
 interface Props {
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
-  globalTxData: GlobalTxOutput;
+  txData: GetTransactionsOutput;
 }
 
 const getTxStatus = (originStatus: string, destinationStatus: string) => {
@@ -35,66 +35,46 @@ const getTxStatus = (originStatus: string, destinationStatus: string) => {
   return "COMPLETED";
 };
 
-const Information = ({ VAAData, globalTxData }: Props) => {
-  const { payload } = VAAData || {};
-  const { fee, tokenAddress, tokenChain, toChain, payloadType } = payload || {};
-  const { originTx, destinationTx } = globalTxData || {};
+const Information = ({ VAAData, txData }: Props) => {
+  const { timestamp, emitterChain, standardizedProperties, globalTx, payload } = txData || {};
+
+  const { fee: payloadFee, payloadType } = payload || {};
+  const { originTx, destinationTx } = globalTx || {};
+
   const {
-    chainId: originChainId,
-    timestamp: originTimestamp,
-    status: originStatus,
-  } = originTx || {};
+    fromChain: stdFromChain,
+    toChain: stdToChain,
+    fee: stdFee,
+  } = standardizedProperties || {};
+
+  const { chainId: globalFromChainId, timestamp: globalFromTimestamp } = originTx || {};
+
   const {
-    timestamp: destinationTimestamp,
-    status: destinationStatus,
-    txHash: redeemTx,
+    chainId: globalToChainId,
+    timestamp: globalToTimestamp,
+    txHash: globalToRedeemTx,
   } = destinationTx || {};
-  const transactionTimeInMinutes = redeemTx
-    ? minutesBetweenDates(new Date(originTimestamp), new Date(destinationTimestamp))
+
+  const fromChain = stdFromChain || globalFromChainId || emitterChain;
+  const toChain = stdToChain || globalToChainId;
+  const startDate = timestamp || globalFromTimestamp;
+  const endDate = globalToTimestamp;
+  const fee = stdFee || payloadFee;
+  const transactionTimeInMinutes = globalToRedeemTx
+    ? minutesBetweenDates(new Date(startDate), new Date(endDate))
     : undefined;
-
-  const tokenDataResponse = useGetTokenData({
-    tokenChain,
-    tokenAddress,
-  });
-  const { tokenData } = tokenDataResponse || {};
-  const { coingeckoId } = tokenData || {};
-  // dd-mm-yyyy === "es"
-  const formattedOriginTimeStamp = new Date(originTimestamp)
-    .toLocaleString("es", {
-      year: "numeric",
-      month: "2-digit",
-      day: "numeric",
-    })
-    .replaceAll("/", "-");
-
-  const tokenPriceResponse = useGetTokenPrice({
-    coingeckoId,
-    date: formattedOriginTimeStamp,
-  });
 
   const TopSummary = useCallback(() => {
     return (
       <Summary
         transactionTimeInMinutes={transactionTimeInMinutes}
         fee={fee}
-        originChainId={originChainId}
+        originChainId={fromChain}
         destinationChainId={toChain}
-        summaryStatus={getTxStatus(originStatus, destinationStatus)}
-        tokenDataResponse={tokenDataResponse}
         payloadType={payloadType}
       />
     );
-  }, [
-    toChain,
-    fee,
-    originChainId,
-    originStatus,
-    destinationStatus,
-    transactionTimeInMinutes,
-    tokenDataResponse,
-    payloadType,
-  ]);
+  }, [toChain, fromChain, fee, transactionTimeInMinutes, payloadType]);
 
   return (
     <section className="tx-information">
@@ -103,13 +83,7 @@ const Information = ({ VAAData, globalTxData }: Props) => {
         contents={[
           <>
             <TopSummary />
-            <Overview
-              VAAData={VAAData}
-              globalTxData={globalTxData}
-              txStatus={getTxStatus(originStatus, destinationStatus)}
-              tokenDataResponse={tokenDataResponse}
-              tokenPriceResponse={tokenPriceResponse}
-            />
+            <Overview VAAData={VAAData} txData={txData} />
           </>,
           <>
             <TopSummary />
