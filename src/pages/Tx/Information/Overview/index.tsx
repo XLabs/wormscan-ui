@@ -221,9 +221,8 @@ const Overview = ({
             <div>SIGNED VAA</div>
           </div>
           <div className="tx-overview-graph-step-iconWrapper">
-            <SignatureCircle />
             <div className="tx-overview-graph-step-signaturesContainer">
-              <div className="tx-overview-graph-step-signaturesContainer-circle"></div>
+              <SignatureCircle guardianSignatures={guardianSignatures} />
               <div className="tx-overview-graph-step-signaturesContainer-text">
                 <div className="tx-overview-graph-step-signaturesContainer-text-number">
                   {guardianSignaturesCount}/{totalGuardiansNeeded}
