@@ -21,7 +21,7 @@ import "./styles.scss";
 import { getCurrentNetwork } from "src/api/Client";
 
 type Props = {
-  VAAData: Omit<VAADetail, "vaa"> & { vaa: any };
+  VAAData: VAADetail & { vaa: any; decodedVaa: any };
   globalTxData: GlobalTxOutput;
   txStatus: TxStatus;
   tokenDataResponse: {
@@ -45,12 +45,10 @@ const Overview = ({
 }: Props) => {
   const currentNetwork = getCurrentNetwork();
   const totalGuardiansNeeded = currentNetwork === "mainnet" ? 13 : 1;
-
   const size = useWindowSize();
   const isMobile = size.width < BREAKPOINTS.tablet;
-  const { emitterNativeAddr, emitterChainId, payload, vaa } = VAAData || {};
-
-  const { guardianSignatures } = vaa || {};
+  const { emitterNativeAddr, emitterChainId, payload, decodedVaa } = VAAData || {};
+  const { guardianSignatures } = decodedVaa || {};
   const { amount, fee, tokenAddress, tokenChain, toChain, toAddress } = payload || {};
   const parsedEmitterAddress = parseAddress({
     value: emitterNativeAddr,
