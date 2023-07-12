@@ -46,13 +46,13 @@ const BlockSection = ({ title, code }: { title: string; code: string }) => {
 };
 
 type Props = {
-  VAAData: Omit<VAADetail, "vaa"> & { vaa: any };
+  VAAData: VAADetail & { vaa: any; decodedVaa: any };
 };
 
 const RawData = ({ VAAData }: Props) => {
-  const { payload, vaa, ...rest } = VAAData || {};
+  const { payload, decodedVaa, ...rest } = VAAData || {};
   const rawData = { ...rest };
-  const { payload: nestedVAAPayload, ...nestedVAARest } = vaa;
+  const { payload: nestedVAAPayload, ...nestedVAARest } = decodedVaa;
   const signedVAA = { ...nestedVAARest };
   const CODE_BLOCKS = [
     {

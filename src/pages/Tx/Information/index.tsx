@@ -16,7 +16,7 @@ const TX_TAB_HEADERS = [
 ];
 
 interface Props {
-  VAAData: Omit<VAADetail, "vaa"> & { vaa: any };
+  VAAData: VAADetail & { vaa: any; decodedVaa: any };
   globalTxData: GlobalTxOutput;
 }
 

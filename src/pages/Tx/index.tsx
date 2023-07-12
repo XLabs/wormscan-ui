@@ -25,7 +25,7 @@ const Tx = () => {
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [VAAId, setVAAId] = useState<string>("");
   const [parsedVAAData, setParsedVAAData] = useState<
-    (Omit<VAADetail, "vaa"> & { vaa: any }) | undefined
+    (VAADetail & { vaa: any; decodedVaa: any }) | undefined
   >(undefined);
   const vaaIdSplit = VAAId.split("/");
   const chainId = Number(vaaIdSplit?.[0]);
@@ -103,9 +103,10 @@ const Tx = () => {
       name: guardianSetList?.[index]?.name,
     }));
 
-    const parsedVAAData = {
+    const newVAAData = {
       ...VAAData,
-      vaa: {
+      vaa,
+      decodedVaa: {
         ...parsedVaa,
         emitterAddress: parsedEmitterAddress,
         guardianSignatures: parsedGuardianSignatures,
@@ -114,7 +115,7 @@ const Tx = () => {
       },
     };
 
-    setParsedVAAData(parsedVAAData);
+    setParsedVAAData(newVAAData);
     setEmitterChainId(emitterChain as ChainId);
   }, [vaa, VAAData, guardianSetIndex]);
 
