@@ -1,0 +1,36 @@
+@import "src/styles/globals.scss";
+
+.signatureCircle {
+  position: absolute;
+  z-index: 2;
+  bottom: -38px;
+  opacity: 1;
+
+  &-section {
+    cursor: pointer;
+  }
+}
+
+.guardianInfo {
+  position: absolute;
+  width: 200px;
+  height: 70px;
+  box-shadow: 2px 2px 4px rgba(5, 5, 40, 0.45);
+  background-color: var(--color-primary-400);
+  border-radius: 6px;
+
+  @include centered-column;
+  gap: 6px;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 300;
+
+  &-signature {
+    @include centered-row;
+    gap: 4px;
+
+    &-text {
+      color: var(--color-white-40);
+    }
+  }
+}

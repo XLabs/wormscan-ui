@@ -1,8 +1,8 @@
-import { ChainId } from "@certusone/wormhole-sdk";
+import { ChainId } from "@xlabs-libs/wormscan-sdk";
 import { CopyIcon } from "@radix-ui/react-icons";
 import { useTranslation } from "react-i18next";
-import Tag from "src/components/atoms/Tag";
-import CopyToClipboard from "src/components/molecules/CopyToClipboard";
+import { Tag } from "src/components/atoms";
+import { CopyToClipboard } from "src/components/molecules";
 import { txType } from "src/consts";
 import { parseTx } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";

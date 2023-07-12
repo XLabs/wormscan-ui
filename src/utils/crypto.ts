@@ -1,12 +1,4 @@
-import {
-  ChainId,
-  CHAIN_ID_APTOS,
-  CHAIN_ID_SOLANA,
-  CHAIN_ID_SUI,
-  isEVMChain,
-  tryHexToNativeString,
-} from "@certusone/wormhole-sdk";
-import { removeLeadingZeros } from "./string";
+import { ChainId, isEVMChain, tryHexToNativeString } from "@certusone/wormhole-sdk";
 
 export const formatUnits = (value: number, tokenDecimals = 8) => {
   if (!value) return 0;

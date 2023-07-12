@@ -1,7 +1,7 @@
 import { CopyIcon } from "@radix-ui/react-icons";
 import { ChainId } from "@xlabs-libs/wormscan-sdk";
 import { useTranslation } from "react-i18next";
-import CopyToClipboard from "src/components/molecules/CopyToClipboard";
+import { CopyToClipboard } from "src/components/molecules";
 import { parseAddress } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
 import "./styles.scss";

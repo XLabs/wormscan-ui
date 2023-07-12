@@ -2,9 +2,8 @@ import { Table } from "src/components/organisms";
 import i18n from "src/i18n";
 import { Column } from "react-table";
 import { PAGE_SIZE, TransactionOutput } from "..";
-import Pagination from "src/components/atoms/Pagination";
 import { Dispatch, SetStateAction } from "react";
-import { Loader } from "src/components/atoms";
+import { Loader, Pagination } from "src/components/atoms";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import "./styles.scss";
 
