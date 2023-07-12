@@ -214,8 +214,6 @@
         height: 115px;
         border-radius: 50%;
         z-index: 4;
-        // border: 10px solid transparent;
-        // background-clip: padding-box;
 
         &::before {
           content: "";
@@ -227,75 +225,6 @@
           background-color: #151632;
           z-index: 3;
         }
-
-        // --d: 5deg; /* distance between dashes */
-        // --c: var(--color-success-100); /* color of dashes */
-        // --b: 8px; /* control the thickness of border*/
-        // --m: 0deg; /* the masked part */
-        // --r: -5deg; /* rotation */
-
-        // &-circle {
-        //   position: absolute;
-        //   width: 150px;
-        //   height: 150px;
-        //   display: block;
-        //   border-radius: 50%;
-
-        //   transform: rotate(var(--r));
-        //   background: repeating-conic-gradient(
-        //     var(--c) 0 calc(360deg / var(--n) - var(--d)),
-        //     transparent 0 calc(360deg / var(--n))
-        //   );
-        //   -webkit-mask: conic-gradient(#fff 0 var(--m), transparent 0 360deg),
-        //     radial-gradient(
-        //       farthest-side,
-        //       transparent calc(100% - var(--b) - 1px),
-        //       #fff calc(100% - var(--b)) calc(100% - 1px),
-        //       transparent
-        //     );
-        //   -webkit-mask-composite: destination-out;
-        //   mask: conic-gradient(#fff 0 var(--m), transparent 0 360deg),
-        //     radial-gradient(
-        //       farthest-side,
-        //       transparent calc(100% - var(--b) - 1px),
-        //       #fff calc(100% - var(--b)) calc(100% - 1px),
-        //       transparent
-        //     );
-        //   mask-composite: exclude;
-
-        //   &::after {
-        //     --c: var(--color-primary-200); /* color of dashes */
-
-        //     content: "";
-        //     position: absolute;
-        //     width: 150px;
-        //     height: 150px;
-        //     display: block;
-        //     border-radius: 50%;
-
-        //     // transform: rotate(var(--r));
-        //     background: repeating-conic-gradient(
-        //       var(--c) 0 calc(360deg / var(--n) - var(--d)),
-        //       transparent 0 calc(360deg / var(--n))
-        //     );
-        //     -webkit-mask: conic-gradient(#fff 0 var(--m2), transparent 0 360deg),
-        //       radial-gradient(
-        //         farthest-side,
-        //         transparent calc(100% - var(--b) - 1px),
-        //         #fff calc(100% - var(--b)) calc(100% - 1px),
-        //         transparent
-        //       );
-        //     -webkit-mask-composite: destination-out;
-        //     mask: conic-gradient(#fff 0 var(--m2), transparent 0 360deg),
-        //       radial-gradient(
-        //         farthest-side,
-        //         transparent calc(100% - var(--b) - 1px),
-        //         #fff calc(100% - var(--b)) calc(100% - 1px),
-        //         transparent
-        //       );
-        //     mask-composite: exclude;
-        //   }
-        // }
 
         &-text {
           text-align: center;
