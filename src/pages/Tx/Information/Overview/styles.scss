@@ -1,7 +1,7 @@
 @import "src/styles/globals.scss";
 
 .tx-overview {
-  --y-space: 275px;
+  --y-space: 285px;
   display: block;
   overflow-x: auto;
 
@@ -41,7 +41,9 @@
       pointer-events: none;
 
       @include desktop {
-        align-items: center;
+        &.signatures {
+          align-items: center;
+        }
       }
 
       > * {
@@ -50,10 +52,12 @@
       }
 
       &-data-container {
-        @include centered-column;
-
         flex: 3;
+
+        display: grid;
+        grid-template-columns: 1fr;
         gap: var(--gap);
+        row-gap: 32px;
         min-height: 350px;
         padding: 75px 0 50px;
 
@@ -66,8 +70,9 @@
         }
 
         @include desktop {
-          @include centered-row;
-
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          row-gap: 72px;
           --gap: 16px;
           padding: 0;
           min-height: unset;
@@ -132,6 +137,7 @@
 
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
         gap: 8px;
         color: var(--color-white);
 
@@ -163,7 +169,7 @@
         display: flex;
         justify-content: center;
         z-index: -1;
-
+        align-self: stretch;
         min-width: 50px;
         margin-left: 25px;
 
@@ -180,12 +186,16 @@
         #{$sbc}-iconWrapper {
           &::before {
             content: "";
+            display: flex;
             position: absolute;
-            top: 100%;
             left: 50%;
             border-left: 1px dashed var(--color);
-            height: calc(var(--y-space) + 20px);
+            height: calc(100%);
             z-index: -1;
+
+            @include desktop {
+              height: calc(100% + var(--y-space));
+            }
           }
         }
       }

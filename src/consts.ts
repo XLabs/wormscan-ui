@@ -109,7 +109,7 @@ export const getGuardianSet = (version: number): GuardianSet[] => {
   return versions[version] || [];
 };
 
-export const txType: { [key: number]: string } = {
+export const txType: { [key: number]: "Transfer" | "Attestation" | "Transfer with payload" } = {
   1: "Transfer",
   2: "Attestation",
   3: "Transfer with payload",
