@@ -48,7 +48,7 @@
     "@radix-ui/react-tabs": "1.0.3",
     "@radix-ui/react-toggle-group": "1.0.2",
     "@radix-ui/react-tooltip": "1.0.5",
-    "@xlabs-libs/wormscan-sdk": "https://github.com/xlabs/wormscan-sdk#lib",
+    "@xlabs-libs/wormscan-sdk": "file:.yalc/@xlabs-libs/wormscan-sdk",
     "apexcharts": "3.36.0",
     "i18next": "22.4.9",
     "react": "18.2.0",
