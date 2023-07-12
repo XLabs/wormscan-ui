@@ -4,8 +4,8 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
 import { getClient, getCurrentNetwork } from "src/api/Client";
-import { BlockchainIcon, Loader } from "src/components/atoms";
-import CopyToClipboard from "src/components/molecules/CopyToClipboard";
+import { BlockchainIcon, Loader, Link } from "src/components/atoms";
+import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { parseAddress, parseTx, shortAddress } from "src/utils/crypto";
 import { timeAgo } from "src/utils/date";
@@ -13,10 +13,8 @@ import { formatCurrency } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { Information } from "./Information";
 import { Top } from "./Top";
-import StatusBadge from "src/components/molecules/StatusBadge";
 import { NETWORK, TxStatus } from "../../types";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
-import Link from "src/components/atoms/Link";
 import "./styles.scss";
 
 export interface TransactionOutput {

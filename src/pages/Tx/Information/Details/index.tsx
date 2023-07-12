@@ -2,9 +2,7 @@ import { CopyIcon, CheckCircledIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon } from "src/components/atoms";
 import "./styles.scss";
 
-type Props = {};
-
-const Details = (props: Props) => {
+const Details = () => {
   return (
     <div className="tx-details">
       <div className="tx-details-group">

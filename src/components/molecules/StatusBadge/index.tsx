@@ -1,5 +1,5 @@
 import { CheckCircledIcon, ClockIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import Chip from "src/components/atoms/Chip";
+import { Chip } from "src/components/atoms";
 import { colorStatus } from "src/consts";
 import { TxStatus } from "src/types";
 import "./styles.scss";

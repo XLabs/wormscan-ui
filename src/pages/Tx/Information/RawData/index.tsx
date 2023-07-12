@@ -2,7 +2,7 @@ import { CopyIcon } from "@radix-ui/react-icons";
 import { VAADetail } from "@xlabs-libs/wormscan-sdk";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { vs2015 } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import CopyToClipboard from "src/components/molecules/CopyToClipboard";
+import { CopyToClipboard } from "src/components/molecules";
 import "./styles.scss";
 
 const CodeBlockStyles = {

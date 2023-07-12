@@ -1,6 +1,6 @@
 import { CopyIcon } from "@radix-ui/react-icons";
-import { BlockchainIcon } from "src/components/atoms";
-import CopyToClipboard from "src/components/molecules/CopyToClipboard";
+import { BlockchainIcon, SignatureCircle } from "src/components/atoms";
+import { CopyToClipboard } from "src/components/molecules";
 import WormIcon from "src/icons/wormIcon.svg";
 import RelayIcon from "src/icons/relayIcon.svg";
 import {
@@ -13,7 +13,6 @@ import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { TxStatus } from "src/types";
 import { shortAddress, formatUnits } from "src/utils/crypto";
 import { formatCurrency } from "src/utils/number";
-import { CSSProperties } from "react";
 import { ChainId } from "@certusone/wormhole-sdk";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { BREAKPOINTS, colorStatus } from "src/consts";
@@ -46,7 +45,6 @@ const Overview = ({
 }: Props) => {
   const currentNetwork = getCurrentNetwork();
   const totalGuardiansNeeded = currentNetwork === "mainnet" ? 13 : 1;
-  const fractionDegree = 360 / totalGuardiansNeeded;
 
   const size = useWindowSize();
   const isMobile = size.width < BREAKPOINTS.tablet;
@@ -59,13 +57,6 @@ const Overview = ({
     chainId: emitterChainId as ChainId,
   });
   const guardianSignaturesCount = guardianSignatures?.length || 0;
-  const signatureContainerMaskDegree = Math.abs(
-    360 - (360 - guardianSignaturesCount * fractionDegree),
-  );
-  const signatureStyles: CSSProperties & { "--m2": string; "--n": number } = {
-    "--m2": `calc(${signatureContainerMaskDegree}deg)`,
-    "--n": totalGuardiansNeeded, // number of dashes
-  };
   const { id: VAAId, originTx, destinationTx } = globalTxData || {};
   const {
     chainId: originChainId,
@@ -232,7 +223,8 @@ const Overview = ({
             <div>SIGNED VAA</div>
           </div>
           <div className="tx-overview-graph-step-iconWrapper">
-            <div className="tx-overview-graph-step-signaturesContainer" style={signatureStyles}>
+            <SignatureCircle />
+            <div className="tx-overview-graph-step-signaturesContainer">
               <div className="tx-overview-graph-step-signaturesContainer-circle"></div>
               <div className="tx-overview-graph-step-signaturesContainer-text">
                 <div className="tx-overview-graph-step-signaturesContainer-text-number">

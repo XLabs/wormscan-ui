@@ -1,5 +1,4 @@
-import ScoreCard from "src/components/molecules/ScoreCard";
-import TransactionHistory from "src/components/molecules/TransactionHistory";
+import { ScoreCard, TransactionHistory } from "src/components/molecules";
 import "./styles.scss";
 
 const RANGE_LIST = [

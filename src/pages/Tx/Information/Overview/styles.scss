@@ -155,6 +155,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
+        z-index: -1;
 
         min-width: 50px;
         margin-left: 25px;
@@ -199,98 +200,99 @@
       }
 
       &-signaturesContainer {
-        --d: 5deg; /* distance between dashes */
-        --c: var(--color-success-100); /* color of dashes */
-        --b: 8px; /* control the thickness of border*/
-        --m: 0deg; /* the masked part */
-        --m2: calc(360deg); /* the masked part **not selected** */
-        --r: -5deg; /* rotation */
-
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 155px;
-        height: 155px;
+        width: 125px;
+        height: 125px;
         border-radius: 50%;
-        border: 10px solid transparent;
-        background-clip: padding-box;
+        z-index: 4;
+        // border: 10px solid transparent;
+        // background-clip: padding-box;
 
         &::before {
           content: "";
           position: absolute;
-          width: 135px;
-          height: 135px;
+          width: 125px;
+          height: 125px;
           display: block;
           border-radius: 50%;
           background-color: #151632;
-          z-index: -1;
+          z-index: 3;
         }
 
-        &-circle {
-          position: absolute;
-          width: 150px;
-          height: 150px;
-          display: block;
-          border-radius: 50%;
+        // --d: 5deg; /* distance between dashes */
+        // --c: var(--color-success-100); /* color of dashes */
+        // --b: 8px; /* control the thickness of border*/
+        // --m: 0deg; /* the masked part */
+        // --r: -5deg; /* rotation */
 
-          transform: rotate(var(--r));
-          background: repeating-conic-gradient(
-            var(--c) 0 calc(360deg / var(--n) - var(--d)),
-            transparent 0 calc(360deg / var(--n))
-          );
-          -webkit-mask: conic-gradient(#fff 0 var(--m), transparent 0 360deg),
-            radial-gradient(
-              farthest-side,
-              transparent calc(100% - var(--b) - 1px),
-              #fff calc(100% - var(--b)) calc(100% - 1px),
-              transparent
-            );
-          -webkit-mask-composite: destination-out;
-          mask: conic-gradient(#fff 0 var(--m), transparent 0 360deg),
-            radial-gradient(
-              farthest-side,
-              transparent calc(100% - var(--b) - 1px),
-              #fff calc(100% - var(--b)) calc(100% - 1px),
-              transparent
-            );
-          mask-composite: exclude;
+        // &-circle {
+        //   position: absolute;
+        //   width: 150px;
+        //   height: 150px;
+        //   display: block;
+        //   border-radius: 50%;
 
-          &::after {
-            --c: var(--color-primary-200); /* color of dashes */
+        //   transform: rotate(var(--r));
+        //   background: repeating-conic-gradient(
+        //     var(--c) 0 calc(360deg / var(--n) - var(--d)),
+        //     transparent 0 calc(360deg / var(--n))
+        //   );
+        //   -webkit-mask: conic-gradient(#fff 0 var(--m), transparent 0 360deg),
+        //     radial-gradient(
+        //       farthest-side,
+        //       transparent calc(100% - var(--b) - 1px),
+        //       #fff calc(100% - var(--b)) calc(100% - 1px),
+        //       transparent
+        //     );
+        //   -webkit-mask-composite: destination-out;
+        //   mask: conic-gradient(#fff 0 var(--m), transparent 0 360deg),
+        //     radial-gradient(
+        //       farthest-side,
+        //       transparent calc(100% - var(--b) - 1px),
+        //       #fff calc(100% - var(--b)) calc(100% - 1px),
+        //       transparent
+        //     );
+        //   mask-composite: exclude;
 
-            content: "";
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            display: block;
-            border-radius: 50%;
+        //   &::after {
+        //     --c: var(--color-primary-200); /* color of dashes */
 
-            // transform: rotate(var(--r));
-            background: repeating-conic-gradient(
-              var(--c) 0 calc(360deg / var(--n) - var(--d)),
-              transparent 0 calc(360deg / var(--n))
-            );
-            -webkit-mask: conic-gradient(#fff 0 var(--m2), transparent 0 360deg),
-              radial-gradient(
-                farthest-side,
-                transparent calc(100% - var(--b) - 1px),
-                #fff calc(100% - var(--b)) calc(100% - 1px),
-                transparent
-              );
-            -webkit-mask-composite: destination-out;
-            mask: conic-gradient(#fff 0 var(--m2), transparent 0 360deg),
-              radial-gradient(
-                farthest-side,
-                transparent calc(100% - var(--b) - 1px),
-                #fff calc(100% - var(--b)) calc(100% - 1px),
-                transparent
-              );
-            mask-composite: exclude;
-          }
-        }
+        //     content: "";
+        //     position: absolute;
+        //     width: 150px;
+        //     height: 150px;
+        //     display: block;
+        //     border-radius: 50%;
+
+        //     // transform: rotate(var(--r));
+        //     background: repeating-conic-gradient(
+        //       var(--c) 0 calc(360deg / var(--n) - var(--d)),
+        //       transparent 0 calc(360deg / var(--n))
+        //     );
+        //     -webkit-mask: conic-gradient(#fff 0 var(--m2), transparent 0 360deg),
+        //       radial-gradient(
+        //         farthest-side,
+        //         transparent calc(100% - var(--b) - 1px),
+        //         #fff calc(100% - var(--b)) calc(100% - 1px),
+        //         transparent
+        //       );
+        //     -webkit-mask-composite: destination-out;
+        //     mask: conic-gradient(#fff 0 var(--m2), transparent 0 360deg),
+        //       radial-gradient(
+        //         farthest-side,
+        //         transparent calc(100% - var(--b) - 1px),
+        //         #fff calc(100% - var(--b)) calc(100% - 1px),
+        //         transparent
+        //       );
+        //     mask-composite: exclude;
+        //   }
+        // }
 
         &-text {
           text-align: center;
+          z-index: 4;
 
           &-number {
             @include text-h5;
