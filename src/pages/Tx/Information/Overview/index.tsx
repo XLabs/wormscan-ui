@@ -12,15 +12,12 @@ import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { BREAKPOINTS, colorStatus, txType } from "src/consts";
 import { parseTx, parseAddress } from "../../../../utils/crypto";
 import { getCurrentNetwork } from "src/api/Client";
-import { CSSProperties } from "react";
 import "./styles.scss";
 
 type Props = {
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
   txData: GetTransactionsOutput;
 };
-
-const fractionDegree = 28;
 
 const Overview = ({ VAAData, txData }: Props) => {
   const currentNetwork = getCurrentNetwork();
@@ -30,9 +27,6 @@ const Overview = ({ VAAData, txData }: Props) => {
   const { decodedVaa } = VAAData || {};
   const { guardianSignatures } = decodedVaa || {};
   const guardianSignaturesCount = guardianSignatures?.length || 0;
-  const signatureContainerMaskDegree = Math.abs(
-    360 - (360 - guardianSignaturesCount * fractionDegree),
-  );
 
   const {
     id: VAAId,
