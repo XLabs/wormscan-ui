@@ -132,18 +132,16 @@ const GuardianInfo = ({
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [clear, clicked]);
+  }, [clear]);
 
   const renderedInfo = (
     <div
       ref={infoRef}
-      tabIndex={1}
       style={{
         top: y,
         left: x,
       }}
       className="guardianInfo"
-      onBlur={clear}
     >
       {/* Testnet has only one guardian and it's from Jump Crypto, name is not on vaa */}
       <span>{currentNetwork === "mainnet" ? showGuardian.name : "Jump Crypto"}</span>
