@@ -26,27 +26,33 @@ const Pagination = ({
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage === totalPages;
 
-  // Note: goLastPage button is disabled due to API limitation
-
   return (
     <div className={`pagination ${className}`}>
-      <button onClick={goFirstPage} disabled={disabled || isFirstPage}>
-        &lt;&lt;
-      </button>
+      {goFirstPage && (
+        <button onClick={goFirstPage} disabled={disabled || isFirstPage}>
+          &lt;&lt;
+        </button>
+      )}
+
       <button onClick={goPrevPage} disabled={disabled || isFirstPage}>
         &lt;
       </button>
+
       <span className="pagination-current">{currentPage}</span>
+
       <button onClick={goNextPage} disabled={disabled || disableNextButton || isLastPage}>
         &gt;
       </button>
-      <button
-        className="pagination-last-page"
-        onClick={goLastPage}
-        disabled={disabled || true || isLastPage}
-      >
-        &gt;&gt;
-      </button>
+
+      {goLastPage && (
+        <button
+          className="pagination-last-page"
+          onClick={goLastPage}
+          disabled={disabled || true || isLastPage}
+        >
+          &gt;&gt;
+        </button>
+      )}
     </div>
   );
 };

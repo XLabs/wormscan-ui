@@ -37,6 +37,9 @@
 
   & > button:hover {
     background: var(--color-white-10);
+    &:disabled {
+      background: none;
+    }
   }
 
   & > button:active {
@@ -46,6 +49,7 @@
 
   & > *:disabled {
     color: var(--color-white-20);
+    cursor: not-allowed;
   }
 
   &-current {

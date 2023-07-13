@@ -1,6 +1,6 @@
 import { ChainId, CrossChainActivity, CrossChainBy } from "@xlabs-libs/wormscan-sdk";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BlockchainIcon } from "src/components/atoms";
+import { BlockchainIcon, Pagination } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { useTranslation } from "react-i18next";
@@ -27,8 +27,8 @@ type Props = {
 export type Info = { percentage: number; volume: number };
 
 export const Chart = ({ data, selectedType }: Props) => {
-  const filteredData = processData(data);
-  const [chartData] = useState(filteredData);
+  const [isShowingOthers, setIsShowingOthers] = useState(false);
+  const [chartData, setChartData] = useState(processData(data, false));
 
   const [selectedChain, setSelectedChain] = useState(chartData[0].chain);
   const [selectedInfo, setSelectedInfo] = useState<Info>({
@@ -148,6 +148,13 @@ export const Chart = ({ data, selectedType }: Props) => {
   }, [destinyChainsHeight.length, devicePixelRatio, draw, originChainsHeight.length]);
 
   useEffect(() => {
+    const selectedItem = chartData.find(item => item.chain === selectedChain);
+
+    if (!selectedItem) {
+      setSelectedChain(chartData[0].chain);
+      return;
+    }
+
     const newDestinationChains = chartData
       .find(item => item.chain === selectedChain)
       .destinations.sort((a, b) => b.volume - a.volume)
@@ -174,9 +181,9 @@ export const Chart = ({ data, selectedType }: Props) => {
 
   return (
     <div className="cross-chain-relative">
-      <div className="cross-chain-header-container cross-chain-header-title">
-        <div>{t("home.crossChain.source")}</div>
-        <div>{t("home.crossChain.destination")}</div>
+      <div className="cross-chain-header-container title">
+        <div>{t("home.crossChain.source").toUpperCase()}</div>
+        <div>{t("home.crossChain.destination").toUpperCase()}</div>
       </div>
       <div className="cross-chain-chart">
         <div className="cross-chain-chart-side" ref={originChainsRef}>
@@ -236,6 +243,20 @@ export const Chart = ({ data, selectedType }: Props) => {
         </div>
       </div>
 
+      <Pagination
+        className="cross-chain-relative-pagination"
+        currentPage={isShowingOthers ? 2 : 1}
+        goNextPage={() => {
+          setIsShowingOthers(true);
+          setChartData(processData(data, true));
+        }}
+        goPrevPage={() => {
+          setIsShowingOthers(false);
+          setChartData(processData(data, false));
+        }}
+        disableNextButton={isShowingOthers}
+      />
+
       <StickyInfo
         chainName={getChainName(selectedChain)}
         selectedInfo={selectedInfo}
@@ -252,52 +273,8 @@ const getChainName = (id: ChainId) => {
   return ChainId[id] ?? "Unset";
 };
 
-const processData = (data: CrossChainActivity) => {
-  const newData = data.sort((a, b) => b.percentage - a.percentage);
+const processData = (data: CrossChainActivity, showOthers: boolean) => {
+  const newData = [...data].sort((a, b) => b.percentage - a.percentage);
 
-  // if more than 10 elements, create "Others" section
-  if (newData.length > 10) {
-    let percentage = 0;
-    let volume = 0;
-    const destinations: any = {};
-
-    newData.slice(10).forEach(item => {
-      // sum the percentage and volume of every other chain
-      percentage += item.percentage;
-      volume += +item.volume;
-
-      // create an object that sums the volume for the same destiny chain
-      item.destinations.forEach(destination => {
-        destinations[destination.chain] = {
-          volume: (destinations[destination.chain]?.volume ?? 0) + Number(destination.volume),
-        };
-      });
-    });
-
-    // transform the object with destination volumes summed up into an array of chains
-    let newDestinations = [];
-    for (const [chain, value] of Object.entries(destinations) as any) {
-      newDestinations.push({
-        chain,
-        volume: value.volume,
-      });
-    }
-
-    // add percentages to that array of destination chains
-    let totalVolume = 0;
-    newDestinations.forEach(dest => {
-      totalVolume += dest.volume;
-    });
-    newDestinations = newDestinations.map(dest => ({
-      chain: dest.chain,
-      volume: dest.volume,
-      percentage: (dest.volume / totalVolume) * 100,
-    }));
-
-    // sort the array and use only the first 10 elements
-    newDestinations = newDestinations.sort((a: any, b: any) => b.volume - a.volume).slice(0, 10);
-    newData[9] = { chain: OTHERS_FAKE_CHAIN_ID, percentage, volume, destinations: newDestinations };
-  }
-
-  return newData.slice(0, 10);
+  return showOthers ? newData.slice(10) : newData.slice(0, 10);
 };
