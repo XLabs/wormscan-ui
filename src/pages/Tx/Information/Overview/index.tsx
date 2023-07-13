@@ -3,27 +3,24 @@ import { BlockchainIcon, SignatureCircle } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import WormIcon from "src/icons/wormIcon.svg";
 import RelayIcon from "src/icons/relayIcon.svg";
-import {
-  GetTokenOutput,
-  GetTokenPriceOutput,
-  GetTransactionsOutput,
-  GlobalTxOutput,
-  VAADetail,
-} from "@xlabs-libs/wormscan-sdk";
+import { GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import { shortAddress, formatUnits } from "src/utils/crypto";
+import { shortAddress } from "src/utils/crypto";
 import { formatCurrency } from "src/utils/number";
 import { ChainId } from "@certusone/wormhole-sdk";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { BREAKPOINTS, colorStatus, txType } from "src/consts";
 import { parseTx, parseAddress } from "../../../../utils/crypto";
 import { getCurrentNetwork } from "src/api/Client";
+import { CSSProperties } from "react";
 import "./styles.scss";
 
 type Props = {
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
   txData: GetTransactionsOutput;
 };
+
+const fractionDegree = 28;
 
 const Overview = ({ VAAData, txData }: Props) => {
   const currentNetwork = getCurrentNetwork();
@@ -36,10 +33,6 @@ const Overview = ({ VAAData, txData }: Props) => {
   const signatureContainerMaskDegree = Math.abs(
     360 - (360 - guardianSignaturesCount * fractionDegree),
   );
-  const signatureStyles: CSSProperties & { "--m2": string; "--n": number } = {
-    "--m2": `calc(${signatureContainerMaskDegree}deg)`,
-    "--n": totalGuardiansNeeded,
-  };
 
   const {
     id: VAAId,
@@ -56,6 +49,9 @@ const Overview = ({ VAAData, txData }: Props) => {
 
   const {
     payloadType,
+    decimals: payloadTokenDecimals,
+    name: payloadTokenName,
+    symbol: payloadTokenSymbol,
     tokenChain: payloadTokenChain,
     tokenAddress: payloadTokenAddress,
   } = payload || {};
@@ -136,7 +132,7 @@ const Overview = ({ VAAData, txData }: Props) => {
   return (
     <div className="tx-overview">
       <div className="tx-overview-graph">
-        <div className={`tx-overview-graph-step green source ${isAttestation && "attestation"}`}>
+        <div className={`tx-overview-graph-step green source`}>
           <div className="tx-overview-graph-step-name">
             <div>SOURCE CHAIN</div>
           </div>
@@ -145,9 +141,7 @@ const Overview = ({ VAAData, txData }: Props) => {
               {fromChain && <BlockchainIcon chainId={fromChain} size={32} />}
             </div>
           </div>
-          <div
-            className={`tx-overview-graph-step-data-container ${isAttestation && "attestation"}`}
-          >
+          <div className={`tx-overview-graph-step-data-container`}>
             <div>
               <div className="tx-overview-graph-step-title">Sent from</div>
               <div className="tx-overview-graph-step-description">
@@ -158,16 +152,16 @@ const Overview = ({ VAAData, txData }: Props) => {
               <>
                 <div>
                   <div className="tx-overview-graph-step-title">Decimals</div>
-                  <div className="tx-overview-graph-step-description">TODO: buscar decimales</div>
+                  <div className="tx-overview-graph-step-description">{payloadTokenDecimals}</div>
                 </div>
-                <div></div>
+                <div className="mobile-hide"></div>
                 <div>
                   <div className="tx-overview-graph-step-title">Token Symbol</div>
-                  <div className="tx-overview-graph-step-description">{symbol}</div>
+                  <div className="tx-overview-graph-step-description">{payloadTokenSymbol}</div>
                 </div>
                 <div>
                   <div className="tx-overview-graph-step-title">Token Name</div>
-                  <div className="tx-overview-graph-step-description">Token Name</div>
+                  <div className="tx-overview-graph-step-description">{payloadTokenName}</div>
                 </div>
               </>
             ) : (

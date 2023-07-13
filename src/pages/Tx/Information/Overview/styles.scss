@@ -13,12 +13,12 @@
 
     @include desktop {
       --y-space: 72px;
-      padding: 16px 24px 32px 24px;
+      padding: 16px 24px 64px 24px;
       min-width: 1000px;
     }
 
     @include bigDesktop {
-      padding: 16px 112px 32px;
+      padding: 16px 112px 64px;
     }
 
     &-step + &-step {
@@ -60,6 +60,14 @@
         row-gap: 32px;
         min-height: 350px;
         padding: 75px 0 50px;
+
+        & .mobile-hide {
+          display: none;
+
+          @include desktop {
+            display: block;
+          }
+        }
 
         &.signatures {
           padding: 175px 0;
@@ -209,7 +217,7 @@
         border-radius: 50%;
         width: 55px;
         height: 55px;
-        background-color: var(--color-primary-900);
+        background-color: var(--color-primary-800);
 
         > img {
           max-height: 32px;

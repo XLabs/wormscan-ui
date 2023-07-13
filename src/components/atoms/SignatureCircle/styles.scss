@@ -3,8 +3,9 @@
 .signatureCircle {
   position: absolute;
   z-index: 2;
-  bottom: -38px;
   opacity: 1;
+  width: 184px;
+  height: 184px;
 
   &-section {
     cursor: pointer;

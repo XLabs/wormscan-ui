@@ -1,25 +1,26 @@
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon } from "src/components/atoms";
 import { txType } from "src/consts";
+import { formatUnits } from "src/utils/crypto";
 import "./styles.scss";
 
 type Props = {
   originChainId: number;
   destinationChainId?: number;
   transactionTimeInMinutes?: number;
-  fee?: number | string;
+  symbol?: string;
+  fee?: string;
   payloadType: number;
 };
 
 const Summary = ({
   transactionTimeInMinutes,
   fee,
+  symbol,
   originChainId,
   destinationChainId,
   payloadType,
 }: Props) => {
-  // TODO: find the symbol
-  const { symbol } = { symbol: false };
   const isAttestation = txType[payloadType] === "Attestation";
 
   return (
@@ -32,10 +33,12 @@ const Summary = ({
           </div>
         </div>
       )}
-      {Boolean(fee) && (
+      {fee && (
         <div>
           <div className="key">Fee:</div>
-          <div className="value">{typeof fee === "number" ? `${fee} ${symbol || ""}` : fee}</div>
+          <div className="value">
+            {formatUnits(Number(fee))} {symbol || ""}
+          </div>
         </div>
       )}
       <div>

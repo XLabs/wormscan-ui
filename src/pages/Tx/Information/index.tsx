@@ -6,8 +6,7 @@ import { GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { minutesBetweenDates } from "src/utils/date";
 import Summary from "./Summary";
 import RawData from "./RawData";
-import { useGetTokenData } from "src/utils/hooks/useGetTokenData";
-import { useGetTokenPrice } from "src/utils/hooks/useGetTokenPrice";
+
 import "./styles.scss";
 
 const TX_TAB_HEADERS = [
@@ -20,25 +19,11 @@ interface Props {
   txData: GetTransactionsOutput;
 }
 
-const getTxStatus = (originStatus: string, destinationStatus: string) => {
-  if (!destinationStatus) {
-    return "ONGOING";
-  }
-
-  if (
-    originStatus === "confirmed" &&
-    (destinationStatus === "failed" || destinationStatus === "unknown")
-  ) {
-    return "FAILED";
-  }
-
-  return "COMPLETED";
-};
-
 const Information = ({ VAAData, txData }: Props) => {
-  const { timestamp, emitterChain, standardizedProperties, globalTx, payload } = txData || {};
+  const { timestamp, symbol, emitterChain, standardizedProperties, globalTx, payload } =
+    txData || {};
 
-  const { fee: payloadFee, payloadType } = payload || {};
+  const { payloadType } = payload || {};
   const { originTx, destinationTx } = globalTx || {};
 
   const {
@@ -59,7 +44,7 @@ const Information = ({ VAAData, txData }: Props) => {
   const toChain = stdToChain || globalToChainId;
   const startDate = timestamp || globalFromTimestamp;
   const endDate = globalToTimestamp;
-  const fee = stdFee || payloadFee;
+  const fee = stdFee;
   const transactionTimeInMinutes = globalToRedeemTx
     ? minutesBetweenDates(new Date(startDate), new Date(endDate))
     : undefined;
@@ -69,12 +54,13 @@ const Information = ({ VAAData, txData }: Props) => {
       <Summary
         transactionTimeInMinutes={transactionTimeInMinutes}
         fee={fee}
+        symbol={symbol}
         originChainId={fromChain}
         destinationChainId={toChain}
         payloadType={payloadType}
       />
     );
-  }, [toChain, fromChain, fee, transactionTimeInMinutes, payloadType]);
+  }, [toChain, fromChain, fee, symbol, transactionTimeInMinutes, payloadType]);
 
   return (
     <section className="tx-information">
