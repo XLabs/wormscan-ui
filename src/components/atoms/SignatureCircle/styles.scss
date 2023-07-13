@@ -13,25 +13,34 @@
 }
 
 .guardianInfo {
-  position: absolute;
-  width: 200px;
-  height: 70px;
-  box-shadow: 2px 2px 4px rgba(5, 5, 40, 0.45);
-  background-color: var(--color-primary-400);
-  border-radius: 6px;
-
   @include centered-column;
-  gap: 6px;
+
+  position: absolute;
+  max-width: 287px;
+  min-height: 30px;
+  box-shadow: 0px 4px 8px rgba(5, 5, 40, 0.45);
+  background-color: var(--color-primary-400);
+  border-radius: 4px;
+  padding: 16px;
+  gap: 4px;
   align-items: center;
   font-size: 14px;
   font-weight: 300;
 
   &-signature {
     @include centered-row;
-    gap: 4px;
+    gap: 8px;
+
+    &-name {
+      @include text-p2-bold;
+    }
 
     &-text {
-      color: var(--color-white-40);
+      color: var(--color-primary-90);
+    }
+
+    & svg {
+      color: var(--color-primary-90);
     }
   }
 }

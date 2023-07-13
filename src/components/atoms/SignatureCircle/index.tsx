@@ -144,9 +144,11 @@ const GuardianInfo = ({
       className="guardianInfo"
     >
       {/* Testnet has only one guardian and it's from Jump Crypto, name is not on vaa */}
-      <span>{currentNetwork === "mainnet" ? showGuardian.name : "Jump Crypto"}</span>
+      <span className="guardianInfo-signature-name">
+        {currentNetwork === "mainnet" ? showGuardian.name : "Jump Crypto"}
+      </span>
       <div className="guardianInfo-signature">
-        <span className="guardianInfo-signature-text">Signature:</span>
+        <span className="guardianInfo-signature-text">Signature:</span>{" "}
         <span>{shortAddress(showGuardian.signature)}</span>
         <span>
           <CopyToClipboard toCopy={showGuardian.signature}>
