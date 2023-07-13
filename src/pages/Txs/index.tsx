@@ -1,5 +1,5 @@
 import { CopyIcon } from "@radix-ui/react-icons";
-import { ChainId, Order } from "@xlabs-libs/wormscan-sdk";
+import { ChainId, GetTransactionsOutput, Order } from "@xlabs-libs/wormscan-sdk";
 import { useCallback, useEffect, useState, useRef } from "react";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
@@ -84,11 +84,16 @@ const Txs = () => {
       onError: () => {
         navigate(`/search-not-found?q=${address || "Txs"}`);
       },
-      onSuccess: txs => {
+      onSuccess: (txs: GetTransactionsOutput[]) => {
         const tempRows: TransactionOutput[] = [];
-        const originAddress = txs?.[0]?.originAddress;
-        const originChainId = txs?.[0]?.originChain;
-        const destinationChainId = txs?.[0]?.destinationChain;
+        const { standardizedProperties: firstStandardizedProperties, globalTx: firstGlobalTx } =
+          txs?.[0] || {};
+        const { originTx: firstOriginTx } = firstGlobalTx || {};
+
+        const originChainId = firstStandardizedProperties?.fromChain || firstOriginTx?.chainId;
+        const originAddress = firstStandardizedProperties?.fromAddress || firstOriginTx?.from;
+        const destinationChainId = firstStandardizedProperties?.toChain;
+
         const addressChainId =
           String(address).toLowerCase() === String(originAddress).toLowerCase()
             ? originChainId
@@ -98,27 +103,39 @@ const Txs = () => {
           ? txs?.forEach(tx => {
               const {
                 txHash,
-                originAddress,
-                originChain,
-                destinationAddress,
-                destinationChain,
                 timestamp,
                 tokenAmount,
                 symbol,
-                status,
+                emitterChain,
+                standardizedProperties,
+                globalTx,
               } = tx || {};
+              const {
+                fromChain: stdFromChain,
+                fromAddress: stdFromAddress,
+                toChain: stdToChain,
+                toAddress: stdToAddress,
+              } = standardizedProperties || {};
+              const { originTx, destinationTx } = globalTx || {};
+              const { chainId: globalFromChainId, from: globalFrom } = originTx || {};
+              const { chainId: globalToChainId, from: globalTo } = destinationTx || {};
+
+              const fromChain = stdFromChain || globalFromChainId || emitterChain;
+              const fromAddress = stdFromAddress || globalFrom;
+              const toChain = stdToChain || globalToChainId;
+              const toAddress = stdToAddress || globalTo;
 
               const parseTxHash = parseTx({
                 value: txHash,
-                chainId: originChain as ChainId,
+                chainId: fromChain as ChainId,
               });
               const parsedOriginAddress = parseAddress({
-                value: originAddress,
-                chainId: originChain as ChainId,
+                value: fromAddress,
+                chainId: fromChain as ChainId,
               });
               const parsedDestinationAddress = parseAddress({
-                value: destinationAddress,
-                chainId: destinationChain as ChainId,
+                value: toAddress,
+                chainId: toChain as ChainId,
               });
               const timestampDate = new Date(timestamp);
               const row = {
@@ -141,14 +158,14 @@ const Txs = () => {
                 ),
                 from: (
                   <div className="tx-from">
-                    <BlockchainIcon chainId={originChain} size={24} />
+                    <BlockchainIcon chainId={fromChain} size={24} />
                     <div>
-                      {getChainName({ chainId: originChain })}
+                      {getChainName({ chainId: fromChain })}
                       {parsedOriginAddress && (
                         <div className="tx-from-address">
                           <a
                             href={getExplorerLink({
-                              chainId: originChain,
+                              chainId: fromChain,
                               value: parsedOriginAddress,
                               base: "address",
                               isNativeAddress: true,
@@ -169,15 +186,15 @@ const Txs = () => {
                 ),
                 to: (
                   <div className="tx-to">
-                    {destinationChain ? (
+                    {toChain ? (
                       <>
-                        <BlockchainIcon chainId={destinationChain} size={24} />
+                        <BlockchainIcon chainId={toChain} size={24} />
                         <div>
-                          {getChainName({ chainId: destinationChain })}
+                          {getChainName({ chainId: toChain })}
                           <div className="tx-from-address">
                             <a
                               href={getExplorerLink({
-                                chainId: destinationChain,
+                                chainId: toChain,
                                 value: parsedDestinationAddress,
                                 base: "address",
                                 isNativeAddress: true,

@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import "./styles.scss";
 import { shortAddress } from "src/utils/crypto";
 import { CopyToClipboard } from "src/components/molecules";
 import { CopyIcon } from "@radix-ui/react-icons";
 import { getCurrentNetwork } from "src/api/Client";
+import "./styles.scss";
 
 interface IGuardian {
   index: number;

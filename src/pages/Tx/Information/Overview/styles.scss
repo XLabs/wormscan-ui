@@ -1,7 +1,7 @@
 @import "src/styles/globals.scss";
 
 .tx-overview {
-  --y-space: 275px;
+  --y-space: 285px;
   display: block;
   overflow-x: auto;
 
@@ -13,12 +13,12 @@
 
     @include desktop {
       --y-space: 72px;
-      padding: 16px 24px 32px 24px;
+      padding: 16px 24px 64px 24px;
       min-width: 1000px;
     }
 
     @include bigDesktop {
-      padding: 16px 112px 32px;
+      padding: 16px 112px 64px;
     }
 
     &-step + &-step {
@@ -41,7 +41,9 @@
       pointer-events: none;
 
       @include desktop {
-        align-items: center;
+        &.signatures {
+          align-items: center;
+        }
       }
 
       > * {
@@ -50,12 +52,22 @@
       }
 
       &-data-container {
-        @include centered-column;
-
         flex: 3;
+
+        display: grid;
+        grid-template-columns: 1fr;
         gap: var(--gap);
+        row-gap: 32px;
         min-height: 350px;
         padding: 75px 0 50px;
+
+        & .mobile-hide {
+          display: none;
+
+          @include desktop {
+            display: block;
+          }
+        }
 
         &.signatures {
           padding: 175px 0;
@@ -66,8 +78,9 @@
         }
 
         @include desktop {
-          @include centered-row;
-
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          row-gap: 72px;
           --gap: 16px;
           padding: 0;
           min-height: unset;
@@ -132,6 +145,7 @@
 
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
         gap: 8px;
         color: var(--color-white);
 
@@ -163,7 +177,7 @@
         display: flex;
         justify-content: center;
         z-index: -1;
-
+        align-self: stretch;
         min-width: 50px;
         margin-left: 25px;
 
@@ -180,12 +194,16 @@
         #{$sbc}-iconWrapper {
           &::before {
             content: "";
+            display: flex;
             position: absolute;
-            top: 100%;
             left: 50%;
             border-left: 1px dashed var(--color);
-            height: calc(var(--y-space) + 20px);
+            height: calc(100%);
             z-index: -1;
+
+            @include desktop {
+              height: calc(100% + var(--y-space));
+            }
           }
         }
       }
@@ -199,7 +217,7 @@
         border-radius: 50%;
         width: 55px;
         height: 55px;
-        background-color: var(--color-primary-900);
+        background-color: var(--color-primary-800);
 
         > img {
           max-height: 32px;

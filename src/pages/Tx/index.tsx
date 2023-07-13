@@ -6,7 +6,7 @@ import { BaseLayout } from "src/layouts/BaseLayout";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import { useParams, useSearchParams } from "react-router-dom";
-import { VAADetail } from "@xlabs-libs/wormscan-sdk";
+import { GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import { ChainId } from "@xlabs-libs/wormscan-sdk";
 import { Buffer } from "buffer";
@@ -65,26 +65,20 @@ const Tx = () => {
     id && setVAAId(id);
   }, [VAAData]);
 
-  const { vaa, payload, guardianSetIndex } = VAAData || {};
-  const { payloadType } = payload || {};
+  const { vaa, guardianSetIndex } = VAAData || {};
 
-  const { data: globalTxData } = useQuery(
-    ["globalTx", VAAId],
-    () =>
-      getClient().guardianNetwork.getGlobalTx({
-        chainId,
-        emitter,
-        seq,
-        query: {
-          parsedPayload: true,
-        },
-      }),
+  const { data: txData } = useQuery(
+    ["getTransactions", VAAId],
+    () => getClient().search.getTransactions({ chainId, emitter, seq }),
     {
       enabled: Boolean(VAAId),
       onSuccess: () => setIsLoading(false),
       onError: () => navigate(`/search-not-found/${txHash}`),
     },
   );
+
+  const { payload } = (txData as GetTransactionsOutput) || {};
+  const { payloadType } = payload || {};
 
   useEffect(() => {
     if (!vaa) return;
@@ -128,7 +122,7 @@ const Tx = () => {
         ) : (
           <>
             <Top txHash={txHash} emitterChainId={emitterChainId} payloadType={payloadType} />
-            <Information VAAData={parsedVAAData} globalTxData={globalTxData} />
+            <Information VAAData={parsedVAAData} txData={txData as GetTransactionsOutput} />
           </>
         )}
       </div>

@@ -109,11 +109,11 @@ export const getGuardianSet = (version: number): GuardianSet[] => {
   return versions[version] || [];
 };
 
-export const txType: { [key: number]: string } = {
+export const txType: { [key: number]: "Transfer" | "Attestation" | "Transfer with payload" } = {
   1: "Transfer",
   2: "Attestation",
   3: "Transfer with payload",
-};
+} as const;
 
 export const colorStatus: any = {
   SUCCESSFUL: "green",
@@ -121,7 +121,7 @@ export const colorStatus: any = {
   ONGOING: "orange",
   FAILED: "red",
   ERROR: "red",
-};
+} as const;
 
 export const PORTAL_BRIDGE_URL = "https://www.portalbridge.com";
 export const TWITTER_URL = "https://twitter.com/wormholecrypto";

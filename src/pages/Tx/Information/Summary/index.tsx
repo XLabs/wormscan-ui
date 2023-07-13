@@ -1,69 +1,53 @@
-import { ArrowRightIcon, CheckCircledIcon } from "@radix-ui/react-icons";
-import { GetTokenOutput } from "@xlabs-libs/wormscan-sdk";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon } from "src/components/atoms";
-// import { StatusBadge } from "src/components/molecules";
-import { colorStatus, txType } from "src/consts";
-import { TxStatus } from "src/types";
+import { txType } from "src/consts";
 import { formatUnits } from "src/utils/crypto";
 import "./styles.scss";
 
 type Props = {
-  summaryStatus: TxStatus;
   originChainId: number;
   destinationChainId?: number;
   transactionTimeInMinutes?: number;
-  fee?: number;
-  tokenDataResponse: {
-    tokenDataIsLoading: boolean;
-    tokenDataError: unknown;
-    tokenData: GetTokenOutput;
-  };
+  symbol?: string;
+  fee?: string;
   payloadType: number;
 };
 
 const Summary = ({
   transactionTimeInMinutes,
   fee,
+  symbol,
   originChainId,
   destinationChainId,
-  summaryStatus,
-  tokenDataResponse,
   payloadType,
 }: Props) => {
-  const { symbol, decimals } = tokenDataResponse?.tokenData || {};
-  const hasDestinationChain = txType[payloadType] && payloadType !== 2;
+  const isAttestation = txType[payloadType] === "Attestation";
 
   return (
     <div className="tx-information-summary">
-      {/* <div>
-        <div className="key">Status:</div>
-        <div className="value">
-          <StatusBadge status={summaryStatus} />
-        </div>
-      </div> */}
       {transactionTimeInMinutes && (
         <div>
           <div className="key">Tx Time:</div>
-          <div className={`value ${colorStatus[summaryStatus]}`}>
+          <div className={"value"}>
             {transactionTimeInMinutes ? `${transactionTimeInMinutes} MIN` : "In progress"}{" "}
           </div>
         </div>
       )}
-      {Boolean(fee) && (
+      {fee && (
         <div>
           <div className="key">Fee:</div>
           <div className="value">
-            {typeof fee === "number" ? `${formatUnits(fee, decimals)} ${symbol || ""}` : fee}
+            {formatUnits(Number(fee))} {symbol || ""}
           </div>
         </div>
       )}
       <div>
-        <div className="key">{hasDestinationChain ? "Chains:" : "Chain:"}</div>
+        <div className="key">{!isAttestation ? "Chains:" : "Chain:"}</div>
         <div className="chains">
           <div className="chains-container">
             <BlockchainIcon size={20} chainId={originChainId || 0} />
           </div>
-          {hasDestinationChain && (
+          {!isAttestation && (
             <>
               <ArrowRightIcon className="arrow-icon" />
               <div className={`chains-container ${!destinationChainId && "disabled"}`}>
