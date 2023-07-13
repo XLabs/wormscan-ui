@@ -947,11 +947,11 @@ __metadata:
   linkType: hard
 
 "@floating-ui/dom@npm:^1.0.1":
-  version: 1.4.4
-  resolution: "@floating-ui/dom@npm:1.4.4"
+  version: 1.4.5
+  resolution: "@floating-ui/dom@npm:1.4.5"
   dependencies:
     "@floating-ui/core": ^1.3.1
-  checksum: e8e43c786e24f8f111a72d7d17c3a9563cab8eddf2a2b3dacc2785370a97313a8dda0f3470b2b2ef2d3b9d6f1fd706ccf786d9441e54e283ed47c90aa0c0b1e1
+  checksum: 8e25c75b9fde158c2314cb30a9e0a9ce97f8eff4d3c892c85d73a5acbd845fe5dd97ae70ef8d43f7db8036df1c75a51cd3e1ac0999196d40363797002c07efb1
   languageName: node
   linkType: hard
 
@@ -2962,90 +2962,90 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-arm64@npm:1.3.68":
-  version: 1.3.68
-  resolution: "@swc/core-darwin-arm64@npm:1.3.68"
+"@swc/core-darwin-arm64@npm:1.3.69":
+  version: 1.3.69
+  resolution: "@swc/core-darwin-arm64@npm:1.3.69"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-x64@npm:1.3.68":
-  version: 1.3.68
-  resolution: "@swc/core-darwin-x64@npm:1.3.68"
+"@swc/core-darwin-x64@npm:1.3.69":
+  version: 1.3.69
+  resolution: "@swc/core-darwin-x64@npm:1.3.69"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm-gnueabihf@npm:1.3.68":
-  version: 1.3.68
-  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.3.68"
+"@swc/core-linux-arm-gnueabihf@npm:1.3.69":
+  version: 1.3.69
+  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.3.69"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-gnu@npm:1.3.68":
-  version: 1.3.68
-  resolution: "@swc/core-linux-arm64-gnu@npm:1.3.68"
+"@swc/core-linux-arm64-gnu@npm:1.3.69":
+  version: 1.3.69
+  resolution: "@swc/core-linux-arm64-gnu@npm:1.3.69"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-musl@npm:1.3.68":
-  version: 1.3.68
-  resolution: "@swc/core-linux-arm64-musl@npm:1.3.68"
+"@swc/core-linux-arm64-musl@npm:1.3.69":
+  version: 1.3.69
+  resolution: "@swc/core-linux-arm64-musl@npm:1.3.69"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-gnu@npm:1.3.68":
-  version: 1.3.68
-  resolution: "@swc/core-linux-x64-gnu@npm:1.3.68"
+"@swc/core-linux-x64-gnu@npm:1.3.69":
+  version: 1.3.69
+  resolution: "@swc/core-linux-x64-gnu@npm:1.3.69"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-musl@npm:1.3.68":
-  version: 1.3.68
-  resolution: "@swc/core-linux-x64-musl@npm:1.3.68"
+"@swc/core-linux-x64-musl@npm:1.3.69":
+  version: 1.3.69
+  resolution: "@swc/core-linux-x64-musl@npm:1.3.69"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@swc/core-win32-arm64-msvc@npm:1.3.68":
-  version: 1.3.68
-  resolution: "@swc/core-win32-arm64-msvc@npm:1.3.68"
+"@swc/core-win32-arm64-msvc@npm:1.3.69":
+  version: 1.3.69
+  resolution: "@swc/core-win32-arm64-msvc@npm:1.3.69"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-win32-ia32-msvc@npm:1.3.68":
-  version: 1.3.68
-  resolution: "@swc/core-win32-ia32-msvc@npm:1.3.68"
+"@swc/core-win32-ia32-msvc@npm:1.3.69":
+  version: 1.3.69
+  resolution: "@swc/core-win32-ia32-msvc@npm:1.3.69"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@swc/core-win32-x64-msvc@npm:1.3.68":
-  version: 1.3.68
-  resolution: "@swc/core-win32-x64-msvc@npm:1.3.68"
+"@swc/core-win32-x64-msvc@npm:1.3.69":
+  version: 1.3.69
+  resolution: "@swc/core-win32-x64-msvc@npm:1.3.69"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
 "@swc/core@npm:^1.3.36":
-  version: 1.3.68
-  resolution: "@swc/core@npm:1.3.68"
+  version: 1.3.69
+  resolution: "@swc/core@npm:1.3.69"
   dependencies:
-    "@swc/core-darwin-arm64": 1.3.68
-    "@swc/core-darwin-x64": 1.3.68
-    "@swc/core-linux-arm-gnueabihf": 1.3.68
-    "@swc/core-linux-arm64-gnu": 1.3.68
-    "@swc/core-linux-arm64-musl": 1.3.68
-    "@swc/core-linux-x64-gnu": 1.3.68
-    "@swc/core-linux-x64-musl": 1.3.68
-    "@swc/core-win32-arm64-msvc": 1.3.68
-    "@swc/core-win32-ia32-msvc": 1.3.68
-    "@swc/core-win32-x64-msvc": 1.3.68
+    "@swc/core-darwin-arm64": 1.3.69
+    "@swc/core-darwin-x64": 1.3.69
+    "@swc/core-linux-arm-gnueabihf": 1.3.69
+    "@swc/core-linux-arm64-gnu": 1.3.69
+    "@swc/core-linux-arm64-musl": 1.3.69
+    "@swc/core-linux-x64-gnu": 1.3.69
+    "@swc/core-linux-x64-musl": 1.3.69
+    "@swc/core-win32-arm64-msvc": 1.3.69
+    "@swc/core-win32-ia32-msvc": 1.3.69
+    "@swc/core-win32-x64-msvc": 1.3.69
   peerDependencies:
     "@swc/helpers": ^0.5.0
   dependenciesMeta:
@@ -3072,7 +3072,7 @@ __metadata:
   peerDependenciesMeta:
     "@swc/helpers":
       optional: true
-  checksum: f56ad1d4cb91f7cc1cb5d4b9894bbb528da0b2eabc98984581f5b3f3187cf2c0d512003880f6ff7a3f6d215b7a3dcbf5a9c45e8a428ac2d711941027c0151d89
+  checksum: 764b5c489030b1cf34ea412d7b7e0680996101d667387c646b44d89e630605f52d48d3ca6c0e63811b0ae675018602dbb132e149c01c9154291ecf180787bd86
   languageName: node
   linkType: hard
 
@@ -3211,9 +3211,9 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:>=13.7.0":
-  version: 20.4.1
-  resolution: "@types/node@npm:20.4.1"
-  checksum: 22cbcc792f2eb636fe4188778ed0f32658ab872aa7fcb9847b3fa289a42b14b9f5e30c6faec50ef3c7adbc6c2a246926e5858136bb8b10c035a3fcaa6afbeed2
+  version: 20.4.2
+  resolution: "@types/node@npm:20.4.2"
+  checksum: 99e544ea7560d51f01f95627fc40394c24a13da8f041121a0da13e4ef0a2aa332932eaf9a5e8d0e30d1c07106e96a183be392cbba62e8cf0bf6a085d5c0f4149
   languageName: node
   linkType: hard
 
@@ -3262,11 +3262,11 @@ __metadata:
   linkType: hard
 
 "@types/react-dom@npm:^18.0.10":
-  version: 18.2.6
-  resolution: "@types/react-dom@npm:18.2.6"
+  version: 18.2.7
+  resolution: "@types/react-dom@npm:18.2.7"
   dependencies:
     "@types/react": "*"
-  checksum: b56e42efab121a3a8013d2eb8c1688e6028a25ea6d33c4362d2846f0af3760b164b4d7c34846614024cfb8956cca70dd1743487f152e32ff89a00fe6fbd2be54
+  checksum: e02ea908289a7ad26053308248d2b87f6aeafd73d0e2de2a3d435947bcea0422599016ffd1c3e38ff36c42f5e1c87c7417f05b0a157e48649e4a02f21727d54f
   languageName: node
   linkType: hard
 
@@ -3298,13 +3298,13 @@ __metadata:
   linkType: hard
 
 "@types/react@npm:*, @types/react@npm:^18.0.27":
-  version: 18.2.14
-  resolution: "@types/react@npm:18.2.14"
+  version: 18.2.15
+  resolution: "@types/react@npm:18.2.15"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: a6a5e8cc78f486b9020d1ad009aa6c56943c68c7c6376e0f8399e9cbcd950b7b8f5d73f00200f5379f5e58d31d57d8aed24357f301d8e86108cd438ce6c8b3dd
+  checksum: 36989f638201bfe2f4110b06c119180f6df9c0e13d7060481e82e7a745f81745a01ae543c478a25b61e0767cb52e82da2ad5b0dedacabf99339e523d06176705
   languageName: node
   linkType: hard
 
@@ -3508,14 +3508,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xlabs-libs/wormscan-sdk@file:.yalc/@xlabs-libs/wormscan-sdk::locator=wormscan-ui%40workspace%3A.":
+"@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk#lib":
   version: 0.0.16
-  resolution: "@xlabs-libs/wormscan-sdk@file:.yalc/@xlabs-libs/wormscan-sdk#.yalc/@xlabs-libs/wormscan-sdk::hash=2f9d80&locator=wormscan-ui%40workspace%3A."
+  resolution: "@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk.git#commit=85e9a2e6840af09e90a13565efdcc659db124de0"
   dependencies:
     axios: ^1.2.5
   peerDependencies:
     axios: ^1.2.5
-  checksum: 8f8da89e9eff313028ceb2e3b7a3058e2ad3312844f7cc81fc64860210559df63dd48b6af0af85455ba951ef87e55e3528cb8500b4e82bfa73bac4ec19abc038
+  checksum: e34e3e3b0f67bfef0221bd25a5a2d12a729a1adf5cd157019ac34171f1b3f7e9c2a2ccdfbb4b72d06066588d8be3f95e68af19ab765fd1f6e457b4faa01a7ab0
   languageName: node
   linkType: hard
 
@@ -5103,9 +5103,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.431":
-  version: 1.4.457
-  resolution: "electron-to-chromium@npm:1.4.457"
-  checksum: 5840a25776e77f3769cfdb2e5250e5f5a27d350c373efd323e38ff4763a0375e512447da4477dd887d56df7b12e360d91484af592ac3e61c969ee52d9aaf7249
+  version: 1.4.460
+  resolution: "electron-to-chromium@npm:1.4.460"
+  checksum: 332686067de5ea3d032884bd1343fd0f944c67007717da41095cbb68cfbf3668e4c9a8929940313e1ddb771ab99afaffdabd4daa99785ddea5ef5d91d63e31b9
   languageName: node
   linkType: hard
 
@@ -5196,8 +5196,8 @@ __metadata:
   linkType: hard
 
 "es-abstract@npm:^1.19.0, es-abstract@npm:^1.20.4":
-  version: 1.21.2
-  resolution: "es-abstract@npm:1.21.2"
+  version: 1.21.3
+  resolution: "es-abstract@npm:1.21.3"
   dependencies:
     array-buffer-byte-length: ^1.0.0
     available-typed-arrays: ^1.0.5
@@ -5205,7 +5205,7 @@ __metadata:
     es-set-tostringtag: ^2.0.1
     es-to-primitive: ^1.2.1
     function.prototype.name: ^1.1.5
-    get-intrinsic: ^1.2.0
+    get-intrinsic: ^1.2.1
     get-symbol-description: ^1.0.0
     globalthis: ^1.0.3
     gopd: ^1.0.1
@@ -5225,15 +5225,16 @@ __metadata:
     object-inspect: ^1.12.3
     object-keys: ^1.1.1
     object.assign: ^4.1.4
-    regexp.prototype.flags: ^1.4.3
+    regexp.prototype.flags: ^1.5.0
     safe-regex-test: ^1.0.0
     string.prototype.trim: ^1.2.7
     string.prototype.trimend: ^1.0.6
     string.prototype.trimstart: ^1.0.6
+    typed-array-byte-offset: ^1.0.0
     typed-array-length: ^1.0.4
     unbox-primitive: ^1.0.2
-    which-typed-array: ^1.1.9
-  checksum: 037f55ee5e1cdf2e5edbab5524095a4f97144d95b94ea29e3611b77d852fd8c8a40e7ae7101fa6a759a9b9b1405f188c3c70928f2d3cd88d543a07fc0d5ad41a
+    which-typed-array: ^1.1.10
+  checksum: 4c5ee900699030a629fc224a3595dcd05f9ff31d607e72bc9042d15e3b1bfde99f408c940b622e96439e755a7b23a3b9e47f3be234015750d32dad38b8f772f4
   languageName: node
   linkType: hard
 
@@ -5910,7 +5911,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-intrinsic@npm:^1.0.2, get-intrinsic@npm:^1.1.1, get-intrinsic@npm:^1.1.3, get-intrinsic@npm:^1.2.0":
+"get-intrinsic@npm:^1.0.2, get-intrinsic@npm:^1.1.1, get-intrinsic@npm:^1.1.3, get-intrinsic@npm:^1.2.0, get-intrinsic@npm:^1.2.1":
   version: 1.2.1
   resolution: "get-intrinsic@npm:1.2.1"
   dependencies:
@@ -8810,7 +8811,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"regexp.prototype.flags@npm:^1.4.3":
+"regexp.prototype.flags@npm:^1.4.3, regexp.prototype.flags@npm:^1.5.0":
   version: 1.5.0
   resolution: "regexp.prototype.flags@npm:1.5.0"
   dependencies:
@@ -9911,6 +9912,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typed-array-byte-offset@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "typed-array-byte-offset@npm:1.0.0"
+  dependencies:
+    available-typed-arrays: ^1.0.5
+    call-bind: ^1.0.2
+    for-each: ^0.3.3
+    has-proto: ^1.0.1
+    is-typed-array: ^1.1.10
+  checksum: 04f6f02d0e9a948a95fbfe0d5a70b002191fae0b8fe0fe3130a9b2336f043daf7a3dda56a31333c35a067a97e13f539949ab261ca0f3692c41603a46a94e960b
+  languageName: node
+  linkType: hard
+
 "typed-array-length@npm:^1.0.4":
   version: 1.0.4
   resolution: "typed-array-length@npm:1.0.4"
@@ -10145,7 +10159,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"which-typed-array@npm:^1.1.2, which-typed-array@npm:^1.1.9":
+"which-typed-array@npm:^1.1.10, which-typed-array@npm:^1.1.2":
   version: 1.1.10
   resolution: "which-typed-array@npm:1.1.10"
   dependencies:
@@ -10206,7 +10220,7 @@ __metadata:
     "@types/react-table": ^7.7.14
     "@typescript-eslint/eslint-plugin": latest
     "@typescript-eslint/parser": latest
-    "@xlabs-libs/wormscan-sdk": "file:.yalc/@xlabs-libs/wormscan-sdk"
+    "@xlabs-libs/wormscan-sdk": "https://github.com/xlabs/wormscan-sdk#lib"
     apexcharts: 3.36.0
     assert: ^2.0.0
     buffer: ^6.0.3
