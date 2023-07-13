@@ -243,28 +243,6 @@ export const Chart = ({ data, selectedType }: Props) => {
         </div>
       </div>
 
-      {/* <div
-        style={{
-          opacity: selectedChain === OTHERS_FAKE_CHAIN_ID || isShowingOthers ? 1 : 0,
-          cursor: selectedChain === OTHERS_FAKE_CHAIN_ID || isShowingOthers ? "pointer" : "default",
-        }}
-        onClick={() => {
-          if (selectedChain === OTHERS_FAKE_CHAIN_ID) {
-            setChartData(processData(data, true));
-            // setIsShowingOthers(true);
-          }
-          if (isShowingOthers) {
-            // setIsShowingOthers(false);
-            const processedData = processData(data, false);
-            setChartData(processedData);
-            setSelectedChain(processedData[9].chain);
-          }
-        }}
-        className="chain-others"
-      >
-        {isShowingOthers ? "Back to top 10 chains" : "Show other chain details"}
-      </div> */}
-
       <Pagination
         className="cross-chain-relative-pagination"
         currentPage={isShowingOthers ? 2 : 1}
@@ -298,55 +276,5 @@ const getChainName = (id: ChainId) => {
 const processData = (data: CrossChainActivity, showOthers: boolean) => {
   const newData = [...data].sort((a, b) => b.percentage - a.percentage);
 
-  if (showOthers) {
-    return newData.slice(10);
-  }
-
-  return newData.slice(0, 10);
-
-  // if more than 10 elements, create "Others" section
-  // if (!showOthers && newData.length > 10) {
-  //   let percentage = 0;
-  //   let volume = 0;
-  //   const destinations: any = {};
-
-  //   newData.slice(10).forEach(item => {
-  //     // sum the percentage and volume of every other chain
-  //     percentage += item.percentage;
-  //     volume += +item.volume;
-
-  //     // create an object that sums the volume for the same destiny chain
-  //     item.destinations.forEach(destination => {
-  //       destinations[destination.chain] = {
-  //         volume: (destinations[destination.chain]?.volume ?? 0) + Number(destination.volume),
-  //       };
-  //     });
-  //   });
-
-  //   // transform the object with destination volumes summed up into an array of chains
-  //   let newDestinations = [];
-  //   for (const [chain, value] of Object.entries(destinations) as any) {
-  //     newDestinations.push({
-  //       chain,
-  //       volume: value.volume,
-  //     });
-  //   }
-
-  //   // add percentages to that array of destination chains
-  //   let totalVolume = 0;
-  //   newDestinations.forEach(dest => {
-  //     totalVolume += dest.volume;
-  //   });
-  //   newDestinations = newDestinations.map(dest => ({
-  //     chain: dest.chain,
-  //     volume: dest.volume,
-  //     percentage: (dest.volume / totalVolume) * 100,
-  //   }));
-
-  //   // sort the array and use only the first 10 elements
-  //   newDestinations = newDestinations.sort((a: any, b: any) => b.volume - a.volume).slice(0, 10);
-  //   newData[9] = { chain: OTHERS_FAKE_CHAIN_ID, percentage, volume, destinations: newDestinations };
-
-  //   return newData.slice(0, 10);
-  // }
+  return showOthers ? newData.slice(10) : newData.slice(0, 10);
 };
