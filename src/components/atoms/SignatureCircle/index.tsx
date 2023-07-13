@@ -36,7 +36,7 @@ const Circle = ({ guardianSignatures }: Props) => {
             const startAngle = (360 / guardianSignatures.length) * idx;
             const endAngle = startAngle + 360 / guardianSignatures.length;
             const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-            // SVG generating a circle divided in 13 separtated pieces (or 1 for testnet)
+            // SVG generating a circle divided in 13 separated pieces (or 1 for testnet)
             const d = [
               "M",
               0,
@@ -124,21 +124,24 @@ const GuardianInfo = ({
   const currentNetwork = getCurrentNetwork();
 
   useEffect(() => {
-    if (clicked) {
-      infoRef.current.focus();
+    function handleClickOutside(event: MouseEvent) {
+      if (infoRef.current && !infoRef.current.contains(event.target as Node)) {
+        clear();
+      }
     }
-  }, [clicked]);
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [clear]);
 
   const renderedInfo = (
     <div
       ref={infoRef}
-      tabIndex={1}
       style={{
         top: y,
         left: x,
       }}
       className="guardianInfo"
-      onBlur={clear}
     >
       {/* Testnet has only one guardian and it's from Jump Crypto, name is not on vaa */}
       <span>{currentNetwork === "mainnet" ? showGuardian.name : "Jump Crypto"}</span>
