@@ -52,6 +52,7 @@ const Information = ({ VAAData, txData }: Props) => {
   const TopSummary = useCallback(() => {
     return (
       <Summary
+        startDate={startDate}
         transactionTimeInMinutes={transactionTimeInMinutes}
         fee={fee}
         symbol={symbol}
@@ -60,7 +61,7 @@ const Information = ({ VAAData, txData }: Props) => {
         payloadType={payloadType}
       />
     );
-  }, [toChain, fromChain, fee, symbol, transactionTimeInMinutes, payloadType]);
+  }, [toChain, fromChain, fee, symbol, transactionTimeInMinutes, payloadType, startDate]);
 
   return (
     <section className="tx-information">
