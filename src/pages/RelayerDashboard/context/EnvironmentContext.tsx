@@ -4,15 +4,20 @@ import { Environment, tiltEnv, testnetEnv, mainnetEnv } from "../utils/environme
 interface EnvironmentContext {
   environment: Environment;
   setEnvironment: (env: "DEVNET" | "TESTNET" | "MAINNET") => void;
+  userInput: string;
+  setUserInput: (input: string) => void;
 }
 
 const EnvironmentProviderContext = React.createContext<EnvironmentContext>({
   environment: tiltEnv,
   setEnvironment: () => {},
+  userInput: "",
+  setUserInput: () => {},
 });
 
 export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
   const [currentEnv, setCurrentEnv] = useState<Environment>(tiltEnv);
+  const [userInput, setUserInput] = useState("");
   const [clearChildren, setClearChildren] = useState<boolean>(false);
 
   const setEnvironment = useCallback(
@@ -42,15 +47,19 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       environment: currentEnv,
       setEnvironment,
+      userInput,
+      setUserInput,
     }),
-    [currentEnv, setEnvironment],
+    [userInput, setUserInput, currentEnv, setEnvironment],
   );
+
   return (
     <EnvironmentProviderContext.Provider value={contextValue}>
       {clearChildren ? null : children}
     </EnvironmentProviderContext.Provider>
   );
 };
+
 export const useEnvironment = () => {
   return useContext(EnvironmentProviderContext);
 };
