@@ -25,6 +25,7 @@ import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
 import TerraIcon from "src/icons/blockchains/terra.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
 import SeiIcon from "src/icons/blockchains/sei.svg";
+import SuiIcon from "src/icons/blockchains/sui.svg";
 
 import NoDarkIcon from "src/icons/blockchains/dark/noIcon.svg";
 import AcalaDarkIcon from "src/icons/blockchains/dark/acala.svg";
@@ -51,6 +52,7 @@ import TerraClassicDarkIcon from "src/icons/blockchains/dark/terra-classic.svg";
 import TerraDarkIcon from "src/icons/blockchains/dark/terra.svg";
 import XplaDarkIcon from "src/icons/blockchains/dark/xpla.svg";
 import SeiDarkIcon from "src/icons/blockchains/dark/sei.svg";
+import SuiDarkIcon from "src/icons/blockchains/dark/sui.svg";
 
 import { parseAddress, parseTx } from "./crypto";
 import { NETWORK } from "src/types";
@@ -79,8 +81,8 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Sui]: {
     name: "Sui",
-    icon: NoDarkIcon,
-    darkIcon: NoDarkIcon,
+    icon: SuiIcon,
+    darkIcon: SuiDarkIcon,
     explorer: {
       testnet: "https://suiexplorer.com",
       mainnet: "https://suiexplorer.com",
