@@ -9,7 +9,7 @@ import {
   tryNativeToHexString,
   tryUint8ArrayToNative,
 } from "@certusone/wormhole-sdk";
-import { ChainInfo, Environment, getEthersProvider } from "./environment";
+import { ChainInfo, Environment, getChainInfo, getEthersProvider } from "./environment";
 import {
   DeliveryInfo,
   DeliveryInstruction,
@@ -29,10 +29,187 @@ import {
   WormholeRelayer__factory,
 } from "@certusone/wormhole-sdk/lib/cjs/ethers-contracts";
 import { ethers } from "ethers";
+import {
+  DeliveryProviderStatus,
+  getDeliveryProviderStatusBySourceTransaction,
+  getDeliveryProviderStatusByTargetTransaction,
+  getDeliveryProviderStatusByVaaInfo,
+} from "./deliveryProviderStatusApi";
+import { get } from "http";
+import { env } from "process";
 export type WormholeTransaction = {
   chainId: ChainId;
   txHash: string;
 };
+
+export type DeliveryLifecycleRecord = {
+  sourceTxHash?: string;
+  sourceTxReceipt?: ethers.providers.TransactionReceipt;
+  sourceChainId?: ChainId;
+  sourceSequence?: number;
+  vaa?: Uint8Array;
+  DeliveryStatuses?: DeliveryProviderStatus[];
+  targetTransactions?: {
+    targetTxHash?: string;
+    targetTxReceipt?: ethers.providers.TransactionReceipt;
+    targetChainId?: ChainId;
+  }[];
+};
+
+export async function populateDeliveryLifeCycleRecordsByTxHash(
+  environment: Environment,
+  txHash: string,
+): Promise<DeliveryLifecycleRecord[]> {
+  let sourceTransactionResponse;
+  let targetTransactionResponse;
+  let output = [] as DeliveryLifecycleRecord[];
+
+  try {
+    sourceTransactionResponse = await getDeliveryProviderStatusBySourceTransaction(
+      environment,
+      txHash,
+    );
+  } catch (e) {
+    //swallow
+  }
+
+  try {
+    targetTransactionResponse = await getDeliveryProviderStatusByTargetTransaction(
+      environment,
+      txHash,
+    );
+  } catch (e) {
+    //swallow
+  }
+
+  if (!sourceTransactionResponse && !targetTransactionResponse) {
+    return output;
+  }
+
+  if (sourceTransactionResponse && targetTransactionResponse) {
+    //This transaction both completes and starts a new transaction, assume it's a source transaction.
+    targetTransactionResponse = undefined;
+  }
+
+  console.log("source transaction response: " + JSON.stringify(sourceTransactionResponse));
+
+  if (sourceTransactionResponse) {
+    for (const status of sourceTransactionResponse) {
+      output.push(await populateDeliveryLifecycleRecordByVaa(environment, status.vaa));
+    }
+  }
+
+  if (targetTransactionResponse) {
+    for (const status of targetTransactionResponse) {
+      output.push(await populateDeliveryLifecycleRecordByVaa(environment, status.vaa));
+    }
+  }
+
+  return output;
+}
+
+export async function populateDeliveryLifecycleRecordByVaa(
+  environment: Environment,
+  vaa: string,
+): Promise<DeliveryLifecycleRecord> {
+  let output = {} as DeliveryLifecycleRecord;
+  const rawVaa = decodeVaaFromBase64orHex(vaa);
+  output.vaa = rawVaa;
+  const parsedVaa = parseVaa(rawVaa);
+  const genericRelayerVaa = parseGenericRelayerVaa(parsedVaa);
+  const targetChain = genericRelayerVaa.targetChainId;
+
+  vaa = Buffer.from(rawVaa).toString("hex");
+
+  const deliveryStatus = await getDeliveryProviderStatusByVaaInfo(
+    environment,
+    parsedVaa.emitterChain.toString(),
+    parsedVaa.emitterAddress.toString("hex"),
+    parsedVaa.sequence.toString(),
+  );
+
+  if (deliveryStatus.length === 0) {
+    return output;
+  }
+
+  const sourceTransactions = deliveryStatus.map(status => {
+    return status.fromTxHash;
+  });
+
+  //All the sourceTransactions should be the same, so just grab the first one
+  const sourceTxHash = sourceTransactions[0];
+  const sourceChainId = parsedVaa.emitterChain;
+  if (sourceTxHash) {
+    await getEthersProvider(getChainInfo(environment, sourceChainId as ChainId))
+      .getTransactionReceipt(sourceTxHash)
+      .then(receipt => {
+        output.sourceTxReceipt = receipt;
+      })
+      .catch(e => {
+        console.log("error getting source tx receipt: " + e);
+        console.log("source chain: " + sourceChainId);
+        console.log("source tx hash: " + sourceTxHash);
+      });
+  }
+
+  output.sourceTxHash = sourceTxHash || undefined;
+  output.sourceChainId = sourceChainId as ChainId;
+  output.targetTransactions = [];
+  for (const status of deliveryStatus) {
+    const targetTxHash = status.toTxHash;
+    if (targetTxHash) {
+      await getEthersProvider(getChainInfo(environment, targetChain as ChainId))
+        .getTransactionReceipt(targetTxHash)
+        .then(receipt => {
+          output.targetTransactions?.push({
+            targetTxHash: targetTxHash,
+            targetTxReceipt: receipt,
+            targetChainId: targetChain as ChainId,
+          });
+        })
+        .catch(e => {
+          console.log("error getting target tx receipt: " + e);
+          console.log("target chain: " + targetChain);
+          console.log("target tx hash: " + targetTxHash);
+        });
+    }
+  }
+
+  return output;
+}
+
+export async function populateDeliveryLifecycleRecordByEmitterSequence(
+  environment: Environment,
+  chainId: ChainInfo,
+  emitterAddress: string,
+  sequence: number,
+): Promise<DeliveryLifecycleRecord> {
+  const VAA = await getVaa(environment, chainId, emitterAddress, sequence.toString());
+  //encode vaa to hex and then pass to vaa lifecycle record
+  return populateDeliveryLifecycleRecordByVaa(environment, Buffer.from(VAA).toString("hex"));
+}
+
+export function decodeVaaFromBase64orHex(vaaRaw: string): Uint8Array {
+  let cloned;
+  //detect if the string is base64 encoded
+  const isBase64 = vaaRaw.match(/^[a-zA-Z0-9+/]+={0,2}$/);
+  const isHexEncoded = vaaRaw.match(/^0x[a-fA-F0-9]+$/) || vaaRaw.match(/^[a-fA-F0-9]+$/);
+  //if it is, convert it to hex
+  if (isHexEncoded) {
+    cloned = vaaRaw;
+  } else if (isBase64) {
+    cloned = Buffer.from(vaaRaw, "base64").toString("hex");
+  } else {
+    throw new Error("Invalid VAA");
+  }
+  //remove all whitespace from the hex string, and also remove the 0x prefix if it exists,
+  const trimmed = cloned.replace(/\s/g, "").replace(/^0x/, "") || "";
+
+  //convert the trimmed hex string into a Uint8Array
+  const vaaBytes = new Uint8Array(trimmed.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
+
+  return vaaBytes;
+}
 
 export async function getGenericRelayerVaasFromTransaction(
   environment: Environment,
