@@ -9,3 +9,4 @@ export { default as Chip } from "./Chip";
 export { default as Pagination } from "./Pagination";
 export { default as Tag } from "./Tag";
 export { default as Tooltip } from "./Tooltip";
+export { default as Alert } from "./Alert";
