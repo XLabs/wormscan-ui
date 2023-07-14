@@ -230,6 +230,8 @@ const DisplayContracts = (props: {
       <BlockSection title="MAXIMUM BUDGETS" code={maximumBudgetsString} />
       {spacer}
       <BlockSection title="ASSET CONVERSION BUFFERS" code={assetConversionBuffersString} />
+      {spacer}
+      {spacer}
     </div>
   );
 };
