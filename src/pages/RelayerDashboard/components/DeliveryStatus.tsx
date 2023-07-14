@@ -19,12 +19,16 @@ import {
   RedeliveryInstruction,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import {
+  DeliveryLifecycleRecord,
   getDeliveryStatusByVaa,
   getGenericRelayerVaasFromTransaction,
   getVaa,
   isRedelivery,
   manualDeliver,
   parseGenericRelayerVaa,
+  populateDeliveryLifeCycleRecordsByTxHash,
+  populateDeliveryLifecycleRecordByEmitterSequence,
+  populateDeliveryLifecycleRecordByVaa,
 } from "../utils/VaaUtils";
 import { useLogger } from "../context/LoggerContext";
 import { useEnvironment } from "../context/EnvironmentContext";
@@ -57,7 +61,7 @@ export default function DeliveryStatus() {
     ? tryNativeToHexString(targetContract, "ethereum")
     : "Error, unconfigured";
 
-  const [vaaResults, setVaaResults] = useState<Uint8Array[]>([]);
+  const [lifecycleRecords, setLifecycleRecords] = useState<DeliveryLifecycleRecord[]>([]);
 
   const handleChange = (event: React.MouseEvent<HTMLElement>, newItem: string) => {
     setQueryType(newItem);
@@ -78,110 +82,57 @@ export default function DeliveryStatus() {
     </ToggleButtonGroup>
   );
 
-  useEffect(() => {
+  const handleSearch = useCallback(() => {
+    setError("");
+    setLoading(true);
+    setLifecycleRecords([]);
     if (queryType === "txHash" && txHash) {
-      getDeliveryProviderStatusBySourceTransaction(environment, txHash).catch(e => {
-        log &&
-          log(
-            "Error getting delivery provider status for txHash: " + txHash,
-            "DeliveryStatus",
-            "error",
-          );
-        log && log(e.message, "DeliveryStatus", "error");
-      });
-
-      setVaaResults([]);
-      log && log("Fetching VAA for txHash: " + txHash, "DeliveryStatus", "info");
-      setError("");
-      setLoading(true);
-      getGenericRelayerVaasFromTransaction(
-        environment,
-        getChainInfo(environment, chain as ChainId),
-        txHash,
-      )
-        .then(vaas => {
-          log &&
-            log(
-              "Got VAA for txHash: " + txHash + ", vaas length" + vaas.length,
-              "DeliveryStatus",
-              "success",
-            );
-          if (vaas) {
-            setVaaResults(vaas);
-          }
+      populateDeliveryLifeCycleRecordsByTxHash(environment, txHash)
+        .then((results: DeliveryLifecycleRecord[]) => {
           setLoading(false);
+          setLifecycleRecords(results);
         })
-        .catch(e => {
-          log && log("Error getting VAA for txHash: " + txHash, "DeliveryStatus", "error");
-          log && log(e.message, "DeliveryStatus", "error");
-          setError(e.message);
+        .catch((e: any) => {
           setLoading(false);
+          setError(e.message || "An error occurred.");
         });
     } else if (queryType === "EmitterSeq") {
-      if (sequence) {
-        setVaaResults([]);
-        log && log("Fetching VAA for EmitterSeq: " + sequence, "DeliveryStatus", "info");
-        setError("");
-        setLoading(true);
-        getVaa(environment, getChainInfo(environment, chain as ChainId), emitter, sequence)
-          .then(vaa => {
-            log && log("Got VAA for EmitterSeq: " + sequence, "DeliveryStatus", "success");
-            if (vaa) {
-              setVaaResults([vaa]);
-            }
-            setLoading(false);
-          })
-          .catch(e => {
-            log && log("Error getting VAA for EmitterSeq: " + sequence, "DeliveryStatus", "error");
-            setError(e.message);
-            setLoading(false);
-          });
-      }
+      populateDeliveryLifecycleRecordByEmitterSequence(
+        environment,
+        getChainInfo(environment, chain),
+        emitter,
+        parseInt(sequence),
+      )
+        .then((results: DeliveryLifecycleRecord) => {
+          setLoading(false);
+          setLifecycleRecords([results]);
+        })
+        .catch((e: any) => {
+          setLoading(false);
+          setError(e.message || "An error occurred.");
+        });
     } else if (queryType === "VAA") {
-      if (vaaRaw) {
-        try {
-          setVaaResults([]);
-          setError("");
-          let cloned;
-          //detect if the string is base64 encoded
-          const isBase64 = vaaRaw.match(/^[a-zA-Z0-9+/]+={0,2}$/);
-          const isHexEncoded = vaaRaw.match(/^0x[a-fA-F0-9]+$/) || vaaRaw.match(/^[a-fA-F0-9]+$/);
-          //if it is, convert it to hex
-          if (isHexEncoded) {
-            log && log("VAA is hex encoded", "DeliveryStatus", "info");
-            cloned = vaaRaw;
-          } else if (isBase64) {
-            log && log("VAA is base64 encoded", "DeliveryStatus", "info");
-            cloned = Buffer.from(vaaRaw, "base64").toString("hex");
-          } else {
-            setError("Invalid VAA");
-            return;
-          }
-          //remove all whitespace from the hex string, and also remove the 0x prefix if it exists,
-          const trimmed = cloned.replace(/\s/g, "").replace(/^0x/, "") || "";
-
-          //convert the trimmed hex string into a Uint8Array
-          const vaaBytes = new Uint8Array(
-            trimmed.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)),
-          );
-
-          setVaaResults([vaaBytes]);
-        } catch (e) {
-          setError("Invalid VAA");
-        }
-      }
+      populateDeliveryLifecycleRecordByVaa(environment, vaaRaw)
+        .then((results: DeliveryLifecycleRecord) => {
+          setLoading(false);
+          setLifecycleRecords([results]);
+        })
+        .catch((e: any) => {
+          setLoading(false);
+          setError(e.message || "An error occurred.");
+        });
     } else {
       setError("Invalid query type");
     }
-  }, [txHash, sequence, emitter, chain, vaaRaw, environment, queryType, log]);
+  }, [queryType, txHash, sequence, vaaRaw, environment, chain, emitter]);
 
-  const vaaReaders = vaaResults.length > 0 && (
-    <div style={{ margin: "10px" }}>
-      {vaaResults.map((vaa, idx) => (
-        <VaaReader key={idx} rawVaa={vaa} />
-      ))}
-    </div>
-  );
+  const vaaReaders = lifecycleRecords.map((record, idx) => {
+    return record.vaa ? (
+      <div style={{ margin: "10px" }}>
+        <VaaReader key={idx} rawVaa={record.vaa} />
+      </div>
+    ) : null;
+  });
 
   return (
     <Paper style={{ padding: "10px" }}>
@@ -227,6 +178,14 @@ export default function DeliveryStatus() {
             style={{ flexGrow: 1, margin: "10px" }}
           />
         )}
+        <Button
+          onClick={handleSearch}
+          disabled={loading}
+          variant="contained"
+          style={{ margin: "10px" }}
+        >
+          Search
+        </Button>
       </div>
       {error && (
         <Alert severity="error" style={{ margin: "10px" }}>

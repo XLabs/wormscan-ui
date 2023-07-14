@@ -3,13 +3,11 @@ import { DeliveryInstruction } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import axios from "axios";
 import { Environment } from "./environment";
 
-type DeliveryProviderStatusResponse = DeliveryProviderStatus[];
-
-type RedeliveryRecord = {
+export type RedeliveryRecord = {
   //TODO this
 };
 
-type DeliveryRecord = {
+export type DeliveryRecord = {
   targetChainDecimals?: number;
   deliveryInstructionPrintable?: string;
   hasAdditionalVaas?: boolean;
@@ -44,7 +42,7 @@ type DeliveryRecord = {
   resultLog?: string;
 };
 
-type DeliveryProviderStatus = {
+export type DeliveryProviderStatus = {
   _id?: string;
   emitterChain?: number;
   emitterAddress?: string;
@@ -68,7 +66,7 @@ type DeliveryProviderStatus = {
   fatalStackTrace?: string;
 };
 
-type DeliveryMetaData = {
+export type DeliveryMetaData = {
   attempts?: number;
   maxAttempts?: number;
   didError?: boolean;
@@ -112,7 +110,7 @@ function getDeliveryProviderStatusRaw(
   toTxHash?: string,
   fromChain?: string,
   toChain?: string,
-): Promise<DeliveryProviderStatusResponse> {
+): Promise<DeliveryProviderStatus[]> {
   let URL = getBaseUrl(Environment);
   if (Environment.network === "DEVNET") {
     throw new Error("DEVNET not supported yet");
@@ -142,20 +140,26 @@ function getDeliveryProviderStatusRaw(
   if (toChain) {
     URL += `toChain=${toChain}&`;
   }
-  return axios.get(URL);
+  return axios
+    .get(URL)
+    .then(value => value.data)
+    .catch(e => {
+      console.error(e);
+      return [];
+    }) as Promise<DeliveryProviderStatus[]>;
 }
 
 export async function getDeliveryProviderStatusBySourceTransaction(
   Environment: Environment,
   fromTxHash: string,
-): Promise<DeliveryProviderStatusResponse> {
+): Promise<DeliveryProviderStatus[]> {
   return getDeliveryProviderStatusRaw(Environment, fromTxHash);
 }
 
 export async function getDeliveryProviderStatusByTargetTransaction(
   Environment: Environment,
   toTxHash: string,
-): Promise<DeliveryProviderStatusResponse> {
+): Promise<DeliveryProviderStatus[]> {
   return getDeliveryProviderStatusRaw(
     Environment,
     undefined,
@@ -172,7 +176,7 @@ export async function getDeliveryProviderStatusByVaaInfo(
   emitterChain: string,
   emitterAddress: string,
   sequence: string,
-): Promise<DeliveryProviderStatusResponse> {
+): Promise<DeliveryProviderStatus[]> {
   return getDeliveryProviderStatusRaw(
     Environment,
     undefined,
