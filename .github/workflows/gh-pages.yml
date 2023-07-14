@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - relayer-dashboard
 
 jobs:
   build_deploy_gh_page:
@@ -26,7 +27,7 @@ jobs:
           NODE_ENV=development yarn build
           cp ./CNAME ./dist/
           cp ./robots.txt ./dist/
-          
+
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           yarn dlx push-dir --dir=dist --branch=gh-pages --cleanup --verbose
