@@ -4,8 +4,8 @@ import { useEnvironment } from "src/pages/RelayerDashboard/context/EnvironmentCo
 import { Select } from "src/components/atoms";
 import "./styles.scss";
 
-export default function ChainSelector(props: { onChainSelected: (chainId: ChainId) => void }) {
-  const { environment } = useEnvironment();
+export default function ChainSelector() {
+  const { environment, setChain } = useEnvironment();
   const allChains = environment.chainInfos.map(chainInfo => {
     return {
       label: `${chainInfo.chainId} - ${chainInfo.chainName}`,
@@ -17,7 +17,8 @@ export default function ChainSelector(props: { onChainSelected: (chainId: ChainI
 
   const handleChange = (selected: any) => {
     setSelectedValue(selected);
-    props.onChainSelected(+selected.value as ChainId);
+    setChain(+selected.value as ChainId);
+    // props.onChainSelected(+selected.value as ChainId);
   };
 
   return (

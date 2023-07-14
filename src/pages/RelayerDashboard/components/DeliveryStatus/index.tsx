@@ -36,10 +36,9 @@ import "./styles.scss";
 // moonbeam mainnet example 0x6a2c36673e8cbbef29cc3bad4eabfb8edb0851c0d27defba300f80561ccecec6
 // moonbeam testnet example 0x9e6e57b40afc622f66c7f29613e71da25e0137e45a3582043058527c13501c86
 export default function DeliveryStatus() {
-  const { environment, userInput } = useEnvironment();
+  const { environment, userInput, chain } = useEnvironment();
   const { log } = useLogger();
 
-  const [chain, setChain] = useState<ChainId>(environment.chainInfos[0].chainId);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   // const [txHash, setTxHash] = useState("");
@@ -121,10 +120,11 @@ export default function DeliveryStatus() {
   }, [chain, emitter, environment, userInput]);
 
   useEffect(() => {
+    console.log("what?", { userInput, chain });
     if (userInput) {
       handleSearch();
     }
-  }, [handleSearch, userInput]);
+  }, [handleSearch, userInput, chain]);
 
   const vaaReaders = lifecycleRecords.map((record, idx) => {
     return record.vaa ? (
