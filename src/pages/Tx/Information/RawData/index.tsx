@@ -13,7 +13,7 @@ const CodeBlockStyles = {
   "hljs-literal": { color: "var(--color-information-100)" },
 };
 
-const BlockSection = ({ title, code }: { title: string; code: string }) => {
+export const BlockSection = ({ title, code }: { title: string; code: string }) => {
   return (
     <div className="tx-raw-data-container-block">
       <div className="tx-raw-data-container-block-top">

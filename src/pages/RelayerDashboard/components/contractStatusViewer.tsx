@@ -7,8 +7,9 @@ import {
   useContractState,
 } from "../context/ContractStateContext";
 import { useCallback, useState } from "react";
-import { ChainId } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "../context/EnvironmentContext";
+import { ChainId } from "@xlabs-libs/wormscan-sdk";
+import { BlockSection } from "src/pages/Tx/Information/RawData";
 
 export default function ContractStates() {
   const { environment } = useEnvironment();
@@ -115,16 +116,26 @@ function DisplayContracts(props: {
   return (
     <div style={{ display: "flex" }}>
       <div style={{ margin: "10px" }}>
-        <Typography variant="h6">Relayer</Typography>
+        <BlockSection
+          title="RELAYER"
+          code={`{
+    Chain ID: ${props.relayer.chainId},
+    Contract Address: ${props.relayer.contractAddress},
+    Default Provider: ${props.relayer.defaultProvider}
+}`}
+        />
         {spacer}
-        <Typography>Chain ID: {props.relayer.chainId}</Typography>
-        <Typography>Contract Address: {props.relayer.contractAddress}</Typography>
-        <Typography>Default Provider: {props.relayer.defaultProvider}</Typography>
-        {spacer}
-        <Typography>Registered Contracts:</Typography>
-        {props.relayer.registeredContracts.map((contract, idx) => {
-          return <Typography key={idx}>{contract.chainId + ": " + contract.contract}</Typography>;
-        })}
+
+        <BlockSection
+          title="REGISTERED CONTRACTS"
+          code={`{
+    ${props.relayer.registeredContracts
+      .map(contract => {
+        return ChainId[contract.chainId] + ": " + contract.contract;
+      })
+      .join(",\n    ")}
+}`}
+        />
       </div>
       <div style={{ margin: "10px" }}>
         <Typography variant="h6">Delivery Provider</Typography>
