@@ -1,5 +1,5 @@
 import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { BlockchainIcon, SignatureCircle, Tooltip } from "src/components/atoms";
+import { Alert, BlockchainIcon, SignatureCircle, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import WormIcon from "src/icons/wormIcon.svg";
 import RelayIcon from "src/icons/relayIcon.svg";
@@ -61,6 +61,8 @@ const Overview = ({ VAAData, txData }: Props) => {
   } = payload || {};
   const { originTx, destinationTx } = globalTx || {};
   const isAttestation = txType[payloadType] === "Attestation";
+  const isUnknownPayloadType = !txType[payloadType];
+  console.log({ isUnknownPayloadType: !txType[payloadType] });
 
   const {
     appIds,
@@ -389,6 +391,15 @@ const Overview = ({ VAAData, txData }: Props) => {
           </div>
         )}
       </div>
+      {isUnknownPayloadType && (
+        <div className="tx-overview-alerts">
+          <div className="tx-overview-alerts-unknown-payload-type">
+            <Alert type="info">
+              This VAA comes from another multiverse, we don&apos;t have more details about it.
+            </Alert>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

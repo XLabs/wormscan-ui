@@ -70,10 +70,17 @@
         }
 
         &.signatures {
-          padding: 175px 0;
+          padding-top: 150px;
+          padding-bottom: 50px;
           pointer-events: none;
+          min-height: 250px;
+
           & > * {
             pointer-events: auto;
+          }
+
+          @include desktop {
+            min-height: unset;
           }
         }
 
@@ -266,6 +273,24 @@
             color: var(--color-success-60);
           }
         }
+      }
+    }
+  }
+
+  &-alerts {
+    padding: 24px 16px;
+
+    @include desktop {
+      padding: 16px 24px 64px 24px;
+    }
+
+    @include bigDesktop {
+      padding: 16px 112px 64px;
+    }
+
+    &-unknown-payload-type {
+      @include desktop {
+        max-width: 390px;
       }
     }
   }
