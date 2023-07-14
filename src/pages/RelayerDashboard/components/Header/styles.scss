@@ -1,0 +1,22 @@
+@import "src/styles/globals.scss";
+
+.connect-button-RELAYER {
+  @include button-secondary;
+}
+
+.menu-RELAYER {
+  @include centered-row;
+  gap: 16px;
+
+  &-item {
+    font-family: IBM Plex Sans, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--color-primary-50);
+
+    &:hover {
+      color: var(--color-secondary-600);
+    }
+  }
+}
