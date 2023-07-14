@@ -24,6 +24,7 @@ const success60 = getComputedStyle(document.documentElement).getPropertyValue("-
 const Circle = ({ guardianSignatures }: Props) => {
   const [hoveredSector, setHoveredSector] = useState(null);
   const [clicked, setClicked] = useState(false);
+  const [touched, setTouched] = useState(false);
   const [showGuardian, setShowGuardian] = useState<IGuardian>(null);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const SIZE = 184;
@@ -67,23 +68,25 @@ const Circle = ({ guardianSignatures }: Props) => {
                 fill={fillColor}
                 strokeWidth="6"
                 className="signatureCircle-section"
-                onClick={ev => {
-                  setPos({ x: ev.pageX - 110, y: ev.pageY - 100 });
-                  setShowGuardian(guardian);
-                  setClicked(true);
-                }}
+                onTouchStart={() => setTouched(true)}
                 onMouseEnter={ev => {
-                  if (!clicked) {
+                  if (!clicked && !touched) {
                     setHoveredSector(idx);
                     setPos({ x: ev.pageX - 110, y: ev.pageY - 100 });
                     setShowGuardian(guardian);
                   }
                 }}
-                onMouseLeave={() => {
-                  if (!clicked) {
+                onMouseLeave={ev => {
+                  if (!clicked && !touched) {
                     setHoveredSector(null);
                     setShowGuardian(null);
                   }
+                }}
+                onClick={ev => {
+                  setClicked(true);
+                  setHoveredSector(idx);
+                  setPos({ x: ev.pageX - 110, y: ev.pageY - 100 });
+                  setShowGuardian(guardian);
                 }}
               />
             );
@@ -95,7 +98,6 @@ const Circle = ({ guardianSignatures }: Props) => {
           y={pos.y}
           x={pos.x}
           showGuardian={showGuardian}
-          clicked={clicked}
           clear={() => {
             setHoveredSector(null);
             setClicked(false);
@@ -111,13 +113,11 @@ const GuardianInfo = ({
   y,
   x,
   showGuardian,
-  clicked,
   clear,
 }: {
   y: number;
   x: number;
   showGuardian: IGuardian;
-  clicked: boolean;
   clear: () => void;
 }) => {
   const infoRef = useRef<HTMLDivElement>(null);
@@ -130,8 +130,8 @@ const GuardianInfo = ({
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mouseup", handleClickOutside);
+    return () => document.removeEventListener("mouseup", handleClickOutside);
   }, [clear]);
 
   const renderedInfo = (
@@ -148,7 +148,7 @@ const GuardianInfo = ({
         {currentNetwork === "mainnet" ? showGuardian.name : "Jump Crypto"}
       </span>
       <div className="guardianInfo-signature">
-        <span className="guardianInfo-signature-text">Signature:</span>{" "}
+        <span className="guardianInfo-signature-text">Signature:</span>
         <span>{shortAddress(showGuardian.signature)}</span>
         <span>
           <CopyToClipboard toCopy={showGuardian.signature}>
