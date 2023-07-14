@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Select } from "src/components/atoms";
 
 import Search from "./Search";
@@ -7,7 +7,6 @@ import { shortAddress } from "src/utils/crypto";
 import "./styles.scss";
 import { useEnvironment } from "../../context/EnvironmentContext";
 import ChainSelector from "../ChainSelector";
-import { ChainId } from "@certusone/wormhole-sdk";
 
 const setOverflowHidden = (hidden: boolean) => {
   if (hidden) {
@@ -29,7 +28,6 @@ const NETWORK_LIST: NetworkSelectProps[] = [
 
 const Header = () => {
   const { environment, setEnvironment } = useEnvironment();
-  const [chain, setChain] = useState<ChainId>(environment.chainInfos[0].chainId);
 
   useEffect(() => {
     return () => setOverflowHidden(false);
@@ -45,7 +43,7 @@ const Header = () => {
   return (
     <header className="header-RELAYER" data-testid="header">
       <div className="header-RELAYER-actions">
-        <ChainSelector onChainSelected={setChain} />
+        <ChainSelector />
         <Select
           name={"relayerNetworkSelect"}
           value={NETWORK_LIST.find(a => a.value === environment.network)}
