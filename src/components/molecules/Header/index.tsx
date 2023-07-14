@@ -56,6 +56,7 @@ const Header = ({ network }: Props) => {
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkSelectProps>(
     getCurrentNetworkItem(network),
   );
+  const isMainnet = network === "mainnet";
 
   const [expandMobileMenu, setExpandMobileMenu] = useState<boolean>(false);
   const handleSetExpand = () => {
@@ -108,11 +109,13 @@ const Header = ({ network }: Props) => {
           <HeaderLinks />
         </div>
 
-        <div>
-          <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
-            <button className="connect-button">{t("home.header.goBridge")}</button>
-          </a>
-        </div>
+        {isMainnet && (
+          <div className="go-bridge-container">
+            <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
+              <button className="go-bridge">{t("home.header.goBridge")}</button>
+            </a>
+          </div>
+        )}
 
         {/* MOBILE HAMBURGER MENU */}
         <div className="header-hamburger">
@@ -138,11 +141,15 @@ const Header = ({ network }: Props) => {
           <HeaderLinks />
 
           <div className="header-navigation-item">
-            <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
-              <button className="go-bridge" data-testid="go-bridge-button">
-                {t("home.header.goBridge")}
-              </button>
-            </a>
+            {isMainnet && (
+              <div className="go-bridge-container">
+                <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
+                  <button className="go-bridge" data-testid="go-bridge-button">
+                    {t("home.header.goBridge")}
+                  </button>
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

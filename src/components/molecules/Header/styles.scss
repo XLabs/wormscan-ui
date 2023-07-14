@@ -112,10 +112,14 @@
       gap: 48px;
     }
 
-    & .connect-button {
+    & .go-bridge-container {
       display: none;
 
       @include desktop {
+        display: block;
+      }
+
+      & .go-bridge {
         @include button-secondary;
       }
     }
@@ -148,7 +152,6 @@
         margin: 0px;
       }
 
-      cursor: pointer;
       user-select: none;
 
       a {
