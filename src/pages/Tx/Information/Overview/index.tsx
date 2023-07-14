@@ -65,18 +65,13 @@ const Overview = ({ VAAData, txData }: Props) => {
   const {
     appIds,
     fromChain: stdFromChain,
-    fromAddress: stdFromAddress,
     toChain: stdToChain,
     toAddress: stdToAddress,
     tokenChain: stdTokenChain,
     tokenAddress: stdTokenAddress,
   } = standardizedProperties || {};
 
-  const {
-    chainId: globalFromChainId,
-    from: globalFrom,
-    timestamp: globalFromTimestamp,
-  } = originTx || {};
+  const { from: globalFrom, timestamp: globalFromTimestamp } = originTx || {};
 
   const {
     chainId: globalToChainId,
@@ -85,8 +80,8 @@ const Overview = ({ VAAData, txData }: Props) => {
     txHash: globalToRedeemTx,
   } = destinationTx || {};
 
-  const fromChain = stdFromChain || globalFromChainId || emitterChain;
-  const fromAddress = stdFromAddress || globalFrom;
+  const fromChain = emitterChain || stdFromChain;
+  const fromAddress = globalFrom;
   const toChain = stdToChain || globalToChainId;
   const toAddress = stdToAddress || globalTo;
   const startDate = timestamp || globalFromTimestamp;
