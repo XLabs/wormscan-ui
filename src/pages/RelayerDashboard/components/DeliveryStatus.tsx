@@ -34,6 +34,7 @@ import { useLogger } from "../context/LoggerContext";
 import { useEnvironment } from "../context/EnvironmentContext";
 import { useEthereumProvider } from "../context/EthereumProviderContext";
 import { getDeliveryProviderStatusBySourceTransaction } from "../utils/deliveryProviderStatusApi";
+import { BlockSection } from "src/pages/Tx/Information/RawData";
 
 //test tx hash 0xcf66519f71be66c7ab5582e864a37d686c6164a32b3df22c89b32119ecfcfc5e
 //test sequence 1
@@ -134,71 +135,127 @@ export default function DeliveryStatus() {
     ) : null;
   });
 
+  const lifecycleRecordDisplays = lifecycleRecords.map((record, idx) => {
+    return (
+      <>
+        <div style={{ display: "flex" }}>
+          <div style={{ margin: "10px" }}>
+            {
+              <BlockSection
+                title="Source Transaction"
+                code={JSON.stringify(
+                  {
+                    sourceTransactionHash: record.sourceTxHash,
+                    sourceChain: record.sourceChainId,
+                    sourceSequence: record.sourceSequence,
+                    sourceReceipt: record.sourceTxReceipt,
+                  },
+                  null,
+                  2,
+                )}
+              />
+            }
+            {record.targetTransactions &&
+              record.targetTransactions.map((tx, idx) => {
+                return (
+                  <BlockSection
+                    title={"Target Transaction " + idx}
+                    code={JSON.stringify(
+                      {
+                        targetTransactionHash: tx.targetTxHash,
+                        targetChain: tx.targetChainId,
+                        targetReceipt: tx.targetTxReceipt,
+                      },
+                      null,
+                      2,
+                    )}
+                  />
+                );
+              })}
+
+            {record.DeliveryStatuses &&
+              record.DeliveryStatuses.map((info, idx) => {
+                return (
+                  <BlockSection
+                    title={"Delivery Info " + idx}
+                    code={JSON.stringify(info, null, 2)}
+                  />
+                );
+              })}
+          </div>
+        </div>
+      </>
+    );
+  });
+
   return (
-    <Paper style={{ padding: "10px" }}>
-      <Typography variant="h5">Search for Delivery VAAs</Typography>
-      <div style={{ display: "flex", margin: "10px" }}>
-        {toggler}
-        {(queryType === "txHash" || queryType === "EmitterSeq") && (
-          <ChainSelector onChainSelected={setChain} />
-        )}
-        {queryType === "EmitterSeq" && (
-          <>
+    <>
+      <Paper style={{ padding: "10px" }}>
+        <Typography variant="h5">Search for Delivery VAAs</Typography>
+        <div style={{ display: "flex", margin: "10px" }}>
+          {toggler}
+          {(queryType === "txHash" || queryType === "EmitterSeq") && (
+            <ChainSelector onChainSelected={setChain} />
+          )}
+          {queryType === "EmitterSeq" && (
+            <>
+              <TextField
+                helperText="Sequence"
+                value={sequence}
+                onChange={(e: any) => setSequence(e.target.value)}
+                variant="outlined"
+                style={{ flexGrow: 1, margin: "10px" }}
+              />
+              <TextField
+                helperText="Emitter (WH format)"
+                value={emitter}
+                variant="outlined"
+                disabled
+                style={{ flexGrow: 2, margin: "10px" }}
+              />
+            </>
+          )}
+          {queryType === "txHash" && (
             <TextField
-              helperText="Sequence"
-              value={sequence}
-              onChange={(e: any) => setSequence(e.target.value)}
+              helperText="Transaction Hash"
+              value={txHash}
+              onChange={(e: any) => setTxHash(e.target.value)}
               variant="outlined"
               style={{ flexGrow: 1, margin: "10px" }}
             />
+          )}
+          {queryType === "VAA" && (
             <TextField
-              helperText="Emitter (WH format)"
-              value={emitter}
+              helperText="Paste either a Hex or Base64 encoded VAA here"
+              value={vaaRaw}
+              onChange={(e: any) => setVaaRaw(e.target.value)}
               variant="outlined"
-              disabled
-              style={{ flexGrow: 2, margin: "10px" }}
+              style={{ flexGrow: 1, margin: "10px" }}
             />
-          </>
+          )}
+          <Button
+            onClick={handleSearch}
+            disabled={loading}
+            variant="contained"
+            style={{ margin: "10px" }}
+          >
+            Search
+          </Button>
+        </div>
+        {error && (
+          <Alert severity="error" style={{ margin: "10px" }}>
+            {error}
+          </Alert>
         )}
-        {queryType === "txHash" && (
-          <TextField
-            helperText="Transaction Hash"
-            value={txHash}
-            onChange={(e: any) => setTxHash(e.target.value)}
-            variant="outlined"
-            style={{ flexGrow: 1, margin: "10px" }}
-          />
+        {loading && (
+          <Alert severity="info" style={{ margin: "10px" }}>
+            Loading...
+          </Alert>
         )}
-        {queryType === "VAA" && (
-          <TextField
-            helperText="Paste either a Hex or Base64 encoded VAA here"
-            value={vaaRaw}
-            onChange={(e: any) => setVaaRaw(e.target.value)}
-            variant="outlined"
-            style={{ flexGrow: 1, margin: "10px" }}
-          />
-        )}
-        <Button
-          onClick={handleSearch}
-          disabled={loading}
-          variant="contained"
-          style={{ margin: "10px" }}
-        >
-          Search
-        </Button>
-      </div>
-      {error && (
-        <Alert severity="error" style={{ margin: "10px" }}>
-          {error}
-        </Alert>
-      )}
-      {loading && (
-        <Alert severity="info" style={{ margin: "10px" }}>
-          Loading...
-        </Alert>
-      )}
-      {vaaReaders && vaaReaders}
-    </Paper>
+        {vaaReaders && vaaReaders}
+      </Paper>
+      {lifecycleRecordDisplays ? lifecycleRecordDisplays : null}
+    </>
   );
 }
 

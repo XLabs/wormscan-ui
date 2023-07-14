@@ -130,6 +130,8 @@ export async function populateDeliveryLifecycleRecordByVaa(
 
   if (deliveryStatus.length === 0) {
     return output;
+  } else {
+    output.DeliveryStatuses = deliveryStatus;
   }
 
   const sourceTransactions = deliveryStatus.map(status => {
