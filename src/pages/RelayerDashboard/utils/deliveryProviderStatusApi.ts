@@ -88,13 +88,18 @@ type DeliveryMetaData = {
 
 function getBaseUrl(environment: Environment): string {
   if (environment.network === "MAINNET") {
-    return ""; //"http://a6163c82a2a6f4c1d9c2cf2c35f0733b-758274193:80/relay-status?";
+    return CORS_PROXY + ""; //"http://a6163c82a2a6f4c1d9c2cf2c35f0733b-758274193:80/relay-status?";
   } else if (environment.network === "TESTNET") {
-    return "http://a6163c82a2a6f4c1d9c2cf2c35f0733b-758274193.us-east-2.elb.amazonaws.com:80/relay-status?";
+    return (
+      CORS_PROXY +
+      "http://a6163c82a2a6f4c1d9c2cf2c35f0733b-758274193.us-east-2.elb.amazonaws.com:80/relay-status?"
+    );
   } else {
     return "";
   }
 }
+
+const CORS_PROXY = "https://nextjs-cors-anywhere.vercel.app/api?endpoint=";
 
 //Don't call this function directly, use the wrapped functions with fewer args
 function getDeliveryProviderStatusRaw(
