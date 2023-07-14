@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { NavLink, Select } from "src/components/atoms";
-import { changeNetwork } from "src/api/Client";
-import { NETWORK } from "src/types";
-import { useSearchParams } from "react-router-dom";
+import { Select } from "src/components/atoms";
 
-import Search from "../../../../components/molecules/Header/Search";
+import Search from "./Search";
 import { useEthereumProvider } from "../../context/EthereumProviderContext";
 import { shortAddress } from "src/utils/crypto";
 import "./styles.scss";
 import { useEnvironment } from "../../context/EnvironmentContext";
+import ChainSelector from "../ChainSelector";
+import { ChainId } from "@certusone/wormhole-sdk";
 
 const setOverflowHidden = (hidden: boolean) => {
   if (hidden) {
@@ -30,6 +29,7 @@ const NETWORK_LIST: NetworkSelectProps[] = [
 
 const Header = () => {
   const { environment, setEnvironment } = useEnvironment();
+  const [chain, setChain] = useState<ChainId>(environment.chainInfos[0].chainId);
 
   useEffect(() => {
     return () => setOverflowHidden(false);
@@ -43,26 +43,16 @@ const Header = () => {
   const isConnected = !!signerAddress;
 
   return (
-    <header className="header" data-testid="header">
-      <div className="menu-RELAYER">
-        <NavLink className="menu-RELAYER-item" to="/relayer-dashboard">
-          Dashboard
-        </NavLink>
-        <NavLink className="menu-RELAYER-item" to="/contract-states">
-          Contract States
-        </NavLink>
-      </div>
-      <Search />
-      <div className="header-actions">
+    <header className="header-RELAYER" data-testid="header">
+      <div className="header-RELAYER-actions">
+        <ChainSelector onChainSelected={setChain} />
         <Select
           name={"relayerNetworkSelect"}
           value={NETWORK_LIST.find(a => a.value === environment.network)}
           onValueChange={(value: NetworkSelectProps) => onChangeNetworkSelect(value)}
           items={NETWORK_LIST}
           ariaLabel={"Select Network"}
-          className={`header-network-select ${
-            environment.network !== "MAINNET" && "header-network-select--active"
-          }`}
+          className={"header-RELAYER-network-selector"}
         />
 
         <div>
@@ -80,6 +70,8 @@ const Header = () => {
           </button>
         </div>
       </div>
+
+      <Search />
     </header>
   );
 };

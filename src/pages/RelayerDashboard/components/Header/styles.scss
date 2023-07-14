@@ -1,22 +1,28 @@
 @import "src/styles/globals.scss";
 
-.button-RELAYER {
-  @include button-secondary;
+.header-RELAYER {
+  align-items: center;
+  width: 100%;
+  min-height: 64px;
+  row-gap: 20px;
+  column-gap: 4px;
+  background-color: rgba(1, 0, 20, 0.2);
+  border-bottom: 1px solid var(--color-white-10);
+  padding: 24px 42px 32px 42px;
+
+  &-actions {
+    @include centered-row;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+
+  &-network-selector {
+    width: 150px;
+    height: 42px;
+  }
 }
 
-.menu-RELAYER {
-  @include centered-row;
-  gap: 16px;
-
-  &-item {
-    font-family: IBM Plex Sans, sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.5;
-    color: var(--color-primary-50);
-
-    &:hover {
-      color: var(--color-secondary-600);
-    }
-  }
+.button-RELAYER {
+  @include button-secondary;
 }

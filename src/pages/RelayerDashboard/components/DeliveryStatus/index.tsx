@@ -1,18 +1,7 @@
 import { ChainId, parseVaa, tryNativeToHexString } from "@certusone/wormhole-sdk";
-import { getChainInfo } from "../utils/environment";
-import ChainSelector from "./chainSelector";
+import { getChainInfo } from "src/pages/RelayerDashboard/utils/environment";
 import { useCallback, useEffect, useState } from "react";
-import {
-  Alert,
-  Button,
-  CircularProgress,
-  Divider,
-  Paper,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material";
+import { Alert, Button, CircularProgress, Divider, TextField, Typography } from "@mui/material";
 import {
   DeliveryInstruction,
   DeliveryTargetInfo,
@@ -29,12 +18,14 @@ import {
   populateDeliveryLifeCycleRecordsByTxHash,
   populateDeliveryLifecycleRecordByEmitterSequence,
   populateDeliveryLifecycleRecordByVaa,
-} from "../utils/VaaUtils";
-import { useLogger } from "../context/LoggerContext";
-import { useEnvironment } from "../context/EnvironmentContext";
-import { useEthereumProvider } from "../context/EthereumProviderContext";
-import { getDeliveryProviderStatusBySourceTransaction } from "../utils/deliveryProviderStatusApi";
+} from "src/pages/RelayerDashboard//utils/VaaUtils";
+import { useLogger } from "src/pages/RelayerDashboard//context/LoggerContext";
+import { useEnvironment } from "src/pages/RelayerDashboard//context/EnvironmentContext";
+import { useEthereumProvider } from "src/pages/RelayerDashboard//context/EthereumProviderContext";
+import { getDeliveryProviderStatusBySourceTransaction } from "src/pages/RelayerDashboard//utils/deliveryProviderStatusApi";
 import { BlockSection } from "src/pages/Tx/Information/RawData";
+import { Loader } from "src/components/atoms";
+import "./styles.scss";
 
 //test tx hash 0xcf66519f71be66c7ab5582e864a37d686c6164a32b3df22c89b32119ecfcfc5e
 //test sequence 1
@@ -45,50 +36,50 @@ import { BlockSection } from "src/pages/Tx/Information/RawData";
 // moonbeam mainnet example 0x6a2c36673e8cbbef29cc3bad4eabfb8edb0851c0d27defba300f80561ccecec6
 // moonbeam testnet example 0x9e6e57b40afc622f66c7f29613e71da25e0137e45a3582043058527c13501c86
 export default function DeliveryStatus() {
-  const { environment } = useEnvironment();
+  const { environment, userInput } = useEnvironment();
   const { log } = useLogger();
+
   const [chain, setChain] = useState<ChainId>(environment.chainInfos[0].chainId);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [txHash, setTxHash] = useState("");
-  const [sequence, setSequence] = useState("");
-  const [queryType, setQueryType] = useState("txHash");
-  const [vaaRaw, setVaaRaw] = useState("");
+  // const [txHash, setTxHash] = useState("");
+  // const [sequence, setSequence] = useState("");
+  // const [vaaRaw, setVaaRaw] = useState("");
 
   const targetContract = environment.chainInfos.find(
     c => c.chainId === chain,
   )?.relayerContractAddress;
+
   const emitter = targetContract
     ? tryNativeToHexString(targetContract, "ethereum")
     : "Error, unconfigured";
 
   const [lifecycleRecords, setLifecycleRecords] = useState<DeliveryLifecycleRecord[]>([]);
 
-  const handleChange = (event: React.MouseEvent<HTMLElement>, newItem: string) => {
-    setQueryType(newItem);
-  };
-
-  const toggler = (
-    <ToggleButtonGroup
-      color="primary"
-      value={queryType}
-      exclusive
-      onChange={handleChange}
-      aria-label="Platform"
-      style={{ margin: "10px", maxHeight: "55px" }}
-    >
-      <ToggleButton value="txHash">TxHash</ToggleButton>
-      <ToggleButton value="EmitterSeq">EmitterSeq</ToggleButton>
-      <ToggleButton value="VAA">VAA</ToggleButton>
-    </ToggleButtonGroup>
-  );
-
   const handleSearch = useCallback(() => {
     setError("");
     setLoading(true);
     setLifecycleRecords([]);
-    if (queryType === "txHash" && txHash) {
-      populateDeliveryLifeCycleRecordsByTxHash(environment, txHash)
+
+    let queryType;
+
+    if (userInput.startsWith("0x")) {
+      queryType = "txHash";
+    } else if (!isNaN(+userInput)) {
+      const maxUint64 = BigInt("18446744073709551615");
+      const inputNumber = BigInt(userInput);
+      if (inputNumber > 0 && inputNumber < maxUint64) {
+        queryType = "EmitterSeq";
+      }
+    } else {
+      queryType = "VAA";
+    }
+
+    console.log("User input query type:", queryType);
+
+    if (queryType === "txHash") {
+      // populateDeliveryLifeCycleRecordsByTxHash(environment, txHash)
+      populateDeliveryLifeCycleRecordsByTxHash(environment, userInput)
         .then((results: DeliveryLifecycleRecord[]) => {
           setLoading(false);
           setLifecycleRecords(results);
@@ -102,7 +93,8 @@ export default function DeliveryStatus() {
         environment,
         getChainInfo(environment, chain),
         emitter,
-        parseInt(sequence),
+        parseInt(userInput),
+        // parseInt(sequence),
       )
         .then((results: DeliveryLifecycleRecord) => {
           setLoading(false);
@@ -113,7 +105,8 @@ export default function DeliveryStatus() {
           setError(e.message || "An error occurred.");
         });
     } else if (queryType === "VAA") {
-      populateDeliveryLifecycleRecordByVaa(environment, vaaRaw)
+      // populateDeliveryLifecycleRecordByVaa(environment, vaaRaw)
+      populateDeliveryLifecycleRecordByVaa(environment, userInput)
         .then((results: DeliveryLifecycleRecord) => {
           setLoading(false);
           setLifecycleRecords([results]);
@@ -125,11 +118,17 @@ export default function DeliveryStatus() {
     } else {
       setError("Invalid query type");
     }
-  }, [queryType, txHash, sequence, vaaRaw, environment, chain, emitter]);
+  }, [chain, emitter, environment, userInput]);
+
+  useEffect(() => {
+    if (userInput) {
+      handleSearch();
+    }
+  }, [handleSearch, userInput]);
 
   const vaaReaders = lifecycleRecords.map((record, idx) => {
     return record.vaa ? (
-      <div style={{ margin: "10px" }}>
+      <div key={"record" + idx} style={{ margin: "10px" }}>
         <VaaReader key={idx} rawVaa={record.vaa} />
       </div>
     ) : null;
@@ -137,125 +136,80 @@ export default function DeliveryStatus() {
 
   const lifecycleRecordDisplays = lifecycleRecords.map((record, idx) => {
     return (
-      <>
-        <div style={{ display: "flex" }}>
-          <div style={{ margin: "10px" }}>
-            {
-              <BlockSection
-                title="Source Transaction"
-                code={JSON.stringify(
-                  {
-                    sourceTransactionHash: record.sourceTxHash,
-                    sourceChain: record.sourceChainId,
-                    sourceSequence: record.sourceSequence,
-                    sourceReceipt: record.sourceTxReceipt,
-                  },
-                  null,
-                  2,
-                )}
-              />
-            }
-            {record.targetTransactions &&
-              record.targetTransactions.map((tx, idx) => {
-                return (
-                  <BlockSection
-                    title={"Target Transaction " + idx}
-                    code={JSON.stringify(
-                      {
-                        targetTransactionHash: tx.targetTxHash,
-                        targetChain: tx.targetChainId,
-                        targetReceipt: tx.targetTxReceipt,
-                      },
-                      null,
-                      2,
-                    )}
-                  />
-                );
-              })}
+      <div
+        key={"lifecycle" + idx}
+        style={{
+          display: "flex",
+          whiteSpace: "normal",
+          wordWrap: "break-word",
+          overflowWrap: "break-word",
+        }}
+      >
+        <div style={{ margin: "10px", maxWidth: "100%" }}>
+          {
+            <BlockSection
+              title="Source Transaction"
+              code={JSON.stringify(
+                {
+                  sourceTransactionHash: record.sourceTxHash,
+                  sourceChain: record.sourceChainId,
+                  sourceSequence: record.sourceSequence,
+                  sourceReceipt: record.sourceTxReceipt,
+                },
+                null,
+                2,
+              )}
+            />
+          }
+          {record.targetTransactions &&
+            record.targetTransactions.map((tx, idx) => {
+              return (
+                <BlockSection
+                  key={idx}
+                  title={"Target Transaction " + idx}
+                  code={JSON.stringify(
+                    {
+                      targetTransactionHash: tx.targetTxHash,
+                      targetChain: tx.targetChainId,
+                      targetReceipt: tx.targetTxReceipt,
+                    },
+                    null,
+                    2,
+                  )}
+                />
+              );
+            })}
 
-            {record.DeliveryStatuses &&
-              record.DeliveryStatuses.map((info, idx) => {
-                return (
-                  <BlockSection
-                    title={"Delivery Info " + idx}
-                    code={JSON.stringify(info, null, 2)}
-                  />
-                );
-              })}
-          </div>
+          {record.DeliveryStatuses &&
+            record.DeliveryStatuses.map((info, idx) => {
+              return (
+                <BlockSection
+                  key={idx}
+                  title={"Delivery Info " + idx}
+                  code={JSON.stringify(info, null, 2)}
+                />
+              );
+            })}
         </div>
-      </>
+      </div>
     );
   });
 
   return (
-    <>
-      <Paper style={{ padding: "10px" }}>
-        <Typography variant="h5">Search for Delivery VAAs</Typography>
-        <div style={{ display: "flex", margin: "10px" }}>
-          {toggler}
-          {(queryType === "txHash" || queryType === "EmitterSeq") && (
-            <ChainSelector onChainSelected={setChain} />
-          )}
-          {queryType === "EmitterSeq" && (
-            <>
-              <TextField
-                helperText="Sequence"
-                value={sequence}
-                onChange={(e: any) => setSequence(e.target.value)}
-                variant="outlined"
-                style={{ flexGrow: 1, margin: "10px" }}
-              />
-              <TextField
-                helperText="Emitter (WH format)"
-                value={emitter}
-                variant="outlined"
-                disabled
-                style={{ flexGrow: 2, margin: "10px" }}
-              />
-            </>
-          )}
-          {queryType === "txHash" && (
-            <TextField
-              helperText="Transaction Hash"
-              value={txHash}
-              onChange={(e: any) => setTxHash(e.target.value)}
-              variant="outlined"
-              style={{ flexGrow: 1, margin: "10px" }}
-            />
-          )}
-          {queryType === "VAA" && (
-            <TextField
-              helperText="Paste either a Hex or Base64 encoded VAA here"
-              value={vaaRaw}
-              onChange={(e: any) => setVaaRaw(e.target.value)}
-              variant="outlined"
-              style={{ flexGrow: 1, margin: "10px" }}
-            />
-          )}
-          <Button
-            onClick={handleSearch}
-            disabled={loading}
-            variant="contained"
-            style={{ margin: "10px" }}
-          >
-            Search
-          </Button>
+    <div className="relayer-delivery-status">
+      {error && (
+        <Alert severity="error" style={{ margin: "10px" }}>
+          {error}
+        </Alert>
+      )}
+      {loading && (
+        <div>
+          <Loader />
         </div>
-        {error && (
-          <Alert severity="error" style={{ margin: "10px" }}>
-            {error}
-          </Alert>
-        )}
-        {loading && (
-          <Alert severity="info" style={{ margin: "10px" }}>
-            Loading...
-          </Alert>
-        )}
-        {vaaReaders && vaaReaders}
-      </Paper>
+      )}
+      {vaaReaders && vaaReaders}
       {lifecycleRecordDisplays ? lifecycleRecordDisplays : null}
-    </>
+    </div>
   );
 }
 
