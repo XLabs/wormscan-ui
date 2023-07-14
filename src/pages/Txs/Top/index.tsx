@@ -26,7 +26,7 @@ const Top = ({ address, addressChainId }: Props) => {
       {address && (
         <div className="txs-top-txId">
           <div>Address:</div>
-          <div className="tx-top-txId-container">
+          <div className="txs-top-txId-container">
             <a
               href={getExplorerLink({
                 chainId: addressChainId,
