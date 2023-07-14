@@ -29,6 +29,7 @@ import {
 import { useLogger } from "../context/LoggerContext";
 import { useEnvironment } from "../context/EnvironmentContext";
 import { useEthereumProvider } from "../context/EthereumProviderContext";
+import { getDeliveryProviderStatusBySourceTransaction } from "../utils/deliveryProviderStatusApi";
 
 //test tx hash 0xcf66519f71be66c7ab5582e864a37d686c6164a32b3df22c89b32119ecfcfc5e
 //test sequence 1
@@ -37,6 +38,7 @@ import { useEthereumProvider } from "../context/EthereumProviderContext";
 //redelivery vaa:
 // 01000000000200d92d417b5f6a20e998652d952f3af3926572f7fd143bb7ad393355f8d1bef64e65ed3f4cff4024fec68fb5f47bf557cb435801dd3896b4a9893a3b4cb3603250000147243d7b7b0e4360b3d918b1cf8a9f0cbbd95e42bf14989ecd4319a57726fab4361ab4da00534875ede2cc2e3ac13cb25a43dd583eaa2d654bbc254080a64b710100000263000000000002000000000000000000000000e66c1bc1b369ef4f376b84373e3aa004e8f4c0830000000000000008c802010002000000000000000000000000e66c1bc1b369ef4f376b84373e3aa004e8f4c083000000000000000700040000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007a1200000000000000000000000000000000000000000000000000000004285e604920000000000000000000000001ef9e15c3bbf0555860b5009b51722027134d53a00000000000000000000000090f8bf6a479f320ead074411a4b0e7944ea8c9c1
 // moonbeam mainnet example 0x6a2c36673e8cbbef29cc3bad4eabfb8edb0851c0d27defba300f80561ccecec6
+// moonbeam testnet example 0x9e6e57b40afc622f66c7f29613e71da25e0137e45a3582043058527c13501c86
 export default function DeliveryStatus() {
   const { environment } = useEnvironment();
   const { log } = useLogger();
@@ -78,6 +80,16 @@ export default function DeliveryStatus() {
 
   useEffect(() => {
     if (queryType === "txHash" && txHash) {
+      getDeliveryProviderStatusBySourceTransaction(environment, txHash).catch(e => {
+        log &&
+          log(
+            "Error getting delivery provider status for txHash: " + txHash,
+            "DeliveryStatus",
+            "error",
+          );
+        log && log(e.message, "DeliveryStatus", "error");
+      });
+
       setVaaResults([]);
       log && log("Fetching VAA for txHash: " + txHash, "DeliveryStatus", "info");
       setError("");

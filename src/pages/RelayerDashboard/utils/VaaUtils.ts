@@ -340,3 +340,79 @@ export async function manualDeliver(
     throw e;
   }
 }
+
+type CoinAmount = {
+  nativeQuote: number;
+  chain: ChainId;
+  spotPrice: number;
+  usdValue: number;
+};
+
+//TODO sdk
+type SendEventRecord = {
+  sequence: string;
+  deliveryQuote: string;
+  paymentForExtraReceiverValue: string;
+};
+
+export async function getCaptureAmount(
+  sourceChain: ChainInfo,
+  sourceTxHash: string,
+  sourceSequence: number,
+  txReceipt?: ethers.providers.TransactionReceipt,
+): Promise<CoinAmount> {
+  if (!txReceipt) {
+    const provider = getEthersProvider(sourceChain);
+    txReceipt = await provider.getTransactionReceipt(sourceTxHash);
+  }
+
+  const relayerContractLogs = txReceipt.logs.filter(l => {
+    return l.address.toLowerCase() === sourceChain.relayerContractAddress.toLowerCase();
+  });
+
+  //TODO pull this off the sdk, don't hardcode
+  const eventAbi = [
+    "event SendEvent(uint64 indexed sequence, uint256 deliveryQuote, uint256 paymentForExtraReceiverValue)",
+  ];
+
+  const requiredSendEvent = relayerContractLogs.filter(log => {
+    const iface = new ethers.utils.Interface(eventAbi);
+    try {
+      const parsedEvent = iface.parseLog(log);
+      if (parsedEvent.args[0].toString() === sourceSequence.toString()) {
+        return true;
+      }
+    } catch (e) {
+      //If it explodes, it was a deliver event
+      return false;
+    }
+  });
+
+  if (requiredSendEvent.length !== 1) {
+    throw new Error(
+      "Could not find send event for sequence " + sourceSequence + "in transaction " + sourceTxHash,
+    );
+  }
+
+  const iface = new ethers.utils.Interface(eventAbi);
+  const parsedEvent = iface.parseLog(requiredSendEvent[0]);
+
+  const deliveryQuote = parsedEvent.args[1].toString();
+  const paymentForExtraReceiverValue = parsedEvent.args[2].toString();
+
+  const deliveryQuoteNative = parseFloat(
+    ethers.utils.formatUnits(deliveryQuote, sourceChain.nativeCurrencyDecimals),
+  );
+  const paymentForExtraReceiverValueNative = parseFloat(
+    ethers.utils.formatUnits(paymentForExtraReceiverValue, sourceChain.nativeCurrencyDecimals),
+  );
+
+  const totalCapture = deliveryQuoteNative + paymentForExtraReceiverValueNative;
+
+  return {
+    nativeQuote: totalCapture,
+    chain: sourceChain.chainId,
+    spotPrice: sourceChain.nativeCurrencyUsdPrice,
+    usdValue: totalCapture * sourceChain.nativeCurrencyUsdPrice,
+  };
+}
