@@ -1,5 +1,5 @@
-import { CopyIcon } from "@radix-ui/react-icons";
-import { BlockchainIcon, SignatureCircle } from "src/components/atoms";
+import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
+import { BlockchainIcon, SignatureCircle, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import WormIcon from "src/icons/wormIcon.svg";
 import RelayIcon from "src/icons/relayIcon.svg";
@@ -18,6 +18,15 @@ type Props = {
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
   txData: GetTransactionsOutput;
 };
+
+const UNKNOWN_APP_ID = "UNKNOWN";
+
+const NotFinalDestinationTooltip = () => (
+  <div>
+    Address shown corresponds to a Smart Contract handling the transaction. Funds will be sent to
+    your recipient address.
+  </div>
+);
 
 const Overview = ({ VAAData, txData }: Props) => {
   const currentNetwork = getCurrentNetwork();
@@ -43,6 +52,7 @@ const Overview = ({ VAAData, txData }: Props) => {
 
   const {
     payloadType,
+    callerAppId,
     decimals: payloadTokenDecimals,
     name: payloadTokenName,
     symbol: payloadTokenSymbol,
@@ -53,6 +63,7 @@ const Overview = ({ VAAData, txData }: Props) => {
   const isAttestation = txType[payloadType] === "Attestation";
 
   const {
+    appIds,
     fromChain: stdFromChain,
     fromAddress: stdFromAddress,
     toChain: stdToChain,
@@ -82,6 +93,7 @@ const Overview = ({ VAAData, txData }: Props) => {
   const endDate = globalToTimestamp;
   const tokenChain = stdTokenChain || payloadTokenChain;
   const tokenAddress = stdTokenAddress || payloadTokenAddress;
+  const isUnknownApp = callerAppId === UNKNOWN_APP_ID || appIds?.includes(UNKNOWN_APP_ID);
 
   const parsedOriginAddress = parseAddress({
     value: fromAddress,
@@ -340,7 +352,14 @@ const Overview = ({ VAAData, txData }: Props) => {
                 </div>
               </div>
               <div>
-                <div className="tx-overview-graph-step-title">Destination wallet</div>
+                <div className="tx-overview-graph-step-title">
+                  Destination wallet
+                  {isUnknownApp && (
+                    <Tooltip tooltip={<NotFinalDestinationTooltip />} type="info">
+                      <InfoCircledIcon />
+                    </Tooltip>
+                  )}
+                </div>
                 <div className="tx-overview-graph-step-description">
                   <a
                     href={getExplorerLink({

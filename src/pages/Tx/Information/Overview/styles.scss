@@ -134,10 +134,16 @@
       }
 
       &-title {
+        @include centered-row;
         @include text-p2;
 
+        gap: 8px;
         color: var(--color-primary-100);
         margin-bottom: 8px;
+
+        & svg {
+          color: var(--color-success-100);
+        }
       }
 
       &-description {

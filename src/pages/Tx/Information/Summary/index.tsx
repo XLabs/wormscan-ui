@@ -11,6 +11,7 @@ type Props = {
   symbol?: string;
   fee?: string;
   payloadType: number;
+  startDate?: string | Date;
 };
 
 const Summary = ({
@@ -20,17 +21,33 @@ const Summary = ({
   originChainId,
   destinationChainId,
   payloadType,
+  startDate,
 }: Props) => {
   const isAttestation = txType[payloadType] === "Attestation";
+  const parsedStartDate = new Date(startDate).toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  const formattedStartDate = parsedStartDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
 
   return (
     <div className="tx-information-summary">
-      {transactionTimeInMinutes && (
+      {transactionTimeInMinutes ? (
         <div>
           <div className="key">Tx Time:</div>
           <div className={"value"}>
-            {transactionTimeInMinutes ? `${transactionTimeInMinutes} MIN` : "In progress"}{" "}
+            {transactionTimeInMinutes ? `${transactionTimeInMinutes} MIN` : "In progress"}
           </div>
+        </div>
+      ) : (
+        <div>
+          <div className="key">Timestamp:</div>
+          <div className={"value"}>{formattedStartDate}</div>
         </div>
       )}
       {fee && (
