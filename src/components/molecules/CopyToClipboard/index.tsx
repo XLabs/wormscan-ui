@@ -35,7 +35,7 @@ const CopyToClipboard = ({ children, tooltip, toCopy }: Props) => {
 
   return (
     <div className="copy-to-clipboard" onClick={copyText}>
-      <Tooltip tooltip={tooltip || "Copied!"} side="right" open={open}>
+      <Tooltip tooltip={tooltip || "Copied!"} side="right" open={open} controlled={true}>
         <div className="copy-to-clipboard-children">{children}</div>
       </Tooltip>
     </div>

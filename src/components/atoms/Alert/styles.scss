@@ -1,0 +1,22 @@
+@import "src/styles/globals.scss";
+
+.alert {
+  display: flex;
+  gap: 16px;
+  padding: 16px 24px;
+  border-radius: 4px;
+  background: var(--color-information-15);
+  width: 100%;
+
+  & svg {
+    width: 24px;
+    height: 24px;
+    color: var(--color-information-100);
+  }
+
+  &-text {
+    @include text-p2;
+
+    color: var(--color-primary-50);
+  }
+}
