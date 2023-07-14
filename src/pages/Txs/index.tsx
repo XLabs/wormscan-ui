@@ -112,16 +112,15 @@ const Txs = () => {
               } = tx || {};
               const {
                 fromChain: stdFromChain,
-                fromAddress: stdFromAddress,
                 toChain: stdToChain,
                 toAddress: stdToAddress,
               } = standardizedProperties || {};
               const { originTx, destinationTx } = globalTx || {};
-              const { chainId: globalFromChainId, from: globalFrom } = originTx || {};
+              const { from: globalFrom } = originTx || {};
               const { chainId: globalToChainId, from: globalTo } = destinationTx || {};
 
-              const fromChain = stdFromChain || globalFromChainId || emitterChain;
-              const fromAddress = stdFromAddress || globalFrom;
+              const fromChain = emitterChain || stdFromChain;
+              const fromAddress = globalFrom;
               const toChain = stdToChain || globalToChainId;
               const toAddress = stdToAddress || globalTo;
 
