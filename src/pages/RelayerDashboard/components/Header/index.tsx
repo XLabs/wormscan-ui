@@ -74,7 +74,7 @@ const Header = () => {
                 connect();
               }
             }}
-            className="connect-button-RELAYER"
+            className="button-RELAYER"
           >
             {isConnected ? `Disconnect ${shortAddress(signerAddress)}` : "Connect Wallet"}
           </button>
