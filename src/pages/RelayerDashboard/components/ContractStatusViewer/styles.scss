@@ -1,0 +1,44 @@
+@import "src/styles/globals.scss";
+
+.contract-status-view {
+  .tx-top {
+    @include centered-column;
+
+    gap: 16px;
+    margin: 32px 0;
+
+    &-header {
+      @include centered-row;
+      gap: 24px;
+      width: 100%;
+
+      &-title {
+        @include text-h5;
+      }
+    }
+  }
+
+  .errored {
+    color: red;
+    margin-bottom: 24px;
+  }
+
+  .spacer {
+    height: 10px;
+  }
+
+  .tab-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30;
+
+    &-button {
+      @include button-secondary;
+      width: 350px;
+      height: 50px;
+      margin-bottom: 30px;
+    }
+  }
+}
