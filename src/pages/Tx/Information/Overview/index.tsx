@@ -162,7 +162,19 @@ const Overview = ({ VAAData, txData }: Props) => {
                 </div>
                 <div>
                   <div className="tx-overview-graph-step-title">Token Name</div>
-                  <div className="tx-overview-graph-step-description">{payloadTokenName}</div>
+                  <div className="tx-overview-graph-step-description">
+                    <a
+                      href={getExplorerLink({
+                        chainId: tokenChain,
+                        value: tokenAddress,
+                        base: "token",
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {payloadTokenName}
+                    </a>
+                  </div>
                 </div>
               </>
             ) : (
