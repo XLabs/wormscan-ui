@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Select } from "src/components/atoms";
+import { NavLink, Select } from "src/components/atoms";
 
 import Search from "./Search";
 import { useEthereumProvider } from "../../context/EthereumProviderContext";
@@ -26,7 +26,7 @@ const NETWORK_LIST: NetworkSelectProps[] = [
   { label: "Tilt Devnet", value: "DEVNET" },
 ];
 
-const Header = () => {
+const Header = ({ page }: { page: "dashboard" | "contracts" }) => {
   const { environment, setEnvironment } = useEnvironment();
 
   useEffect(() => {
@@ -42,8 +42,21 @@ const Header = () => {
 
   return (
     <header className="header-RELAYER" data-testid="header">
-      <div className="header-RELAYER-actions">
-        <ChainSelector />
+      <div
+        className="header-RELAYER-actions"
+        style={{ marginBottom: page === "dashboard" ? 16 : -16 }}
+      >
+        {page === "dashboard" ? (
+          <NavLink className="header-RELAYER-nav" to="/contract-states">
+            Contract States
+          </NavLink>
+        ) : (
+          <NavLink className="header-RELAYER-nav" to="/relayer-dashboard">
+            Go back to dashboard
+          </NavLink>
+        )}
+
+        {page === "dashboard" && <ChainSelector />}
         <Select
           name={"relayerNetworkSelect"}
           value={NETWORK_LIST.find(a => a.value === environment.network)}
@@ -53,23 +66,25 @@ const Header = () => {
           className={"header-RELAYER-network-selector"}
         />
 
-        <div>
-          <button
-            onClick={() => {
-              if (isConnected) {
-                disconnect();
-              } else {
-                connect();
-              }
-            }}
-            className="button-RELAYER"
-          >
-            {isConnected ? `Disconnect ${shortAddress(signerAddress)}` : "Connect Wallet"}
-          </button>
-        </div>
+        {page === "dashboard" && (
+          <div>
+            <button
+              onClick={() => {
+                if (isConnected) {
+                  disconnect();
+                } else {
+                  connect();
+                }
+              }}
+              className="button-RELAYER"
+            >
+              {isConnected ? `Disconnect ${shortAddress(signerAddress)}` : "Connect Wallet"}
+            </button>
+          </div>
+        )}
       </div>
 
-      <Search />
+      {page === "dashboard" && <Search />}
     </header>
   );
 };

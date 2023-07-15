@@ -10,10 +10,18 @@
   border-bottom: 1px solid var(--color-white-10);
   padding: 24px 42px 32px 42px;
 
+  &-nav {
+    color: var(--color-white-90);
+    margin-right: auto;
+    text-decoration: none;
+    &:hover {
+      color: var(--color-secondary-600);
+    }
+  }
+
   &-actions {
     @include centered-row;
     justify-content: flex-end;
-    margin-bottom: 16px;
     gap: 16px;
   }
 

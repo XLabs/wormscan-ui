@@ -122,7 +122,11 @@ export type DeliveryMetaData = {
 
 function getBaseUrl(environment: Environment): string {
   if (environment.network === "MAINNET") {
-    return CORS_PROXY + ""; //"http://a6163c82a2a6f4c1d9c2cf2c35f0733b-758274193:80/relay-status?";
+    return (
+      CORS_PROXY +
+      "http://ade18dde9976749fca82c41f05d29cbe-364125254.us-east-2.elb.amazonaws.com/relay-status?"
+    );
+    // return CORS_PROXY + ""; //"http://a6163c82a2a6f4c1d9c2cf2c35f0733b-758274193:80/relay-status?";
   } else if (environment.network === "TESTNET") {
     return (
       CORS_PROXY +
