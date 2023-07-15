@@ -62,7 +62,7 @@ export async function populateDeliveryLifeCycleRecordsByTxHash(
 ): Promise<DeliveryLifecycleRecord[]> {
   let sourceTransactionResponse;
   let targetTransactionResponse;
-  let output = [] as DeliveryLifecycleRecord[];
+  const output = [] as DeliveryLifecycleRecord[];
 
   try {
     sourceTransactionResponse = await getDeliveryProviderStatusBySourceTransaction(
@@ -112,7 +112,7 @@ export async function populateDeliveryLifecycleRecordByVaa(
   environment: Environment,
   vaa: string,
 ): Promise<DeliveryLifecycleRecord> {
-  let output = {} as DeliveryLifecycleRecord;
+  const output = {} as DeliveryLifecycleRecord;
   const rawVaa = decodeVaaFromBase64orHex(vaa);
   output.vaa = rawVaa;
   const parsedVaa = parseVaa(rawVaa);

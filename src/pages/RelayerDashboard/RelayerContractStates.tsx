@@ -1,5 +1,7 @@
 import "./styles.scss";
 
+import ContractStates from "./components/ContractStatusViewer";
+
 import DeliveryStatus from "src/pages/RelayerDashboard/components/DeliveryStatus";
 import Header from "src/pages/RelayerDashboard/components/Header";
 import { LoggerProvider } from "src/pages/RelayerDashboard/context/LoggerContext";
@@ -20,10 +22,10 @@ const RelayerDashboard = () => {
         <LoggerProvider>
           <EthereumProviderProvider>
             <ContractStateProvider>
-              <Header page="dashboard" />
+              <Header page="contracts" />
               <div className="main-content">
                 <div className="relayer-dashboard">
-                  <DeliveryStatus />
+                  <ContractStates />
                 </div>
               </div>
             </ContractStateProvider>

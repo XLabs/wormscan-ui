@@ -18,11 +18,10 @@ import {
   populateDeliveryLifeCycleRecordsByTxHash,
   populateDeliveryLifecycleRecordByEmitterSequence,
   populateDeliveryLifecycleRecordByVaa,
-} from "src/pages/RelayerDashboard//utils/VaaUtils";
-import { useLogger } from "src/pages/RelayerDashboard//context/LoggerContext";
-import { useEnvironment } from "src/pages/RelayerDashboard//context/EnvironmentContext";
-import { useEthereumProvider } from "src/pages/RelayerDashboard//context/EthereumProviderContext";
-import { getDeliveryProviderStatusBySourceTransaction } from "src/pages/RelayerDashboard//utils/deliveryProviderStatusApi";
+} from "src/pages/RelayerDashboard/utils/VaaUtils";
+import { useEnvironment } from "src/pages/RelayerDashboard/context/EnvironmentContext";
+import { useEthereumProvider } from "src/pages/RelayerDashboard/context/EthereumProviderContext";
+import { getDeliveryProviderStatusBySourceTransaction } from "src/pages/RelayerDashboard/utils/deliveryProviderStatusApi";
 import { BlockSection } from "src/pages/Tx/Information/RawData";
 import { Loader } from "src/components/atoms";
 import "./styles.scss";
@@ -45,7 +44,6 @@ import "./styles.scss";
 
 export default function DeliveryStatus() {
   const { environment, userInput, chain } = useEnvironment();
-  const { log } = useLogger();
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -70,7 +68,7 @@ export default function DeliveryStatus() {
 
     let queryType;
 
-    if (userInput.startsWith("0x")) {
+    if (userInput.startsWith("0x") && userInput.length === 66) {
       queryType = "txHash";
     } else if (!isNaN(+userInput)) {
       const maxUint64 = BigInt("18446744073709551615");
@@ -124,6 +122,7 @@ export default function DeliveryStatus() {
         });
     } else {
       setError("Invalid query type");
+      setLoading(false);
     }
   }, [chain, emitter, environment, userInput]);
 
