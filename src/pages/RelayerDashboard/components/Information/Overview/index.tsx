@@ -3,11 +3,11 @@ import { Alert, BlockchainIcon, Loader, SignatureCircle, Tooltip } from "src/com
 import { CopyToClipboard } from "src/components/molecules";
 import WormIcon from "src/icons/wormIcon.svg";
 import RelayIcon from "src/icons/relayIcon.svg";
-import { GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
+import { ChainId, GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress } from "src/utils/crypto";
 import { formatCurrency } from "src/utils/number";
-import { ChainId, parseVaa } from "@certusone/wormhole-sdk";
+import { ParsedVaa, parseVaa, tryNativeToHexString } from "@certusone/wormhole-sdk";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { BREAKPOINTS, colorStatus, getGuardianSet, txType } from "src/consts";
 import { parseTx, parseAddress } from "src/utils/crypto";
@@ -27,7 +27,7 @@ import {
   DeliveryTargetInfo,
   RedeliveryInstruction,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { Button, CircularProgress, TextField } from "@mui/material";
 import { useEthereumProvider } from "src/pages/RelayerDashboard/context/EthereumProviderContext";
 import { getChainInfo } from "src/pages/RelayerDashboard/utils/environment";
@@ -79,11 +79,15 @@ export function DeliveryInstructionDisplay({ instruction }: { instruction: Deliv
     <div style={{ margin: "10px" }}>
       <h4>Delivery Instruction</h4>
       {Divider}
-      <div>{"Target Chain: " + instruction.targetChainId}</div>
+      <div>{`Target Chain: ${instruction.targetChainId} (${
+        ChainId[instruction.targetChainId]
+      })`}</div>
       <div>{"Target Address: " + Buffer.from(instruction.targetAddress).toString("hex")}</div>
       <div>{"Extra Receiver Value: " + instruction.extraReceiverValue.toString()}</div>
       <div>{"Refund Address: " + Buffer.from(instruction.refundAddress).toString("hex")}</div>
-      <div>{"Refund Chain: " + instruction.refundChainId}</div>
+      <div>{`Refund Chain: ${instruction.refundChainId} (${
+        ChainId[instruction.refundChainId]
+      })`}</div>
       <div>
         {"Refund Delivery Provider: " +
           Buffer.from(instruction.refundDeliveryProvider).toString("hex")}
@@ -264,16 +268,26 @@ export function ManualDeliverDeliveryVaa({ rawVaa }: { rawVaa: Uint8Array }) {
   ]);
 
   return (
-    <div style={{ margin: "10px", padding: "10px" }}>
-      <h4>Manual Deliver</h4>
-      <Button
+    <div style={{ marginTop: "6px" }}>
+      {/* <h4>Manual Deliver</h4> */}
+
+      <div style={{ marginBottom: "6px" }}>
+        <button
+          className="manual-delivery-btn"
+          onClick={onManualDeliver}
+          disabled={!correctChain || isManualDelivering || !walletIsConnected}
+        >
+          Manual Deliver
+        </button>
+      </div>
+      {/* <Button
         onClick={onManualDeliver}
         disabled={!correctChain || isManualDelivering}
         variant="contained"
         style={{ margin: "10px" }}
       >
         Manual Deliver
-      </Button>
+      </Button> */}
       {!correctChain && <div>Wallet is not connected to the correct EVM network</div>}
       {!correctChain && (
         <div>
@@ -282,8 +296,10 @@ export function ManualDeliverDeliveryVaa({ rawVaa }: { rawVaa: Uint8Array }) {
         </div>
       )}
       {!correctChain && !walletIsConnected && <div>Wallet is not connected</div>}
-      {providerError && <div>{"Provider Error: " + providerError}</div>}
-      {manualDeliverError && <div>{manualDeliverError}</div>}
+      {providerError && <div className="errored-info">{"Provider Error: " + providerError}</div>}
+      {manualDeliverError && (
+        <div className="errored-info">{"Manual Delivery Error: " + manualDeliverError}</div>
+      )}
       {isManualDelivering && <CircularProgress />}
       {manualDeliverTxHash && (
         <div>{"Successfully landed the delivery: " + manualDeliverTxHash}</div>
@@ -292,23 +308,30 @@ export function ManualDeliverDeliveryVaa({ rawVaa }: { rawVaa: Uint8Array }) {
   );
 }
 
-const VaaReader = ({ rawVaa }: { rawVaa: Uint8Array }) => {
-  const vaa = parseVaa(rawVaa);
-  const info: DeliveryInstruction | RedeliveryInstruction | null = parseGenericRelayerVaa(vaa);
-
+const VaaReader = ({
+  rawVaa,
+  vaa,
+  info,
+  isDelivery,
+}: {
+  rawVaa: Uint8Array;
+  vaa: ParsedVaa;
+  info: DeliveryInstruction | RedeliveryInstruction | null;
+  isDelivery: boolean;
+}) => {
   const vaaHeaderInfo = (
     <div style={{ margin: "10px" }}>
       <h4>VAA Info </h4>
       {Divider}
-      <div>Chain: {vaa.emitterChain}</div>
+      <div>
+        Chain: {vaa.emitterChain} ({ChainId[vaa.emitterChain]})
+      </div>
       <div>Emitter: {Buffer.from(vaa.emitterAddress).toString("hex")}</div>
       <div>Sequence: {vaa.sequence.toString()}</div>
       <div>Hash: {Buffer.from(vaa.hash).toString("hex")}</div>
       <div>Timestamp: {vaa.timestamp.toString()}</div>
     </div>
   );
-
-  const isDelivery = info && !isRedelivery(info);
 
   const vaaBodyInfo =
     info == null ? (
@@ -321,354 +344,651 @@ const VaaReader = ({ rawVaa }: { rawVaa: Uint8Array }) => {
 
   return (
     <div style={{ margin: "10px" }}>
-      {vaaHeaderInfo}
+      {/* {vaaHeaderInfo}
       <div style={{ height: "10px" }} />
-      {vaaBodyInfo}
+      {vaaBodyInfo} */}
+
       {isDelivery && <PullDeliveryInfo rawVaa={rawVaa} />}
-      {isDelivery && <ManualDeliverDeliveryVaa rawVaa={rawVaa} />}
+      {/* {isDelivery && <ManualDeliverDeliveryVaa rawVaa={rawVaa} />} */}
     </div>
   );
 };
 
 type Props = {
   lifecycleRecords: DeliveryLifecycleRecord[];
+  txsData?: any[];
 };
 
-const Overview = ({ lifecycleRecords }: Props) => {
+const Overview = ({ lifecycleRecords, txsData }: Props) => {
   const { environment } = useEnvironment();
 
-  const lifecycle = lifecycleRecords.find(record => !!record.vaa);
-  const vaa = lifecycle?.vaa;
-  const parsedVaa = parseVaa(vaa);
+  const { connect, disconnect, signerAddress, providerError } = useEthereumProvider();
+  const isConnected = !!signerAddress;
+  const [manualDeliverVaa, setManualDeliverVaa] = useState<Uint8Array>(null);
 
-  // const vaaReaders = lifecycleRecords.map((record, idx) => {
-  //   return record.vaa ? (
-  //     <div key={"record" + idx} style={{ margin: "10px" }}>
-  //       <VaaReader key={idx} rawVaa={record.vaa} />
-  //     </div>
-  //   ) : null;
-  // });
+  const lifecycleVaas = lifecycleRecords.filter(record => !!record.vaa);
+  if (lifecycleVaas.length <= 0) return <div>No VAA was found</div>;
 
-  if (!vaa) return <div>No VAA was found</div>;
+  const render = lifecycleVaas.map((lifecycleRecord, idx) => {
+    // const {
+    //   id: VAAId,
+    //   timestamp,
+    //   tokenAmount,
+    //   usdAmount,
+    //   symbol,
+    //   emitterChain: txEmitterChain,
+    //   emitterNativeAddress,
+    //   standardizedProperties,
+    //   globalTx,
+    //   payload,
+    // } = (txsData[idx].data as GetTransactionsOutput) || {};
+    // console.log("VAAId??", VAAId);
+    // console.log({ txsData });
 
-  const { guardianSetIndex, emitterAddress, emitterChain, guardianSignatures, hash, sequence } =
-    parsedVaa || {};
-  const guardianSetList = getGuardianSet(guardianSetIndex);
+    // const { originTx, destinationTx } = globalTx || {};
 
-  const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
-  const parsedHash = Buffer.from(hash).toString("hex");
-  const parsedSequence = Number(sequence);
-  const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
-    index,
-    signature: Buffer.from(signature).toString("hex"),
-    name: guardianSetList?.[index]?.name,
-  }));
+    // const {
+    //   chainId: globalToChainId,
+    //   from: globalTo,
+    //   timestamp: globalToTimestamp,
+    //   txHash: globalToRedeemTx,
+    // } = destinationTx || {};
 
-  const totalGuardiansNeeded = environment.network === "MAINNET" ? 13 : 1;
-  const guardianSignaturesCount = guardianSignatures?.length || 0;
+    // const { from: globalFrom, timestamp: globalFromTimestamp } = originTx || {};
 
-  // const {
-  //   chainId: globalToChainId,
-  //   from: globalTo,
-  //   timestamp: globalToTimestamp,
-  //   txHash: globalToRedeemTx,
-  // } = destinationTx || {};
+    // const {
+    //   appIds,
+    //   fromChain: stdFromChain,
+    //   toChain: stdToChain,
+    //   toAddress: stdToAddress,
+    //   tokenChain: stdTokenChain,
+    //   tokenAddress: stdTokenAddress,
+    // } = standardizedProperties || {};
 
-  const fromChain = emitterChain;
-  // const fromAddress = globalFrom;
-  // const toChain = stdToChain || globalToChainId;
-  // const toAddress = stdToAddress || globalTo;
-  // const startDate = timestamp || globalFromTimestamp;
-  // const endDate = globalToTimestamp;
-  // const tokenChain = stdTokenChain || payloadTokenChain;
-  // const tokenAddress = stdTokenAddress || payloadTokenAddress;
-  // const isUnknownApp = callerAppId === UNKNOWN_APP_ID || appIds?.includes(UNKNOWN_APP_ID);
+    // const fromAddress = globalFrom;
+    // const toChain = stdToChain;
+    // const toAddress = stdToAddress;
+    // const startDate = timestamp;
+    // const endDate = globalToTimestamp;
+    // const tokenChain = stdTokenChain;
+    // const tokenAddress = stdTokenAddress;
 
-  // const parsedOriginAddress = parseAddress({
-  //   value: fromAddress,
-  //   chainId: fromChain as ChainId,
-  // });
+    // const parsedOriginAddress = parseAddress({
+    //   value: fromAddress,
+    //   chainId: fromChain as ChainId,
+    // });
 
-  // const parsedEmitterAddress = parseAddress({
-  //   value: emitterNativeAddress,
-  //   chainId: emitterChain as ChainId,
-  // });
+    // const parsedEmitterAddress = parseAddress({
+    //   value: emitterNativeAddress,
+    //   chainId: emitterChain as ChainId,
+    // });
 
-  // const parsedDestinationAddress = parseAddress({
-  //   value: toAddress,
-  //   chainId: toChain as ChainId,
-  // });
+    // const parsedDestinationAddress = parseAddress({
+    //   value: toAddress,
+    //   chainId: toChain as ChainId,
+    // });
 
-  // const parsedRedeemTx = parseTx({ value: globalToRedeemTx, chainId: toChain as ChainId });
+    // const parsedRedeemTx = parseTx({ value: globalToRedeemTx, chainId: toChain as ChainId });
 
-  // const originDate = new Date(startDate).toLocaleString("en-US", {
-  //   year: "numeric",
-  //   month: "short",
-  //   day: "numeric",
-  //   hour: "2-digit",
-  //   minute: "2-digit",
-  //   hour12: false,
-  // });
-  // const destinationDate = new Date(endDate).toLocaleString("en-US", {
-  //   year: "numeric",
-  //   month: "short",
-  //   day: "numeric",
-  //   hour: "2-digit",
-  //   minute: "2-digit",
-  //   hour12: false,
-  // });
+    // const originDate = new Date(startDate).toLocaleString("en-US", {
+    //   year: "numeric",
+    //   month: "short",
+    //   day: "numeric",
+    //   hour: "2-digit",
+    //   minute: "2-digit",
+    //   hour12: false,
+    // });
+    // const destinationDate = new Date(endDate).toLocaleString("en-US", {
+    //   year: "numeric",
+    //   month: "short",
+    //   day: "numeric",
+    //   hour: "2-digit",
+    //   minute: "2-digit",
+    //   hour12: false,
+    // });
 
-  // const amountSent = formatCurrency(Number(tokenAmount));
-  // const amountSentUSD = formatCurrency(Number(usdAmount));
+    // const amountSent = formatCurrency(Number(tokenAmount));
+    // const amountSentUSD = formatCurrency(Number(usdAmount));
 
-  // const originDateParsed = originDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
-  // const destinationDateParsed = destinationDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
+    // const originDateParsed = originDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
+    // const destinationDateParsed = destinationDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
 
-  return (
-    <>
-      {/* <Summary
-        startDate={startDate}
-        transactionTimeInMinutes={transactionTimeInMinutes}
-        fee={fee}
-        symbol={symbol}
-        originChainId={fromChain}
-        destinationChainId={toChain}
-        payloadType={payloadType}
-      /> */}
+    const vaa = lifecycleRecord.vaa;
+    const parsedVaa = parseVaa(vaa);
 
-      <div className="relayer-tx-overview">
-        <div className="relayer-tx-overview-graph">
-          <div className={`relayer-tx-overview-graph-step green source`}>
-            <div className="relayer-tx-overview-graph-step-name">
-              <div>SOURCE CHAIN</div>
-            </div>
-            <div className="relayer-tx-overview-graph-step-iconWrapper">
-              <div className="relayer-tx-overview-graph-step-iconContainer">
-                {fromChain && <BlockchainIcon chainId={fromChain} size={32} />}
+    const { guardianSetIndex, emitterAddress, emitterChain, guardianSignatures, hash, sequence } =
+      parsedVaa || {};
+    const guardianSetList = getGuardianSet(guardianSetIndex);
+
+    const bufferEmitterAddress = Buffer.from(emitterAddress).toString("hex");
+    const parsedEmitterAddress = parseAddress({
+      value: bufferEmitterAddress,
+      chainId: emitterChain as ChainId,
+    });
+    const parsedHash = Buffer.from(hash).toString("hex");
+
+    const parsedSequence = Number(sequence);
+    const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
+      index,
+      signature: Buffer.from(signature).toString("hex"),
+      name: guardianSetList?.[index]?.name,
+    }));
+
+    const totalGuardiansNeeded = environment.network === "MAINNET" ? 13 : 1;
+    const guardianSignaturesCount = guardianSignatures?.length || 0;
+
+    const fromChain = emitterChain;
+
+    const parseDate = (timestamp: number | string) => {
+      const date = new Date(timestamp).toLocaleString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+      return date.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
+    };
+
+    const instruction = parseGenericRelayerVaa(parsedVaa);
+    const deliveryInstruction = instruction as DeliveryInstruction | null;
+    const redeliveryInstruction = instruction as RedeliveryInstruction | null;
+    const isDelivery = deliveryInstruction && !isRedelivery(deliveryInstruction);
+
+    const deliveryParsedTargetAddress = parseAddress({
+      value: Buffer.from(deliveryInstruction?.targetAddress).toString("hex"),
+      chainId: deliveryInstruction?.targetChainId as ChainId,
+    });
+
+    const deliveryParsedRefundAddress = parseAddress({
+      value: Buffer.from(deliveryInstruction?.refundAddress).toString("hex"),
+      chainId: deliveryInstruction?.refundChainId as ChainId,
+    });
+
+    const deliveryParsedRefundProviderAddress = parseAddress({
+      value: Buffer.from(deliveryInstruction?.refundDeliveryProvider).toString("hex"),
+      chainId: deliveryInstruction?.refundChainId as ChainId,
+    });
+
+    const deliveryParsedSenderAddress = parseAddress({
+      value: Buffer.from(deliveryInstruction?.senderAddress).toString("hex"),
+      chainId: fromChain as ChainId,
+    });
+
+    const deliveryParsedSourceProviderAddress = parseAddress({
+      value: Buffer.from(deliveryInstruction?.sourceDeliveryProvider).toString("hex"),
+      chainId: fromChain as ChainId,
+    });
+
+    return (
+      <Fragment key={parsedHash}>
+        {/* <Summary
+          startDate={startDate}
+          transactionTimeInMinutes={transactionTimeInMinutes}
+          fee={fee}
+          symbol={symbol}
+          originChainId={fromChain}
+          destinationChainId={toChain}
+          payloadType={payloadType}
+        /> */}
+
+        <div className="relayer-tx-overview">
+          <div className="relayer-tx-overview-graph">
+            <div className={`relayer-tx-overview-graph-step green source`}>
+              <div className="relayer-tx-overview-graph-step-name">
+                <div>SOURCE CHAIN</div>
               </div>
-            </div>
-            <div className={`relayer-tx-overview-graph-step-data-container`}>
-              <div>
-                <div className="relayer-tx-overview-graph-step-title">Sent from</div>
-                <div className="relayer-tx-overview-graph-step-description">
-                  {fromChain && getChainName({ chainId: fromChain }).toUpperCase()}
+              <div className="relayer-tx-overview-graph-step-iconWrapper">
+                <div className="relayer-tx-overview-graph-step-iconContainer">
+                  {fromChain && <BlockchainIcon chainId={fromChain} size={32} />}
                 </div>
               </div>
-              {/* <>
-                <div style={{ order: tokenAmount ? 1 : 2 }}>
-                  {tokenAmount && (
-                    <>
-                      <div className="relayer-tx-overview-graph-step-title">Amount</div>
-                      <div className="relayer-tx-overview-graph-step-description">
-                        {amountSent}{" "}
-                        {symbol && (
-                          <a
-                            href={getExplorerLink({
-                              chainId: tokenChain,
-                              value: tokenAddress,
-                              base: "token",
-                            })}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {symbol}
-                          </a>
-                        )}
-                        ({amountSentUSD || "-"} USD)
-                      </div>
-                    </>
-                  )}
+              <div className={`relayer-tx-overview-graph-step-data-container`}>
+                <div>
+                  <div className="relayer-tx-overview-graph-step-title">Sent from</div>
+                  <div className="relayer-tx-overview-graph-step-description">
+                    {fromChain && getChainName({ chainId: fromChain }).toUpperCase()}
+                  </div>
                 </div>
-                <div style={{ order: tokenAmount ? 2 : 1 }}>
-                  {parsedOriginAddress && (
-                    <>
-                      <div className="relayer-tx-overview-graph-step-title">Source wallet</div>
+              </div>
+            </div>
+
+            <div className="relayer-tx-overview-graph-step green">
+              <div className="relayer-tx-overview-graph-step-name">
+                <div>EMITTER CONTRACT</div>
+              </div>
+              <div className="relayer-tx-overview-graph-step-iconWrapper">
+                <div className="relayer-tx-overview-graph-step-iconContainer">
+                  <img src={WormIcon} alt="" height={32} loading="lazy" />
+                </div>
+              </div>
+              <div className="relayer-tx-overview-graph-step-data-container">
+                <div>
+                  <div className="relayer-tx-overview-graph-step-title">Time</div>
+                  <div className="relayer-tx-overview-graph-step-description">
+                    {parseDate(parsedVaa.timestamp * 1000)}
+                  </div>
+                </div>
+                <div>
+                  <div className="relayer-tx-overview-graph-step-title">Contract Address</div>
+                  <div className="relayer-tx-overview-graph-step-description">
+                    <a
+                      href={getExplorerLink({
+                        chainId: fromChain,
+                        value: parsedEmitterAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {shortAddress(parsedEmitterAddress).toUpperCase()}
+                    </a>{" "}
+                    <CopyToClipboard toCopy={parsedEmitterAddress}>
+                      <CopyIcon />
+                    </CopyToClipboard>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className={`relayer-tx-overview-graph-step signatures ${colorStatus["COMPLETED"]}`}
+            >
+              <div className="relayer-tx-overview-graph-step-name">
+                <div>SIGNED VAA</div>
+              </div>
+              <div className="relayer-tx-overview-graph-step-iconWrapper">
+                <div className="relayer-tx-overview-graph-step-signaturesContainer">
+                  <SignatureCircle guardianSignatures={parsedGuardianSignatures} />
+                  <div className="relayer-tx-overview-graph-step-signaturesContainer-text">
+                    <div className="relayer-tx-overview-graph-step-signaturesContainer-text-number">
+                      {guardianSignaturesCount}/{totalGuardiansNeeded}
+                    </div>
+                    <div className="relayer-tx-overview-graph-step-signaturesContainer-text-description">
+                      Signatures
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relayer-tx-overview-graph-step-data-container signatures">
+                <div>
+                  <div className="relayer-tx-overview-graph-step-title">VAA</div>
+                  <div className="relayer-tx-overview-graph-step-description">
+                    {shortAddress(Buffer.from(vaa).toString("hex"))}
+                    <CopyToClipboard toCopy={Buffer.from(vaa).toString("hex")}>
+                      <CopyIcon />
+                    </CopyToClipboard>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {isDelivery && (
+              <>
+                <div className="relayer-tx-overview-graph-step green">
+                  <div className="relayer-tx-overview-graph-step-name">
+                    <div>VAA DELIVERY INSTRUCTIONS</div>
+                  </div>
+                  <div className="relayer-tx-overview-graph-step-iconWrapper">
+                    <div className="relayer-tx-overview-graph-step-iconContainer">
+                      <BlockchainIcon chainId={fromChain} size={32} />
+                    </div>
+                  </div>
+                  <div className="relayer-tx-overview-graph-step-data-container">
+                    <div>
+                      <div className="relayer-tx-overview-graph-step-title">Sender Address</div>
                       <div className="relayer-tx-overview-graph-step-description">
                         <a
                           href={getExplorerLink({
                             chainId: fromChain,
-                            value: parsedOriginAddress,
+                            value: deliveryParsedSenderAddress,
                             base: "address",
                             isNativeAddress: true,
                           })}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {shortAddress(parsedOriginAddress).toUpperCase()}
+                          {shortAddress(deliveryParsedSenderAddress).toUpperCase()}
                         </a>{" "}
-                        <CopyToClipboard toCopy={parsedOriginAddress}>
+                        <CopyToClipboard toCopy={deliveryParsedSenderAddress}>
                           <CopyIcon />
                         </CopyToClipboard>
                       </div>
-                    </>
-                  )}
+                    </div>
+                  </div>
                 </div>
-              </> */}
-            </div>
-          </div>
 
-          {/* <div className="relayer-tx-overview-graph-step green">
-          <div className="relayer-tx-overview-graph-step-name">
-            <div>EMITTER CONTRACT</div>
-          </div>
-          <div className="relayer-tx-overview-graph-step-iconWrapper">
-            <div className="relayer-tx-overview-graph-step-iconContainer">
-              <img src={WormIcon} alt="" height={32} loading="lazy" />
+                <div className="relayer-tx-overview-graph-step green">
+                  <div className="relayer-tx-overview-graph-step-name">
+                    <div></div>
+                  </div>
+                  <div className="relayer-tx-overview-graph-step-iconWrapper">
+                    <div className="relayer-tx-overview-graph-step-iconContainer">
+                      <BlockchainIcon chainId={deliveryInstruction.targetChainId} size={32} />
+                    </div>
+                  </div>
+                  <div className="relayer-tx-overview-graph-step-data-container">
+                    <div>
+                      <div className="relayer-tx-overview-graph-step-title">Delivery Provider</div>
+                      <div className="relayer-tx-overview-graph-step-description">
+                        <a
+                          href={getExplorerLink({
+                            chainId: deliveryInstruction.targetChainId,
+                            value: deliveryParsedSourceProviderAddress,
+                            base: "address",
+                            isNativeAddress: true,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {shortAddress(deliveryParsedSourceProviderAddress).toUpperCase()}
+                        </a>{" "}
+                        <CopyToClipboard toCopy={deliveryParsedSourceProviderAddress}>
+                          <CopyIcon />
+                        </CopyToClipboard>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="relayer-tx-overview-graph-step-title">Send to</div>
+                      <div className="relayer-tx-overview-graph-step-description">
+                        {getChainName({ chainId: deliveryInstruction.targetChainId }).toUpperCase()}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="relayer-tx-overview-graph-step-title">Target Address</div>
+                      <div className="relayer-tx-overview-graph-step-description">
+                        <a
+                          href={getExplorerLink({
+                            chainId: deliveryInstruction.targetChainId,
+                            value: deliveryParsedTargetAddress,
+                            base: "address",
+                            isNativeAddress: true,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {shortAddress(deliveryParsedTargetAddress).toUpperCase()}
+                        </a>{" "}
+                        <CopyToClipboard toCopy={deliveryParsedTargetAddress}>
+                          <CopyIcon />
+                        </CopyToClipboard>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relayer-tx-overview-graph-step green">
+                  <div className="relayer-tx-overview-graph-step-name">
+                    <div></div>
+                  </div>
+                  <div className="relayer-tx-overview-graph-step-iconWrapper">
+                    <div className="relayer-tx-overview-graph-step-iconContainer">
+                      <BlockchainIcon chainId={deliveryInstruction.refundChainId} size={32} />
+                    </div>
+                  </div>
+                  <div className="relayer-tx-overview-graph-step-data-container">
+                    <div>
+                      <div className="relayer-tx-overview-graph-step-title">Refund to</div>
+                      <div className="relayer-tx-overview-graph-step-description">
+                        {getChainName({ chainId: deliveryInstruction.refundChainId }).toUpperCase()}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="relayer-tx-overview-graph-step-title">Refund Address</div>
+                      <div className="relayer-tx-overview-graph-step-description">
+                        <a
+                          href={getExplorerLink({
+                            chainId: deliveryInstruction.refundChainId,
+                            value: deliveryParsedRefundAddress,
+                            base: "address",
+                            isNativeAddress: true,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {shortAddress(deliveryParsedRefundAddress).toUpperCase()}
+                        </a>{" "}
+                        <CopyToClipboard toCopy={deliveryParsedRefundAddress}>
+                          <CopyIcon />
+                        </CopyToClipboard>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="relayer-tx-overview-graph-step-title">Refund Provider</div>
+                      <div className="relayer-tx-overview-graph-step-description">
+                        <a
+                          href={getExplorerLink({
+                            chainId: deliveryInstruction.refundChainId,
+                            value: deliveryParsedRefundProviderAddress,
+                            base: "address",
+                            isNativeAddress: true,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {shortAddress(deliveryParsedRefundProviderAddress).toUpperCase()}
+                        </a>{" "}
+                        <CopyToClipboard toCopy={deliveryParsedRefundProviderAddress}>
+                          <CopyIcon />
+                        </CopyToClipboard>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {lifecycleRecord.DeliveryStatuses.map((deliveryStatus, deliveryStatusIdx) => {
+                  return (
+                    <Fragment key={`${idx}-${deliveryStatusIdx}`}>
+                      <div className={`relayer-tx-overview-graph-step green source`}>
+                        <div className="relayer-tx-overview-graph-step-name">
+                          <div>DELIVERY STATUS</div>
+                        </div>
+                        <div className="relayer-tx-overview-graph-step-iconWrapper">
+                          <div className="relayer-tx-overview-graph-step-iconContainer">
+                            <img src={RelayIcon} alt="" height={32} loading="lazy" />
+                          </div>
+                        </div>
+
+                        {deliveryStatus.status === "failed" ? (
+                          <div className={`relayer-tx-overview-graph-step-data-container`}>
+                            <div>
+                              <div className="relayer-tx-overview-graph-step-title">STATUS</div>
+                              <div className="relayer-tx-overview-graph-step-description red">
+                                FAILED
+                              </div>
+                            </div>
+                            <div>
+                              <div className="relayer-tx-overview-graph-step-title">Failed at</div>
+                              <div className="relayer-tx-overview-graph-step-description">
+                                {parseDate(deliveryStatus.failedAt)}
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className={`relayer-tx-overview-graph-step-data-container`}>
+                            <div>
+                              <div className="relayer-tx-overview-graph-step-title">STATUS</div>
+                              <div
+                                className={`relayer-tx-overview-graph-step-description ${
+                                  deliveryStatus.status === "redeemed" ? "green" : "orange"
+                                }`}
+                              >
+                                {deliveryStatus.status.toUpperCase()}
+                              </div>
+                            </div>
+                            <div>
+                              <div className="relayer-tx-overview-graph-step-title">More data</div>
+                              <div className="relayer-tx-overview-graph-step-description">DATA</div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div
+                        onClick={() => {
+                          setManualDeliverVaa(vaa);
+                        }}
+                        className="try-manual-delivery-btn"
+                      >
+                        Try Manual Deliver
+                      </div>
+                    </Fragment>
+                  );
+                })}
+              </>
+            )}
+
+            {/* 
+  
+          {globalToRedeemTx && (
+            <div className={`relayer-tx-overview-graph-step ${colorStatus["COMPLETED"]}`}>
+              <div className="relayer-tx-overview-graph-step-name">
+                <div>RELAYING</div>
+              </div>
+              <div className="relayer-tx-overview-graph-step-iconWrapper">
+                <div className="relayer-tx-overview-graph-step-iconContainer">
+                  <img src={RelayIcon} alt="" height={32} loading="lazy" />
+                </div>
+              </div>
+              <div className="relayer-tx-overview-graph-step-data-container">
+                <div>
+                  <div className="relayer-tx-overview-graph-step-title">Time</div>
+                  <div className="relayer-tx-overview-graph-step-description">{destinationDateParsed}</div>
+                </div>
+  
+                <div>
+                  <div className="relayer-tx-overview-graph-step-title">Redeem Tx</div>
+                  <div className="relayer-tx-overview-graph-step-description">
+                    <a
+                      href={getExplorerLink({
+                        chainId: toChain,
+                        value: parsedRedeemTx,
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {shortAddress(parsedRedeemTx).toUpperCase()}
+                    </a>{" "}
+                    <CopyToClipboard toCopy={parsedRedeemTx}>
+                      <CopyIcon />
+                    </CopyToClipboard>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="relayer-tx-overview-graph-step-data-container">
-            <div>
-              <div className="relayer-tx-overview-graph-step-title">Time</div>
-              <div className="relayer-tx-overview-graph-step-description">{originDateParsed}</div>
+          )}
+  
+          {toChain && (
+            <div className="relayer-tx-overview-graph-step green">
+              <div className="relayer-tx-overview-graph-step-name">
+                <div>DESTINATION CHAIN</div>
+              </div>
+              <div className="relayer-tx-overview-graph-step-iconWrapper">
+                <div className="relayer-tx-overview-graph-step-iconContainer">
+                  {toChain && <BlockchainIcon chainId={toChain} size={32} />}
+                </div>
+              </div>
+              <div className="relayer-tx-overview-graph-step-data-container">
+                <div>
+                  <div className="relayer-tx-overview-graph-step-title">Sent to</div>
+                  <div className="relayer-tx-overview-graph-step-description">
+                    {toChain && getChainName({ chainId: toChain }).toUpperCase()}
+                  </div>
+                </div>
+                <div>
+                  <div className="relayer-tx-overview-graph-step-title">
+                    Destination wallet
+                    {isUnknownApp && (
+                      <Tooltip tooltip={<NotFinalDestinationTooltip />} type="info">
+                        <InfoCircledIcon />
+                      </Tooltip>
+                    )}
+                  </div>
+                  <div className="relayer-tx-overview-graph-step-description">
+                    <a
+                      href={getExplorerLink({
+                        chainId: toChain,
+                        value: parsedDestinationAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {shortAddress(parsedDestinationAddress).toUpperCase()}
+                    </a>{" "}
+                    <CopyToClipboard toCopy={parsedDestinationAddress}>
+                      <CopyIcon />
+                    </CopyToClipboard>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <div className="relayer-tx-overview-graph-step-title">Contract Address</div>
-              <div className="relayer-tx-overview-graph-step-description">
-                <a
-                  href={getExplorerLink({
-                    chainId: fromChain,
-                    value: parsedEmitterAddress,
-                    base: "address",
-                    isNativeAddress: true,
-                  })}
-                  target="_blank"
-                  rel="noopener noreferrer"
+          )} */}
+
+            <div
+              style={{
+                marginTop: "60px",
+                display: "flex",
+                flexDirection: "column",
+                textAlign: "center",
+                width: "100%",
+              }}
+            >
+              {manualDeliverVaa && (
+                <div
+                  style={{
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                    borderTop: "1px solid black",
+                    borderBottom: "1px solid black",
+                  }}
                 >
-                  {shortAddress(parsedEmitterAddress).toUpperCase()}
-                </a>{" "}
-                <CopyToClipboard toCopy={parsedEmitterAddress}>
-                  <CopyIcon />
-                </CopyToClipboard>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className={`relayer-tx-overview-graph-step signatures ${colorStatus["COMPLETED"]}`}>
-          <div className="relayer-tx-overview-graph-step-name">
-            <div>SIGNED VAA</div>
-          </div>
-          <div className="relayer-tx-overview-graph-step-iconWrapper">
-            <div className="relayer-tx-overview-graph-step-signaturesContainer">
-              <SignatureCircle guardianSignatures={guardianSignatures} />
-              <div className="relayer-tx-overview-graph-step-signaturesContainer-text">
-                <div className="relayer-tx-overview-graph-step-signaturesContainer-text-number">
-                  {guardianSignaturesCount}/{totalGuardiansNeeded}
-                </div>
-                <div className="relayer-tx-overview-graph-step-signaturesContainer-text-description">
-                  Signatures
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="relayer-tx-overview-graph-step-data-container signatures">
-            <div>
-              <div className="relayer-tx-overview-graph-step-title">VAA ID</div>
-              <div className="relayer-tx-overview-graph-step-description">
-                {shortAddress(VAAId)}
-                <CopyToClipboard toCopy={VAAId}>
-                  <CopyIcon />
-                </CopyToClipboard>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {globalToRedeemTx && (
-          <div className={`relayer-tx-overview-graph-step ${colorStatus["COMPLETED"]}`}>
-            <div className="relayer-tx-overview-graph-step-name">
-              <div>RELAYING</div>
-            </div>
-            <div className="relayer-tx-overview-graph-step-iconWrapper">
-              <div className="relayer-tx-overview-graph-step-iconContainer">
-                <img src={RelayIcon} alt="" height={32} loading="lazy" />
-              </div>
-            </div>
-            <div className="relayer-tx-overview-graph-step-data-container">
-              <div>
-                <div className="relayer-tx-overview-graph-step-title">Time</div>
-                <div className="relayer-tx-overview-graph-step-description">{destinationDateParsed}</div>
-              </div>
-
-              <div>
-                <div className="relayer-tx-overview-graph-step-title">Redeem Tx</div>
-                <div className="relayer-tx-overview-graph-step-description">
-                  <a
-                    href={getExplorerLink({
-                      chainId: toChain,
-                      value: parsedRedeemTx,
-                      isNativeAddress: true,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <h4>Manual Delivery</h4>
+                  <div
+                    onClick={() => setManualDeliverVaa(null)}
+                    style={{ marginTop: 4, marginBottom: 4, cursor: "pointer" }}
                   >
-                    {shortAddress(parsedRedeemTx).toUpperCase()}
-                  </a>{" "}
-                  <CopyToClipboard toCopy={parsedRedeemTx}>
-                    <CopyIcon />
-                  </CopyToClipboard>
+                    Close
+                  </div>
+                  <div style={{ width: "50%", marginLeft: "25%" }}>
+                    <button
+                      onClick={() => {
+                        if (isConnected) {
+                          disconnect();
+                        } else {
+                          connect();
+                        }
+                      }}
+                      className="manual-delivery-btn"
+                    >
+                      {isConnected ? `Disconnect ${shortAddress(signerAddress)}` : "Connect Wallet"}
+                    </button>
+                  </div>
+                  <div style={{ width: "50%", marginLeft: "25%" }}>
+                    <ManualDeliverDeliveryVaa rawVaa={manualDeliverVaa} />
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        )}
+              )}
 
-        {toChain && (
-          <div className="relayer-tx-overview-graph-step green">
-            <div className="relayer-tx-overview-graph-step-name">
-              <div>DESTINATION CHAIN</div>
+              <VaaReader
+                rawVaa={vaa}
+                vaa={parsedVaa}
+                info={deliveryInstruction}
+                isDelivery={isDelivery}
+              />
             </div>
-            <div className="relayer-tx-overview-graph-step-iconWrapper">
-              <div className="relayer-tx-overview-graph-step-iconContainer">
-                {toChain && <BlockchainIcon chainId={toChain} size={32} />}
-              </div>
-            </div>
-            <div className="relayer-tx-overview-graph-step-data-container">
-              <div>
-                <div className="relayer-tx-overview-graph-step-title">Sent to</div>
-                <div className="relayer-tx-overview-graph-step-description">
-                  {toChain && getChainName({ chainId: toChain }).toUpperCase()}
-                </div>
-              </div>
-              <div>
-                <div className="relayer-tx-overview-graph-step-title">
-                  Destination wallet
-                  {isUnknownApp && (
-                    <Tooltip tooltip={<NotFinalDestinationTooltip />} type="info">
-                      <InfoCircledIcon />
-                    </Tooltip>
-                  )}
-                </div>
-                <div className="relayer-tx-overview-graph-step-description">
-                  <a
-                    href={getExplorerLink({
-                      chainId: toChain,
-                      value: parsedDestinationAddress,
-                      base: "address",
-                      isNativeAddress: true,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {shortAddress(parsedDestinationAddress).toUpperCase()}
-                  </a>{" "}
-                  <CopyToClipboard toCopy={parsedDestinationAddress}>
-                    <CopyIcon />
-                  </CopyToClipboard>
-                </div>
-              </div>
-            </div>
-          </div>
-        )} */}
-
-          <div style={{ marginTop: "120px" }}>
-            <VaaReader rawVaa={vaa} />
           </div>
         </div>
-      </div>
-    </>
-  );
+      </Fragment>
+    );
+  });
+
+  return render;
 };
 
 export default Overview;

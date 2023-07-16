@@ -321,6 +321,10 @@ export const mainnetEnv: Environment = {
   ],
 };
 
+export const getChainName = (chainId: ChainId, env: Environment) => {
+  return env.chainInfos.find(a => a.chainId === chainId);
+};
+
 // Use environment context instead
 // export function getEnvironment(): Environment {
 //   if (env === null) {

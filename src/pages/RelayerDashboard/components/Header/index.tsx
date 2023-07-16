@@ -37,8 +37,8 @@ const Header = ({ page }: { page: "dashboard" | "contracts" }) => {
     setEnvironment(network.value);
   };
 
-  const { connect, disconnect, signerAddress, providerError } = useEthereumProvider();
-  const isConnected = !!signerAddress;
+  // const { connect, disconnect, signerAddress, providerError } = useEthereumProvider();
+  // const isConnected = !!signerAddress;
 
   return (
     <header className="header-RELAYER" data-testid="header">
@@ -66,7 +66,7 @@ const Header = ({ page }: { page: "dashboard" | "contracts" }) => {
           className={"header-RELAYER-network-selector"}
         />
 
-        {page === "dashboard" && (
+        {/* {page === "dashboard" && (
           <div>
             <button
               onClick={() => {
@@ -81,7 +81,7 @@ const Header = ({ page }: { page: "dashboard" | "contracts" }) => {
               {isConnected ? `Disconnect ${shortAddress(signerAddress)}` : "Connect Wallet"}
             </button>
           </div>
-        )}
+        )} */}
       </div>
 
       {page === "dashboard" && <Search />}
