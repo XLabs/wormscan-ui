@@ -16,7 +16,8 @@ const Search = () => {
     <SearchBar
       value={searchValue}
       onValueChange={setSearchValue}
-      onSubmit={() => {
+      onSubmit={ev => {
+        ev.preventDefault();
         setUserInput(searchValue);
       }}
       className="header-search-bar"

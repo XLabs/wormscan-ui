@@ -35,8 +35,6 @@ import {
   getDeliveryProviderStatusByTargetTransaction,
   getDeliveryProviderStatusByVaaInfo,
 } from "./deliveryProviderStatusApi";
-import { get } from "http";
-import { env } from "process";
 export type WormholeTransaction = {
   chainId: ChainId;
   txHash: string;
@@ -70,6 +68,7 @@ export async function populateDeliveryLifeCycleRecordsByTxHash(
       txHash,
     );
   } catch (e) {
+    console.error("err txhash", e);
     //swallow
   }
 
@@ -79,6 +78,7 @@ export async function populateDeliveryLifeCycleRecordsByTxHash(
       txHash,
     );
   } catch (e) {
+    console.error("err target tx", e);
     //swallow
   }
 

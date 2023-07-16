@@ -1,0 +1,297 @@
+@import "src/styles/globals.scss";
+
+.tx-overview {
+  --y-space: 285px;
+  display: block;
+  overflow-x: auto;
+
+  &-graph {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    padding: 24px 16px;
+
+    @include desktop {
+      --y-space: 72px;
+      padding: 16px 24px 64px 24px;
+      min-width: 1000px;
+    }
+
+    @include bigDesktop {
+      padding: 16px 112px 64px;
+    }
+
+    &-step + &-step {
+      @include desktop {
+        padding-top: var(--y-space);
+      }
+    }
+
+    &-step {
+      --color: var(--color-information-100);
+      --gap: 0px;
+
+      $sbc: &;
+      flex: 1;
+      display: flex;
+      align-items: start;
+      position: relative;
+      z-index: 0;
+      gap: var(--gap);
+      pointer-events: none;
+
+      @include desktop {
+        &.signatures {
+          align-items: center;
+        }
+      }
+
+      > * {
+        flex: 1;
+        pointer-events: auto;
+      }
+
+      &-data-container {
+        flex: 3;
+
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--gap);
+        row-gap: 32px;
+        min-height: 350px;
+        padding: 75px 0 50px;
+
+        & .mobile-hide {
+          display: none;
+
+          @include desktop {
+            display: block;
+          }
+        }
+
+        &.signatures {
+          padding-top: 150px;
+          padding-bottom: 50px;
+          pointer-events: none;
+          min-height: 250px;
+
+          & > * {
+            pointer-events: auto;
+          }
+
+          @include desktop {
+            min-height: unset;
+          }
+        }
+
+        @include desktop {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          row-gap: 72px;
+          --gap: 16px;
+          padding: 0;
+          min-height: unset;
+
+          &.signatures {
+            padding: 0;
+          }
+        }
+
+        > * {
+          flex: 1;
+        }
+      }
+
+      &-name {
+        width: 70px;
+        height: 50px;
+        pointer-events: none;
+
+        > div {
+          position: absolute;
+          width: inherit;
+          height: inherit;
+
+          @include centered-row;
+        }
+      }
+
+      &.blue {
+        --color: red;
+      }
+
+      &.green {
+        --color: var(--color-success-100);
+      }
+
+      &.orange {
+        --color: var(--color-alert-100);
+      }
+
+      &.red {
+        --color: var(--color-error-100);
+      }
+
+      &-name {
+        @include text-p3;
+
+        max-width: 120px;
+        font-weight: 600;
+        color: var(--color-primary-100);
+      }
+
+      &-title {
+        @include centered-row;
+        @include text-p2;
+
+        gap: 8px;
+        color: var(--color-primary-100);
+        margin-bottom: 8px;
+
+        & svg {
+          color: var(--color-success-100);
+        }
+      }
+
+      &-description {
+        @include text-p2;
+
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        color: var(--color-white);
+
+        &.orange {
+          color: var(--color-alert-100);
+        }
+
+        &.red {
+          color: var(--color-error-100);
+        }
+
+        & > .copy-to-clipboard {
+          display: flex;
+
+          & svg {
+            color: var(--color-primary-90);
+          }
+        }
+
+        & > a {
+          color: var(--color-information-100);
+          text-decoration: none;
+        }
+      }
+
+      &-iconWrapper {
+        position: relative;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        z-index: -1;
+        align-self: stretch;
+        min-width: 50px;
+        margin-left: 25px;
+
+        @include tablet {
+          margin-left: 0px;
+        }
+
+        @include desktop {
+          min-width: unset;
+        }
+      }
+
+      &:not(:last-child) {
+        #{$sbc}-iconWrapper {
+          &::before {
+            content: "";
+            display: flex;
+            position: absolute;
+            left: 50%;
+            border-left: 1px dashed var(--color);
+            height: calc(100%);
+            z-index: -1;
+
+            @include desktop {
+              height: calc(100% + var(--y-space));
+            }
+          }
+        }
+      }
+
+      &-iconContainer {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 2px solid var(--color);
+        border-radius: 50%;
+        width: 55px;
+        height: 55px;
+        background-color: var(--color-primary-800);
+
+        > img {
+          max-height: 32px;
+        }
+      }
+
+      &-signaturesContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 115px;
+        height: 115px;
+        border-radius: 50%;
+        z-index: 4;
+
+        &::before {
+          content: "";
+          position: absolute;
+          width: 125px;
+          height: 125px;
+          display: block;
+          border-radius: 50%;
+          background-color: #151632;
+          z-index: 3;
+        }
+
+        &-text {
+          text-align: center;
+          z-index: 4;
+
+          &-number {
+            @include text-h5;
+
+            color: var(--color-success-100);
+          }
+
+          &-description {
+            @include text-p2;
+
+            color: var(--color-success-60);
+          }
+        }
+      }
+    }
+  }
+
+  &-alerts {
+    padding: 24px 16px;
+
+    @include desktop {
+      padding: 16px 24px 64px 24px;
+    }
+
+    @include bigDesktop {
+      padding: 16px 112px 64px;
+    }
+
+    &-unknown-payload-type {
+      @include desktop {
+        max-width: 390px;
+      }
+    }
+  }
+}
