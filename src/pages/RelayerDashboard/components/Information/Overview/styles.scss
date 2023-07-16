@@ -3,7 +3,6 @@
 .divider {
   height: 1px;
   width: 100%;
-  // background: var(--color-white-40);
   margin-bottom: 8px;
 }
 
@@ -14,22 +13,17 @@
 
   .try-manual-delivery-btn {
     @include button;
-    margin-top: 80px;
-    width: 50%;
-    border: 1px solid transparent;
+    font-size: 14px;
+    margin-top: 14px;
+    width: 45%;
+    border: 1px solid var(--color-success-30);
     &:hover {
-      border: 1px solid black;
+      border: 1px solid var(--color-success-15);
       background-color: var(--color-white-05);
     }
-  }
 
-  .manual-delivery-btn {
-    @include button-secondary;
-    width: 100%;
-
-    &:disabled {
-      background-color: grey;
-      cursor: not-allowed;
+    @include desktop {
+      margin-top: 80px;
     }
   }
 
