@@ -1,4 +1,3 @@
-import { Network } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
   RedeliveryInstruction,
@@ -6,7 +5,6 @@ import {
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import axios from "axios";
 import { Environment } from "./environment";
-import { decode } from "punycode";
 
 function foo() {
   const ins: DeliveryInstruction = null as any;
