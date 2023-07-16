@@ -3,14 +3,47 @@
 .divider {
   height: 1px;
   width: 100%;
-  background: var(--color-white-40);
-  margin-bottom: 6px;
+  // background: var(--color-white-40);
+  margin-bottom: 8px;
 }
 
 .relayer-tx-overview {
   --y-space: 285px;
   display: block;
   overflow-x: auto;
+
+  .try-manual-delivery-btn {
+    @include button;
+    margin-top: 80px;
+    width: 50%;
+    border: 1px solid transparent;
+    &:hover {
+      border: 1px solid black;
+      background-color: var(--color-white-05);
+    }
+  }
+
+  .manual-delivery-btn {
+    @include button-secondary;
+    width: 100%;
+
+    &:disabled {
+      background-color: grey;
+      cursor: not-allowed;
+    }
+  }
+
+  .errored-info {
+    background-color: var(--color-error-30);
+    font-size: 14px;
+    padding: 8px;
+    height: 100px;
+    overflow: auto;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+  }
 
   &-graph {
     display: flex;
@@ -168,6 +201,10 @@
         flex-wrap: wrap;
         gap: 8px;
         color: var(--color-white);
+
+        &.green {
+          color: var(--color-success-100);
+        }
 
         &.orange {
           color: var(--color-alert-100);
