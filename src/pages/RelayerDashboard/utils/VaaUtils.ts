@@ -130,7 +130,9 @@ export async function populateDeliveryLifecycleRecordByVaa(
     parsedVaa.sequence.toString(),
   );
 
-  if (deliveryStatus.length === 0) {
+  const noSourceTxHash = !deliveryStatus.find(status => status.fromTxHash);
+  let fallbackSourceTxHash;
+  if (deliveryStatus.length === 0 || noSourceTxHash) {
     console.log("no info on relayStatus, get source tx hash from wormhole scan api");
     const tx = (await getClient().search.getTransactions({
       chainId: parsedVaa.emitterChain,
@@ -138,11 +140,12 @@ export async function populateDeliveryLifecycleRecordByVaa(
       seq: Number(parsedVaa.sequence),
     })) as GetTransactionsOutput;
 
-    output.sourceTxHash = `0x${tx.txHash}`;
+    fallbackSourceTxHash = `0x${tx.txHash}`;
+    output.sourceTxHash = fallbackSourceTxHash;
     output.sourceSequence = Number(parsedVaa.sequence);
     output.sourceChainId = tx.emitterChain as ChainId;
 
-    return output;
+    if (deliveryStatus.length === 0) return output;
   } else {
     output.DeliveryStatuses = deliveryStatus;
   }
@@ -167,7 +170,7 @@ export async function populateDeliveryLifecycleRecordByVaa(
       });
   }
 
-  output.sourceTxHash = sourceTxHash || undefined;
+  output.sourceTxHash = sourceTxHash || fallbackSourceTxHash || undefined;
   output.sourceChainId = sourceChainId as ChainId;
   output.targetTransactions = [];
   for (const status of deliveryStatus) {
