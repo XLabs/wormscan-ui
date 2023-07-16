@@ -4,7 +4,7 @@ import "./styles.scss";
 type Props = {
   value: string;
   onValueChange: React.Dispatch<React.SetStateAction<string>>;
-  onSubmit: () => void;
+  onSubmit: React.FormEventHandler<HTMLFormElement>;
   name: string;
   className?: string;
   placeholder?: string;
@@ -24,12 +24,7 @@ const SearchBar = ({
 }: Props) => {
   return (
     <div className={`search-bar ${className}`}>
-      <form
-        onSubmit={ev => {
-          ev.preventDefault();
-          onSubmit();
-        }}
-      >
+      <form onSubmit={onSubmit} data-testid="search-form">
         <div className="search-bar-input">
           <input
             type="text"
