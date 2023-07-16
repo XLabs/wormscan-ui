@@ -1,6 +1,13 @@
 @import "src/styles/globals.scss";
 
-.tx-overview {
+.divider {
+  height: 1px;
+  width: 100%;
+  background: var(--color-white-40);
+  margin-bottom: 6px;
+}
+
+.relayer-tx-overview {
   --y-space: 285px;
   display: block;
   overflow-x: auto;

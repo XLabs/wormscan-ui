@@ -1,6 +1,6 @@
 @import "src/styles/globals.scss";
 
-.tx-raw-data {
+.relayer-tx-raw-data {
   &-container {
     display: flex;
     flex-direction: column;
@@ -17,6 +17,7 @@
 
     &-block {
       @include card-container;
+      margin-top: 10px;
 
       &-top {
         @include centered-row;
@@ -40,6 +41,17 @@
           @include centered-row;
 
           gap: 8px;
+        }
+      }
+
+      &-body {
+        &-code {
+          overflow-x: scroll !important;
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+          &::-webkit-scrollbar {
+            width: 0;
+          }
         }
       }
     }

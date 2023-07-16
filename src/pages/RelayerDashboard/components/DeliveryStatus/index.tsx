@@ -49,6 +49,7 @@ export default function DeliveryStatus() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [didSearch, setDidSearch] = useState("");
 
   const targetContract = environment.chainInfos.find(
     c => c.chainId === chain,
@@ -63,6 +64,7 @@ export default function DeliveryStatus() {
   const handleSearch = useCallback(() => {
     setError("");
     setLoading(true);
+    setDidSearch(userInput + chain);
     setLifecycleRecords([]);
 
     let queryType;
@@ -126,34 +128,34 @@ export default function DeliveryStatus() {
   }, [chain, emitter, environment, userInput]);
 
   useEffect(() => {
-    console.log("what?", { userInput, chain });
+    console.log("user_data", { userInput, chain });
+    if (didSearch !== userInput + chain) {
+      setDidSearch("");
+    }
     if (userInput) {
       handleSearch();
     }
-  }, [handleSearch, userInput, chain]);
+  }, [handleSearch, userInput, chain, didSearch]);
 
-  // const vaaReaders = lifecycleRecords.map((record, idx) => {
-  //   return record.vaa ? (
-  //     <div key={"record" + idx} style={{ margin: "10px" }}>
-  //       <VaaReader key={idx} rawVaa={record.vaa} />
-  //     </div>
-  //   ) : null;
-  // });
+  console.log({ lifecycleRecords });
 
   return (
     <div className="relayer-delivery-status">
-      {error && (
-        <Alert severity="error" style={{ margin: "10px" }}>
-          {error}
-        </Alert>
-      )}
+      {error && <div className="relayer-errored">{error}</div>}
       {loading && (
         <div>
           <Loader />
         </div>
       )}
 
-      {lifecycleRecords.length > 0 && <Information lifecycleRecords={lifecycleRecords} />}
+      {didSearch &&
+        !loading &&
+        (lifecycleRecords.length > 0 ? (
+          <Information lifecycleRecords={lifecycleRecords} />
+        ) : (
+          <div className="relayer-errored">No relay status was found for this input</div>
+        ))}
+
       {/* {vaaReaders && vaaReaders} */}
       {/* {lifecycleRecordDisplays ? lifecycleRecordDisplays : null} */}
     </div>

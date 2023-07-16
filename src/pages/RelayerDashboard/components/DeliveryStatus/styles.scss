@@ -6,3 +6,13 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
+
+.relayer-errored {
+  width: 100%;
+  @include centered-column;
+  align-items: center;
+  height: 60px;
+  background-color: var(--color-alert-30);
+  margin-bottom: 12px;
+  margin-top: 12px;
+}
