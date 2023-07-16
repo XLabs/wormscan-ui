@@ -113,7 +113,6 @@ export type DeliveryMetaData = {
   sequence?: number; //redudant with the VAA
   rawVaaHex?: string; //should be the vaa, hex encoded
   deliveryRecord?: DeliveryRecord; //delivery record object
-  transactionHashes?: string[];
 
   rawVaaPayloadHex?: string; //payload inside the vaa, hex encoded
   payloadType?: number; //payload type of the delivery, 1 is delivery, 2 is redelivery. Can be gotten from parsing the vaa
