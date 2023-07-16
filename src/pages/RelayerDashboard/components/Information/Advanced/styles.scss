@@ -1,0 +1,16 @@
+@import "src/styles/globals.scss";
+
+.relayer-advanced {
+  @include centered-column;
+
+  .manual-delivery-btn {
+    @include button-secondary;
+    width: 100%;
+    cursor: pointer;
+
+    &:disabled {
+      background-color: grey;
+      cursor: not-allowed;
+    }
+  }
+}

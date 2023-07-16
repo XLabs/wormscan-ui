@@ -92,11 +92,11 @@ export type DeliveryProviderStatus = {
   failedAt?: string; //not that useful, only used for errors
   errorMessage?: string; //should never actually be set
   toTxHash?: string; //!!! target transaction hash of the target transaction
-  metaData?: DeliveryMetaData; //meta data object
+  metadata?: DeliveryMetaData; //meta data object
   specifiedDeliveryProvider?: string; //not that useful, is also on the source transaction
   didMatchDeliveryProvider?: boolean; //not that useful,
   redeliveryRecord?: RedeliveryRecord; //redelivery record object
-  deliveryRecord?: DeliveryRecord; //delivery record object
+  // deliveryRecord?: DeliveryRecord; //delivery record object
   fatalStackTrace?: string; //not that useful, only used for errors
 };
 
@@ -112,6 +112,9 @@ export type DeliveryMetaData = {
   emitterAddress?: string; // redudant with the VAA
   sequence?: number; //redudant with the VAA
   rawVaaHex?: string; //should be the vaa, hex encoded
+  deliveryRecord?: DeliveryRecord; //delivery record object
+  transactionHashes?: string[];
+
   rawVaaPayloadHex?: string; //payload inside the vaa, hex encoded
   payloadType?: number; //payload type of the delivery, 1 is delivery, 2 is redelivery. Can be gotten from parsing the vaa
   didParse?: boolean; //Should always be true, not useful
