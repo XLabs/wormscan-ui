@@ -170,10 +170,10 @@ export function DeliveryInstructionDisplay({ instruction }: { instruction: Deliv
 
 type Props = {
   lifecycleRecords: DeliveryLifecycleRecord[];
-  txsData?: any[];
+  goAdvancedTab: () => void;
 };
 
-const Overview = ({ lifecycleRecords, txsData }: Props) => {
+const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
   const { environment } = useEnvironment();
 
   const lifecycleVaas = lifecycleRecords.filter(record => !!record.vaa);
@@ -362,29 +362,27 @@ const Overview = ({ lifecycleRecords, txsData }: Props) => {
                   </div>
                 </div>
                 <div>
-                  <div className="relayer-tx-overview-graph-step-title">Sender Address</div>
+                  <div className="relayer-tx-overview-graph-step-title">Source Tx Hash</div>
                   <div className="relayer-tx-overview-graph-step-description">
                     <a
                       href={getExplorerLink({
                         chainId: fromChain,
-                        value: deliveryParsedSenderAddress,
-                        base: "address",
+                        value: lifecycleRecord.sourceTxHash,
+                        base: "tx",
                         isNativeAddress: true,
                       })}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {shortAddress(deliveryParsedSenderAddress).toUpperCase()}
+                      {shortAddress(lifecycleRecord.sourceTxHash).toUpperCase()}
                     </a>{" "}
-                    <CopyToClipboard toCopy={deliveryParsedSenderAddress}>
+                    <CopyToClipboard toCopy={lifecycleRecord.sourceTxHash}>
                       <CopyIcon />
                     </CopyToClipboard>
                   </div>
                 </div>
                 <div>
-                  <div className="relayer-tx-overview-graph-step-title">
-                    Source Tx Hash (WORMHOLESCAN)
-                  </div>
+                  <div className="relayer-tx-overview-graph-step-title">Sender Address</div>
                   <div className="relayer-tx-overview-graph-step-description">
                     <a
                       href={getExplorerLink({
@@ -714,13 +712,7 @@ const Overview = ({ lifecycleRecords, txsData }: Props) => {
                   </div>
                 )}
 
-                <div
-                  onClick={() => {
-                    console.log("TODO: go to advanced tab");
-                    // setManualDeliverVaa(vaa);
-                  }}
-                  className="try-manual-delivery-btn"
-                >
+                <div onClick={() => goAdvancedTab()} className="try-manual-delivery-btn">
                   Try Manual Deliver
                 </div>
               </>

@@ -35,6 +35,8 @@ import {
   getDeliveryProviderStatusByTargetTransaction,
   getDeliveryProviderStatusByVaaInfo,
 } from "./deliveryProviderStatusApi";
+import { getClient } from "src/api/Client";
+import { GetTransactionsOutput } from "@xlabs-libs/wormscan-sdk";
 export type WormholeTransaction = {
   chainId: ChainId;
   txHash: string;
@@ -129,6 +131,17 @@ export async function populateDeliveryLifecycleRecordByVaa(
   );
 
   if (deliveryStatus.length === 0) {
+    console.log("no info on relayStatus, get source tx hash from wormhole scan api");
+    const tx = (await getClient().search.getTransactions({
+      chainId: parsedVaa.emitterChain,
+      emitter: parsedVaa.emitterAddress.toString("hex"),
+      seq: Number(parsedVaa.sequence),
+    })) as GetTransactionsOutput;
+
+    output.sourceTxHash = `0x${tx.txHash}`;
+    output.sourceSequence = Number(parsedVaa.sequence);
+    output.sourceChainId = tx.emitterChain as ChainId;
+
     return output;
   } else {
     output.DeliveryStatuses = deliveryStatus;

@@ -224,7 +224,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     },
   },
   [ChainId.BSC]: {
-    name: "Binance Smart Chain",
+    name: "BNB Smart Chain",
     acronym: "BSC",
     icon: BSCIcon,
     darkIcon: BSCDarkIcon,
