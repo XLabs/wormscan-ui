@@ -23,7 +23,7 @@ const initialEnv = shouldBeTestnet() ? testnetEnv : mainnetEnv;
 
 const shouldBeSpecificChain = () => !!queryParams.chainId;
 const initialChain = shouldBeSpecificChain()
-  ? (queryParams.chainId as any)
+  ? initialEnv.chainInfos.find(a => `${a.chainId}` === queryParams.chainId).chainId
   : initialEnv.chainInfos[0].chainId;
 
 const EnvironmentProviderContext = React.createContext<EnvironmentContext>({
