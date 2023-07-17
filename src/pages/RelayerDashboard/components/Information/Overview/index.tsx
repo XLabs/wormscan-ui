@@ -27,6 +27,7 @@ import {
   DeliveryInstruction,
   DeliveryTargetInfo,
   RedeliveryInstruction,
+  parseEVMExecutionInfoV1,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useEthereumProvider } from "src/pages/RelayerDashboard/context/EthereumProviderContext";
@@ -178,6 +179,9 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
     const redeliveryInstruction = instruction as RedeliveryInstruction | null;
     const isDelivery = deliveryInstruction && !isRedelivery(deliveryInstruction);
 
+    const decodeExecution = parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0];
+    const gasLimit = decodeExecution.gasLimit;
+
     if (!deliveryInstruction?.targetAddress) {
       console.log({ deliveryInstruction });
       return (
@@ -219,24 +223,42 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
     };
 
     const maxRefundText = (deliveryStatus: any) =>
-      `${trunkStringsDecimal(
+      deliveryStatus.metadata?.deliveryRecord?.maxRefundUsd
+        ? `${trunkStringsDecimal(
+            ethers.utils.formatUnits(
+              deliveryStatus.metadata?.deliveryRecord?.maxRefund,
+              deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
+            ),
+            3,
+          )} ${
+            environment.chainInfos.find(
+              chain => chain.chainId === deliveryInstruction.targetChainId,
+            ).nativeCurrencyName
+          } (${trunkStringsDecimal(
+            "" + deliveryStatus.metadata?.deliveryRecord?.maxRefundUsd,
+            4,
+          )} USD)`
+        : `
+      ${trunkStringsDecimal(
         ethers.utils.formatUnits(
           deliveryStatus.metadata?.deliveryRecord?.maxRefund,
           deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
         ),
         3,
       )} ${
-        environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
-          .nativeCurrencyName
-      } (${trunkStringsDecimal(
-        "" + deliveryStatus.metadata?.deliveryRecord?.maxRefundUsd,
-        4,
-      )} USD)`;
+            environment.chainInfos.find(
+              chain => chain.chainId === deliveryInstruction.targetChainId,
+            ).nativeCurrencyName
+          }`;
 
     const gasUsedText = (deliveryStatus: any) =>
-      `${deliveryStatus.metadata?.deliveryRecord?.resultLog?.gasUsed}`;
+      deliveryStatus.metadata?.deliveryRecord?.resultLog?.gasUsed
+        ? `${deliveryStatus.metadata?.deliveryRecord?.resultLog?.gasUsed}/${gasLimit}`
+        : "";
 
-    const receiverValueText = (deliveryStatus: any) => `
+    const receiverValueText = (deliveryStatus: any) =>
+      deliveryStatus.metadata?.deliveryRecord?.receiverValueUsd
+        ? `
     ${trunkStringsDecimal(
       ethers.utils.formatUnits(
         deliveryStatus.metadata?.deliveryRecord?.receiverValue,
@@ -244,14 +266,29 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
       ),
       3,
     )} ${
-      environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
-        .nativeCurrencyName
-    } (${trunkStringsDecimal(
-      "" + deliveryStatus.metadata?.deliveryRecord?.receiverValueUsd,
-      4,
-    )} USD)`;
+            environment.chainInfos.find(
+              chain => chain.chainId === deliveryInstruction.targetChainId,
+            ).nativeCurrencyName
+          } (${trunkStringsDecimal(
+            "" + deliveryStatus.metadata?.deliveryRecord?.receiverValueUsd,
+            4,
+          )} USD)`
+        : `
+    ${trunkStringsDecimal(
+      ethers.utils.formatUnits(
+        deliveryStatus.metadata?.deliveryRecord?.receiverValue,
+        deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
+      ),
+      3,
+    )} ${
+            environment.chainInfos.find(
+              chain => chain.chainId === deliveryInstruction.targetChainId,
+            ).nativeCurrencyName
+          }`;
 
-    const budgetText = (deliveryStatus: any) => `
+    const budgetText = (deliveryStatus: any) =>
+      deliveryStatus.metadata?.deliveryRecord?.budgetUsd
+        ? `
     ${`${trunkStringsDecimal(
       ethers.utils.formatUnits(
         deliveryStatus.metadata?.deliveryRecord?.budget,
@@ -262,12 +299,25 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
       environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
         .nativeCurrencyName
     } (${deliveryStatus.metadata?.deliveryRecord?.budgetUsd.toFixed(3)} USD)`}
+    `
+        : `
+    ${trunkStringsDecimal(
+      ethers.utils.formatUnits(
+        deliveryStatus.metadata?.deliveryRecord?.budget,
+        deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
+      ),
+      3,
+    )} ${
+            environment.chainInfos.find(
+              chain => chain.chainId === deliveryInstruction.targetChainId,
+            ).nativeCurrencyName
+          }
     `;
 
     const copyBudgetText = (deliveryStatus: any) =>
-      `Budget: ${budgetText(deliveryStatus)}\nMax Refund:\n${maxRefundText(
-        deliveryStatus,
-      )}\n\nGas Used:\n${gasUsedText(deliveryStatus)}\n\nReceiver Value: ${receiverValueText(
+      `Budget: ${budgetText(deliveryStatus)}\nMax Refund:\n${maxRefundText(deliveryStatus)}\n\n${
+        gasUsedText(deliveryStatus) ?? "Gas Used/Gas limit\n"
+      }${gasUsedText(deliveryStatus)}\n\nReceiver Value: ${receiverValueText(
         deliveryStatus,
       )}`.replaceAll("    ", "");
 
@@ -508,17 +558,21 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                     </div>
                     {lifecycleRecord.DeliveryStatuses &&
                       lifecycleRecord.DeliveryStatuses.map((deliveryStatus, idx) => (
-                        <>
+                        <Fragment key={`texts-tool-${idx}`}>
                           <Tooltip
                             tooltip={
                               <div className="budget-tooltip">
                                 <div className="budget-tooltip-title">Max Refund:</div>
                                 <div>{maxRefundText(deliveryStatus)}</div>
 
-                                <div className="budget-tooltip-title">Gas Used: </div>
-                                <div>{gasUsedText(deliveryStatus)}</div>
+                                {gasUsedText(deliveryStatus) && (
+                                  <>
+                                    <div className="budget-tooltip-title">Gas Used/Gas Limit</div>
+                                    <div>{gasUsedText(deliveryStatus)}</div>
+                                  </>
+                                )}
 
-                                <div className="budget-tooltip-title">Receiver Value: </div>
+                                <div className="budget-tooltip-title">Receiver Value:</div>
                                 <div>{receiverValueText(deliveryStatus)}</div>
                               </div>
                             }
@@ -546,7 +600,7 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                               </div>
                             </div>
                           </Tooltip>
-                        </>
+                        </Fragment>
                       ))}
                   </div>
                 </div>
