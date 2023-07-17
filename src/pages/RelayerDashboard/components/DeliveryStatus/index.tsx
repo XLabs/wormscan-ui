@@ -1,31 +1,15 @@
-import { ChainId, parseVaa, tryNativeToHexString } from "@certusone/wormhole-sdk";
+import { tryNativeToHexString } from "@certusone/wormhole-sdk";
 import { getChainInfo } from "src/pages/RelayerDashboard/utils/environment";
 import { useCallback, useEffect, useState } from "react";
-import { Alert, Button, CircularProgress, Divider, TextField, Typography } from "@mui/material";
-import {
-  DeliveryInstruction,
-  DeliveryTargetInfo,
-  RedeliveryInstruction,
-} from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import {
   DeliveryLifecycleRecord,
-  getDeliveryStatusByVaa,
-  getGenericRelayerVaasFromTransaction,
-  getVaa,
-  isRedelivery,
-  manualDeliver,
-  parseGenericRelayerVaa,
   populateDeliveryLifeCycleRecordsByTxHash,
   populateDeliveryLifecycleRecordByEmitterSequence,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/pages/RelayerDashboard/utils/VaaUtils";
 import { useEnvironment } from "src/pages/RelayerDashboard/context/EnvironmentContext";
-import { useEthereumProvider } from "src/pages/RelayerDashboard/context/EthereumProviderContext";
-import { getDeliveryProviderStatusBySourceTransaction } from "src/pages/RelayerDashboard/utils/deliveryProviderStatusApi";
-import { BlockSection } from "src/pages/Tx/Information/RawData";
 import { Loader } from "src/components/atoms";
 import "./styles.scss";
-import { Tabs } from "src/components/organisms";
 import { Information } from "../Information";
 
 //test tx hash 0xcf66519f71be66c7ab5582e864a37d686c6164a32b3df22c89b32119ecfcfc5e
@@ -96,6 +80,7 @@ export default function DeliveryStatus() {
           setError(e.message || "An error occurred.");
         });
     } else if (queryType === "EmitterSeq") {
+      console.log({ environment, cha: chain });
       populateDeliveryLifecycleRecordByEmitterSequence(
         environment,
         getChainInfo(environment, chain),
@@ -137,8 +122,6 @@ export default function DeliveryStatus() {
       handleSearch();
     }
   }, [handleSearch, userInput, chain, didSearch]);
-
-  console.log({ lifecycleRecords });
 
   return (
     <div className="relayer-delivery-status">

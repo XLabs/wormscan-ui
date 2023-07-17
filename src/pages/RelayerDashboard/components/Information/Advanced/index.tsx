@@ -210,6 +210,7 @@ type Props = {
 };
 
 const Advanced = ({ lifecycleRecords }: Props) => {
+  const { environment } = useEnvironment();
   const { connect, disconnect, signerAddress, providerError } = useEthereumProvider();
   const isConnected = !!signerAddress;
 
@@ -236,7 +237,21 @@ const Advanced = ({ lifecycleRecords }: Props) => {
             width: "100%",
           }}
         >
-          <div>Gas Limit: {"" + decodeExecution.gasLimit}</div>
+          <div
+            style={{
+              fontSize: 24,
+              borderTop: "1px solid black",
+              borderBottom: "1px solid black",
+              paddingTop: 12,
+              paddingBottom: 12,
+            }}
+          >
+            Advanced transaction view coming soon. Full transaction data is available on the RAW
+            DATA tab.
+          </div>
+          <div style={{ height: 10 }} />
+
+          {/* <div>Gas Limit: {"" + decodeExecution.gasLimit}</div>
           <div>
             Target Chain Refund Per Gas Unused: {"" + decodeExecution.targetChainRefundPerGasUnused}
           </div>
@@ -306,7 +321,7 @@ const Advanced = ({ lifecycleRecords }: Props) => {
                 )}
               </Fragment>
             );
-          })}
+          })} */}
 
           <div style={{ height: 40 }} />
           <div
@@ -338,7 +353,7 @@ const Advanced = ({ lifecycleRecords }: Props) => {
           </div>
         </div>
 
-        {/* <PullDeliveryInfo rawVaa={lifecycleRecord.vaa} /> */}
+        {environment.network === "DEVNET" && <PullDeliveryInfo rawVaa={lifecycleRecord.vaa} />}
       </div>
     );
   });

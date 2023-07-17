@@ -12,6 +12,7 @@ import { parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
   RedeliveryInstruction,
+  parseEVMExecutionInfoV1,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 
 const CodeBlockStyles = {
@@ -78,6 +79,8 @@ const RawData = ({ lifecycleRecords }: Props) => {
     const deliveryInstruction = instruction as DeliveryInstruction;
     const redeliveryInstruction = instruction as RedeliveryInstruction;
 
+    const decodeExecution = parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0];
+
     return (
       <div key={"lifecycle" + idx} className="relayer-tx-raw-data">
         <div>
@@ -120,9 +123,10 @@ const RawData = ({ lifecycleRecords }: Props) => {
                     Emitter: Buffer.from(vaaKey.emitterAddress).toString("hex"),
                     Sequence: vaaKey.sequence,
                   })),
-                  "Encoded Execution Info:": Buffer.from(
-                    deliveryInstruction.encodedExecutionInfo,
-                  ).toString("hex"),
+                  "Encoded Execution Info:": {
+                    gasLimit: decodeExecution.gasLimit,
+                    targetChainRefundPerGasUnused: decodeExecution.targetChainRefundPerGasUnused,
+                  },
                   Payload: Buffer.from(deliveryInstruction.payload).toString("hex"),
                 },
                 null,

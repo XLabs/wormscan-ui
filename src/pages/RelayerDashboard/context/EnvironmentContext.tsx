@@ -12,9 +12,19 @@ interface EnvironmentContext {
   setChain: (selectedChain: ChainId) => void;
 }
 
-const shouldBeTestnet = () => window.location.href.includes("network=testnet");
+const params = new URLSearchParams(window.location.search);
+const queryParams: { [key: string]: string } = {};
+for (const param of params) {
+  queryParams[param[0]] = param[1];
+}
+
+const shouldBeTestnet = () => queryParams.network === "testnet";
 const initialEnv = shouldBeTestnet() ? testnetEnv : mainnetEnv;
-const initialChain = initialEnv.chainInfos[0].chainId;
+
+const shouldBeSpecificChain = () => !!queryParams.chainId;
+const initialChain = shouldBeSpecificChain()
+  ? (queryParams.chainId as any)
+  : initialEnv.chainInfos[0].chainId;
 
 const EnvironmentProviderContext = React.createContext<EnvironmentContext>({
   environment: initialEnv,
@@ -29,54 +39,70 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
   const [currentEnv, setCurrentEnv] = useState<Environment>(initialEnv);
   const [chain, setChain] = useState(initialChain);
   const [userInput, setUserInput] = useState("");
+
   const [clearChildren, setClearChildren] = useState<boolean>(false);
 
-  const changeURL = (network: "MAINNET" | "TESTNET") => {
+  function updateQueryParams(key: string, value: string | null) {
+    // Create a new URL object with the current URL
     const url = new URL(window.location.href);
-    const params = new URLSearchParams(url.search);
-    if (network === "TESTNET") {
-      params.append("network", "testnet");
+
+    // If the value is null, remove the key from the query parameters
+    if (value === null) {
+      url.searchParams.delete(key);
     } else {
-      params.delete("network");
+      // Otherwise, set the key to the new value
+      url.searchParams.set(key, value);
     }
-    url.search = params.toString();
-    window.history.replaceState(null, "", url.href);
-  };
+
+    // Update the URL without reloading the page
+    window.history.pushState({}, "", url.toString());
+  }
 
   const setEnvironment = useCallback(
     (env: "DEVNET" | "TESTNET" | "MAINNET") => {
       if (env === "DEVNET") {
         setCurrentEnv(tiltEnv);
+        updateQueryParams("network", "testnet");
+
         setUserInput("");
+
         setChain(tiltEnv.chainInfos[0].chainId);
+        updateQueryParams("chainId", "" + tiltEnv.chainInfos[0].chainId);
+
         setClearChildren(true);
       } else if (env === "TESTNET") {
         changeNetwork("testnet");
-        changeURL("TESTNET");
+        updateQueryParams("network", "testnet");
 
         setCurrentEnv(testnetEnv);
         setUserInput("");
+
         setChain(testnetEnv.chainInfos[0].chainId);
+        updateQueryParams("chainId", "" + testnetEnv.chainInfos[0].chainId);
+
         setClearChildren(true);
       } else if (env === "MAINNET") {
         changeNetwork("mainnet");
-        changeURL("MAINNET");
+        updateQueryParams("network", "mainnet");
 
         setCurrentEnv(mainnetEnv);
         setUserInput("");
+
         setChain(mainnetEnv.chainInfos[0].chainId);
+        updateQueryParams("chainId", "" + mainnetEnv.chainInfos[0].chainId);
+
         setClearChildren(true);
       }
     },
     [setCurrentEnv],
   );
 
-  //hacky component unmount to clear state on env change
   useEffect(() => {
     if (shouldBeTestnet()) {
       changeNetwork("testnet");
     }
 
+    //hacky component unmount to clear state on env change
     if (clearChildren) {
       setClearChildren(false);
     }
@@ -87,11 +113,14 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
       environment: currentEnv,
       setEnvironment,
       userInput,
-      setUserInput,
+      setUserInput: (input: string) => {
+        setUserInput(input);
+      },
       chain,
       setChain: (newChain: ChainId) => {
-        setUserInput("");
         setChain(newChain);
+        updateQueryParams("chainId", newChain as any);
+        setUserInput("");
       },
     }),
     [chain, setChain, userInput, setUserInput, currentEnv, setEnvironment],

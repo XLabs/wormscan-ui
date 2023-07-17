@@ -1,51 +1,39 @@
-import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { Alert, BlockchainIcon, Loader, SignatureCircle, Tooltip } from "src/components/atoms";
+import { CopyIcon } from "@radix-ui/react-icons";
+import { BlockchainIcon, SignatureCircle, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
-import WormIcon from "src/icons/wormIcon.svg";
 import RelayIcon from "src/icons/relayIcon.svg";
-import { ChainId, GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
+import { ChainId } from "@xlabs-libs/wormscan-sdk";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress } from "src/utils/crypto";
-import { formatCurrency } from "src/utils/number";
-import { ParsedVaa, parseVaa, tryNativeToHexString } from "@certusone/wormhole-sdk";
-import { useWindowSize } from "src/utils/hooks/useWindowSize";
-import { BREAKPOINTS, colorStatus, getGuardianSet, txType } from "src/consts";
-import { parseTx, parseAddress } from "src/utils/crypto";
-import { getCurrentNetwork } from "src/api/Client";
+import { parseVaa } from "@certusone/wormhole-sdk";
+import { colorStatus, getGuardianSet } from "src/consts";
+import { parseAddress } from "src/utils/crypto";
 import "./styles.scss";
 import { ethers } from "ethers";
 import {
   DeliveryLifecycleRecord,
-  getDeliveryStatusByVaa,
   isRedelivery,
-  manualDeliver,
   parseGenericRelayerVaa,
 } from "src/pages/RelayerDashboard/utils/VaaUtils";
 import { useEnvironment } from "src/pages/RelayerDashboard/context/EnvironmentContext";
 
 import {
   DeliveryInstruction,
-  DeliveryTargetInfo,
   RedeliveryInstruction,
   parseEVMExecutionInfoV1,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import { useEthereumProvider } from "src/pages/RelayerDashboard/context/EthereumProviderContext";
+import { Fragment } from "react";
 import {
-  getChainInfo,
-  getEthersProvider,
   mainnetDefaultDeliveryProviderContractAddress,
   testnetDefaultDeliveryProviderContractAddress,
 } from "src/pages/RelayerDashboard/utils/environment";
 
 const Divider = <div className="divider" />;
 
-const NotFinalDestinationTooltip = () => (
-  <div>
-    Address shown corresponds to a Smart Contract handling the transaction. Funds will be sent to
-    your recipient address.
-  </div>
-);
+// eslint-disable-next-line no-var
+var gasUsed: any;
+// eslint-disable-next-line no-var
+var maxRefund: any;
 
 export function RedeliveryInstructionDisplay({
   instruction,
@@ -222,15 +210,17 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
       return `${whole}.${fraction.slice(0, decimals)}`;
     };
 
-    const maxRefundText = (deliveryStatus: any) =>
-      deliveryStatus.metadata?.deliveryRecord?.maxRefundUsd
-        ? `${trunkStringsDecimal(
-            ethers.utils.formatUnits(
-              deliveryStatus.metadata?.deliveryRecord?.maxRefund,
-              deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
-            ),
-            3,
-          )} ${
+    const maxRefundText = (deliveryStatus: any) => {
+      maxRefund = trunkStringsDecimal(
+        ethers.utils.formatUnits(
+          deliveryStatus.metadata?.deliveryRecord?.maxRefund,
+          deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
+        ),
+        3,
+      );
+
+      return deliveryStatus.metadata?.deliveryRecord?.maxRefundUsd
+        ? `${maxRefund} ${
             environment.chainInfos.find(
               chain => chain.chainId === deliveryInstruction.targetChainId,
             ).nativeCurrencyName
@@ -239,52 +229,46 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
             4,
           )} USD)`
         : `
-      ${trunkStringsDecimal(
+      ${maxRefund} ${
+            environment.chainInfos.find(
+              chain => chain.chainId === deliveryInstruction.targetChainId,
+            ).nativeCurrencyName
+          }`;
+    };
+
+    const gasUsedText = (deliveryStatus: any) => {
+      gasUsed = `${deliveryStatus.metadata?.deliveryRecord?.resultLog?.gasUsed}`;
+      return isNaN(gasUsed) ? `${gasLimit}` : `${gasUsed}/${gasLimit}`;
+    };
+
+    const receiverValueText = (deliveryStatus: any) => {
+      const receiverValue = trunkStringsDecimal(
         ethers.utils.formatUnits(
-          deliveryStatus.metadata?.deliveryRecord?.maxRefund,
+          deliveryStatus.metadata?.deliveryRecord?.receiverValue,
           deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
         ),
         3,
-      )} ${
-            environment.chainInfos.find(
-              chain => chain.chainId === deliveryInstruction.targetChainId,
-            ).nativeCurrencyName
-          }`;
+      );
 
-    const gasUsedText = (deliveryStatus: any) =>
-      deliveryStatus.metadata?.deliveryRecord?.resultLog?.gasUsed
-        ? `${deliveryStatus.metadata?.deliveryRecord?.resultLog?.gasUsed}/${gasLimit}`
-        : "";
+      const receiverValueUsd = trunkStringsDecimal(
+        "" + deliveryStatus.metadata?.deliveryRecord?.receiverValueUsd,
+        4,
+      );
 
-    const receiverValueText = (deliveryStatus: any) =>
-      deliveryStatus.metadata?.deliveryRecord?.receiverValueUsd
+      return deliveryStatus.metadata?.deliveryRecord?.receiverValueUsd
         ? `
-    ${trunkStringsDecimal(
-      ethers.utils.formatUnits(
-        deliveryStatus.metadata?.deliveryRecord?.receiverValue,
-        deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
-      ),
-      3,
-    )} ${
+  ${receiverValue} ${
             environment.chainInfos.find(
               chain => chain.chainId === deliveryInstruction.targetChainId,
             ).nativeCurrencyName
-          } (${trunkStringsDecimal(
-            "" + deliveryStatus.metadata?.deliveryRecord?.receiverValueUsd,
-            4,
-          )} USD)`
+          } (${receiverValueUsd} USD)`
         : `
-    ${trunkStringsDecimal(
-      ethers.utils.formatUnits(
-        deliveryStatus.metadata?.deliveryRecord?.receiverValue,
-        deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
-      ),
-      3,
-    )} ${
+  ${receiverValue} ${
             environment.chainInfos.find(
               chain => chain.chainId === deliveryInstruction.targetChainId,
             ).nativeCurrencyName
           }`;
+    };
 
     const budgetText = (deliveryStatus: any) =>
       deliveryStatus.metadata?.deliveryRecord?.budgetUsd
@@ -314,25 +298,21 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
           }
     `;
 
+    const refundText = () =>
+      `${(1 - gasUsed / Number(gasLimit)) * maxRefund} ${
+        environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
+          .nativeCurrencyName
+      }`;
+
     const copyBudgetText = (deliveryStatus: any) =>
       `Budget: ${budgetText(deliveryStatus)}\nMax Refund:\n${maxRefundText(deliveryStatus)}\n\n${
-        gasUsedText(deliveryStatus) ?? "Gas Used/Gas limit\n"
-      }${gasUsedText(deliveryStatus)}\n\nReceiver Value: ${receiverValueText(
-        deliveryStatus,
-      )}`.replaceAll("    ", "");
+        !isNaN(gasUsed) ? "Gas Used/" : ""
+      }Gas limit\n${gasUsedText(deliveryStatus)}\n\n${
+        !isNaN(gasUsed) ? "Refund Amount\n" + refundText() : ""
+      }\n\nReceiver Value: ${receiverValueText(deliveryStatus)}`.replaceAll("    ", "");
 
     return (
       <Fragment key={parsedHash}>
-        {/* <Summary
-          startDate={startDate}
-          transactionTimeInMinutes={transactionTimeInMinutes}
-          fee={fee}
-          symbol={symbol}
-          originChainId={fromChain}
-          destinationChainId={toChain}
-          payloadType={payloadType}
-        /> */}
-
         <div className="relayer-tx-overview">
           <div className="relayer-tx-overview-graph">
             <div className={`relayer-tx-overview-graph-step green source`}>
@@ -567,8 +547,17 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
 
                                 {gasUsedText(deliveryStatus) && (
                                   <>
-                                    <div className="budget-tooltip-title">Gas Used/Gas Limit</div>
+                                    <div className="budget-tooltip-title">
+                                      {isNaN(gasUsed) ? "Gas Limit" : "Gas Used/Gas Limit"}
+                                    </div>
                                     <div>{gasUsedText(deliveryStatus)}</div>
+                                  </>
+                                )}
+
+                                {!isNaN(gasUsed) && (
+                                  <>
+                                    <div className="budget-tooltip-title">Refund amount:</div>
+                                    <div>{refundText()}</div>
                                   </>
                                 )}
 
