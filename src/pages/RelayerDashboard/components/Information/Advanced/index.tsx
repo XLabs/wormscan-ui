@@ -3,17 +3,24 @@ import "./styles.scss";
 import {
   DeliveryLifecycleRecord,
   getDeliveryStatusByVaa,
+  isRedelivery,
   manualDeliver,
   parseGenericRelayerVaa,
 } from "src/pages/RelayerDashboard/utils/VaaUtils";
 import { useEnvironment } from "src/pages/RelayerDashboard/context/EnvironmentContext";
-import { useCallback, useState } from "react";
-import { DeliveryInstruction, DeliveryTargetInfo } from "@certusone/wormhole-sdk/lib/cjs/relayer";
+import { Fragment, useCallback, useState } from "react";
+import {
+  DeliveryInstruction,
+  DeliveryTargetInfo,
+  RedeliveryInstruction,
+  parseEVMExecutionInfoV1,
+} from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { Button, TextField } from "@mui/material";
 import { Loader } from "src/components/atoms";
 import { useEthereumProvider } from "src/pages/RelayerDashboard/context/EthereumProviderContext";
 import { getChainInfo } from "src/pages/RelayerDashboard/utils/environment";
 import { shortAddress } from "src/utils/crypto";
+import { ChainId as ChainIds } from "@xlabs-libs/wormscan-sdk";
 
 const Divider = <div className="divider" />;
 
@@ -210,6 +217,14 @@ const Advanced = ({ lifecycleRecords }: Props) => {
   if (lifecycleVaas.length <= 0) return <div>No VAA was found</div>;
 
   const render = lifecycleVaas.map((lifecycleRecord, idx) => {
+    const parsedVaa = parseVaa(lifecycleRecord.vaa);
+    const instruction = parseGenericRelayerVaa(parsedVaa);
+    const deliveryInstruction = instruction as DeliveryInstruction | null;
+    const redeliveryInstruction = instruction as RedeliveryInstruction | null;
+    const isDelivery = deliveryInstruction && !isRedelivery(deliveryInstruction);
+
+    const decodeExecution = parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0];
+
     return (
       <div key={`advanced-${idx}`} className="relayer-advanced">
         <div
@@ -221,6 +236,79 @@ const Advanced = ({ lifecycleRecords }: Props) => {
             width: "100%",
           }}
         >
+          <div>Gas Limit: {"" + decodeExecution.gasLimit}</div>
+          <div>
+            Target Chain Refund Per Gas Unused: {"" + decodeExecution.targetChainRefundPerGasUnused}
+          </div>
+          <div style={{ height: 10 }} />
+          {!!deliveryInstruction.vaaKeys.length && (
+            <>
+              <div>VAA Keys:</div>
+              {deliveryInstruction.vaaKeys.map((ins, idx) => (
+                <div key={idx}>
+                  <div>
+                    Chain Id: {ins.chainId}
+                    {ChainIds[ins.chainId]}
+                  </div>
+                  <div>{Buffer.from(ins.emitterAddress).toString("hex")}</div>
+                  <div>Chain Id: {"" + ins.sequence}</div>
+                </div>
+              ))}
+            </>
+          )}
+
+          <div>Extra Receiver Value: {"" + deliveryInstruction.extraReceiverValue}</div>
+          <div>Payload: {deliveryInstruction.payload}</div>
+          <div>Requested Receiver Value: {"" + deliveryInstruction.requestedReceiverValue}</div>
+
+          <div style={{ height: 15 }} />
+
+          {lifecycleRecord.DeliveryStatuses.map((deliveryStatus, idx) => {
+            const refundAddress: any = deliveryStatus.metadata?.instructions?.refundAddress;
+            const refundDeliveryProvider: any =
+              deliveryStatus.metadata?.instructions?.refundDeliveryProvider;
+            const refundChainId = deliveryStatus.metadata?.instructions?.refundChainId;
+
+            return (
+              <Fragment key={`deliver-${idx}`}>
+                {deliveryStatus.metadata.deliveryRecord && (
+                  <>
+                    <div>
+                      Has additional VAAS:{" "}
+                      {deliveryStatus.metadata.deliveryRecord.hasAdditionalVaas ? "true" : "false"}
+                    </div>
+
+                    <div>
+                      Additional VAA Keys is valid format:{" "}
+                      {deliveryStatus.metadata.deliveryRecord.additionalVaaKeysFormatValid
+                        ? "true"
+                        : "false"}
+                    </div>
+
+                    <div>
+                      Has additional VAAs Hex:{" "}
+                      {deliveryStatus.metadata.deliveryRecord.additionalVaasHex ? "true" : "false"}
+                    </div>
+
+                    <div style={{ height: 15 }} />
+
+                    <div>
+                      Refund Chain: {refundChainId} ({ChainIds[refundChainId]})
+                    </div>
+                    <div>
+                      Refund Address: {Buffer.from(refundAddress, "base64").toString("hex")}
+                    </div>
+                    <div>
+                      Refund Delivery Provider:{" "}
+                      {Buffer.from(refundDeliveryProvider, "base64").toString("hex")}
+                    </div>
+                  </>
+                )}
+              </Fragment>
+            );
+          })}
+
+          <div style={{ height: 40 }} />
           <div
             style={{
               paddingTop: "24px",
@@ -248,13 +336,6 @@ const Advanced = ({ lifecycleRecords }: Props) => {
               <ManualDeliverDeliveryVaa rawVaa={lifecycleRecord.vaa} />
             </div>
           </div>
-
-          {/* <VaaReader
-                rawVaa={vaa}
-                vaa={parsedVaa}
-                info={deliveryInstruction}
-                isDelivery={isDelivery}
-              /> */}
         </div>
 
         {/* <PullDeliveryInfo rawVaa={lifecycleRecord.vaa} /> */}
