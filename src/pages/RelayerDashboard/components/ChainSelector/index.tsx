@@ -1,11 +1,12 @@
 import { ChainId } from "@certusone/wormhole-sdk";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useEnvironment } from "src/pages/RelayerDashboard/context/EnvironmentContext";
 import { Select } from "src/components/atoms";
 import "./styles.scss";
 
 export default function ChainSelector() {
-  const { environment, setChain } = useEnvironment();
+  const { environment, chain, setChain } = useEnvironment();
+
   const allChains = environment.chainInfos.map(chainInfo => {
     return {
       label: `${chainInfo.chainId} - ${chainInfo.chainName}`,
@@ -13,12 +14,15 @@ export default function ChainSelector() {
     };
   });
 
-  const [selectedValue, setSelectedValue] = useState(allChains[0]);
+  const [selectedValue, setSelectedValue] = useState(allChains.find(c => c.value === `${chain}`));
+
+  useEffect(() => {
+    console.log("deberia cambiar a chain", chain);
+  }, [chain]);
 
   const handleChange = (selected: any) => {
     setSelectedValue(selected);
     setChain(+selected.value as ChainId);
-    // props.onChainSelected(+selected.value as ChainId);
   };
 
   return (
