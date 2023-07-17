@@ -80,7 +80,6 @@ export default function DeliveryStatus() {
           setError(e.message || "An error occurred.");
         });
     } else if (queryType === "EmitterSeq") {
-      console.log({ environment, cha: chain });
       populateDeliveryLifecycleRecordByEmitterSequence(
         environment,
         getChainInfo(environment, chain),

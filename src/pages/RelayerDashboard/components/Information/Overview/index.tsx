@@ -121,7 +121,7 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
   const { environment } = useEnvironment();
 
   const lifecycleVaas = lifecycleRecords.filter(record => !!record.vaa);
-  if (lifecycleVaas.length <= 0) return <div>No VAA was found</div>;
+  if (lifecycleVaas?.length <= 0) return <div>No VAA was found</div>;
 
   const render = lifecycleVaas.map((lifecycleRecord, idx) => {
     const vaa = lifecycleRecord.vaa;
@@ -537,60 +537,62 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                       </div>
                     </div>
                     {lifecycleRecord.DeliveryStatuses &&
-                      lifecycleRecord.DeliveryStatuses.map((deliveryStatus, idx) => (
-                        <Fragment key={`texts-tool-${idx}`}>
-                          <Tooltip
-                            tooltip={
-                              <div className="budget-tooltip">
-                                <div className="budget-tooltip-title">Max Refund:</div>
-                                <div>{maxRefundText(deliveryStatus)}</div>
+                      lifecycleRecord.DeliveryStatuses.map((deliveryStatus, idx) =>
+                        deliveryStatus.metadata ? (
+                          <Fragment key={`texts-tool-${idx}`}>
+                            <Tooltip
+                              tooltip={
+                                <div className="budget-tooltip">
+                                  <div className="budget-tooltip-title">Max Refund:</div>
+                                  <div>{maxRefundText(deliveryStatus)}</div>
 
-                                {gasUsedText(deliveryStatus) && (
-                                  <>
-                                    <div className="budget-tooltip-title">
-                                      {isNaN(gasUsed) ? "Gas Limit" : "Gas Used/Gas Limit"}
-                                    </div>
-                                    <div>{gasUsedText(deliveryStatus)}</div>
-                                  </>
-                                )}
+                                  {gasUsedText(deliveryStatus) && (
+                                    <>
+                                      <div className="budget-tooltip-title">
+                                        {isNaN(gasUsed) ? "Gas Limit" : "Gas Used/Gas Limit"}
+                                      </div>
+                                      <div>{gasUsedText(deliveryStatus)}</div>
+                                    </>
+                                  )}
 
-                                {!isNaN(gasUsed) && (
-                                  <>
-                                    <div className="budget-tooltip-title">Refund amount:</div>
-                                    <div>{refundText()}</div>
-                                  </>
-                                )}
+                                  {!isNaN(gasUsed) && (
+                                    <>
+                                      <div className="budget-tooltip-title">Refund amount:</div>
+                                      <div>{refundText()}</div>
+                                    </>
+                                  )}
 
-                                <div className="budget-tooltip-title">Receiver Value:</div>
-                                <div>{receiverValueText(deliveryStatus)}</div>
-                              </div>
-                            }
-                            side="bottom"
-                          >
-                            <div
-                              style={{
-                                cursor: "pointer",
-                                backgroundColor: "#ddddff05",
-                                borderRadius: 6,
-                              }}
+                                  <div className="budget-tooltip-title">Receiver Value:</div>
+                                  <div>{receiverValueText(deliveryStatus)}</div>
+                                </div>
+                              }
+                              side="bottom"
                             >
-                              <div className="relayer-tx-overview-graph-step-title budget-copy">
-                                <div>Budget</div>
-                                <CopyToClipboard toCopy={copyBudgetText(deliveryStatus)}>
-                                  <CopyIcon />
-                                </CopyToClipboard>
-                              </div>
-
                               <div
-                                key={"deliv" + idx}
-                                className="relayer-tx-overview-graph-step-description"
+                                style={{
+                                  cursor: "pointer",
+                                  backgroundColor: "#ddddff05",
+                                  borderRadius: 6,
+                                }}
                               >
-                                <div>{budgetText(deliveryStatus)}</div>
+                                <div className="relayer-tx-overview-graph-step-title budget-copy">
+                                  <div>Budget</div>
+                                  <CopyToClipboard toCopy={copyBudgetText(deliveryStatus)}>
+                                    <CopyIcon />
+                                  </CopyToClipboard>
+                                </div>
+
+                                <div
+                                  key={"deliv" + idx}
+                                  className="relayer-tx-overview-graph-step-description"
+                                >
+                                  <div>{budgetText(deliveryStatus)}</div>
+                                </div>
                               </div>
-                            </div>
-                          </Tooltip>
-                        </Fragment>
-                      ))}
+                            </Tooltip>
+                          </Fragment>
+                        ) : null,
+                      )}
                   </div>
                 </div>
 
@@ -754,9 +756,9 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                                 </CopyToClipboard>
                               </div>
                             </div>
-                            {!!lifecycleRecord.targetTransactions[
-                              lifecycleRecord.targetTransactions.length - 1
-                            ].targetTxTimestamp && (
+                            {!!lifecycleRecord?.targetTransactions[
+                              lifecycleRecord?.targetTransactions?.length - 1
+                            ]?.targetTxTimestamp && (
                               <div>
                                 <div className="relayer-tx-overview-graph-step-title">Time</div>
                                 <div className="relayer-tx-overview-graph-step-description">

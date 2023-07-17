@@ -16,10 +16,6 @@ export default function ChainSelector() {
 
   const [selectedValue, setSelectedValue] = useState(allChains.find(c => c.value === `${chain}`));
 
-  useEffect(() => {
-    console.log("deberia cambiar a chain", chain);
-  }, [chain]);
-
   const handleChange = (selected: any) => {
     setSelectedValue(selected);
     setChain(+selected.value as ChainId);
