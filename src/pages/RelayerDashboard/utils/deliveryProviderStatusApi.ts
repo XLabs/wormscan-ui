@@ -1,6 +1,8 @@
 import {
   DeliveryInstruction,
+  DeliveryStatus,
   RedeliveryInstruction,
+  RefundStatus,
   parseEVMExecutionInfoV1,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import axios from "axios";
@@ -42,38 +44,56 @@ export type RedeliveryRecord = {
 
 export type DeliveryRecord = {
   //pretty much all of this can be derived from the delivery vaa
-  targetChainDecimals?: number; //useful for calculating usd quotes
-  deliveryInstructionPrintable?: string; //Readable stringify format. Should be redudant if the VAA is also in hand
-  hasAdditionalVaas?: boolean; //! true if additional VAAs were specified in the delivery instruction
   additionalVaaKeysFormatValid?: boolean; //! if this is false, then the delivery is probably invalid
   additionalVaaKeysPrintable?: string; //Readable stringify format. Should be redudant if the VAA is also in hand
-  fetchAdditionalVaasTimeStart?: number; //unneeded, time the relayer started fetching additional VAAs
-  fetAdditionalVaasTimeEnd?: number; //unneeded, time the relayer finished fetching additional VAAs
   additionalVaasDidFetch?: boolean; //unneeded, if the relayer fetched additional VAAs
   additionalVaasHex?: string; //! hex encoded additional VAAs, if these fail to verify against the core contract
-  chainId?: number; //chain id of the target chain, can be useful, but generally is redundant with the VAA
-  receiverValue?: string; //! amount of tokens to be sent the the receiver contract on the target chain, denoted in target chain wei.
-  maxRefund?: string; //! maximum amount of tokens that can be refunded to the sender, denoted in target chain wei.
   budget?: string; //! the amount of tokens that the relayer has to pass in in order to pay for the refund & receiver value budget.
-  walletAcquisitionStartTime?: number; //unneeded, time the relayer started acquiring a wallet
-  walletAcquisitionEndTime?: number; //unneeded, time the relayer finished acquiring a wallet
-  walletAcquisitionDidSucceed?: boolean; //unneeded, if the relayer successfully acquired a wallet
-  walletAddress?: string; //unneeded, address of the wallet the relayer used to send the transaction
-  walletBalanceBefore?: string; //unneeded, balance of the wallet before the transaction was sent
-  walletBalanceAfter?: string; //unneeded, balance of the wallet after the transaction was sent
-  walletNonce?: number; //unneeded, nonce of the wallet before the transaction was sent
-  gasUnitsEstimate?: number; //unneeded, gas units estimate of the transaction during simulation
-  gasPriceEstimate?: string; //somewhat useful, estimated gas price at the time this attempt ran
-  gasUsed?: number; //gas actually utilized in the delivered transaction. not that useful.
-  gasPrice?: string; //gas price of the delivered transaction. not that useful.
+  budgetUsd: number;
+  chainId?: number; //chain id of the target chain, can be useful, but generally is redundant with the VAA
+  deliveryInstructionPrintable?: string; //Readable stringify format. Should be redudant if the VAA is also in hand
   estimatedTransactionFee?: string; //estimatedTransactionFee of the delivered transaction at the time of simulation. Less useful than the real value.
   estimatedTransactionFeeEther?: string; //just the above field but denoted in ether
-  transactionSubmitTimeStart?: number; //time the relayer started submitting the transaction, not useful
-  transactionSubmitTimeEnd?: number; //time the relayer finished submitting the transaction, not useful
+  fetAdditionalVaasTimeEnd?: number; //unneeded, time the relayer finished fetching additional VAAs
+  fetchAdditionalVaasTimeStart?: number; //unneeded, time the relayer started fetching additional VAAs
+  gasPrice?: string; //gas price of the delivered transaction. not that useful.
+  gasPriceEstimate?: string; //somewhat useful, estimated gas price at the time this attempt ran
+  gasUnitsEstimate?: number; //unneeded, gas units estimate of the transaction during simulation
+  gasUsed?: number; //gas actually utilized in the delivered transaction. not that useful.
+  hasAdditionalVaas?: boolean; //! true if additional VAAs were specified in the delivery instruction
+  maxRefund?: string; //! maximum amount of tokens that can be refunded to the sender, denoted in target chain wei.
+  maxRefundUsd: number;
+  receiverValue?: string; //! amount of tokens to be sent the the receiver contract on the target chain, denoted in target chain wei.
+  receiverValueUsd: number;
+  resultLog?: {
+    status: DeliveryStatus | string; //!!! most important field, status which the relayer read after delivering the transaction.
+    gasUsed: string;
+    overrides?: {
+      newReceiverValue: string;
+      redeliveryHash: string;
+      newExecutionInfo: string;
+    };
+    sourceChain: string;
+    sourceVaaSequence: string | null;
+    transactionHash: string | null;
+    vaaHash: string | null;
+    refundStatus: RefundStatus; //!!! important!!
+    revertString: string | undefined;
+  };
+  resultLogDidParse?: boolean; //unneeded, if the relayer parsed the result log
+  targetChainAssetPriceUSD: number;
+  targetChainDecimals?: number; //useful for calculating usd quotes
   transactionDidSubmit?: boolean; //Fairly important, if it failed to submit there is likely a problem with the relayer process
   transactionHashes?: string[]; //probably not needed, toTxHash is more useful
-  resultLogDidParse?: boolean; //unneeded, if the relayer parsed the result log
-  resultLog?: string; //!!! most important field, status which the relayer read after delivering the transaction.
+  transactionSubmitTimeEnd?: number; //time the relayer finished submitting the transaction, not useful
+  transactionSubmitTimeStart?: number; //time the relayer started submitting the transaction, not useful
+  walletAcquisitionDidSucceed?: boolean; //unneeded, if the relayer successfully acquired a wallet
+  walletAcquisitionEndTime?: number; //unneeded, time the relayer finished acquiring a wallet
+  walletAcquisitionStartTime?: number; //unneeded, time the relayer started acquiring a wallet
+  walletAddress?: string; //unneeded, address of the wallet the relayer used to send the transaction
+  walletBalanceAfter?: string; //unneeded, balance of the wallet after the transaction was sent
+  walletBalanceBefore?: string; //unneeded, balance of the wallet before the transaction was sent
+  walletNonce?: number; //unneeded, nonce of the wallet before the transaction was sent
 };
 
 export type DeliveryProviderStatus = {
@@ -137,6 +157,7 @@ function getBaseUrl(environment: Environment): string {
   }
 }
 
+// const CORS_PROXY = "";
 const CORS_PROXY = "https://nextjs-cors-anywhere.vercel.app/api?endpoint=";
 
 //Don't call this function directly, use the wrapped functions with fewer args

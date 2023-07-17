@@ -156,9 +156,6 @@ export default function DeliveryStatus() {
         ) : (
           <div className="relayer-errored">No relay status was found for this input</div>
         ))}
-
-      {/* {vaaReaders && vaaReaders} */}
-      {/* {lifecycleRecordDisplays ? lifecycleRecordDisplays : null} */}
     </div>
   );
 }

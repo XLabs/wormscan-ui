@@ -153,6 +153,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Algorand]: {
     name: "Algorand",
+    acronym: "ALGO",
     icon: AlgorandIcon,
     darkIcon: AlgorandDarkIcon,
     explorer: {
@@ -211,6 +212,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Avalanche]: {
     name: "Avalanche",
+    acronym: "AVAX",
     icon: AvalancheIcon,
     darkIcon: AvalancheDarkIcon,
     explorer: {
@@ -254,6 +256,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Ethereum]: {
     name: "Ethereum",
+    acronym: "ETH",
     icon: EthereumIcon,
     darkIcon: EthereumDarkIcon,
     explorer: {
@@ -282,6 +285,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Injective]: {
     name: "Injective",
+    acronym: "INJ",
     icon: InjectiveIcon,
     darkIcon: InjectiveDarkIcon,
     explorer: {
@@ -408,6 +412,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Solana]: {
     name: "Solana",
+    acronym: "SOL",
     icon: SolanaIcon,
     darkIcon: SolanaDarkIcon,
     explorer: {

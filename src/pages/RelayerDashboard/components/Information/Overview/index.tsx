@@ -13,6 +13,7 @@ import { BREAKPOINTS, colorStatus, getGuardianSet, txType } from "src/consts";
 import { parseTx, parseAddress } from "src/utils/crypto";
 import { getCurrentNetwork } from "src/api/Client";
 import "./styles.scss";
+import { ethers } from "ethers";
 import {
   DeliveryLifecycleRecord,
   getDeliveryStatusByVaa,
@@ -27,11 +28,11 @@ import {
   DeliveryTargetInfo,
   RedeliveryInstruction,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
-import { Fragment, useCallback, useEffect, useState } from "react";
-import { Button, CircularProgress, TextField } from "@mui/material";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useEthereumProvider } from "src/pages/RelayerDashboard/context/EthereumProviderContext";
 import {
   getChainInfo,
+  getEthersProvider,
   mainnetDefaultDeliveryProviderContractAddress,
   testnetDefaultDeliveryProviderContractAddress,
 } from "src/pages/RelayerDashboard/utils/environment";
@@ -122,52 +123,6 @@ export function DeliveryInstructionDisplay({ instruction }: { instruction: Deliv
   );
 }
 
-// const VaaReader = ({
-//   rawVaa,
-//   vaa,
-//   info,
-//   isDelivery,
-// }: {
-//   rawVaa: Uint8Array;
-//   vaa: ParsedVaa;
-//   info: DeliveryInstruction | RedeliveryInstruction | null;
-//   isDelivery: boolean;
-// }) => {
-//   const vaaHeaderInfo = (
-//     <div style={{ margin: "10px" }}>
-//       <h4>VAA Info </h4>
-//       {Divider}
-//       <div>
-//         Chain: {vaa.emitterChain} ({ChainId[vaa.emitterChain]})
-//       </div>
-//       <div>Emitter: {Buffer.from(vaa.emitterAddress).toString("hex")}</div>
-//       <div>Sequence: {vaa.sequence.toString()}</div>
-//       <div>Hash: {Buffer.from(vaa.hash).toString("hex")}</div>
-//       <div>Timestamp: {vaa.timestamp.toString()}</div>
-//     </div>
-//   );
-
-//   const vaaBodyInfo =
-//     info == null ? (
-//       <div>This VAA can&apos;t be parsed. It is likely not a Wormhole relayer VAA.</div>
-//     ) : isRedelivery(info) ? (
-//       <RedeliveryInstructionDisplay instruction={info as RedeliveryInstruction} />
-//     ) : (
-//       <DeliveryInstructionDisplay instruction={info as DeliveryInstruction} />
-//     );
-
-//   return (
-//     <div style={{ margin: "10px" }}>
-//       {/* {vaaHeaderInfo}
-//       <div style={{ height: "10px" }} />
-//       {vaaBodyInfo} */}
-
-//       {isDelivery && <PullDeliveryInfo rawVaa={rawVaa} />}
-//       {/* {isDelivery && <ManualDeliverDeliveryVaa rawVaa={rawVaa} />} */}
-//     </div>
-//   );
-// };
-
 type Props = {
   lifecycleRecords: DeliveryLifecycleRecord[];
   goAdvancedTab: () => void;
@@ -180,89 +135,6 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
   if (lifecycleVaas.length <= 0) return <div>No VAA was found</div>;
 
   const render = lifecycleVaas.map((lifecycleRecord, idx) => {
-    // const {
-    //   id: VAAId,
-    //   timestamp,
-    //   tokenAmount,
-    //   usdAmount,
-    //   symbol,
-    //   emitterChain: txEmitterChain,
-    //   emitterNativeAddress,
-    //   standardizedProperties,
-    //   globalTx,
-    //   payload,
-    // } = (txsData[idx].data as GetTransactionsOutput) || {};
-    // console.log("VAAId??", VAAId);
-    // console.log({ txsData });
-
-    // const { originTx, destinationTx } = globalTx || {};
-
-    // const {
-    //   chainId: globalToChainId,
-    //   from: globalTo,
-    //   timestamp: globalToTimestamp,
-    //   txHash: globalToRedeemTx,
-    // } = destinationTx || {};
-
-    // const { from: globalFrom, timestamp: globalFromTimestamp } = originTx || {};
-
-    // const {
-    //   appIds,
-    //   fromChain: stdFromChain,
-    //   toChain: stdToChain,
-    //   toAddress: stdToAddress,
-    //   tokenChain: stdTokenChain,
-    //   tokenAddress: stdTokenAddress,
-    // } = standardizedProperties || {};
-
-    // const fromAddress = globalFrom;
-    // const toChain = stdToChain;
-    // const toAddress = stdToAddress;
-    // const startDate = timestamp;
-    // const endDate = globalToTimestamp;
-    // const tokenChain = stdTokenChain;
-    // const tokenAddress = stdTokenAddress;
-
-    // const parsedOriginAddress = parseAddress({
-    //   value: fromAddress,
-    //   chainId: fromChain as ChainId,
-    // });
-
-    // const parsedEmitterAddress = parseAddress({
-    //   value: emitterNativeAddress,
-    //   chainId: emitterChain as ChainId,
-    // });
-
-    // const parsedDestinationAddress = parseAddress({
-    //   value: toAddress,
-    //   chainId: toChain as ChainId,
-    // });
-
-    // const parsedRedeemTx = parseTx({ value: globalToRedeemTx, chainId: toChain as ChainId });
-
-    // const originDate = new Date(startDate).toLocaleString("en-US", {
-    //   year: "numeric",
-    //   month: "short",
-    //   day: "numeric",
-    //   hour: "2-digit",
-    //   minute: "2-digit",
-    //   hour12: false,
-    // });
-    // const destinationDate = new Date(endDate).toLocaleString("en-US", {
-    //   year: "numeric",
-    //   month: "short",
-    //   day: "numeric",
-    //   hour: "2-digit",
-    //   minute: "2-digit",
-    //   hour12: false,
-    // });
-
-    // const amountSent = formatCurrency(Number(tokenAmount));
-    // const amountSentUSD = formatCurrency(Number(usdAmount));
-
-    // const originDateParsed = originDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
-    // const destinationDateParsed = destinationDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
-
     const vaa = lifecycleRecord.vaa;
     const parsedVaa = parseVaa(vaa);
 
@@ -306,6 +178,15 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
     const redeliveryInstruction = instruction as RedeliveryInstruction | null;
     const isDelivery = deliveryInstruction && !isRedelivery(deliveryInstruction);
 
+    if (!deliveryInstruction?.targetAddress) {
+      console.log({ deliveryInstruction });
+      return (
+        <div key={idx} className="relayer-tx-overview">
+          <div className="errored-info">This doesn&apos;t look like a Generic Relayer VAA</div>
+        </div>
+      );
+    }
+
     const deliveryParsedTargetAddress = parseAddress({
       value: Buffer.from(deliveryInstruction?.targetAddress).toString("hex"),
       chainId: deliveryInstruction?.targetChainId as ChainId,
@@ -330,6 +211,65 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
       value: Buffer.from(deliveryInstruction?.sourceDeliveryProvider).toString("hex"),
       chainId: fromChain as ChainId,
     });
+
+    const trunkStringsDecimal = (num: string, decimals: number) => {
+      const [whole, fraction] = num.split(".");
+      if (!fraction) return whole;
+      return `${whole}.${fraction.slice(0, decimals)}`;
+    };
+
+    const maxRefundText = (deliveryStatus: any) =>
+      `${trunkStringsDecimal(
+        ethers.utils.formatUnits(
+          deliveryStatus.metadata?.deliveryRecord?.maxRefund,
+          deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
+        ),
+        3,
+      )} ${
+        environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
+          .nativeCurrencyName
+      } (${trunkStringsDecimal(
+        "" + deliveryStatus.metadata?.deliveryRecord?.maxRefundUsd,
+        4,
+      )} USD)`;
+
+    const gasUsedText = (deliveryStatus: any) =>
+      `${deliveryStatus.metadata?.deliveryRecord?.resultLog?.gasUsed}`;
+
+    const receiverValueText = (deliveryStatus: any) => `
+    ${trunkStringsDecimal(
+      ethers.utils.formatUnits(
+        deliveryStatus.metadata?.deliveryRecord?.receiverValue,
+        deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
+      ),
+      3,
+    )} ${
+      environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
+        .nativeCurrencyName
+    } (${trunkStringsDecimal(
+      "" + deliveryStatus.metadata?.deliveryRecord?.receiverValueUsd,
+      4,
+    )} USD)`;
+
+    const budgetText = (deliveryStatus: any) => `
+    ${`${trunkStringsDecimal(
+      ethers.utils.formatUnits(
+        deliveryStatus.metadata?.deliveryRecord?.budget,
+        deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
+      ),
+      3,
+    )} ${
+      environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
+        .nativeCurrencyName
+    } (${deliveryStatus.metadata?.deliveryRecord?.budgetUsd.toFixed(3)} USD)`}
+    `;
+
+    const copyBudgetText = (deliveryStatus: any) =>
+      `Budget: ${budgetText(deliveryStatus)}\nMax Refund:\n${maxRefundText(
+        deliveryStatus,
+      )}\n\nGas Used:\n${gasUsedText(deliveryStatus)}\n\nReceiver Value: ${receiverValueText(
+        deliveryStatus,
+      )}`.replaceAll("    ", "");
 
     return (
       <Fragment key={parsedHash}>
@@ -358,7 +298,29 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                 <div>
                   <div className="relayer-tx-overview-graph-step-title">Sent from</div>
                   <div className="relayer-tx-overview-graph-step-description">
-                    {fromChain && getChainName({ chainId: fromChain }).toUpperCase()}
+                    <div className="relayer-tx-overview-graph-step-description">
+                      <a
+                        href={getExplorerLink({
+                          chainId: fromChain,
+                          value: deliveryParsedSenderAddress,
+                          base: "address",
+                          isNativeAddress: true,
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {shortAddress(deliveryParsedSenderAddress).toUpperCase()}
+                      </a>{" "}
+                      <CopyToClipboard toCopy={deliveryParsedSenderAddress}>
+                        <CopyIcon />
+                      </CopyToClipboard>
+                    </div>
+                    <div>
+                      (
+                      {fromChain &&
+                        getChainName({ chainId: fromChain, acronym: true }).toUpperCase()}
+                      )
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -382,23 +344,9 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                   </div>
                 </div>
                 <div>
-                  <div className="relayer-tx-overview-graph-step-title">Sender Address</div>
+                  <div className="relayer-tx-overview-graph-step-title">Time</div>
                   <div className="relayer-tx-overview-graph-step-description">
-                    <a
-                      href={getExplorerLink({
-                        chainId: fromChain,
-                        value: deliveryParsedSenderAddress,
-                        base: "address",
-                        isNativeAddress: true,
-                      })}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {shortAddress(deliveryParsedSenderAddress).toUpperCase()}
-                    </a>{" "}
-                    <CopyToClipboard toCopy={deliveryParsedSenderAddress}>
-                      <CopyIcon />
-                    </CopyToClipboard>
+                    {parseDate(parsedVaa.timestamp * 1000)}
                   </div>
                 </div>
               </div>
@@ -417,21 +365,29 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                 <div>
                   <div className="relayer-tx-overview-graph-step-title">Contract Address</div>
                   <div className="relayer-tx-overview-graph-step-description">
-                    <a
-                      href={getExplorerLink({
-                        chainId: fromChain,
-                        value: parsedEmitterAddress,
-                        base: "address",
-                        isNativeAddress: true,
-                      })}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {shortAddress(parsedEmitterAddress).toUpperCase()}
-                    </a>{" "}
-                    <CopyToClipboard toCopy={parsedEmitterAddress}>
-                      <CopyIcon />
-                    </CopyToClipboard>
+                    <div className="relayer-tx-overview-graph-step-description">
+                      <a
+                        href={getExplorerLink({
+                          chainId: fromChain,
+                          value: parsedEmitterAddress,
+                          base: "address",
+                          isNativeAddress: true,
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {shortAddress(parsedEmitterAddress).toUpperCase()}
+                      </a>{" "}
+                      <CopyToClipboard toCopy={parsedEmitterAddress}>
+                        <CopyIcon />
+                      </CopyToClipboard>
+                    </div>
+                    <div>
+                      (
+                      {fromChain &&
+                        getChainName({ chainId: fromChain, acronym: true }).toUpperCase()}
+                      )
+                    </div>
                   </div>
                 </div>
               </div>
@@ -467,12 +423,15 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                     </CopyToClipboard>
                   </div>
                 </div>
-                <div>
-                  <div className="relayer-tx-overview-graph-step-title">Time</div>
-                  <div className="relayer-tx-overview-graph-step-description">
-                    {parseDate(parsedVaa.timestamp * 1000)}
-                  </div>
-                </div>
+                {lifecycleRecord.DeliveryStatuses &&
+                  lifecycleRecord.DeliveryStatuses[0]?.receivedAt && (
+                    <div>
+                      <div className="relayer-tx-overview-graph-step-title">Time</div>
+                      <div className="relayer-tx-overview-graph-step-description">
+                        {parseDate(lifecycleRecord.DeliveryStatuses?.[0]?.receivedAt)}
+                      </div>
+                    </div>
+                  )}
               </div>
             </div>
 
@@ -491,56 +450,104 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                     <div>
                       <div className="relayer-tx-overview-graph-step-title">Target Address</div>
                       <div className="relayer-tx-overview-graph-step-description">
+                        <div className="relayer-tx-overview-graph-step-description">
+                          <a
+                            href={getExplorerLink({
+                              chainId: deliveryInstruction.targetChainId,
+                              value: deliveryParsedTargetAddress,
+                              base: "address",
+                              isNativeAddress: true,
+                            })}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {shortAddress(deliveryParsedTargetAddress).toUpperCase()}
+                          </a>{" "}
+                          <CopyToClipboard toCopy={deliveryParsedTargetAddress}>
+                            <CopyIcon />
+                          </CopyToClipboard>
+                        </div>
+                        <div className="relayer-tx-overview-graph-step-description">
+                          (
+                          {getChainName({
+                            chainId: deliveryInstruction.targetChainId,
+                            acronym: true,
+                          }).toUpperCase()}
+                          )
+                        </div>
+                      </div>
+                    </div>
+                    {/* <div>
+                      <div className="relayer-tx-overview-graph-step-title">MORE INFO</div>
+                      <div className="relayer-tx-overview-graph-step-description">ASD</div>
+                    </div> */}
+                    <div>
+                      <div className="relayer-tx-overview-graph-step-title">Delivery Provider</div>
+                      <div className="relayer-tx-overview-graph-step-description">
                         <a
                           href={getExplorerLink({
                             chainId: deliveryInstruction.targetChainId,
-                            value: deliveryParsedTargetAddress,
+                            value: deliveryParsedSourceProviderAddress,
                             base: "address",
                             isNativeAddress: true,
                           })}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {shortAddress(deliveryParsedTargetAddress).toUpperCase()}
+                          {deliveryParsedSourceProviderAddress.toLowerCase() ===
+                            testnetDefaultDeliveryProviderContractAddress.toLowerCase() ||
+                          deliveryParsedSourceProviderAddress.toLowerCase() ===
+                            mainnetDefaultDeliveryProviderContractAddress.toLowerCase()
+                            ? "xLabs"
+                            : shortAddress(deliveryParsedSourceProviderAddress).toUpperCase()}
                         </a>{" "}
-                        <CopyToClipboard toCopy={deliveryParsedTargetAddress}>
+                        <CopyToClipboard toCopy={deliveryParsedSourceProviderAddress}>
                           <CopyIcon />
                         </CopyToClipboard>
                       </div>
                     </div>
-                    <div>
-                      <div className="relayer-tx-overview-graph-step-title">Send to</div>
-                      <div className="relayer-tx-overview-graph-step-description">
-                        {getChainName({ chainId: deliveryInstruction.targetChainId }).toUpperCase()}
-                      </div>
-                    </div>
-                    {deliveryParsedSourceProviderAddress.toLowerCase() !==
-                      testnetDefaultDeliveryProviderContractAddress.toLowerCase() &&
-                      deliveryParsedSourceProviderAddress.toLowerCase() !==
-                        mainnetDefaultDeliveryProviderContractAddress.toLowerCase() && (
-                        <div>
-                          <div className="relayer-tx-overview-graph-step-title">
-                            Delivery Provider
-                          </div>
-                          <div className="relayer-tx-overview-graph-step-description">
-                            <a
-                              href={getExplorerLink({
-                                chainId: deliveryInstruction.targetChainId,
-                                value: deliveryParsedSourceProviderAddress,
-                                base: "address",
-                                isNativeAddress: true,
-                              })}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                    {lifecycleRecord.DeliveryStatuses &&
+                      lifecycleRecord.DeliveryStatuses.map((deliveryStatus, idx) => (
+                        <>
+                          <Tooltip
+                            tooltip={
+                              <div className="budget-tooltip">
+                                <div className="budget-tooltip-title">Max Refund:</div>
+                                <div>{maxRefundText(deliveryStatus)}</div>
+
+                                <div className="budget-tooltip-title">Gas Used: </div>
+                                <div>{gasUsedText(deliveryStatus)}</div>
+
+                                <div className="budget-tooltip-title">Receiver Value: </div>
+                                <div>{receiverValueText(deliveryStatus)}</div>
+                              </div>
+                            }
+                            side="bottom"
+                          >
+                            <div
+                              style={{
+                                cursor: "pointer",
+                                backgroundColor: "#ddddff05",
+                                borderRadius: 6,
+                              }}
                             >
-                              {shortAddress(deliveryParsedSourceProviderAddress).toUpperCase()}
-                            </a>{" "}
-                            <CopyToClipboard toCopy={deliveryParsedSourceProviderAddress}>
-                              <CopyIcon />
-                            </CopyToClipboard>
-                          </div>
-                        </div>
-                      )}
+                              <div className="relayer-tx-overview-graph-step-title budget-copy">
+                                <div>Budget</div>
+                                <CopyToClipboard toCopy={copyBudgetText(deliveryStatus)}>
+                                  <CopyIcon />
+                                </CopyToClipboard>
+                              </div>
+
+                              <div
+                                key={"deliv" + idx}
+                                className="relayer-tx-overview-graph-step-description"
+                              >
+                                <div>{budgetText(deliveryStatus)}</div>
+                              </div>
+                            </div>
+                          </Tooltip>
+                        </>
+                      ))}
                   </div>
                 </div>
 
@@ -573,14 +580,14 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                           <CopyToClipboard toCopy={deliveryParsedRefundAddress}>
                             <CopyIcon />
                           </CopyToClipboard>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="relayer-tx-overview-graph-step-title">Refund to</div>
-                        <div className="relayer-tx-overview-graph-step-description">
-                          {getChainName({
-                            chainId: deliveryInstruction.refundChainId,
-                          }).toUpperCase()}
+                          <div className="relayer-tx-overview-graph-step-description">
+                            (
+                            {getChainName({
+                              chainId: deliveryInstruction.refundChainId,
+                              acronym: true,
+                            }).toUpperCase()}
+                            )
+                          </div>
                         </div>
                       </div>
                       {deliveryParsedRefundProviderAddress.toLowerCase() !==
@@ -650,6 +657,40 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                         {deliveryStatus.status !== "failed" && (
                           <div className={`relayer-tx-overview-graph-step-data-container`}>
                             <div>
+                              <div className="relayer-tx-overview-graph-step-title">STATUS</div>
+                              <div
+                                className={`relayer-tx-overview-graph-step-description ${
+                                  typeof deliveryStatus.metadata?.deliveryRecord?.resultLog ===
+                                  "string"
+                                    ? deliveryStatus.metadata?.deliveryRecord?.resultLog ===
+                                      "Delivery Success"
+                                      ? "green"
+                                      : "white"
+                                    : deliveryStatus.metadata?.deliveryRecord?.resultLog?.status ===
+                                      "Delivery Success"
+                                    ? "green"
+                                    : "white"
+                                }`}
+                              >
+                                {typeof deliveryStatus.metadata?.deliveryRecord?.resultLog ===
+                                "string"
+                                  ? deliveryStatus.metadata?.deliveryRecord?.resultLog
+                                  : deliveryStatus.metadata?.deliveryRecord?.resultLog?.status}
+                              </div>
+                              {deliveryStatus.metadata?.deliveryRecord?.resultLog?.refundStatus && (
+                                <div
+                                  className={`relayer-tx-overview-graph-step-description ${
+                                    deliveryStatus.metadata?.deliveryRecord?.resultLog
+                                      ?.refundStatus === "Refund Sent"
+                                      ? "green"
+                                      : "white"
+                                  }`}
+                                >
+                                  {deliveryStatus.metadata?.deliveryRecord?.resultLog?.refundStatus}
+                                </div>
+                              )}
+                            </div>
+                            <div>
                               <div className="relayer-tx-overview-graph-step-title">
                                 Target Tx Hash
                               </div>
@@ -670,20 +711,20 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                                 </CopyToClipboard>
                               </div>
                             </div>
-                            <div>
-                              <div className="relayer-tx-overview-graph-step-title">STATUS</div>
-                              <div
-                                className={`relayer-tx-overview-graph-step-description ${
-                                  deliveryStatus.metadata?.deliveryRecord?.resultLog ===
-                                  "Delivery Success"
-                                    ? "green"
-                                    : "white"
-                                }`}
-                              >
-                                {deliveryStatus.metadata?.deliveryRecord?.resultLog}
-                                {/* {deliveryStatus.status.toUpperCase()} */}
+                            {!!lifecycleRecord.targetTransactions[
+                              lifecycleRecord.targetTransactions.length - 1
+                            ].targetTxTimestamp && (
+                              <div>
+                                <div className="relayer-tx-overview-graph-step-title">Time</div>
+                                <div className="relayer-tx-overview-graph-step-description">
+                                  {parseDate(
+                                    lifecycleRecord.targetTransactions[
+                                      lifecycleRecord.targetTransactions.length - 1
+                                    ].targetTxTimestamp * 1000,
+                                  )}
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </div>
                         )}
                       </div>
@@ -712,9 +753,9 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                   </div>
                 )}
 
-                <div onClick={() => goAdvancedTab()} className="try-manual-delivery-btn">
+                {/* <div onClick={() => goAdvancedTab()} className="try-manual-delivery-btn">
                   Try Manual Deliver
-                </div>
+                </div> */}
               </>
             )}
           </div>
