@@ -6,6 +6,37 @@
   margin-bottom: 8px;
 }
 
+.budget-copy {
+  svg {
+    color: var(--color-primary-90) !important;
+  }
+}
+
+.errored-info {
+  background-color: var(--color-error-30);
+  font-size: 14px;
+  padding: 8px;
+  height: 60px;
+  overflow: auto;
+  margin: 20px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.budget-tooltip {
+  @include centered-column;
+  align-items: center;
+  width: 250px;
+  height: 140px;
+  gap: 5px;
+  font-size: 14px;
+
+  &-title {
+    font-weight: bold;
+    margin-bottom: -4px;
+  }
+}
+
 .relayer-tx-overview {
   --y-space: 285px;
   display: block;
@@ -25,18 +56,6 @@
     @include desktop {
       margin-top: 80px;
     }
-  }
-
-  .errored-info {
-    background-color: var(--color-error-30);
-    font-size: 14px;
-    padding: 8px;
-    height: 100px;
-    overflow: auto;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
   }
 
   &-graph {

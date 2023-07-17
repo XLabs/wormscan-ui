@@ -83,3 +83,10 @@ const Information = ({ VAAData, txData }: Props) => {
 };
 
 export { Information };
+
+// timestamp for source tx and target tx.
+// GWEI/WEI ($ USD).
+// amounts and gases are important, show them.
+// redelivery support not that important, show original info better.
+// parse execution params and show them, important.
+// refreshing loses state, try maintaining it.

@@ -53,6 +53,7 @@ export type DeliveryLifecycleRecord = {
     targetTxHash?: string;
     targetTxReceipt?: ethers.providers.TransactionReceipt;
     targetChainId?: ChainId;
+    targetTxTimestamp?: number;
   }[];
 };
 
@@ -123,6 +124,17 @@ export async function populateDeliveryLifecycleRecordByVaa(
 
   vaa = Buffer.from(rawVaa).toString("hex");
 
+  let tx;
+  try {
+    tx = (await getClient().search.getTransactions({
+      chainId: parsedVaa.emitterChain,
+      emitter: parsedVaa.emitterAddress.toString("hex"),
+      seq: Number(parsedVaa.sequence),
+    })) as GetTransactionsOutput;
+  } catch (e) {
+    console.error("err on getTransaction wormhole api", e);
+  }
+
   const deliveryStatus = await getDeliveryProviderStatusByVaaInfo(
     environment,
     parsedVaa.emitterChain.toString(),
@@ -130,67 +142,78 @@ export async function populateDeliveryLifecycleRecordByVaa(
     parsedVaa.sequence.toString(),
   );
 
-  const noSourceTxHash = !deliveryStatus.find(status => status.fromTxHash);
-  let fallbackSourceTxHash;
-  if (deliveryStatus.length === 0 || noSourceTxHash) {
-    console.log("no info on relayStatus, get source tx hash from wormhole scan api");
-    const tx = (await getClient().search.getTransactions({
-      chainId: parsedVaa.emitterChain,
-      emitter: parsedVaa.emitterAddress.toString("hex"),
-      seq: Number(parsedVaa.sequence),
-    })) as GetTransactionsOutput;
-
-    fallbackSourceTxHash = `0x${tx.txHash}`;
-    output.sourceTxHash = fallbackSourceTxHash;
-    output.sourceSequence = Number(parsedVaa.sequence);
-    output.sourceChainId = tx.emitterChain as ChainId;
-
-    if (deliveryStatus.length === 0) return output;
+  const sourceChainId = parsedVaa.emitterChain;
+  let preventProcess = false;
+  if (deliveryStatus.length === 0) {
+    preventProcess = true;
   } else {
     output.DeliveryStatuses = deliveryStatus;
   }
 
-  const sourceTransactions = deliveryStatus.map(status => {
-    return status.fromTxHash;
-  });
+  if (!preventProcess) {
+    const sourceTransactions = deliveryStatus.map(status => {
+      return status.fromTxHash;
+    });
 
-  //All the sourceTransactions should be the same, so just grab the first one
-  const sourceTxHash = sourceTransactions[0];
-  const sourceChainId = parsedVaa.emitterChain;
-  if (sourceTxHash) {
+    //All the sourceTransactions should be the same, so just grab the first one
+    const sourceTxHash = sourceTransactions[0];
+
+    output.sourceTxHash = sourceTxHash || undefined;
+    output.sourceChainId = sourceChainId as ChainId;
+    output.targetTransactions = [];
+
+    for (const status of deliveryStatus) {
+      const targetTxHash = status.toTxHash;
+      if (targetTxHash) {
+        const ethersProvider = getEthersProvider(getChainInfo(environment, targetChain as ChainId));
+        await ethersProvider
+          .getTransactionReceipt(targetTxHash)
+          .then(async receipt => {
+            await ethersProvider
+              .getBlock(receipt.blockNumber)
+              .then(block => {
+                output.targetTransactions?.push({
+                  targetTxHash: targetTxHash,
+                  targetTxReceipt: receipt,
+                  targetChainId: targetChain as ChainId,
+                  targetTxTimestamp: ethers.BigNumber.from(block.timestamp).toNumber(),
+                });
+              })
+              .catch(err => {
+                console.error("failed to get block for target tx", err);
+                output.targetTransactions?.push({
+                  targetTxHash: targetTxHash,
+                  targetTxReceipt: receipt,
+                  targetChainId: targetChain as ChainId,
+                });
+              });
+          })
+          .catch(e => {
+            console.log("error getting target tx receipt: " + e);
+            console.log("target chain: " + targetChain);
+            console.log("target tx hash: " + targetTxHash);
+          });
+      }
+    }
+  }
+
+  const noSourceTxHash = !deliveryStatus.find(status => status.fromTxHash);
+  if (noSourceTxHash && tx && !!tx.txHash) {
+    output.sourceTxHash = tx.txHash.startsWith("0x") ? tx.txHash : `0x${tx.txHash}`;
+    output.sourceSequence = Number(parsedVaa.sequence);
+  }
+
+  if (output.sourceTxHash) {
     await getEthersProvider(getChainInfo(environment, sourceChainId as ChainId))
-      .getTransactionReceipt(sourceTxHash)
-      .then(receipt => {
+      .getTransactionReceipt(output.sourceTxHash)
+      .then(async receipt => {
         output.sourceTxReceipt = receipt;
       })
       .catch(e => {
         console.log("error getting source tx receipt: " + e);
         console.log("source chain: " + sourceChainId);
-        console.log("source tx hash: " + sourceTxHash);
+        console.log("source tx hash: " + output.sourceTxHash);
       });
-  }
-
-  output.sourceTxHash = sourceTxHash || fallbackSourceTxHash || undefined;
-  output.sourceChainId = sourceChainId as ChainId;
-  output.targetTransactions = [];
-  for (const status of deliveryStatus) {
-    const targetTxHash = status.toTxHash;
-    if (targetTxHash) {
-      await getEthersProvider(getChainInfo(environment, targetChain as ChainId))
-        .getTransactionReceipt(targetTxHash)
-        .then(receipt => {
-          output.targetTransactions?.push({
-            targetTxHash: targetTxHash,
-            targetTxReceipt: receipt,
-            targetChainId: targetChain as ChainId,
-          });
-        })
-        .catch(e => {
-          console.log("error getting target tx receipt: " + e);
-          console.log("target chain: " + targetChain);
-          console.log("target tx hash: " + targetTxHash);
-        });
-    }
   }
 
   return output;

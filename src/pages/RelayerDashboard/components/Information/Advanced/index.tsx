@@ -79,7 +79,7 @@ export function PullDeliveryInfo({ rawVaa }: { rawVaa: Uint8Array }) {
 
   return (
     <div style={{ margin: "10px", padding: "10px" }}>
-      <h4>Pull Delivery Info</h4>
+      <h4>Search Delivery Info</h4>
       {Divider}
       <TextField
         label="Block Start"
@@ -169,8 +169,6 @@ export function ManualDeliverDeliveryVaa({ rawVaa }: { rawVaa: Uint8Array }) {
 
   return (
     <div style={{ marginTop: "6px" }}>
-      {/* <h4>Manual Deliver</h4> */}
-
       <div style={{ marginBottom: "6px" }}>
         <button
           className="manual-delivery-btn"
@@ -180,14 +178,6 @@ export function ManualDeliverDeliveryVaa({ rawVaa }: { rawVaa: Uint8Array }) {
           Manual Deliver
         </button>
       </div>
-      {/* <Button
-        onClick={onManualDeliver}
-        disabled={!correctChain || isManualDelivering}
-        variant="contained"
-        style={{ margin: "10px" }}
-      >
-        Manual Deliver
-      </Button> */}
       {!correctChain && <div>Wallet is not connected to the correct EVM network</div>}
       {!correctChain && (
         <div>
@@ -267,7 +257,7 @@ const Advanced = ({ lifecycleRecords }: Props) => {
               /> */}
         </div>
 
-        <PullDeliveryInfo rawVaa={lifecycleRecord.vaa} />
+        {/* <PullDeliveryInfo rawVaa={lifecycleRecord.vaa} /> */}
       </div>
     );
   });
