@@ -28,7 +28,7 @@ const MAINNET_RPCS: { [key in ChainName]?: string } = {
 
 const TESTNET_RPCS: { [key in ChainName]?: string } = {
   bsc: "https://data-seed-prebsc-2-s3.binance.org:8545",
-  polygon: "https://matic-mumbai.chainstacklabs.com",
+  polygon: "https://rpc.ankr.com/polygon_mumbai",
   avalanche: "https://api.avax-test.network/ext/bc/C/rpc",
   celo: "https://alfajores-forno.celo-testnet.org",
   moonbeam: "https://rpc.api.moonbase.moonbeam.network",
