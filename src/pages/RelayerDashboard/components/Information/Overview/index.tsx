@@ -228,8 +228,7 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
             "" + deliveryStatus.metadata?.deliveryRecord?.maxRefundUsd,
             4,
           )} USD)`
-        : `
-      ${maxRefund} ${
+        : `${maxRefund} ${
             environment.chainInfos.find(
               chain => chain.chainId === deliveryInstruction.targetChainId,
             ).nativeCurrencyName
@@ -309,7 +308,9 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
         !isNaN(gasUsed) ? "Gas Used/" : ""
       }Gas limit\n${gasUsedText(deliveryStatus)}\n\n${
         !isNaN(gasUsed) ? "Refund Amount\n" + refundText() : ""
-      }\n\nReceiver Value: ${receiverValueText(deliveryStatus)}`.replaceAll("    ", "");
+      }\n\nReceiver Value: ${receiverValueText(deliveryStatus)}`
+        .replaceAll("  ", "")
+        .replaceAll("\n\n\n\n", "\n\n");
 
     return (
       <Fragment key={parsedHash}>
