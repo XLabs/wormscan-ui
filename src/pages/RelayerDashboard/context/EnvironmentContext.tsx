@@ -2,6 +2,8 @@ import React, { ReactNode, useCallback, useContext, useEffect, useMemo, useState
 import { Environment, tiltEnv, testnetEnv, mainnetEnv } from "../utils/environment";
 import { ChainId } from "@certusone/wormhole-sdk";
 import { changeNetwork } from "src/api/Client";
+import { useSearchParams } from "react-router-dom";
+import { NETWORK } from "src/types";
 
 interface EnvironmentContext {
   environment: Environment;
@@ -12,93 +14,92 @@ interface EnvironmentContext {
   setChain: (selectedChain: ChainId) => void;
 }
 
-const params = new URLSearchParams(window.location.search);
-const queryParams: { [key: string]: string } = {};
-for (const param of params) {
-  queryParams[param[0]] = param[1];
-}
-
-const shouldBeTestnet = () => queryParams.network === "testnet";
-const initialEnv = shouldBeTestnet() ? testnetEnv : mainnetEnv;
-
-const shouldBeSpecificChain = () => !!queryParams.chainId;
-const initialChain = shouldBeSpecificChain()
-  ? initialEnv.chainInfos.find(a => `${a.chainId}` === queryParams.chainId).chainId
-  : initialEnv.chainInfos[0].chainId;
-
 const EnvironmentProviderContext = React.createContext<EnvironmentContext>({
-  environment: initialEnv,
+  environment: testnetEnv,
   setEnvironment: () => {},
   userInput: "",
   setUserInput: () => {},
-  chain: initialChain,
+  chain: testnetEnv.chainInfos[0].chainId,
   setChain: () => {},
 });
 
 export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
-  const [currentEnv, setCurrentEnv] = useState<Environment>(initialEnv);
-  const [chain, setChain] = useState(initialChain);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const networkParam = searchParams.get("network") as NETWORK;
+  const [currentEnv, setCurrentEnv] = useState<Environment>(
+    networkParam === "testnet" ? testnetEnv : mainnetEnv,
+  );
+
+  const chainIdParam = searchParams.get("chainId");
+  const [chain, setChain] = useState(
+    chainIdParam
+      ? currentEnv.chainInfos.find(a => "" + a.chainId === chainIdParam).chainId
+      : currentEnv.chainInfos[0].chainId,
+  );
+
   const [userInput, setUserInput] = useState("");
-
   const [clearChildren, setClearChildren] = useState<boolean>(false);
-
-  function updateQueryParams(key: string, value: string | null) {
-    // Create a new URL object with the current URL
-    const url = new URL(window.location.href);
-
-    // If the value is null, remove the key from the query parameters
-    if (value === null) {
-      url.searchParams.delete(key);
-    } else {
-      // Otherwise, set the key to the new value
-      url.searchParams.set(key, value);
-    }
-
-    // Update the URL without reloading the page
-    window.history.pushState({}, "", url.toString());
-  }
 
   const setEnvironment = useCallback(
     (env: "DEVNET" | "TESTNET" | "MAINNET") => {
       if (env === "DEVNET") {
         setCurrentEnv(tiltEnv);
-        updateQueryParams("network", "testnet");
+        setSearchParams(prev => {
+          prev.set("network", "testnet");
+          return prev;
+        });
 
         setUserInput("");
 
         setChain(tiltEnv.chainInfos[0].chainId);
-        updateQueryParams("chainId", "" + tiltEnv.chainInfos[0].chainId);
+        setSearchParams(prev => {
+          prev.set("chainId", "" + tiltEnv.chainInfos[0].chainId);
+          return prev;
+        });
 
         setClearChildren(true);
       } else if (env === "TESTNET") {
         changeNetwork("testnet");
-        updateQueryParams("network", "testnet");
+        setSearchParams(prev => {
+          prev.set("network", "testnet");
+          return prev;
+        });
 
         setCurrentEnv(testnetEnv);
         setUserInput("");
 
         setChain(testnetEnv.chainInfos[0].chainId);
-        updateQueryParams("chainId", "" + testnetEnv.chainInfos[0].chainId);
+        setSearchParams(prev => {
+          prev.set("chainId", "" + testnetEnv.chainInfos[0].chainId);
+          return prev;
+        });
 
         setClearChildren(true);
       } else if (env === "MAINNET") {
         changeNetwork("mainnet");
-        updateQueryParams("network", "mainnet");
+        setSearchParams(prev => {
+          prev.set("network", "mainnet");
+          return prev;
+        });
 
         setCurrentEnv(mainnetEnv);
         setUserInput("");
 
         setChain(mainnetEnv.chainInfos[0].chainId);
-        updateQueryParams("chainId", "" + mainnetEnv.chainInfos[0].chainId);
+        setSearchParams(prev => {
+          prev.set("chainId", "" + mainnetEnv.chainInfos[0].chainId);
+          return prev;
+        });
 
         setClearChildren(true);
       }
     },
-    [setCurrentEnv],
+    [setSearchParams],
   );
 
   useEffect(() => {
-    if (shouldBeTestnet()) {
+    if (currentEnv.network === "TESTNET") {
       changeNetwork("testnet");
     }
 
@@ -106,7 +107,7 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
     if (clearChildren) {
       setClearChildren(false);
     }
-  }, [clearChildren, setClearChildren]);
+  }, [clearChildren, currentEnv.network, setClearChildren]);
 
   const contextValue = useMemo(
     () => ({
@@ -119,11 +120,15 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
       chain,
       setChain: (newChain: ChainId) => {
         setChain(newChain);
-        updateQueryParams("chainId", newChain as any);
+        console.log("setting search param chainId with", newChain);
+        setSearchParams(prev => {
+          prev.set("chainId", newChain as any);
+          return prev;
+        });
         setUserInput("");
       },
     }),
-    [chain, setChain, userInput, setUserInput, currentEnv, setEnvironment],
+    [currentEnv, setEnvironment, userInput, chain, setSearchParams],
   );
 
   return (

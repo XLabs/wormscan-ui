@@ -1,45 +1,34 @@
 import { useEffect, useRef, useState } from "react";
 import SearchBar from "src/components/molecules/SearchBar";
-import "./styles.scss";
 import { useEnvironment } from "src/pages/RelayerDashboard/context/EnvironmentContext";
-
-const params = new URLSearchParams(window.location.search);
-const queryParams: { [key: string]: string } = {};
-for (const param of params) {
-  queryParams[param[0]] = param[1];
-}
+import { useSearchParams } from "react-router-dom";
+import "./styles.scss";
 
 const Search = () => {
-  const { userInput, setUserInput } = useEnvironment();
+  const { setUserInput } = useEnvironment();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  function updateQueryParams(key: string, value: string | null) {
-    const url = new URL(window.location.href);
-    if (value === null) {
-      url.searchParams.delete(key);
-    } else {
-      url.searchParams.set(key, value);
-    }
-    window.history.pushState({}, "", url.toString());
-  }
-
-  const [searchValue, setSearchValue] = useState(queryParams.userInput);
+  const [searchValue, setSearchValue] = useState(searchParams.get("userInput"));
   const mounted = useRef(false);
 
   useEffect(() => {
-    if (mounted.current) {
-      setSearchValue(userInput);
-    } else {
-      mounted.current = true;
-    }
-  }, [userInput]);
-
-  useEffect(() => {
     if (searchValue) {
-      updateQueryParams("userInput", searchValue);
+      setSearchParams(prev => {
+        prev.set("userInput", searchValue);
+        return prev;
+      });
+      if (!mounted.current && searchValue) {
+        setUserInput(searchValue);
+      }
     } else {
-      updateQueryParams("userInput", null);
+      setSearchParams(prev => {
+        prev.delete("userInput");
+        return prev;
+      });
     }
-  }, [searchValue]);
+
+    mounted.current = true;
+  }, [searchValue, setSearchParams, setUserInput]);
 
   return (
     <SearchBar

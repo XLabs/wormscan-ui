@@ -1,5 +1,5 @@
 import { ChainId } from "@certusone/wormhole-sdk";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useEnvironment } from "src/pages/RelayerDashboard/context/EnvironmentContext";
 import { Select } from "src/components/atoms";
 import "./styles.scss";
