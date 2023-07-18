@@ -710,10 +710,16 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                                     ? deliveryStatus.metadata?.deliveryRecord?.resultLog ===
                                       "Delivery Success"
                                       ? "green"
+                                      : deliveryStatus.metadata?.deliveryRecord?.resultLog ===
+                                        "Receiver Failure"
+                                      ? "red"
                                       : "white"
                                     : deliveryStatus.metadata?.deliveryRecord?.resultLog?.status ===
                                       "Delivery Success"
                                     ? "green"
+                                    : deliveryStatus.metadata?.deliveryRecord?.resultLog?.status ===
+                                      "Receiver Failure"
+                                    ? "red"
                                     : "white"
                                 }`}
                               >
@@ -728,6 +734,9 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                                     deliveryStatus.metadata?.deliveryRecord?.resultLog
                                       ?.refundStatus === "Refund Sent"
                                       ? "green"
+                                      : deliveryStatus.metadata?.deliveryRecord?.resultLog
+                                          ?.refundStatus === "Refund Fail"
+                                      ? "red"
                                       : "white"
                                   }`}
                                 >

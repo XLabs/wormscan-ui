@@ -37,6 +37,7 @@ import {
 } from "./deliveryProviderStatusApi";
 import { getClient } from "src/api/Client";
 import { GetTransactionsOutput } from "@xlabs-libs/wormscan-sdk";
+import { wait } from "src/utils/date";
 export type WormholeTransaction = {
   chainId: ChainId;
   txHash: string;
@@ -70,31 +71,33 @@ export async function populateDeliveryLifeCycleRecordsByTxHash(
       environment,
       txHash,
     );
+    console.log("source transaction response: " + JSON.stringify(sourceTransactionResponse));
   } catch (e) {
-    console.error("err txhash", e);
+    console.error("err source txhash", e);
     //swallow
   }
 
-  try {
-    targetTransactionResponse = await getDeliveryProviderStatusByTargetTransaction(
-      environment,
-      txHash,
-    );
-  } catch (e) {
-    console.error("err target tx", e);
-    //swallow
+  if (!sourceTransactionResponse) {
+    try {
+      targetTransactionResponse = await getDeliveryProviderStatusByTargetTransaction(
+        environment,
+        txHash,
+      );
+      console.log("target transaction response: " + JSON.stringify(targetTransactionResponse));
+    } catch (e) {
+      console.error("err target txhash", e);
+      //swallow
+    }
   }
 
   if (!sourceTransactionResponse && !targetTransactionResponse) {
     return output;
   }
 
-  if (sourceTransactionResponse && targetTransactionResponse) {
-    //This transaction both completes and starts a new transaction, assume it's a source transaction.
-    targetTransactionResponse = undefined;
-  }
-
-  console.log("source transaction response: " + JSON.stringify(sourceTransactionResponse));
+  // if (sourceTransactionResponse && targetTransactionResponse) {
+  //   //This transaction both completes and starts a new transaction, assume it's a source transaction.
+  //   targetTransactionResponse = undefined;
+  // }
 
   if (sourceTransactionResponse) {
     for (const status of sourceTransactionResponse) {
@@ -162,37 +165,66 @@ export async function populateDeliveryLifecycleRecordByVaa(
     output.sourceChainId = sourceChainId as ChainId;
     output.targetTransactions = [];
 
+    const WAIT_TIME = 10000;
+    let waiting = true;
+    let gotResults = false;
+
     for (const status of deliveryStatus) {
       const targetTxHash = status.toTxHash;
+
       if (targetTxHash) {
         const ethersProvider = getEthersProvider(getChainInfo(environment, targetChain as ChainId));
-        await ethersProvider
+        ethersProvider
           .getTransactionReceipt(targetTxHash)
-          .then(async receipt => {
-            await ethersProvider
-              .getBlock(receipt.blockNumber)
-              .then(block => {
-                output.targetTransactions?.push({
-                  targetTxHash: targetTxHash,
-                  targetTxReceipt: receipt,
-                  targetChainId: targetChain as ChainId,
-                  targetTxTimestamp: ethers.BigNumber.from(block.timestamp).toNumber(),
+          .then(receipt => {
+            if (waiting) {
+              ethersProvider
+                .getBlock(receipt.blockNumber)
+                .then(block => {
+                  if (waiting) {
+                    gotResults = true;
+                    output.targetTransactions?.push({
+                      targetTxHash: targetTxHash,
+                      targetTxReceipt: receipt,
+                      targetChainId: targetChain as ChainId,
+                      targetTxTimestamp: ethers.BigNumber.from(block.timestamp).toNumber(),
+                    });
+                  }
+                })
+                .catch(err => {
+                  if (waiting) {
+                    console.error("failed to get block for target tx", err);
+
+                    gotResults = true;
+                    output.targetTransactions?.push({
+                      targetTxHash: targetTxHash,
+                      targetTxReceipt: receipt,
+                      targetChainId: targetChain as ChainId,
+                    });
+                  } else {
+                    console.log("error on getBlock after waiting");
+                  }
                 });
-              })
-              .catch(err => {
-                console.error("failed to get block for target tx", err);
-                output.targetTransactions?.push({
-                  targetTxHash: targetTxHash,
-                  targetTxReceipt: receipt,
-                  targetChainId: targetChain as ChainId,
-                });
-              });
+            }
           })
           .catch(e => {
-            console.log("error getting target tx receipt: " + e);
-            console.log("target chain: " + targetChain);
-            console.log("target tx hash: " + targetTxHash);
+            if (waiting) {
+              console.log("error getting target tx receipt: " + e);
+              console.log("target chain: " + targetChain);
+              console.log("target tx hash: " + targetTxHash);
+            } else {
+              console.log("error on getTransactionReceipt after waiting");
+            }
           });
+      }
+
+      await wait(WAIT_TIME);
+      waiting = false;
+      if (!gotResults) {
+        output.targetTransactions?.push({
+          targetTxHash: targetTxHash,
+          targetChainId: targetChain as ChainId,
+        });
       }
     }
   }

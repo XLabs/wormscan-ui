@@ -41,3 +41,7 @@ export const daysAgoDate = (daysAgo: number) => {
   const today = new Date();
   return new Date(today.getTime() - Number(daysAgo) * 24 * 60 * 60 * 1000);
 };
+
+export const wait = (ms: number) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
