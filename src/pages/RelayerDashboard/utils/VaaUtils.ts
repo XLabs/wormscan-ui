@@ -147,6 +147,7 @@ export async function populateDeliveryLifecycleRecordByVaa(
 
   const sourceChainId = parsedVaa.emitterChain;
   let preventProcess = false;
+
   if (deliveryStatus.length === 0) {
     preventProcess = true;
   } else {
@@ -202,7 +203,7 @@ export async function populateDeliveryLifecycleRecordByVaa(
                       targetChainId: targetChain as ChainId,
                     });
                   } else {
-                    console.log("error on getBlock after waiting");
+                    console.log("error on target getBlock after waiting");
                   }
                 });
             }
@@ -213,7 +214,7 @@ export async function populateDeliveryLifecycleRecordByVaa(
               console.log("target chain: " + targetChain);
               console.log("target tx hash: " + targetTxHash);
             } else {
-              console.log("error on getTransactionReceipt after waiting");
+              console.log("error on target getTransactionReceipt after waiting");
             }
           });
       }
@@ -235,18 +236,32 @@ export async function populateDeliveryLifecycleRecordByVaa(
     output.sourceSequence = Number(parsedVaa.sequence);
   }
 
+  const WAIT_TIME = 10000;
+  let waiting = true;
+  let gotResults = false;
+
   if (output.sourceTxHash) {
-    await getEthersProvider(getChainInfo(environment, sourceChainId as ChainId))
+    getEthersProvider(getChainInfo(environment, sourceChainId as ChainId))
       .getTransactionReceipt(output.sourceTxHash)
-      .then(async receipt => {
-        output.sourceTxReceipt = receipt;
+      .then(receipt => {
+        if (waiting) {
+          output.sourceTxReceipt = receipt;
+          gotResults = true;
+        }
       })
       .catch(e => {
-        console.log("error getting source tx receipt: " + e);
-        console.log("source chain: " + sourceChainId);
-        console.log("source tx hash: " + output.sourceTxHash);
+        if (waiting) {
+          console.log("error getting source tx receipt: " + e);
+          console.log("source chain: " + sourceChainId);
+          console.log("source tx hash: " + output.sourceTxHash);
+        } else {
+          console.log("error on source getTransactionReceipt after waiting");
+        }
       });
   }
+
+  await wait(WAIT_TIME);
+  waiting = false;
 
   return output;
 }
