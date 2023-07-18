@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
 import { getClient, getCurrentNetwork } from "src/api/Client";
-import { BlockchainIcon, Loader, Link } from "src/components/atoms";
+import { BlockchainIcon, Loader, NavLink } from "src/components/atoms";
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { parseAddress, parseTx, shortAddress } from "src/utils/crypto";
@@ -42,6 +42,10 @@ const Txs = () => {
   const [isPaginationLoading, setIsPaginationLoading] = useState<boolean>(false);
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
   const [parsedTxsData, setParsedTxsData] = useState<TransactionOutput[] | undefined>(undefined);
+
+  const stopPropagation = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.stopPropagation();
+  };
 
   const setCurrentPage = useCallback(
     (pageNumber: number) => {
@@ -143,9 +147,9 @@ const Txs = () => {
                   <div className="tx-hash">
                     {parseTxHash ? (
                       <>
-                        <Link to={`/tx/${txHash}`} asNavLink={false} target="_blank">
+                        <NavLink to={`/tx/${txHash}`} onClick={stopPropagation}>
                           {shortAddress(parseTxHash).toUpperCase()}
-                        </Link>
+                        </NavLink>
                         <CopyToClipboard toCopy={parseTxHash}>
                           <CopyIcon />
                         </CopyToClipboard>
@@ -171,6 +175,7 @@ const Txs = () => {
                             })}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={stopPropagation}
                           >
                             {shortAddress(parsedOriginAddress).toUpperCase()}
                           </a>
@@ -200,6 +205,7 @@ const Txs = () => {
                               })}
                               target="_blank"
                               rel="noopener noreferrer"
+                              onClick={stopPropagation}
                             >
                               {shortAddress(parsedDestinationAddress).toUpperCase()}
                             </a>
