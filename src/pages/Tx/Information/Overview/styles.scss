@@ -144,9 +144,24 @@
         @include centered-row;
         @include text-p2;
 
+        position: relative;
         gap: 8px;
         color: var(--color-primary-100);
         margin-bottom: 8px;
+
+        &-tooltip {
+          @include centered-row;
+
+          position: absolute;
+          left: -16px;
+          transform: translate(-100%, 0);
+
+          @include tablet {
+            position: static;
+            left: unset;
+            transform: unset;
+          }
+        }
 
         & svg {
           color: var(--color-success-100);

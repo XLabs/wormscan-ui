@@ -364,9 +364,11 @@ const Overview = ({ VAAData, txData }: Props) => {
                 <div className="tx-overview-graph-step-title">
                   Destination wallet
                   {isUnknownApp && (
-                    <Tooltip tooltip={<NotFinalDestinationTooltip />} type="info">
-                      <InfoCircledIcon />
-                    </Tooltip>
+                    <div className="tx-overview-graph-step-title-tooltip">
+                      <Tooltip tooltip={<NotFinalDestinationTooltip />} type="info">
+                        <InfoCircledIcon />
+                      </Tooltip>
+                    </div>
                   )}
                 </div>
                 <div className="tx-overview-graph-step-description">
