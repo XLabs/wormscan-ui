@@ -114,10 +114,9 @@ export function DeliveryInstructionDisplay({ instruction }: { instruction: Deliv
 
 type Props = {
   lifecycleRecords: DeliveryLifecycleRecord[];
-  goAdvancedTab: () => void;
 };
 
-const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
+const Overview = ({ lifecycleRecords }: Props) => {
   const { environment } = useEnvironment();
 
   const lifecycleVaas = lifecycleRecords.filter(record => !!record.vaa);
@@ -807,10 +806,6 @@ const Overview = ({ lifecycleRecords, goAdvancedTab }: Props) => {
                     </div>
                   </div>
                 )}
-
-                {/* <div onClick={() => goAdvancedTab()} className="try-manual-delivery-btn">
-                  Try Manual Deliver
-                </div> */}
               </>
             )}
           </div>

@@ -1,28 +1,16 @@
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import "./styles.scss";
-import { useEffect, useState } from "react";
 
 type Props = {
   headers: (React.ReactNode | string)[];
   contents: (React.ReactNode | string)[];
   className?: string;
-  activeTab?: string;
 };
 
-const Tabs = ({ activeTab, headers, contents, className = "" }: Props) => {
-  const [tabValue, setTabValue] = useState("tabs-0");
-
-  useEffect(() => {
-    setTabValue(activeTab ? activeTab : "tabs-0");
-  }, [activeTab, headers]);
-
+const Tabs = ({ headers, contents, className = "" }: Props) => {
   return (
-    <TabsPrimitive.Root
-      className={`tabs ${className}`}
-      value={tabValue}
-      onValueChange={setTabValue}
-    >
-      <TabsPrimitive.List className="tabs-list">
+    <TabsPrimitive.Root className={`tabs ${className}`} defaultValue="tabs-0">
+      <TabsPrimitive.List className="tabs-list" aria-label="Manage your account">
         {headers?.length > 0 &&
           headers.map((header, index) => {
             return (
