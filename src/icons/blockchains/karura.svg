@@ -1,32 +1,24 @@
-<svg viewBox="0 0 32 32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
-  <style></style>
-  <linearGradient
-    id="a"
-    x1="30.603"
-    x2="9.067"
-    y1="3.118"
-    y2="26.527"
-    gradientTransform="matrix(1 0 0 -1 0 34)"
-    gradientUnits="userSpaceOnUse"
-  >
-    <stop stop-color="#E40C5B" offset="0" />
-    <stop stop-color="#FF4C3B" offset="1" />
-  </linearGradient>
-  <path
-    d="m22.1 2-8.6 7.8c-.9.8-2.1 1.3-3.3 1.3H7.6V2H3v26h2.5c1.4 0 2.7-.8 3.4-2 .5-.8.7-2.5.6-3.6-.1-2.5-.5-3.2-.5-3.2 0 1.8-1.8 1.9-1.8 1.9 1.3-1.2.6-2.2.6-2.2-2.3 1.6-2.9-.1-2.9-.3.1.1.7.6 2-1.1 1.3-1.8 3.1-4.8 4.2-5.6s2.2-.7 2.2-.7.6-.8 2.2-1.5 2.6.3 2.6.3c-1.6 1.3-3.9 3.5-4 6.6-.1 2.5 5.4 6.9 4.4 13.3.6-1.5.8-2.9.6-4.7-.2-1.5-1.1-4.5-1.1-4.5l5.2 7.2H29L17.7 12.4 29 2h-6.9z"
-    fill="url(#a)"
-  />
-  <linearGradient
-    id="b"
-    x1="12.414"
-    x2="10.889"
-    y1="20.185"
-    y2="21.855"
-    gradientTransform="matrix(1 0 0 -1 0 34)"
-    gradientUnits="userSpaceOnUse"
-  >
-    <stop stop-color="#E40C5B" offset="0" />
-    <stop stop-color="#FF4C3B" offset="1" />
-  </linearGradient>
-  <path d="M10.9 12.8c-.4.7-.4.9-.4.9s1.5-.2 1.9-2c-.1 0-1 .3-1.5 1.1z" fill="url(#b)" />
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  fill="none"
+  xmlns:v="https://vecta.io/nano"
+>
+  <rect width="24" height="24" rx="12" fill="url(#B)" />
+  <mask id="A" maskUnits="userSpaceOnUse" x="4" y="4" width="16" height="16" mask-type="alpha">
+    <path fill="#d9d9d9" d="M4 4h16v16H4z" />
+  </mask>
+  <g mask="url(#A)">
+    <path
+      d="M15.324 5.049l-4.709 4.126c-.512.442-1.177.688-1.792.688H7.389V5.049H4.881v13.754h1.382c.768 0 1.485-.442 1.894-1.081.256-.442.41-1.326.307-1.916-.051-1.326-.256-1.67-.256-1.67 0 .933-.973.982-.973.982.717-.639.307-1.179.307-1.179-1.28.835-1.587-.049-1.587-.147.051.049.41.295 1.126-.589.717-.933 1.689-2.554 2.304-2.947.614-.442 1.229-.393 1.229-.393s.307-.442 1.229-.786 1.433.147 1.433.147c-.87.688-2.15 1.867-2.201 3.488-.051 1.326 2.969 3.635 2.406 7.025.307-.786.461-1.523.307-2.505-.102-.786-.614-2.358-.614-2.358l2.867 3.782h3.174l-6.245-8.203 6.194-5.403h-3.839z"
+      fill="#fff"
+    />
+  </g>
+  <defs>
+    <linearGradient id="B" x1="12" y1="0" x2="26.5" y2="16.5" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e40c5b" />
+      <stop offset="1" stop-color="#ff4c3b" />
+    </linearGradient>
+  </defs>
 </svg>
