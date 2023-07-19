@@ -45,15 +45,11 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
     (env: "DEVNET" | "TESTNET" | "MAINNET") => {
       if (env === "DEVNET") {
         setCurrentEnv(tiltEnv);
-        setSearchParams(prev => {
-          prev.set("network", "testnet");
-          return prev;
-        });
-
         setUserInput("");
-
         setChain(tiltEnv.chainInfos[0].chainId);
         setSearchParams(prev => {
+          prev.delete("userInput");
+          prev.set("network", "testnet");
           prev.set("chainId", "" + tiltEnv.chainInfos[0].chainId);
           return prev;
         });
@@ -61,16 +57,13 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
         setClearChildren(true);
       } else if (env === "TESTNET") {
         changeNetwork("testnet");
-        setSearchParams(prev => {
-          prev.set("network", "testnet");
-          return prev;
-        });
-
         setCurrentEnv(testnetEnv);
         setUserInput("");
-
         setChain(testnetEnv.chainInfos[0].chainId);
+
         setSearchParams(prev => {
+          prev.delete("userInput");
+          prev.set("network", "testnet");
           prev.set("chainId", "" + testnetEnv.chainInfos[0].chainId);
           return prev;
         });
@@ -78,16 +71,13 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
         setClearChildren(true);
       } else if (env === "MAINNET") {
         changeNetwork("mainnet");
-        setSearchParams(prev => {
-          prev.set("network", "mainnet");
-          return prev;
-        });
-
         setCurrentEnv(mainnetEnv);
         setUserInput("");
 
         setChain(mainnetEnv.chainInfos[0].chainId);
         setSearchParams(prev => {
+          prev.delete("userInput");
+          prev.set("network", "mainnet");
           prev.set("chainId", "" + mainnetEnv.chainInfos[0].chainId);
           return prev;
         });
@@ -120,8 +110,8 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
       chain,
       setChain: (newChain: ChainId) => {
         setChain(newChain);
-        console.log("setting search param chainId with", newChain);
         setSearchParams(prev => {
+          prev.delete("userInput");
           prev.set("chainId", newChain as any);
           return prev;
         });
