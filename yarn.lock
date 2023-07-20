@@ -8597,7 +8597,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-draggable@npm:^4.4.5":
+"react-draggable@npm:4.4.5":
   version: 4.4.5
   resolution: "react-draggable@npm:4.4.5"
   dependencies:
@@ -10294,7 +10294,7 @@ __metadata:
     react: 18.2.0
     react-apexcharts: 1.4.0
     react-dom: 18.2.0
-    react-draggable: ^4.4.5
+    react-draggable: 4.4.5
     react-i18next: 12.1.5
     react-query: 3.39.3
     react-router-dom: 6.7.0
