@@ -18,7 +18,8 @@ import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import "./styles.scss";
 
 export interface TransactionOutput {
-  id: string;
+  VAAId: string;
+  txHashId: string;
   txHash: React.ReactNode;
   from: React.ReactNode;
   to: React.ReactNode;
@@ -106,6 +107,7 @@ const Txs = () => {
         txs?.length > 0
           ? txs?.forEach(tx => {
               const {
+                id: VAAId,
                 txHash,
                 timestamp,
                 tokenAmount,
@@ -142,12 +144,13 @@ const Txs = () => {
               });
               const timestampDate = new Date(timestamp);
               const row = {
-                id: txHash,
+                VAAId: VAAId,
+                txHashId: txHash,
                 txHash: (
                   <div className="tx-hash">
                     {parseTxHash ? (
                       <>
-                        <NavLink to={`/tx/${txHash}`} onClick={stopPropagation}>
+                        <NavLink to={`/tx/${VAAId}`} onClick={stopPropagation}>
                           {shortAddress(parseTxHash).toUpperCase()}
                         </NavLink>
                         <CopyToClipboard toCopy={parseTxHash}>

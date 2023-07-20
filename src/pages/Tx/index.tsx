@@ -15,27 +15,25 @@ import { NETWORK } from "src/types";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import "./styles.scss";
 
-const STALE_TIME = 1000 * 10;
+const STALE_TIME = 1000 * 5;
 
 const Tx = () => {
   const navigate = useNavigateCustom();
-  const { txHash } = useParams();
+  const { txHash, chainId, emitter, seq } = useParams();
+  const VAAId: string = `${chainId}/${emitter}/${seq}`;
+  const isTxHashSearch = Boolean(txHash);
+  const isVAAIdSearch = Boolean(chainId) && Boolean(emitter) && Boolean(seq);
   const [searchParams] = useSearchParams();
   const network = searchParams.get("network") as NETWORK;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
-  const [VAAId, setVAAId] = useState<string>("");
   const [parsedVAAData, setParsedVAAData] = useState<
     (VAADetail & { vaa: any; decodedVaa: any }) | undefined
   >(undefined);
-  const vaaIdSplit = VAAId.split("/");
-  const chainId = Number(vaaIdSplit?.[0]);
-  const emitter = vaaIdSplit?.[1];
-  const seq = Number(vaaIdSplit?.[2]);
 
   useEffect(() => {
     setIsLoading(true);
-  }, [txHash]);
+  }, [txHash, chainId, emitter, seq]);
 
   useEffect(() => {
     if (!network) return;
@@ -43,8 +41,8 @@ const Tx = () => {
     setIsLoading(true);
   }, [network]);
 
-  const { data: VAAData } = useQuery(
-    ["getVAA", txHash],
+  const { data: VAADataByTx } = useQuery(
+    ["getVAAbyTxHash", txHash],
     () =>
       getClient().guardianNetwork.getVAAbyTxHash({
         query: {
@@ -55,27 +53,58 @@ const Tx = () => {
     {
       onError: () => navigate(`/search-not-found/${txHash}`),
       staleTime: STALE_TIME,
+      enabled: isTxHashSearch,
+    },
+  );
+
+  const { data: VAADataByVAAId }: { data: VAADetail } = useQuery(
+    ["getVAA", VAAId],
+    () => {
+      return getClient().guardianNetwork.getVAA({
+        chainId: Number(chainId),
+        emitter,
+        seq: Number(seq),
+        query: {
+          parsedPayload: true,
+        },
+      });
+    },
+    {
+      onError: () => navigate(`/search-not-found/?q=${VAAId}`),
+      staleTime: STALE_TIME,
+      enabled: isVAAIdSearch,
+    },
+  );
+
+  const VAAData: VAADetail | null = isTxHashSearch ? VAADataByTx : VAADataByVAAId;
+  const { id: VAADataId, txHash: VAADataTxHash, vaa, guardianSetIndex } = VAAData || {};
+
+  const { data: txData, refetch: refetchTxData } = useQuery(
+    ["getTransactions", VAADataId],
+    () => {
+      const VAADataVaaId = VAADataId.split("/");
+      const VaaDataChainId = Number(VAADataVaaId?.[0]);
+      const VaaDataEmitter = VAADataVaaId?.[1];
+      const VaaDataSeq = Number(VAADataVaaId?.[2]);
+
+      return getClient().search.getTransactions({
+        chainId: VaaDataChainId,
+        emitter: VaaDataEmitter,
+        seq: VaaDataSeq,
+      });
+    },
+    {
+      enabled: false,
+      onSuccess: () => setIsLoading(false),
+      onError: () => navigate(`/search-not-found/?q=${VAADataId}`),
     },
   );
 
   useEffect(() => {
     if (!VAAData) return;
 
-    const { id } = VAAData || {};
-    id && setVAAId(id);
-  }, [VAAData]);
-
-  const { vaa, guardianSetIndex } = VAAData || {};
-
-  const { data: txData } = useQuery(
-    ["getTransactions", VAAId],
-    () => getClient().search.getTransactions({ chainId, emitter, seq }),
-    {
-      enabled: Boolean(VAAId),
-      onSuccess: () => setIsLoading(false),
-      onError: () => navigate(`/search-not-found/${txHash}`),
-    },
-  );
+    refetchTxData();
+  }, [VAAData, refetchTxData]);
 
   const { payload } = (txData as GetTransactionsOutput) || {};
   const { payloadType } = payload || {};
@@ -121,7 +150,7 @@ const Tx = () => {
           <Loader />
         ) : (
           <>
-            <Top txHash={txHash} emitterChainId={emitterChainId} payloadType={payloadType} />
+            <Top txHash={VAADataTxHash} emitterChainId={emitterChainId} payloadType={payloadType} />
             <Information VAAData={parsedVAAData} txData={txData as GetTransactionsOutput} />
           </>
         )}
