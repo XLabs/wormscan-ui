@@ -94,10 +94,10 @@ const Search = () => {
     },
     {
       onSuccess: vaa => {
-        if ("txHash" in vaa) {
-          const { id: VAAId, txHash } = vaa || {};
+        if ("id" in vaa) {
+          const { id: VAAId } = vaa || {};
 
-          if (txHash) {
+          if (VAAId) {
             queryClient.setQueryData(["getVAA", VAAId], vaa);
             navigate(`/tx/${VAAId}`);
           } else {
