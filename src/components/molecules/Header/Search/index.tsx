@@ -61,7 +61,7 @@ const Search = () => {
       onSuccess: vaa => {
         const { txHash } = vaa || {};
         if (txHash) {
-          queryClient.setQueryData(["getVAA", txHash], vaa);
+          queryClient.setQueryData(["getVAAbyTxHash", txHash], vaa);
           navigate(`/tx/${txHash}`);
         } else {
           goSearchNotFound();
@@ -95,11 +95,11 @@ const Search = () => {
     {
       onSuccess: vaa => {
         if ("txHash" in vaa) {
-          const { txHash } = vaa || {};
+          const { id: VAAId, txHash } = vaa || {};
 
           if (txHash) {
-            queryClient.setQueryData(["getVAA", txHash], vaa);
-            navigate(`/tx/${txHash}`);
+            queryClient.setQueryData(["getVAA", VAAId], vaa);
+            navigate(`/tx/${VAAId}`);
           } else {
             goSearchNotFound();
           }
