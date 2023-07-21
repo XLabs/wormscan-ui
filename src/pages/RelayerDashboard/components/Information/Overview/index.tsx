@@ -28,89 +28,87 @@ import {
   testnetDefaultDeliveryProviderContractAddress,
 } from "src/pages/RelayerDashboard/utils/environment";
 
-const Divider = <div className="divider" />;
-
 // eslint-disable-next-line no-var
 var gasUsed: any;
 // eslint-disable-next-line no-var
 var maxRefund: any;
 
-export function RedeliveryInstructionDisplay({
-  instruction,
-}: {
-  instruction: RedeliveryInstruction;
-}) {
-  return (
-    <div style={{ margin: "10px" }}>
-      <h4>Redelivery Instruction</h4>
-      <div>Original VAA Key Info</div>
-      <div>{"Chain: " + instruction.deliveryVaaKey.chainId}</div>
-      <div>
-        {"Emitter" + Buffer.from(instruction.deliveryVaaKey.emitterAddress).toString("hex")}
-      </div>
-      <div>{"Sequence: " + instruction.deliveryVaaKey.sequence}</div>
-      <div style={{ height: "10px" }} />
-      <div>
-        {"Encoded Execution Params: " +
-          Buffer.from(instruction.newEncodedExecutionInfo.toString("hex"))}
-      </div>
-      <div>{"New Receiver Value: " + instruction.newRequestedReceiverValue}</div>
-      <div>
-        {"New Sender Address: " + Buffer.from(instruction.newSenderAddress).toString("hex")}
-      </div>
-      <div>
-        {"New Delivery Provider: " +
-          Buffer.from(instruction.newSourceDeliveryProvider).toString("hex")}
-      </div>
-      <div>{"Target Chain: " + instruction.targetChainId}</div>
-    </div>
-  );
-}
+// export function RedeliveryInstructionDisplay({
+//   instruction,
+// }: {
+//   instruction: RedeliveryInstruction;
+// }) {
+//   return (
+//     <div style={{ margin: "10px" }}>
+//       <h4>Redelivery Instruction</h4>
+//       <div>Original VAA Key Info</div>
+//       <div>{"Chain: " + instruction.deliveryVaaKey.chainId}</div>
+//       <div>
+//         {"Emitter" + Buffer.from(instruction.deliveryVaaKey.emitterAddress).toString("hex")}
+//       </div>
+//       <div>{"Sequence: " + instruction.deliveryVaaKey.sequence}</div>
+//       <div style={{ height: "10px" }} />
+//       <div>
+//         {"Encoded Execution Params: " +
+//           Buffer.from(instruction.newEncodedExecutionInfo.toString("hex"))}
+//       </div>
+//       <div>{"New Receiver Value: " + instruction.newRequestedReceiverValue}</div>
+//       <div>
+//         {"New Sender Address: " + Buffer.from(instruction.newSenderAddress).toString("hex")}
+//       </div>
+//       <div>
+//         {"New Delivery Provider: " +
+//           Buffer.from(instruction.newSourceDeliveryProvider).toString("hex")}
+//       </div>
+//       <div>{"Target Chain: " + instruction.targetChainId}</div>
+//     </div>
+//   );
+// }
 
-export function DeliveryInstructionDisplay({ instruction }: { instruction: DeliveryInstruction }) {
-  const spacer = <div style={{ height: "10px" }} />;
-  return (
-    <div style={{ margin: "10px" }}>
-      <h4>Delivery Instruction</h4>
-      {Divider}
-      <div>{`Target Chain: ${instruction.targetChainId} (${
-        ChainId[instruction.targetChainId]
-      })`}</div>
-      <div>{"Target Address: " + Buffer.from(instruction.targetAddress).toString("hex")}</div>
-      <div>{"Extra Receiver Value: " + instruction.extraReceiverValue.toString()}</div>
-      <div>{"Refund Address: " + Buffer.from(instruction.refundAddress).toString("hex")}</div>
-      <div>{`Refund Chain: ${instruction.refundChainId} (${
-        ChainId[instruction.refundChainId]
-      })`}</div>
-      <div>
-        {"Refund Delivery Provider: " +
-          Buffer.from(instruction.refundDeliveryProvider).toString("hex")}
-      </div>
-      <div>{"Receiver Value: " + instruction.requestedReceiverValue.toString()}</div>
-      <div>{"Sender Address: " + Buffer.from(instruction.senderAddress).toString("hex")}</div>
-      <div>
-        {"Source Delivery Provider: " +
-          Buffer.from(instruction.sourceDeliveryProvider).toString("hex")}
-      </div>
+// export function DeliveryInstructionDisplay({ instruction }: { instruction: DeliveryInstruction }) {
+//   const spacer = <div style={{ height: "10px" }} />;
+//   return (
+//     <div style={{ margin: "10px" }}>
+//       <h4>Delivery Instruction</h4>
+//       {spacer}
+//       <div>{`Target Chain: ${instruction.targetChainId} (${
+//         ChainId[instruction.targetChainId]
+//       })`}</div>
+//       <div>{"Target Address: " + Buffer.from(instruction.targetAddress).toString("hex")}</div>
+//       <div>{"Extra Receiver Value: " + instruction.extraReceiverValue.toString()}</div>
+//       <div>{"Refund Address: " + Buffer.from(instruction.refundAddress).toString("hex")}</div>
+//       <div>{`Refund Chain: ${instruction.refundChainId} (${
+//         ChainId[instruction.refundChainId]
+//       })`}</div>
+//       <div>
+//         {"Refund Delivery Provider: " +
+//           Buffer.from(instruction.refundDeliveryProvider).toString("hex")}
+//       </div>
+//       <div>{"Receiver Value: " + instruction.requestedReceiverValue.toString()}</div>
+//       <div>{"Sender Address: " + Buffer.from(instruction.senderAddress).toString("hex")}</div>
+//       <div>
+//         {"Source Delivery Provider: " +
+//           Buffer.from(instruction.sourceDeliveryProvider).toString("hex")}
+//       </div>
 
-      <h5>Additional Vaa Keys:</h5>
-      {instruction.vaaKeys.map(vaaKey => {
-        return (
-          <div key={vaaKey.chainId}>
-            <div>{"Chain: " + vaaKey.chainId}</div>
-            <div>{"Emitter" + Buffer.from(vaaKey.emitterAddress).toString("hex")}</div>
-            <div>{"Sequence: " + vaaKey.sequence}</div>
-          </div>
-        );
-      })}
-      {spacer}
-      <div>
-        {"Encoded Execution Info: " + Buffer.from(instruction.encodedExecutionInfo).toString("hex")}
-      </div>
-      <div>{"Payload: " + Buffer.from(instruction.payload).toString("hex")}</div>
-    </div>
-  );
-}
+//       <h5>Additional Vaa Keys:</h5>
+//       {instruction.vaaKeys.map(vaaKey => {
+//         return (
+//           <div key={vaaKey.chainId}>
+//             <div>{"Chain: " + vaaKey.chainId}</div>
+//             <div>{"Emitter" + Buffer.from(vaaKey.emitterAddress).toString("hex")}</div>
+//             <div>{"Sequence: " + vaaKey.sequence}</div>
+//           </div>
+//         );
+//       })}
+//       {spacer}
+//       <div>
+//         {"Encoded Execution Info: " + Buffer.from(instruction.encodedExecutionInfo).toString("hex")}
+//       </div>
+//       <div>{"Payload: " + Buffer.from(instruction.payload).toString("hex")}</div>
+//     </div>
+//   );
+// }
 
 type Props = {
   lifecycleRecords: DeliveryLifecycleRecord[];
@@ -173,7 +171,7 @@ const Overview = ({ lifecycleRecords }: Props) => {
       console.log({ deliveryInstruction });
       return (
         <div key={idx} className="relayer-tx-overview">
-          <div className="errored-info">This doesn&apos;t look like a Generic Relayer VAA</div>
+          <div className="errored-info">This doesn&apos;t look like an Automatic Relayer VAA</div>
         </div>
       );
     }
@@ -384,7 +382,7 @@ const Overview = ({ lifecycleRecords }: Props) => {
 
             <div className="relayer-tx-overview-graph-step green">
               <div className="relayer-tx-overview-graph-step-name">
-                <div>GENERIC RELAYER CONTRACT</div>
+                <div>AUTOMATIC RELAYER CONTRACT</div>
               </div>
               <div className="relayer-tx-overview-graph-step-iconWrapper">
                 <div className="relayer-tx-overview-graph-step-iconContainer">
@@ -732,10 +730,10 @@ const Overview = ({ lifecycleRecords }: Props) => {
                                 <div
                                   className={`relayer-tx-overview-graph-step-description ${
                                     deliveryStatus.metadata?.deliveryRecord?.resultLog
-                                      ?.refundStatus === "Refund Sent"
+                                      ?.refundStatus === ("Refund Sent" as any)
                                       ? "green"
                                       : deliveryStatus.metadata?.deliveryRecord?.resultLog
-                                          ?.refundStatus === "Refund Fail"
+                                          ?.refundStatus === ("Refund Fail" as any)
                                       ? "red"
                                       : "white"
                                   }`}

@@ -174,9 +174,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@certusone/wormhole-sdk@npm:^0.9.19-beta.1":
-  version: 0.9.22
-  resolution: "@certusone/wormhole-sdk@npm:0.9.22"
+"@certusone/wormhole-sdk@npm:0.9.20":
+  version: 0.9.20
+  resolution: "@certusone/wormhole-sdk@npm:0.9.20"
   dependencies:
     "@certusone/wormhole-sdk-proto-web": 0.0.6
     "@certusone/wormhole-sdk-wasm": ^0.0.1
@@ -206,7 +206,7 @@ __metadata:
       optional: true
     "@injectivelabs/utils":
       optional: true
-  checksum: f8a5fb2bb087fcf80f75b2f4e505df3190ca4c4b33c1f073a1647a962169aa15ff21cf52e79712f91a840b64068e3be52aac4113f7533429d518059c6b65b564
+  checksum: e4bc898437e1ed6c1458778f58f831f5eda3b82781aaba50f0306d481636f93bb9f84feb164e946a910b99bc0649d177573029a36462c7362f125fd9ad95dbac
   languageName: node
   linkType: hard
 
@@ -14079,7 +14079,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "wormscan-ui@workspace:."
   dependencies:
-    "@certusone/wormhole-sdk": ^0.9.19-beta.1
+    "@certusone/wormhole-sdk": 0.9.20
     "@emotion/react": ^11.11.1
     "@emotion/styled": ^11.11.0
     "@improbable-eng/grpc-web-node-http-transport": ^0.15.0

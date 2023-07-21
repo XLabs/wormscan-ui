@@ -44,7 +44,7 @@
     "url": "^0.11.0"
   },
   "dependencies": {
-    "@certusone/wormhole-sdk": "^0.9.19-beta.1",
+    "@certusone/wormhole-sdk": "0.9.20",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@improbable-eng/grpc-web-node-http-transport": "^0.15.0",
