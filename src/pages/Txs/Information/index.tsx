@@ -59,8 +59,8 @@ const Information = ({
   const navigate = useNavigateCustom();
 
   const onRowClick = (row: TransactionOutput) => {
-    const { id: txHash } = row || {};
-    txHash && navigate(`/tx/${txHash}`);
+    const { VAAId } = row || {};
+    VAAId && navigate(`/tx/${VAAId}`);
   };
 
   const goFirstPage = () => {

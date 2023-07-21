@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { NavLink } from "src/components/atoms";
-import { DISCORD_URL, TWITTER_URL, XLABS_URL } from "src/consts";
+import { DISCORD_URL, TWITTER_URL, WORMHOLE_DOCS_URL, XLABS_URL } from "src/consts";
 import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
 import WormholeBrand from "../WormholeBrand";
@@ -51,7 +51,7 @@ const Footer = () => {
           </div>
 
           <div className="footer-links-item">
-            <a href="https://doc.wormscan.io/" target="_blank" rel="noopener noreferrer">
+            <a href={WORMHOLE_DOCS_URL} target="_blank" rel="noopener noreferrer">
               {t("home.footer.apiDoc")}
             </a>
           </div>
@@ -62,7 +62,7 @@ const Footer = () => {
           <div className="footer-copy-project">-Wormhole Explorer-</div>
           <div className="footer-copy-powered">
             <a href={XLABS_URL} target="_blank" rel="noopener noreferrer">
-              Powered by xlabs.xyz
+              Built by xlabs
             </a>
           </div>
         </div>

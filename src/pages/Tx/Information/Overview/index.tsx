@@ -62,7 +62,6 @@ const Overview = ({ VAAData, txData }: Props) => {
   const { originTx, destinationTx } = globalTx || {};
   const isAttestation = txType[payloadType] === "Attestation";
   const isUnknownPayloadType = !txType[payloadType];
-  console.log({ isUnknownPayloadType: !txType[payloadType] });
 
   const {
     appIds,

@@ -8,8 +8,9 @@ import Search from "./Search";
 import { PORTAL_BRIDGE_URL } from "src/consts";
 import { changeNetwork } from "src/api/Client";
 import { NETWORK } from "src/types";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import "./styles.scss";
+import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 
 const setOverflowHidden = (hidden: boolean) => {
   if (hidden) {
@@ -52,6 +53,8 @@ const getCurrentNetworkItem = (network: NETWORK): NetworkSelectProps => {
 
 const Header = ({ network }: Props) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [, setSearchParams] = useSearchParams();
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkSelectProps>(
     getCurrentNetworkItem(network),
@@ -78,6 +81,18 @@ const Header = ({ network }: Props) => {
   }, [network]);
 
   const onClickChangeNetwork = (network: NETWORK) => {
+    if (network === selectedNetwork.value) return;
+
+    if (pathname.includes("/tx/")) {
+      navigate(`/txs?network=${network}`);
+      return;
+    }
+
+    if (pathname.includes("/search-not-found")) {
+      navigate(`/?network=${network}`);
+      return;
+    }
+
     setSearchParams(prev => {
       prev.set("network", network);
       return prev;

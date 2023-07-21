@@ -27,6 +27,7 @@ const Navigation = () => {
           <Route path="/contract-states" element={<RelayerContractStates />} />
           <Route path="/txs" element={<Txs />} />
           <Route path="/tx/:txHash" element={<Tx />} />
+          <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
           <Route path="/search-not-found" element={<SearchNotFound />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
