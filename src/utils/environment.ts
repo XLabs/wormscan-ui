@@ -331,30 +331,6 @@ export const getChainName = (chainId: ChainId, env: Environment) => {
   return env.chainInfos.find(a => a.chainId === chainId);
 };
 
-// Use environment context instead
-// export function getEnvironment(): Environment {
-//   if (env === null) {
-//     const envString = process.env.REACT_APP_TARGET_ENVIRONMENT;
-//     if (envString === undefined) {
-//       throw new Error("Environment variable TARGET_ENVIRONMENT not set");
-//     }
-//     if (
-//       envString.toLowerCase() === "devnet" ||
-//       envString.toLowerCase() === "tilt"
-//     ) {
-//       env = tiltEnv;
-//     } else if (envString.toLowerCase() === "testnet") {
-//       env = testnetEnv;
-//     } else if (envString.toLowerCase() === "mainnet") {
-//       env = mainnetEnv;
-//     } else {
-//       throw new Error(`Unknown environment ${envString}`);
-//     }
-//   }
-
-//   return env;
-// }
-
 export function getEthersProvider(chainInfo: ChainInfo) {
   return new ethers.providers.JsonRpcProvider(chainInfo.rpcUrl);
 }
