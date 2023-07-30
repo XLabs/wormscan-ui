@@ -7,6 +7,7 @@ import { txType } from "src/consts";
 import { parseTx } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
 import "./styles.scss";
+import { useEnvironment } from "src/context/EnvironmentContext";
 
 interface Props {
   txHash: string;
@@ -15,6 +16,9 @@ interface Props {
 }
 
 const Top = ({ txHash, emitterChainId, payloadType }: Props) => {
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+
   const { t } = useTranslation();
   const parseTxHash = parseTx({
     value: txHash,
@@ -32,6 +36,7 @@ const Top = ({ txHash, emitterChainId, payloadType }: Props) => {
         <div className="tx-top-txId-container">
           <a
             href={getExplorerLink({
+              network: currentNetwork,
               chainId: emitterChainId,
               value: parseTxHash,
               isNativeAddress: true,

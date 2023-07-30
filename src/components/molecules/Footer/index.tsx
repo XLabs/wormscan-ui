@@ -59,7 +59,7 @@ const Footer = () => {
 
         <div className="footer-copy">
           <div className="footer-copy-brand">&copy;{year} Wormholescan</div>
-          <div className="footer-copy-project">-Wormhole Explorer-</div>
+          <div className="footer-copy-project">Wormhole Explorer</div>
           <div className="footer-copy-powered">
             <a href={XLABS_URL} target="_blank" rel="noopener noreferrer">
               Built by xlabs

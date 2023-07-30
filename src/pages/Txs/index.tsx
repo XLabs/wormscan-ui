@@ -3,7 +3,7 @@ import { ChainId, GetTransactionsOutput, Order } from "@xlabs-libs/wormscan-sdk"
 import { useCallback, useEffect, useState, useRef } from "react";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
-import { getClient, getCurrentNetwork } from "src/api/Client";
+import { getClient } from "src/api/Client";
 import { BlockchainIcon, Loader, NavLink } from "src/components/atoms";
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import { BaseLayout } from "src/layouts/BaseLayout";
@@ -13,9 +13,10 @@ import { formatCurrency } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { Information } from "./Information";
 import { Top } from "./Top";
-import { NETWORK, TxStatus } from "../../types";
+import { TxStatus } from "../../types";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import "./styles.scss";
+import { useEnvironment } from "src/context/EnvironmentContext";
 
 export interface TransactionOutput {
   VAAId: string;
@@ -32,13 +33,14 @@ export const PAGE_SIZE = 50;
 const REFETCH_TIME = 1000 * 10;
 
 const Txs = () => {
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+
   const navigate = useNavigateCustom();
   const [searchParams, setSearchParams] = useSearchParams();
   const address = searchParams.get("address");
-  const network = (searchParams.get("network") as NETWORK) || "mainnet";
   const page = Number(searchParams.get("page"));
   const currentPage = page >= 1 ? page : 1;
-  const currentNetwork = useRef(network);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isPaginationLoading, setIsPaginationLoading] = useState<boolean>(false);
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
@@ -61,14 +63,6 @@ const Txs = () => {
   useEffect(() => {
     setIsLoading(true);
   }, [address]);
-
-  useEffect(() => {
-    if (currentNetwork.current === getCurrentNetwork()) return;
-
-    currentNetwork.current = network;
-    setIsLoading(true);
-    setCurrentPage(1);
-  }, [network, setCurrentPage]);
 
   const getTransactionInput = {
     query: {
@@ -171,6 +165,7 @@ const Txs = () => {
                         <div className="tx-from-address">
                           <a
                             href={getExplorerLink({
+                              network: currentNetwork,
                               chainId: fromChain,
                               value: parsedOriginAddress,
                               base: "address",
@@ -201,6 +196,7 @@ const Txs = () => {
                           <div className="tx-from-address">
                             <a
                               href={getExplorerLink({
+                                network: currentNetwork,
                                 chainId: toChain,
                                 value: parsedDestinationAddress,
                                 base: "address",

@@ -3,17 +3,17 @@ name: Build and deploy gh-pages
 on:
   push:
     branches:
-      - relayer-dashboard
+      - develop
 
 jobs:
   build_deploy_gh_page:
     name: Build and Deploy Github Page
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repos relayer-dashboard branch
+      - name: Check out repos develop branch
         uses: actions/checkout@v3
         with:
-          ref: "relayer-dashboard"
+          ref: "develop"
 
       - name: Setup node
         uses: actions/setup-node@v3
@@ -23,7 +23,7 @@ jobs:
       - name: Build and Deploy Github Page
         run: |
           yarn install
-          NODE_ENV=production yarn build
+          NODE_ENV=development yarn build
           cp ./CNAME ./dist/
           cp ./robots.txt ./dist/
 

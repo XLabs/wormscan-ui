@@ -2,8 +2,7 @@ import { lazy, Suspense } from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { Loader } from "src/components/atoms";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import RelayerDashboard from "../pages/RelayerDashboard/Dashboard";
-import RelayerContractStates from "../pages/RelayerDashboard/RelayerContractStates";
+import { EnvironmentProvider } from "src/context/EnvironmentContext";
 
 const Home = lazy(() => import("../pages/Home"));
 const Tx = lazy(() => import("../pages/Tx"));
@@ -21,16 +20,16 @@ const Navigation = () => {
           </BaseLayout>
         }
       >
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/relayer-dashboard" element={<RelayerDashboard />} />
-          <Route path="/contract-states" element={<RelayerContractStates />} />
-          <Route path="/txs" element={<Txs />} />
-          <Route path="/tx/:txHash" element={<Tx />} />
-          <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
-          <Route path="/search-not-found" element={<SearchNotFound />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <EnvironmentProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/txs" element={<Txs />} />
+            <Route path="/tx/:txHash" element={<Tx />} />
+            <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
+            <Route path="/search-not-found" element={<SearchNotFound />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </EnvironmentProvider>
       </Suspense>
     </Router>
   );
