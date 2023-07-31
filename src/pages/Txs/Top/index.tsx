@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { CopyToClipboard } from "src/components/molecules";
 import { parseAddress } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
+import { useEnvironment } from "src/context/EnvironmentContext";
 import "./styles.scss";
 
 interface Props {
@@ -12,6 +13,9 @@ interface Props {
 }
 
 const Top = ({ address, addressChainId }: Props) => {
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+
   const { t } = useTranslation();
   const parsedAddress = parseAddress({
     value: address,
@@ -29,6 +33,7 @@ const Top = ({ address, addressChainId }: Props) => {
           <div className="txs-top-txId-container">
             <a
               href={getExplorerLink({
+                network: currentNetwork,
                 chainId: addressChainId,
                 value: parsedAddress,
                 isNativeAddress: true,

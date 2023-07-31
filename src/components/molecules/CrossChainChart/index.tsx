@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getClient, getCurrentNetwork } from "src/api/Client";
+import { getClient } from "src/api/Client";
 import { Chart } from "./Chart";
 import { useQuery } from "react-query";
 import { Loader, Select, ToggleGroup } from "src/components/atoms";
@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { CrossChainBy } from "@xlabs-libs/wormscan-sdk";
 import { ErrorPlaceholder } from "src/components/molecules";
 import "./styles.scss";
+import { useEnvironment } from "src/context/EnvironmentContext";
 
 const MAINNET_TYPE_LIST = [
   { label: i18n.t("home.crossChain.volume"), value: "notional", ariaLabel: "Volume" },
@@ -27,7 +28,8 @@ const RANGE_LIST = [
 ];
 
 const CrossChainChart = () => {
-  const currentNetwork = getCurrentNetwork();
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
   const { t } = useTranslation();
 
   const [TYPE_LIST, setTypeList] = useState(MAINNET_TYPE_LIST);
@@ -35,7 +37,7 @@ const CrossChainChart = () => {
   const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
 
   useEffect(() => {
-    if (currentNetwork === "mainnet") {
+    if (currentNetwork === "MAINNET") {
       setTypeList(MAINNET_TYPE_LIST);
     } else {
       setSelectedType("tx");

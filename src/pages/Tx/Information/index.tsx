@@ -1,12 +1,22 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { Loader } from "src/components/atoms";
 import { Tabs } from "src/components/organisms";
-import i18n from "src/i18n";
-import Overview from "./Overview/index";
 import { GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { minutesBetweenDates } from "src/utils/date";
+
+import i18n from "src/i18n";
+import Overview from "./Overview/index";
 import Summary from "./Summary";
 import RawData from "./RawData";
 
+import { useEnvironment } from "src/context/EnvironmentContext";
+import { parseAddress } from "src/utils/crypto";
+import { ChainId } from "@certusone/wormhole-sdk";
+import RelayerOverview from "./RelayerOverview";
+import {
+  DeliveryLifecycleRecord,
+  populateDeliveryLifecycleRecordByVaa,
+} from "src/utils/genericRelayerVaaUtils";
 import "./styles.scss";
 
 const TX_TAB_HEADERS = [
@@ -20,6 +30,7 @@ interface Props {
 }
 
 const Information = ({ VAAData, txData }: Props) => {
+  const { environment } = useEnvironment();
   const { timestamp, symbol, emitterChain, standardizedProperties, globalTx, payload } =
     txData || {};
 
@@ -63,6 +74,44 @@ const Information = ({ VAAData, txData }: Props) => {
     );
   }, [toChain, fromChain, fee, symbol, transactionTimeInMinutes, payloadType, startDate]);
 
+  // --- Automatic Relayer Detection and handling ---
+  const [genericRelayerInfo, setGenericRelayerInfo] = useState<DeliveryLifecycleRecord>(null);
+  const [loadingRelayers, setLoadingRelayers] = useState(false);
+  const getRelayerInfo = useCallback(async () => {
+    setLoadingRelayers(true);
+    populateDeliveryLifecycleRecordByVaa(environment, VAAData.vaa)
+      .then((result: DeliveryLifecycleRecord) => {
+        setLoadingRelayers(false);
+        setGenericRelayerInfo(result);
+      })
+      .catch((e: any) => {
+        setLoadingRelayers(false);
+        console.error("automatic relayer tx errored:", e);
+        setIsGenericRelayerTx(false);
+      });
+  }, [VAAData.vaa, environment]);
+
+  const targetContract = environment.chainInfos.find(
+    a => a.chainId === fromChain,
+  )?.relayerContractAddress;
+
+  const parsedEmitterAddress = parseAddress({
+    value: txData?.emitterAddress,
+    chainId: txData?.emitterChain as ChainId,
+  });
+
+  const [isGenericRelayerTx, setIsGenericRelayerTx] = useState(
+    targetContract?.toUpperCase() === parsedEmitterAddress?.toUpperCase(),
+  );
+
+  useEffect(() => {
+    if (isGenericRelayerTx) {
+      console.log("isGenericRelayerTx!!!");
+      getRelayerInfo();
+    }
+  }, [getRelayerInfo, isGenericRelayerTx]);
+  // --- x ---
+
   return (
     <section className="tx-information">
       <Tabs
@@ -70,11 +119,25 @@ const Information = ({ VAAData, txData }: Props) => {
         contents={[
           <>
             <TopSummary />
-            <Overview VAAData={VAAData} txData={txData} />
+            {isGenericRelayerTx ? (
+              <>
+                {loadingRelayers ? (
+                  <Loader />
+                ) : (
+                  <RelayerOverview VAAData={VAAData} lifecycleRecord={genericRelayerInfo} />
+                )}
+              </>
+            ) : (
+              <Overview VAAData={VAAData} txData={txData} />
+            )}
           </>,
           <>
             <TopSummary />
-            <RawData VAAData={VAAData} />
+            {isGenericRelayerTx && loadingRelayers ? (
+              <Loader />
+            ) : (
+              <RawData lifecycleRecord={genericRelayerInfo} VAAData={VAAData} />
+            )}
           </>,
         ]}
       />

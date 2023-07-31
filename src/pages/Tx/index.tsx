@@ -5,26 +5,27 @@ import { Loader } from "src/components/atoms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { Information } from "./Information";
 import { Top } from "./Top";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import { ChainId } from "@xlabs-libs/wormscan-sdk";
 import { Buffer } from "buffer";
 import { getGuardianSet } from "../../consts";
-import { NETWORK } from "src/types";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import { useEnvironment } from "src/context/EnvironmentContext";
 import "./styles.scss";
 
-const STALE_TIME = 1000 * 5;
+const STALE_TIME = 1000 * 10;
 
 const Tx = () => {
   const navigate = useNavigateCustom();
   const { txHash, chainId, emitter, seq } = useParams();
+  const { environment } = useEnvironment();
+  const network = environment.network;
+
   const VAAId: string = `${chainId}/${emitter}/${seq}`;
   const isTxHashSearch = Boolean(txHash);
   const isVAAIdSearch = Boolean(chainId) && Boolean(emitter) && Boolean(seq);
-  const [searchParams] = useSearchParams();
-  const network = searchParams.get("network") as NETWORK;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [parsedVAAData, setParsedVAAData] = useState<

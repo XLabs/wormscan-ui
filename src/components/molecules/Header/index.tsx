@@ -6,11 +6,10 @@ import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 import i18n from "src/i18n";
 import Search from "./Search";
 import { PORTAL_BRIDGE_URL } from "src/consts";
-import { changeNetwork } from "src/api/Client";
-import { NETWORK } from "src/types";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./styles.scss";
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import { useEnvironment } from "src/context/EnvironmentContext";
+import { Network } from "@certusone/wormhole-sdk";
 
 const setOverflowHidden = (hidden: boolean) => {
   if (hidden) {
@@ -36,30 +35,22 @@ const HeaderLinks = () => (
   </nav>
 );
 
-type Props = {
-  network: NETWORK;
-};
-
-type NetworkSelectProps = { label: string; value: NETWORK };
+type NetworkSelectProps = { label: string; value: Network };
 
 const NETWORK_LIST: NetworkSelectProps[] = [
-  { label: "Mainnet", value: "mainnet" },
-  { label: "Testnet", value: "testnet" },
+  { label: "Mainnet", value: "MAINNET" },
+  { label: "Testnet", value: "TESTNET" },
 ];
 
-const getCurrentNetworkItem = (network: NETWORK): NetworkSelectProps => {
-  return NETWORK_LIST.find(item => item.value === network) || NETWORK_LIST[0];
-};
-
-const Header = ({ network }: Props) => {
+const Header = () => {
   const { t } = useTranslation();
+  const { pathname, search } = useLocation();
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const [, setSearchParams] = useSearchParams();
-  const [selectedNetwork, setSelectedNetwork] = useState<NetworkSelectProps>(
-    getCurrentNetworkItem(network),
-  );
-  const isMainnet = network === "mainnet";
+
+  const { environment, setEnvironment } = useEnvironment();
+  const currentNetwork = environment.network;
+
+  const isMainnet = currentNetwork === "MAINNET";
 
   const [expandMobileMenu, setExpandMobileMenu] = useState<boolean>(false);
   const handleSetExpand = () => {
@@ -73,35 +64,27 @@ const Header = ({ network }: Props) => {
     return () => setOverflowHidden(false);
   }, []);
 
-  useEffect(() => {
-    if (!network) return;
+  const onClickChangeNetwork = (network: Network) => {
+    if (network === currentNetwork) return;
+    setEnvironment(network);
 
-    setSelectedNetwork(getCurrentNetworkItem(network));
-    changeNetwork(network);
-  }, [network]);
-
-  const onClickChangeNetwork = (network: NETWORK) => {
-    if (network === selectedNetwork.value) return;
-
+    // if watching a transaction, go to transactions list
     if (pathname.includes("/tx/")) {
       navigate(`/txs?network=${network}`);
       return;
     }
 
+    // if watching txs list on a specific page, go to page 1.
+    if (pathname.includes("/txs") && search.includes("page=")) {
+      navigate(`/txs?network=${network}`);
+      return;
+    }
+
+    // if on search not found, go to home
     if (pathname.includes("/search-not-found")) {
       navigate(`/?network=${network}`);
       return;
     }
-
-    setSearchParams(prev => {
-      prev.set("network", network);
-      return prev;
-    });
-  };
-
-  const onChangeNetworkSelect = (network: NetworkSelectProps) => {
-    setSelectedNetwork(network);
-    onClickChangeNetwork(network.value);
   };
 
   return (
@@ -111,13 +94,11 @@ const Header = ({ network }: Props) => {
       <div className="header-actions">
         <Select
           name={"networkSelect"}
-          value={selectedNetwork}
-          onValueChange={(value: NetworkSelectProps) => onChangeNetworkSelect(value)}
+          value={NETWORK_LIST.find(a => a.value === environment.network)}
+          onValueChange={(env: NetworkSelectProps) => onClickChangeNetwork(env.value)}
           items={NETWORK_LIST}
           ariaLabel={"Select Network"}
-          className={`header-network-select ${
-            selectedNetwork.value !== "mainnet" && "header-network-select--active"
-          }`}
+          className={`header-network-select ${!isMainnet && "header-network-select--active"}`}
         />
 
         <div className="header-navigation">

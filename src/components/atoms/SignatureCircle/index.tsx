@@ -3,8 +3,8 @@ import { createPortal } from "react-dom";
 import { shortAddress } from "src/utils/crypto";
 import { CopyToClipboard } from "src/components/molecules";
 import { CopyIcon } from "@radix-ui/react-icons";
-import { getCurrentNetwork } from "src/api/Client";
 import "./styles.scss";
+import { useEnvironment } from "src/context/EnvironmentContext";
 
 interface IGuardian {
   index: number;
@@ -120,8 +120,10 @@ const GuardianInfo = ({
   showGuardian: IGuardian;
   clear: () => void;
 }) => {
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+
   const infoRef = useRef<HTMLDivElement>(null);
-  const currentNetwork = getCurrentNetwork();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -145,7 +147,7 @@ const GuardianInfo = ({
     >
       {/* Testnet has only one guardian and it's from Jump Crypto, name is not on vaa */}
       <span className="guardianInfo-signature-name">
-        {currentNetwork === "mainnet" ? showGuardian.name : "Jump Crypto"}
+        {currentNetwork === "MAINNET" ? showGuardian.name : "Jump Crypto"}
       </span>
       <div className="guardianInfo-signature">
         <span className="guardianInfo-signature-text">Signature:</span>

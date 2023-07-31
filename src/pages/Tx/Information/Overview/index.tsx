@@ -11,8 +11,8 @@ import { ChainId } from "@certusone/wormhole-sdk";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { BREAKPOINTS, colorStatus, txType } from "src/consts";
 import { parseTx, parseAddress } from "../../../../utils/crypto";
-import { getCurrentNetwork } from "src/api/Client";
 import "./styles.scss";
+import { useEnvironment } from "src/context/EnvironmentContext";
 
 type Props = {
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
@@ -29,8 +29,10 @@ const NotFinalDestinationTooltip = () => (
 );
 
 const Overview = ({ VAAData, txData }: Props) => {
-  const currentNetwork = getCurrentNetwork();
-  const totalGuardiansNeeded = currentNetwork === "mainnet" ? 13 : 1;
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+
+  const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
   const size = useWindowSize();
   const isMobile = size.width < BREAKPOINTS.tablet;
   const { decodedVaa } = VAAData || {};
@@ -166,6 +168,7 @@ const Overview = ({ VAAData, txData }: Props) => {
                   <div className="tx-overview-graph-step-description">
                     <a
                       href={getExplorerLink({
+                        network: currentNetwork,
                         chainId: tokenChain,
                         value: tokenAddress,
                         base: "token",
@@ -189,6 +192,7 @@ const Overview = ({ VAAData, txData }: Props) => {
                         {symbol && (
                           <a
                             href={getExplorerLink({
+                              network: currentNetwork,
                               chainId: tokenChain,
                               value: tokenAddress,
                               base: "token",
@@ -211,6 +215,7 @@ const Overview = ({ VAAData, txData }: Props) => {
                       <div className="tx-overview-graph-step-description">
                         <a
                           href={getExplorerLink({
+                            network: currentNetwork,
                             chainId: fromChain,
                             value: parsedOriginAddress,
                             base: "address",
@@ -253,6 +258,7 @@ const Overview = ({ VAAData, txData }: Props) => {
                 <div className="tx-overview-graph-step-description">
                   <a
                     href={getExplorerLink({
+                      network: currentNetwork,
                       chainId: fromChain,
                       value: parsedEmitterAddress,
                       base: "address",
@@ -324,6 +330,7 @@ const Overview = ({ VAAData, txData }: Props) => {
                 <div className="tx-overview-graph-step-description">
                   <a
                     href={getExplorerLink({
+                      network: currentNetwork,
                       chainId: toChain,
                       value: parsedRedeemTx,
                       isNativeAddress: true,
@@ -373,6 +380,7 @@ const Overview = ({ VAAData, txData }: Props) => {
                 <div className="tx-overview-graph-step-description">
                   <a
                     href={getExplorerLink({
+                      network: currentNetwork,
                       chainId: toChain,
                       value: parsedDestinationAddress,
                       base: "address",

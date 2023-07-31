@@ -42,6 +42,17 @@
           gap: 8px;
         }
       }
+
+      &-body {
+        &-code {
+          overflow-x: scroll !important;
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+          &::-webkit-scrollbar {
+            width: 0;
+          }
+        }
+      }
     }
   }
 }
