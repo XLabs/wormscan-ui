@@ -8,6 +8,7 @@ const RANGE_LIST = [
   { label: "1D", value: "day", ariaLabel: "One day" },
   { label: "1W", value: "week", ariaLabel: "One week" },
   { label: "1M", value: "month", ariaLabel: "One month" },
+  { label: "3M", value: "3-month", ariaLabel: "Three months" },
 ];
 
 const TransactionHistory = () => {
