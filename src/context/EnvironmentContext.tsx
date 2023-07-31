@@ -6,15 +6,11 @@ import { Environment, testnetEnv, mainnetEnv } from "src/utils/environment";
 interface EnvironmentContext {
   environment: Environment;
   setEnvironment: (env: "DEVNET" | "TESTNET" | "MAINNET") => void;
-  userInput: string;
-  setUserInput: (input: string) => void;
 }
 
 const EnvironmentProviderContext = React.createContext<EnvironmentContext>({
   environment: testnetEnv,
   setEnvironment: () => {},
-  userInput: "",
-  setUserInput: () => {},
 });
 
 export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
@@ -25,19 +21,15 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
     networkParam === "TESTNET" ? testnetEnv : mainnetEnv,
   );
 
-  const [userInput, setUserInput] = useState("");
   const [clearChildren, setClearChildren] = useState<boolean>(false);
 
   const setEnvironment = useCallback(
     (env: "DEVNET" | "TESTNET" | "MAINNET") => {
       /* if (env === "DEVNET") {
         setCurrentEnv(tiltEnv);
-        setUserInput("");
         setChain(tiltEnv.chainInfos[0].chainId);
         setSearchParams(prev => {
-          prev.delete("userInput");
           prev.set("network", "testnet");
-          prev.set("chainId", "" + tiltEnv.chainInfos[0].chainId);
           return prev;
         });
 
@@ -45,10 +37,8 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
       } else */ if (env === "TESTNET") {
         changeClientNetwork("TESTNET");
         setCurrentEnv(testnetEnv);
-        setUserInput("");
 
         setSearchParams(prev => {
-          prev.delete("userInput");
           prev.set("network", "TESTNET");
           return prev;
         });
@@ -57,10 +47,8 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
       } else if (env === "MAINNET") {
         changeClientNetwork("MAINNET");
         setCurrentEnv(mainnetEnv);
-        setUserInput("");
 
         setSearchParams(prev => {
-          prev.delete("userInput");
           prev.set("network", "MAINNET");
           return prev;
         });
@@ -85,12 +73,8 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       environment: currentEnv,
       setEnvironment,
-      userInput,
-      setUserInput: (input: string) => {
-        setUserInput(input);
-      },
     }),
-    [currentEnv, setEnvironment, userInput],
+    [currentEnv, setEnvironment],
   );
 
   return (
