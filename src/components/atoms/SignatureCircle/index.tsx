@@ -3,8 +3,8 @@ import { createPortal } from "react-dom";
 import { shortAddress } from "src/utils/crypto";
 import { CopyToClipboard } from "src/components/molecules";
 import { CopyIcon } from "@radix-ui/react-icons";
-import "./styles.scss";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import "./styles.scss";
 
 interface IGuardian {
   index: number;
@@ -28,31 +28,35 @@ const Circle = ({ guardianSignatures }: Props) => {
   const [showGuardian, setShowGuardian] = useState<IGuardian>(null);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const SIZE = 184;
+  const totalGuardians = guardianSignatures?.length || 0;
+  const scale = totalGuardians > 1 ? 2.5 : 2.6;
+  const strokeWidth = totalGuardians > 1 ? 6 : 0;
 
   return (
     <div className="signatureCircle">
       <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`}>
         <g transform={`translate(${SIZE / 2},${SIZE / 2})`}>
           {guardianSignatures.map((guardian, idx) => {
-            const startAngle = (360 / guardianSignatures.length) * idx;
-            const endAngle = startAngle + 360 / guardianSignatures.length;
+            const startAngle = (360 / totalGuardians) * idx;
+            const endAngle = startAngle + 360 / totalGuardians;
             const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+
             // SVG generating a circle divided in 13 separated pieces (or 1 for testnet)
             const d = [
               "M",
               0,
               0,
               "L",
-              (SIZE / 2.5) * Math.cos((Math.PI * startAngle) / 180),
-              (SIZE / 2.5) * Math.sin((Math.PI * startAngle) / 180),
+              (SIZE / scale) * Math.cos((Math.PI * startAngle) / 180),
+              (SIZE / scale) * Math.sin((Math.PI * startAngle) / 180),
               "A",
-              SIZE / 2.5,
-              SIZE / 2.5,
+              SIZE / scale,
+              SIZE / scale,
               0,
               largeArcFlag,
               1,
-              (SIZE / 2.5) * Math.cos((Math.PI * endAngle) / 180),
-              (SIZE / 2.5) * Math.sin((Math.PI * endAngle) / 180),
+              (SIZE / scale) * Math.cos((Math.PI * endAngle) / 180),
+              (SIZE / scale) * Math.sin((Math.PI * endAngle) / 180),
               "L",
               0,
               0,
@@ -66,7 +70,7 @@ const Circle = ({ guardianSignatures }: Props) => {
                 stroke="#151632"
                 d={d}
                 fill={fillColor}
-                strokeWidth="6"
+                strokeWidth={strokeWidth}
                 className="signatureCircle-section"
                 onTouchStart={() => setTouched(true)}
                 onMouseEnter={ev => {

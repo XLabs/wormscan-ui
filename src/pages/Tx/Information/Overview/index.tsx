@@ -11,8 +11,8 @@ import { ChainId } from "@certusone/wormhole-sdk";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { BREAKPOINTS, colorStatus, txType } from "src/consts";
 import { parseTx, parseAddress } from "../../../../utils/crypto";
-import "./styles.scss";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import "./styles.scss";
 
 type Props = {
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
