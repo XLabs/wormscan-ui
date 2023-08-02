@@ -169,8 +169,8 @@ export const Chart = ({ data, selectedType }: Props) => {
   }, [chartData, selectedChain]);
 
   useEffect(() => {
-    if (size.width >= 1024 && !isDesktop) setIsDesktop(true);
-    else if (size.width < 1024 && isDesktop) setIsDesktop(false);
+    if (size.width >= BREAKPOINTS.desktop && !isDesktop) setIsDesktop(true);
+    else if (size.width < BREAKPOINTS.desktop && isDesktop) setIsDesktop(false);
   }, [isDesktop, size]);
 
   // re-render canvas when destinations or isDesktop changes.

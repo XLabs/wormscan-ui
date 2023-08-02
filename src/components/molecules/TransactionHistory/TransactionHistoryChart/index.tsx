@@ -6,12 +6,14 @@ import { DateRange } from "@xlabs-libs/wormscan-sdk";
 import { getClient } from "src/api/Client";
 import { numberToSuffix } from "src/utils/number";
 import { ErrorPlaceholder } from "src/components/molecules";
+import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import "./styles.scss";
 
 type Props = {
   range: DateRange;
 };
 
+// TODO: Remove this mock data when real data is available
 const data3Months = [
   {
     time: "2023-07-31T20:26:20.505228728Z",
@@ -391,7 +393,10 @@ const TransactionHistoryChart = ({ range }: Props) => {
   const [seriesData, setSeriesData] = useState([0]);
   const [seriesLabels, setSeriesLabels] = useState([""]);
   const [totalTxs, setTotalTxs] = useState("");
-  const tickAmount = range === "month" ? 4 : 5;
+  const tickAmount = range === "3-month" ? 3 : range === "month" ? 4 : 5;
+  const size = useWindowSize();
+  const isWidthOver1200px = size.width >= 1200;
+  const [dataReverse, setDataReverse] = useState([]);
 
   const { data, isError, isLoading, isFetching } = useQuery(
     ["getLastTxs", range],
@@ -400,14 +405,19 @@ const TransactionHistoryChart = ({ range }: Props) => {
   );
 
   useEffect(() => {
-    /* TODO delete range !== "3-month" when api is ready */
+    // TODO delete range !== "3-month" when api is ready
     if (!data && range !== "3-month") return;
 
-    /* TODO delete data3Months when api is ready */
+    // TODO delete data3Months when api is ready
     const responseReversed = range !== "3-month" ? [...data].reverse() : [...data3Months].reverse();
     const totalAmount = responseReversed.reduce((prev, curr) => prev + curr.count, 0);
 
-    setTotalTxs(`Last ${range === "day" ? "24hs" : range}: ${totalAmount.toLocaleString()} txs`);
+    setDataReverse(responseReversed);
+    setTotalTxs(
+      `Last ${
+        range === "day" ? "24hs" : range === "3-month" ? "3 months" : range
+      }: ${totalAmount.toLocaleString()} txs`,
+    );
     setSeriesData(responseReversed.map(item => item.count));
     setSeriesLabels(
       responseReversed.map(item => {
@@ -425,12 +435,23 @@ const TransactionHistoryChart = ({ range }: Props) => {
           return date.toLocaleString("en", { weekday: "short" });
         }
 
-        if (range === "month" || range === "3-month") {
+        if (range === "month") {
           return date.toLocaleString("en", { month: "short", day: "numeric" });
+        }
+
+        if (range === "3-month") {
+          return date
+            .toLocaleString("en", {
+              month: "short",
+              day: "numeric",
+              year: isWidthOver1200px ? "numeric" : "2-digit",
+            })
+            .replace(", ", isWidthOver1200px ? " / " : "/")
+            .toUpperCase();
         }
       }),
     );
-  }, [data, range]);
+  }, [data, range, isWidthOver1200px]);
 
   return (
     <div className="trans-history" data-range={range}>
@@ -438,7 +459,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
         <Loader />
       ) : (
         <>
-          {/* TODO delete range !== "3-month" when api is ready  */}
+          {/* TODO delete range !== "3-month" when api is ready */}
           {range !== "3-month" && isError ? (
             <ErrorPlaceholder errorType="chart" />
           ) : (
@@ -462,6 +483,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                       fontSize: "16px",
                       fontWeight: 400,
                     },
+                    offsetX: -8,
                   },
                   fill: {
                     type: "gradient",
@@ -490,24 +512,48 @@ const TransactionHistoryChart = ({ range }: Props) => {
                   },
                   labels: seriesLabels,
                   chart: {
-                    zoom: { enabled: true },
-                    toolbar: {
-                      show: true,
-                      tools: {
-                        download: false,
-                        selection: false,
-                        zoom: false,
-                        zoomin: range === "3-month",
-                        zoomout: range === "3-month",
-                        pan: range === "3-month",
-                        reset: false,
-                      },
-                    },
+                    zoom: { enabled: false },
+                    toolbar: { show: false },
                   },
                   grid: {
                     show: false,
+                    padding: {
+                      // This is to make the chart look aligned to the right
+                      right: isWidthOver1200px ? seriesLabels[0].length * -2.4 : 10,
+                      left: -2,
+                    },
                   },
                   tooltip: {
+                    custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                      const index = w.globals.labels[dataPointIndex] - 1;
+
+                      const date = dataReverse[index].time;
+                      const transactions = series[seriesIndex][dataPointIndex];
+
+                      const parsedDate = new Date(date);
+                      const formattedDate = parsedDate.toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      });
+
+                      return `
+                        <div class="trans-history-chart-info">
+                          <p class="trans-history-chart-info-paragraph">#Transactions: ${transactions}</p>
+                          ${
+                            // TODO, uncomment when endpoint returns volume
+                            // <p class="trans-history-chart-info-paragraph">Volume: $8.24M</p>
+                            ""
+                          }
+                          <p class="trans-history-chart-info-paragraph">${formattedDate}</p>
+                          <span class="trans-history-chart-info-span">Hours correspond to current device's local time.</span>
+                         
+                        </div>
+                      `;
+                    },
                     enabled: true,
                     x: {
                       show: false,
@@ -529,6 +575,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                     tickAmount: 4,
                     labels: {
                       formatter: numberToSuffix,
+                      offsetX: -14,
                       style: {
                         colors: "var(--color-primary-50)",
                         fontFamily: "IBM Plex Sans",
@@ -543,7 +590,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                   },
                   xaxis: {
                     labels: {
-                      hideOverlappingLabels: false,
+                      offsetX: 0,
                       style: {
                         colors: "var(--color-primary-50)",
                         fontFamily: "IBM Plex Sans",
@@ -555,6 +602,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                     tickPlacement: "on",
                     axisTicks: { show: false },
                     axisBorder: { show: true, strokeWidth: 4, color: "#FFFFFF25" },
+                    tooltip: { enabled: false },
                   },
                   responsive: [
                     {
