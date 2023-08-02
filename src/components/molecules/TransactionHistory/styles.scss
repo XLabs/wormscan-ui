@@ -2,8 +2,9 @@
 
 .tx {
   &-title {
-    color: var(--color-primary-50);
     @include text-p1;
+
+    color: var(--color-primary-50);
   }
 
   &-history {

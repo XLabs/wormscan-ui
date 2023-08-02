@@ -87,14 +87,18 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
   const redeliveryInstruction = instruction as RedeliveryInstruction | null;
   const isDelivery = deliveryInstruction && !isRedelivery(deliveryInstruction);
 
-  const decodeExecution = parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0];
-  const gasLimit = decodeExecution.gasLimit;
+  const decodeExecution = deliveryInstruction.encodedExecutionInfo
+    ? parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0]
+    : null;
+  const gasLimit = decodeExecution ? decodeExecution.gasLimit : null;
 
   if (!deliveryInstruction?.targetAddress) {
     console.log({ deliveryInstruction });
     return (
       <div className="relayer-tx-overview">
-        <div className="errored-info">This doesn&apos;t look like an Automatic Relayer VAA</div>
+        <div className="errored-info">
+          This is either not an Automatic Relayer VAA or something&apos;s wrong with it
+        </div>
       </div>
     );
   }
@@ -463,7 +467,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                                 <div className="budget-tooltip-title">Max Refund:</div>
                                 <div>{maxRefundText(deliveryStatus)}</div>
 
-                                {gasUsedText(deliveryStatus) && (
+                                {decodeExecution && gasUsedText(deliveryStatus) && (
                                   <>
                                     <div className="budget-tooltip-title">
                                       {isNaN(gasUsed) ? "Gas Limit" : "Gas Used/Gas Limit"}

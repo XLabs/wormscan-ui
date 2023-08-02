@@ -66,7 +66,20 @@
     "recoil": "0.7.6"
   },
   "alias": {
-    "src": "./src"
+    "src": "./src",
+    "@injectivelabs/sdk-ts": false,
+    "@injectivelabs/networks": false,
+    "@injectivelabs/utils": false,
+    "@terra-money/terra.js": false,
+    "@terra-money/terra.proto": false,
+    "@terra-money/legacy.proto": false,
+    "@xpla/xpla.js": false,
+    "aptos": false,
+    "@mysten/sui.js": false,
+    "near-api-js": false,
+    "@project-serum/anchor": false,
+    "lodash": false,
+    "elliptic": false
   },
   "lint-staged": {
     "*.{svg,ts,tsx,js,jsx,scss,css,md}": "prettier --write"

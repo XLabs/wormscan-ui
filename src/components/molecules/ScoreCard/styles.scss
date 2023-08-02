@@ -7,6 +7,12 @@
     height: 100%;
   }
 
+  &-title {
+    @include text-p1;
+
+    color: var(--color-primary-50);
+  }
+
   &-data {
     @include card-container;
     @include centered-column;

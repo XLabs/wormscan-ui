@@ -16,11 +16,12 @@
   background-color: var(--color-error-30);
   font-size: 14px;
   padding: 8px;
+  padding-top: 20px;
   height: 60px;
   overflow: auto;
-  margin: 20px;
   margin-bottom: 20px;
   border-radius: 4px;
+  text-align: center;
 }
 
 .budget-tooltip {
