@@ -496,9 +496,9 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       MAINNET: "https://basescan.org",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return this.explorer?.[network] + "/account/" + value;
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
       if (base === "token") return this.explorer?.[network] + "/token/" + value;
-      return this.explorer?.[network] + "/transaction/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
     },
   },
   [ChainId.Sepolia]: {
