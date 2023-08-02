@@ -26,6 +26,7 @@ import TerraIcon from "src/icons/blockchains/terra.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
 import SeiIcon from "src/icons/blockchains/sei.svg";
 import SuiIcon from "src/icons/blockchains/sui.svg";
+import BaseIcon from "src/icons/blockchains/base.svg";
 
 import NoDarkIcon from "src/icons/blockchains/dark/noIcon.svg";
 import AcalaDarkIcon from "src/icons/blockchains/dark/acala.svg";
@@ -53,6 +54,7 @@ import TerraDarkIcon from "src/icons/blockchains/dark/terra.svg";
 import XplaDarkIcon from "src/icons/blockchains/dark/xpla.svg";
 import SeiDarkIcon from "src/icons/blockchains/dark/sei.svg";
 import SuiDarkIcon from "src/icons/blockchains/dark/sui.svg";
+import BaseDarkIcon from "src/icons/blockchains/dark/base.svg";
 
 import { parseAddress, parseTx } from "./crypto";
 import { Network } from "@certusone/wormhole-sdk";
@@ -483,6 +485,34 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       if (base === "address") return this.explorer?.[network] + "/account/" + value;
       if (base === "token") return this.explorer?.[network] + "/token/" + value;
       return this.explorer?.[network] + "/transaction/" + value;
+    },
+  },
+  [ChainId.Base]: {
+    name: "Base",
+    icon: BaseIcon,
+    darkIcon: BaseDarkIcon,
+    explorer: {
+      TESTNET: "https://goerli.basescan.org",
+      MAINNET: "https://basescan.org",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/account/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      return this.explorer?.[network] + "/transaction/" + value;
+    },
+  },
+  [ChainId.Sepolia]: {
+    name: "Sepolia",
+    icon: EthereumIcon,
+    darkIcon: EthereumDarkIcon,
+    explorer: {
+      TESTNET: "https://sepolia.etherscan.io",
+      MAINNET: "https://sepolia.etherscan.io",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
     },
   },
 };
