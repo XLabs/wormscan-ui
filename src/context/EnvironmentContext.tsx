@@ -2,8 +2,8 @@ import React, { ReactNode, useCallback, useContext, useEffect, useMemo, useState
 import { changeClientNetwork } from "src/api/Client";
 import { useSearchParams } from "react-router-dom";
 import { Environment, testnetEnv, mainnetEnv } from "src/utils/environment";
+import { Network } from "@certusone/wormhole-sdk";
 
-type Network = "DEVNET" | "TESTNET" | "MAINNET";
 interface EnvironmentContext {
   environment: Environment;
   setEnvironment: (env: Network) => void;
