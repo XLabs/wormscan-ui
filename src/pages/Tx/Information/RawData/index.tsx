@@ -98,9 +98,10 @@ const RawData = ({ VAAData, lifecycleRecord }: Props) => {
   const redeliveryInstruction = relayerInfo
     ? (relayerInfo.instruction as RedeliveryInstruction)
     : null;
-  const decodeExecution = relayerInfo
-    ? parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0]
-    : null;
+  const decodeExecution =
+    relayerInfo && deliveryInstruction.encodedExecutionInfo
+      ? parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0]
+      : null;
 
   return (
     <div className="tx-raw-data">
@@ -142,10 +143,13 @@ const RawData = ({ VAAData, lifecycleRecord }: Props) => {
                       Emitter: Buffer.from(vaaKey.emitterAddress).toString("hex"),
                       Sequence: vaaKey.sequence,
                     })),
-                    "Encoded Execution Info:": {
-                      gasLimit: decodeExecution.gasLimit,
-                      targetChainRefundPerGasUnused: decodeExecution.targetChainRefundPerGasUnused,
-                    },
+                    "Encoded Execution Info:": decodeExecution
+                      ? {
+                          gasLimit: decodeExecution.gasLimit,
+                          targetChainRefundPerGasUnused:
+                            decodeExecution.targetChainRefundPerGasUnused,
+                        }
+                      : { gasLimit: null, targetChainRefundPerGasUnused: null },
                     Payload: Buffer.from(deliveryInstruction.payload).toString("hex"),
                   },
                   null,
@@ -162,9 +166,13 @@ const RawData = ({ VAAData, lifecycleRecord }: Props) => {
                       redeliveryInstruction.deliveryVaaKey.emitterAddress,
                     ).toString("hex"),
                     "Original Sequence": redeliveryInstruction.deliveryVaaKey.sequence,
-                    "Encoded Execution Params": Buffer.from(
-                      redeliveryInstruction.newEncodedExecutionInfo.toString("hex"),
-                    ),
+                    "Encoded Execution Info": decodeExecution
+                      ? {
+                          gasLimit: decodeExecution.gasLimit,
+                          targetChainRefundPerGasUnused:
+                            decodeExecution.targetChainRefundPerGasUnused,
+                        }
+                      : { gasLimit: null, targetChainRefundPerGasUnused: null },
                     "New Receiver Value": redeliveryInstruction.newRequestedReceiverValue,
                     "New Sender Address": Buffer.from(
                       redeliveryInstruction.newSenderAddress,
