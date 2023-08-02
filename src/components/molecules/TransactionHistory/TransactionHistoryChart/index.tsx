@@ -225,7 +225,8 @@ const TransactionHistoryChart = ({ range }: Props) => {
                         fontFamily: "IBM Plex Sans",
                         fontSize: "14px",
                       },
-                      rotate: 0,
+                      rotate: isWidthOver1200px ? 0 : -45,
+                      rotateAlways: !isWidthOver1200px,
                     },
                     tickAmount,
                     tickPlacement: "on",
@@ -233,18 +234,6 @@ const TransactionHistoryChart = ({ range }: Props) => {
                     axisBorder: { show: true, strokeWidth: 4, color: "#FFFFFF25" },
                     tooltip: { enabled: false },
                   },
-                  responsive: [
-                    {
-                      breakpoint: 1200,
-                      options: {
-                        xaxis: {
-                          labels: {
-                            rotate: -45,
-                          },
-                        },
-                      },
-                    },
-                  ],
                 }}
               />
             </div>
