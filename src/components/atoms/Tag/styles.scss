@@ -7,12 +7,20 @@
   align-items: center;
   padding: 6px 14px;
   border-radius: 4px;
-
-  background-color: var(--color-white);
-  color: var(--color-black);
+  background-color: var(--color-white-10);
+  color: var(--color-white);
 
   &.blue {
     background-color: var(--color-information-30);
     color: var(--color-information-500);
+  }
+
+  &.chip {
+    border-radius: 16px;
+    padding: 4px 12px;
+  }
+
+  &.small {
+    font-size: 12px;
   }
 }
