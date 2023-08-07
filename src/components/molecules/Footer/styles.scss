@@ -4,71 +4,100 @@
   @include centered-row;
 
   min-height: 570px;
-  padding: 48px 16px 24px;
+  padding: 32px;
   background-color: rgba(1, 0, 20, 0.25);
   border-top: 1px solid var(--color-white-10);
 
   @include desktop {
-    padding: 36px 60px 24px;
+    padding: 60px 60px 40px;
     min-height: 168px;
   }
 
   &-container {
     display: grid;
     grid-template-areas:
+      "top-button"
       "brand"
       "links"
       "social"
+      "built"
       "copy";
-    column-gap: 32px;
-    row-gap: 72px;
+    grid-template-columns: 1fr;
+    column-gap: 16px;
+    row-gap: 56px;
     width: 100%;
     max-width: 425px;
     margin: 0 auto;
 
     @include desktop {
-      row-gap: 52px;
+      row-gap: 32px;
       grid-template-areas:
-        "brand links social"
-        "copy copy copy";
-      grid-template-columns: 1fr 1fr 1fr;
+        "brand links links top-button"
+        "brand links links social"
+        "built . . ."
+        "copy copy copy copy";
+      grid-template-columns: 1.1fr 1fr 1fr 1.1fr;
       max-width: unset;
       margin: auto;
+    }
+
+    @include bigDesktop {
+      grid-template-columns: 2fr 1fr 1fr 2fr;
+    }
+  }
+
+  &-top-button-container {
+    @include centered-row;
+
+    grid-area: top-button;
+    justify-content: end;
+
+    @include desktop {
+      align-items: start;
+    }
+  }
+
+  &-top-button {
+    @include text-p3;
+    @include centered-row;
+
+    color: var(--color-primary-50);
+    background-color: transparent;
+    border: none;
+    gap: 8px;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--color-secondary-800);
     }
   }
 
   &-brand {
     @include centered-row;
 
-    justify-content: center;
     grid-area: brand;
-    padding: 0 32px;
-
-    a {
-      text-decoration: none;
-    }
+    height: 100%;
 
     @include desktop {
       width: 100%;
       margin: auto;
       padding: 0;
       justify-content: start;
+      align-items: start;
     }
   }
 
   &-social {
     @include centered-column;
 
-    align-items: center;
     grid-area: social;
     gap: 24px;
-    padding: 0 32px;
 
     @include desktop {
       @include centered-row;
 
       justify-content: flex-end;
-      gap: 40px;
+      gap: 24px;
       margin-bottom: 0;
       padding: 0;
     }
@@ -98,21 +127,49 @@
 
       @include desktop {
         flex: unset;
-        gap: 40px;
+        gap: 32px;
       }
     }
   }
 
   &-links {
     display: grid;
-    justify-content: center;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     grid-area: links;
-    padding: 0 32px;
+
+    row-gap: 40px;
 
     @include desktop {
-      grid-template-columns: 1fr 1fr 1fr;
-      justify-content: center;
+      column-gap: 16px;
+
+      [data-link="home"] {
+        grid-area: home;
+      }
+
+      [data-link="careers"] {
+        grid-area: careers;
+      }
+
+      [data-link="api"] {
+        grid-area: api;
+      }
+
+      [data-link="txs"] {
+        grid-area: txs;
+      }
+
+      [data-link="contact"] {
+        grid-area: contact;
+      }
+
+      [data-link="bounty"] {
+        grid-area: bounty;
+      }
+
+      grid-template-columns: 1fr 1fr 0.5fr;
+      grid-template-areas:
+        "home careers api"
+        "txs contact bounty";
       padding: 0;
     }
 
@@ -120,10 +177,10 @@
       @include centered-row;
       width: 100%;
 
-      cursor: pointer;
+      display: flex;
+      gap: 8px;
       user-select: none;
       text-align: center;
-      justify-content: center;
 
       a {
         @include text-p3;
@@ -139,21 +196,38 @@
     }
   }
 
+  &-built {
+    @include text-p3;
+
+    grid-area: built;
+
+    & a {
+      text-decoration: none;
+      color: var(--color-secondary-800);
+
+      &:hover,
+      &:active {
+        text-decoration: underline;
+      }
+    }
+  }
+
   &-copy {
     @include centered-column;
     @include text-caption1;
 
     font-weight: 400;
     font-size: 14px;
-    text-align: center;
     grid-area: copy;
-    color: var(--color-white-30);
+    color: var(--color-white-40);
+    border-top: 1px solid var(--color-white-10);
+    padding-top: 32px;
 
     @include desktop {
       @include centered-row;
 
       justify-content: space-between;
-      font-size: 12px;
+      padding-top: 20px;
 
       & > * {
         flex: 1;
@@ -163,50 +237,10 @@
         }
       }
 
-      &-powered {
-        text-align: left;
-      }
-
       &-brand {
-        text-align: right;
-      }
-    }
+        @include text-p2;
 
-    &-brand {
-      order: 1;
-
-      @include desktop {
-        order: 3;
-      }
-    }
-
-    &-project {
-      order: 2;
-    }
-
-    &-powered {
-      order: 3;
-      margin-top: 80px;
-      color: var(--color-white-40);
-      font-size: 12px;
-
-      & a {
-        text-decoration: none;
-        color: var(--color-white-40);
-
-        &:hover,
-        &:active {
-          color: var(--color-information-100);
-        }
-      }
-
-      @include desktop {
-        order: 1;
-        margin: 0;
-
-        & a {
-          color: var(--color-white-30);
-        }
+        text-align: center;
       }
     }
   }
