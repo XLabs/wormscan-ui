@@ -5,15 +5,19 @@
 
   margin-bottom: 32px;
   padding: 0 !important;
-  overflow-x: auto;
-  overflow-y: visible;
-  height: 100%;
+  // overflow-x: auto;
+  // overflow-y: visible;
+  // height: 100%;
 
   &-loader {
     @include centered-row;
     justify-content: center;
     height: 100%;
     min-height: 220px;
+  }
+
+  & .table-container {
+    overflow-x: auto;
   }
 
   &-table-results {
@@ -57,6 +61,7 @@
 
     &-pagination {
       @include centered-row;
+      justify-content: center;
 
       padding: 24px 16px;
 
@@ -108,13 +113,12 @@
 
   .txs-pagination {
     display: flex;
-    justify-content: start;
-    margin: 75px 0 48px;
-    padding: 0 16px;
+    justify-content: center;
+    padding: 48px 16px;
 
     @include desktop {
       justify-content: end;
-      padding: 0 32px;
+      padding: 32px;
     }
   }
 }

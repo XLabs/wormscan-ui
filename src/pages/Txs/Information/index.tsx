@@ -47,6 +47,7 @@ interface Props {
   onChangePagination: (pageNumber: number) => void;
   isPaginationLoading: boolean;
   setIsPaginationLoading: Dispatch<SetStateAction<boolean>>;
+  isTxsFiltered: boolean;
 }
 
 const Information = ({
@@ -55,6 +56,7 @@ const Information = ({
   onChangePagination,
   isPaginationLoading,
   setIsPaginationLoading,
+  isTxsFiltered = false,
 }: Props) => {
   const navigate = useNavigateCustom();
 
@@ -80,6 +82,11 @@ const Information = ({
     onChangePagination(nextPage);
   };
 
+  const goPage = (currentPage: number) => {
+    setIsPaginationLoading(true);
+    onChangePagination(currentPage);
+  };
+
   const PaginationComponent = ({ className }: { className?: string }) => {
     return (
       <Pagination
@@ -88,6 +95,7 @@ const Information = ({
         goPrevPage={() => goPrevPage(currentPage)}
         goNextPage={() => goNextPage(currentPage)}
         // goLastPage={() => goLastPage()}
+        goPage={isTxsFiltered ? null : goPage}
         disabled={isPaginationLoading}
         disableNextButton={parsedTxsData.length <= 0 || parsedTxsData.length < PAGE_SIZE}
         className={className}
@@ -112,13 +120,15 @@ const Information = ({
           {isPaginationLoading ? (
             <Loader />
           ) : (
-            <Table
-              columns={columns}
-              data={parsedTxsData}
-              className="txs"
-              emptyMessage="No txs found."
-              onRowClick={onRowClick}
-            />
+            <div className="table-container">
+              <Table
+                columns={columns}
+                data={parsedTxsData}
+                className="txs"
+                emptyMessage="No txs found."
+                onRowClick={onRowClick}
+              />
+            </div>
           )}
 
           <div className="txs-pagination">
