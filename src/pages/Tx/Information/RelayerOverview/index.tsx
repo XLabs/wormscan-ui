@@ -622,89 +622,107 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                         </div>
                       )}
 
-                      {deliveryStatus.status !== "failed" && (
+                      {deliveryStatus.status === "waiting" && (
                         <div className={`relayer-tx-overview-graph-step-data-container`}>
                           <div>
                             <div className="relayer-tx-overview-graph-step-title">STATUS</div>
-                            <div
-                              className={`relayer-tx-overview-graph-step-description ${
-                                typeof deliveryStatus.metadata?.deliveryRecord?.resultLog ===
-                                "string"
-                                  ? deliveryStatus.metadata?.deliveryRecord?.resultLog ===
-                                    "Delivery Success"
-                                    ? "green"
-                                    : deliveryStatus.metadata?.deliveryRecord?.resultLog ===
-                                      "Receiver Failure"
-                                    ? "red"
-                                    : "white"
-                                  : deliveryStatus.metadata?.deliveryRecord?.resultLog?.status ===
-                                    "Delivery Success"
-                                  ? "green"
-                                  : deliveryStatus.metadata?.deliveryRecord?.resultLog?.status ===
-                                    "Receiver Failure"
-                                  ? "red"
-                                  : "white"
-                              }`}
-                            >
-                              {typeof deliveryStatus.metadata?.deliveryRecord?.resultLog ===
-                              "string"
-                                ? deliveryStatus.metadata?.deliveryRecord?.resultLog
-                                : deliveryStatus.metadata?.deliveryRecord?.resultLog?.status}
+                            <div className="relayer-tx-overview-graph-step-description">
+                              WAITING..
                             </div>
-                            {deliveryStatus.metadata?.deliveryRecord?.resultLog?.refundStatus && (
+                          </div>
+                          <div>
+                            <div className="relayer-tx-overview-graph-step-title">Attempts</div>
+                            <div className="relayer-tx-overview-graph-step-description">
+                              {`${deliveryStatus.attempts}/${deliveryStatus.maxAttempts}`}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {deliveryStatus.status !== "failed" &&
+                        deliveryStatus.status !== "waiting" && (
+                          <div className={`relayer-tx-overview-graph-step-data-container`}>
+                            <div>
+                              <div className="relayer-tx-overview-graph-step-title">STATUS</div>
                               <div
                                 className={`relayer-tx-overview-graph-step-description ${
-                                  deliveryStatus.metadata?.deliveryRecord?.resultLog
-                                    ?.refundStatus === ("Refund Sent" as any)
+                                  typeof deliveryStatus.metadata?.deliveryRecord?.resultLog ===
+                                  "string"
+                                    ? deliveryStatus.metadata?.deliveryRecord?.resultLog ===
+                                      "Delivery Success"
+                                      ? "green"
+                                      : deliveryStatus.metadata?.deliveryRecord?.resultLog ===
+                                        "Receiver Failure"
+                                      ? "red"
+                                      : "white"
+                                    : deliveryStatus.metadata?.deliveryRecord?.resultLog?.status ===
+                                      "Delivery Success"
                                     ? "green"
-                                    : deliveryStatus.metadata?.deliveryRecord?.resultLog
-                                        ?.refundStatus === ("Refund Fail" as any)
+                                    : deliveryStatus.metadata?.deliveryRecord?.resultLog?.status ===
+                                      "Receiver Failure"
                                     ? "red"
                                     : "white"
                                 }`}
                               >
-                                {deliveryStatus.metadata?.deliveryRecord?.resultLog?.refundStatus}
+                                {typeof deliveryStatus.metadata?.deliveryRecord?.resultLog ===
+                                "string"
+                                  ? deliveryStatus.metadata?.deliveryRecord?.resultLog
+                                  : deliveryStatus.metadata?.deliveryRecord?.resultLog?.status}
+                              </div>
+                              {deliveryStatus.metadata?.deliveryRecord?.resultLog?.refundStatus && (
+                                <div
+                                  className={`relayer-tx-overview-graph-step-description ${
+                                    deliveryStatus.metadata?.deliveryRecord?.resultLog
+                                      ?.refundStatus === ("Refund Sent" as any)
+                                      ? "green"
+                                      : deliveryStatus.metadata?.deliveryRecord?.resultLog
+                                          ?.refundStatus === ("Refund Fail" as any)
+                                      ? "red"
+                                      : "white"
+                                  }`}
+                                >
+                                  {deliveryStatus.metadata?.deliveryRecord?.resultLog?.refundStatus}
+                                </div>
+                              )}
+                            </div>
+                            <div>
+                              <div className="relayer-tx-overview-graph-step-title">
+                                Target Tx Hash
+                              </div>
+                              <div className="relayer-tx-overview-graph-step-description">
+                                <a
+                                  href={getExplorerLink({
+                                    network: currentNetwork,
+                                    chainId: deliveryInstruction.targetChainId,
+                                    value: deliveryStatus.toTxHash,
+                                    isNativeAddress: true,
+                                  })}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {shortAddress(deliveryStatus.toTxHash).toUpperCase()}
+                                </a>{" "}
+                                <CopyToClipboard toCopy={deliveryStatus.toTxHash}>
+                                  <CopyIcon />
+                                </CopyToClipboard>
+                              </div>
+                            </div>
+                            {!!lifecycleRecord?.targetTransactions[
+                              lifecycleRecord?.targetTransactions?.length - 1
+                            ]?.targetTxTimestamp && (
+                              <div>
+                                <div className="relayer-tx-overview-graph-step-title">Time</div>
+                                <div className="relayer-tx-overview-graph-step-description">
+                                  {parseDate(
+                                    lifecycleRecord.targetTransactions[
+                                      lifecycleRecord.targetTransactions.length - 1
+                                    ].targetTxTimestamp * 1000,
+                                  )}
+                                </div>
                               </div>
                             )}
                           </div>
-                          <div>
-                            <div className="relayer-tx-overview-graph-step-title">
-                              Target Tx Hash
-                            </div>
-                            <div className="relayer-tx-overview-graph-step-description">
-                              <a
-                                href={getExplorerLink({
-                                  network: currentNetwork,
-                                  chainId: deliveryInstruction.targetChainId,
-                                  value: deliveryStatus.toTxHash,
-                                  isNativeAddress: true,
-                                })}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                {shortAddress(deliveryStatus.toTxHash).toUpperCase()}
-                              </a>{" "}
-                              <CopyToClipboard toCopy={deliveryStatus.toTxHash}>
-                                <CopyIcon />
-                              </CopyToClipboard>
-                            </div>
-                          </div>
-                          {!!lifecycleRecord?.targetTransactions[
-                            lifecycleRecord?.targetTransactions?.length - 1
-                          ]?.targetTxTimestamp && (
-                            <div>
-                              <div className="relayer-tx-overview-graph-step-title">Time</div>
-                              <div className="relayer-tx-overview-graph-step-description">
-                                {parseDate(
-                                  lifecycleRecord.targetTransactions[
-                                    lifecycleRecord.targetTransactions.length - 1
-                                  ].targetTxTimestamp * 1000,
-                                )}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      )}
+                        )}
                     </div>
                   );
                 })}

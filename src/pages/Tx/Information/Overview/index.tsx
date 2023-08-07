@@ -46,6 +46,7 @@ const Overview = ({ VAAData, txData }: Props) => {
     usdAmount,
     symbol,
     emitterChain,
+    emitterAddress,
     emitterNativeAddress,
     standardizedProperties,
     globalTx,
@@ -99,7 +100,7 @@ const Overview = ({ VAAData, txData }: Props) => {
   });
 
   const parsedEmitterAddress = parseAddress({
-    value: emitterNativeAddress,
+    value: emitterNativeAddress ? emitterNativeAddress : emitterAddress,
     chainId: emitterChain as ChainId,
   });
 
