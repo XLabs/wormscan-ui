@@ -27,6 +27,7 @@ import {
   mainnetDefaultDeliveryProviderContractAddress,
   testnetDefaultDeliveryProviderContractAddress,
 } from "src/utils/environment";
+import { DeliveryMetaData, DeliveryProviderStatus } from "src/utils/deliveryProviderStatusApi";
 
 // eslint-disable-next-line no-var
 var gasUsed: any;
@@ -134,49 +135,47 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
     return `${whole}.${fraction.slice(0, decimals)}`;
   };
 
-  const maxRefundText = (deliveryStatus: any) => {
+  const maxRefundText = (metadata: DeliveryMetaData) => {
+    const deliveryRecord = metadata?.deliveryRecord;
+
     maxRefund = trunkStringsDecimal(
       ethers.utils.formatUnits(
-        deliveryStatus.metadata?.deliveryRecord?.maxRefund,
-        deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
+        deliveryRecord?.maxRefund,
+        deliveryRecord?.targetChainDecimals || 18,
       ),
       3,
     );
 
-    return deliveryStatus.metadata?.deliveryRecord?.maxRefundUsd
+    return deliveryRecord?.maxRefundUsd
       ? `${maxRefund} ${
           environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
             .nativeCurrencyName
-        } (${trunkStringsDecimal(
-          "" + deliveryStatus.metadata?.deliveryRecord?.maxRefundUsd,
-          4,
-        )} USD)`
+        } (${trunkStringsDecimal("" + deliveryRecord?.maxRefundUsd, 4)} USD)`
       : `${maxRefund} ${
           environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
             .nativeCurrencyName
         }`;
   };
 
-  const gasUsedText = (deliveryStatus: any) => {
-    gasUsed = `${deliveryStatus.metadata?.deliveryRecord?.resultLog?.gasUsed}`;
+  const gasUsedText = (metadata: DeliveryMetaData) => {
+    gasUsed = `${metadata?.deliveryRecord?.resultLog?.gasUsed}`;
     return isNaN(gasUsed) ? `${gasLimit}` : `${gasUsed}/${gasLimit}`;
   };
 
-  const receiverValueText = (deliveryStatus: any) => {
+  const receiverValueText = (metadata: DeliveryMetaData) => {
+    const deliveryRecord = metadata?.deliveryRecord;
+
     const receiverValue = trunkStringsDecimal(
       ethers.utils.formatUnits(
-        deliveryStatus.metadata?.deliveryRecord?.receiverValue,
-        deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
+        deliveryRecord?.receiverValue,
+        deliveryRecord?.targetChainDecimals || 18,
       ),
       3,
     );
 
-    const receiverValueUsd = trunkStringsDecimal(
-      "" + deliveryStatus.metadata?.deliveryRecord?.receiverValueUsd,
-      4,
-    );
+    const receiverValueUsd = trunkStringsDecimal("" + deliveryRecord?.receiverValueUsd, 4);
 
-    return deliveryStatus.metadata?.deliveryRecord?.receiverValueUsd
+    return deliveryRecord?.receiverValueUsd
       ? `
   ${receiverValue} ${
           environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
@@ -189,32 +188,29 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
         }`;
   };
 
-  const budgetText = (deliveryStatus: any) =>
-    deliveryStatus.metadata?.deliveryRecord?.budgetUsd
+  const budgetText = (metadata: DeliveryMetaData) => {
+    const deliveryRecord = metadata?.deliveryRecord;
+
+    return deliveryRecord?.budgetUsd
       ? `
     ${`${trunkStringsDecimal(
-      ethers.utils.formatUnits(
-        deliveryStatus.metadata?.deliveryRecord?.budget,
-        deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
-      ),
+      ethers.utils.formatUnits(deliveryRecord?.budget, deliveryRecord?.targetChainDecimals || 18),
       3,
     )} ${
       environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
         .nativeCurrencyName
-    } (${deliveryStatus.metadata?.deliveryRecord?.budgetUsd.toFixed(3)} USD)`}
+    } (${deliveryRecord?.budgetUsd.toFixed(3)} USD)`}
     `
       : `
     ${trunkStringsDecimal(
-      ethers.utils.formatUnits(
-        deliveryStatus.metadata?.deliveryRecord?.budget,
-        deliveryStatus.metadata?.deliveryRecord?.targetChainDecimals || 18,
-      ),
+      ethers.utils.formatUnits(deliveryRecord?.budget, deliveryRecord?.targetChainDecimals || 18),
       3,
     )} ${
           environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
             .nativeCurrencyName
         }
     `;
+  };
 
   const refundText = () =>
     `${(1 - gasUsed / Number(gasLimit)) * maxRefund} ${
@@ -222,14 +218,90 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
         .nativeCurrencyName
     }`;
 
-  const copyBudgetText = (deliveryStatus: any) =>
-    `Budget: ${budgetText(deliveryStatus)}\nMax Refund:\n${maxRefundText(deliveryStatus)}\n\n${
+  const copyBudgetText = (metadata: DeliveryMetaData) =>
+    `Budget: ${budgetText(metadata)}\nMax Refund:\n${maxRefundText(metadata)}\n\n${
       !isNaN(gasUsed) ? "Gas Used/" : ""
-    }Gas limit\n${gasUsedText(deliveryStatus)}\n\n${
+    }Gas limit\n${gasUsedText(metadata)}\n\n${
       !isNaN(gasUsed) ? "Refund Amount\n" + refundText() : ""
-    }\n\nReceiver Value: ${receiverValueText(deliveryStatus)}`
+    }\n\nReceiver Value: ${receiverValueText(metadata)}`
       .replaceAll("  ", "")
       .replaceAll("\n\n\n\n", "\n\n");
+
+  const renderDeliveryStatus = (deliveryStatus: DeliveryProviderStatus) => {
+    const metadata = deliveryStatus.metadata;
+    const deliveryRecord = metadata ? metadata.deliveryRecord : null;
+    const resultLog = deliveryRecord ? deliveryRecord.resultLog : null;
+
+    return (
+      <div className={`relayer-tx-overview-graph-step-data-container`}>
+        <div>
+          <div className="relayer-tx-overview-graph-step-title">STATUS</div>
+          <div
+            className={`relayer-tx-overview-graph-step-description ${
+              typeof resultLog === "string"
+                ? resultLog === "Delivery Success"
+                  ? "green"
+                  : resultLog === "Receiver Failure"
+                  ? "red"
+                  : "white"
+                : resultLog?.status === "Delivery Success"
+                ? "green"
+                : resultLog?.status === "Receiver Failure"
+                ? "red"
+                : "white"
+            }`}
+          >
+            {typeof resultLog === "string" ? resultLog : resultLog?.status}
+          </div>
+          {resultLog?.refundStatus && (
+            <div
+              className={`relayer-tx-overview-graph-step-description ${
+                resultLog?.refundStatus === ("Refund Sent" as any)
+                  ? "green"
+                  : resultLog?.refundStatus === ("Refund Fail" as any)
+                  ? "red"
+                  : "white"
+              }`}
+            >
+              {resultLog?.refundStatus}
+            </div>
+          )}
+        </div>
+        <div>
+          <div className="relayer-tx-overview-graph-step-title">Target Tx Hash</div>
+          <div className="relayer-tx-overview-graph-step-description">
+            <a
+              href={getExplorerLink({
+                network: currentNetwork,
+                chainId: deliveryInstruction.targetChainId,
+                value: deliveryStatus.toTxHash,
+                isNativeAddress: true,
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {shortAddress(deliveryStatus.toTxHash).toUpperCase()}
+            </a>{" "}
+            <CopyToClipboard toCopy={deliveryStatus.toTxHash}>
+              <CopyIcon />
+            </CopyToClipboard>
+          </div>
+        </div>
+        {!!lifecycleRecord?.targetTransactions[lifecycleRecord?.targetTransactions?.length - 1]
+          ?.targetTxTimestamp && (
+          <div>
+            <div className="relayer-tx-overview-graph-step-title">Time</div>
+            <div className="relayer-tx-overview-graph-step-description">
+              {parseDate(
+                lifecycleRecord.targetTransactions[lifecycleRecord.targetTransactions.length - 1]
+                  .targetTxTimestamp * 1000,
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <Fragment key={parsedHash}>
@@ -458,21 +530,23 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                     </div>
                   </div>
                   {lifecycleRecord.DeliveryStatuses &&
-                    lifecycleRecord.DeliveryStatuses.map((deliveryStatus, idx) =>
-                      deliveryStatus.metadata ? (
+                    lifecycleRecord.DeliveryStatuses.map((deliveryStatus, idx) => {
+                      const metadata = deliveryStatus.metadata;
+
+                      return metadata ? (
                         <Fragment key={`texts-tool-${idx}`}>
                           <Tooltip
                             tooltip={
                               <div className="budget-tooltip">
                                 <div className="budget-tooltip-title">Max Refund:</div>
-                                <div>{maxRefundText(deliveryStatus)}</div>
+                                <div>{maxRefundText(metadata)}</div>
 
-                                {decodeExecution && gasUsedText(deliveryStatus) && (
+                                {decodeExecution && gasUsedText(metadata) && (
                                   <>
                                     <div className="budget-tooltip-title">
                                       {isNaN(gasUsed) ? "Gas Limit" : "Gas Used/Gas Limit"}
                                     </div>
-                                    <div>{gasUsedText(deliveryStatus)}</div>
+                                    <div>{gasUsedText(metadata)}</div>
                                   </>
                                 )}
 
@@ -484,7 +558,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                                 )}
 
                                 <div className="budget-tooltip-title">Receiver Value:</div>
-                                <div>{receiverValueText(deliveryStatus)}</div>
+                                <div>{receiverValueText(metadata)}</div>
                               </div>
                             }
                             side="bottom"
@@ -498,7 +572,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                             >
                               <div className="relayer-tx-overview-graph-step-title budget-copy">
                                 <div>Budget</div>
-                                <CopyToClipboard toCopy={copyBudgetText(deliveryStatus)}>
+                                <CopyToClipboard toCopy={copyBudgetText(metadata)}>
                                   <CopyIcon />
                                 </CopyToClipboard>
                               </div>
@@ -507,13 +581,13 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                                 key={"deliv" + idx}
                                 className="relayer-tx-overview-graph-step-description"
                               >
-                                <div>{budgetText(deliveryStatus)}</div>
+                                <div>{budgetText(metadata)}</div>
                               </div>
                             </div>
                           </Tooltip>
                         </Fragment>
-                      ) : null,
-                    )}
+                      ) : null;
+                    })}
                 </div>
               </div>
 
@@ -640,89 +714,8 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                       )}
 
                       {deliveryStatus.status !== "failed" &&
-                        deliveryStatus.status !== "waiting" && (
-                          <div className={`relayer-tx-overview-graph-step-data-container`}>
-                            <div>
-                              <div className="relayer-tx-overview-graph-step-title">STATUS</div>
-                              <div
-                                className={`relayer-tx-overview-graph-step-description ${
-                                  typeof deliveryStatus.metadata?.deliveryRecord?.resultLog ===
-                                  "string"
-                                    ? deliveryStatus.metadata?.deliveryRecord?.resultLog ===
-                                      "Delivery Success"
-                                      ? "green"
-                                      : deliveryStatus.metadata?.deliveryRecord?.resultLog ===
-                                        "Receiver Failure"
-                                      ? "red"
-                                      : "white"
-                                    : deliveryStatus.metadata?.deliveryRecord?.resultLog?.status ===
-                                      "Delivery Success"
-                                    ? "green"
-                                    : deliveryStatus.metadata?.deliveryRecord?.resultLog?.status ===
-                                      "Receiver Failure"
-                                    ? "red"
-                                    : "white"
-                                }`}
-                              >
-                                {typeof deliveryStatus.metadata?.deliveryRecord?.resultLog ===
-                                "string"
-                                  ? deliveryStatus.metadata?.deliveryRecord?.resultLog
-                                  : deliveryStatus.metadata?.deliveryRecord?.resultLog?.status}
-                              </div>
-                              {deliveryStatus.metadata?.deliveryRecord?.resultLog?.refundStatus && (
-                                <div
-                                  className={`relayer-tx-overview-graph-step-description ${
-                                    deliveryStatus.metadata?.deliveryRecord?.resultLog
-                                      ?.refundStatus === ("Refund Sent" as any)
-                                      ? "green"
-                                      : deliveryStatus.metadata?.deliveryRecord?.resultLog
-                                          ?.refundStatus === ("Refund Fail" as any)
-                                      ? "red"
-                                      : "white"
-                                  }`}
-                                >
-                                  {deliveryStatus.metadata?.deliveryRecord?.resultLog?.refundStatus}
-                                </div>
-                              )}
-                            </div>
-                            <div>
-                              <div className="relayer-tx-overview-graph-step-title">
-                                Target Tx Hash
-                              </div>
-                              <div className="relayer-tx-overview-graph-step-description">
-                                <a
-                                  href={getExplorerLink({
-                                    network: currentNetwork,
-                                    chainId: deliveryInstruction.targetChainId,
-                                    value: deliveryStatus.toTxHash,
-                                    isNativeAddress: true,
-                                  })}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
-                                  {shortAddress(deliveryStatus.toTxHash).toUpperCase()}
-                                </a>{" "}
-                                <CopyToClipboard toCopy={deliveryStatus.toTxHash}>
-                                  <CopyIcon />
-                                </CopyToClipboard>
-                              </div>
-                            </div>
-                            {!!lifecycleRecord?.targetTransactions[
-                              lifecycleRecord?.targetTransactions?.length - 1
-                            ]?.targetTxTimestamp && (
-                              <div>
-                                <div className="relayer-tx-overview-graph-step-title">Time</div>
-                                <div className="relayer-tx-overview-graph-step-description">
-                                  {parseDate(
-                                    lifecycleRecord.targetTransactions[
-                                      lifecycleRecord.targetTransactions.length - 1
-                                    ].targetTxTimestamp * 1000,
-                                  )}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
+                        deliveryStatus.status !== "waiting" &&
+                        renderDeliveryStatus(deliveryStatus)}
                     </div>
                   );
                 })}
