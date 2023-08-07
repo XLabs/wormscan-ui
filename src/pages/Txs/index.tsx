@@ -15,8 +15,8 @@ import { Information } from "./Information";
 import { Top } from "./Top";
 import { TxStatus } from "../../types";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
-import "./styles.scss";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import "./styles.scss";
 
 export interface TransactionOutput {
   VAAId: string;
@@ -41,6 +41,7 @@ const Txs = () => {
   const address = searchParams.get("address");
   const page = Number(searchParams.get("page"));
   const currentPage = page >= 1 ? page : 1;
+  const isTxsFiltered = address ? true : false;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isPaginationLoading, setIsPaginationLoading] = useState<boolean>(false);
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
@@ -259,6 +260,7 @@ const Txs = () => {
               onChangePagination={onChangePagination}
               isPaginationLoading={isPaginationLoading}
               setIsPaginationLoading={setIsPaginationLoading}
+              isTxsFiltered={isTxsFiltered}
             />
           </>
         )}

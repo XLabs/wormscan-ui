@@ -1,6 +1,7 @@
 @import "src/styles/globals.scss";
 
 .pagination {
+  display: flex;
   color: var(--color-secondary-800);
   min-height: 38px;
   font-size: 15px;
@@ -52,8 +53,19 @@
     cursor: not-allowed;
   }
 
-  &-current {
-    color: var(--color-white);
+  &.number {
+    &.page {
+      color: var(--color-white-20);
+    }
+
+    &.current {
+      color: var(--color-white);
+    }
+
+    &:active {
+      background-color: var(--color-secondary-800);
+      color: var(--color-white);
+    }
   }
 
   &-last-page {

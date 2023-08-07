@@ -6,6 +6,7 @@ type Props = {
   currentPage?: number;
   goNextPage?: () => void;
   goLastPage?: () => void;
+  goPage?: (pageNumber: number) => void;
   totalPages?: number | undefined;
   className?: string;
   disabled?: boolean;
@@ -18,7 +19,8 @@ const Pagination = ({
   currentPage = 1,
   goNextPage,
   goLastPage,
-  totalPages = undefined,
+  goPage,
+  totalPages = Infinity,
   className,
   disabled = false,
   disableNextButton = false,
@@ -38,7 +40,11 @@ const Pagination = ({
         &lt;
       </button>
 
-      <span className="pagination-current">{currentPage}</span>
+      {goPage ? (
+        <PageNumbers currentPage={currentPage} goPage={goPage} />
+      ) : (
+        <span className={`pagination number current`}>{currentPage}</span>
+      )}
 
       <button onClick={goNextPage} disabled={disabled || disableNextButton || isLastPage}>
         &gt;
@@ -54,6 +60,33 @@ const Pagination = ({
         </button>
       )}
     </div>
+  );
+};
+
+const PageNumbers = ({
+  currentPage,
+  goPage,
+}: {
+  currentPage?: number;
+  goPage?: (pageNumber: number) => void;
+}) => {
+  const TOTAL_PREV_VISIBLE_PAGES = 2;
+  const isPrevOffset = currentPage - TOTAL_PREV_VISIBLE_PAGES >= TOTAL_PREV_VISIBLE_PAGES;
+  const firstPrevOffsetPageNumber = currentPage - TOTAL_PREV_VISIBLE_PAGES;
+  const pages = [...Array(5)].map((_, i) => (isPrevOffset ? firstPrevOffsetPageNumber + i : i + 1));
+
+  return (
+    <>
+      {pages.map((page, index) => (
+        <button
+          key={index}
+          className={`pagination number ${page === currentPage ? "current" : "page"}`}
+          onClick={() => goPage && goPage(page)}
+        >
+          {page}
+        </button>
+      ))}
+    </>
   );
 };
 
