@@ -128,3 +128,4 @@ export const TWITTER_URL = "https://twitter.com/wormholecrypto";
 export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";
 export const XLABS_URL = "https://www.xlabs.xyz";
 export const WORMHOLE_DOCS_URL = "https://docs.wormholescan.io";
+export const XLABS_CAREERS_URL = "https://boards.greenhouse.io/xlabs";

@@ -20,6 +20,10 @@ export default {
           txs: "Txs",
           joinUs: "Join us",
           apiDoc: "API Doc",
+          bugBounty: "Bug Bounty",
+          careers: "Careers",
+          contactUs: "Contact us",
+          hiring: "We're hiring!",
         },
         hero: {
           text: "Cross-chain Explorer",
