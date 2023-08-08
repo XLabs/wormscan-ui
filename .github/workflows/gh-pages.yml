@@ -24,7 +24,6 @@ jobs:
         run: |
           yarn install
           NODE_ENV=development yarn build
-          cp ./CNAME ./dist/
           cp ./robots.txt ./dist/
 
           git config --global user.name "${GITHUB_ACTOR}"
