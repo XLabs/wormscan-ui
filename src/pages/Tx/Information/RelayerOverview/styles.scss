@@ -160,13 +160,12 @@
         width: 70px;
         height: 50px;
         pointer-events: none;
+        position: relative;
 
         > div {
           position: absolute;
           width: inherit;
           height: inherit;
-
-          @include centered-row;
         }
       }
 
@@ -192,6 +191,11 @@
         max-width: 120px;
         font-weight: 600;
         color: var(--color-primary-100);
+        line-height: 1.8;
+
+        @include desktop {
+          line-height: 1.714;
+        }
       }
 
       &-title {

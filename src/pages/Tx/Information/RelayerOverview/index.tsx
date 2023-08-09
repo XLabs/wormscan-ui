@@ -8,7 +8,6 @@ import { shortAddress } from "src/utils/crypto";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import { colorStatus, getGuardianSet } from "src/consts";
 import { parseAddress } from "src/utils/crypto";
-import "./styles.scss";
 import { ethers } from "ethers";
 import {
   DeliveryLifecycleRecord,
@@ -28,6 +27,7 @@ import {
   testnetDefaultDeliveryProviderContractAddress,
 } from "src/utils/environment";
 import { DeliveryMetaData, DeliveryProviderStatus } from "src/utils/deliveryProviderStatusApi";
+import "./styles.scss";
 
 // eslint-disable-next-line no-var
 var gasUsed: any;

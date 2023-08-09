@@ -34,7 +34,7 @@
       grid-template-areas:
         "brand links links top-button"
         "brand links links social"
-        "built . . ."
+        "built . . social"
         "copy copy copy copy";
       grid-template-columns: 1.1fr 1fr 1fr 1.1fr;
       max-width: unset;
@@ -88,18 +88,26 @@
   }
 
   &-social {
-    @include centered-column;
-
-    grid-area: social;
-    gap: 24px;
+    @include centered-row;
 
     @include desktop {
-      @include centered-row;
+      justify-content: end;
+      grid-column: 4 / 5;
+      grid-row: 2 / 4;
+    }
 
-      justify-content: flex-end;
+    &-container {
+      @include centered-column;
+
+      grid-area: social;
       gap: 24px;
-      margin-bottom: 0;
-      padding: 0;
+
+      @include desktop {
+        align-items: center;
+        gap: 30px;
+        margin-bottom: 0;
+        padding: 0;
+      }
     }
 
     &-text {
@@ -117,11 +125,11 @@
 
       gap: 56px;
 
-      svg {
-        color: var(--color-secondary-800);
+      path {
+        fill: var(--color-secondary-800);
 
         &:hover {
-          color: var(--color-secondary-700);
+          fill: var(--color-secondary-700);
         }
       }
 
@@ -137,7 +145,7 @@
     grid-template-columns: 1fr 1fr;
     grid-area: links;
 
-    row-gap: 40px;
+    row-gap: 32px;
 
     @include desktop {
       column-gap: 16px;
