@@ -1,11 +1,15 @@
-## WormScan UI
+## Wormholescan UI
+
+### Live
+
+https://wormholescan.io/
 
 ### Prerequisites
 
 - NodeJS v16+
 - NPM v8+
 - Visual Studio Code with 'Prettier' and 'SCSS IntelliSense' extensions installed
-- Yarn
+- Yarn v3
 
 ## Commands
 
@@ -45,8 +49,13 @@ npx serve -s dist
 yarn clean
 ```
 
+## Documentation
+
+- [API Doc](https://docs.wormholescan.io/)
+
 ## Stack used
 
+- [Wormholescan SDK](https://github.com/XLabs/wormscan-sdk)
 - [Parcel](https://parceljs.org/) as the build tool.
 - [Typescript](https://www.typescriptlang.org/) as the language.
 - [ReactJS](https://reactjs.org/) as the development tool/library.
