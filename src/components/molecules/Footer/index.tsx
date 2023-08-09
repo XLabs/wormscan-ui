@@ -37,24 +37,26 @@ const Footer = () => {
         </div>
 
         <div className="footer-social">
-          <div className="footer-social-text">{t("home.footer.joinUs")}:</div>
-          <div className="footer-social-icons">
-            <a
-              href={DISCORD_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Discord link"
-            >
-              <DiscordIcon />
-            </a>
-            <a
-              href={TWITTER_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Twitter link"
-            >
-              <TwitterIcon />
-            </a>
+          <div className="footer-social-container">
+            <div className="footer-social-text">{t("home.footer.joinUs")}:</div>
+            <div className="footer-social-icons">
+              <a
+                href={DISCORD_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Discord link"
+              >
+                <DiscordIcon />
+              </a>
+              <a
+                href={TWITTER_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Twitter link"
+              >
+                <TwitterIcon />
+              </a>
+            </div>
           </div>
         </div>
 
