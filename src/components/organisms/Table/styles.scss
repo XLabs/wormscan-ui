@@ -65,6 +65,10 @@
           padding-left: 16px;
         }
 
+        &:nth-child(2) {
+          max-width: 120px;
+        }
+
         &:last-child {
           padding-right: 16px;
         }

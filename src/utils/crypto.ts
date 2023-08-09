@@ -9,8 +9,9 @@ export const formatUnits = (value: number, tokenDecimals = 8) => {
   const startAmount = valueString.substring(0, decimalLength);
   const endAmount = valueString.substring(decimalLength);
   const parsedAmount = `${startAmount}.${endAmount}`;
+  const abbreviatedAmount = parsedAmount.replace(/\.?0+$/, "");
 
-  return parsedAmount;
+  return abbreviatedAmount;
 };
 
 export const shortAddress = (address: string) => {
@@ -51,4 +52,16 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
   }
 
   return parsedValue;
+};
+
+export const formatAppIds = (appIds: string[]) => {
+  return appIds
+    .filter(appId => appId !== "UNKNOWN")
+    .map(appId =>
+      appId
+        .split("_")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(" "),
+    )
+    .join(", ");
 };
