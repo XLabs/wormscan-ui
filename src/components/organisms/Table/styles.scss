@@ -6,6 +6,7 @@
 
   > thead {
     @include text-caption2;
+    font-size: 14px;
 
     height: 48px;
     text-align: left;
@@ -17,8 +18,9 @@
       margin: 15px;
 
       > th {
-        padding: 8px 16px;
+        padding: 8px 12px;
         font-weight: 500;
+        white-space: nowrap;
 
         &:first-child {
           padding-left: 16px;
@@ -29,6 +31,8 @@
         }
 
         @include desktop {
+          padding: 8px;
+
           &:first-child {
             padding-left: 32px;
           }
@@ -36,6 +40,10 @@
           &:last-child {
             padding-right: 32px;
           }
+        }
+
+        @include bigDesktop {
+          padding: 8px 16px;
         }
       }
     }
@@ -66,7 +74,12 @@
         }
 
         &:nth-child(2) {
-          max-width: 120px;
+          white-space: nowrap;
+
+          @include desktop {
+            max-width: 120px;
+            white-space: normal;
+          }
         }
 
         &:last-child {
@@ -74,6 +87,8 @@
         }
 
         @include desktop {
+          padding: 8px;
+
           &:first-child {
             padding-left: 32px;
           }
@@ -81,6 +96,10 @@
           &:last-child {
             padding-right: 32px;
           }
+        }
+
+        @include bigDesktop {
+          padding: 8px 16px;
         }
       }
     }
