@@ -5,6 +5,7 @@ import { PAGE_SIZE, TransactionOutput } from "..";
 import { Dispatch, SetStateAction } from "react";
 import { Loader, Pagination } from "src/components/atoms";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import { useLocation } from "react-router-dom";
 import "./styles.scss";
 
 const TXS_TAB_HEADERS = [
@@ -63,6 +64,8 @@ const Information = ({
   isTxsFiltered = false,
 }: Props) => {
   const navigate = useNavigateCustom();
+  const location = useLocation();
+  const currentUrlPage = +new URLSearchParams(location.search).get("page") || 1;
 
   const onRowClick = (row: TransactionOutput) => {
     const { VAAId } = row || {};
@@ -87,6 +90,7 @@ const Information = ({
   };
 
   const goPage = (currentPage: number) => {
+    if (currentPage === currentUrlPage) return;
     setIsPaginationLoading(true);
     onChangePagination(currentPage);
   };

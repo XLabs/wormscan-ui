@@ -54,8 +54,8 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
   return parsedValue;
 };
 
-export const formatAppIds = (appIds: string[]) => {
-  return appIds
+export const formatAppIds = (appIds: string[]) =>
+  appIds
     .filter(appId => appId !== "UNKNOWN")
     .map(appId =>
       appId
@@ -64,4 +64,3 @@ export const formatAppIds = (appIds: string[]) => {
         .join(" "),
     )
     .join(", ");
-};
