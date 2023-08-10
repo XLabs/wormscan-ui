@@ -1,13 +1,13 @@
 import { CopyIcon } from "@radix-ui/react-icons";
 import { ChainId, GetTransactionsOutput, Order } from "@xlabs-libs/wormscan-sdk";
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
 import { getClient } from "src/api/Client";
 import { BlockchainIcon, Loader, NavLink } from "src/components/atoms";
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { parseAddress, parseTx, shortAddress } from "src/utils/crypto";
+import { formatAppIds, parseAddress, parseTx, shortAddress } from "src/utils/crypto";
 import { timeAgo } from "src/utils/date";
 import { formatCurrency } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
@@ -112,6 +112,7 @@ const Txs = () => {
                 globalTx,
               } = tx || {};
               const {
+                appIds,
                 fromChain: stdFromChain,
                 toChain: stdToChain,
                 toAddress: stdToAddress,
@@ -157,6 +158,7 @@ const Txs = () => {
                     )}
                   </div>
                 ),
+                originApp: appIds?.length > 0 ? formatAppIds(appIds) : "-",
                 from: (
                   <div className="tx-from">
                     <BlockchainIcon chainId={fromChain} size={24} />

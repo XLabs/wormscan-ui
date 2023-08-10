@@ -18,6 +18,10 @@ const columns: Column<TransactionOutput>[] | any = [
     accessor: "txHash",
   },
   {
+    Header: "ORIGIN APP",
+    accessor: "originApp",
+  },
+  {
     Header: "FROM",
     accessor: "from",
   },

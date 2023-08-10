@@ -1,7 +1,7 @@
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon } from "src/components/atoms";
 import { txType } from "src/consts";
-import { formatUnits } from "src/utils/crypto";
+import { formatAppIds, formatUnits } from "src/utils/crypto";
 import "./styles.scss";
 
 type Props = {
@@ -10,6 +10,7 @@ type Props = {
   transactionTimeInMinutes?: number;
   symbol?: string;
   fee?: string;
+  appIds?: string[];
   payloadType: number;
   startDate?: string | Date;
 };
@@ -17,6 +18,7 @@ type Props = {
 const Summary = ({
   transactionTimeInMinutes,
   fee,
+  appIds,
   symbol,
   originChainId,
   destinationChainId,
@@ -78,6 +80,12 @@ const Summary = ({
           )}
         </div>
       </div>
+      {appIds?.length > 0 && (
+        <div>
+          <div className="key">Origin App:</div>
+          <div className="value">{formatAppIds(appIds)}</div>
+        </div>
+      )}
     </div>
   );
 };
