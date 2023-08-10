@@ -40,7 +40,8 @@ const Information = ({ VAAData, txData }: Props) => {
   const {
     fromChain: stdFromChain,
     toChain: stdToChain,
-    fee: stdFee,
+    fee,
+    appIds,
   } = standardizedProperties || {};
 
   const { chainId: globalFromChainId, timestamp: globalFromTimestamp } = originTx || {};
@@ -55,7 +56,7 @@ const Information = ({ VAAData, txData }: Props) => {
   const toChain = stdToChain || globalToChainId;
   const startDate = timestamp || globalFromTimestamp;
   const endDate = globalToTimestamp;
-  const fee = stdFee;
+
   const transactionTimeInMinutes = globalToRedeemTx
     ? minutesBetweenDates(new Date(startDate), new Date(endDate))
     : undefined;
@@ -66,13 +67,14 @@ const Information = ({ VAAData, txData }: Props) => {
         startDate={startDate}
         transactionTimeInMinutes={transactionTimeInMinutes}
         fee={fee}
+        appIds={appIds}
         symbol={symbol}
         originChainId={fromChain}
         destinationChainId={toChain}
         payloadType={payloadType}
       />
     );
-  }, [toChain, fromChain, fee, symbol, transactionTimeInMinutes, payloadType, startDate]);
+  }, [toChain, fromChain, fee, appIds, symbol, transactionTimeInMinutes, payloadType, startDate]);
 
   // --- Automatic Relayer Detection and handling ---
   const [genericRelayerInfo, setGenericRelayerInfo] = useState<DeliveryLifecycleRecord>(null);

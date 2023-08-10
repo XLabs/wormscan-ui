@@ -3,7 +3,7 @@
 .tx-information-summary {
   @include centered-column;
 
-  column-gap: 72px;
+  column-gap: 32px;
   row-gap: 32px;
   padding: 24px;
   background-color: var(--color-white-05);
@@ -18,19 +18,19 @@
   }
 
   @include bigDesktop {
-    padding: 16px 112px 24px;
+    column-gap: 72px;
+    padding: 16px 112px;
   }
 
   > * {
     @include centered-row;
-
-    gap: 24px;
+    gap: 12px;
 
     > * {
       flex: 1;
     }
     > *:last-child {
-      flex: 3;
+      flex: 2.3;
     }
 
     @include tablet {
@@ -46,6 +46,10 @@
       > * {
         flex: unset;
       }
+    }
+
+    @include bigDesktop {
+      gap: 24px;
     }
   }
 
