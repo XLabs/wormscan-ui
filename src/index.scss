@@ -68,6 +68,8 @@
 
 html {
   background-color: var(--color-primary-900);
+  scroll-behavior: smooth;
+  /* scrollbar-gutter: controlled by ScrollControl; */
 }
 
 body {

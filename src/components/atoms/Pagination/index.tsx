@@ -21,7 +21,7 @@ const Pagination = ({
   goLastPage,
   goPage,
   totalPages = Infinity,
-  className,
+  className = "",
   disabled = false,
   disableNextButton = false,
 }: Props) => {
