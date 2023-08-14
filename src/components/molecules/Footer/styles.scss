@@ -125,10 +125,12 @@
 
       gap: 56px;
 
-      path {
-        fill: var(--color-secondary-800);
+      > a {
+        path {
+          fill: var(--color-secondary-800);
+        }
 
-        &:hover {
+        &:hover path {
           fill: var(--color-secondary-700);
         }
       }

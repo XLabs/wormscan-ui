@@ -3,6 +3,7 @@ import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { Loader } from "src/components/atoms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { EnvironmentProvider } from "src/context/EnvironmentContext";
+import { ScrollControl } from "src/utils/scrollControl";
 
 const Home = lazy(() => import("../pages/Home"));
 const Tx = lazy(() => import("../pages/Tx"));
@@ -13,6 +14,7 @@ const SearchNotFound = lazy(() => import("../pages/SearchNotFound"));
 const Navigation = () => {
   return (
     <Router>
+      <ScrollControl />
       <Suspense
         fallback={
           <BaseLayout>
