@@ -247,7 +247,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     darkIcon: CeloDarkIcon,
     explorer: {
       TESTNET: "https://alfajores.celoscan.io",
-      MAINNET: "https://explorer.celo.org/MAINNET",
+      MAINNET: "https://explorer.celo.org/mainnet",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
@@ -422,7 +422,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       // Wormhole uses Solana's devnet as their 'TESTNET'
-      const solNetwork = network === "MAINNET" ? "MAINNET" : "devnet";
+      const solNetwork = network === "MAINNET" ? "" : "devnet";
 
       if (base === "address")
         return this.explorer?.[network] + "/account/" + value + "?cluster=" + solNetwork;
