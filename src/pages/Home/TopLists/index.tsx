@@ -138,7 +138,7 @@ const TopLists = () => {
 
                 return (
                   <TopAssetListItem
-                    key={`${emitterChain}-${tokenChain}-${symbol}`}
+                    key={`${emitterChain}-${tokenChain}-${symbol}-${tokenAddress}`}
                     from_chain={emitterChain}
                     token_logo={tokenLogoURL}
                     symbol={symbol}
