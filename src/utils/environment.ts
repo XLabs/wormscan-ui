@@ -1,5 +1,26 @@
-import { CONTRACTS, ChainId, ChainName, Network } from "@certusone/wormhole-sdk";
+import {
+  CHAIN_ID_ARBITRUM,
+  CHAIN_ID_BASE,
+  CHAIN_ID_BSC,
+  CHAIN_ID_ETH,
+  CHAIN_ID_OPTIMISM,
+  CHAIN_ID_POLYGON,
+  CHAIN_ID_SEPOLIA,
+  CONTRACTS,
+  ChainId,
+  ChainName,
+  Network,
+} from "@certusone/wormhole-sdk";
 import { ethers } from "ethers";
+
+export const SLOW_FINALITY_CHAINS = [
+  CHAIN_ID_ETH,
+  CHAIN_ID_POLYGON,
+  CHAIN_ID_BSC,
+  CHAIN_ID_OPTIMISM,
+  CHAIN_ID_ARBITRUM,
+  CHAIN_ID_BASE,
+];
 
 const MAINNET_RPCS: { [key in ChainName]?: string } = {
   ethereum: process.env.ETH_RPC || "https://rpc.ankr.com/eth",
@@ -33,6 +54,8 @@ const TESTNET_RPCS: { [key in ChainName]?: string } = {
   celo: "https://alfajores-forno.celo-testnet.org",
   moonbeam: "https://rpc.api.moonbase.moonbeam.network",
   base: "https://goerli.base.org",
+  optimism: "https://goerli.optimism.io",
+  arbitrum: "https://goerli-rollup.arbitrum.io/rpc",
 };
 
 const DEVNET_RPCS: { [key in ChainName]?: string } = {
