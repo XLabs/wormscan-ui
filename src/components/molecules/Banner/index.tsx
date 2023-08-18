@@ -111,6 +111,48 @@ const BannerSuccess = () => (
   </div>
 );
 
+const BannerPossibleError = () => (
+  <div className="banner banner-error">
+    <div className="banner-icon">
+      <MinusCircledIcon color="var(--color-error-100)" width={24} height={24} />
+    </div>
+    <div className="banner-content">
+      <h2 className="banner-content-title">
+        <span className="banner-content-title-text">Wormhole Upgrade In Progress</span>{" "}
+        <span className="banner-content-title-hyphen">-</span>{" "}
+        <span className="banner-content-title-text">Temporary Downtime In Effect</span>
+      </h2>
+      <div className="banner-content-description">
+        <p>
+          The upgrade is resulting in slightly longer than expected downtimes, please continue to be
+          patient while the Guardian network completes this network upgrade.
+        </p>
+        <p>
+          Follow:{" "}
+          <a
+            className="banner-content-description-link"
+            href="https://x.com/wormholecrypto"
+            target="_blank"
+            rel="noreferrer"
+          >
+            @wormholescrypto
+          </a>{" "}
+          and join the{" "}
+          <a
+            className="banner-content-description-link"
+            href="https://discord.gg/wormholecrypto"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Discord
+          </a>{" "}
+          for updates.
+        </p>
+      </div>
+    </div>
+  </div>
+);
+
 const Banner = () => {
   function isWarningRange(): boolean {
     const currentDate = new Date();
@@ -140,13 +182,15 @@ const Banner = () => {
   const isError = isErrorRange();
   const isSuccess = isSuccessRange();
 
-  if (isWarning) {
+  /*  if (isWarning) {
     return <BannerWarning />;
   } else if (isError) {
     return <BannerError />;
   } else if (isSuccess) {
     return <BannerSuccess />;
-  }
+  }  */
+
+  return <BannerPossibleError />;
 };
 
 export default Banner;
