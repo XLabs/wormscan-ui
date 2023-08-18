@@ -1,16 +1,130 @@
 @import "src/styles/globals.scss";
 
 .banner {
-  @include centered-row;
+  @include centered-column;
 
+  border-radius: 5px;
+  gap: 16px;
   justify-content: center;
-  height: 40px;
+  margin-top: 24px;
+  padding: 24px 16px;
   width: 100%;
-  background: var(--color-information-100);
+
+  @include desktop {
+    @include centered-row;
+
+    padding: 32px;
+  }
+
+  &-warning {
+    background-color: #995a341a;
+    color: #fff2e9;
+
+    .banner-content-description {
+      max-width: 936px;
+    }
+  }
+
+  &-error {
+    background-color: #f520201a;
+    color: #ffe3e9;
+
+    .banner-content-description {
+      max-width: 856px;
+    }
+  }
+
+  &-success {
+    background-color: #01bbac1a;
+    color: #e1fffd;
+
+    .banner-content-description {
+      max-width: 816px;
+    }
+  }
+
+  &-icon {
+    margin-bottom: auto;
+  }
 
   &-content {
-    @include text-p2-bold;
+    @include centered-column;
+    gap: 24px;
 
-    color: var(--color-white-80);
+    &-title {
+      @include text-p2;
+
+      @include desktop {
+        @include text-p2-bold;
+      }
+
+      &-text {
+        display: block;
+
+        @include tablet {
+          display: inline-block;
+        }
+      }
+
+      &-hyphen {
+        display: none;
+
+        @include tablet {
+          display: inline-block;
+        }
+      }
+
+      &-span {
+        @include text-p2-bold;
+
+        color: #01bbac;
+        display: block;
+
+        @include tablet {
+          display: inline-block;
+        }
+      }
+    }
+
+    &-description {
+      @include centered-column;
+      @include text-p2;
+
+      font-size: 14px;
+      gap: 24px;
+      /* font-weight: 100; */
+
+      @include desktop {
+        font-size: 16px;
+        gap: 0;
+      }
+
+      &-link {
+        color: inherit;
+      }
+
+      &-span {
+        @include text-p2-bold;
+        font-size: 14px;
+
+        @include desktop {
+          font-size: 16px;
+        }
+
+        &-break {
+          display: inline-block;
+          margin-top: 24px;
+
+          @include desktop {
+            display: inline;
+          }
+        }
+
+        &-warning {
+          font-weight: 600;
+          color: var(--color-alert-100);
+        }
+      }
+    }
   }
 }
