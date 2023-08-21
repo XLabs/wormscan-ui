@@ -68,8 +68,8 @@ const Information = ({
   const currentUrlPage = +new URLSearchParams(location.search).get("page") || 1;
 
   const onRowClick = (row: TransactionOutput) => {
-    const { VAAId } = row || {};
-    VAAId && navigate(`/tx/${VAAId}`);
+    const { txHashId } = row || {};
+    txHashId && navigate(`/tx/${txHashId}`);
   };
 
   const goFirstPage = () => {
