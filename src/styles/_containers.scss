@@ -2,13 +2,9 @@
   border-radius: 5px;
   background-color: var(--color-white-05);
 
-  padding: 20px 16px;
+  padding: 24px 16px;
 
   @include desktop {
-    padding: 20px;
-  }
-
-  @include bigDesktop {
     padding: 24px;
   }
 }

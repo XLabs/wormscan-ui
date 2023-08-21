@@ -82,6 +82,7 @@ const PageNumbers = ({
           key={index}
           className={`pagination number ${page === currentPage ? "current" : "page"}`}
           onClick={() => goPage && goPage(page)}
+          disabled={page === currentPage}
         >
           {page}
         </button>

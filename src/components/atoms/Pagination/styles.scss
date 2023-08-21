@@ -38,6 +38,7 @@
 
   & > button:hover {
     background: var(--color-white-10);
+
     &:disabled {
       background: none;
     }
@@ -51,20 +52,28 @@
   & > *:disabled {
     color: var(--color-white-20);
     cursor: not-allowed;
+
+    &:active {
+      color: var(--color-white-20);
+    }
   }
 
   &.number {
     &.page {
       color: var(--color-white-20);
+
+      &:active {
+        background-color: var(--color-secondary-800);
+        color: var(--color-white);
+      }
     }
 
     &.current {
       color: var(--color-white);
-    }
 
-    &:active {
-      background-color: var(--color-secondary-800);
-      color: var(--color-white);
+      &:active {
+        background-color: none;
+      }
     }
   }
 
