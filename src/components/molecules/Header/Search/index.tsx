@@ -59,7 +59,7 @@ const Search = () => {
       }),
     {
       onSuccess: vaa => {
-        const { txHash } = vaa || {};
+        const { txHash } = vaa?.[0] || {};
         if (txHash) {
           queryClient.setQueryData(["getVAAbyTxHash", txHash], vaa);
           navigate(`/tx/${txHash}`);

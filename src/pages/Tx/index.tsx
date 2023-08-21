@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
 import { Loader } from "src/components/atoms";
@@ -6,9 +6,8 @@ import { BaseLayout } from "src/layouts/BaseLayout";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import { useParams } from "react-router-dom";
-import { GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
+import { VAADetail, ChainId } from "@xlabs-libs/wormscan-sdk";
 import { parseVaa } from "@certusone/wormhole-sdk";
-import { ChainId } from "@xlabs-libs/wormscan-sdk";
 import { Buffer } from "buffer";
 import { getGuardianSet } from "../../consts";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
@@ -16,6 +15,7 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import "./styles.scss";
 
 const STALE_TIME = 1000 * 10;
+type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
 const Tx = () => {
   const navigate = useNavigateCustom();
@@ -28,9 +28,7 @@ const Tx = () => {
   const isVAAIdSearch = Boolean(chainId) && Boolean(emitter) && Boolean(seq);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
-  const [parsedVAAData, setParsedVAAData] = useState<
-    (VAADetail & { vaa: any; decodedVaa: any }) | undefined
-  >(undefined);
+  const [parsedVAAsData, setParsedVAAsData] = useState<ParsedVAA[] | undefined>(undefined);
 
   useEffect(() => {
     setIsLoading(true);
@@ -77,72 +75,96 @@ const Tx = () => {
     },
   );
 
-  const VAAData: VAADetail | null = isTxHashSearch ? VAADataByTx : VAADataByVAAId;
-  const { id: VAADataId, txHash: VAADataTxHash, vaa, guardianSetIndex } = VAAData || {};
+  const VAAData = useMemo(() => {
+    if (isTxHashSearch) {
+      return VAADataByTx;
+    } else {
+      if (VAADataByVAAId) return [VAADataByVAAId];
+      return null;
+    }
+  }, [isTxHashSearch, VAADataByTx, VAADataByVAAId]);
+
+  const VAADataTxHash = VAAData?.[0]?.txHash;
 
   const { data: txData, refetch: refetchTxData } = useQuery(
-    ["getTransactions", VAADataId],
-    () => {
-      const VAADataVaaId = VAADataId.split("/");
-      const VaaDataChainId = Number(VAADataVaaId?.[0]);
-      const VaaDataEmitter = VAADataVaaId?.[1];
-      const VaaDataSeq = Number(VAADataVaaId?.[2]);
+    ["getTransactions", isTxHashSearch ? txHash : VAAId],
+    async () => {
+      const result = VAAData.map(async tx => {
+        const VAADataId = tx.id;
+        const VAADataVaaId = VAADataId.split("/");
+        const VaaDataChainId = Number(VAADataVaaId?.[0]);
+        const VaaDataEmitter = VAADataVaaId?.[1];
+        const VaaDataSeq = Number(VAADataVaaId?.[2]);
 
-      return getClient().search.getTransactions({
-        chainId: VaaDataChainId,
-        emitter: VaaDataEmitter,
-        seq: VaaDataSeq,
+        return await getClient().search.getTransactions({
+          chainId: VaaDataChainId,
+          emitter: VaaDataEmitter,
+          seq: VaaDataSeq,
+        });
       });
+
+      const results = await Promise.all(result);
+      return results;
     },
     {
       enabled: false,
       onSuccess: () => setIsLoading(false),
-      onError: () => navigate(`/search-not-found/?q=${VAADataId}`),
+      onError: () => navigate(`/search-not-found/?q=${VAADataTxHash}`),
     },
   );
 
   useEffect(() => {
     if (!VAAData) return;
-
     refetchTxData();
   }, [VAAData, refetchTxData]);
 
-  const { payload } = (txData as GetTransactionsOutput) || {};
+  const { payload } = txData?.find(tx => !!tx.payload) || {};
   const { payloadType } = payload || {};
 
+  const processVAA = useCallback(async () => {
+    const result = VAAData.map(async tx => {
+      const vaa = tx.vaa;
+      if (!vaa) return;
+
+      const guardianSetIndex = tx.guardianSetIndex;
+      // Decode SignedVAA and get guardian signatures with name
+      const guardianSetList = getGuardianSet(guardianSetIndex);
+      const vaaBuffer = Buffer.from(vaa, "base64");
+      const parsedVaa = parseVaa(vaaBuffer);
+
+      const { emitterAddress, guardianSignatures, hash, sequence } = parsedVaa || {};
+      const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
+      const parsedHash = Buffer.from(hash).toString("hex");
+      const parsedSequence = Number(sequence);
+      const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
+        index,
+        signature: Buffer.from(signature).toString("hex"),
+        name: guardianSetList?.[index]?.name,
+      }));
+
+      return {
+        ...tx,
+        vaa,
+        decodedVaa: {
+          ...parsedVaa,
+          emitterAddress: parsedEmitterAddress,
+          guardianSignatures: parsedGuardianSignatures,
+          hash: parsedHash,
+          sequence: parsedSequence,
+        },
+      };
+    });
+
+    const results = await Promise.all(result);
+    setParsedVAAsData(results);
+    setEmitterChainId(results.find(a => !!a?.emitterChain)?.emitterChain);
+  }, [VAAData]);
+
   useEffect(() => {
-    if (!vaa) return;
-
-    // Decode SignedVAA and get guardian signatures with name
-    const guardianSetList = getGuardianSet(guardianSetIndex);
-    const vaaBuffer = Buffer.from(vaa, "base64");
-    const parsedVaa = parseVaa(vaaBuffer);
-
-    const { emitterAddress, emitterChain, guardianSignatures, hash, sequence } = parsedVaa || {};
-    const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
-    const parsedHash = Buffer.from(hash).toString("hex");
-    const parsedSequence = Number(sequence);
-    const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
-      index,
-      signature: Buffer.from(signature).toString("hex"),
-      name: guardianSetList?.[index]?.name,
-    }));
-
-    const newVAAData = {
-      ...VAAData,
-      vaa,
-      decodedVaa: {
-        ...parsedVaa,
-        emitterAddress: parsedEmitterAddress,
-        guardianSignatures: parsedGuardianSignatures,
-        hash: parsedHash,
-        sequence: parsedSequence,
-      },
-    };
-
-    setParsedVAAData(newVAAData);
-    setEmitterChainId(emitterChain as ChainId);
-  }, [vaa, VAAData, guardianSetIndex]);
+    if (VAAData) {
+      processVAA();
+    }
+  }, [VAAData, processVAA]);
 
   return (
     <BaseLayout>
@@ -152,7 +174,16 @@ const Tx = () => {
         ) : (
           <>
             <Top txHash={VAADataTxHash} emitterChainId={emitterChainId} payloadType={payloadType} />
-            <Information VAAData={parsedVAAData} txData={txData as GetTransactionsOutput} />
+            {parsedVAAsData.map(
+              parsedVAAData =>
+                txData && (
+                  <Information
+                    key={parsedVAAData.id}
+                    VAAData={parsedVAAData}
+                    txData={txData.find(tx => tx.id === parsedVAAData.id)}
+                  />
+                ),
+            )}
           </>
         )}
       </div>
