@@ -311,6 +311,18 @@ export const mainnetEnv: Environment = {
       mockIntegrationAddress: "",
       rpcUrl: MAINNET_RPCS.optimism || "",
     },
+    {
+      chainId: 30 as ChainId,
+      evmNetworkId: 8453,
+      chainName: "BASE",
+      nativeCurrencyName: "ETH",
+      nativeCurrencyDecimals: 18,
+      relayerContractAddress: "0x706f82e9bb5b0813501714ab5974216704980e31",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      coreBridgeAddress: CONTRACTS.MAINNET.base.core,
+      mockIntegrationAddress: "",
+      rpcUrl: MAINNET_RPCS.base || "",
+    },
   ],
   guardianRpcs: [
     "https://wormhole-v2-mainnet-api.certus.one",
