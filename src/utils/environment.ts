@@ -10,6 +10,7 @@ const MAINNET_RPCS: { [key in ChainName]?: string } = {
   algorand: "https://mainnet-api.algonode.cloud",
   fantom: "https://rpc.ankr.com/fantom",
   karura: "https://eth-rpc-karura.aca-api.network",
+  base: "https://mainnet.base.org",
   acala: "https://eth-rpc-acala.aca-api.network",
   klaytn: "https://klaytn-mainnet-rpc.allthatnode.com:8551",
   celo: "https://forno.celo.org",
