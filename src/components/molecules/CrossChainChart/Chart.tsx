@@ -1,4 +1,4 @@
-import { ChainId, CrossChainActivity, CrossChainBy } from "@xlabs-libs/wormscan-sdk";
+import { CrossChainActivity, CrossChainBy } from "@xlabs-libs/wormscan-sdk";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BlockchainIcon, Pagination } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
@@ -6,6 +6,7 @@ import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { useTranslation } from "react-i18next";
 import { BREAKPOINTS } from "src/consts";
 import { StickyInfo } from "./StickyInfo";
+import { calculateBezierPointAndAngle, getChainName, processData } from "./chartUtils";
 
 interface IOriginChainsHeight {
   itemHeight: number;
@@ -23,12 +24,21 @@ const MARGIN_SIZE_CANVAS = 2;
 type Props = {
   data: CrossChainActivity;
   selectedType: CrossChainBy;
+  selectedDestination: "sources" | "destinations";
 };
 export type Info = { percentage: number; volume: number };
 
-export const Chart = ({ data, selectedType }: Props) => {
+export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
   const [isShowingOthers, setIsShowingOthers] = useState(false);
-  const [chartData, setChartData] = useState(processData(data, false));
+  const [chartData, setChartData] = useState(processData(data, false, selectedDestination));
+
+  useEffect(() => {
+    const newChartData = processData(data, false, selectedDestination);
+
+    setChartData(newChartData);
+    setSelectedChain(newChartData[0].chain);
+    setIsShowingOthers(false);
+  }, [data, selectedDestination]);
 
   const [selectedChain, setSelectedChain] = useState(chartData[0].chain);
   const [selectedInfo, setSelectedInfo] = useState<Info>({
@@ -83,6 +93,8 @@ export const Chart = ({ data, selectedType }: Props) => {
       counter = 0;
       // we have top 10 blockchains so we need 10 graphs
       for (let i = 0; i < Math.min(10, destinyChainsHeight.length); i++) {
+        ctx.beginPath();
+
         // drawing graph
         const START = START_POINT + counter;
         const END = END_POINTS[i] + i * MARGIN_SIZE_ELEMENTS * 2;
@@ -103,18 +115,92 @@ export const Chart = ({ data, selectedType }: Props) => {
 
         // painting graph
         const grad = ctx.createLinearGradient(0, START, CHART_SIZE, END);
-        grad.addColorStop(0, "rgb(49, 52, 124)");
-        grad.addColorStop(0.2, "rgb(44, 45, 116)");
-        grad.addColorStop(1, "rgb(74, 34, 105)");
+
+        if (selectedDestination === "sources") {
+          grad.addColorStop(0, "rgb(49, 52, 124)");
+          grad.addColorStop(0.4, "rgb(44, 45, 116)");
+          grad.addColorStop(1, "rgb(74, 34, 105)");
+        } else {
+          grad.addColorStop(0, "rgb(74, 34, 105)");
+          grad.addColorStop(0.6, "rgb(44, 45, 116)");
+          grad.addColorStop(1, "rgb(49, 52, 124)");
+        }
 
         ctx.strokeStyle = grad;
         ctx.fillStyle = grad;
 
         ctx.stroke();
         ctx.fill();
+
+        // drawing direction lines and arrows
+        ctx.closePath();
+        ctx.save();
+        ctx.beginPath();
+
+        const START_ARROW = START + excess / 2 - MARGIN_SIZE_CANVAS * 2;
+        const END_ARROW = END + DESTINY_CHAIN_HEIGHT / 2;
+        const ARROW_WIDTH = 6;
+
+        // calculate the point and angle at the 85% of the bezier curve
+        const { x, y, angle } = calculateBezierPointAndAngle(
+          0,
+          START_ARROW,
+          CHART_SIZE / 2,
+          START_ARROW,
+          CHART_SIZE / 2,
+          END_ARROW,
+          CHART_SIZE,
+          END_ARROW,
+          selectedDestination === "sources" ? 0.83 : 0.5,
+        );
+
+        // define arrow area
+        if (selectedDestination === "sources") {
+          ctx.rect(CHART_SIZE / 2.15, 0, x - CHART_SIZE / 2.15, CHART_SIZE);
+        } else {
+          ctx.rect(x, 0, CHART_SIZE / 3, CHART_SIZE);
+        }
+        ctx.clip();
+        ctx.beginPath();
+
+        ctx.lineWidth = 1.5;
+        // arrow line
+        ctx.moveTo(0, START_ARROW);
+        ctx.bezierCurveTo(
+          CHART_SIZE / 2,
+          START_ARROW,
+          CHART_SIZE / 2,
+          END_ARROW,
+          CHART_SIZE,
+          END_ARROW,
+        );
+
+        // actual arrow
+        ctx.moveTo(x, y);
+        ctx.lineTo(
+          x +
+            (selectedDestination === "sources" ? -ARROW_WIDTH : ARROW_WIDTH) *
+              Math.cos(angle + Math.PI / 6),
+          y +
+            (selectedDestination === "sources" ? -ARROW_WIDTH : ARROW_WIDTH) *
+              Math.sin(angle + Math.PI / 6),
+        );
+        ctx.moveTo(x, y);
+        ctx.lineTo(
+          x +
+            (selectedDestination === "sources" ? -ARROW_WIDTH : ARROW_WIDTH) *
+              Math.cos(angle - Math.PI / 6),
+          y +
+            (selectedDestination === "sources" ? -ARROW_WIDTH : ARROW_WIDTH) *
+              Math.sin(angle - Math.PI / 6),
+        );
+
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+        ctx.stroke();
+        ctx.restore();
       }
     },
-    [MARGIN_SIZE_ELEMENTS, destinyChainsHeight, originChainsHeight],
+    [MARGIN_SIZE_ELEMENTS, destinyChainsHeight, originChainsHeight, selectedDestination],
   );
 
   // update arrays containing height of items on both sides of the graphics
@@ -174,7 +260,7 @@ export const Chart = ({ data, selectedType }: Props) => {
   }, [isDesktop, size]);
 
   // re-render canvas when destinations or isDesktop changes.
-  useEffect(updateChainsHeight, [destinations, isDesktop]);
+  useEffect(updateChainsHeight, [destinations, isDesktop, selectedDestination]);
 
   const getAmount = (vol: string | number) =>
     selectedType === "tx" ? vol : "$" + formatCurrency(+vol, 0);
@@ -182,8 +268,17 @@ export const Chart = ({ data, selectedType }: Props) => {
   return (
     <div className="cross-chain-relative">
       <div className="cross-chain-header-container title">
-        <div>{t("home.crossChain.source").toUpperCase()}</div>
-        <div>{t("home.crossChain.destination").toUpperCase()}</div>
+        {selectedDestination === "sources" ? (
+          <>
+            <div>{t("home.crossChain.source").toUpperCase()}</div>
+            <div>{t("home.crossChain.destination").toUpperCase()}</div>
+          </>
+        ) : (
+          <>
+            <div>{t("home.crossChain.destination").toUpperCase()}</div>
+            <div>{t("home.crossChain.source").toUpperCase()}</div>
+          </>
+        )}
       </div>
       <div className="cross-chain-chart">
         <div className="cross-chain-chart-side" ref={originChainsRef}>
@@ -248,11 +343,11 @@ export const Chart = ({ data, selectedType }: Props) => {
         currentPage={isShowingOthers ? 2 : 1}
         goNextPage={() => {
           setIsShowingOthers(true);
-          setChartData(processData(data, true));
+          setChartData(processData(data, true, selectedDestination));
         }}
         goPrevPage={() => {
           setIsShowingOthers(false);
-          setChartData(processData(data, false));
+          setChartData(processData(data, false, selectedDestination));
         }}
         disableNextButton={isShowingOthers}
       />
@@ -265,16 +360,4 @@ export const Chart = ({ data, selectedType }: Props) => {
       />
     </div>
   );
-};
-
-const OTHERS_FAKE_CHAIN_ID = 123123123 as ChainId;
-const getChainName = (id: ChainId) => {
-  if (id === OTHERS_FAKE_CHAIN_ID) return "Others";
-  return ChainId[id] ?? "Unset";
-};
-
-const processData = (data: CrossChainActivity, showOthers: boolean) => {
-  const newData = [...data].sort((a, b) => b.percentage - a.percentage);
-
-  return showOthers ? newData.slice(10) : newData.slice(0, 10);
 };

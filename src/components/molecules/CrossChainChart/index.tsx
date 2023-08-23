@@ -19,6 +19,11 @@ const TESTNET_TYPE_LIST = [
   { label: i18n.t("home.crossChain.count"), value: "tx", ariaLabel: "Transactions" },
 ];
 
+const DESTINATION_LIST = [
+  { label: "Sources", value: "sources", ariaLabel: "Sources" },
+  { label: "Destinations", value: "destinations", ariaLabel: "Destinations" },
+];
+
 const RANGE_LIST = [
   { label: "Last 7 days", value: "7d" },
   { label: "Last 30 days", value: "30d" },
@@ -35,6 +40,9 @@ const CrossChainChart = () => {
   const [TYPE_LIST, setTypeList] = useState(MAINNET_TYPE_LIST);
   const [selectedType, setSelectedType] = useState<CrossChainBy>("notional");
   const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
+  const [selectedDestination, setSelectedDestination] = useState<"sources" | "destinations">(
+    "sources",
+  );
 
   useEffect(() => {
     if (currentNetwork === "MAINNET") {
@@ -68,6 +76,14 @@ const CrossChainChart = () => {
           className="cross-chain-options-items"
         />
 
+        <ToggleGroup
+          value={selectedDestination}
+          onValueChange={value => setSelectedDestination(value)}
+          items={DESTINATION_LIST}
+          ariaLabel="Select graphic type"
+          className="cross-chain-options-items"
+        />
+
         <div className="cross-chain-filters">
           <div className="cross-chain-filters-group">
             <span className="cross-chain-filters-text">{t("home.crossChain.timeRange")}</span>
@@ -90,14 +106,22 @@ const CrossChainChart = () => {
           {isError ? (
             <ErrorPlaceholder errorType="sankey" />
           ) : (
-            <Chart data={data} selectedType={selectedType} />
+            <Chart
+              data={data}
+              selectedType={selectedType}
+              selectedDestination={selectedDestination}
+            />
           )}
         </>
       )}
 
       <div className="cross-chain-message">
         <div>{t("home.crossChain.portalActivity")}</div>
-        <div>{t("home.crossChain.bottomMessage")}</div>
+        {selectedDestination === "sources" ? (
+          <div>{t("home.crossChain.bottomMessageSources")}</div>
+        ) : (
+          <div>{t("home.crossChain.bottomMessageDestinations")}</div>
+        )}
       </div>
     </div>
   );

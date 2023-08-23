@@ -49,7 +49,8 @@ export default {
           allApps: "All apps",
           allTime: "All time",
           portalActivity: "Portal Bridge Activity",
-          bottomMessage: "Chart shows only top ten destinations / assets",
+          bottomMessageSources: "Chart shows only top ten destinations",
+          bottomMessageDestinations: "Chart shows only top ten sources",
         },
         vaaCount: {
           title: "VAAs count by blockchain",
