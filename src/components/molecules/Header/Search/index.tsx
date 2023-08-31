@@ -64,12 +64,10 @@ const Search = () => {
           queryClient.setQueryData(["getVAAbyTxHash", txHash], vaa);
           navigate(`/tx/${txHash}`);
         } else {
-          console.log("vaa not found, going tx page anyways");
           navigate(`/tx/${params.txHash}`);
         }
       },
       onError: (_err, params) => {
-        console.log("vaa not found, going tx page anyways");
         navigate(`/tx/${params.txHash}`);
       },
       onSettled: () => {

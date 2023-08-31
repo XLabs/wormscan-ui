@@ -54,7 +54,6 @@ const Tx = () => {
       onSettled: async (data, error) => {
         if (error || data.length === 0) {
           const txsData = await fetchWithRpcFallThrough(environment, txHash);
-          console.log({ txsData });
 
           if (txsData) {
             const txData = await txsData[0];
