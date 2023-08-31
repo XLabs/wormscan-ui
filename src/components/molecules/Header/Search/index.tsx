@@ -58,17 +58,19 @@ const Search = () => {
         },
       }),
     {
-      onSuccess: vaa => {
+      onSuccess: (vaa, params) => {
         const { txHash } = vaa?.[0] || {};
         if (txHash) {
           queryClient.setQueryData(["getVAAbyTxHash", txHash], vaa);
           navigate(`/tx/${txHash}`);
         } else {
-          goSearchNotFound();
+          console.log("vaa not found, going tx page anyways");
+          navigate(`/tx/${params.txHash}`);
         }
       },
-      onError: _ => {
-        goSearchNotFound();
+      onError: (_err, params) => {
+        console.log("vaa not found, going tx page anyways");
+        navigate(`/tx/${params.txHash}`);
       },
       onSettled: () => {
         setIsLoading(false);

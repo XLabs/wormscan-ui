@@ -1,5 +1,5 @@
 import { CopyIcon } from "@radix-ui/react-icons";
-import { VAADetail } from "@xlabs-libs/wormscan-sdk";
+import { GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { vs2015 } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { CopyToClipboard } from "src/components/molecules";
@@ -58,15 +58,18 @@ export const BlockSection = ({ title, code }: { title: string; code: string }) =
 };
 
 type Props = {
-  VAAData: VAADetail & { vaa: any; decodedVaa: any };
   lifecycleRecord: DeliveryLifecycleRecord;
+  txData: GetTransactionsOutput;
+  VAAData: VAADetail & { vaa: any; decodedVaa: any };
 };
 
-const RawData = ({ VAAData, lifecycleRecord }: Props) => {
+const RawData = ({ VAAData, txData, lifecycleRecord }: Props) => {
   const { payload, decodedVaa, ...rest } = VAAData || {};
   const rawData = { ...rest };
-  const { payload: nestedVAAPayload, ...nestedVAARest } = decodedVaa;
-  const signedVAA = { ...nestedVAARest };
+  const { payload: nestedVAAPayload, ...nestedVAARest } = decodedVaa
+    ? decodedVaa
+    : { payload: null };
+  const signedVAA = Object.values(nestedVAARest).length > 0 ? { ...nestedVAARest } : null;
   const CODE_BLOCKS = [
     {
       title: "RAW MESSAGE DATA",
@@ -79,6 +82,10 @@ const RawData = ({ VAAData, lifecycleRecord }: Props) => {
     {
       title: "SIGNED VAA",
       code: signedVAA && JSON.stringify(signedVAA, null, 4),
+    },
+    {
+      title: "TX DATA",
+      code: !signedVAA && JSON.stringify(txData, null, 4),
     },
   ];
 
