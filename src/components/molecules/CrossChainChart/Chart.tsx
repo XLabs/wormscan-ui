@@ -6,7 +6,7 @@ import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { useTranslation } from "react-i18next";
 import { BREAKPOINTS } from "src/consts";
 import { StickyInfo } from "./StickyInfo";
-import { calculateBezierPointAndAngle, getChainName, processData } from "./chartUtils";
+import { getChainName, processData } from "./chartUtils";
 
 interface IOriginChainsHeight {
   itemHeight: number;
@@ -131,75 +131,6 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
 
         ctx.stroke();
         ctx.fill();
-
-        // drawing direction lines and arrows
-        ctx.closePath();
-        ctx.save();
-        ctx.beginPath();
-
-        const START_ARROW = START + excess / 2 - MARGIN_SIZE_CANVAS * 2;
-        const END_ARROW = END + DESTINY_CHAIN_HEIGHT / 2;
-        const ARROW_WIDTH = 6;
-
-        // calculate the point and angle at the 85% of the bezier curve
-        const { x, y, angle } = calculateBezierPointAndAngle(
-          0,
-          START_ARROW,
-          CHART_SIZE / 2,
-          START_ARROW,
-          CHART_SIZE / 2,
-          END_ARROW,
-          CHART_SIZE,
-          END_ARROW,
-          // selectedDestination === "sources" ? 0.5 : 0.5,
-          0.5, // 50% of the line
-        );
-
-        // define arrow area
-        if (selectedDestination === "sources") {
-          ctx.rect(CHART_SIZE / 4.5, 0, CHART_SIZE / 3.6, CHART_SIZE);
-          // ctx.rect(CHART_SIZE / 2.15, 0, x - CHART_SIZE / 2.15, CHART_SIZE);
-        } else {
-          ctx.rect(x, 0, CHART_SIZE / 3, CHART_SIZE);
-        }
-        ctx.clip();
-        ctx.beginPath();
-
-        ctx.lineWidth = 1;
-        // arrow line
-        ctx.moveTo(0, START_ARROW);
-        ctx.bezierCurveTo(
-          CHART_SIZE / 2,
-          START_ARROW,
-          CHART_SIZE / 2,
-          END_ARROW,
-          CHART_SIZE,
-          END_ARROW,
-        );
-
-        // actual arrow
-        ctx.moveTo(x, y);
-        ctx.lineTo(
-          x +
-            (selectedDestination === "sources" ? -ARROW_WIDTH : ARROW_WIDTH) *
-              Math.cos(angle + Math.PI / 6),
-          y +
-            (selectedDestination === "sources" ? -ARROW_WIDTH : ARROW_WIDTH) *
-              Math.sin(angle + Math.PI / 6),
-        );
-        ctx.moveTo(x, y);
-        ctx.lineTo(
-          x +
-            (selectedDestination === "sources" ? -ARROW_WIDTH : ARROW_WIDTH) *
-              Math.cos(angle - Math.PI / 6),
-          y +
-            (selectedDestination === "sources" ? -ARROW_WIDTH : ARROW_WIDTH) *
-              Math.sin(angle - Math.PI / 6),
-        );
-
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
-        ctx.stroke();
-        ctx.restore();
       }
     },
     [MARGIN_SIZE_ELEMENTS, destinyChainsHeight, originChainsHeight, selectedDestination],
