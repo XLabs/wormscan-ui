@@ -30,6 +30,11 @@
     .rowed {
       @include centered-row;
       gap: 32px;
+      flex-wrap: wrap;
+      width: 100%;
+      @include desktop {
+        width: auto;
+      }
     }
 
     &-items {
@@ -67,6 +72,10 @@
     padding-left: 16px;
     padding-right: 16px;
     gap: 12px;
+    width: 100%;
+    @include desktop {
+      width: auto;
+    }
 
     border-radius: 8px;
     border: 2px solid var(--color-white-10);
