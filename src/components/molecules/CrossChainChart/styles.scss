@@ -29,7 +29,7 @@
 
     .rowed {
       @include centered-row;
-      gap: 12px;
+      gap: 32px;
     }
 
     &-items {
