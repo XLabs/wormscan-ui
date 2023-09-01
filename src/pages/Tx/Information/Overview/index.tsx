@@ -1,5 +1,5 @@
 import { ArrowDownIcon, CheckboxIcon, CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { Alert, BlockchainIcon, Tooltip } from "src/components/atoms";
+import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import WormIcon from "src/icons/wormIcon.svg";
 import { getExplorerLink } from "src/utils/wormhole";
@@ -17,10 +17,8 @@ type Props = {
   fromChain?: ChainId | number;
   globalToRedeemTx?: string;
   guardianSignaturesCount?: number;
-  hasVAA?: boolean;
   isAttestation?: boolean;
   isUnknownApp?: boolean;
-  isUnknownPayloadType?: boolean;
   originDateParsed?: string;
   parsedDestinationAddress?: string;
   parsedEmitterAddress?: string;
@@ -43,17 +41,6 @@ const NotFinalDestinationTooltip = () => (
   </div>
 );
 
-const RenderChildrenOrNA = ({
-  condition,
-  children,
-}: {
-  condition: boolean | string | number | undefined;
-  children: React.ReactNode;
-}) => {
-  if (!condition) return <>N/A</>;
-  return <>{children}</>;
-};
-
 const Overview = ({
   amountSent,
   amountSentUSD,
@@ -63,10 +50,8 @@ const Overview = ({
   fromChain,
   globalToRedeemTx,
   guardianSignaturesCount,
-  hasVAA,
   isAttestation,
   isUnknownApp,
-  isUnknownPayloadType,
   originDateParsed,
   parsedDestinationAddress,
   parsedEmitterAddress,
@@ -96,47 +81,55 @@ const Overview = ({
           <div>
             <div className="tx-overview-graph-step-title">Amount</div>
             <div className="tx-overview-graph-step-description">
-              <RenderChildrenOrNA condition={tokenAmount}>
-                {amountSent}{" "}
-                {symbol && (
-                  <a
-                    href={getExplorerLink({
-                      network: currentNetwork,
-                      chainId: tokenChain,
-                      value: tokenAddress,
-                      base: "token",
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {symbol}
-                  </a>
-                )}
-                ({amountSentUSD || "-"} USD)
-              </RenderChildrenOrNA>
+              {tokenAmount ? (
+                <>
+                  {amountSent}{" "}
+                  {symbol && (
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: tokenChain,
+                        value: tokenAddress,
+                        base: "token",
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {symbol}
+                    </a>
+                  )}
+                  ({amountSentUSD || "-"} USD)
+                </>
+              ) : (
+                "N/A"
+              )}
             </div>
           </div>
           <div>
             <div className="tx-overview-graph-step-title">Source wallet</div>
             <div className="tx-overview-graph-step-description">
-              <RenderChildrenOrNA condition={parsedOriginAddress}>
-                <a
-                  href={getExplorerLink({
-                    network: currentNetwork,
-                    chainId: fromChain,
-                    value: parsedOriginAddress,
-                    base: "address",
-                    isNativeAddress: true,
-                  })}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {shortAddress(parsedOriginAddress).toUpperCase()}
-                </a>{" "}
-                <CopyToClipboard toCopy={parsedOriginAddress}>
-                  <CopyIcon />
-                </CopyToClipboard>
-              </RenderChildrenOrNA>
+              {parsedOriginAddress ? (
+                <>
+                  <a
+                    href={getExplorerLink({
+                      network: currentNetwork,
+                      chainId: fromChain,
+                      value: parsedOriginAddress,
+                      base: "address",
+                      isNativeAddress: true,
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {shortAddress(parsedOriginAddress).toUpperCase()}
+                  </a>{" "}
+                  <CopyToClipboard toCopy={parsedOriginAddress}>
+                    <CopyIcon />
+                  </CopyToClipboard>
+                </>
+              ) : (
+                "N/A"
+              )}
             </div>
           </div>
         </div>
@@ -156,33 +149,35 @@ const Overview = ({
             <div>
               <div className="tx-overview-graph-step-title">Time</div>
               <div className="tx-overview-graph-step-description">
-                <RenderChildrenOrNA condition={originDateParsed}>
-                  {originDateParsed}
-                </RenderChildrenOrNA>
+                {originDateParsed ? <>{originDateParsed}</> : "N/A"}
               </div>
             </div>
             <div>
               <div className="tx-overview-graph-step-title">Contract Address</div>
-              <RenderChildrenOrNA condition={parsedEmitterAddress}>
-                <div className="tx-overview-graph-step-description">
-                  <a
-                    href={getExplorerLink({
-                      network: currentNetwork,
-                      chainId: fromChain,
-                      value: parsedEmitterAddress,
-                      base: "address",
-                      isNativeAddress: true,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {shortAddress(parsedEmitterAddress).toUpperCase()}
-                  </a>{" "}
-                  <CopyToClipboard toCopy={parsedEmitterAddress}>
-                    <CopyIcon />
-                  </CopyToClipboard>
-                </div>
-              </RenderChildrenOrNA>
+              {parsedEmitterAddress ? (
+                <>
+                  <div className="tx-overview-graph-step-description">
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: fromChain,
+                        value: parsedEmitterAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {shortAddress(parsedEmitterAddress).toUpperCase()}
+                    </a>{" "}
+                    <CopyToClipboard toCopy={parsedEmitterAddress}>
+                      <CopyIcon />
+                    </CopyToClipboard>
+                  </div>
+                </>
+              ) : (
+                "N/A"
+              )}
             </div>
           </div>
         </div>
@@ -209,12 +204,16 @@ const Overview = ({
           <div>
             <div className="tx-overview-graph-step-title">VAA ID</div>
             <div className="tx-overview-graph-step-description">
-              <RenderChildrenOrNA condition={VAAId}>
-                {shortAddress(VAAId)}
-                <CopyToClipboard toCopy={VAAId}>
-                  <CopyIcon />
-                </CopyToClipboard>
-              </RenderChildrenOrNA>
+              {VAAId ? (
+                <>
+                  {shortAddress(VAAId)}
+                  <CopyToClipboard toCopy={VAAId}>
+                    <CopyIcon />
+                  </CopyToClipboard>
+                </>
+              ) : (
+                "N/A"
+              )}
             </div>
           </div>
         </div>
@@ -292,8 +291,8 @@ const Overview = ({
                       </a>
                     )}
                   </>
-                ) : (
-                  <RenderChildrenOrNA condition={tokenAmount}>
+                ) : tokenAmount ? (
+                  <>
                     {amountSent}{" "}
                     {symbol && (
                       <a
@@ -310,7 +309,9 @@ const Overview = ({
                       </a>
                     )}
                     ({amountSentUSD || "-"} USD)
-                  </RenderChildrenOrNA>
+                  </>
+                ) : (
+                  "N/A"
                 )}
               </div>
             </div>
@@ -344,35 +345,6 @@ const Overview = ({
                 </CopyToClipboard>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-      <div>
-        {hasVAA ? (
-          <div className="tx-overview-alerts">
-            <div className="tx-overview-alerts-unknown-payload-type">
-              <Alert type="info">
-                Data being shown is incomplete because there is no emitted VAA for this transaction
-                yet. Wait 20 minutes and try again.
-              </Alert>
-            </div>
-          </div>
-        ) : isUnknownPayloadType ? (
-          <div className="tx-overview-alerts">
-            <div className="tx-overview-alerts-unknown-payload-type">
-              <Alert type="info">
-                This VAA comes from another multiverse, we don&apos;t have more details about it.
-              </Alert>
-            </div>
-          </div>
-        ) : null}
-      </div>
-      {isUnknownPayloadType && (
-        <div className="tx-overview-alerts">
-          <div className="tx-overview-alerts-unknown-payload-type">
-            <Alert type="info">
-              This VAA comes from another multiverse, we don&apos;t have more details about it.
-            </Alert>
           </div>
         </div>
       )}

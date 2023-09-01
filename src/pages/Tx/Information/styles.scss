@@ -11,4 +11,20 @@
     padding: 0 16px;
     color: var(--color-primary-50);
   }
+
+  &-alerts {
+    padding: 0 16px 64px 16px;
+
+    @include desktop {
+      padding: 0 24px 64px 24px;
+    }
+
+    @include bigDesktop {
+      padding: 0 24px 64px 112px;
+    }
+
+    &-unknown-payload-type {
+      max-width: 390px;
+    }
+  }
 }

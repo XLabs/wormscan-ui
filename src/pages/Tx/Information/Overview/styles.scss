@@ -220,20 +220,4 @@
       }
     }
   }
-
-  &-alerts {
-    padding: 0 16px 120px 16px;
-
-    @include desktop {
-      padding: 56px 24px 120px 24px;
-    }
-
-    @include bigDesktop {
-      padding: 56px 24px 120px 112px;
-    }
-
-    &-unknown-payload-type {
-      max-width: 390px;
-    }
-  }
 }

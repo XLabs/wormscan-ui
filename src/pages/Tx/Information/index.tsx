@@ -11,8 +11,8 @@ import {
   DeliveryLifecycleRecord,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
+import { Alert, Loader } from "src/components/atoms";
 import { txType } from "src/consts";
-import { Loader } from "src/components/atoms";
 
 import Tabs from "./Tabs";
 import Summary from "./Summary";
@@ -131,9 +131,7 @@ const Information = ({ VAAData, txData }: Props) => {
     fee,
     fromChain,
     guardianSignaturesCount,
-    hasVAA,
     isUnknownApp,
-    originDateParsed,
     parsedDestinationAddress,
     parsedEmitterAddress,
     parsedOriginAddress,
@@ -182,6 +180,54 @@ const Information = ({ VAAData, txData }: Props) => {
   }, [getRelayerInfo, isGenericRelayerTx]);
   // --- x ---
 
+  const OverviewContent = () => {
+    if (isGenericRelayerTx) {
+      if (loadingRelayers) return <Loader />;
+      return <RelayerOverview VAAData={VAAData} lifecycleRecord={genericRelayerInfo} />;
+    }
+
+    if (showOverviewDetail) {
+      return (
+        <>
+          <Details {...overviewAndDetailProps} />
+          <AlertsContent />
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Overview
+          {...overviewAndDetailProps}
+          globalToRedeemTx={globalToRedeemTx}
+          isAttestation={isAttestation}
+          originDateParsed={originDateParsed}
+        />
+        <AlertsContent />
+      </>
+    );
+  };
+
+  const RawDataContent = () => {
+    if (isGenericRelayerTx && loadingRelayers) return <Loader />;
+    return <RawData lifecycleRecord={genericRelayerInfo} txData={txData} VAAData={VAAData} />;
+  };
+
+  const AlertsContent = () => {
+    if (!hasVAA && !isUnknownPayloadType) return null;
+    return (
+      <div className="tx-information-alerts">
+        <div className="tx-information-alerts-unknown-payload-type">
+          <Alert type="info">
+            {hasVAA
+              ? "Data being shown is incomplete because there is no emitted VAA for this transaction yet. Wait 20 minutes and try again."
+              : "This VAA comes from another multiverse, we don't have more details about it."}
+          </Alert>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <section className="tx-information">
       <Tabs
@@ -200,28 +246,7 @@ const Information = ({ VAAData, txData }: Props) => {
         vaa={vaa}
       />
 
-      {showOverview ? (
-        isGenericRelayerTx ? (
-          loadingRelayers ? (
-            <Loader />
-          ) : (
-            <RelayerOverview VAAData={VAAData} lifecycleRecord={genericRelayerInfo} />
-          )
-        ) : showOverviewDetail ? (
-          <Details {...overviewAndDetailProps} />
-        ) : (
-          <Overview
-            {...overviewAndDetailProps}
-            globalToRedeemTx={globalToRedeemTx}
-            isAttestation={isAttestation}
-            isUnknownPayloadType={isUnknownPayloadType}
-          />
-        )
-      ) : isGenericRelayerTx && loadingRelayers ? (
-        <Loader />
-      ) : (
-        <RawData lifecycleRecord={genericRelayerInfo} txData={txData} VAAData={VAAData} />
-      )}
+      {showOverview ? <OverviewContent /> : <RawDataContent />}
     </section>
   );
 };

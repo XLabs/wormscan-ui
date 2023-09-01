@@ -15,7 +15,6 @@ type Props = {
   fromChain?: ChainId | number;
   guardianSignaturesCount?: number;
   isUnknownApp?: boolean;
-  originDateParsed?: string;
   parsedDestinationAddress?: string;
   parsedEmitterAddress?: string;
   parsedOriginAddress?: string;
@@ -29,17 +28,6 @@ type Props = {
   tokenChain?: ChainId | number;
   totalGuardiansNeeded?: number;
   VAAId?: string;
-};
-
-const RenderChildrenOrNA = ({
-  condition,
-  children,
-}: {
-  condition: boolean | string | number | undefined;
-  children: React.ReactNode;
-}) => {
-  if (!condition) return <>N/A</>;
-  return children;
 };
 
 const Details = ({
@@ -69,79 +57,95 @@ const Details = ({
       <div className="tx-details-group-line">
         <div className="tx-details-group-line-key">Source</div>
         <div className="tx-details-group-line-value">
-          <RenderChildrenOrNA condition={fromChain}>
-            <BlockchainIcon chainId={fromChain} size={24} />
-            {getChainName({ chainId: fromChain }).toUpperCase()}
-          </RenderChildrenOrNA>
+          {fromChain ? (
+            <>
+              <BlockchainIcon chainId={fromChain} size={24} />
+              {getChainName({ chainId: fromChain }).toUpperCase()}
+            </>
+          ) : (
+            "N/A"
+          )}
         </div>
       </div>
       <div className="tx-details-group-line">
         <div className="tx-details-group-line-key">Contract Address</div>
         <div className="tx-details-group-line-value">
-          <RenderChildrenOrNA condition={parsedEmitterAddress}>
-            <a
-              href={getExplorerLink({
-                network: currentNetwork,
-                chainId: fromChain,
-                value: parsedEmitterAddress,
-                base: "address",
-                isNativeAddress: true,
-              })}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {shortAddress(parsedEmitterAddress).toUpperCase()}
-            </a>{" "}
-            <CopyToClipboard toCopy={parsedEmitterAddress}>
-              <CopyIcon />
-            </CopyToClipboard>
-          </RenderChildrenOrNA>
+          {parsedEmitterAddress ? (
+            <>
+              <a
+                href={getExplorerLink({
+                  network: currentNetwork,
+                  chainId: fromChain,
+                  value: parsedEmitterAddress,
+                  base: "address",
+                  isNativeAddress: true,
+                })}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {shortAddress(parsedEmitterAddress).toUpperCase()}
+              </a>{" "}
+              <CopyToClipboard toCopy={parsedEmitterAddress}>
+                <CopyIcon />
+              </CopyToClipboard>
+            </>
+          ) : (
+            "N/A"
+          )}
         </div>
       </div>
       <div className="tx-details-group-line">
         <div className="tx-details-group-line-key">From</div>
         <div className="tx-details-group-line-value">
-          <RenderChildrenOrNA condition={parsedOriginAddress}>
-            <a
-              href={getExplorerLink({
-                network: currentNetwork,
-                chainId: fromChain,
-                value: parsedOriginAddress,
-                base: "address",
-                isNativeAddress: true,
-              })}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {shortAddress(parsedOriginAddress).toUpperCase()}
-            </a>{" "}
-            <CopyToClipboard toCopy={parsedOriginAddress}>
-              <CopyIcon />
-            </CopyToClipboard>
-          </RenderChildrenOrNA>
+          {parsedOriginAddress ? (
+            <>
+              <a
+                href={getExplorerLink({
+                  network: currentNetwork,
+                  chainId: fromChain,
+                  value: parsedOriginAddress,
+                  base: "address",
+                  isNativeAddress: true,
+                })}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {shortAddress(parsedOriginAddress).toUpperCase()}
+              </a>{" "}
+              <CopyToClipboard toCopy={parsedOriginAddress}>
+                <CopyIcon />
+              </CopyToClipboard>
+            </>
+          ) : (
+            "N/A"
+          )}
         </div>
       </div>
       <div className="tx-details-group-line">
         <div className="tx-details-group-line-key">Amount</div>
         <div className="tx-details-group-line-value">
-          <RenderChildrenOrNA condition={tokenAmount}>
-            {amountSent}{" "}
-            {symbol && (
-              <a
-                href={getExplorerLink({
-                  network: currentNetwork,
-                  chainId: tokenChain,
-                  value: tokenAddress,
-                  base: "token",
-                })}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {symbol}
-              </a>
-            )}
-            ({amountSentUSD || "-"} USD)
-          </RenderChildrenOrNA>
+          {tokenAmount ? (
+            <>
+              {amountSent}{" "}
+              {symbol && (
+                <a
+                  href={getExplorerLink({
+                    network: currentNetwork,
+                    chainId: tokenChain,
+                    value: tokenAddress,
+                    base: "token",
+                  })}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {symbol}
+                </a>
+              )}
+              ({amountSentUSD || "-"} USD)
+            </>
+          ) : (
+            "N/A"
+          )}
         </div>
       </div>
     </div>
@@ -149,9 +153,7 @@ const Details = ({
       <div className="tx-details-group-line">
         <div className="tx-details-group-line-key">Time</div>
         <div className="tx-details-group-line-value">
-          <RenderChildrenOrNA condition={destinationDateParsed}>
-            {destinationDateParsed}
-          </RenderChildrenOrNA>
+          {destinationDateParsed ? <>{destinationDateParsed}</> : "N/A"}
         </div>
       </div>
       <div className="tx-details-group-line">
@@ -163,34 +165,42 @@ const Details = ({
       <div className="tx-details-group-line">
         <div className="tx-details-group-line-key">VAA ID</div>
         <div className="tx-details-group-line-value">
-          <RenderChildrenOrNA condition={VAAId}>
-            {shortAddress(VAAId)}
-            <CopyToClipboard toCopy={VAAId}>
-              <CopyIcon />
-            </CopyToClipboard>
-          </RenderChildrenOrNA>
+          {VAAId ? (
+            <>
+              {shortAddress(VAAId)}
+              <CopyToClipboard toCopy={VAAId}>
+                <CopyIcon />
+              </CopyToClipboard>
+            </>
+          ) : (
+            "N/A"
+          )}
         </div>
       </div>
       <div className="tx-details-group-line">
         <div className="tx-details-group-line-key">Redeem Txn</div>
         <div className="tx-details-group-line-value">
-          <RenderChildrenOrNA condition={parsedRedeemTx}>
-            <a
-              href={getExplorerLink({
-                network: currentNetwork,
-                chainId: toChain,
-                value: parsedRedeemTx,
-                isNativeAddress: true,
-              })}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {shortAddress(parsedRedeemTx.toUpperCase())}
-            </a>{" "}
-            <CopyToClipboard toCopy={parsedRedeemTx}>
-              <CopyIcon />
-            </CopyToClipboard>
-          </RenderChildrenOrNA>
+          {parsedRedeemTx ? (
+            <>
+              <a
+                href={getExplorerLink({
+                  network: currentNetwork,
+                  chainId: toChain,
+                  value: parsedRedeemTx,
+                  isNativeAddress: true,
+                })}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {shortAddress(parsedRedeemTx.toUpperCase())}
+              </a>{" "}
+              <CopyToClipboard toCopy={parsedRedeemTx}>
+                <CopyIcon />
+              </CopyToClipboard>
+            </>
+          ) : (
+            "N/A"
+          )}
         </div>
       </div>
     </div>
@@ -198,33 +208,41 @@ const Details = ({
       <div className="tx-details-group-line">
         <div className="tx-details-group-line-key">Destination</div>
         <div className="tx-details-group-line-value">
-          <RenderChildrenOrNA condition={toChain}>
-            <BlockchainIcon chainId={toChain} size={24} />
-            {getChainName({ chainId: toChain }).toUpperCase()}
-          </RenderChildrenOrNA>
+          {toChain ? (
+            <>
+              <BlockchainIcon chainId={toChain} size={24} />
+              {getChainName({ chainId: toChain }).toUpperCase()}
+            </>
+          ) : (
+            "N/A"
+          )}
         </div>
       </div>
       <div className="tx-details-group-line">
         <div className="tx-details-group-line-key">To</div>
         <div className="tx-details-group-line-value">
-          <RenderChildrenOrNA condition={parsedDestinationAddress}>
-            <a
-              href={getExplorerLink({
-                network: currentNetwork,
-                chainId: toChain,
-                value: parsedDestinationAddress,
-                base: "address",
-                isNativeAddress: true,
-              })}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {shortAddress(parsedDestinationAddress).toUpperCase()}
-            </a>{" "}
-            <CopyToClipboard toCopy={parsedDestinationAddress}>
-              <CopyIcon />
-            </CopyToClipboard>
-          </RenderChildrenOrNA>
+          {parsedDestinationAddress ? (
+            <>
+              <a
+                href={getExplorerLink({
+                  network: currentNetwork,
+                  chainId: toChain,
+                  value: parsedDestinationAddress,
+                  base: "address",
+                  isNativeAddress: true,
+                })}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {shortAddress(parsedDestinationAddress).toUpperCase()}
+              </a>{" "}
+              <CopyToClipboard toCopy={parsedDestinationAddress}>
+                <CopyIcon />
+              </CopyToClipboard>
+            </>
+          ) : (
+            "N/A"
+          )}
           {isUnknownApp && (
             <Tooltip
               tooltip={
@@ -261,8 +279,8 @@ const Details = ({
                 </a>
               )}
             </>
-          ) : (
-            <RenderChildrenOrNA condition={tokenAmount}>
+          ) : tokenAmount ? (
+            <>
               {amountSent}{" "}
               {symbol && (
                 <a
@@ -279,7 +297,9 @@ const Details = ({
                 </a>
               )}
               ({amountSentUSD || "-"} USD)
-            </RenderChildrenOrNA>
+            </>
+          ) : (
+            "N/A"
           )}
         </div>
       </div>

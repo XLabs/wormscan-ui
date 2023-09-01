@@ -8,12 +8,16 @@
 
   &-sub-list {
     @include centered-row;
-    gap: 8px;
+    gap: 16px;
     margin: 0 16px 0 auto;
     min-height: 48px;
 
     @include tablet {
       margin: 0 41px 0 auto;
+    }
+
+    @include desktop {
+      gap: 8px;
     }
 
     &-title {
