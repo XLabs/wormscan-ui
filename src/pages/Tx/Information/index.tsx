@@ -138,7 +138,7 @@ const Information = ({ VAAData, txData }: Props) => {
             {isGenericRelayerTx && loadingRelayers ? (
               <Loader />
             ) : (
-              <RawData lifecycleRecord={genericRelayerInfo} VAAData={VAAData} />
+              <RawData lifecycleRecord={genericRelayerInfo} txData={txData} VAAData={VAAData} />
             )}
           </>,
         ]}

@@ -6,13 +6,14 @@ import { BaseLayout } from "src/layouts/BaseLayout";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import { useParams } from "react-router-dom";
-import { VAADetail, ChainId } from "@xlabs-libs/wormscan-sdk";
+import { VAADetail, ChainId, GetTransactionsOutput } from "@xlabs-libs/wormscan-sdk";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import { Buffer } from "buffer";
 import { getGuardianSet } from "../../consts";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import "./styles.scss";
+import { fetchWithRpcFallThrough } from "src/utils/fetchWithRPCsFallthrough";
 
 const STALE_TIME = 1000 * 10;
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
@@ -45,12 +46,75 @@ const Tx = () => {
     () =>
       getClient().guardianNetwork.getVAAbyTxHash({
         query: {
-          txHash,
+          txHash: txHash,
           parsedPayload: true,
         },
       }),
     {
-      onError: () => navigate(`/search-not-found/${txHash}`),
+      onSettled: async (data, error) => {
+        if (error || data.length === 0) {
+          const txsData = await fetchWithRpcFallThrough(environment, txHash);
+
+          if (txsData) {
+            const txData = await txsData[0];
+
+            setParsedVAAsData([
+              {
+                appId: "",
+                decodedVaa: null,
+                emitterAddr: txData.emitterAddress,
+                emitterChain: txData.tokenChain,
+                emitterNativeAddr: txData.emitterNattiveAddress,
+                guardianSetIndex: null,
+                id: txData.id,
+                indexedAt: null,
+                payload: null,
+                sequence: txData.sequence,
+                timestamp: new Date(txData.timestamp),
+                txHash: txData.txHash,
+                updatedAt: null,
+                vaa: "",
+                version: 1,
+              },
+            ]);
+            setEmitterChainId(txData.chain as ChainId);
+            setTxData([
+              {
+                emitterAddress: txData.emitterAddress,
+                emitterChain: txData.chain,
+                emitterNativeAddress: txData.emitterNattiveAddress,
+                globalTx: null,
+                id: txData.id,
+                payload: {
+                  payloadType: txData.payloadType,
+                },
+                standardizedProperties: {
+                  amount: txData.amount,
+                  appIds: [],
+                  fee: "",
+                  feeAddress: "",
+                  feeChain: txData.chain,
+                  fromAddress: txData.fromAddress,
+                  fromChain: txData.chain,
+                  toAddress: txData.toAddress,
+                  toChain: txData.toChain,
+                  tokenAddress: txData.tokenAddress,
+                  tokenChain: txData.tokenChain,
+                },
+                symbol: txData.symbol,
+                timestamp: new Date(txData.timestamp),
+                tokenAmount: txData.amount,
+                txHash: txData.txHash,
+                usdAmount: null, // TODO? should use coingecko or similar if needed.
+              },
+            ]);
+            setIsLoading(false);
+          } else {
+            navigate(`/search-not-found/${txHash}`);
+          }
+        }
+      },
+      retry: 2,
       staleTime: STALE_TIME,
       enabled: isTxHashSearch,
     },
@@ -86,7 +150,8 @@ const Tx = () => {
 
   const VAADataTxHash = VAAData?.[0]?.txHash;
 
-  const { data: txData, refetch: refetchTxData } = useQuery(
+  const [txData, setTxData] = useState<GetTransactionsOutput[]>([]);
+  const { data: apiTxData, refetch: refetchTxData } = useQuery(
     ["getTransactions", isTxHashSearch ? txHash : VAAId],
     async () => {
       const result = VAAData.map(async tx => {
@@ -108,10 +173,18 @@ const Tx = () => {
     },
     {
       enabled: false,
-      onSuccess: () => setIsLoading(false),
+      onSuccess: data => {
+        if (!!data.length) setIsLoading(false);
+      },
       onError: () => navigate(`/search-not-found/?q=${VAADataTxHash}`),
     },
   );
+
+  useEffect(() => {
+    if (apiTxData && apiTxData.length > 0) {
+      setTxData(apiTxData);
+    }
+  }, [apiTxData]);
 
   useEffect(() => {
     if (!VAAData) return;
@@ -173,7 +246,11 @@ const Tx = () => {
           <Loader />
         ) : (
           <>
-            <Top txHash={VAADataTxHash} emitterChainId={emitterChainId} payloadType={payloadType} />
+            <Top
+              txHash={VAADataTxHash ?? txData?.[0]?.txHash}
+              emitterChainId={emitterChainId}
+              payloadType={payloadType}
+            />
             {parsedVAAsData.map(
               parsedVAAData =>
                 txData && (

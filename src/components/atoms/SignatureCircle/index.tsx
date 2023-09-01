@@ -36,65 +36,66 @@ const Circle = ({ guardianSignatures }: Props) => {
     <div className="signatureCircle">
       <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`}>
         <g transform={`translate(${SIZE / 2},${SIZE / 2})`}>
-          {guardianSignatures.map((guardian, idx) => {
-            const startAngle = (360 / totalGuardians) * idx;
-            const endAngle = startAngle + 360 / totalGuardians;
-            const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+          {totalGuardians &&
+            guardianSignatures.map((guardian, idx) => {
+              const startAngle = (360 / totalGuardians) * idx;
+              const endAngle = startAngle + 360 / totalGuardians;
+              const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
 
-            // SVG generating a circle divided in 13 separated pieces (or 1 for testnet)
-            const d = [
-              "M",
-              0,
-              0,
-              "L",
-              (SIZE / scale) * Math.cos((Math.PI * startAngle) / 180),
-              (SIZE / scale) * Math.sin((Math.PI * startAngle) / 180),
-              "A",
-              SIZE / scale,
-              SIZE / scale,
-              0,
-              largeArcFlag,
-              1,
-              (SIZE / scale) * Math.cos((Math.PI * endAngle) / 180),
-              (SIZE / scale) * Math.sin((Math.PI * endAngle) / 180),
-              "L",
-              0,
-              0,
-            ].join(" ");
+              // SVG generating a circle divided in 13 separated pieces (or 1 for testnet)
+              const d = [
+                "M",
+                0,
+                0,
+                "L",
+                (SIZE / scale) * Math.cos((Math.PI * startAngle) / 180),
+                (SIZE / scale) * Math.sin((Math.PI * startAngle) / 180),
+                "A",
+                SIZE / scale,
+                SIZE / scale,
+                0,
+                largeArcFlag,
+                1,
+                (SIZE / scale) * Math.cos((Math.PI * endAngle) / 180),
+                (SIZE / scale) * Math.sin((Math.PI * endAngle) / 180),
+                "L",
+                0,
+                0,
+              ].join(" ");
 
-            const fillColor = hoveredSector === idx ? success60 : success100;
+              const fillColor = hoveredSector === idx ? success60 : success100;
 
-            return (
-              <path
-                key={idx}
-                stroke="#151632"
-                d={d}
-                fill={fillColor}
-                strokeWidth={strokeWidth}
-                className="signatureCircle-section"
-                onTouchStart={() => setTouched(true)}
-                onMouseEnter={ev => {
-                  if (!clicked && !touched) {
+              return (
+                <path
+                  key={idx}
+                  stroke="#151632"
+                  d={d}
+                  fill={fillColor}
+                  strokeWidth={strokeWidth}
+                  className="signatureCircle-section"
+                  onTouchStart={() => setTouched(true)}
+                  onMouseEnter={ev => {
+                    if (!clicked && !touched) {
+                      setHoveredSector(idx);
+                      setPos({ x: ev.pageX - 110, y: ev.pageY - 100 });
+                      setShowGuardian(guardian);
+                    }
+                  }}
+                  onMouseLeave={ev => {
+                    if (!clicked && !touched) {
+                      setHoveredSector(null);
+                      setShowGuardian(null);
+                    }
+                  }}
+                  onClick={ev => {
+                    setClicked(true);
                     setHoveredSector(idx);
                     setPos({ x: ev.pageX - 110, y: ev.pageY - 100 });
                     setShowGuardian(guardian);
-                  }
-                }}
-                onMouseLeave={ev => {
-                  if (!clicked && !touched) {
-                    setHoveredSector(null);
-                    setShowGuardian(null);
-                  }
-                }}
-                onClick={ev => {
-                  setClicked(true);
-                  setHoveredSector(idx);
-                  setPos({ x: ev.pageX - 110, y: ev.pageY - 100 });
-                  setShowGuardian(guardian);
-                }}
-              />
-            );
-          })}
+                  }}
+                />
+              );
+            })}
         </g>
       </svg>
       {showGuardian && (

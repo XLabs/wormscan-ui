@@ -38,6 +38,7 @@ const Overview = ({ VAAData, txData }: Props) => {
   const { decodedVaa } = VAAData || {};
   const { guardianSignatures } = decodedVaa || {};
   const guardianSignaturesCount = guardianSignatures?.length || 0;
+  const hasVAA = !VAAData.vaa;
 
   const {
     id: VAAId,
@@ -68,6 +69,7 @@ const Overview = ({ VAAData, txData }: Props) => {
 
   const {
     appIds,
+    fromAddress: stdFromAddress,
     fromChain: stdFromChain,
     toChain: stdToChain,
     toAddress: stdToAddress,
@@ -85,7 +87,7 @@ const Overview = ({ VAAData, txData }: Props) => {
   } = destinationTx || {};
 
   const fromChain = emitterChain || stdFromChain;
-  const fromAddress = globalFrom;
+  const fromAddress = globalFrom || stdFromAddress;
   const toChain = stdToChain || globalToChainId;
   const toAddress = stdToAddress || globalTo;
   const startDate = timestamp || globalFromTimestamp;
@@ -204,7 +206,7 @@ const Overview = ({ VAAData, txData }: Props) => {
                             {symbol}
                           </a>
                         )}
-                        ({amountSentUSD || "-"} USD)
+                        {usdAmount && `(${amountSentUSD ? amountSentUSD : "-"} USD)`}
                       </div>
                     </>
                   )}
@@ -401,7 +403,16 @@ const Overview = ({ VAAData, txData }: Props) => {
           </div>
         )}
       </div>
-      {isUnknownPayloadType && (
+      {hasVAA ? (
+        <div className="tx-overview-alerts">
+          <div className="tx-overview-alerts-unknown-payload-type">
+            <Alert type="info">
+              Data being shown is incomplete because there is no emitted VAA for this transaction
+              yet. Wait 20 minutes and try again.
+            </Alert>
+          </div>
+        </div>
+      ) : isUnknownPayloadType ? (
         <div className="tx-overview-alerts">
           <div className="tx-overview-alerts-unknown-payload-type">
             <Alert type="info">
@@ -409,7 +420,7 @@ const Overview = ({ VAAData, txData }: Props) => {
             </Alert>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
