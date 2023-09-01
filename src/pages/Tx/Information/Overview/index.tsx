@@ -17,6 +17,7 @@ type Props = {
   fromChain?: ChainId | number;
   globalToRedeemTx?: string;
   guardianSignaturesCount?: number;
+  hasVAA?: boolean;
   isAttestation?: boolean;
   isUnknownApp?: boolean;
   isUnknownPayloadType?: boolean;
@@ -25,6 +26,7 @@ type Props = {
   parsedEmitterAddress?: string;
   parsedOriginAddress?: string;
   parsedRedeemTx?: string;
+  redeemedAmount?: string;
   symbol?: string;
   toChain?: ChainId | number;
   tokenAddress?: string;
@@ -32,7 +34,6 @@ type Props = {
   tokenChain?: ChainId | number;
   totalGuardiansNeeded?: number;
   VAAId?: string;
-  redeemedAmount?: string;
 };
 
 const NotFinalDestinationTooltip = () => (
@@ -62,6 +63,7 @@ const Overview = ({
   fromChain,
   globalToRedeemTx,
   guardianSignaturesCount,
+  hasVAA,
   isAttestation,
   isUnknownApp,
   isUnknownPayloadType,
@@ -345,16 +347,36 @@ const Overview = ({
           </div>
         </div>
       )}
-    </div>
-    {isUnknownPayloadType && (
-      <div className="tx-overview-alerts">
-        <div className="tx-overview-alerts-unknown-payload-type">
-          <Alert type="info">
-            This VAA comes from another multiverse, we don&apos;t have more details about it.
-          </Alert>
-        </div>
+      <div>
+        {hasVAA ? (
+          <div className="tx-overview-alerts">
+            <div className="tx-overview-alerts-unknown-payload-type">
+              <Alert type="info">
+                Data being shown is incomplete because there is no emitted VAA for this transaction
+                yet. Wait 20 minutes and try again.
+              </Alert>
+            </div>
+          </div>
+        ) : isUnknownPayloadType ? (
+          <div className="tx-overview-alerts">
+            <div className="tx-overview-alerts-unknown-payload-type">
+              <Alert type="info">
+                This VAA comes from another multiverse, we don&apos;t have more details about it.
+              </Alert>
+            </div>
+          </div>
+        ) : null}
       </div>
-    )}
+      {isUnknownPayloadType && (
+        <div className="tx-overview-alerts">
+          <div className="tx-overview-alerts-unknown-payload-type">
+            <Alert type="info">
+              This VAA comes from another multiverse, we don&apos;t have more details about it.
+            </Alert>
+          </div>
+        </div>
+      )}
+    </div>
   </div>
 );
 

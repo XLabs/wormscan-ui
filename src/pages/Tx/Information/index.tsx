@@ -43,6 +43,7 @@ const Information = ({ VAAData, txData }: Props) => {
   const { decodedVaa, vaa } = VAAData || {};
   const { guardianSignatures } = decodedVaa || {};
   const guardianSignaturesCount = guardianSignatures?.length || 0;
+  const hasVAA = !vaa;
 
   const {
     id: VAAId,
@@ -71,6 +72,7 @@ const Information = ({ VAAData, txData }: Props) => {
     amount,
     appIds,
     fee,
+    fromAddress: stdFromAddress,
     fromChain: stdFromChain,
     toAddress: stdToAddress,
     toChain: stdToChain,
@@ -88,7 +90,7 @@ const Information = ({ VAAData, txData }: Props) => {
   } = destinationTx || {};
 
   const fromChain = emitterChain || stdFromChain;
-  const fromAddress = globalFrom;
+  const fromAddress = globalFrom || stdFromAddress;
   const toChain = stdToChain || globalToChainId;
   const toAddress = stdToAddress || globalTo;
   const startDate = timestamp || globalFromTimestamp;
@@ -129,6 +131,7 @@ const Information = ({ VAAData, txData }: Props) => {
     fee,
     fromChain,
     guardianSignaturesCount,
+    hasVAA,
     isUnknownApp,
     originDateParsed,
     parsedDestinationAddress,
@@ -217,7 +220,7 @@ const Information = ({ VAAData, txData }: Props) => {
       ) : isGenericRelayerTx && loadingRelayers ? (
         <Loader />
       ) : (
-        <RawData lifecycleRecord={genericRelayerInfo} VAAData={VAAData} />
+        <RawData lifecycleRecord={genericRelayerInfo} txData={txData} VAAData={VAAData} />
       )}
     </section>
   );
