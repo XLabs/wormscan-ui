@@ -1,39 +1,66 @@
-import { CONTRACTS, ChainId, ChainName, Network } from "@certusone/wormhole-sdk";
+import {
+  CHAIN_ID_ARBITRUM,
+  CHAIN_ID_AVAX,
+  CHAIN_ID_BASE,
+  CHAIN_ID_BSC,
+  CHAIN_ID_CELO,
+  CHAIN_ID_ETH,
+  CHAIN_ID_OPTIMISM,
+  CHAIN_ID_POLYGON,
+  CONTRACTS,
+  ChainId,
+  ChainName,
+  Network,
+} from "@certusone/wormhole-sdk";
 import { ethers } from "ethers";
 
+export const SLOW_FINALITY_CHAINS = [
+  CHAIN_ID_ETH,
+  CHAIN_ID_POLYGON,
+  CHAIN_ID_BSC,
+  CHAIN_ID_OPTIMISM,
+  CHAIN_ID_ARBITRUM,
+  CHAIN_ID_AVAX,
+  CHAIN_ID_BASE,
+  CHAIN_ID_CELO,
+];
+
 const MAINNET_RPCS: { [key in ChainName]?: string } = {
-  ethereum: process.env.ETH_RPC || "https://rpc.ankr.com/eth",
-  bsc: process.env.BSC_RPC || "https://bsc-dataseed2.defibit.io",
-  polygon: "https://rpc.ankr.com/polygon",
-  avalanche: "https://rpc.ankr.com/avalanche",
-  oasis: "https://emerald.oasis.dev",
-  algorand: "https://mainnet-api.algonode.cloud",
-  fantom: "https://rpc.ankr.com/fantom",
-  karura: "https://eth-rpc-karura.aca-api.network",
-  base: "https://mainnet.base.org",
   acala: "https://eth-rpc-acala.aca-api.network",
-  klaytn: "https://klaytn-mainnet-rpc.allthatnode.com:8551",
-  celo: "https://forno.celo.org",
-  moonbeam: "https://rpc.ankr.com/moonbeam",
-  arbitrum: "https://arb1.arbitrum.io/rpc",
-  optimism: "https://rpc.ankr.com/optimism",
+  algorand: "https://mainnet-api.algonode.cloud",
   aptos: "https://fullnode.mainnet.aptoslabs.com/",
-  near: "https://rpc.mainnet.near.org",
-  xpla: "https://dimension-lcd.xpla.dev",
-  terra2: "https://phoenix-lcd.terra.dev",
-  terra: "https://terra-classic-fcd.publicnode.com",
+  arbitrum: "https://arb1.arbitrum.io/rpc",
+  avalanche: "https://rpc.ankr.com/avalanche",
+  base: "https://mainnet.base.org",
+  bsc: process.env.BSC_RPC || "https://bsc-dataseed2.defibit.io",
+  celo: "https://forno.celo.org",
+  ethereum: process.env.ETH_RPC || "https://rpc.ankr.com/eth",
+  fantom: "https://rpc.ankr.com/fantom",
   injective: "https://api.injective.network",
+  karura: "https://eth-rpc-karura.aca-api.network",
+  klaytn: "https://klaytn-mainnet-rpc.allthatnode.com:8551",
+  moonbeam: "https://rpc.ankr.com/moonbeam",
+  near: "https://rpc.mainnet.near.org",
+  oasis: "https://emerald.oasis.dev",
+  optimism: "https://rpc.ankr.com/optimism",
+  polygon: "https://rpc.ankr.com/polygon",
   solana: process.env.SOLANA_RPC ?? "https://api.mainnet-beta.solana.com",
   sui: "https://rpc.mainnet.sui.io",
+  terra: "https://terra-classic-fcd.publicnode.com",
+  terra2: "https://phoenix-lcd.terra.dev",
+  xpla: "https://dimension-lcd.xpla.dev",
 };
 
 const TESTNET_RPCS: { [key in ChainName]?: string } = {
-  bsc: "https://data-seed-prebsc-2-s3.binance.org:8545",
-  polygon: "https://rpc.ankr.com/polygon_mumbai",
+  arbitrum: "https://goerli-rollup.arbitrum.io/rpc",
   avalanche: "https://api.avax-test.network/ext/bc/C/rpc",
-  celo: "https://alfajores-forno.celo-testnet.org",
-  moonbeam: "https://rpc.api.moonbase.moonbeam.network",
   base: "https://goerli.base.org",
+  bsc: "https://data-seed-prebsc-2-s3.binance.org:8545",
+  celo: "https://alfajores-forno.celo-testnet.org",
+  ethereum: "https://rpc.ankr.com/eth_goerli",
+  moonbeam: "https://rpc.api.moonbase.moonbeam.network",
+  optimism: "https://goerli.optimism.io",
+  polygon: "https://rpc.ankr.com/polygon_mumbai",
 };
 
 const DEVNET_RPCS: { [key in ChainName]?: string } = {
@@ -99,6 +126,18 @@ export const testnetEnv: Environment = {
   network: "TESTNET",
   chainInfos: [
     {
+      chainId: 2 as ChainId,
+      evmNetworkId: 5, // https://chainlist.org/chain/5
+      chainName: "Ethereum",
+      nativeCurrencyName: "ETH",
+      nativeCurrencyDecimals: 18,
+      relayerContractAddress: null,
+      defaultDeliveryProviderContractAddress: null,
+      coreBridgeAddress: CONTRACTS.TESTNET.ethereum.core,
+      mockIntegrationAddress: "",
+      rpcUrl: TESTNET_RPCS.ethereum || "",
+    },
+    {
       chainId: 4 as ChainId,
       evmNetworkId: 97,
       chainName: "BSC - Testnet",
@@ -160,15 +199,39 @@ export const testnetEnv: Environment = {
     },
     {
       chainId: 30 as ChainId,
-      evmNetworkId: 84531,
       chainName: "BASE Goerli",
-      nativeCurrencyName: "ETH",
-      nativeCurrencyDecimals: 18,
-      relayerContractAddress: "0xea8029CD7FCAEFFcD1F53686430Db0Fc8ed384E1",
-      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       coreBridgeAddress: "0x23908A62110e21C04F3A4e011d24F901F911744A",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 84531,
       mockIntegrationAddress: "0x9Ee656203B0DC40cc1bA3f4738527779220e3998",
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      relayerContractAddress: "0xea8029CD7FCAEFFcD1F53686430Db0Fc8ed384E1",
       rpcUrl: TESTNET_RPCS.base || "",
+    },
+    {
+      chainId: 23 as ChainId,
+      chainName: "Arbitrum",
+      coreBridgeAddress: CONTRACTS.TESTNET.arbitrum.core,
+      defaultDeliveryProviderContractAddress: null,
+      evmNetworkId: 42161,
+      mockIntegrationAddress: "",
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      rpcUrl: TESTNET_RPCS.arbitrum || "",
+      relayerContractAddress: null,
+    },
+    {
+      chainId: 24 as ChainId,
+      chainName: "Optimism",
+      coreBridgeAddress: CONTRACTS.TESTNET.optimism.core,
+      defaultDeliveryProviderContractAddress: null,
+      evmNetworkId: 10,
+      mockIntegrationAddress: "",
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "Eth",
+      relayerContractAddress: null,
+      rpcUrl: TESTNET_RPCS.optimism || "",
     },
   ],
   guardianRpcs: ["https://wormhole-v2-testnet-api.certus.one"],
@@ -339,14 +402,16 @@ export const getChainName = (chainId: ChainId, env: Environment) => {
 };
 
 export function getEthersProvider(chainInfo: ChainInfo) {
-  return new ethers.providers.JsonRpcProvider(chainInfo.rpcUrl);
+  if (chainInfo?.rpcUrl) return new ethers.providers.JsonRpcProvider(chainInfo.rpcUrl);
+
+  return null;
 }
 
 export function getChainInfo(env: Environment, chainId: ChainId): ChainInfo {
   const output = env.chainInfos.find(chainInfo => chainInfo.chainId === chainId);
 
   if (output === undefined) {
-    throw new Error(`Unknown chainId ${chainId}`);
+    console.error(`Unknown chainId ${chainId}`);
   }
 
   return output;

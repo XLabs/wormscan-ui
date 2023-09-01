@@ -3,23 +3,24 @@
 .tx-information-summary {
   @include centered-column;
 
-  column-gap: 32px;
-  row-gap: 32px;
-  padding: 24px;
   background-color: var(--color-white-05);
-  min-height: 95px;
+  column-gap: 32px;
   margin-bottom: 24px;
+  min-height: 95px;
+  padding: 40px 16px;
+  row-gap: 32px;
 
   @include desktop {
     @include centered-row;
 
     justify-content: start;
+    padding: 16px 0px 16px 24px;
     row-gap: 16px;
   }
 
   @include bigDesktop {
     column-gap: 72px;
-    padding: 16px 112px;
+    padding: 16px 0px 16px 112px;
   }
 
   > * {
