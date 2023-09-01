@@ -63,18 +63,13 @@
     }
 
     & .status {
-      @include text-p2;
-      @include centered-row;
-
-      border-radius: 40px;
+      font-size: 16px;
       font-weight: 500;
-      gap: 8px;
-      padding: 8px 16px;
     }
 
     & .progress {
       background-color: #ffd600;
-      color: #675700;
+      color: #473c01;
     }
 
     & .completed {

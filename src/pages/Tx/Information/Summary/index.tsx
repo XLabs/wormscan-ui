@@ -3,7 +3,7 @@ import { Network } from "@certusone/wormhole-sdk";
 import { ChainId } from "@xlabs-libs/wormscan-sdk";
 import { formatAppIds, shortAddress } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
-import { Tooltip } from "src/components/atoms";
+import { Chip, Tooltip } from "src/components/atoms";
 import "./styles.scss";
 
 type Props = {
@@ -27,19 +27,17 @@ const Summary = ({
     <div>
       <div className="key">Status:</div>
       <div className="value">
-        <div className={`status ${vaa ? "completed" : "progress"}`}>
-          {vaa ? (
-            <>
-              <CheckCircledIcon height={16} width={16} />
-              COMPLETED
-            </>
-          ) : (
-            <>
-              <ClockIcon height={16} width={16} />
-              IN PROGRESS
-            </>
-          )}
-        </div>
+        {vaa ? (
+          <Chip className="status" color="completed">
+            <CheckCircledIcon height={16} width={16} />
+            COMPLETED
+          </Chip>
+        ) : (
+          <Chip className="status" color="progress">
+            <ClockIcon height={16} width={16} />
+            IN PROGRESS
+          </Chip>
+        )}
       </div>
     </div>
     <div>
