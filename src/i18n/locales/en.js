@@ -78,7 +78,7 @@ export default {
       },
       tx: {
         top: {
-          title: "Tx detail",
+          title: "Tx Detail",
         },
       },
       common: {

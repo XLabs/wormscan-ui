@@ -65,7 +65,7 @@ type Props = {
 const RawData = ({ VAAData, lifecycleRecord }: Props) => {
   const { payload, decodedVaa, ...rest } = VAAData || {};
   const rawData = { ...rest };
-  const { payload: nestedVAAPayload, ...nestedVAARest } = decodedVaa;
+  const { payload: nestedVAAPayload, ...nestedVAARest } = decodedVaa || {};
   const signedVAA = { ...nestedVAARest };
   const CODE_BLOCKS = [
     {

@@ -5,8 +5,7 @@
 
   background-color: var(--color-white-05);
   column-gap: 32px;
-  margin-bottom: 24px;
-  min-height: 95px;
+  min-height: 132px;
   padding: 40px 16px;
   row-gap: 32px;
 
@@ -19,37 +18,15 @@
   }
 
   @include bigDesktop {
-    column-gap: 72px;
+    column-gap: 64px;
     padding: 16px 0px 16px 112px;
   }
 
-  > * {
+  & > div {
     @include centered-row;
-    gap: 12px;
-
-    > * {
-      flex: 1;
-    }
-    > *:last-child {
-      flex: 2.3;
-    }
-
-    @include tablet {
-      > * {
-        flex: 1;
-      }
-      > *:last-child {
-        flex: 5;
-      }
-    }
+    gap: 40px;
 
     @include desktop {
-      > * {
-        flex: unset;
-      }
-    }
-
-    @include bigDesktop {
       gap: 24px;
     }
   }
@@ -58,46 +35,62 @@
     @include text-p2;
 
     color: var(--color-primary-90);
+    flex: 1;
+
+    @include tablet {
+      max-width: 150px;
+    }
+
+    @include desktop {
+      flex: unset;
+    }
   }
 
   & .value {
     @include text-p2;
     @include centered-row;
 
-    gap: 8px;
     color: var(--color-white);
+    flex: 2;
+    gap: 8px;
 
-    &.orange {
-      color: var(--color-alert-100);
+    @include tablet {
+      flex: 3;
     }
 
-    &.red {
-      color: var(--color-error-100);
-    }
-  }
-
-  & .chains {
-    @include centered-row;
-
-    gap: 12px;
-
-    &-container {
-      @include centered-column;
-
-      align-items: center;
-      background-color: var(--color-primary-800);
-      border-radius: 50%;
-      height: 32px;
-      width: 32px;
-
-      &.disabled {
-        opacity: 0.25;
-      }
+    @include desktop {
+      flex: 4;
     }
 
-    > .arrow-icon {
-      transform: scale(1.75);
-      color: var(--color-primary-200);
+    & .status {
+      @include text-p2;
+      @include centered-row;
+
+      border-radius: 40px;
+      font-weight: 500;
+      gap: 8px;
+      padding: 8px 16px;
+    }
+
+    & .progress {
+      background-color: #ffd600;
+      color: #675700;
+    }
+
+    & .completed {
+      background-color: #00ffa3;
+      color: #023523;
+    }
+
+    &-tooltip {
+      @include centered-row;
+
+      color: var(--color-success-100);
+    }
+
+    & > a {
+      color: var(--color-information-100);
+      text-decoration: none;
     }
   }
 }

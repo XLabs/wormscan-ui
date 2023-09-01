@@ -63,16 +63,16 @@
     display: flex;
     flex-direction: column;
     justify-content: start;
-    padding: 24px 16px;
+    padding: 64px 16px;
 
     @include desktop {
       --y-space: 72px;
-      padding: 16px 24px 64px 24px;
+      padding: 64px 24px 64px 24px;
       min-width: 1000px;
     }
 
     @include bigDesktop {
-      padding: 16px 112px 64px;
+      padding: 64px 112px 64px;
     }
 
     &-step + &-step {

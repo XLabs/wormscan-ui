@@ -1,32 +1,33 @@
-import { CopyIcon } from "@radix-ui/react-icons";
-import { BlockchainIcon, SignatureCircle, Tooltip } from "src/components/atoms";
-import { CopyToClipboard } from "src/components/molecules";
-import RelayIcon from "src/icons/relayIcon.svg";
-import { ChainId, VAADetail } from "@xlabs-libs/wormscan-sdk";
-import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import { shortAddress } from "src/utils/crypto";
-import { parseVaa } from "@certusone/wormhole-sdk";
-import { colorStatus, getGuardianSet } from "src/consts";
-import { parseAddress } from "src/utils/crypto";
+import { Fragment } from "react";
 import { ethers } from "ethers";
-import {
-  DeliveryLifecycleRecord,
-  isRedelivery,
-  parseGenericRelayerVaa,
-} from "src/utils/genericRelayerVaaUtils";
-import { useEnvironment } from "src/context/EnvironmentContext";
-
+import { CheckboxIcon, CopyIcon } from "@radix-ui/react-icons";
+import { ChainId, VAADetail } from "@xlabs-libs/wormscan-sdk";
+import { parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
   RedeliveryInstruction,
   parseEVMExecutionInfoV1,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
-import { Fragment } from "react";
+
+import { useEnvironment } from "src/context/EnvironmentContext";
+import { BlockchainIcon, Tooltip } from "src/components/atoms";
+import { CopyToClipboard } from "src/components/molecules";
+import { colorStatus, getGuardianSet } from "src/consts";
+import RelayIcon from "src/icons/relayIcon.svg";
+import { getChainName, getExplorerLink } from "src/utils/wormhole";
+import { shortAddress } from "src/utils/crypto";
+import { parseAddress } from "src/utils/crypto";
+import { DeliveryMetaData, DeliveryProviderStatus } from "src/utils/deliveryProviderStatusApi";
+import {
+  DeliveryLifecycleRecord,
+  isRedelivery,
+  parseGenericRelayerVaa,
+} from "src/utils/genericRelayerVaaUtils";
 import {
   mainnetDefaultDeliveryProviderContractAddress,
   testnetDefaultDeliveryProviderContractAddress,
 } from "src/utils/environment";
-import { DeliveryMetaData, DeliveryProviderStatus } from "src/utils/deliveryProviderStatusApi";
+
 import "./styles.scss";
 
 // eslint-disable-next-line no-var
@@ -421,20 +422,18 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
               <div>SIGNED VAA</div>
             </div>
             <div className="relayer-tx-overview-graph-step-iconWrapper">
-              <div className="relayer-tx-overview-graph-step-signaturesContainer">
-                <SignatureCircle guardianSignatures={parsedGuardianSignatures} />
-                <div className="relayer-tx-overview-graph-step-signaturesContainer-text">
-                  <div className="relayer-tx-overview-graph-step-signaturesContainer-text-number">
-                    {guardianSignaturesCount}/{totalGuardiansNeeded}
-                  </div>
-                  <div className="relayer-tx-overview-graph-step-signaturesContainer-text-description">
-                    Signatures
-                  </div>
-                </div>
+              <div className="relayer-tx-overview-graph-step-iconContainer">
+                <CheckboxIcon height={32} width={32} />
               </div>
             </div>
 
             <div className="relayer-tx-overview-graph-step-data-container signatures">
+              <div>
+                <div className="relayer-tx-overview-graph-step-title">Signatures</div>
+                <div className="relayer-tx-overview-graph-step-description">
+                  {guardianSignaturesCount} / {totalGuardiansNeeded}
+                </div>
+              </div>
               <div>
                 <div className="relayer-tx-overview-graph-step-title">VAA ID</div>
                 <div className="relayer-tx-overview-graph-step-description">
@@ -499,10 +498,6 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                       </div>
                     </div>
                   </div>
-                  {/* <div>
-                      <div className="relayer-tx-overview-graph-step-title">MORE INFO</div>
-                      <div className="relayer-tx-overview-graph-step-description">ASD</div>
-                    </div> */}
                   <div>
                     <div className="relayer-tx-overview-graph-step-title">Delivery Provider</div>
                     <div className="relayer-tx-overview-graph-step-description">
