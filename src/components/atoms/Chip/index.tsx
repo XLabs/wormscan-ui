@@ -7,7 +7,7 @@ type Props = {
   className?: string;
 };
 
-const Chip = ({ children, color, className }: Props) => {
+const Chip = ({ children, color = "", className = "" }: Props) => {
   return <div className={`chip ${color} ${className}`}>{children}</div>;
 };
 

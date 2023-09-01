@@ -1,80 +1,151 @@
 import { useCallback, useEffect, useState } from "react";
-import { Loader } from "src/components/atoms";
-import { Tabs } from "src/components/organisms";
+import { ChainId } from "@certusone/wormhole-sdk";
 import { GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
-import { minutesBetweenDates } from "src/utils/date";
-
-import i18n from "src/i18n";
-import Overview from "./Overview/index";
-import Summary from "./Summary";
-import RawData from "./RawData";
 
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { parseAddress } from "src/utils/crypto";
-import { ChainId } from "@certusone/wormhole-sdk";
-import RelayerOverview from "./RelayerOverview";
+import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
+import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
+import { formatDate } from "src/utils/date";
+import { formatCurrency } from "src/utils/number";
 import {
   DeliveryLifecycleRecord,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
-import "./styles.scss";
+import { Alert, Loader } from "src/components/atoms";
+import { txType } from "src/consts";
 
-const TX_TAB_HEADERS = [
-  i18n.t("common.overview").toUpperCase(),
-  i18n.t("common.rawData").toUpperCase(),
-];
+import Tabs from "./Tabs";
+import Summary from "./Summary";
+import Overview from "./Overview/index";
+import Details from "./Details";
+import RawData from "./RawData";
+import RelayerOverview from "./RelayerOverview";
+
+import "./styles.scss";
 
 interface Props {
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
   txData: GetTransactionsOutput;
 }
 
-const Information = ({ VAAData, txData }: Props) => {
-  const { environment } = useEnvironment();
-  const { timestamp, symbol, emitterChain, standardizedProperties, globalTx, payload } =
-    txData || {};
+const UNKNOWN_APP_ID = "UNKNOWN";
 
-  const { payloadType } = payload || {};
+const Information = ({ VAAData, txData }: Props) => {
+  const [showOverview, setShowOverview] = useState(true);
+  const [showOverviewDetail, setShowOverviewDetail] = useLocalStorage<boolean>(
+    "showOverviewDetail",
+    false,
+  );
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+
+  const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
+  const { decodedVaa, vaa } = VAAData || {};
+  const { guardianSignatures } = decodedVaa || {};
+  const guardianSignaturesCount = guardianSignatures?.length || 0;
+  const hasVAA = !vaa;
+
+  const {
+    id: VAAId,
+    timestamp,
+    tokenAmount,
+    usdAmount,
+    symbol,
+    emitterChain,
+    emitterAddress,
+    emitterNativeAddress,
+    standardizedProperties,
+    globalTx,
+    payload,
+  } = txData || {};
+
+  const {
+    payloadType,
+    callerAppId,
+    tokenChain: payloadTokenChain,
+    tokenAddress: payloadTokenAddress,
+  } = payload || {};
+
   const { originTx, destinationTx } = globalTx || {};
 
   const {
-    fromChain: stdFromChain,
-    toChain: stdToChain,
-    fee,
+    amount,
     appIds,
+    fee,
+    fromAddress: stdFromAddress,
+    fromChain: stdFromChain,
+    toAddress: stdToAddress,
+    toChain: stdToChain,
+    tokenAddress: stdTokenAddress,
+    tokenChain: stdTokenChain,
   } = standardizedProperties || {};
 
-  const { chainId: globalFromChainId, timestamp: globalFromTimestamp } = originTx || {};
+  const { from: globalFrom, timestamp: globalFromTimestamp } = originTx || {};
 
   const {
     chainId: globalToChainId,
+    from: globalTo,
     timestamp: globalToTimestamp,
     txHash: globalToRedeemTx,
   } = destinationTx || {};
 
-  const fromChain = stdFromChain || globalFromChainId || emitterChain;
+  const fromChain = emitterChain || stdFromChain;
+  const fromAddress = globalFrom || stdFromAddress;
   const toChain = stdToChain || globalToChainId;
+  const toAddress = stdToAddress || globalTo;
   const startDate = timestamp || globalFromTimestamp;
   const endDate = globalToTimestamp;
+  const tokenChain = stdTokenChain || payloadTokenChain;
+  const tokenAddress = stdTokenAddress || payloadTokenAddress;
+  const isUnknownApp = callerAppId === UNKNOWN_APP_ID || appIds?.includes(UNKNOWN_APP_ID);
+  const isAttestation = txType[payloadType] === "Attestation";
+  const isUnknownPayloadType = !txType[payloadType];
 
-  const transactionTimeInMinutes = globalToRedeemTx
-    ? minutesBetweenDates(new Date(startDate), new Date(endDate))
-    : undefined;
+  const parsedOriginAddress = parseAddress({
+    value: fromAddress,
+    chainId: fromChain as ChainId,
+  });
+  const parsedEmitterAddress = parseAddress({
+    value: emitterNativeAddress ? emitterNativeAddress : emitterAddress,
+    chainId: emitterChain as ChainId,
+  });
+  const parsedDestinationAddress = parseAddress({
+    value: toAddress,
+    chainId: toChain as ChainId,
+  });
 
-  const TopSummary = useCallback(() => {
-    return (
-      <Summary
-        startDate={startDate}
-        transactionTimeInMinutes={transactionTimeInMinutes}
-        fee={fee}
-        appIds={appIds}
-        symbol={symbol}
-        originChainId={fromChain}
-        destinationChainId={toChain}
-        payloadType={payloadType}
-      />
-    );
-  }, [toChain, fromChain, fee, appIds, symbol, transactionTimeInMinutes, payloadType, startDate]);
+  const parsedRedeemTx = parseTx({ value: globalToRedeemTx, chainId: toChain as ChainId });
+
+  const amountSent = formatCurrency(Number(tokenAmount));
+  const amountSentUSD = formatCurrency(Number(usdAmount));
+  const redeemedAmount = formatCurrency(formatUnits(+amount - +fee));
+
+  const originDateParsed = formatDate(startDate);
+  const destinationDateParsed = formatDate(endDate);
+
+  const overviewAndDetailProps = {
+    amountSent,
+    amountSentUSD,
+    currentNetwork,
+    destinationDateParsed,
+    fee,
+    fromChain,
+    guardianSignaturesCount,
+    isUnknownApp,
+    parsedDestinationAddress,
+    parsedEmitterAddress,
+    parsedOriginAddress,
+    parsedRedeemTx,
+    redeemedAmount,
+    symbol,
+    toChain,
+    tokenAddress,
+    tokenAmount,
+    tokenChain,
+    totalGuardiansNeeded,
+    VAAId,
+  };
+  // --- x ---
 
   // --- Automatic Relayer Detection and handling ---
   const [genericRelayerInfo, setGenericRelayerInfo] = useState<DeliveryLifecycleRecord>(null);
@@ -97,11 +168,6 @@ const Information = ({ VAAData, txData }: Props) => {
     a => a.chainId === fromChain,
   )?.relayerContractAddress;
 
-  const parsedEmitterAddress = parseAddress({
-    value: txData?.emitterAddress,
-    chainId: txData?.emitterChain as ChainId,
-  });
-
   const [isGenericRelayerTx, setIsGenericRelayerTx] = useState(
     targetContract?.toUpperCase() === parsedEmitterAddress?.toUpperCase(),
   );
@@ -114,35 +180,73 @@ const Information = ({ VAAData, txData }: Props) => {
   }, [getRelayerInfo, isGenericRelayerTx]);
   // --- x ---
 
+  const OverviewContent = () => {
+    if (isGenericRelayerTx) {
+      if (loadingRelayers) return <Loader />;
+      return <RelayerOverview VAAData={VAAData} lifecycleRecord={genericRelayerInfo} />;
+    }
+
+    if (showOverviewDetail) {
+      return (
+        <>
+          <Details {...overviewAndDetailProps} />
+          <AlertsContent />
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Overview
+          {...overviewAndDetailProps}
+          globalToRedeemTx={globalToRedeemTx}
+          isAttestation={isAttestation}
+          originDateParsed={originDateParsed}
+        />
+        <AlertsContent />
+      </>
+    );
+  };
+
+  const RawDataContent = () => {
+    if (isGenericRelayerTx && loadingRelayers) return <Loader />;
+    return <RawData lifecycleRecord={genericRelayerInfo} txData={txData} VAAData={VAAData} />;
+  };
+
+  const AlertsContent = () => {
+    if (!hasVAA && !isUnknownPayloadType) return null;
+    return (
+      <div className="tx-information-alerts">
+        <div className="tx-information-alerts-unknown-payload-type">
+          <Alert type="info">
+            {hasVAA
+              ? "Data being shown is incomplete because there is no emitted VAA for this transaction yet. Wait 20 minutes and try again."
+              : "This VAA comes from another multiverse, we don't have more details about it."}
+          </Alert>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <section className="tx-information">
       <Tabs
-        headers={TX_TAB_HEADERS}
-        contents={[
-          <>
-            <TopSummary />
-            {isGenericRelayerTx ? (
-              <>
-                {loadingRelayers ? (
-                  <Loader />
-                ) : (
-                  <RelayerOverview VAAData={VAAData} lifecycleRecord={genericRelayerInfo} />
-                )}
-              </>
-            ) : (
-              <Overview VAAData={VAAData} txData={txData} />
-            )}
-          </>,
-          <>
-            <TopSummary />
-            {isGenericRelayerTx && loadingRelayers ? (
-              <Loader />
-            ) : (
-              <RawData lifecycleRecord={genericRelayerInfo} txData={txData} VAAData={VAAData} />
-            )}
-          </>,
-        ]}
+        isGenericRelayerTx={isGenericRelayerTx}
+        setShowOverview={setShowOverview}
+        setShowOverviewDetail={setShowOverviewDetail}
+        showOverview={showOverview}
+        showOverviewDetail={showOverviewDetail}
       />
+      <Summary
+        appIds={appIds}
+        currentNetwork={currentNetwork}
+        isUnknownApp={isUnknownApp}
+        parsedDestinationAddress={parsedDestinationAddress}
+        toChain={toChain}
+        vaa={vaa}
+      />
+
+      {showOverview ? <OverviewContent /> : <RawDataContent />}
     </section>
   );
 };

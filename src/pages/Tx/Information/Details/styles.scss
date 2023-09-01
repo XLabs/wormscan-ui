@@ -1,48 +1,85 @@
 @import "src/styles/globals.scss";
 
 .tx-details {
-  padding: 24px;
-  padding-top: 0;
+  padding: 64px 16px;
+
+  @include desktop {
+    padding: 64px 24px;
+  }
+
+  @include bigDesktop {
+    padding: 64px 112px;
+  }
 
   &-group {
+    border-bottom: 1px solid var(--color-white-05);
     display: flex;
-    gap: 16px;
+    flex-direction: column;
+    gap: 32px;
+    padding-bottom: 40px;
 
-    & + & {
-      margin-top: 24px;
-      padding-top: 24px;
-      border-top: 1px solid var(--color-white-05);
+    &:not(:last-child) {
+      margin-bottom: 40px;
     }
 
-    &-keys {
-      flex: 1;
-      color: var(--color-primary-90);
-      display: flex;
-      flex-direction: column;
+    @include desktop {
       gap: 16px;
-      max-width: 150px;
+      padding-bottom: 24px;
+
+      &:not(:last-child) {
+        margin-bottom: 24px;
+      }
     }
 
-    &-values {
-      flex: 1;
-      color: var(--color-primary-10);
+    &-line {
       display: flex;
-      flex-direction: column;
-      gap: 16px;
+      gap: 40px;
 
-      &-address {
-        display: flex;
-        align-items: center;
-        gap: 8px;
+      @include desktop {
+        gap: 64px;
       }
 
-      &-status {
-        @include text-p3;
-
-        display: flex;
+      &-key {
         align-items: center;
-        color: var(--color-success-100);
+        color: var(--color-primary-90);
+        display: flex;
+        flex: 1;
+
+        @include tablet {
+          max-width: 150px;
+        }
+      }
+
+      &-value {
+        @include text-p2;
+
+        align-items: center;
+        color: var(--color-white);
+        display: flex;
+        flex-wrap: wrap;
+        flex: 2;
         gap: 8px;
+
+        @include tablet {
+          flex: 3;
+        }
+
+        @include desktop {
+          flex: 4;
+        }
+
+        & svg {
+          color: var(--color-success-100);
+        }
+
+        & > a {
+          color: var(--color-information-100);
+          text-decoration: none;
+        }
+
+        & > .copy-to-clipboard svg {
+          color: var(--color-primary-90);
+        }
       }
     }
   }

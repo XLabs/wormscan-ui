@@ -1,6 +1,7 @@
 @import "src/styles/globals.scss";
 
 .tx-information {
+  background-color: var(--color-white-05);
   margin-bottom: 32px;
 
   &-table-results {
@@ -9,5 +10,21 @@
     margin-bottom: 24px;
     padding: 0 16px;
     color: var(--color-primary-50);
+  }
+
+  &-alerts {
+    padding: 0 16px 64px 16px;
+
+    @include desktop {
+      padding: 0 24px 64px 24px;
+    }
+
+    @include bigDesktop {
+      padding: 0 24px 64px 112px;
+    }
+
+    &-unknown-payload-type {
+      max-width: 390px;
+    }
   }
 }

@@ -41,3 +41,21 @@ export const daysAgoDate = (daysAgo: number) => {
   const today = new Date();
   return new Date(today.getTime() - Number(daysAgo) * 24 * 60 * 60 * 1000);
 };
+
+export const formatDate = (date: string | Date): string => {
+  if (!date) return;
+
+  const dateObject = new Date(date);
+  if (isNaN(dateObject.getTime())) return;
+
+  const formattedDate = dateObject.toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  return formattedDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
+};

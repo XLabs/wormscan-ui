@@ -1,25 +1,38 @@
-import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { Alert, BlockchainIcon, SignatureCircle, Tooltip } from "src/components/atoms";
+import { ArrowDownIcon, CheckboxIcon, CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
+import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import WormIcon from "src/icons/wormIcon.svg";
-import RelayIcon from "src/icons/relayIcon.svg";
-import { GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
-import { getChainName, getExplorerLink } from "src/utils/wormhole";
+import { getExplorerLink } from "src/utils/wormhole";
 import { shortAddress } from "src/utils/crypto";
-import { formatCurrency } from "src/utils/number";
-import { ChainId } from "@certusone/wormhole-sdk";
-import { useWindowSize } from "src/utils/hooks/useWindowSize";
-import { BREAKPOINTS, colorStatus, txType } from "src/consts";
-import { parseTx, parseAddress } from "../../../../utils/crypto";
-import { useEnvironment } from "src/context/EnvironmentContext";
+import { ChainId, Network } from "@certusone/wormhole-sdk";
+import { colorStatus } from "src/consts";
 import "./styles.scss";
 
 type Props = {
-  VAAData: VAADetail & { vaa: any; decodedVaa: any };
-  txData: GetTransactionsOutput;
+  amountSent?: string;
+  amountSentUSD?: string;
+  currentNetwork?: Network;
+  destinationDateParsed?: string;
+  fee?: string;
+  fromChain?: ChainId | number;
+  globalToRedeemTx?: string;
+  guardianSignaturesCount?: number;
+  isAttestation?: boolean;
+  isUnknownApp?: boolean;
+  originDateParsed?: string;
+  parsedDestinationAddress?: string;
+  parsedEmitterAddress?: string;
+  parsedOriginAddress?: string;
+  parsedRedeemTx?: string;
+  redeemedAmount?: string;
+  symbol?: string;
+  toChain?: ChainId | number;
+  tokenAddress?: string;
+  tokenAmount?: string;
+  tokenChain?: ChainId | number;
+  totalGuardiansNeeded?: number;
+  VAAId?: string;
 };
-
-const UNKNOWN_APP_ID = "UNKNOWN";
 
 const NotFinalDestinationTooltip = () => (
   <div>
@@ -28,147 +41,50 @@ const NotFinalDestinationTooltip = () => (
   </div>
 );
 
-const Overview = ({ VAAData, txData }: Props) => {
-  const { environment } = useEnvironment();
-  const currentNetwork = environment.network;
-
-  const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
-  const size = useWindowSize();
-  const isMobile = size.width < BREAKPOINTS.tablet;
-  const { decodedVaa } = VAAData || {};
-  const { guardianSignatures } = decodedVaa || {};
-  const guardianSignaturesCount = guardianSignatures?.length || 0;
-  const hasVAA = !VAAData.vaa;
-
-  const {
-    id: VAAId,
-    timestamp,
-    tokenAmount,
-    usdAmount,
-    symbol,
-    emitterChain,
-    emitterAddress,
-    emitterNativeAddress,
-    standardizedProperties,
-    globalTx,
-    payload,
-  } = txData || {};
-
-  const {
-    payloadType,
-    callerAppId,
-    decimals: payloadTokenDecimals,
-    name: payloadTokenName,
-    symbol: payloadTokenSymbol,
-    tokenChain: payloadTokenChain,
-    tokenAddress: payloadTokenAddress,
-  } = payload || {};
-  const { originTx, destinationTx } = globalTx || {};
-  const isAttestation = txType[payloadType] === "Attestation";
-  const isUnknownPayloadType = !txType[payloadType];
-
-  const {
-    appIds,
-    fromAddress: stdFromAddress,
-    fromChain: stdFromChain,
-    toChain: stdToChain,
-    toAddress: stdToAddress,
-    tokenChain: stdTokenChain,
-    tokenAddress: stdTokenAddress,
-  } = standardizedProperties || {};
-
-  const { from: globalFrom, timestamp: globalFromTimestamp } = originTx || {};
-
-  const {
-    chainId: globalToChainId,
-    from: globalTo,
-    timestamp: globalToTimestamp,
-    txHash: globalToRedeemTx,
-  } = destinationTx || {};
-
-  const fromChain = emitterChain || stdFromChain;
-  const fromAddress = globalFrom || stdFromAddress;
-  const toChain = stdToChain || globalToChainId;
-  const toAddress = stdToAddress || globalTo;
-  const startDate = timestamp || globalFromTimestamp;
-  const endDate = globalToTimestamp;
-  const tokenChain = stdTokenChain || payloadTokenChain;
-  const tokenAddress = stdTokenAddress || payloadTokenAddress;
-  const isUnknownApp = callerAppId === UNKNOWN_APP_ID || appIds?.includes(UNKNOWN_APP_ID);
-
-  const parsedOriginAddress = parseAddress({
-    value: fromAddress,
-    chainId: fromChain as ChainId,
-  });
-
-  const parsedEmitterAddress = parseAddress({
-    value: emitterNativeAddress ? emitterNativeAddress : emitterAddress,
-    chainId: emitterChain as ChainId,
-  });
-
-  const parsedDestinationAddress = parseAddress({
-    value: toAddress,
-    chainId: toChain as ChainId,
-  });
-
-  const parsedRedeemTx = parseTx({ value: globalToRedeemTx, chainId: toChain as ChainId });
-
-  const originDate = new Date(startDate).toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-  const destinationDate = new Date(endDate).toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-
-  const amountSent = formatCurrency(Number(tokenAmount));
-  const amountSentUSD = formatCurrency(Number(usdAmount));
-
-  const originDateParsed = originDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
-  const destinationDateParsed = destinationDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
-
-  return (
-    <div className="tx-overview">
-      <div className="tx-overview-graph">
-        <div className={`tx-overview-graph-step green source`}>
-          <div className="tx-overview-graph-step-name">
-            <div>SOURCE CHAIN</div>
+const Overview = ({
+  amountSent,
+  amountSentUSD,
+  currentNetwork,
+  destinationDateParsed,
+  fee,
+  fromChain,
+  globalToRedeemTx,
+  guardianSignaturesCount,
+  isAttestation,
+  isUnknownApp,
+  originDateParsed,
+  parsedDestinationAddress,
+  parsedEmitterAddress,
+  parsedOriginAddress,
+  parsedRedeemTx,
+  redeemedAmount,
+  symbol,
+  toChain,
+  tokenAddress,
+  tokenAmount,
+  tokenChain,
+  totalGuardiansNeeded,
+  VAAId,
+}: Props) => (
+  <div className="tx-overview">
+    <div className="tx-overview-graph">
+      <div className={`tx-overview-graph-step green source`}>
+        <div className="tx-overview-graph-step-name">
+          <div>SOURCE CHAIN</div>
+        </div>
+        <div className="tx-overview-graph-step-iconWrapper">
+          <div className="tx-overview-graph-step-iconContainer">
+            {fromChain && <BlockchainIcon chainId={fromChain} size={32} />}
           </div>
-          <div className="tx-overview-graph-step-iconWrapper">
-            <div className="tx-overview-graph-step-iconContainer">
-              {fromChain && <BlockchainIcon chainId={fromChain} size={32} />}
-            </div>
-          </div>
-          <div className={`tx-overview-graph-step-data-container`}>
-            <div>
-              <div className="tx-overview-graph-step-title">Sent from</div>
-              <div className="tx-overview-graph-step-description">
-                {fromChain && getChainName({ chainId: fromChain }).toUpperCase()}
-              </div>
-            </div>
-            {isAttestation ? (
-              <>
-                <div>
-                  <div className="tx-overview-graph-step-title">Decimals</div>
-                  <div className="tx-overview-graph-step-description">{payloadTokenDecimals}</div>
-                </div>
-                <div className="mobile-hide"></div>
-                <div>
-                  <div className="tx-overview-graph-step-title">Token Symbol</div>
-                  <div className="tx-overview-graph-step-description">{payloadTokenSymbol}</div>
-                </div>
-                <div>
-                  <div className="tx-overview-graph-step-title">Token Name</div>
-                  <div className="tx-overview-graph-step-description">
+        </div>
+        <div className={`tx-overview-graph-step-data-container`}>
+          <div>
+            <div className="tx-overview-graph-step-title">Amount</div>
+            <div className="tx-overview-graph-step-description">
+              {tokenAmount ? (
+                <>
+                  {amountSent}{" "}
+                  {symbol && (
                     <a
                       href={getExplorerLink({
                         network: currentNetwork,
@@ -179,250 +95,261 @@ const Overview = ({ VAAData, txData }: Props) => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {payloadTokenName}
+                      {symbol}
                     </a>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div style={{ order: tokenAmount ? 1 : 2 }}>
-                  {tokenAmount && (
-                    <>
-                      <div className="tx-overview-graph-step-title">Amount</div>
-                      <div className="tx-overview-graph-step-description">
-                        {amountSent}{" "}
-                        {symbol && (
-                          <a
-                            href={getExplorerLink({
-                              network: currentNetwork,
-                              chainId: tokenChain,
-                              value: tokenAddress,
-                              base: "token",
-                            })}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {symbol}
-                          </a>
-                        )}
-                        {usdAmount && `(${amountSentUSD ? amountSentUSD : "-"} USD)`}
-                      </div>
-                    </>
                   )}
-                </div>
-                <div style={{ order: tokenAmount ? 2 : 1 }}>
-                  {parsedOriginAddress && (
-                    <>
-                      <div className="tx-overview-graph-step-title">Source wallet</div>
-                      <div className="tx-overview-graph-step-description">
-                        <a
-                          href={getExplorerLink({
-                            network: currentNetwork,
-                            chainId: fromChain,
-                            value: parsedOriginAddress,
-                            base: "address",
-                            isNativeAddress: true,
-                          })}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {shortAddress(parsedOriginAddress).toUpperCase()}
-                        </a>{" "}
-                        <CopyToClipboard toCopy={parsedOriginAddress}>
-                          <CopyIcon />
-                        </CopyToClipboard>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </>
-            )}
+                  ({amountSentUSD || "-"} USD)
+                </>
+              ) : (
+                "N/A"
+              )}
+            </div>
           </div>
-        </div>
-
-        {!isAttestation && (
-          <div className="tx-overview-graph-step green">
-            <div className="tx-overview-graph-step-name">
-              <div>EMITTER CONTRACT</div>
-            </div>
-            <div className="tx-overview-graph-step-iconWrapper">
-              <div className="tx-overview-graph-step-iconContainer">
-                <img src={WormIcon} alt="" height={32} loading="lazy" />
-              </div>
-            </div>
-            <div className="tx-overview-graph-step-data-container">
-              <div>
-                <div className="tx-overview-graph-step-title">Time</div>
-                <div className="tx-overview-graph-step-description">{originDateParsed}</div>
-              </div>
-              <div>
-                <div className="tx-overview-graph-step-title">Contract Address</div>
-                <div className="tx-overview-graph-step-description">
+          <div>
+            <div className="tx-overview-graph-step-title">Source wallet</div>
+            <div className="tx-overview-graph-step-description">
+              {parsedOriginAddress ? (
+                <>
                   <a
                     href={getExplorerLink({
                       network: currentNetwork,
                       chainId: fromChain,
-                      value: parsedEmitterAddress,
+                      value: parsedOriginAddress,
                       base: "address",
                       isNativeAddress: true,
                     })}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {shortAddress(parsedEmitterAddress).toUpperCase()}
+                    {shortAddress(parsedOriginAddress).toUpperCase()}
                   </a>{" "}
-                  <CopyToClipboard toCopy={parsedEmitterAddress}>
+                  <CopyToClipboard toCopy={parsedOriginAddress}>
                     <CopyIcon />
                   </CopyToClipboard>
-                </div>
-              </div>
+                </>
+              ) : (
+                "N/A"
+              )}
             </div>
           </div>
-        )}
+        </div>
+      </div>
 
-        <div className={`tx-overview-graph-step signatures ${colorStatus["COMPLETED"]}`}>
+      {!isAttestation && (
+        <div className="tx-overview-graph-step green">
           <div className="tx-overview-graph-step-name">
-            <div>SIGNED VAA</div>
+            <div>EMITTER CONTRACT</div>
           </div>
           <div className="tx-overview-graph-step-iconWrapper">
-            <div className="tx-overview-graph-step-signaturesContainer">
-              <SignatureCircle guardianSignatures={guardianSignatures} />
-              <div className="tx-overview-graph-step-signaturesContainer-text">
-                <div className="tx-overview-graph-step-signaturesContainer-text-number">
-                  {guardianSignaturesCount}/{totalGuardiansNeeded}
-                </div>
-                <div className="tx-overview-graph-step-signaturesContainer-text-description">
-                  Signatures
-                </div>
+            <div className="tx-overview-graph-step-iconContainer">
+              <img src={WormIcon} alt="" height={32} loading="lazy" />
+            </div>
+          </div>
+          <div className="tx-overview-graph-step-data-container">
+            <div>
+              <div className="tx-overview-graph-step-title">Time</div>
+              <div className="tx-overview-graph-step-description">
+                {originDateParsed ? <>{originDateParsed}</> : "N/A"}
               </div>
+            </div>
+            <div>
+              <div className="tx-overview-graph-step-title">Contract Address</div>
+              {parsedEmitterAddress ? (
+                <>
+                  <div className="tx-overview-graph-step-description">
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: fromChain,
+                        value: parsedEmitterAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {shortAddress(parsedEmitterAddress).toUpperCase()}
+                    </a>{" "}
+                    <CopyToClipboard toCopy={parsedEmitterAddress}>
+                      <CopyIcon />
+                    </CopyToClipboard>
+                  </div>
+                </>
+              ) : (
+                "N/A"
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className={`tx-overview-graph-step signatures ${colorStatus["COMPLETED"]}`}>
+        <div className="tx-overview-graph-step-name">
+          <div>SIGNED VAA</div>
+        </div>
+        <div className="tx-overview-graph-step-iconWrapper">
+          <div className="tx-overview-graph-step-iconContainer">
+            <CheckboxIcon height={24} width={24} />
+          </div>
+        </div>
+
+        <div className="tx-overview-graph-step-data-container">
+          <div>
+            <div className="tx-overview-graph-step-title">Signatures</div>
+            <div className="tx-overview-graph-step-description">
+              {guardianSignaturesCount} / {totalGuardiansNeeded}
             </div>
           </div>
 
-          <div className="tx-overview-graph-step-data-container signatures">
+          <div>
+            <div className="tx-overview-graph-step-title">VAA ID</div>
+            <div className="tx-overview-graph-step-description">
+              {VAAId ? (
+                <>
+                  {shortAddress(VAAId)}
+                  <CopyToClipboard toCopy={VAAId}>
+                    <CopyIcon />
+                  </CopyToClipboard>
+                </>
+              ) : (
+                "N/A"
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {globalToRedeemTx && (
+        <div className={`tx-overview-graph-step ${colorStatus["COMPLETED"]}`}>
+          <div className="tx-overview-graph-step-name">
+            <div>RELAYING</div>
+          </div>
+          <div className="tx-overview-graph-step-iconWrapper">
+            <div className="tx-overview-graph-step-iconContainer">
+              <ArrowDownIcon height={24} width={24} />
+            </div>
+          </div>
+          <div className="tx-overview-graph-step-data-container">
             <div>
-              <div className="tx-overview-graph-step-title">VAA ID</div>
+              <div className="tx-overview-graph-step-title">Time</div>
+              <div className="tx-overview-graph-step-description">{destinationDateParsed}</div>
+            </div>
+
+            <div>
+              <div className="tx-overview-graph-step-title">Redeem Txn</div>
               <div className="tx-overview-graph-step-description">
-                {shortAddress(VAAId)}
-                <CopyToClipboard toCopy={VAAId}>
+                <a
+                  href={getExplorerLink({
+                    network: currentNetwork,
+                    chainId: toChain,
+                    value: parsedRedeemTx,
+                    isNativeAddress: true,
+                  })}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {shortAddress(parsedRedeemTx).toUpperCase()}
+                </a>{" "}
+                <CopyToClipboard toCopy={parsedRedeemTx}>
                   <CopyIcon />
                 </CopyToClipboard>
               </div>
             </div>
           </div>
         </div>
+      )}
 
-        {globalToRedeemTx && (
-          <div className={`tx-overview-graph-step ${colorStatus["COMPLETED"]}`}>
-            <div className="tx-overview-graph-step-name">
-              <div>RELAYING</div>
-            </div>
-            <div className="tx-overview-graph-step-iconWrapper">
-              <div className="tx-overview-graph-step-iconContainer">
-                <img src={RelayIcon} alt="" height={32} loading="lazy" />
-              </div>
-            </div>
-            <div className="tx-overview-graph-step-data-container">
-              <div>
-                <div className="tx-overview-graph-step-title">Time</div>
-                <div className="tx-overview-graph-step-description">{destinationDateParsed}</div>
-              </div>
-
-              <div>
-                <div className="tx-overview-graph-step-title">Redeem Tx</div>
-                <div className="tx-overview-graph-step-description">
-                  <a
-                    href={getExplorerLink({
-                      network: currentNetwork,
-                      chainId: toChain,
-                      value: parsedRedeemTx,
-                      isNativeAddress: true,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {shortAddress(parsedRedeemTx).toUpperCase()}
-                  </a>{" "}
-                  <CopyToClipboard toCopy={parsedRedeemTx}>
-                    <CopyIcon />
-                  </CopyToClipboard>
-                </div>
-              </div>
+      {toChain && (
+        <div className="tx-overview-graph-step green">
+          <div className="tx-overview-graph-step-name">
+            <div>TARGET CHAIN</div>
+          </div>
+          <div className="tx-overview-graph-step-iconWrapper">
+            <div className="tx-overview-graph-step-iconContainer">
+              {toChain && <BlockchainIcon chainId={toChain} size={32} />}
             </div>
           </div>
-        )}
-
-        {toChain && (
-          <div className="tx-overview-graph-step green">
-            <div className="tx-overview-graph-step-name">
-              <div>{isMobile ? "DEST. CHAIN" : "DESTINATION CHAIN"}</div>
-            </div>
-            <div className="tx-overview-graph-step-iconWrapper">
-              <div className="tx-overview-graph-step-iconContainer">
-                {toChain && <BlockchainIcon chainId={toChain} size={32} />}
+          <div className="tx-overview-graph-step-data-container">
+            <div>
+              <div className="tx-overview-graph-step-title">Redeemed Amount</div>
+              <div className="tx-overview-graph-step-description">
+                {Number(fee) ? (
+                  <>
+                    {redeemedAmount}{" "}
+                    {symbol && (
+                      <a
+                        href={getExplorerLink({
+                          network: currentNetwork,
+                          chainId: tokenChain,
+                          value: tokenAddress,
+                          base: "token",
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {symbol}
+                      </a>
+                    )}
+                  </>
+                ) : tokenAmount ? (
+                  <>
+                    {amountSent}{" "}
+                    {symbol && (
+                      <a
+                        href={getExplorerLink({
+                          network: currentNetwork,
+                          chainId: tokenChain,
+                          value: tokenAddress,
+                          base: "token",
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {symbol}
+                      </a>
+                    )}
+                    ({amountSentUSD || "-"} USD)
+                  </>
+                ) : (
+                  "N/A"
+                )}
               </div>
             </div>
-            <div className="tx-overview-graph-step-data-container">
-              <div>
-                <div className="tx-overview-graph-step-title">Sent to</div>
-                <div className="tx-overview-graph-step-description">
-                  {toChain && getChainName({ chainId: toChain }).toUpperCase()}
-                </div>
+            <div>
+              <div className="tx-overview-graph-step-title">
+                Destination Wallet
+                {isUnknownApp && (
+                  <div className="tx-overview-graph-step-title-tooltip">
+                    <Tooltip tooltip={<NotFinalDestinationTooltip />} type="info">
+                      <InfoCircledIcon />
+                    </Tooltip>
+                  </div>
+                )}
               </div>
-              <div>
-                <div className="tx-overview-graph-step-title">
-                  Destination wallet
-                  {isUnknownApp && (
-                    <div className="tx-overview-graph-step-title-tooltip">
-                      <Tooltip tooltip={<NotFinalDestinationTooltip />} type="info">
-                        <InfoCircledIcon />
-                      </Tooltip>
-                    </div>
-                  )}
-                </div>
-                <div className="tx-overview-graph-step-description">
-                  <a
-                    href={getExplorerLink({
-                      network: currentNetwork,
-                      chainId: toChain,
-                      value: parsedDestinationAddress,
-                      base: "address",
-                      isNativeAddress: true,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {shortAddress(parsedDestinationAddress).toUpperCase()}
-                  </a>{" "}
-                  <CopyToClipboard toCopy={parsedDestinationAddress}>
-                    <CopyIcon />
-                  </CopyToClipboard>
-                </div>
+              <div className="tx-overview-graph-step-description">
+                <a
+                  href={getExplorerLink({
+                    network: currentNetwork,
+                    chainId: toChain,
+                    value: parsedDestinationAddress,
+                    base: "address",
+                    isNativeAddress: true,
+                  })}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {shortAddress(parsedDestinationAddress).toUpperCase()}
+                </a>{" "}
+                <CopyToClipboard toCopy={parsedDestinationAddress}>
+                  <CopyIcon />
+                </CopyToClipboard>
               </div>
             </div>
-          </div>
-        )}
-      </div>
-      {hasVAA ? (
-        <div className="tx-overview-alerts">
-          <div className="tx-overview-alerts-unknown-payload-type">
-            <Alert type="info">
-              Data being shown is incomplete because there is no emitted VAA for this transaction
-              yet. Wait 20 minutes and try again.
-            </Alert>
           </div>
         </div>
-      ) : isUnknownPayloadType ? (
-        <div className="tx-overview-alerts">
-          <div className="tx-overview-alerts-unknown-payload-type">
-            <Alert type="info">
-              This VAA comes from another multiverse, we don&apos;t have more details about it.
-            </Alert>
-          </div>
-        </div>
-      ) : null}
+      )}
     </div>
-  );
-};
+  </div>
+);
 
 export default Overview;

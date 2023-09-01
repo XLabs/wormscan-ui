@@ -1,93 +1,90 @@
-import { ArrowRightIcon } from "@radix-ui/react-icons";
-import { BlockchainIcon } from "src/components/atoms";
-import { txType } from "src/consts";
-import { formatAppIds, formatUnits } from "src/utils/crypto";
+import { CheckCircledIcon, ClockIcon, InfoCircledIcon } from "@radix-ui/react-icons";
+import { Network } from "@certusone/wormhole-sdk";
+import { ChainId } from "@xlabs-libs/wormscan-sdk";
+import { formatAppIds, shortAddress } from "src/utils/crypto";
+import { getExplorerLink } from "src/utils/wormhole";
+import { Chip, Tooltip } from "src/components/atoms";
 import "./styles.scss";
 
 type Props = {
-  originChainId: number;
-  destinationChainId?: number;
-  transactionTimeInMinutes?: number;
-  symbol?: string;
-  fee?: string;
-  appIds?: string[];
-  payloadType: number;
-  startDate?: string | Date;
+  appIds: string[];
+  currentNetwork: Network;
+  isUnknownApp: boolean;
+  parsedDestinationAddress: string;
+  toChain: ChainId | number;
+  vaa: string;
 };
 
 const Summary = ({
-  transactionTimeInMinutes,
-  fee,
   appIds,
-  symbol,
-  originChainId,
-  destinationChainId,
-  payloadType,
-  startDate,
-}: Props) => {
-  const isAttestation = txType[payloadType] === "Attestation";
-  const parsedStartDate = new Date(startDate).toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-
-  const formattedStartDate = parsedStartDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
-
-  return (
-    <div className="tx-information-summary">
-      {transactionTimeInMinutes ? (
-        <div>
-          <div className="key">Tx Time:</div>
-          <div className={"value"}>
-            {transactionTimeInMinutes ? `${transactionTimeInMinutes} MIN` : "In progress"}
-          </div>
-        </div>
-      ) : (
-        <div>
-          <div className="key">Timestamp:</div>
-          <div className={"value"}>{formattedStartDate}</div>
-        </div>
-      )}
-      {fee && (
-        <div>
-          <div className="key">Fee:</div>
-          <div className="value">
-            {formatUnits(Number(fee))} {symbol || ""}
-          </div>
-        </div>
-      )}
-      <div>
-        <div className="key">{!isAttestation ? "Chains:" : "Chain:"}</div>
-        <div className="chains">
-          <div className="chains-container">
-            <BlockchainIcon size={20} chainId={originChainId || 0} />
-          </div>
-          {!isAttestation && (
-            <>
-              <ArrowRightIcon className="arrow-icon" />
-              <div className={`chains-container ${!destinationChainId && "disabled"}`}>
-                <BlockchainIcon
-                  size={20}
-                  chainId={destinationChainId || 0}
-                  dark={!destinationChainId}
-                />
-              </div>
-            </>
-          )}
-        </div>
+  currentNetwork,
+  isUnknownApp,
+  parsedDestinationAddress,
+  toChain,
+  vaa,
+}: Props) => (
+  <div className="tx-information-summary">
+    <div>
+      <div className="key">Status:</div>
+      <div className="value">
+        {vaa ? (
+          <Chip className="status" color="completed">
+            <CheckCircledIcon height={16} width={16} />
+            COMPLETED
+          </Chip>
+        ) : (
+          <Chip className="status" color="progress">
+            <ClockIcon height={16} width={16} />
+            IN PROGRESS
+          </Chip>
+        )}
       </div>
-      {appIds?.length > 0 && (
-        <div>
-          <div className="key">Origin App:</div>
-          <div className="value">{formatAppIds(appIds)}</div>
-        </div>
-      )}
     </div>
-  );
-};
+    <div>
+      <div className="key">Origin App:</div>
+      <div className="value">{appIds?.length > 0 ? formatAppIds(appIds) : "N/A"}</div>
+    </div>
+    <div>
+      <div className="key">Destination Wallet:</div>
+      <div className="value">
+        {parsedDestinationAddress ? (
+          <>
+            <a
+              href={getExplorerLink({
+                network: currentNetwork,
+                chainId: toChain,
+                value: parsedDestinationAddress,
+                base: "address",
+                isNativeAddress: true,
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {shortAddress(parsedDestinationAddress).toUpperCase()}
+            </a>
+
+            {isUnknownApp && (
+              <div className="value-tooltip">
+                <Tooltip
+                  tooltip={
+                    <div>
+                      Address shown corresponds to a Smart Contract handling the transaction. Funds
+                      will be sent to your recipient address.
+                    </div>
+                  }
+                  type="info"
+                >
+                  <InfoCircledIcon />
+                </Tooltip>
+              </div>
+            )}
+          </>
+        ) : (
+          "N/A"
+        )}
+      </div>
+    </div>
+  </div>
+);
 
 export default Summary;

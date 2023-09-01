@@ -10,8 +10,9 @@ export const formatUnits = (value: number, tokenDecimals = 8) => {
   const endAmount = valueString.substring(decimalLength);
   const parsedAmount = `${startAmount}.${endAmount}`;
   const abbreviatedAmount = parsedAmount.replace(/\.?0+$/, "");
+  const abbreviatedAmountNumber = Number(abbreviatedAmount);
 
-  return abbreviatedAmount;
+  return abbreviatedAmountNumber;
 };
 
 export const shortAddress = (address: string) => {

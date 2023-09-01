@@ -1,0 +1,93 @@
+@import "src/styles/globals.scss";
+
+.tx-tabs {
+  @include centered-row;
+
+  border-bottom: 1px solid var(--color-white-10);
+  min-height: 48px;
+
+  &-sub-list {
+    @include centered-row;
+    gap: 16px;
+    margin: 0 16px 0 auto;
+    min-height: 48px;
+
+    @include tablet {
+      margin: 0 41px 0 auto;
+    }
+
+    @include desktop {
+      gap: 8px;
+    }
+
+    &-title {
+      @include text-p3;
+
+      color: var(--color-primary-90);
+      display: none;
+      margin-right: 8px;
+
+      @include tablet {
+        display: block;
+      }
+    }
+
+    &-divider {
+      position: relative;
+
+      &-tooltip {
+        color: var(--color-primary-30);
+        font-size: 12px;
+      }
+
+      &-button {
+        align-items: center;
+        align-items: flex-start;
+        background-color: var(--color-black-25);
+        border-radius: 4px;
+        border: 1px solid var(--color-white-20);
+        color: var(--color-white-20);
+        cursor: pointer;
+        display: flex;
+        height: 32px;
+        justify-content: center;
+        padding: 4px;
+        position: relative;
+        width: 32px;
+
+        &-active {
+          background-color: var(--secondary-900, #ff2a57);
+          border: 1px solid var(--secondary-900, #ff2a57);
+          color: var(--color-secondary-100);
+        }
+      }
+    }
+  }
+
+  &-trigger {
+    all: unset;
+
+    @include centered-row;
+    @include text-p3;
+
+    color: var(--color-primary-100);
+    cursor: pointer;
+    font-weight: 600;
+    justify-content: center;
+    min-height: inherit;
+    padding: 6px 16px;
+
+    @include tablet {
+      width: 120px;
+    }
+
+    &:hover {
+      background-color: transparent;
+    }
+
+    &-active {
+      border-bottom: 1px solid var(--color-secondary-800);
+      color: var(--color-secondary-800);
+    }
+  }
+}
