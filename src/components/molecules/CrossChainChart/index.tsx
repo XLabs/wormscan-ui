@@ -9,6 +9,7 @@ import { CrossChainBy } from "@xlabs-libs/wormscan-sdk";
 import { ErrorPlaceholder } from "src/components/molecules";
 import "./styles.scss";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 
 const MAINNET_TYPE_LIST = [
   { label: i18n.t("home.crossChain.volume"), value: "notional", ariaLabel: "Volume" },
@@ -17,11 +18,6 @@ const MAINNET_TYPE_LIST = [
 
 const TESTNET_TYPE_LIST = [
   { label: i18n.t("home.crossChain.count"), value: "tx", ariaLabel: "Transactions" },
-];
-
-const DESTINATION_LIST = [
-  { label: "Sources", value: "sources", ariaLabel: "Sources" },
-  { label: "Destinations", value: "destinations", ariaLabel: "Destinations" },
 ];
 
 const RANGE_LIST = [
@@ -43,6 +39,7 @@ const CrossChainChart = () => {
   const [selectedDestination, setSelectedDestination] = useState<"sources" | "destinations">(
     "sources",
   );
+  const isSources = selectedDestination === "sources";
 
   useEffect(() => {
     if (currentNetwork === "MAINNET") {
@@ -68,21 +65,31 @@ const CrossChainChart = () => {
       <div className="cross-chain-title">{t("home.crossChain.title")}</div>
 
       <div className="cross-chain-options">
-        <ToggleGroup
-          value={selectedType}
-          onValueChange={value => setSelectedType(value)}
-          items={TYPE_LIST}
-          ariaLabel="Select type"
-          className="cross-chain-options-items"
-        />
+        <div className="rowed">
+          <ToggleGroup
+            value={selectedType}
+            onValueChange={value => setSelectedType(value)}
+            items={TYPE_LIST}
+            ariaLabel="Select type"
+            className="cross-chain-options-items"
+          />
 
-        <ToggleGroup
-          value={selectedDestination}
-          onValueChange={value => setSelectedDestination(value)}
-          items={DESTINATION_LIST}
-          ariaLabel="Select graphic type"
-          className="cross-chain-options-items"
-        />
+          <div
+            className="cross-chain-destination"
+            aria-label="Select graphic type"
+            onClick={() => setSelectedDestination(isSources ? "destinations" : "sources")}
+          >
+            <span>{isSources ? "Source" : "Target"}</span>
+            <div className="cross-chain-destination-arrow">
+              {isSources ? (
+                <ArrowRightIcon width={20} height={20} />
+              ) : (
+                <ArrowLeftIcon width={20} height={20} />
+              )}
+            </div>
+            <span>{isSources ? "Target" : "Source"}</span>
+          </div>
+        </div>
 
         <div className="cross-chain-filters">
           <div className="cross-chain-filters-group">

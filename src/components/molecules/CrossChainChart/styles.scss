@@ -27,6 +27,11 @@
     gap: 24px;
     margin-bottom: 24px;
 
+    .rowed {
+      @include centered-row;
+      gap: 12px;
+    }
+
     &-items {
       min-height: 56px;
       width: 100%;
@@ -47,6 +52,46 @@
     @include centered-row;
     justify-content: center;
     height: 500px;
+  }
+
+  &-destination {
+    @include button;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    user-select: none;
+
+    min-height: 56px;
+    padding-left: 16px;
+    padding-right: 16px;
+    gap: 12px;
+
+    border-radius: 8px;
+    border: 2px solid var(--color-white-10);
+    color: var(--color-white-70);
+    background-color: var(--color-white-05);
+
+    &:hover {
+      color: var(--color-white);
+      background-color: var(--color-white-10);
+    }
+
+    span {
+      width: 53px;
+      text-align: center;
+    }
+
+    &-arrow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 24px;
+      width: 24px;
+      background-color: var(--color-secondary-800);
+      border-radius: 8px;
+    }
   }
 
   &-filters {

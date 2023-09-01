@@ -151,19 +151,21 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
           END_ARROW,
           CHART_SIZE,
           END_ARROW,
-          selectedDestination === "sources" ? 0.83 : 0.5,
+          // selectedDestination === "sources" ? 0.5 : 0.5,
+          0.5, // 50% of the line
         );
 
         // define arrow area
         if (selectedDestination === "sources") {
-          ctx.rect(CHART_SIZE / 2.15, 0, x - CHART_SIZE / 2.15, CHART_SIZE);
+          ctx.rect(CHART_SIZE / 4.5, 0, CHART_SIZE / 3.6, CHART_SIZE);
+          // ctx.rect(CHART_SIZE / 2.15, 0, x - CHART_SIZE / 2.15, CHART_SIZE);
         } else {
           ctx.rect(x, 0, CHART_SIZE / 3, CHART_SIZE);
         }
         ctx.clip();
         ctx.beginPath();
 
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 1;
         // arrow line
         ctx.moveTo(0, START_ARROW);
         ctx.bezierCurveTo(
