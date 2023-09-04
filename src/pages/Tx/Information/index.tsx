@@ -152,7 +152,7 @@ const Information = ({ VAAData, txData }: Props) => {
   const [loadingRelayers, setLoadingRelayers] = useState(false);
   const getRelayerInfo = useCallback(async () => {
     setLoadingRelayers(true);
-    populateDeliveryLifecycleRecordByVaa(environment, VAAData.vaa)
+    populateDeliveryLifecycleRecordByVaa(environment, vaa)
       .then((result: DeliveryLifecycleRecord) => {
         setLoadingRelayers(false);
         setGenericRelayerInfo(result);
@@ -162,7 +162,7 @@ const Information = ({ VAAData, txData }: Props) => {
         console.error("automatic relayer tx errored:", e);
         setIsGenericRelayerTx(false);
       });
-  }, [VAAData.vaa, environment]);
+  }, [vaa, environment]);
 
   const targetContract = environment.chainInfos.find(
     a => a.chainId === fromChain,
@@ -173,11 +173,13 @@ const Information = ({ VAAData, txData }: Props) => {
   );
 
   useEffect(() => {
-    if (isGenericRelayerTx) {
+    const isGeneric = targetContract?.toUpperCase() === parsedEmitterAddress?.toUpperCase();
+    setIsGenericRelayerTx(isGeneric);
+    if (isGeneric) {
       console.log("isGenericRelayerTx!!!");
       getRelayerInfo();
     }
-  }, [getRelayerInfo, isGenericRelayerTx]);
+  }, [targetContract, parsedEmitterAddress, getRelayerInfo]);
   // --- x ---
 
   const OverviewContent = () => {
