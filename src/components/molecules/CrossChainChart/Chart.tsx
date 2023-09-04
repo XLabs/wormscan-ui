@@ -39,7 +39,6 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
   });
 
   useEffect(() => {
-    console.log("asd");
     let newChartData = processData(data, false, selectedDestination);
     if (newChartData.find(a => a.chain === selectedChain)) {
       setIsShowingOthers(false);
