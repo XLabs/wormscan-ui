@@ -55,7 +55,7 @@ const Details = ({
   <div className="tx-details">
     <div className="tx-details-group">
       <div className="tx-details-group-line">
-        <div className="tx-details-group-line-key">Source</div>
+        <div className="tx-details-group-line-key">Source Chain</div>
         <div className="tx-details-group-line-value">
           {fromChain ? (
             <>
@@ -206,7 +206,7 @@ const Details = ({
     </div>
     <div className="tx-details-group">
       <div className="tx-details-group-line">
-        <div className="tx-details-group-line-key">Destination</div>
+        <div className="tx-details-group-line-key">Target Chain</div>
         <div className="tx-details-group-line-value">
           {toChain ? (
             <>
