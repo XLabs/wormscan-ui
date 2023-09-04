@@ -32,19 +32,25 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
   const [isShowingOthers, setIsShowingOthers] = useState(false);
   const [chartData, setChartData] = useState(processData(data, false, selectedDestination));
 
-  useEffect(() => {
-    const newChartData = processData(data, false, selectedDestination);
-
-    setChartData(newChartData);
-    setSelectedChain(newChartData[0].chain);
-    setIsShowingOthers(false);
-  }, [data, selectedDestination]);
-
   const [selectedChain, setSelectedChain] = useState(chartData[0].chain);
   const [selectedInfo, setSelectedInfo] = useState<Info>({
     percentage: chartData[0].percentage,
     volume: chartData[0].volume,
   });
+
+  useEffect(() => {
+    console.log("asd");
+    let newChartData = processData(data, false, selectedDestination);
+    if (newChartData.find(a => a.chain === selectedChain)) {
+      setIsShowingOthers(false);
+    } else {
+      setIsShowingOthers(true);
+      newChartData = processData(data, true, selectedDestination);
+    }
+
+    setChartData(newChartData);
+  }, [data, selectedChain, selectedDestination]);
+
   const [destinations, setDestinations] = useState([]);
   const [originChainsHeight, setOriginChainsHeight] = useState<IOriginChainsHeight[]>([]);
   const [destinyChainsHeight, setDestinyChainsHeight] = useState<IDestinyChainsHeight[]>([]);
@@ -263,7 +269,9 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
               <BlockchainIcon className="chain-icon" dark={true} size={19} chainId={item.chain} />
               <span className="chain-name">{getChainName(item.chain)}</span>
               {!isDesktop && <span className="mobile-separator">|</span>}
-              <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
+              <span className="chain-infoTxt percentage">
+                {item.percentage.toFixed(2).replace("00.00", "00.0")}%
+              </span>
               <span className="chain-separator onlyBig">|</span>
               <span className="chain-infoTxt onlyBig">{getAmount(item.volume)}</span>
             </div>
