@@ -1,18 +1,14 @@
-import LoaderGif from "src/assets/loader.gif";
 import "./styles.scss";
 
-// Note: I am keeping the former loader code, just in case I need it in the future.
-// const Loader = () => <span className="spinner-loader" />;
 const Loader = () => (
-  <div className="loader-container">
-    <img
-      className="gif-loader"
-      src={LoaderGif}
-      alt="spinner-loader"
-      loading="lazy"
-      height="48"
-      width="48"
-    />
+  <div className="loader">
+    <div className="loader-container">
+      <div className="loader-circle loader-circle-large" />
+      <div className="loader-circle loader-circle-medium" />
+      <div className="loader-circle loader-circle-small" />
+      <div className="loader-circle loader-circle-smallest" />
+      <div className="loader-circle loader-circle-dot" />
+    </div>
   </div>
 );
 
