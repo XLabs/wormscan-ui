@@ -70,11 +70,21 @@
     & .progress {
       background-color: #ffd600;
       color: #473c01;
+
+      & > svg > path {
+        stroke-width: 0.3;
+        stroke: #473c01;
+      }
     }
 
     & .completed {
       background-color: #00ffa3;
       color: #023523;
+
+      & > svg > path {
+        stroke-width: 0.3;
+        stroke: #023523;
+      }
     }
 
     &-tooltip {
