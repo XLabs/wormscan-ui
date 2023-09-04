@@ -1,53 +1,127 @@
 @import "src/styles/globals.scss";
 
-.loader-container {
+.loader {
   @include centered-column;
 
   align-items: center;
-  width: 100%;
   height: 100%;
   padding: 48px 16px;
+  width: 100%;
 
-  img {
-    display: block;
+  .loader-container {
+    height: 48px;
+    position: relative;
+    width: 48px;
+
+    .loader-circle {
+      animation-duration: 1.1s;
+      animation-iteration-count: infinite;
+      border-radius: 50%;
+      bottom: 0;
+      margin: auto 0;
+      position: absolute;
+      top: 0;
+      z-index: 10;
+    }
+
+    .loader-circle-large {
+      animation-name: circleLarge;
+      border: 2px solid var(--color-white);
+      height: 48px;
+      transform-origin: 7px 7px;
+      width: 48px;
+    }
+
+    .loader-circle-medium {
+      animation-name: circleMid;
+      border: 1.5px solid var(--color-white);
+      height: 40px;
+      right: 1px;
+      transform-origin: 6px 6px;
+      width: 40px;
+    }
+
+    .loader-circle-small {
+      animation-name: circleSmall;
+      border: 1px solid var(--color-white);
+      height: 32px;
+      right: 2px;
+      transform-origin: 5px 5px;
+      width: 32px;
+    }
+
+    .loader-circle-smallest {
+      animation-name: circleSmallest;
+      border: 0.5px solid var(--color-white);
+      height: 24px;
+      right: 3px;
+      transform-origin: 4px 4px;
+      width: 24px;
+    }
+
+    .loader-circle-dot {
+      animation-name: circleDot;
+      background-color: var(--color-secondary-800);
+      height: 7px;
+      right: 8px;
+      transform-origin: 1px 1px;
+      width: 7px;
+      z-index: 1;
+    }
   }
 }
 
-.spinner-loader {
-  width: 48px;
-  height: 48px;
-  border: 3px solid var(--color-white);
-  border-radius: 50%;
-  display: inline-block;
-  position: relative;
-  box-sizing: border-box;
-  animation: spinner-rotation 1s linear infinite;
-
-  &:after {
-    content: "";
-    box-sizing: border-box;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 3px solid;
-    border-color: var(--color-secondary-800) transparent;
+@keyframes circleLarge {
+  0%,
+  20% {
+    transform: scale(0);
   }
-}
-
-.gif-loader {
-  width: 48px;
-  height: 48px;
-}
-
-@keyframes spinner-rotation {
-  0% {
-    transform: rotate(0deg);
-  }
+  92%,
   100% {
-    transform: rotate(360deg);
+    transform: scale(1);
+  }
+}
+
+@keyframes circleMid {
+  0%,
+  15% {
+    transform: scale(0);
+  }
+  85%,
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes circleSmall {
+  0%,
+  8% {
+    transform: scale(0);
+  }
+  73%,
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes circleSmallest {
+  0%,
+  4% {
+    transform: scale(0);
+  }
+  65%,
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes circleDot {
+  0%,
+  28% {
+    transform: scale(0);
+  }
+  98%,
+  100% {
+    transform: scale(1);
   }
 }
