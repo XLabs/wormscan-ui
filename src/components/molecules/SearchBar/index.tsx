@@ -36,7 +36,7 @@ const SearchBar = ({
           />
         </div>
         <button type="submit" aria-label="search">
-          {isLoading ? <span className="loader"></span> : <MagnifyingGlassIcon className="icon" />}
+          {isLoading ? <span className="search-loader"></span> : <MagnifyingGlassIcon className="icon" />}
         </button>
       </form>
     </div>
