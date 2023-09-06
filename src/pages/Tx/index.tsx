@@ -249,6 +249,7 @@ const Tx = () => {
             <Top
               txHash={VAADataTxHash ?? txData?.[0]?.txHash}
               emitterChainId={emitterChainId}
+              gatewayInfo={txData?.[0]?.globalTx?.originTx?.attribute?.value}
               payloadType={payloadType}
             />
             {parsedVAAsData.map(

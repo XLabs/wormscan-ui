@@ -12,11 +12,16 @@ import { CHAIN_ID_WORMCHAIN } from "@certusone/wormhole-sdk";
 
 interface Props {
   txHash: string;
+  gatewayInfo?: {
+    originAddress: string;
+    originChainId: ChainId;
+    originTxHash: string;
+  };
   emitterChainId: ChainId;
   payloadType: number;
 }
 
-const Top = ({ txHash, emitterChainId, payloadType }: Props) => {
+const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
 
@@ -59,6 +64,29 @@ const Top = ({ txHash, emitterChainId, payloadType }: Props) => {
           </CopyToClipboard>
         </div>
       </div>
+
+      {gatewayInfo?.originTxHash && (
+        <div className="tx-top-txId">
+          <div>Gateway Tx Hash:</div>
+          <div className="tx-top-txId-container">
+            <a
+              href={getExplorerLink({
+                network: currentNetwork,
+                chainId: gatewayInfo?.originChainId,
+                value: gatewayInfo?.originTxHash,
+                isNativeAddress: true,
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {gatewayInfo?.originTxHash}
+            </a>
+            <CopyToClipboard toCopy={txHash}>
+              <CopyIcon />
+            </CopyToClipboard>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
