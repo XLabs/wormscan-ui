@@ -7,6 +7,7 @@ import AptosIcon from "src/icons/blockchains/aptos.svg";
 import ArbitrumIcon from "src/icons/blockchains/arbitrum.svg";
 import AuroraIcon from "src/icons/blockchains/aurora.svg";
 import AvalancheIcon from "src/icons/blockchains/avax.svg";
+import BaseIcon from "src/icons/blockchains/base.svg";
 import BSCIcon from "src/icons/blockchains/bsc.svg";
 import CeloIcon from "src/icons/blockchains/celo.svg";
 import EthereumIcon from "src/icons/blockchains/eth.svg";
@@ -19,22 +20,22 @@ import NearIcon from "src/icons/blockchains/near.svg";
 import NeonIcon from "src/icons/blockchains/neon.svg";
 import OasisIcon from "src/icons/blockchains/oasis.svg";
 import OptimismIcon from "src/icons/blockchains/optimism.svg";
+import OsmosisIcon from "src/icons/blockchains/osmosis.svg";
 import PolygonIcon from "src/icons/blockchains/polygon.svg";
+import SeiIcon from "src/icons/blockchains/sei.svg";
 import SolanaIcon from "src/icons/blockchains/solana.svg";
+import SuiIcon from "src/icons/blockchains/sui.svg";
 import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
 import TerraIcon from "src/icons/blockchains/terra.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
-import SeiIcon from "src/icons/blockchains/sei.svg";
-import SuiIcon from "src/icons/blockchains/sui.svg";
-import BaseIcon from "src/icons/blockchains/base.svg";
 
-import NoDarkIcon from "src/icons/blockchains/dark/noIcon.svg";
 import AcalaDarkIcon from "src/icons/blockchains/dark/acala.svg";
 import AlgorandDarkIcon from "src/icons/blockchains/dark/algorand.svg";
 import AptosDarkIcon from "src/icons/blockchains/dark/aptos.svg";
 import ArbitrumDarkIcon from "src/icons/blockchains/dark/arbitrum.svg";
 import AuroraDarkIcon from "src/icons/blockchains/dark/aurora.svg";
 import AvalancheDarkIcon from "src/icons/blockchains/dark/avax.svg";
+import BaseDarkIcon from "src/icons/blockchains/dark/base.svg";
 import BSCDarkIcon from "src/icons/blockchains/dark/bsc.svg";
 import CeloDarkIcon from "src/icons/blockchains/dark/celo.svg";
 import EthereumDarkIcon from "src/icons/blockchains/dark/eth.svg";
@@ -45,16 +46,17 @@ import KlaytnDarkIcon from "src/icons/blockchains/dark/klaytn.svg";
 import MoonbeamDarkIcon from "src/icons/blockchains/dark/moonbeam.svg";
 import NearDarkIcon from "src/icons/blockchains/dark/near.svg";
 import NeonDarkIcon from "src/icons/blockchains/dark/neon.svg";
+import NoDarkIcon from "src/icons/blockchains/dark/noIcon.svg";
 import OasisDarkIcon from "src/icons/blockchains/dark/oasis.svg";
 import OptimismDarkIcon from "src/icons/blockchains/dark/optimism.svg";
+import OsmosisDarkIcon from "src/icons/blockchains/osmosis.svg";
 import PolygonDarkIcon from "src/icons/blockchains/dark/polygon.svg";
+import SeiDarkIcon from "src/icons/blockchains/dark/sei.svg";
 import SolanaDarkIcon from "src/icons/blockchains/dark/solana.svg";
+import SuiDarkIcon from "src/icons/blockchains/dark/sui.svg";
 import TerraClassicDarkIcon from "src/icons/blockchains/dark/terra-classic.svg";
 import TerraDarkIcon from "src/icons/blockchains/dark/terra.svg";
 import XplaDarkIcon from "src/icons/blockchains/dark/xpla.svg";
-import SeiDarkIcon from "src/icons/blockchains/dark/sei.svg";
-import SuiDarkIcon from "src/icons/blockchains/dark/sui.svg";
-import BaseDarkIcon from "src/icons/blockchains/dark/base.svg";
 
 import { parseAddress, parseTx } from "./crypto";
 import { Network } from "@certusone/wormhole-sdk";
@@ -136,6 +138,20 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       if (base === "address") return "";
       if (base === "token") return "";
       return "";
+    },
+  },
+  [ChainId.Osmosis]: {
+    name: "Osmosis",
+    icon: OsmosisIcon,
+    darkIcon: OsmosisDarkIcon,
+    explorer: {
+      TESTNET: "https://testnet.osmosis.explorers.guru",
+      MAINNET: "https://osmosis.explorers.guru",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/account/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      return this.explorer?.[network] + "/transaction/" + value;
     },
   },
   [ChainId.Acala]: {
@@ -478,7 +494,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     icon: SeiIcon,
     darkIcon: SeiDarkIcon,
     explorer: {
-      TESTNET: "https://sei.explorers.guru",
+      TESTNET: "https://testnet.sei.explorers.guru",
       MAINNET: "https://sei.explorers.guru",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {

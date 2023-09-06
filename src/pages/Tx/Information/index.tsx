@@ -60,10 +60,11 @@ const Information = ({ VAAData, txData }: Props) => {
   } = txData || {};
 
   const {
-    payloadType,
     callerAppId,
-    tokenChain: payloadTokenChain,
+    parsedPayload,
+    payloadType,
     tokenAddress: payloadTokenAddress,
+    tokenChain: payloadTokenChain,
   } = payload || {};
 
   const { originTx, destinationTx } = globalTx || {};
@@ -132,18 +133,26 @@ const Information = ({ VAAData, txData }: Props) => {
     fromChain,
     guardianSignaturesCount,
     isUnknownApp,
-    parsedDestinationAddress,
     parsedEmitterAddress,
     parsedOriginAddress,
+    parsedPayload,
     parsedRedeemTx,
     redeemedAmount,
     symbol,
-    toChain,
     tokenAddress,
     tokenAmount,
     tokenChain,
     totalGuardiansNeeded,
     VAAId,
+
+    // Gateway Transfers
+    parsedDestinationAddress: parsedPayload?.["gateway_transfer"]?.recipient
+      ? parsedPayload?.["gateway_transfer"].recipient
+      : parsedDestinationAddress,
+
+    toChain: parsedPayload?.["gateway_transfer"]?.chain
+      ? parsedPayload?.["gateway_transfer"].chain
+      : toChain,
   };
   // --- x ---
 
