@@ -2,7 +2,7 @@ import { ArrowDownIcon, CheckboxIcon, CopyIcon, InfoCircledIcon } from "@radix-u
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import WormIcon from "src/icons/wormIcon.svg";
-import { getExplorerLink } from "src/utils/wormhole";
+import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress } from "src/utils/crypto";
 import { ChainId, Network } from "@certusone/wormhole-sdk";
 import { colorStatus } from "src/consts";
@@ -73,9 +73,13 @@ const Overview = ({
           <div>SOURCE CHAIN</div>
         </div>
         <div className="tx-overview-graph-step-iconWrapper">
-          <div className="tx-overview-graph-step-iconContainer">
-            {fromChain && <BlockchainIcon chainId={fromChain} size={32} />}
-          </div>
+          {fromChain && (
+            <Tooltip tooltip={<div>{getChainName({ chainId: fromChain })}</div>} type="info">
+              <div className="tx-overview-graph-step-iconContainer">
+                <BlockchainIcon chainId={fromChain} size={32} />
+              </div>
+            </Tooltip>
+          )}
         </div>
         <div className={`tx-overview-graph-step-data-container`}>
           <div>
@@ -232,27 +236,35 @@ const Overview = ({
           <div className="tx-overview-graph-step-data-container">
             <div>
               <div className="tx-overview-graph-step-title">Time</div>
-              <div className="tx-overview-graph-step-description">{destinationDateParsed}</div>
+              <div className="tx-overview-graph-step-description">
+                {destinationDateParsed ? destinationDateParsed : "N/A"}
+              </div>
             </div>
 
             <div>
               <div className="tx-overview-graph-step-title">Redeem Txn</div>
               <div className="tx-overview-graph-step-description">
-                <a
-                  href={getExplorerLink({
-                    network: currentNetwork,
-                    chainId: toChain,
-                    value: parsedRedeemTx,
-                    isNativeAddress: true,
-                  })}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {shortAddress(parsedRedeemTx).toUpperCase()}
-                </a>{" "}
-                <CopyToClipboard toCopy={parsedRedeemTx}>
-                  <CopyIcon />
-                </CopyToClipboard>
+                {parsedRedeemTx ? (
+                  <>
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: toChain,
+                        value: parsedRedeemTx,
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {shortAddress(parsedRedeemTx).toUpperCase()}
+                    </a>{" "}
+                    <CopyToClipboard toCopy={parsedRedeemTx}>
+                      <CopyIcon />
+                    </CopyToClipboard>
+                  </>
+                ) : (
+                  "N/A"
+                )}
               </div>
             </div>
           </div>
@@ -265,9 +277,11 @@ const Overview = ({
             <div>TARGET CHAIN</div>
           </div>
           <div className="tx-overview-graph-step-iconWrapper">
-            <div className="tx-overview-graph-step-iconContainer">
-              {toChain && <BlockchainIcon chainId={toChain} size={32} />}
-            </div>
+            <Tooltip tooltip={<div>{getChainName({ chainId: toChain })}</div>} type="info">
+              <div className="tx-overview-graph-step-iconContainer">
+                <BlockchainIcon chainId={toChain} size={32} />
+              </div>
+            </Tooltip>
           </div>
           <div className="tx-overview-graph-step-data-container">
             <div>
@@ -327,22 +341,28 @@ const Overview = ({
                 )}
               </div>
               <div className="tx-overview-graph-step-description">
-                <a
-                  href={getExplorerLink({
-                    network: currentNetwork,
-                    chainId: toChain,
-                    value: parsedDestinationAddress,
-                    base: "address",
-                    isNativeAddress: true,
-                  })}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {shortAddress(parsedDestinationAddress).toUpperCase()}
-                </a>{" "}
-                <CopyToClipboard toCopy={parsedDestinationAddress}>
-                  <CopyIcon />
-                </CopyToClipboard>
+                {parsedDestinationAddress ? (
+                  <>
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: toChain,
+                        value: parsedDestinationAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {shortAddress(parsedDestinationAddress).toUpperCase()}
+                    </a>{" "}
+                    <CopyToClipboard toCopy={parsedDestinationAddress}>
+                      <CopyIcon />
+                    </CopyToClipboard>
+                  </>
+                ) : (
+                  "N/A"
+                )}
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { ChainId, CHAIN_ID_OSMOSIS, Network } from "@certusone/wormhole-sdk";
+import { ChainId, Network } from "@certusone/wormhole-sdk";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { shortAddress } from "src/utils/crypto";
