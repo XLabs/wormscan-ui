@@ -11,6 +11,7 @@ import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
 import WormholeBrand from "../WormholeBrand";
 import { PinTopIcon } from "@radix-ui/react-icons";
+import packageJson from "../../../../package.json";
 import "./styles.scss";
 
 const Footer = () => {
@@ -105,7 +106,9 @@ const Footer = () => {
         </div>
 
         <div className="footer-copy">
-          <div className="footer-copy-brand">&copy; {year} Wormholescan</div>
+          <div className="footer-copy-brand">
+            &copy; {year} Wormholescan v{packageJson.version}
+          </div>
         </div>
       </div>
     </footer>
