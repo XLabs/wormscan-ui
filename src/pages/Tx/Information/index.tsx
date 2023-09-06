@@ -92,7 +92,6 @@ const Information = ({ VAAData, txData }: Props) => {
 
   const fromChain = emitterChain || stdFromChain;
   const fromAddress = globalFrom || stdFromAddress;
-  /* const toChain = stdToChain || globalToChainId; */
   const toAddress = stdToAddress || globalTo;
   const startDate = timestamp || globalFromTimestamp;
   const endDate = globalToTimestamp;
