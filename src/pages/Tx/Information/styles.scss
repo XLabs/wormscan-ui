@@ -1,5 +1,11 @@
 @import "src/styles/globals.scss";
 
+.comment {
+  font-size: 14px;
+  margin-left: 2px;
+  color: var(--color-primary-100);
+}
+
 .tx-information {
   background-color: var(--color-white-05);
   margin-bottom: 32px;

@@ -1,5 +1,5 @@
 import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { ChainId, Network } from "@certusone/wormhole-sdk";
+import { CHAIN_ID_WORMCHAIN, ChainId, Network } from "@certusone/wormhole-sdk";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { shortAddress } from "src/utils/crypto";
@@ -13,7 +13,9 @@ type Props = {
   destinationDateParsed?: string;
   fee?: string;
   fromChain?: ChainId | number;
+  fromChainOrig?: ChainId | number;
   guardianSignaturesCount?: number;
+  isGatewaySource?: boolean;
   isUnknownApp?: boolean;
   parsedDestinationAddress?: string;
   parsedEmitterAddress?: string;
@@ -38,7 +40,9 @@ const Details = ({
   destinationDateParsed,
   fee,
   fromChain,
+  fromChainOrig,
   guardianSignaturesCount,
+  isGatewaySource,
   isUnknownApp,
   parsedDestinationAddress,
   parsedEmitterAddress,
@@ -63,6 +67,7 @@ const Details = ({
             <>
               <BlockchainIcon chainId={fromChain} size={24} />
               {getChainName({ chainId: fromChain }).toUpperCase()}
+              {isGatewaySource && <span className="comment"> (through Wormchain)</span>}
             </>
           ) : (
             "N/A"
@@ -74,22 +79,30 @@ const Details = ({
         <div className="tx-details-group-line-value">
           {parsedEmitterAddress ? (
             <>
-              <a
-                href={getExplorerLink({
-                  network: currentNetwork,
-                  chainId: fromChain,
-                  value: parsedEmitterAddress,
-                  base: "address",
-                  isNativeAddress: true,
-                })}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {shortAddress(parsedEmitterAddress).toUpperCase()}
-              </a>{" "}
+              {/* delete conditional when WORMCHAIN gets an explorer */}
+              {fromChainOrig === CHAIN_ID_WORMCHAIN ? (
+                <div>
+                  <span>{shortAddress(parsedEmitterAddress).toUpperCase()}</span>
+                </div>
+              ) : (
+                <a
+                  href={getExplorerLink({
+                    network: currentNetwork,
+                    chainId: fromChainOrig,
+                    value: parsedEmitterAddress,
+                    base: "address",
+                    isNativeAddress: true,
+                  })}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {shortAddress(parsedEmitterAddress).toUpperCase()}
+                </a>
+              )}
               <CopyToClipboard toCopy={parsedEmitterAddress}>
                 <CopyIcon />
               </CopyToClipboard>
+              {isGatewaySource && <span className="comment"> (Wormchain)</span>}
             </>
           ) : (
             "N/A"

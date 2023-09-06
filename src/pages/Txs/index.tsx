@@ -123,14 +123,19 @@ const Txs = () => {
               const { chainId: globalToChainId, from: globalTo } = destinationTx || {};
 
               const parsedPayload = payload?.parsedPayload;
-              const fromChain = emitterChain || stdFromChain;
+              const fromChainOrig = emitterChain || stdFromChain;
               const fromAddress = globalFrom;
               const toAddress = stdToAddress || globalTo;
 
-              // Gateway Transfers
+              // --- Gateway Transfers
+              const fromChain =
+                originTx?.attribute?.type === "wormchain-gateway"
+                  ? originTx?.attribute?.value?.originChainId
+                  : fromChainOrig;
               const toChain = parsedPayload?.["gateway_transfer"]?.chain
                 ? parsedPayload?.["gateway_transfer"].chain
                 : stdToChain || globalToChainId;
+              // -----
 
               const parseTxHash = parseTx({
                 value: txHash,
@@ -145,10 +150,15 @@ const Txs = () => {
                 chainId: toChain as ChainId,
               });
 
-              // Gateway Transfer
+              // --- Gateway Transfers
+              const sourceAddress =
+                originTx?.attribute?.type === "wormchain-gateway"
+                  ? originTx?.attribute?.value?.originAddress
+                  : parsedOriginAddress;
               const targetAddress = parsedPayload?.["gateway_transfer"]?.recipient
                 ? parsedPayload?.["gateway_transfer"].recipient
                 : parsedDestinationAddress;
+              // -----
 
               const timestampDate = new Date(timestamp);
               const row = {
@@ -176,13 +186,13 @@ const Txs = () => {
                     <BlockchainIcon chainId={fromChain} size={24} />
                     <div>
                       {getChainName({ chainId: fromChain })}
-                      {parsedOriginAddress && (
+                      {sourceAddress && (
                         <div className="tx-from-address">
                           <a
                             href={getExplorerLink({
                               network: currentNetwork,
                               chainId: fromChain,
-                              value: parsedOriginAddress,
+                              value: sourceAddress,
                               base: "address",
                               isNativeAddress: true,
                             })}
@@ -190,10 +200,10 @@ const Txs = () => {
                             rel="noopener noreferrer"
                             onClick={stopPropagation}
                           >
-                            {shortAddress(parsedOriginAddress).toUpperCase()}
+                            {shortAddress(sourceAddress).toUpperCase()}
                           </a>
 
-                          <CopyToClipboard toCopy={parsedOriginAddress}>
+                          <CopyToClipboard toCopy={sourceAddress}>
                             <CopyIcon />
                           </CopyToClipboard>
                         </div>
