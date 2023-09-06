@@ -8,14 +8,20 @@ import { parseTx } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
 import "./styles.scss";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { CHAIN_ID_WORMCHAIN } from "@certusone/wormhole-sdk";
 
 interface Props {
   txHash: string;
+  gatewayInfo?: {
+    originAddress: string;
+    originChainId: ChainId;
+    originTxHash: string;
+  };
   emitterChainId: ChainId;
   payloadType: number;
 }
 
-const Top = ({ txHash, emitterChainId, payloadType }: Props) => {
+const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
 
@@ -34,23 +40,53 @@ const Top = ({ txHash, emitterChainId, payloadType }: Props) => {
       <div className="tx-top-txId">
         <div>Tx Hash:</div>
         <div className="tx-top-txId-container">
-          <a
-            href={getExplorerLink({
-              network: currentNetwork,
-              chainId: emitterChainId,
-              value: parseTxHash,
-              isNativeAddress: true,
-            })}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {parseTxHash}
-          </a>
+          {/* delete conditional when WORMCHAIN gets an explorer */}
+          {emitterChainId === CHAIN_ID_WORMCHAIN ? (
+            <div>
+              <span>{parseTxHash}</span>
+            </div>
+          ) : (
+            <a
+              href={getExplorerLink({
+                network: currentNetwork,
+                chainId: emitterChainId,
+                value: parseTxHash,
+                isNativeAddress: true,
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {parseTxHash}
+            </a>
+          )}
           <CopyToClipboard toCopy={txHash}>
             <CopyIcon />
           </CopyToClipboard>
         </div>
       </div>
+
+      {gatewayInfo?.originTxHash && (
+        <div className="tx-top-txId">
+          <div>Gateway Tx Hash:</div>
+          <div className="tx-top-txId-container">
+            <a
+              href={getExplorerLink({
+                network: currentNetwork,
+                chainId: gatewayInfo?.originChainId,
+                value: gatewayInfo?.originTxHash,
+                isNativeAddress: true,
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {gatewayInfo?.originTxHash}
+            </a>
+            <CopyToClipboard toCopy={gatewayInfo?.originTxHash}>
+              <CopyIcon />
+            </CopyToClipboard>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

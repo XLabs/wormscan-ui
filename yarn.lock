@@ -3534,12 +3534,12 @@ __metadata:
 
 "@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk#lib":
   version: 0.0.19
-  resolution: "@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk.git#commit=9da192148910275ec66df9a90886d0643b819059"
+  resolution: "@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk.git#commit=f4a3c56470843923089163c6be6ee324d6ac2c47"
   dependencies:
     axios: ^1.2.5
   peerDependencies:
     axios: ^1.2.5
-  checksum: 54bf37d3b8332920b115a1e47ef66bb8d4cca839a68473251fd4ce2658d74a11ddb6c05d8c6f09bada018f1a7f814f0cb210f30c41561a1b84697ce868cc4852
+  checksum: 1c3f350aaa25b06317d71f626a57e2b93f47092293aa93c5316baab2311a2abcb5cdd37850a4bf142f5b9426347fb864ebe89dd483c905b121d9bb0c63e0ca99
   languageName: node
   linkType: hard
 
