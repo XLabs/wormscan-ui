@@ -108,6 +108,7 @@ const Txs = () => {
                 tokenAmount,
                 symbol,
                 emitterChain,
+                payload,
                 standardizedProperties,
                 globalTx,
               } = tx || {};
@@ -121,10 +122,15 @@ const Txs = () => {
               const { from: globalFrom } = originTx || {};
               const { chainId: globalToChainId, from: globalTo } = destinationTx || {};
 
+              const parsedPayload = payload?.parsedPayload;
               const fromChain = emitterChain || stdFromChain;
               const fromAddress = globalFrom;
-              const toChain = stdToChain || globalToChainId;
               const toAddress = stdToAddress || globalTo;
+
+              // Gateway Transfers
+              const toChain = parsedPayload?.["gateway_transfer"]?.chain
+                ? parsedPayload?.["gateway_transfer"].chain
+                : stdToChain || globalToChainId;
 
               const parseTxHash = parseTx({
                 value: txHash,
@@ -138,6 +144,12 @@ const Txs = () => {
                 value: toAddress,
                 chainId: toChain as ChainId,
               });
+
+              // Gateway Transfer
+              const targetAddress = parsedPayload?.["gateway_transfer"]?.recipient
+                ? parsedPayload?.["gateway_transfer"].recipient
+                : parsedDestinationAddress;
+
               const timestampDate = new Date(timestamp);
               const row = {
                 VAAId: VAAId,
@@ -201,7 +213,7 @@ const Txs = () => {
                               href={getExplorerLink({
                                 network: currentNetwork,
                                 chainId: toChain,
-                                value: parsedDestinationAddress,
+                                value: targetAddress,
                                 base: "address",
                                 isNativeAddress: true,
                               })}
@@ -209,10 +221,10 @@ const Txs = () => {
                               rel="noopener noreferrer"
                               onClick={stopPropagation}
                             >
-                              {shortAddress(parsedDestinationAddress).toUpperCase()}
+                              {shortAddress(targetAddress).toUpperCase()}
                             </a>
 
-                            <CopyToClipboard toCopy={parsedDestinationAddress}>
+                            <CopyToClipboard toCopy={targetAddress}>
                               <CopyIcon />
                             </CopyToClipboard>
                           </div>

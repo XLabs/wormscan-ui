@@ -1,5 +1,5 @@
 import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { ChainId, Network } from "@certusone/wormhole-sdk";
+import { ChainId, CHAIN_ID_OSMOSIS, Network } from "@certusone/wormhole-sdk";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { shortAddress } from "src/utils/crypto";
@@ -212,6 +212,9 @@ const Details = ({
             <>
               <BlockchainIcon chainId={toChain} size={24} />
               {getChainName({ chainId: toChain }).toUpperCase()}
+              {toChain === CHAIN_ID_OSMOSIS && (
+                <span className="comment"> (through Wormchain)</span>
+              )}
             </>
           ) : (
             "N/A"
