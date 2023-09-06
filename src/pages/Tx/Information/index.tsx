@@ -92,7 +92,7 @@ const Information = ({ VAAData, txData }: Props) => {
 
   const fromChain = emitterChain || stdFromChain;
   const fromAddress = globalFrom || stdFromAddress;
-  const toChain = stdToChain || globalToChainId;
+  /* const toChain = stdToChain || globalToChainId; */
   const toAddress = stdToAddress || globalTo;
   const startDate = timestamp || globalFromTimestamp;
   const endDate = globalToTimestamp;
@@ -110,10 +110,19 @@ const Information = ({ VAAData, txData }: Props) => {
     value: emitterNativeAddress ? emitterNativeAddress : emitterAddress,
     chainId: emitterChain as ChainId,
   });
-  const parsedDestinationAddress = parseAddress({
-    value: toAddress,
-    chainId: toChain as ChainId,
-  });
+
+  // Gateway Transfers
+  const toChain = parsedPayload?.["gateway_transfer"]?.chain
+    ? parsedPayload?.["gateway_transfer"].chain
+    : stdToChain || globalToChainId;
+
+  const parsedDestinationAddress = parsedPayload?.["gateway_transfer"]?.recipient
+    ? parsedPayload?.["gateway_transfer"].recipient
+    : parseAddress({
+        value: toAddress,
+        chainId: toChain as ChainId,
+      });
+  // --- x ---
 
   const parsedRedeemTx = parseTx({ value: globalToRedeemTx, chainId: toChain as ChainId });
 
@@ -144,15 +153,8 @@ const Information = ({ VAAData, txData }: Props) => {
     tokenChain,
     totalGuardiansNeeded,
     VAAId,
-
-    // Gateway Transfers
-    parsedDestinationAddress: parsedPayload?.["gateway_transfer"]?.recipient
-      ? parsedPayload?.["gateway_transfer"].recipient
-      : parsedDestinationAddress,
-
-    toChain: parsedPayload?.["gateway_transfer"]?.chain
-      ? parsedPayload?.["gateway_transfer"].chain
-      : toChain,
+    parsedDestinationAddress,
+    toChain,
   };
   // --- x ---
 

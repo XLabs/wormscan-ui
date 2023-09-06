@@ -47,8 +47,7 @@ const Summary = ({
     <div>
       <div className="key">Destination Wallet:</div>
       <div className="value">
-        {parsedDestinationAddress &&
-        getExplorerLink({
+        {getExplorerLink({
           network: currentNetwork,
           chainId: toChain,
           value: parsedDestinationAddress,
