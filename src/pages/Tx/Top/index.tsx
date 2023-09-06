@@ -8,6 +8,7 @@ import { parseTx } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
 import "./styles.scss";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { CHAIN_ID_WORMCHAIN } from "@certusone/wormhole-sdk";
 
 interface Props {
   txHash: string;
@@ -34,18 +35,25 @@ const Top = ({ txHash, emitterChainId, payloadType }: Props) => {
       <div className="tx-top-txId">
         <div>Tx Hash:</div>
         <div className="tx-top-txId-container">
-          <a
-            href={getExplorerLink({
-              network: currentNetwork,
-              chainId: emitterChainId,
-              value: parseTxHash,
-              isNativeAddress: true,
-            })}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {parseTxHash}
-          </a>
+          {/* delete conditional when WORMCHAIN gets an explorer */}
+          {emitterChainId === CHAIN_ID_WORMCHAIN ? (
+            <div>
+              <span>{parseTxHash}</span>
+            </div>
+          ) : (
+            <a
+              href={getExplorerLink({
+                network: currentNetwork,
+                chainId: emitterChainId,
+                value: parseTxHash,
+                isNativeAddress: true,
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {parseTxHash}
+            </a>
+          )}
           <CopyToClipboard toCopy={txHash}>
             <CopyIcon />
           </CopyToClipboard>

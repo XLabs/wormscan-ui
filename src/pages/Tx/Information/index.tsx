@@ -90,7 +90,7 @@ const Information = ({ VAAData, txData }: Props) => {
     txHash: globalToRedeemTx,
   } = destinationTx || {};
 
-  const fromChain = emitterChain || stdFromChain;
+  const fromChainOrig = emitterChain || stdFromChain;
   const fromAddress = globalFrom || stdFromAddress;
   const toAddress = stdToAddress || globalTo;
   const startDate = timestamp || globalFromTimestamp;
@@ -101,20 +101,24 @@ const Information = ({ VAAData, txData }: Props) => {
   const isAttestation = txType[payloadType] === "Attestation";
   const isUnknownPayloadType = !txType[payloadType];
 
-  const parsedOriginAddress = parseAddress({
-    value: fromAddress,
-    chainId: fromChain as ChainId,
-  });
   const parsedEmitterAddress = parseAddress({
     value: emitterNativeAddress ? emitterNativeAddress : emitterAddress,
     chainId: emitterChain as ChainId,
   });
+  const isGatewaySource = originTx?.attribute?.type === "wormchain-gateway";
 
   // Gateway Transfers
+  const fromChain = isGatewaySource ? originTx?.attribute?.value?.originChainId : fromChainOrig;
   const toChain = parsedPayload?.["gateway_transfer"]?.chain
     ? parsedPayload?.["gateway_transfer"].chain
     : stdToChain || globalToChainId;
 
+  const parsedOriginAddress = isGatewaySource
+    ? originTx?.attribute?.value?.originAddress
+    : parseAddress({
+        value: fromAddress,
+        chainId: fromChainOrig as ChainId,
+      });
   const parsedDestinationAddress = parsedPayload?.["gateway_transfer"]?.recipient
     ? parsedPayload?.["gateway_transfer"].recipient
     : parseAddress({
@@ -139,23 +143,24 @@ const Information = ({ VAAData, txData }: Props) => {
     destinationDateParsed,
     fee,
     fromChain,
+    fromChainOrig,
     guardianSignaturesCount,
+    isGatewaySource,
     isUnknownApp,
+    parsedDestinationAddress,
     parsedEmitterAddress,
     parsedOriginAddress,
     parsedPayload,
     parsedRedeemTx,
     redeemedAmount,
     symbol,
+    toChain,
     tokenAddress,
     tokenAmount,
     tokenChain,
     totalGuardiansNeeded,
     VAAId,
-    parsedDestinationAddress,
-    toChain,
   };
-  // --- x ---
 
   // --- Automatic Relayer Detection and handling ---
   const [genericRelayerInfo, setGenericRelayerInfo] = useState<DeliveryLifecycleRecord>(null);
