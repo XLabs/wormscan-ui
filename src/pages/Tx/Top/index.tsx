@@ -81,7 +81,7 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
             >
               {gatewayInfo?.originTxHash}
             </a>
-            <CopyToClipboard toCopy={txHash}>
+            <CopyToClipboard toCopy={gatewayInfo?.originTxHash}>
               <CopyIcon />
             </CopyToClipboard>
           </div>
