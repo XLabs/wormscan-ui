@@ -47,40 +47,44 @@ const Summary = ({
     <div>
       <div className="key">Destination Wallet:</div>
       <div className="value">
-        {parsedDestinationAddress ? (
-          <>
-            <a
-              href={getExplorerLink({
-                network: currentNetwork,
-                chainId: toChain,
-                value: parsedDestinationAddress,
-                base: "address",
-                isNativeAddress: true,
-              })}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {shortAddress(parsedDestinationAddress).toUpperCase()}
-            </a>
-
-            {isUnknownApp && (
-              <div className="value-tooltip">
-                <Tooltip
-                  tooltip={
-                    <div>
-                      Address shown corresponds to a Smart Contract handling the transaction. Funds
-                      will be sent to your recipient address.
-                    </div>
-                  }
-                  type="info"
-                >
-                  <InfoCircledIcon />
-                </Tooltip>
-              </div>
-            )}
-          </>
+        {parsedDestinationAddress &&
+        getExplorerLink({
+          network: currentNetwork,
+          chainId: toChain,
+          value: parsedDestinationAddress,
+          base: "address",
+          isNativeAddress: true,
+        }) ? (
+          <a
+            href={getExplorerLink({
+              network: currentNetwork,
+              chainId: toChain,
+              value: parsedDestinationAddress,
+              base: "address",
+              isNativeAddress: true,
+            })}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {shortAddress(parsedDestinationAddress).toUpperCase()}
+          </a>
         ) : (
           "N/A"
+        )}
+        {isUnknownApp && (
+          <div className="value-tooltip">
+            <Tooltip
+              tooltip={
+                <div>
+                  Address shown corresponds to a Smart Contract handling the transaction. Funds will
+                  be sent to your recipient address.
+                </div>
+              }
+              type="info"
+            >
+              <InfoCircledIcon />
+            </Tooltip>
+          </div>
         )}
       </div>
     </div>

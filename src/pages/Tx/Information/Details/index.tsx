@@ -221,7 +221,14 @@ const Details = ({
       <div className="tx-details-group-line">
         <div className="tx-details-group-line-key">To</div>
         <div className="tx-details-group-line-value">
-          {parsedDestinationAddress ? (
+          {parsedDestinationAddress &&
+          getExplorerLink({
+            network: currentNetwork,
+            chainId: toChain,
+            value: parsedDestinationAddress,
+            base: "address",
+            isNativeAddress: true,
+          }) ? (
             <>
               <a
                 href={getExplorerLink({
