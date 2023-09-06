@@ -3,6 +3,10 @@
 .tx-details {
   padding: 64px 16px;
 
+  @include tablet {
+    padding: 80px 40px;
+  }
+
   @include desktop {
     padding: 64px 24px;
   }
