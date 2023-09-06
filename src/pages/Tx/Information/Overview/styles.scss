@@ -9,6 +9,10 @@
     justify-content: start;
     padding: 64px 16px 64px 16px;
 
+    @include tablet {
+      padding: 80px 40px;
+    }
+
     @include desktop {
       --y-space: 72px;
       padding: 64px 24px 64px 24px;

@@ -74,7 +74,7 @@
 @keyframes circleLarge {
   0%,
   20% {
-    transform: scale(0);
+    transform: scale(0.001);
   }
   92%,
   100% {
@@ -85,7 +85,7 @@
 @keyframes circleMid {
   0%,
   15% {
-    transform: scale(0);
+    transform: scale(0.001);
   }
   85%,
   100% {
@@ -96,7 +96,7 @@
 @keyframes circleSmall {
   0%,
   8% {
-    transform: scale(0);
+    transform: scale(0.001);
   }
   73%,
   100% {
@@ -107,7 +107,7 @@
 @keyframes circleSmallest {
   0%,
   4% {
-    transform: scale(0);
+    transform: scale(0.001);
   }
   65%,
   100% {
@@ -118,7 +118,7 @@
 @keyframes circleDot {
   0%,
   28% {
-    transform: scale(0);
+    transform: scale(0.001);
   }
   98%,
   100% {

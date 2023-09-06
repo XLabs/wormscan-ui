@@ -9,6 +9,10 @@
   padding: 40px 16px;
   row-gap: 32px;
 
+  @include tablet {
+    padding: 40px;
+  }
+
   @include desktop {
     @include centered-row;
 
