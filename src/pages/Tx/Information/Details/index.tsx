@@ -1,5 +1,5 @@
 import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { ChainId, CHAIN_ID_OSMOSIS, Network } from "@certusone/wormhole-sdk";
+import { ChainId, Network } from "@certusone/wormhole-sdk";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { shortAddress } from "src/utils/crypto";
@@ -226,14 +226,7 @@ const Details = ({
       <div className="tx-details-group-line">
         <div className="tx-details-group-line-key">To</div>
         <div className="tx-details-group-line-value">
-          {parsedDestinationAddress &&
-          getExplorerLink({
-            network: currentNetwork,
-            chainId: toChain,
-            value: parsedDestinationAddress,
-            base: "address",
-            isNativeAddress: true,
-          }) ? (
+          {parsedDestinationAddress ? (
             <>
               <a
                 href={getExplorerLink({

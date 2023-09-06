@@ -47,13 +47,7 @@ const Summary = ({
     <div>
       <div className="key">Destination Wallet:</div>
       <div className="value">
-        {getExplorerLink({
-          network: currentNetwork,
-          chainId: toChain,
-          value: parsedDestinationAddress,
-          base: "address",
-          isNativeAddress: true,
-        }) ? (
+        {parsedDestinationAddress ? (
           <a
             href={getExplorerLink({
               network: currentNetwork,

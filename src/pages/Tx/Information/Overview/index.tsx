@@ -244,13 +244,7 @@ const Overview = ({
             <div>
               <div className="tx-overview-graph-step-title">Redeem Txn</div>
               <div className="tx-overview-graph-step-description">
-                {parsedRedeemTx &&
-                getExplorerLink({
-                  network: currentNetwork,
-                  chainId: toChain,
-                  value: parsedRedeemTx,
-                  isNativeAddress: true,
-                }) ? (
+                {parsedRedeemTx ? (
                   <>
                     <a
                       href={getExplorerLink({
@@ -347,13 +341,7 @@ const Overview = ({
                 )}
               </div>
               <div className="tx-overview-graph-step-description">
-                {getExplorerLink({
-                  network: currentNetwork,
-                  chainId: toChain,
-                  value: parsedDestinationAddress,
-                  base: "address",
-                  isNativeAddress: true,
-                }) ? (
+                {parsedDestinationAddress ? (
                   <>
                     <a
                       href={getExplorerLink({
