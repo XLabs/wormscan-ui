@@ -18,6 +18,7 @@ type Props = {
   parsedDestinationAddress?: string;
   parsedEmitterAddress?: string;
   parsedOriginAddress?: string;
+  parsedPayload?: any;
   parsedRedeemTx?: string;
   redeemedAmount?: string;
   redeemedAmountUSD?: string;
@@ -42,6 +43,7 @@ const Details = ({
   parsedDestinationAddress,
   parsedEmitterAddress,
   parsedOriginAddress,
+  parsedPayload,
   parsedRedeemTx,
   redeemedAmount,
   symbol,
@@ -212,7 +214,7 @@ const Details = ({
             <>
               <BlockchainIcon chainId={toChain} size={24} />
               {getChainName({ chainId: toChain }).toUpperCase()}
-              {toChain === CHAIN_ID_OSMOSIS && (
+              {parsedPayload?.["gateway_transfer"] && (
                 <span className="comment"> (through Wormchain)</span>
               )}
             </>
