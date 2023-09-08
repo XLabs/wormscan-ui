@@ -130,7 +130,7 @@ const Information = ({ VAAData, txData }: Props) => {
   const parsedRedeemTx = parseTx({ value: globalToRedeemTx, chainId: toChain as ChainId });
 
   const amountSent = formatCurrency(Number(tokenAmount));
-  const amountSentUSD = formatCurrency(Number(usdAmount));
+  const amountSentUSD = +usdAmount ? formatCurrency(+usdAmount) : "";
   const redeemedAmount = formatCurrency(formatUnits(+amount - +fee));
 
   const originDateParsed = formatDate(startDate);

@@ -90,7 +90,7 @@ const Tx = () => {
                 },
                 standardizedProperties: {
                   amount: txData.amount,
-                  appIds: [],
+                  appIds: txData.appIds ?? [],
                   fee: "",
                   feeAddress: "",
                   feeChain: txData.chain,
@@ -105,7 +105,7 @@ const Tx = () => {
                 timestamp: new Date(txData.timestamp),
                 tokenAmount: txData.amount,
                 txHash: txData.txHash,
-                usdAmount: null, // TODO? should use coingecko or similar if needed.
+                usdAmount: txData.usdAmount,
               },
             ]);
             setIsLoading(false);

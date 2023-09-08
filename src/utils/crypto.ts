@@ -26,7 +26,7 @@ export const parseAddress = ({ value, chainId }: { value: string; chainId: Chain
 
   let parsedValue = value;
   try {
-    if (isEVMChain(chainId)) {
+    if (isEVMChain(chainId) || chainId === 1) {
       parsedValue = tryHexToNativeString(value, chainId);
     }
   } catch (e: unknown) {
