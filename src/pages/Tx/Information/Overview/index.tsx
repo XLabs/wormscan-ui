@@ -297,7 +297,7 @@ const Overview = ({
           </div>
           <div className="tx-overview-graph-step-data-container">
             <div>
-              <div className="tx-overview-graph-step-title">Redeemed Amount</div>
+              <div className="tx-overview-graph-step-title">Redeem Amount</div>
               <div className="tx-overview-graph-step-description">
                 {Number(fee) ? (
                   <>
