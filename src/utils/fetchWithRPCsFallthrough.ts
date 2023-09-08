@@ -275,7 +275,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               symbol: "USDC",
               timestamp,
               toAddress: cctpResult.toAddress,
-              toChain: getCctpDomain(cctpResult.fromDomain),
+              toChain: getCctpDomain(cctpResult.toDomain),
               toNativeAmount,
               tokenAddress: cctpResult.tokenAddress,
               tokenChain: result.chainId,
@@ -315,7 +315,7 @@ interface CircleRelayerPayload {
   version: number;
 }
 
-const getCctpDomain = (dom: any) => {
+const getCctpDomain = (dom: number) => {
   if (dom === 0) return ChainId.Ethereum;
   if (dom === 1) return ChainId.Avalanche;
   if (dom === 2) return ChainId.Optimism;
