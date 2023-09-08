@@ -122,7 +122,9 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             const toChain = buff.readUInt16BE(99);
 
             const fee =
-              payloadType === 1 ? BigInt(`0x${buff.subarray(101, 133).toString("hex")}`) : null;
+              payloadType === 1
+                ? BigInt(`0x${buff.subarray(101, 133).toString("hex")}`).toString()
+                : null;
 
             fromAddress =
               payloadType === 3 ? buff.subarray(101, 133)?.toString("hex") : result.receipt.from;
@@ -227,7 +229,9 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               offset += 1; // 148
               const feeAmount = ethers.BigNumber.from(payload.subarray(offset, offset + 32));
               offset += 32; // 180
-              const toNativeAmount = ethers.BigNumber.from(payload.subarray(offset, offset + 32));
+              const toNativeAmount = ethers.BigNumber.from(
+                payload.subarray(offset, offset + 32),
+              ).toString();
               offset += 32; // 212
               const recipientWalletBytes = Uint8Array.from(payload.subarray(offset, offset + 32));
               const toAddress = uint8ArrayToHex(recipientWalletBytes);
@@ -253,6 +257,8 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
 
             const cctpResult = parseCCTPRelayerPayload(Buffer.from(payload.slice(2), "hex"));
             const amount = "" + 0.000001 * +cctpResult.amount; // 6 decimals for USDC
+            const fee = "" + 0.000001 * +cctpResult.feeAmount; // 6 decimals for USDC
+            const toNativeAmount = "" + 0.000001 * +cctpResult.toNativeAmount; // 6 decimals for USDC
 
             return {
               appIds: ["CCTP_WORMHOLE_INTEGRATION"],
@@ -261,6 +267,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               consistencyLevel,
               emitterAddress,
               emitterNattiveAddress,
+              fee,
               fromAddress,
               id: `${result.chainId}/${emitterAddress}/${sequence}`,
               parsedFromAddress,
@@ -269,6 +276,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               timestamp,
               toAddress: cctpResult.toAddress,
               toChain: getCctpDomain(cctpResult.fromDomain),
+              toNativeAmount,
               tokenAddress: cctpResult.tokenAddress,
               tokenChain: result.chainId,
               txHash: search,
@@ -303,7 +311,7 @@ interface CircleRelayerPayload {
   toAddress: string;
   toDomain: number;
   tokenAddress: string;
-  toNativeAmount: ethers.BigNumber;
+  toNativeAmount: string;
   version: number;
 }
 
@@ -320,10 +328,12 @@ const getCctpEmitterAddress = (env: Environment, chain: ChainId) => {
     if (chain === ChainId.Ethereum) return "0xaada05bd399372f0b0463744c09113c137636f6a";
     if (chain === ChainId.Avalanche) return "0x09fb06a271faff70a651047395aaeb6265265f13";
     if (chain === ChainId.Arbitrum) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
+    if (chain === ChainId.Optimism) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
   } else {
     if (chain === ChainId.Ethereum) return "0x0a69146716b3a21622287efa1607424c663069a4";
     if (chain === ChainId.Avalanche) return "0x58f4c17449c90665891c42e14d34aae7a26a472e";
     if (chain === ChainId.Arbitrum) return "0x2e8f5e00a9c5d450a72700546b89e2b70dfb00f2";
+    if (chain === ChainId.Optimism) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
   }
   return null;
 };

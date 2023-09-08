@@ -87,11 +87,15 @@ const Tx = () => {
                 id: txData.id,
                 payload: {
                   payloadType: txData.payloadType,
+                  parsedPayload: {
+                    feeAmount: txData?.fee,
+                    toNativeAmount: txData?.toNativeAmount,
+                  },
                 },
                 standardizedProperties: {
                   amount: txData.amount,
                   appIds: txData.appIds ?? [],
-                  fee: "",
+                  fee: txData.fee,
                   feeAddress: "",
                   feeChain: txData.chain,
                   fromAddress: txData.fromAddress,
