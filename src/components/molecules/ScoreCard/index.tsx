@@ -5,6 +5,7 @@ import { Loader } from "src/components/atoms";
 import { formatCurrency, formatNumber, numberToSuffix } from "src/utils/number";
 import { ErrorPlaceholder } from "src/components/molecules";
 import "./styles.scss";
+import { useEnvironment } from "src/context/EnvironmentContext";
 
 const ScoreCard = () => {
   const { t } = useTranslation();
@@ -24,6 +25,8 @@ const ScoreCard = () => {
     "24h_messages": messages24h,
   } = scoreData || {};
 
+  const { environment } = useEnvironment();
+
   return (
     <div className="home-statistics-data" data-testid="home-score-card">
       <div className="home-statistics-title">Wormhole stats</div>
@@ -40,7 +43,11 @@ const ScoreCard = () => {
                   {t("home.statistics.tvl")}
                 </div>
                 <div className="home-statistics-data-container-item-value">
-                  ${tvl ? numberToSuffix(Number(tvl)) : "-"}
+                  {environment.network === "MAINNET" ? (
+                    <>${tvl ? numberToSuffix(Number(tvl)) : "-"}</>
+                  ) : (
+                    "-"
+                  )}
                 </div>
               </div>
 
@@ -49,7 +56,11 @@ const ScoreCard = () => {
                   {t("home.statistics.allVolume")}
                 </div>
                 <div className="home-statistics-data-container-item-value">
-                  ${total_volume ? numberToSuffix(Number(total_volume)) : "-"}
+                  {environment.network === "MAINNET" ? (
+                    <>${total_volume ? numberToSuffix(Number(total_volume)) : "-"}</>
+                  ) : (
+                    "-"
+                  )}
                 </div>
               </div>
 
@@ -69,7 +80,11 @@ const ScoreCard = () => {
                   {t("home.statistics.messageVolume")}
                 </div>
                 <div className="home-statistics-data-container-item-value">
-                  ${volume24h ? formatCurrency(Number(volume24h), 0) : "-"}
+                  {environment.network === "MAINNET" ? (
+                    <>${volume24h ? formatCurrency(Number(volume24h), 0) : "-"}</>
+                  ) : (
+                    "-"
+                  )}
                 </div>
               </div>
 
