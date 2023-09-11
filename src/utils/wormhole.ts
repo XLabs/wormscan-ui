@@ -145,13 +145,19 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     icon: OsmosisIcon,
     darkIcon: OsmosisDarkIcon,
     explorer: {
-      TESTNET: "https://testnet.osmosis.explorers.guru",
-      MAINNET: "https://osmosis.explorers.guru",
+      TESTNET: "https://testnet.mintscan.io/osmosis-testnet",
+      MAINNET: "https://www.mintscan.io/osmosis",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return this.explorer?.[network] + "/account/" + value;
-      if (base === "token") return this.explorer?.[network] + "/token/" + value;
-      return this.explorer?.[network] + "/transaction/" + value;
+      if (network === "MAINNET") {
+        if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
+        if (base === "token") return this.explorer?.[network] + "/assets/ibc/" + value;
+        return this.explorer?.[network] + "/transactions/" + value;
+      } else {
+        if (base === "address") return this.explorer?.[network] + "/account/" + value;
+        if (base === "token") return this.explorer?.[network] + "/assets";
+        return this.explorer?.[network] + "/txs/" + value;
+      }
     },
   },
   [ChainId.Acala]: {

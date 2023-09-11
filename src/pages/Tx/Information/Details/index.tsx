@@ -277,7 +277,7 @@ const Details = ({
         </div>
       </div>
       <div className="tx-details-group-line">
-        <div className="tx-details-group-line-key">Redeemed Amount</div>
+        <div className="tx-details-group-line-key">Redeem Amount</div>
         <div className="tx-details-group-line-value">
           {Number(fee) ? (
             <>

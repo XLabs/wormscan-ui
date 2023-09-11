@@ -89,11 +89,15 @@ const Tx = () => {
                 id: txData.id,
                 payload: {
                   payloadType: txData.payloadType,
+                  parsedPayload: {
+                    feeAmount: txData?.fee,
+                    toNativeAmount: txData?.toNativeAmount,
+                  },
                 },
                 standardizedProperties: {
                   amount: txData.amount,
-                  appIds: [],
-                  fee: "",
+                  appIds: txData.appIds ?? [],
+                  fee: txData.fee,
                   feeAddress: "",
                   feeChain: txData.chain,
                   fromAddress: txData.fromAddress,
@@ -107,7 +111,7 @@ const Tx = () => {
                 timestamp: new Date(txData.timestamp),
                 tokenAmount: txData.amount,
                 txHash: txData.txHash,
-                usdAmount: null, // TODO? should use coingecko or similar if needed.
+                usdAmount: txData.usdAmount,
               },
             ]);
             setIsLoading(false);
