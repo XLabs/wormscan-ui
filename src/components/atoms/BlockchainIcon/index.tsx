@@ -1,5 +1,5 @@
-import { ChainId } from "@xlabs-libs/wormscan-sdk";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
+import { ChainId } from "src/api";
 
 type Props = {
   chainId: ChainId;

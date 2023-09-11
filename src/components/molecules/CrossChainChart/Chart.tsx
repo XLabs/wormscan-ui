@@ -1,10 +1,10 @@
-import { CrossChainActivity, CrossChainBy } from "@xlabs-libs/wormscan-sdk";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { BREAKPOINTS } from "src/consts";
 import { BlockchainIcon, Pagination } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
-import { useTranslation } from "react-i18next";
-import { BREAKPOINTS } from "src/consts";
+import { CrossChainActivity, CrossChainBy } from "src/api/guardian-network/types";
 import { StickyInfo } from "./StickyInfo";
 import { getChainName, processData } from "./chartUtils";
 

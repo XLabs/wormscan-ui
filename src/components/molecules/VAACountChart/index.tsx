@@ -1,12 +1,12 @@
-import { useQuery } from "react-query";
-import { getClient } from "src/api/Client";
-import { Chart } from "./Chart";
-import { ChainId, VAACount } from "@xlabs-libs/wormscan-sdk";
-import { Loader } from "src/components/atoms";
-
-import "./styles.scss";
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
+import { Loader } from "src/components/atoms";
+import { getClient } from "src/api/Client";
+import { ChainId } from "src/api";
+import { VAACount } from "src/api/guardian-network/types";
+import { Chart } from "./Chart";
+import "./styles.scss";
 
 const MIN_VALUE_ON_CHART = 2500;
 

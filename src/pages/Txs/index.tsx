@@ -1,9 +1,8 @@
-import { CopyIcon } from "@radix-ui/react-icons";
-import { ChainId, GetTransactionsOutput, Order } from "@xlabs-libs/wormscan-sdk";
 import { useCallback, useEffect, useState } from "react";
-import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
-import { getClient } from "src/api/Client";
+import { useQuery } from "react-query";
+import { CopyIcon } from "@radix-ui/react-icons";
+import { useEnvironment } from "src/context/EnvironmentContext";
 import { BlockchainIcon, Loader, NavLink } from "src/components/atoms";
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import { BaseLayout } from "src/layouts/BaseLayout";
@@ -11,11 +10,13 @@ import { formatAppIds, parseAddress, parseTx, shortAddress } from "src/utils/cry
 import { timeAgo } from "src/utils/date";
 import { formatCurrency } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
+import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import { ChainId, Order } from "src/api";
+import { getClient } from "src/api/Client";
+import { GetTransactionsOutput } from "src/api/search/types";
+import { TxStatus } from "../../types";
 import { Information } from "./Information";
 import { Top } from "./Top";
-import { TxStatus } from "../../types";
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
-import { useEnvironment } from "src/context/EnvironmentContext";
 import "./styles.scss";
 
 export interface TransactionOutput {

@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { getClient } from "src/api/Client";
-import { Chart } from "./Chart";
-import { useQuery } from "react-query";
-import { Loader, Select, ToggleGroup } from "src/components/atoms";
-import i18n from "src/i18n";
 import { useTranslation } from "react-i18next";
-import { CrossChainBy } from "@xlabs-libs/wormscan-sdk";
-import { ErrorPlaceholder } from "src/components/molecules";
-import "./styles.scss";
-import { useEnvironment } from "src/context/EnvironmentContext";
+import { useQuery } from "react-query";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
+import { useEnvironment } from "src/context/EnvironmentContext";
+import i18n from "src/i18n";
+import { Loader, Select, ToggleGroup } from "src/components/atoms";
+import { ErrorPlaceholder } from "src/components/molecules";
+import { getClient } from "src/api/Client";
+import { CrossChainBy } from "src/api/guardian-network/types";
+import { Chart } from "./Chart";
+import "./styles.scss";
 
 const MAINNET_TYPE_LIST = [
   { label: i18n.t("home.crossChain.volume"), value: "notional", ariaLabel: "Volume" },

@@ -1,12 +1,12 @@
 import { useState } from "react";
+import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
+import { ChainId, isEVMChain } from "@certusone/wormhole-sdk";
+import { Loader } from "src/components/atoms";
 import { TopAssetListItem, TopChainListItem, ErrorPlaceholder } from "src/components/molecules";
 import { TopList } from "src/components/organisms";
-import { getClient } from "src/api/Client";
-import { useQuery } from "react-query";
-import { Loader } from "src/components/atoms";
 import { removeLeadingZeros } from "src/utils/string";
-import { ChainId, isEVMChain } from "@certusone/wormhole-sdk";
+import { getClient } from "src/api/Client";
 import "./styles.scss";
 
 const RANGE_LIST: { label: string; value: "7d" | "15d" | "30d" }[] = [

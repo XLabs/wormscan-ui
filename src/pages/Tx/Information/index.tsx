@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { ChainId } from "@certusone/wormhole-sdk";
-import { GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { txType } from "src/consts";
+import { Alert, Loader } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
@@ -11,8 +12,8 @@ import {
   DeliveryLifecycleRecord,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
-import { Alert, Loader } from "src/components/atoms";
-import { txType } from "src/consts";
+import { GetTransactionsOutput } from "src/api/search/types";
+import { VAADetail } from "src/api/guardian-network/types";
 
 import Tabs from "./Tabs";
 import Summary from "./Summary";

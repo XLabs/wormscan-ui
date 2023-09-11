@@ -1,8 +1,8 @@
 import React, { ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { changeClientNetwork } from "src/api/Client";
 import { useSearchParams } from "react-router-dom";
-import { Environment, testnetEnv, mainnetEnv } from "src/utils/environment";
 import { Network } from "@certusone/wormhole-sdk";
+import { Environment, testnetEnv, mainnetEnv } from "src/utils/environment";
+import { changeClientNetwork } from "src/api/Client";
 
 interface EnvironmentContext {
   environment: Environment;
