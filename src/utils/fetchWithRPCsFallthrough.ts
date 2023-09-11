@@ -141,6 +141,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             const parsedTokenAddress = parseAddress({
               chainId: tokenChain as ChainId,
               value: tokenAddress,
+              anyChain: true,
             });
 
             if (isCosmWasmChain(toChain as ChainId)) {

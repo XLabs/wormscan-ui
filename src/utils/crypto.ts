@@ -21,12 +21,20 @@ export const shortAddress = (address: string) => {
   return `${address?.slice(0, 6) || ""}...${address?.slice(-4) || ""}`;
 };
 
-export const parseAddress = ({ value, chainId }: { value: string; chainId: ChainId }) => {
+export const parseAddress = ({
+  value,
+  chainId,
+  anyChain,
+}: {
+  value: string;
+  chainId: ChainId;
+  anyChain?: boolean;
+}) => {
   if (!value) return "";
 
   let parsedValue = value;
   try {
-    if (isEVMChain(chainId) || chainId === 1) {
+    if (anyChain ? true : isEVMChain(chainId)) {
       parsedValue = tryHexToNativeString(value, chainId);
     }
   } catch (e: unknown) {
