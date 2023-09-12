@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
+import React, { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "react-query";
+import { useTranslation } from "react-i18next";
+import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import { getClient } from "src/api/Client";
 import SearchBar from "../../SearchBar";
-import { useRef } from "react";
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 
 const Search = () => {
   const navigate = useNavigateCustom();

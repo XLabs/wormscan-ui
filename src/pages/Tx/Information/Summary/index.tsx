@@ -1,9 +1,9 @@
 import { CheckCircledIcon, ClockIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { Network } from "@certusone/wormhole-sdk";
-import { ChainId } from "@xlabs-libs/wormscan-sdk";
+import { Chip, Tooltip } from "src/components/atoms";
 import { formatAppIds, shortAddress } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
-import { Chip, Tooltip } from "src/components/atoms";
+import { ChainId } from "src/api";
 import "./styles.scss";
 
 type Props = {

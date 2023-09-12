@@ -1,10 +1,11 @@
-import { ChainId, CrossChainBy } from "@xlabs-libs/wormscan-sdk";
-import { formatCurrency } from "src/utils/number";
-import { Info } from "./Chart";
 import { useRef, useState } from "react";
-import { BlockchainIcon } from "src/components/atoms";
 import Draggable from "react-draggable";
+import { BlockchainIcon } from "src/components/atoms";
+import { formatCurrency } from "src/utils/number";
 import useOutsideClick from "src/utils/hooks/useOutsideClick";
+import { ChainId } from "src/api";
+import { CrossChainBy } from "src/api/guardian-network/types";
+import { Info } from "./Chart";
 
 type Props = {
   chainName: string;

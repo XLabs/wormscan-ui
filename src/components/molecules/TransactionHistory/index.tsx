@@ -1,6 +1,6 @@
-import { DateRange } from "@xlabs-libs/wormscan-sdk";
 import { useState } from "react";
 import { ToggleGroup } from "src/components/atoms";
+import { DateRange } from "src/api/guardian-network/types";
 import { TransactionHistoryChart } from "..";
 import "./styles.scss";
 

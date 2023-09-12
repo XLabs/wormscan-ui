@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { Loader } from "src/components/atoms";
 import ReactApexChart from "react-apexcharts";
-import { DateRange } from "@xlabs-libs/wormscan-sdk";
-import { getClient } from "src/api/Client";
-import { numberToSuffix } from "src/utils/number";
+import { Loader } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
+import { numberToSuffix } from "src/utils/number";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
+import { getClient } from "src/api/Client";
+import { DateRange } from "src/api/guardian-network/types";
 import "./styles.scss";
 
 type Props = {

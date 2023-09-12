@@ -1,5 +1,6 @@
 import ApexChart from "react-apexcharts";
-import { ChainId, VAACount } from "@xlabs-libs/wormscan-sdk";
+import { ChainId } from "src/api";
+import { VAACount } from "src/api/guardian-network/types";
 
 const chartColors = [
   "#5c30d8",

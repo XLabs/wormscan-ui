@@ -1,4 +1,4 @@
-import { ChainId } from "@xlabs-libs/wormscan-sdk";
+import { ChainId } from "src/api";
 
 // import NoIcon from "src/icons/blockchains/noIcon.svg";
 import AcalaIcon from "src/icons/blockchains/acala.svg";

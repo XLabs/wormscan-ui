@@ -1,18 +1,16 @@
 import { Fragment } from "react";
 import { ethers } from "ethers";
 import { CheckboxIcon, CopyIcon } from "@radix-ui/react-icons";
-import { ChainId, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
   RedeliveryInstruction,
   parseEVMExecutionInfoV1,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
-
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { colorStatus, getGuardianSet } from "src/consts";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
-import { colorStatus, getGuardianSet } from "src/consts";
 import RelayIcon from "src/icons/relayIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress } from "src/utils/crypto";
@@ -27,7 +25,8 @@ import {
   mainnetDefaultDeliveryProviderContractAddress,
   testnetDefaultDeliveryProviderContractAddress,
 } from "src/utils/environment";
-
+import { ChainId } from "src/api";
+import { VAADetail } from "src/api/guardian-network/types";
 import "./styles.scss";
 
 // eslint-disable-next-line no-var

@@ -1,20 +1,21 @@
-import { CopyIcon } from "@radix-ui/react-icons";
-import { GetTransactionsOutput, VAADetail } from "@xlabs-libs/wormscan-sdk";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { vs2015 } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { CopyToClipboard } from "src/components/molecules";
-import "./styles.scss";
-import {
-  DeliveryLifecycleRecord,
-  isRedelivery,
-  parseGenericRelayerVaa,
-} from "src/utils/genericRelayerVaaUtils";
+import { CopyIcon } from "@radix-ui/react-icons";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
   RedeliveryInstruction,
   parseEVMExecutionInfoV1,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
+import { CopyToClipboard } from "src/components/molecules";
+import {
+  DeliveryLifecycleRecord,
+  isRedelivery,
+  parseGenericRelayerVaa,
+} from "src/utils/genericRelayerVaaUtils";
+import { GetTransactionsOutput } from "src/api/search/types";
+import { VAADetail } from "src/api/guardian-network/types";
+import "./styles.scss";
 
 const CodeBlockStyles = {
   ...vs2015,

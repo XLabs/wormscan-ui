@@ -2484,22 +2484,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-collection@npm:1.0.2":
-  version: 1.0.2
-  resolution: "@radix-ui/react-collection@npm:1.0.2"
-  dependencies:
-    "@babel/runtime": ^7.13.10
-    "@radix-ui/react-compose-refs": 1.0.0
-    "@radix-ui/react-context": 1.0.0
-    "@radix-ui/react-primitive": 1.0.2
-    "@radix-ui/react-slot": 1.0.1
-  peerDependencies:
-    react: ^16.8 || ^17.0 || ^18.0
-    react-dom: ^16.8 || ^17.0 || ^18.0
-  checksum: f7d92f52c7f92b53c055370a5cbf077eea54366706eec9100973737577d841c0cc76a2a577fec67dd85b2853d03c20c4810058f0f511821052358439017e9e5d
-  languageName: node
-  linkType: hard
-
 "@radix-ui/react-compose-refs@npm:1.0.0":
   version: 1.0.0
   resolution: "@radix-ui/react-compose-refs@npm:1.0.0"
@@ -2667,27 +2651,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-roving-focus@npm:1.0.3":
-  version: 1.0.3
-  resolution: "@radix-ui/react-roving-focus@npm:1.0.3"
-  dependencies:
-    "@babel/runtime": ^7.13.10
-    "@radix-ui/primitive": 1.0.0
-    "@radix-ui/react-collection": 1.0.2
-    "@radix-ui/react-compose-refs": 1.0.0
-    "@radix-ui/react-context": 1.0.0
-    "@radix-ui/react-direction": 1.0.0
-    "@radix-ui/react-id": 1.0.0
-    "@radix-ui/react-primitive": 1.0.2
-    "@radix-ui/react-use-callback-ref": 1.0.0
-    "@radix-ui/react-use-controllable-state": 1.0.0
-  peerDependencies:
-    react: ^16.8 || ^17.0 || ^18.0
-    react-dom: ^16.8 || ^17.0 || ^18.0
-  checksum: 08f33c7cd2962b5603a83c67e54f4b1d43f89138bc598644bde551845a302da2fc32f53cad712aa2b17915b2c598fc36244d88fbc5f01986ea93d788faf32101
-  languageName: node
-  linkType: hard
-
 "@radix-ui/react-slot@npm:1.0.1":
   version: 1.0.1
   resolution: "@radix-ui/react-slot@npm:1.0.1"
@@ -2697,26 +2660,6 @@ __metadata:
   peerDependencies:
     react: ^16.8 || ^17.0 || ^18.0
   checksum: a20693f8ce532bd6cbff12ba543dfcf90d451f22923bd60b57dc9e639f6e53348915e182002b33444feb6ab753434e78e2a54085bf7092aadda4418f0423763f
-  languageName: node
-  linkType: hard
-
-"@radix-ui/react-tabs@npm:1.0.3":
-  version: 1.0.3
-  resolution: "@radix-ui/react-tabs@npm:1.0.3"
-  dependencies:
-    "@babel/runtime": ^7.13.10
-    "@radix-ui/primitive": 1.0.0
-    "@radix-ui/react-context": 1.0.0
-    "@radix-ui/react-direction": 1.0.0
-    "@radix-ui/react-id": 1.0.0
-    "@radix-ui/react-presence": 1.0.0
-    "@radix-ui/react-primitive": 1.0.2
-    "@radix-ui/react-roving-focus": 1.0.3
-    "@radix-ui/react-use-controllable-state": 1.0.0
-  peerDependencies:
-    react: ^16.8 || ^17.0 || ^18.0
-    react-dom: ^16.8 || ^17.0 || ^18.0
-  checksum: 603b06a1c071fec7b01cf82c3058aff239079b14f7d7988b559b9877bcd4e3f23d287b8cf38ebef6bb6b0c4f238a80f67525aa5fc9db519fbf1b70777a40f0ec
   languageName: node
   linkType: hard
 
@@ -3532,17 +3475,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk#lib":
-  version: 0.0.19
-  resolution: "@xlabs-libs/wormscan-sdk@https://github.com/xlabs/wormscan-sdk.git#commit=f4a3c56470843923089163c6be6ee324d6ac2c47"
-  dependencies:
-    axios: ^1.2.5
-  peerDependencies:
-    axios: ^1.2.5
-  checksum: 1c3f350aaa25b06317d71f626a57e2b93f47092293aa93c5316baab2311a2abcb5cdd37850a4bf142f5b9426347fb864ebe89dd483c905b121d9bb0c63e0ca99
-  languageName: node
-  linkType: hard
-
 "@xpla/xpla.js@npm:^0.2.1":
   version: 0.2.3
   resolution: "@xpla/xpla.js@npm:0.2.3"
@@ -3970,7 +3902,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.2.5, axios@npm:^1.4.0":
+"axios@npm:^1.4.0":
   version: 1.4.0
   resolution: "axios@npm:1.4.0"
   dependencies:
@@ -10306,7 +10238,6 @@ __metadata:
     "@parcel/transformer-sass": ^2.8.3
     "@playwright/test": ^1.32.3
     "@radix-ui/react-icons": 1.1.1
-    "@radix-ui/react-tabs": 1.0.3
     "@radix-ui/react-toggle-group": 1.0.2
     "@radix-ui/react-tooltip": 1.0.5
     "@types/node": ^18.13.0
@@ -10316,7 +10247,6 @@ __metadata:
     "@types/react-table": ^7.7.14
     "@typescript-eslint/eslint-plugin": latest
     "@typescript-eslint/parser": latest
-    "@xlabs-libs/wormscan-sdk": "https://github.com/xlabs/wormscan-sdk#lib"
     apexcharts: 3.36.0
     assert: ^2.0.0
     axios: ^1.4.0

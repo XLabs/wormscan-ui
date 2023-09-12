@@ -1,4 +1,5 @@
-import { ChainId, CrossChainActivity } from "@xlabs-libs/wormscan-sdk";
+import { ChainId } from "src/api";
+import { CrossChainActivity } from "src/api/guardian-network/types";
 
 const OTHERS_FAKE_CHAIN_ID = 123123123 as ChainId;
 export const getChainName = (id: ChainId) => {

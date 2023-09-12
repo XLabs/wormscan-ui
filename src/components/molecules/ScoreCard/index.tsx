@@ -1,9 +1,9 @@
-import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import { getClient } from "src/api/Client";
+import { useTranslation } from "react-i18next";
 import { Loader } from "src/components/atoms";
-import { formatCurrency, formatNumber, numberToSuffix } from "src/utils/number";
 import { ErrorPlaceholder } from "src/components/molecules";
+import { formatCurrency, formatNumber, numberToSuffix } from "src/utils/number";
+import { getClient } from "src/api/Client";
 import "./styles.scss";
 import { useEnvironment } from "src/context/EnvironmentContext";
 

@@ -1,6 +1,6 @@
 import { Network } from "@certusone/wormhole-sdk";
-import { createClient } from "@xlabs-libs/wormscan-sdk";
 import { queryClient } from "src/App";
+import { createClient } from "src/api";
 
 let currentNetwork: Network = "MAINNET";
 let client = createClient(process.env.WORMSCAN_API_BASE_URL);

@@ -10,7 +10,7 @@ import { ethers } from "ethers";
 import { Implementation__factory } from "@certusone/wormhole-sdk/lib/cjs/ethers-contracts";
 import { parseAddress } from "./crypto";
 import { humanAddress } from "@certusone/wormhole-sdk/lib/cjs/cosmos";
-import { ChainId } from "@xlabs-libs/wormscan-sdk";
+import { ChainId } from "src/api";
 
 type TxReceiptHolder = {
   receipt: ethers.providers.TransactionReceipt;
