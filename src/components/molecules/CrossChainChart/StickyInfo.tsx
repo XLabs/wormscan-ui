@@ -9,12 +9,19 @@ import { Info } from "./Chart";
 
 type Props = {
   chainName: string;
+  destinations: any[];
+  selectedDestination: "sources" | "destinations";
   selectedInfo: Info;
   selectedType: CrossChainBy;
-  destinations: any[];
 };
 
-export const StickyInfo = ({ chainName, selectedInfo, selectedType, destinations }: Props) => {
+export const StickyInfo = ({
+  chainName,
+  destinations,
+  selectedDestination,
+  selectedInfo,
+  selectedType,
+}: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const stickyRef = useRef<HTMLDivElement>(null);
@@ -72,7 +79,9 @@ export const StickyInfo = ({ chainName, selectedInfo, selectedType, destinations
               <div className="cross-chain-sticky-line-draw" />
             </div>
 
-            <div className="cross-chain-sticky-subtitle">Source</div>
+            <div className="cross-chain-sticky-subtitle">
+              {selectedDestination === "sources" ? "Source" : "Target"}
+            </div>
             <div className="cross-chain-sticky-info">
               <span className="cross-chain-sticky-info-source">{chainName}</span>
               <span className="cross-chain-sticky-info-value">
@@ -88,7 +97,9 @@ export const StickyInfo = ({ chainName, selectedInfo, selectedType, destinations
         <div className="cross-chain-sticky-destinations" style={{ opacity: isOpen ? 1 : 0 }}>
           <div className="cross-chain-sticky-separator" />
 
-          <div className="cross-chain-sticky-subtitle">Destination</div>
+          <div className="cross-chain-sticky-subtitle">
+            {selectedDestination === "sources" ? "Destinations" : "Sources"}
+          </div>
 
           {destinations.map(destination => (
             <div key={destination.chain} className="cross-chain-sticky-info spaced">

@@ -11,6 +11,7 @@ type Props = {
   className?: string;
   disabled?: boolean;
   disableNextButton?: boolean;
+  style?: object;
 };
 
 const Pagination = ({
@@ -24,12 +25,13 @@ const Pagination = ({
   className = "",
   disabled = false,
   disableNextButton = false,
+  style = {},
 }: Props) => {
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage === totalPages;
 
   return (
-    <div className={`pagination ${className}`}>
+    <div className={`pagination ${className}`} style={style}>
       {goFirstPage && (
         <button onClick={goFirstPage} disabled={disabled || isFirstPage}>
           &lt;&lt;

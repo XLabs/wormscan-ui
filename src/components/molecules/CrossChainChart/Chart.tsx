@@ -8,12 +8,9 @@ import { CrossChainActivity, CrossChainBy } from "src/api/guardian-network/types
 import { StickyInfo } from "./StickyInfo";
 import { getChainName, processData } from "./chartUtils";
 
-interface IOriginChainsHeight {
+interface IChartChain {
   itemHeight: number;
   selected: boolean;
-}
-interface IDestinyChainsHeight {
-  itemHeight: number;
   percentage: string;
 }
 
@@ -51,8 +48,8 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
   }, [data, selectedChain, selectedDestination]);
 
   const [destinations, setDestinations] = useState([]);
-  const [originChainsHeight, setOriginChainsHeight] = useState<IOriginChainsHeight[]>([]);
-  const [destinyChainsHeight, setDestinyChainsHeight] = useState<IDestinyChainsHeight[]>([]);
+  const [originChainsHeight, setOriginChainsHeight] = useState<IChartChain[]>([]);
+  const [destinyChainsHeight, setDestinyChainsHeight] = useState<IChartChain[]>([]);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const originChainsRef = useRef<HTMLDivElement>(null);
@@ -70,72 +67,132 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
     (ctx: CanvasRenderingContext2D) => {
       // selected blockchain
       let selectedIdx: number;
-      const selected = originChainsHeight.find((item, idx) => {
-        selectedIdx = idx;
-        return !!item.selected;
-      });
+      const selected =
+        originChainsHeight.find((item, idx) => {
+          selectedIdx = idx;
+          return !!item.selected;
+        }) ||
+        destinyChainsHeight.find((item, idx) => {
+          selectedIdx = idx;
+          return !!item.selected;
+        });
 
-      // start point: the Y position from where to start the graphs (count previous items heights)
-      const START_POINT = originChainsHeight.slice(0, selectedIdx).reduce(
-        (prev, curr) => ({
-          itemHeight: prev.itemHeight + curr.itemHeight + MARGIN_SIZE_ELEMENTS * 2,
-        }),
-        { itemHeight: 0 },
-      ).itemHeight;
+      console.log({ destinyChainsHeight, originChainsHeight, selected });
 
-      // end points: the Y position where to go for each graph (count previous items heights)
-      const END_POINTS: number[] = [];
-      let counter = 0;
-      destinyChainsHeight.forEach(item => {
-        END_POINTS.push(counter);
-        counter += item.itemHeight;
-      });
+      if (selectedDestination === "sources") {
+        // start point: the Y position from where to start the graphs (count previous items heights)
+        const START_POINT = originChainsHeight.slice(0, selectedIdx).reduce(
+          (prev, curr) => ({
+            itemHeight: prev.itemHeight + curr.itemHeight + MARGIN_SIZE_ELEMENTS * 2,
+          }),
+          { itemHeight: 0 },
+        ).itemHeight;
 
-      // empty the canvas
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      ctx.beginPath();
+        // end points: the Y position where to go for each graph (count previous items heights)
+        const END_POINTS: number[] = [];
+        let counter = 0;
+        destinyChainsHeight.forEach(item => {
+          END_POINTS.push(counter);
+          counter += item.itemHeight;
+        });
 
-      counter = 0;
-      // we have top 10 blockchains so we need 10 graphs
-      for (let i = 0; i < Math.min(10, destinyChainsHeight.length); i++) {
+        // empty the canvas
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.beginPath();
 
-        // drawing graph
-        const START = START_POINT + counter;
-        const END = END_POINTS[i] + i * MARGIN_SIZE_ELEMENTS * 2;
+        counter = 0;
+        // we have top 10 blockchains so we need 10 graphs
+        for (let i = 0; i < Math.min(10, destinyChainsHeight.length); i++) {
+          ctx.beginPath();
 
-        ctx.moveTo(0, START);
-        ctx.bezierCurveTo(CHART_SIZE / 2, START, CHART_SIZE / 2, END, CHART_SIZE, END);
+          // drawing graph
+          const START = START_POINT + counter;
+          const END = END_POINTS[i] + i * MARGIN_SIZE_ELEMENTS * 2;
 
-        const excess = (selected.itemHeight * +destinyChainsHeight[i].percentage) / 100;
-        const START2 = START + excess - MARGIN_SIZE_CANVAS * 2;
-        counter += excess;
+          ctx.moveTo(0, START);
+          ctx.bezierCurveTo(CHART_SIZE / 2, START, CHART_SIZE / 2, END, CHART_SIZE, END);
 
-        const DESTINY_CHAIN_HEIGHT = destinyChainsHeight[i].itemHeight;
-        const END2 = END + DESTINY_CHAIN_HEIGHT;
+          const excess = (selected.itemHeight * +destinyChainsHeight[i].percentage) / 100;
+          const START2 = START + excess - MARGIN_SIZE_CANVAS * 2;
+          counter += excess;
 
-        ctx.lineTo(CHART_SIZE, END2);
-        ctx.bezierCurveTo(CHART_SIZE / 2, END2, CHART_SIZE / 2, START2, 0, START2);
-        ctx.lineTo(0, START);
+          const DESTINY_CHAIN_HEIGHT = destinyChainsHeight[i].itemHeight;
+          const END2 = END + DESTINY_CHAIN_HEIGHT;
 
-        // painting graph
-        const grad = ctx.createLinearGradient(0, START, CHART_SIZE, END);
+          ctx.lineTo(CHART_SIZE, END2);
+          ctx.bezierCurveTo(CHART_SIZE / 2, END2, CHART_SIZE / 2, START2, 0, START2);
+          ctx.lineTo(0, START);
 
-        if (selectedDestination === "sources") {
+          // painting graph
+          const grad = ctx.createLinearGradient(0, START, CHART_SIZE, END);
+
           grad.addColorStop(0, "rgb(49, 52, 124)");
           grad.addColorStop(0.4, "rgb(44, 45, 116)");
           grad.addColorStop(1, "rgb(74, 34, 105)");
-        } else {
+
+          ctx.strokeStyle = grad;
+          ctx.fillStyle = grad;
+
+          ctx.stroke();
+          ctx.fill();
+        }
+      } else {
+        // start point: the Y position from where to start the graphs (count previous items heights)
+        const START_POINT = destinyChainsHeight.slice(0, selectedIdx).reduce(
+          (prev, curr) => ({
+            itemHeight: prev.itemHeight + curr.itemHeight + MARGIN_SIZE_ELEMENTS * 2,
+          }),
+          { itemHeight: 0 },
+        ).itemHeight;
+
+        // end points: the Y position where to go for each graph (count previous items heights)
+        const END_POINTS: number[] = [];
+        let counter = 0;
+        originChainsHeight.forEach(item => {
+          END_POINTS.push(counter);
+          counter += item.itemHeight;
+        });
+
+        // empty the canvas
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.beginPath();
+
+        counter = 0;
+        // we have top 10 blockchains so we need 10 graphs
+        for (let i = 0; i < Math.min(10, originChainsHeight.length); i++) {
+          ctx.beginPath();
+
+          // drawing graph
+          const START = START_POINT + counter;
+          const END = END_POINTS[i] + i * MARGIN_SIZE_ELEMENTS * 2;
+
+          ctx.moveTo(CHART_SIZE, START);
+          ctx.bezierCurveTo(CHART_SIZE / 2, START, CHART_SIZE / 2, END, 0, END);
+
+          const excess = (selected.itemHeight * +originChainsHeight[i].percentage) / 100;
+          const START2 = START + excess - MARGIN_SIZE_CANVAS * 2;
+          counter += excess;
+
+          const DESTINY_CHAIN_HEIGHT = originChainsHeight[i].itemHeight;
+          const END2 = END + DESTINY_CHAIN_HEIGHT;
+
+          ctx.lineTo(0, END2);
+          ctx.bezierCurveTo(CHART_SIZE / 2, END2, CHART_SIZE / 2, START2, CHART_SIZE, START2);
+          ctx.lineTo(CHART_SIZE, START);
+
+          // painting graph
+          const grad = ctx.createLinearGradient(0, START, CHART_SIZE, END);
+
           grad.addColorStop(0, "rgb(74, 34, 105)");
           grad.addColorStop(0.6, "rgb(44, 45, 116)");
           grad.addColorStop(1, "rgb(49, 52, 124)");
+
+          ctx.strokeStyle = grad;
+          ctx.fillStyle = grad;
+
+          ctx.stroke();
+          ctx.fill();
         }
-
-        ctx.strokeStyle = grad;
-        ctx.fillStyle = grad;
-
-        ctx.stroke();
-        ctx.fill();
       }
     },
     [MARGIN_SIZE_ELEMENTS, destinyChainsHeight, originChainsHeight, selectedDestination],
@@ -146,6 +203,7 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
     setOriginChainsHeight(
       Array.from(originChainsRef.current.children).map(item => ({
         itemHeight: item.getBoundingClientRect().height,
+        percentage: item.getAttribute("data-percentage"),
         selected: item.getAttribute("data-selected") === "true",
       })),
     );
@@ -153,6 +211,7 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
       Array.from(destinyChainsRef.current.children).map(item => ({
         itemHeight: item.getBoundingClientRect().height,
         percentage: item.getAttribute("data-percentage"),
+        selected: item.getAttribute("data-selected") === "true",
       })),
     );
   };
@@ -200,49 +259,82 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
   // re-render canvas when destinations or isDesktop changes.
   useEffect(updateChainsHeight, [destinations, isDesktop, selectedDestination]);
 
-  const getAmount = (vol: string | number) =>
-    selectedType === "tx" ? vol : "$" + formatCurrency(+vol, 0);
+  const getAmount = useCallback(
+    (vol: string | number) => (selectedType === "tx" ? vol : "$" + formatCurrency(+vol, 0)),
+    [selectedType],
+  );
+
+  const renderDestinations = useCallback(
+    (item: any, idx: number) => (
+      <div
+        key={item.chain}
+        className={`cross-chain-chart-side-item nonSelectable ${
+          selectedDestination === "sources" ? "right" : "left"
+        }`}
+        data-percentage={item.percentage}
+        style={{
+          height: (item.percentage * CHART_SIZE) / 100,
+          marginTop: idx === 0 ? 0 : MARGIN_SIZE_ELEMENTS,
+          marginBottom: MARGIN_SIZE_ELEMENTS,
+        }}
+      >
+        <div data-selected={true} className="volume-info">
+          {getAmount(item.volume)}
+        </div>
+        <BlockchainIcon className="chain-icon" dark={true} size={19} chainId={item.chain} />
+        <span className="chain-name">{getChainName(item.chain)}</span>
+        {!isDesktop && <span className="mobile-separator">|</span>}
+        <span className="chain-infoTxt percentage">
+          {item.percentage.toFixed(2).replace("00.00", "00.0")}%
+        </span>
+        <span className="chain-separator onlyBig">|</span>
+        <span className="chain-infoTxt onlyBig">{getAmount(item.volume)}</span>
+      </div>
+    ),
+    [MARGIN_SIZE_ELEMENTS, getAmount, isDesktop, selectedDestination],
+  );
+
+  const renderChartData = useCallback(
+    (item: CrossChainActivity[0], idx: number) => (
+      <div
+        key={item.chain}
+        className={`cross-chain-chart-side-item selectable ${
+          selectedDestination === "sources" ? "left" : "right"
+        }`}
+        onClick={() => setSelectedChain(item.chain)}
+        data-percentage={item.percentage}
+        data-selected={selectedChain === item.chain}
+        style={{
+          height: (item.percentage * CHART_SIZE) / 100,
+          marginTop: idx === 0 ? 0 : MARGIN_SIZE_ELEMENTS,
+          marginBottom: MARGIN_SIZE_ELEMENTS,
+        }}
+      >
+        <div data-selected={selectedChain === item.chain} className="volume-info">
+          {getAmount(item.volume)}
+        </div>
+        <BlockchainIcon className="chain-icon" dark={true} size={19} chainId={item.chain} />
+        <span className="chain-name">{getChainName(item.chain)}</span>
+        {!isDesktop && <span className="mobile-separator">|</span>}
+        <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
+        <span className="chain-separator onlyBig">|</span>
+        <span className="chain-infoTxt onlyBig">{getAmount(item.volume)}</span>
+      </div>
+    ),
+    [MARGIN_SIZE_ELEMENTS, getAmount, isDesktop, selectedChain, selectedDestination],
+  );
 
   return (
     <div className="cross-chain-relative">
       <div className="cross-chain-header-container title">
-        {selectedDestination === "sources" ? (
-          <>
-            <div>{t("home.crossChain.source").toUpperCase()}</div>
-            <div>{t("home.crossChain.destination").toUpperCase()}</div>
-          </>
-        ) : (
-          <>
-            <div>{t("home.crossChain.destination").toUpperCase()}</div>
-            <div>{t("home.crossChain.source").toUpperCase()}</div>
-          </>
-        )}
+        <div>{t("home.crossChain.source").toUpperCase()}</div>
+        <div>{t("home.crossChain.destination").toUpperCase()}</div>
       </div>
       <div className="cross-chain-chart">
         <div className="cross-chain-chart-side" ref={originChainsRef}>
-          {chartData.map((item, idx) => (
-            <div
-              key={item.chain}
-              className="cross-chain-chart-side-item left"
-              onClick={() => setSelectedChain(item.chain)}
-              data-selected={selectedChain === item.chain}
-              style={{
-                height: (item.percentage * CHART_SIZE) / 100,
-                marginTop: idx === 0 ? 0 : MARGIN_SIZE_ELEMENTS,
-                marginBottom: MARGIN_SIZE_ELEMENTS,
-              }}
-            >
-              <div data-selected={selectedChain === item.chain} className="volume-info">
-                {getAmount(item.volume)}
-              </div>
-              <BlockchainIcon className="chain-icon" dark={true} size={19} chainId={item.chain} />
-              <span className="chain-name">{getChainName(item.chain)}</span>
-              {!isDesktop && <span className="mobile-separator">|</span>}
-              <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
-              <span className="chain-separator onlyBig">|</span>
-              <span className="chain-infoTxt onlyBig">{getAmount(item.volume)}</span>
-            </div>
-          ))}
+          {selectedDestination === "sources"
+            ? chartData.map(renderChartData)
+            : destinations.map(renderDestinations)}
         </div>
         <canvas
           className="cross-chain-chart-graph"
@@ -251,35 +343,15 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
           width={CHART_SIZE}
         />
         <div className="cross-chain-chart-side" ref={destinyChainsRef}>
-          {destinations.map((item, idx) => (
-            <div
-              key={item.chain}
-              className="cross-chain-chart-side-item right"
-              data-percentage={item.percentage}
-              style={{
-                height: (item.percentage * CHART_SIZE) / 100,
-                marginTop: idx === 0 ? 0 : MARGIN_SIZE_ELEMENTS,
-                marginBottom: MARGIN_SIZE_ELEMENTS,
-              }}
-            >
-              <div data-selected={true} className="volume-info">
-                {getAmount(item.volume)}
-              </div>
-              <BlockchainIcon className="chain-icon" dark={true} size={19} chainId={item.chain} />
-              <span className="chain-name">{getChainName(item.chain)}</span>
-              {!isDesktop && <span className="mobile-separator">|</span>}
-              <span className="chain-infoTxt percentage">
-                {item.percentage.toFixed(2).replace("00.00", "00.0")}%
-              </span>
-              <span className="chain-separator onlyBig">|</span>
-              <span className="chain-infoTxt onlyBig">{getAmount(item.volume)}</span>
-            </div>
-          ))}
+          {selectedDestination === "sources"
+            ? destinations.map(renderDestinations)
+            : chartData.map(renderChartData)}
         </div>
       </div>
 
       <Pagination
         className="cross-chain-relative-pagination"
+        style={{ justifyContent: selectedDestination === "sources" ? "flex-start" : "flex-end" }}
         currentPage={isShowingOthers ? 2 : 1}
         goNextPage={() => {
           setIsShowingOthers(true);
@@ -297,6 +369,7 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
         selectedInfo={selectedInfo}
         selectedType={selectedType}
         destinations={destinations}
+        selectedDestination={selectedDestination}
       />
     </div>
   );
