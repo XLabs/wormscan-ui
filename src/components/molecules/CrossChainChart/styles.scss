@@ -283,8 +283,15 @@
         &.selectable {
           cursor: pointer;
 
-          .volume-info {
-            left: 100%;
+          &.left {
+            .volume-info {
+              left: 100%;
+            }
+          }
+          &.right {
+            .volume-info {
+              right: 100%;
+            }
           }
 
           .chain-name {
@@ -401,15 +408,12 @@
           justify-content: end;
 
           &.right {
-            border-left: 0px;
-            border-right: 8px solid var(--color-information-100);
-          }
-          &.left {
-            border-right: 0px;
-            border-left: 8px solid var(--color-information-100);
-          }
+            .volume-info {
+              right: 100%;
+            }
 
-          &.right {
+            border-right: 8px solid var(--color-information-100);
+            border-left: 0px;
             background: linear-gradient(
               90deg,
               rgba(15, 12, 72, 0) 9.64%,
@@ -422,6 +426,12 @@
             }
           }
           &.left {
+            .volume-info {
+              left: 100%;
+            }
+
+            border-right: 0px;
+            border-left: 8px solid var(--color-information-100);
             background: linear-gradient(
               90deg,
               rgba(15, 12, 72, 0.71) 9.64%,
