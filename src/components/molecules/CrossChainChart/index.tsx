@@ -79,15 +79,15 @@ const CrossChainChart = () => {
             aria-label="Select graphic type"
             onClick={() => setSelectedDestination(isSources ? "destinations" : "sources")}
           >
-            <span>{isSources ? "Source" : "Target"}</span>
+            <span>Source</span>
             <div className="cross-chain-destination-arrow">
-              {isSources ? (
-                <ArrowRightIcon width={20} height={20} />
-              ) : (
-                <ArrowLeftIcon width={20} height={20} />
-              )}
+              <ArrowLeftIcon
+                width={20}
+                height={20}
+                className={`cross-chain-destination-arrow-icon ${isSources ? "right" : "left"}`}
+              />
             </div>
-            <span>{isSources ? "Target" : "Source"}</span>
+            <span>Target</span>
           </div>
         </div>
 
@@ -123,11 +123,12 @@ const CrossChainChart = () => {
       )}
 
       <div className="cross-chain-message">
-        <div>{t("home.crossChain.portalActivity")}</div>
-        {selectedDestination === "sources" ? (
-          <div>{t("home.crossChain.bottomMessageSources")}</div>
-        ) : (
+        {selectedDestination === "destinations" && (
           <div>{t("home.crossChain.bottomMessageDestinations")}</div>
+        )}
+        <div>Wormhole Activity</div>
+        {selectedDestination === "sources" && (
+          <div>{t("home.crossChain.bottomMessageSources")}</div>
         )}
       </div>
     </div>
