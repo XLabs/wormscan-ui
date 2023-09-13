@@ -77,8 +77,6 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
           return !!item.selected;
         });
 
-      console.log({ destinyChainsHeight, originChainsHeight, selected });
-
       if (selectedDestination === "sources") {
         // start point: the Y position from where to start the graphs (count previous items heights)
         const START_POINT = originChainsHeight.slice(0, selectedIdx).reduce(
