@@ -40,6 +40,35 @@ const ScoreCard = () => {
             <div className="home-statistics-data-container">
               <div className="home-statistics-data-container-item end">
                 <div className="home-statistics-data-container-item-title">
+                  {t("home.statistics.allTxn")}
+                </div>
+                <div className="home-statistics-data-container-item-value">
+                  {total_tx_count ? numberToSuffix(Number(total_tx_count)) : "-"}
+                </div>
+              </div>
+
+              <div className="home-statistics-data-container-item end">
+                <div className="home-statistics-data-container-item-title">
+                  {t("home.statistics.dayTxn")}
+                </div>
+                <div className="home-statistics-data-container-item-value">
+                  {tx_count24h ? formatNumber(Number(tx_count24h), 0) : "-"}
+                </div>
+              </div>
+
+              <div className="home-statistics-data-container-item end">
+                <div className="home-statistics-data-container-item-title">
+                  {t("home.statistics.dayMessage")}
+                </div>
+                <div className="home-statistics-data-container-item-value">
+                  {messages24h ? formatNumber(Number(messages24h), 0) : "-"}
+                </div>
+              </div>
+
+              <hr />
+
+              <div className="home-statistics-data-container-item start">
+                <div className="home-statistics-data-container-item-title">
                   {t("home.statistics.tvl")}
                 </div>
                 <div className="home-statistics-data-container-item-value">
@@ -51,7 +80,7 @@ const ScoreCard = () => {
                 </div>
               </div>
 
-              <div className="home-statistics-data-container-item end">
+              <div className="home-statistics-data-container-item start">
                 <div className="home-statistics-data-container-item-title">
                   {t("home.statistics.allVolume")}
                 </div>
@@ -64,17 +93,6 @@ const ScoreCard = () => {
                 </div>
               </div>
 
-              <div className="home-statistics-data-container-item end">
-                <div className="home-statistics-data-container-item-title">
-                  {t("home.statistics.allTxn")}
-                </div>
-                <div className="home-statistics-data-container-item-value">
-                  {total_tx_count ? numberToSuffix(Number(total_tx_count)) : "-"}
-                </div>
-              </div>
-
-              <hr />
-
               <div className="home-statistics-data-container-item start">
                 <div className="home-statistics-data-container-item-title">
                   {t("home.statistics.messageVolume")}
@@ -85,24 +103,6 @@ const ScoreCard = () => {
                   ) : (
                     "-"
                   )}
-                </div>
-              </div>
-
-              <div className="home-statistics-data-container-item start">
-                <div className="home-statistics-data-container-item-title">
-                  {t("home.statistics.dayTxn")}
-                </div>
-                <div className="home-statistics-data-container-item-value">
-                  {tx_count24h ? formatNumber(Number(tx_count24h), 0) : "-"}
-                </div>
-              </div>
-
-              <div className="home-statistics-data-container-item start">
-                <div className="home-statistics-data-container-item-title">
-                  {t("home.statistics.dayMessage")}
-                </div>
-                <div className="home-statistics-data-container-item-value">
-                  {messages24h ? formatNumber(Number(messages24h), 0) : "-"}
                 </div>
               </div>
             </div>
