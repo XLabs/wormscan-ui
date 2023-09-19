@@ -135,7 +135,7 @@ const Information = ({ VAAData, txData }: Props) => {
   const redeemedAmount =
     parsedPayload?.feeAmount && parsedPayload?.toNativeAmount
       ? formatCurrency(+amount - +fee - +parsedPayload?.toNativeAmount)
-      : formatCurrency(+amount - +fee);
+      : formatCurrency(formatUnits(+amount - +fee));
 
   const originDateParsed = formatDate(startDate);
   const destinationDateParsed = formatDate(endDate);
