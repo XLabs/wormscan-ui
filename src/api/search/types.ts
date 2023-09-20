@@ -1,3 +1,8 @@
+import {
+  DeliveryInstruction,
+  DeliveryStatus,
+  RefundStatus,
+} from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { GlobalTxOutput } from "src/api/guardian-network/types";
 import { PageRequest } from "src/api/model";
 import { Pagination } from "src/api/types";
@@ -108,4 +113,100 @@ export type GetTransactionsOutput = {
     tokenChain: number;
   };
   globalTx: GlobalTxOutput;
+};
+
+export type DeliveryRecord = {
+  additionalVaaKeysFormatValid?: boolean;
+  additionalVaaKeysPrintable?: string;
+  additionalVaasDidFetch?: boolean;
+  additionalVaasHex?: string;
+  budget?: string;
+  budgetUsd: number;
+  chainId?: number;
+  deliveryInstructionPrintable?: string;
+  estimatedTransactionFee?: string;
+  estimatedTransactionFeeEther?: string;
+  fetAdditionalVaasTimeEnd?: number;
+  fetchAdditionalVaasTimeStart?: number;
+  gasPrice?: string;
+  gasPriceEstimate?: string;
+  gasUnitsEstimate?: number;
+  gasUsed?: number;
+  hasAdditionalVaas?: boolean;
+  maxRefund?: string;
+  maxRefundUsd: number;
+  receiverValue?: string;
+  receiverValueUsd: number;
+  resultLog?: {
+    status: DeliveryStatus | string;
+    gasUsed: string;
+    overrides?: {
+      newReceiverValue: string;
+      redeliveryHash: string;
+      newExecutionInfo: string;
+    };
+    sourceChain: string;
+    sourceVaaSequence: string | null;
+    transactionHash: string | null;
+    vaaHash: string | null;
+    refundStatus: RefundStatus;
+    revertString: string | undefined;
+  };
+  resultLogDidParse?: boolean;
+  targetChainAssetPriceUSD: number;
+  targetChainDecimals?: number;
+  transactionDidSubmit?: boolean;
+  transactionHashes?: string[];
+  transactionSubmitTimeEnd?: number;
+  transactionSubmitTimeStart?: number;
+  walletAcquisitionDidSucceed?: boolean;
+  walletAcquisitionEndTime?: number;
+  walletAcquisitionStartTime?: number;
+  walletAddress?: string;
+  walletBalanceAfter?: string;
+  walletBalanceBefore?: string;
+  walletNonce?: number;
+};
+
+export type DeliveryMetaData = {
+  attempts?: number;
+  maxAttempts?: number;
+  didError?: boolean;
+  errorName?: string;
+  didSubmitTransaction?: boolean;
+  executionStartTime?: number;
+  executionEndTime?: number;
+  emitterChain?: number;
+  emitterAddress?: string;
+  sequence?: number;
+  rawVaaHex?: string;
+  deliveryRecord?: DeliveryRecord;
+
+  rawVaaPayloadHex?: string;
+  payloadType?: number;
+  didParse?: boolean;
+  instructions?: DeliveryInstruction;
+};
+
+export type DeliveryProviderStatus = {
+  _id?: string;
+  emitterChain?: number;
+  emitterAddress?: string;
+  sequence?: number;
+  vaa?: string;
+  fromTxHash?: string;
+  status?: string;
+  addedTimes?: number;
+  attempts?: number;
+  maxAttempts?: number;
+  receivedAt?: string;
+  completedAt?: string;
+  failedAt?: string;
+  errorMessage?: string;
+  toTxHash?: string;
+  metadata?: DeliveryMetaData;
+  specifiedDeliveryProvider?: string;
+  didMatchDeliveryProvider?: boolean;
+  redeliveryRecord?: null; // todo ?
+  fatalStackTrace?: string;
 };

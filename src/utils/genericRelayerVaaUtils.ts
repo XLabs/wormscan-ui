@@ -10,12 +10,8 @@ import {
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { callWithTimeout } from "src/utils/asyncUtils";
 import { getClient } from "src/api/Client";
-import { GetTransactionsOutput } from "src/api/search/types";
+import { DeliveryProviderStatus, GetTransactionsOutput } from "src/api/search/types";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
-import {
-  DeliveryProviderStatus,
-  getDeliveryProviderStatusByVaaInfo,
-} from "./deliveryProviderStatusApi";
 
 export type WormholeTransaction = {
   chainId: ChainId;
@@ -61,12 +57,21 @@ export async function populateDeliveryLifecycleRecordByVaa(
     console.error("err on getTransaction wormhole api", e);
   }
 
-  const deliveryStatus = await getDeliveryProviderStatusByVaaInfo(
-    environment,
-    parsedVaa.emitterChain.toString(),
-    parsedVaa.emitterAddress.toString("hex"),
-    parsedVaa.sequence.toString(),
-  );
+  // WORMHOLESCAN API
+  const relayInfo = await getClient().search.getRelays({
+    chainId: parsedVaa.emitterChain,
+    emitter: parsedVaa.emitterAddress.toString("hex"),
+    seq: Number(parsedVaa.sequence.toString()),
+  });
+  const deliveryStatus: DeliveryProviderStatus[] = !!relayInfo ? [].concat(relayInfo) : [];
+
+  // RELAY-STATUS API
+  // const deliveryStatus = await getDeliveryProviderStatusByVaaInfo(
+  //   environment,
+  //   parsedVaa.emitterChain.toString(),
+  //   parsedVaa.emitterAddress.toString("hex"),
+  //   parsedVaa.sequence.toString(),
+  // );
 
   const sourceChainId = parsedVaa.emitterChain;
   let preventProcess = false;

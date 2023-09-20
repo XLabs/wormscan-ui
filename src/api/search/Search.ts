@@ -5,6 +5,7 @@ import { DefaultPageRequest } from "src/api/model";
 import { _get } from "src/api/utils/Objects";
 
 import {
+  DeliveryProviderStatus,
   FindVAAByAddressOutput,
   GetTokenInput,
   GetTokenOutput,
@@ -58,6 +59,24 @@ export class Search {
     // When returns GetTransactionsOutput[] differs when returns a single GetTransactionsOutput
     if (result) return result;
     return payload as GetTransactionsOutput;
+  }
+
+  async getRelays({
+    chainId,
+    emitter,
+    seq,
+  }: GetTransactionsInput): Promise<DeliveryProviderStatus> {
+    const effectivePath = this._vaaSearchCriteriaToPathSegmentFilter("/relays", {
+      chainId,
+      emitter,
+      seq,
+    });
+
+    const payload = await this._client.doGet(effectivePath);
+    const result = _get(payload, "data", null);
+
+    console.log("getRelays:", payload);
+    return result;
   }
 
   async getToken({ chainId, tokenAddress }: GetTokenInput): Promise<GetTokenOutput> {
