@@ -5,7 +5,7 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import { txType } from "src/consts";
 import { Alert, Loader } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
-import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
+import { parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
 import { formatCurrency } from "src/utils/number";
 import {

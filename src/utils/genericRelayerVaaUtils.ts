@@ -57,21 +57,12 @@ export async function populateDeliveryLifecycleRecordByVaa(
     console.error("err on getTransaction wormhole api", e);
   }
 
-  // WORMHOLESCAN API
   const relayInfo = await getClient().search.getRelays({
     chainId: parsedVaa.emitterChain,
     emitter: parsedVaa.emitterAddress.toString("hex"),
     seq: Number(parsedVaa.sequence.toString()),
   });
   const deliveryStatus: DeliveryProviderStatus[] = !!relayInfo ? [].concat(relayInfo) : [];
-
-  // RELAY-STATUS API
-  // const deliveryStatus = await getDeliveryProviderStatusByVaaInfo(
-  //   environment,
-  //   parsedVaa.emitterChain.toString(),
-  //   parsedVaa.emitterAddress.toString("hex"),
-  //   parsedVaa.sequence.toString(),
-  // );
 
   const sourceChainId = parsedVaa.emitterChain;
   let preventProcess = false;

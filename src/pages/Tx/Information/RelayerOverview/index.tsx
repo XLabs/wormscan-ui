@@ -15,7 +15,6 @@ import RelayIcon from "src/icons/relayIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress } from "src/utils/crypto";
 import { parseAddress } from "src/utils/crypto";
-import { DeliveryMetaData, DeliveryProviderStatus } from "src/utils/deliveryProviderStatusApi";
 import {
   DeliveryLifecycleRecord,
   isRedelivery,
@@ -28,6 +27,7 @@ import {
 import { ChainId } from "src/api";
 import { VAADetail } from "src/api/guardian-network/types";
 import "./styles.scss";
+import { DeliveryMetaData, DeliveryProviderStatus } from "src/api/search/types";
 
 // eslint-disable-next-line no-var
 var gasUsed: any;

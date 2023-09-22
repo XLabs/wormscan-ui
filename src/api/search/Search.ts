@@ -75,7 +75,6 @@ export class Search {
     const payload = await this._client.doGet(effectivePath);
     const result = _get(payload, "data", null);
 
-    console.log("getRelays:", payload);
     return result;
   }
 
