@@ -62,6 +62,8 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
   const MARGIN_SIZE_ELEMENTS = isDesktop ? 2 : 4;
   const devicePixelRatio = window.devicePixelRatio * 2;
 
+  const isSourcesSelected = selectedDestination === "sources";
+
   // DRAWING GRAPH FUNCTION
   const draw = useCallback(
     (ctx: CanvasRenderingContext2D) => {
@@ -77,7 +79,7 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
           return !!item.selected;
         });
 
-      if (selectedDestination === "sources") {
+      if (isSourcesSelected) {
         // start point: the Y position from where to start the graphs (count previous items heights)
         const START_POINT = originChainsHeight.slice(0, selectedIdx).reduce(
           (prev, curr) => ({
@@ -124,9 +126,9 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
           // painting graph
           const grad = ctx.createLinearGradient(0, START, CHART_SIZE, END);
 
-          grad.addColorStop(0, "rgb(49, 52, 124)");
-          grad.addColorStop(0.4, "rgb(44, 45, 116)");
-          grad.addColorStop(1, "rgb(74, 34, 105)");
+          grad.addColorStop(0, "rgb(56, 38, 71)");
+          grad.addColorStop(0.6, "rgb(58,43,83)");
+          grad.addColorStop(1, "rgb(63,56,124)");
 
           ctx.strokeStyle = grad;
           ctx.fillStyle = grad;
@@ -181,9 +183,9 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
           // painting graph
           const grad = ctx.createLinearGradient(0, START, CHART_SIZE, END);
 
-          grad.addColorStop(0, "rgb(74, 34, 105)");
-          grad.addColorStop(0.6, "rgb(44, 45, 116)");
-          grad.addColorStop(1, "rgb(49, 52, 124)");
+          grad.addColorStop(0, "rgb(63,56,124)");
+          grad.addColorStop(0.4, "rgb(58,43,83)");
+          grad.addColorStop(1, "rgb(56, 38, 71)");
 
           ctx.strokeStyle = grad;
           ctx.fillStyle = grad;
@@ -193,7 +195,7 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
         }
       }
     },
-    [MARGIN_SIZE_ELEMENTS, destinyChainsHeight, originChainsHeight, selectedDestination],
+    [MARGIN_SIZE_ELEMENTS, destinyChainsHeight, isSourcesSelected, originChainsHeight],
   );
 
   // update arrays containing height of items on both sides of the graphics
@@ -267,7 +269,7 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
       <div
         key={item.chain}
         className={`cross-chain-chart-side-item nonSelectable ${
-          selectedDestination === "sources" ? "right" : "left"
+          isSourcesSelected ? "right" : "left"
         }`}
         data-percentage={item.percentage}
         style={{
@@ -289,16 +291,14 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
         <span className="chain-infoTxt onlyBig">{getAmount(item.volume)}</span>
       </div>
     ),
-    [MARGIN_SIZE_ELEMENTS, getAmount, isDesktop, selectedDestination],
+    [MARGIN_SIZE_ELEMENTS, getAmount, isDesktop, isSourcesSelected],
   );
 
   const renderChartData = useCallback(
     (item: CrossChainActivity[0], idx: number) => (
       <div
         key={item.chain}
-        className={`cross-chain-chart-side-item selectable ${
-          selectedDestination === "sources" ? "left" : "right"
-        }`}
+        className={`cross-chain-chart-side-item selectable ${isSourcesSelected ? "left" : "right"}`}
         onClick={() => setSelectedChain(item.chain)}
         data-percentage={item.percentage}
         data-selected={selectedChain === item.chain}
@@ -319,7 +319,7 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
         <span className="chain-infoTxt onlyBig">{getAmount(item.volume)}</span>
       </div>
     ),
-    [MARGIN_SIZE_ELEMENTS, getAmount, isDesktop, selectedChain, selectedDestination],
+    [MARGIN_SIZE_ELEMENTS, getAmount, isDesktop, isSourcesSelected, selectedChain],
   );
 
   return (
@@ -330,7 +330,7 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
       </div>
       <div className="cross-chain-chart">
         <div className="cross-chain-chart-side" ref={originChainsRef}>
-          {selectedDestination === "sources"
+          {isSourcesSelected
             ? chartData.map(renderChartData)
             : destinations.map(renderDestinations)}
         </div>
@@ -341,7 +341,7 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
           width={CHART_SIZE}
         />
         <div className="cross-chain-chart-side" ref={destinyChainsRef}>
-          {selectedDestination === "sources"
+          {isSourcesSelected
             ? destinations.map(renderDestinations)
             : chartData.map(renderChartData)}
         </div>
@@ -349,7 +349,7 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
 
       <Pagination
         className="cross-chain-relative-pagination"
-        style={{ justifyContent: selectedDestination === "sources" ? "flex-start" : "flex-end" }}
+        style={{ justifyContent: isSourcesSelected ? "flex-start" : "flex-end" }}
         currentPage={isShowingOthers ? 2 : 1}
         goNextPage={() => {
           setIsShowingOthers(true);
