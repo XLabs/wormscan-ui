@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import { Buffer } from "buffer";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
@@ -17,7 +16,7 @@ import { Information } from "./Information";
 import { Top } from "./Top";
 import "./styles.scss";
 
-const STALE_TIME = 1000 * 10;
+const STALE_TIME = 10;
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
 const Tx = () => {
