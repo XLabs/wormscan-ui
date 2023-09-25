@@ -392,7 +392,7 @@
               );
               @include desktop {
                 border-right: 0px;
-                background: withOpacity(var(--color-primary-300), 0.5);
+                background: var(--color-white-05);
               }
             }
           }
