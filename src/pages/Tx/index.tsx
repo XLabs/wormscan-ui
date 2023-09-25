@@ -16,7 +16,6 @@ import { Information } from "./Information";
 import { Top } from "./Top";
 import "./styles.scss";
 
-const STALE_TIME = 10;
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
 const Tx = () => {
@@ -120,7 +119,6 @@ const Tx = () => {
         }
       },
       retry: 2,
-      staleTime: STALE_TIME,
       enabled: isTxHashSearch,
     },
   );
@@ -139,7 +137,6 @@ const Tx = () => {
     },
     {
       onError: () => navigate(`/search-not-found/?q=${VAAId}`),
-      staleTime: STALE_TIME,
       enabled: isVAAIdSearch,
     },
   );
