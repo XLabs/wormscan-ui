@@ -27,16 +27,6 @@
     gap: 24px;
     margin-bottom: 24px;
 
-    .rowed {
-      @include centered-row;
-      gap: 32px;
-      flex-wrap: wrap;
-      width: 100%;
-      @include desktop {
-        width: auto;
-      }
-    }
-
     &-items {
       min-height: 56px;
       width: 100%;
@@ -44,6 +34,11 @@
       .toggle-group-item {
         flex: 1;
       }
+    }
+
+    &-txsText {
+      color: var(--color-primary-100);
+      font-size: 18px;
     }
 
     @include desktop {
@@ -68,49 +63,33 @@
     cursor: pointer;
     user-select: none;
 
-    min-height: 56px;
-    padding-left: 16px;
-    padding-right: 16px;
-    gap: 12px;
+    height: 56px;
+    padding-left: 8px;
+    padding-right: 8px;
+    gap: 8px;
     width: 100%;
     @include desktop {
       width: auto;
     }
 
     border-radius: 8px;
-    border: 2px solid var(--color-white-10);
-    color: var(--color-white-70);
-    background-color: var(--color-white-05);
+    border: 2px solid var(--color-black-25);
+    color: var(--color-primary-100);
+    background-color: var(--color-black-25);
 
-    &:hover {
-      color: var(--color-white);
-      background-color: var(--color-white-10);
-    }
-
-    span {
-      width: 53px;
-      text-align: center;
-    }
-
-    &-arrow {
+    div {
+      width: 76px;
+      height: 40px;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 24px;
-      width: 24px;
-      background-color: var(--color-secondary-800);
-      border-radius: 8px;
+      font-size: 14px;
+    }
 
-      &-icon {
-        &.right {
-          transform: rotate(180deg);
-        }
-        &.left {
-          transform: rotate(0deg);
-        }
-
-        transition: all 0.4s ease-out;
-      }
+    &-selected {
+      background-color: var(--color-white-05);
+      border-radius: 4px;
+      color: var(--color-primary-30);
     }
   }
 
@@ -181,19 +160,6 @@
         position: relative;
         grid-template-columns: 70px 60px;
 
-        &.left {
-          border-left: 16px solid var(--color-information-60);
-          @include desktop {
-            border-left: 0;
-          }
-        }
-        &.right {
-          border-right: 16px solid var(--color-information-60);
-          @include desktop {
-            border-right: 0;
-          }
-        }
-
         @media only screen and (min-width: 425px) {
           grid-template-columns: 85px 30px 40px;
         }
@@ -206,7 +172,7 @@
 
         @include desktop {
           grid-template-columns: 1.5fr 5fr 1fr;
-          background: withOpacity(var(--color-primary-100), 0.2);
+          background: var(--color-black-20);
         }
         @include bigDesktop {
           grid-template-columns: 1.2fr 3.6fr 2fr 0.2fr 4fr;
@@ -280,6 +246,21 @@
           }
         }
 
+        &.left {
+          border-left: 16px solid var(--color-white-05);
+          @include desktop {
+            border-left: 0;
+          }
+        }
+        &.right {
+          justify-content: end;
+
+          border-right: 16px solid var(--color-white-05);
+          @include desktop {
+            border-right: 0;
+          }
+        }
+
         &.selectable {
           cursor: pointer;
 
@@ -305,82 +286,10 @@
             border-right: 4px solid transparent;
 
             &:hover {
-              background: withOpacity(var(--color-primary-300), 0.5);
+              background: var(--color-white-03);
             }
           }
         }
-
-        &[data-selected="true"] {
-          .percentage {
-            display: block;
-          }
-          .mobile-separator {
-            @media only screen and (min-width: 425px) {
-              display: block;
-            }
-          }
-          .chain-name {
-            opacity: 1;
-          }
-          &.selectable {
-            &.left {
-              border-left: 16px solid var(--color-information-100);
-              background: linear-gradient(
-                90deg,
-                rgba(15, 12, 72, 0.71) 9.64%,
-                rgba(15, 12, 72, 0) 95.18%
-              );
-              @include desktop {
-                border-left: 0px;
-                background: withOpacity(var(--color-primary-300), 0.5);
-              }
-            }
-            &.right {
-              border-right: 16px solid var(--color-information-100);
-
-              background: linear-gradient(
-                90deg,
-                rgba(15, 12, 72, 0) 9.64%,
-                rgba(15, 12, 72, 0.71) 95.18%
-              );
-              @include desktop {
-                border-right: 0px;
-                background: withOpacity(var(--color-primary-300), 0.5);
-              }
-            }
-          }
-
-          &.left {
-            @include desktop {
-              border-right: 4px solid var(--color-information-100);
-            }
-          }
-          &.right {
-            @include desktop {
-              border-left: 4px solid var(--color-information-100);
-            }
-          }
-        }
-
-        .volume-info {
-          display: none;
-          position: absolute;
-          z-index: 2;
-          padding-left: 8px;
-          padding-right: 8px;
-          font-size: 14px;
-          height: 20px;
-
-          @include desktop {
-            &[data-selected="true"] {
-              display: block;
-            }
-          }
-          @include bigDesktop {
-            display: none !important;
-          }
-        }
-
         &.nonSelectable {
           .percentage {
             display: block;
@@ -405,24 +314,22 @@
             }
           }
 
-          justify-content: end;
-
           &.right {
             .volume-info {
               right: 100%;
             }
 
-            border-right: 8px solid var(--color-information-100);
+            border-right: 8px solid var(--color-primary-200);
             border-left: 0px;
             background: linear-gradient(
               90deg,
               rgba(15, 12, 72, 0) 9.64%,
-              rgba(15, 12, 72, 0.71) 95.18%
+              rgba(15, 12, 72, 0.45) 95.18%
             );
             @include desktop {
-              background: withOpacity(var(--color-primary-100), 0.2);
+              background: #39326f;
               border-right: 0px;
-              border-left: 4px solid var(--color-information-100);
+              border-left: 4px solid var(--color-primary-200);
             }
           }
           &.left {
@@ -431,21 +338,93 @@
             }
 
             border-right: 0px;
-            border-left: 8px solid var(--color-information-100);
+            border-left: 8px solid var(--color-primary-200);
+            padding-left: 6px;
             background: linear-gradient(
               90deg,
-              rgba(15, 12, 72, 0.71) 9.64%,
+              rgba(15, 12, 72, 0.45) 9.64%,
               rgba(15, 12, 72, 0) 95.18%
             );
             @include desktop {
-              background: withOpacity(var(--color-primary-100), 0.2);
-              border-right: 4px solid var(--color-information-100);
+              background: #39326f;
+              border-right: 4px solid var(--color-primary-200);
               border-left: 0px;
             }
           }
 
           @include desktop {
             align-items: center;
+          }
+        }
+
+        &[data-selected="true"] {
+          .percentage {
+            display: block;
+          }
+          .mobile-separator {
+            @media only screen and (min-width: 425px) {
+              display: block;
+            }
+          }
+          .chain-name {
+            opacity: 1;
+          }
+          &.selectable {
+            &.left {
+              border-left: 16px solid var(--color-secondary-800);
+              background: linear-gradient(
+                90deg,
+                rgba(15, 12, 72, 0.45) 9.64%,
+                rgba(15, 12, 72, 0) 95.18%
+              );
+              @include desktop {
+                border-left: 0px;
+                background: var(--color-white-05);
+              }
+            }
+            &.right {
+              border-right: 16px solid var(--color-secondary-800);
+
+              background: linear-gradient(
+                90deg,
+                rgba(15, 12, 72, 0) 9.64%,
+                rgba(15, 12, 72, 0.45) 95.18%
+              );
+              @include desktop {
+                border-right: 0px;
+                background: withOpacity(var(--color-primary-300), 0.5);
+              }
+            }
+          }
+
+          &.left {
+            @include desktop {
+              border-right: 4px solid var(--color-secondary-800);
+            }
+          }
+          &.right {
+            @include desktop {
+              border-left: 4px solid var(--color-secondary-800);
+            }
+          }
+        }
+
+        .volume-info {
+          display: none;
+          position: absolute;
+          z-index: 2;
+          padding-left: 8px;
+          padding-right: 8px;
+          font-size: 14px;
+          height: 20px;
+
+          @include desktop {
+            &[data-selected="true"] {
+              display: block;
+            }
+          }
+          @include bigDesktop {
+            display: none !important;
           }
         }
       }
