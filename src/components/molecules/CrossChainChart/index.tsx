@@ -65,7 +65,7 @@ const CrossChainChart = () => {
       <div className="cross-chain-title">{t("home.crossChain.title")}</div>
 
       <div className="cross-chain-options">
-        <div className="rowed">
+        {currentNetwork === "MAINNET" ? (
           <ToggleGroup
             value={selectedType}
             onValueChange={value => setSelectedType(value)}
@@ -73,21 +73,22 @@ const CrossChainChart = () => {
             ariaLabel="Select type"
             className="cross-chain-options-items"
           />
+        ) : (
+          <div className="cross-chain-options-txsText">Transactions</div>
+        )}
 
+        <div className="cross-chain-destination" aria-label="Select graphic type">
           <div
-            className="cross-chain-destination"
-            aria-label="Select graphic type"
-            onClick={() => setSelectedDestination(isSources ? "destinations" : "sources")}
+            onClick={() => setSelectedDestination("sources")}
+            className={isSources ? "cross-chain-destination-selected" : ""}
           >
-            <span>Source</span>
-            <div className="cross-chain-destination-arrow">
-              <ArrowLeftIcon
-                width={20}
-                height={20}
-                className={`cross-chain-destination-arrow-icon ${isSources ? "right" : "left"}`}
-              />
-            </div>
-            <span>Target</span>
+            SOURCE
+          </div>
+          <div
+            onClick={() => setSelectedDestination("destinations")}
+            className={isSources ? "" : "cross-chain-destination-selected"}
+          >
+            TARGET
           </div>
         </div>
 
