@@ -220,7 +220,7 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
   useEffect(() => {
     if (originChainsHeight.length && destinyChainsHeight.length) {
       const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
+      const context = canvas.getContext("2d", { willReadFrequently: true });
 
       canvas.width = Math.floor(CHART_SIZE * devicePixelRatio);
       canvas.height = Math.floor(CHART_SIZE * devicePixelRatio);
