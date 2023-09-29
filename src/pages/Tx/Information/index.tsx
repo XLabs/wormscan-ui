@@ -25,13 +25,14 @@ import RelayerOverview from "./RelayerOverview";
 import "./styles.scss";
 
 interface Props {
+  extraRawInfo: any;
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
   txData: GetTransactionsOutput;
 }
 
 const UNKNOWN_APP_ID = "UNKNOWN";
 
-const Information = ({ VAAData, txData }: Props) => {
+const Information = ({ extraRawInfo, VAAData, txData }: Props) => {
   const [showOverview, setShowOverview] = useState(true);
   const [showOverviewDetail, setShowOverviewDetail] = useLocalStorage<boolean>(
     "showOverviewDetail",
@@ -231,7 +232,14 @@ const Information = ({ VAAData, txData }: Props) => {
 
   const RawDataContent = () => {
     if (isGenericRelayerTx && loadingRelayers) return <Loader />;
-    return <RawData lifecycleRecord={genericRelayerInfo} txData={txData} VAAData={VAAData} />;
+    return (
+      <RawData
+        extraRawInfo={extraRawInfo}
+        lifecycleRecord={genericRelayerInfo}
+        txData={txData}
+        VAAData={VAAData}
+      />
+    );
   };
 
   const AlertsContent = () => {
