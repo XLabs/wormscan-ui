@@ -9,7 +9,7 @@ import { fetchWithRpcFallThrough } from "src/utils/fetchWithRPCsFallthrough";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
-import { VAADetail } from "src/api/guardian-network/types";
+import { GlobalTxOutput, VAADetail } from "src/api/guardian-network/types";
 import { GetTransactionsOutput } from "src/api/search/types";
 import { getGuardianSet } from "../../consts";
 import { Information } from "./Information";
@@ -181,7 +181,7 @@ const Tx = () => {
 
           // and add Redeem Txn information to the tx response
           if (relayResponse?.to?.txHash) {
-            txResponse.globalTx.destinationTx = {
+            const cctpDestination: GlobalTxOutput["destinationTx"] = {
               chainId: relayResponse.to.chainId,
               status: relayResponse.status,
               timestamp: relayResponse.metrics?.completedAt,
@@ -194,7 +194,24 @@ const Tx = () => {
               to: null,
             };
 
+            if (txResponse.globalTx) {
+              txResponse.globalTx.destinationTx = cctpDestination;
+            } else {
+              txResponse.globalTx = {
+                id: null,
+                originTx: null,
+                destinationTx: cctpDestination,
+              };
+            }
             setExtraRawInfo(relayResponse);
+          }
+
+          // the fee for CCTP is feeAmount (fee) + toNativeAmount (gas drop)
+          if (txResponse.payload?.parsedPayload?.feeAmount) {
+            txResponse.standardizedProperties.fee = `${
+              +txResponse.payload.parsedPayload.feeAmount * 100 +
+              +txResponse.payload.parsedPayload.toNativeAmount * 100
+            }`;
           }
         }
         return txResponse;
