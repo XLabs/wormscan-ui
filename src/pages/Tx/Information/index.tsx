@@ -133,10 +133,7 @@ const Information = ({ extraRawInfo, VAAData, txData }: Props) => {
 
   const amountSent = formatCurrency(Number(tokenAmount));
   const amountSentUSD = +usdAmount ? formatCurrency(+usdAmount) : "";
-  const redeemedAmount =
-    parsedPayload?.feeAmount && parsedPayload?.toNativeAmount
-      ? formatCurrency(+amount - +fee - +parsedPayload?.toNativeAmount)
-      : formatCurrency(formatUnits(+amount - +fee));
+  const redeemedAmount = formatCurrency(formatUnits(+amount - +fee));
 
   const originDateParsed = formatDate(startDate);
   const destinationDateParsed = formatDate(endDate);
