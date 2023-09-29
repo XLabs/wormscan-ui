@@ -15,6 +15,7 @@ import { getGuardianSet } from "../../consts";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import "./styles.scss";
+import { parseTx } from "src/utils/crypto";
 
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
@@ -30,6 +31,7 @@ const Tx = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [parsedVAAsData, setParsedVAAsData] = useState<ParsedVAA[] | undefined>(undefined);
+  const [extraRawInfo, setExtraRawInfo] = useState(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -163,11 +165,39 @@ const Tx = () => {
         const VaaDataEmitter = VAADataVaaId?.[1];
         const VaaDataSeq = Number(VAADataVaaId?.[2]);
 
-        return await getClient().search.getTransactions({
+        const txResponse = await getClient().search.getTransactions({
           chainId: VaaDataChainId,
           emitter: VaaDataEmitter,
           seq: VaaDataSeq,
         });
+
+        // check CCTP
+        if (txResponse?.standardizedProperties?.appIds?.includes("CCTP_WORMHOLE_INTEGRATION")) {
+          // if it is, get relayer information
+          const relayResponse = await getClient().search.getCctpRelay({
+            txHash: parseTx({ value: txResponse.txHash, chainId: 2 }),
+            network: network,
+          });
+
+          // and add Redeem Txn information to the tx response
+          if (relayResponse?.to?.txHash) {
+            txResponse.globalTx.destinationTx = {
+              chainId: relayResponse.to.chainId,
+              status: relayResponse.status,
+              timestamp: relayResponse.metrics?.completedAt,
+              txHash: relayResponse.to.txHash,
+              updatedAt: relayResponse.metrics?.completedAt,
+
+              blockNumber: null,
+              from: null,
+              method: null,
+              to: null,
+            };
+
+            setExtraRawInfo(relayResponse);
+          }
+        }
+        return txResponse;
       });
 
       const results = await Promise.all(result);
@@ -259,6 +289,7 @@ const Tx = () => {
                 txData && (
                   <Information
                     key={parsedVAAData.id}
+                    extraRawInfo={extraRawInfo}
                     VAAData={parsedVAAData}
                     txData={txData.find(tx => tx.id === parsedVAAData.id)}
                   />

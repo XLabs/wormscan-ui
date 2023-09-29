@@ -5,6 +5,7 @@ import { DefaultPageRequest } from "src/api/model";
 import { _get } from "src/api/utils/Objects";
 
 import {
+  CctpRelayOutput,
   FindVAAByAddressOutput,
   GetTokenInput,
   GetTokenOutput,
@@ -13,6 +14,7 @@ import {
   GetTransactionsInput,
   GetTransactionsOutput,
 } from "./types";
+import { Network } from "@certusone/wormhole-sdk";
 
 interface FindVAAByAddressInput {
   address: string;
@@ -58,6 +60,25 @@ export class Search {
     // When returns GetTransactionsOutput[] differs when returns a single GetTransactionsOutput
     if (result) return result;
     return payload as GetTransactionsOutput;
+  }
+
+  async getCctpRelay({
+    txHash,
+    network,
+  }: {
+    txHash: string;
+    network: Network;
+  }): Promise<CctpRelayOutput> {
+    let cctpURL = "https://relayer.stable.io/v1/relays?txHash=";
+    if (network === "TESTNET") {
+      cctpURL = "https://relayer.dev.stable.io/v1/relays?txHash=";
+    }
+
+    const response = await axios.get(cctpURL + txHash);
+    if (response?.data?.data) {
+      return response.data.data;
+    }
+    return null;
   }
 
   async getToken({ chainId, tokenAddress }: GetTokenInput): Promise<GetTokenOutput> {

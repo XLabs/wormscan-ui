@@ -68,6 +68,22 @@ export type GetTransactionsInput = (
   pagination?: PageRequest;
 };
 
+export type CctpRelayOutput = {
+  status: string;
+  metrics: {
+    completedAt: string;
+    receivedAt: string;
+  };
+  to: {
+    chain: string;
+    chainId: number;
+    gasUsed: number;
+    recipientAddress: string;
+    txHash: string;
+  };
+  vaa: string;
+};
+
 export type GetTransactionsOutput = {
   id: string;
   timestamp: Date;
