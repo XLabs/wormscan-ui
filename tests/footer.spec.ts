@@ -1,24 +1,42 @@
 import { test, expect } from "@playwright/test";
+import { describe } from "node:test";
 
-const footerLinks = [
-  { name: "Home", href: "#/", internalLink: true },
-  { name: "Txs", href: "#/txs", internalLink: true },
-  { name: "Careers", href: "https://boards.greenhouse.io/xlabs", externalLink: false },
-  { name: "Contact us", href: "https://discord.com/invite/wormholecrypto", externalLink: false },
-  { name: "API Doc", href: "https://docs.wormholescan.io/", externalLink: false },
+const internalLinks = [
+  { name: "Wormhole Scan logo", href: "#/" },
+  { name: "Home", href: "#/" },
+  { name: "Txs", href: "#/txs" },
 ];
 
-test.describe("Footer Links", () => {
-  footerLinks.forEach(link => {
-    test(`Check "${link.name}" footer link`, async ({ page, baseURL }) => {
-      await page.goto(link.href);
+const externalLinks = [
+  { name: "Built by xLabs", href: "https://www.xlabs.xyz/" },
+  { name: "Careers", href: "https://boards.greenhouse.io/xlabs" },
+  { name: "Contact us", href: "https://discord.com/invite/wormholecrypto" },
+  { name: "API Doc", href: "https://docs.wormholescan.io/" },
+  { name: "Discord link", href: "https://discord.com/invite/wormholecrypto" },
+  { name: "Twitter link", href: "https://twitter.com/wormholecrypto" },
+];
 
-      if (link.internalLink) {
-        expect(page.url()).toBe(`${baseURL}/${link.href}`);
-        return;
-      } else {
-        expect(page.url()).toBe(link.href);
-      }
-    });
+describe("Footer Links", () => {
+  test.beforeEach(async ({ page, baseURL }) => {
+    await page.goto(`${baseURL}/#/`);
+  });
+
+  test("Check footer links", async ({ page, baseURL }) => {
+    const footer = page.getByTestId("footer");
+
+    // check the internal links
+    for (const internalLink of internalLinks) {
+      await footer.getByRole("link", { name: internalLink.name }).click();
+      expect(page.url()).toBe(`${baseURL}/${internalLink.href}`);
+    }
+
+    // check the external links
+    for (const externalLink of externalLinks) {
+      const pagePromise = page.waitForEvent("popup");
+      await footer.getByRole("link", { name: externalLink.name }).click();
+      const pageOpen = await pagePromise;
+      expect(pageOpen.url()).toBe(externalLink.href);
+      await pageOpen.close();
+    }
   });
 });

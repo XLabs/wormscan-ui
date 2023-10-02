@@ -164,12 +164,12 @@ const Txs = () => {
               const timestampDate = new Date(timestamp);
               const row = {
                 VAAId: VAAId,
-                txHashId: txHash,
+                txHashId: parseTxHash,
                 txHash: (
                   <div className="tx-hash">
                     {parseTxHash ? (
                       <>
-                        <NavLink to={`/tx/${VAAId}`} onClick={stopPropagation}>
+                        <NavLink to={`/tx/${parseTxHash}`} onClick={stopPropagation}>
                           {shortAddress(parseTxHash).toUpperCase()}
                         </NavLink>
                         <CopyToClipboard toCopy={parseTxHash}>
@@ -273,7 +273,7 @@ const Txs = () => {
 
   return (
     <BaseLayout>
-      <div className="txs-page">
+      <div className="txs-page" data-testid="txs-page">
         {isLoading ? (
           <Loader />
         ) : (

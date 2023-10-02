@@ -26,9 +26,8 @@ type Props = {
   redeemedAmountUSD?: string;
   symbol?: string;
   toChain?: ChainId | number;
-  tokenAddress?: string;
   tokenAmount?: string;
-  tokenChain?: ChainId | number;
+  tokenLink?: string;
   totalGuardiansNeeded?: number;
   VAAId?: string;
 };
@@ -52,9 +51,8 @@ const Details = ({
   redeemedAmount,
   symbol,
   toChain,
-  tokenAddress,
   tokenAmount,
-  tokenChain,
+  tokenLink,
   totalGuardiansNeeded,
   VAAId,
 }: Props) => (
@@ -139,27 +137,27 @@ const Details = ({
       <div className="tx-details-group-line">
         <div className="tx-details-group-line-key">Amount</div>
         <div className="tx-details-group-line-value">
-          {tokenAmount ? (
+          {tokenAmount && tokenLink ? (
             <>
               {amountSent}{" "}
               {symbol && (
-                <a
-                  href={getExplorerLink({
-                    network: currentNetwork,
-                    chainId: tokenChain,
-                    value: tokenAddress,
-                    base: "token",
-                  })}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={tokenLink} target="_blank" rel="noopener noreferrer">
                   {symbol}
                 </a>
               )}
               ({amountSentUSD || "-"} USD)
             </>
           ) : (
-            "N/A"
+            <>
+              {amountSent && symbol ? (
+                <>
+                  {amountSent} <span>{symbol}</span>
+                  {amountSentUSD && `(${amountSentUSD} USD)`}
+                </>
+              ) : (
+                "N/A"
+              )}
+            </>
           )}
         </div>
       </div>
@@ -283,41 +281,32 @@ const Details = ({
             <>
               {redeemedAmount}{" "}
               {symbol && (
-                <a
-                  href={getExplorerLink({
-                    network: currentNetwork,
-                    chainId: tokenChain,
-                    value: tokenAddress,
-                    base: "token",
-                  })}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={tokenLink} target="_blank" rel="noopener noreferrer">
                   {symbol}
                 </a>
               )}
             </>
-          ) : tokenAmount ? (
+          ) : tokenAmount && tokenLink ? (
             <>
               {amountSent}{" "}
               {symbol && (
-                <a
-                  href={getExplorerLink({
-                    network: currentNetwork,
-                    chainId: tokenChain,
-                    value: tokenAddress,
-                    base: "token",
-                  })}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={tokenLink} target="_blank" rel="noopener noreferrer">
                   {symbol}
                 </a>
               )}
               ({amountSentUSD || "-"} USD)
             </>
           ) : (
-            "N/A"
+            <>
+              {amountSent && symbol ? (
+                <>
+                  {amountSent} <span>{symbol}</span>
+                  {amountSentUSD && `(${amountSentUSD} USD)`}
+                </>
+              ) : (
+                "N/A"
+              )}
+            </>
           )}
         </div>
       </div>

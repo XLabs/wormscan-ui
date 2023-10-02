@@ -23,6 +23,7 @@ import RawData from "./RawData";
 import RelayerOverview from "./RelayerOverview";
 
 import "./styles.scss";
+import { getExplorerLink } from "src/utils/wormhole";
 
 interface Props {
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
@@ -137,6 +138,13 @@ const Information = ({ VAAData, txData }: Props) => {
       ? formatCurrency(+amount - +fee - +parsedPayload?.toNativeAmount)
       : formatCurrency(formatUnits(+amount - +fee));
 
+  const tokenLink = getExplorerLink({
+    network: currentNetwork,
+    chainId: tokenChain,
+    value: tokenAddress,
+    base: "token",
+  });
+
   const originDateParsed = formatDate(startDate);
   const destinationDateParsed = formatDate(endDate);
 
@@ -159,9 +167,8 @@ const Information = ({ VAAData, txData }: Props) => {
     redeemedAmount,
     symbol,
     toChain,
-    tokenAddress,
     tokenAmount,
-    tokenChain,
+    tokenLink,
     totalGuardiansNeeded,
     VAAId,
   };
