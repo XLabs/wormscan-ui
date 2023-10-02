@@ -8,6 +8,7 @@ import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
 import { formatCurrency } from "src/utils/number";
+import { getExplorerLink } from "src/utils/wormhole";
 import {
   DeliveryLifecycleRecord,
   populateDeliveryLifecycleRecordByVaa,
@@ -23,7 +24,6 @@ import RawData from "./RawData";
 import RelayerOverview from "./RelayerOverview";
 
 import "./styles.scss";
-import { getExplorerLink } from "src/utils/wormhole";
 
 interface Props {
   extraRawInfo: any;
