@@ -31,9 +31,6 @@ describe("Tx Page", () => {
         await link.click();
         const pageOpen = await pagePromise;
 
-        // wait for the page to load completely
-        /* await pageOpen.waitForLoadState("domcontentloaded"); */
-
         expect(pageOpen.url()).toBe(href);
         await pageOpen.close();
       }
