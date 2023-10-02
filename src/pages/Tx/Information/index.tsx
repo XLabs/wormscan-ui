@@ -26,13 +26,14 @@ import "./styles.scss";
 import { getExplorerLink } from "src/utils/wormhole";
 
 interface Props {
+  extraRawInfo: any;
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
   txData: GetTransactionsOutput;
 }
 
 const UNKNOWN_APP_ID = "UNKNOWN";
 
-const Information = ({ VAAData, txData }: Props) => {
+const Information = ({ extraRawInfo, VAAData, txData }: Props) => {
   const [showOverview, setShowOverview] = useState(true);
   const [showOverviewDetail, setShowOverviewDetail] = useLocalStorage<boolean>(
     "showOverviewDetail",
@@ -133,10 +134,7 @@ const Information = ({ VAAData, txData }: Props) => {
 
   const amountSent = formatCurrency(Number(tokenAmount));
   const amountSentUSD = +usdAmount ? formatCurrency(+usdAmount) : "";
-  const redeemedAmount =
-    parsedPayload?.feeAmount && parsedPayload?.toNativeAmount
-      ? formatCurrency(+amount - +fee - +parsedPayload?.toNativeAmount)
-      : formatCurrency(formatUnits(+amount - +fee));
+  const redeemedAmount = formatCurrency(formatUnits(+amount - +fee));
 
   const tokenLink = getExplorerLink({
     network: currentNetwork,
@@ -238,7 +236,14 @@ const Information = ({ VAAData, txData }: Props) => {
 
   const RawDataContent = () => {
     if (isGenericRelayerTx && loadingRelayers) return <Loader />;
-    return <RawData lifecycleRecord={genericRelayerInfo} txData={txData} VAAData={VAAData} />;
+    return (
+      <RawData
+        extraRawInfo={extraRawInfo}
+        lifecycleRecord={genericRelayerInfo}
+        txData={txData}
+        VAAData={VAAData}
+      />
+    );
   };
 
   const AlertsContent = () => {

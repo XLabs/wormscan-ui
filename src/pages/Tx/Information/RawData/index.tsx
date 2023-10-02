@@ -59,12 +59,13 @@ export const BlockSection = ({ title, code }: { title: string; code: string }) =
 };
 
 type Props = {
+  extraRawInfo: any;
   lifecycleRecord: DeliveryLifecycleRecord;
   txData: GetTransactionsOutput;
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
 };
 
-const RawData = ({ VAAData, txData, lifecycleRecord }: Props) => {
+const RawData = ({ extraRawInfo, VAAData, txData, lifecycleRecord }: Props) => {
   const { payload, decodedVaa, ...rest } = VAAData || {};
   const rawData = { ...rest };
   const { payload: nestedVAAPayload, ...nestedVAARest } = decodedVaa
@@ -119,6 +120,10 @@ const RawData = ({ VAAData, txData, lifecycleRecord }: Props) => {
             ({ title, code }, index) =>
               code && <BlockSection key={index} title={title} code={code} />,
           )}
+
+        {!!extraRawInfo && (
+          <BlockSection code={JSON.stringify(extraRawInfo, null, 4)} title="Extra info" />
+        )}
 
         {relayerInfo && (
           <>

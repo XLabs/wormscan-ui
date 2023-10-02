@@ -78,12 +78,16 @@
     background-color: var(--color-black-25);
 
     div {
-      width: 76px;
+      width: 100%;
       height: 40px;
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 14px;
+
+      @include desktop {
+        width: 76px;
+      }
     }
 
     &-selected {
