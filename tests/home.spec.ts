@@ -8,7 +8,7 @@ describe("Home Page", () => {
 
   describe("Transaction History", () => {
     test("check endpoints for 1d-1w-1mo", async ({ page }) => {
-      const transHistory = page.locator(".trans-history");
+      const transHistory = page.getByTestId("trans-history");
 
       const testCases = [
         { label: "One month", timeSpan: "1mo", sampleRate: "1d", expectedRange: "month" },

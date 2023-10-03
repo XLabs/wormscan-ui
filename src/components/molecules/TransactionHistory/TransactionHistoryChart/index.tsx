@@ -83,7 +83,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
   }, [data, range, isWidthOver1200px]);
 
   return (
-    <div className="trans-history" data-range={range}>
+    <div className="trans-history" data-range={range} data-testid="trans-history">
       {isLoading || isFetching ? (
         <Loader />
       ) : (
