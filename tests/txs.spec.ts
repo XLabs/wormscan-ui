@@ -83,7 +83,7 @@ describe("Txs Page", () => {
     const txsPage = page.getByTestId("txs-page");
     const tbody = txsPage.locator("tbody");
 
-    // test first 5 items
+    // test 5 rows
     for (let i = 10; i <= 14; i++) {
       try {
         await page.waitForSelector(`tbody tr:nth-child(${i})`);
