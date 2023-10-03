@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { describe } from "node:test";
 
-test.describe("Home Page", () => {
+describe("Home Page", () => {
   test.beforeEach(async ({ page, baseURL }) => {
     await page.goto(`${baseURL}/#/`);
   });
