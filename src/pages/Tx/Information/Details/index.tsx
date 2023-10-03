@@ -137,27 +137,20 @@ const Details = ({
       <div className="tx-details-group-line">
         <div className="tx-details-group-line-key">Amount</div>
         <div className="tx-details-group-line-value">
-          {tokenAmount && tokenLink ? (
+          {tokenAmount ? (
             <>
               {amountSent}{" "}
-              {symbol && (
+              {symbol && tokenLink ? (
                 <a href={tokenLink} target="_blank" rel="noopener noreferrer">
                   {symbol}
                 </a>
+              ) : (
+                <span>{symbol}</span>
               )}
               ({amountSentUSD || "-"} USD)
             </>
           ) : (
-            <>
-              {tokenAmount ? (
-                <>
-                  {amountSent} <span>{symbol}</span>
-                  {amountSentUSD && `(${amountSentUSD} USD)`}
-                </>
-              ) : (
-                "N/A"
-              )}
-            </>
+            "N/A"
           )}
         </div>
       </div>
@@ -286,27 +279,20 @@ const Details = ({
                 </a>
               )}
             </>
-          ) : tokenAmount && tokenLink ? (
+          ) : tokenAmount ? (
             <>
               {amountSent}{" "}
-              {symbol && (
+              {symbol && tokenLink ? (
                 <a href={tokenLink} target="_blank" rel="noopener noreferrer">
                   {symbol}
                 </a>
+              ) : (
+                <span>{symbol}</span>
               )}
               ({amountSentUSD || "-"} USD)
             </>
           ) : (
-            <>
-              {tokenAmount ? (
-                <>
-                  {amountSent} <span>{symbol}</span>
-                  {amountSentUSD && `(${amountSentUSD} USD)`}
-                </>
-              ) : (
-                "N/A"
-              )}
-            </>
+            "N/A"
           )}
         </div>
       </div>

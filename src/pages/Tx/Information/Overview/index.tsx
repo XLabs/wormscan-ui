@@ -87,27 +87,20 @@ const Overview = ({
           <div>
             <div className="tx-overview-graph-step-title">Amount</div>
             <div className="tx-overview-graph-step-description">
-              {tokenAmount && tokenLink ? (
+              {tokenAmount ? (
                 <>
                   {amountSent}{" "}
-                  {symbol && (
+                  {symbol && tokenLink ? (
                     <a href={tokenLink} target="_blank" rel="noopener noreferrer">
                       {symbol}
                     </a>
+                  ) : (
+                    <span>{symbol}</span>
                   )}
                   {amountSentUSD && `(${amountSentUSD} USD)`}
                 </>
               ) : (
-                <>
-                  {tokenAmount ? (
-                    <>
-                      {amountSent} <span>{symbol}</span>
-                      {amountSentUSD && `(${amountSentUSD} USD)`}
-                    </>
-                  ) : (
-                    "N/A"
-                  )}
-                </>
+                "N/A"
               )}
             </div>
           </div>
@@ -306,27 +299,20 @@ const Overview = ({
                       </a>
                     )}
                   </>
-                ) : tokenAmount && tokenLink ? (
+                ) : tokenAmount ? (
                   <>
                     {amountSent}{" "}
-                    {symbol && (
+                    {symbol && tokenLink ? (
                       <a href={tokenLink} target="_blank" rel="noopener noreferrer">
                         {symbol}
                       </a>
+                    ) : (
+                      <span>{symbol}</span>
                     )}
                     {amountSentUSD && `(${amountSentUSD} USD)`}
                   </>
                 ) : (
-                  <>
-                    {tokenAmount ? (
-                      <>
-                        {amountSent} <span>{symbol}</span>
-                        {amountSentUSD && `(${amountSentUSD} USD)`}
-                      </>
-                    ) : (
-                      "N/A"
-                    )}
-                  </>
+                  "N/A"
                 )}
               </div>
             </div>
