@@ -147,7 +147,7 @@ const Details = ({
               ) : (
                 <span>{symbol}</span>
               )}
-              ({amountSentUSD || "-"} USD)
+              {amountSentUSD && `(${amountSentUSD} USD)`}
             </>
           ) : (
             "N/A"
@@ -289,7 +289,7 @@ const Details = ({
               ) : (
                 <span>{symbol}</span>
               )}
-              ({amountSentUSD || "-"} USD)
+              {amountSentUSD && `(${amountSentUSD} USD)`}
             </>
           ) : (
             "N/A"
