@@ -140,8 +140,13 @@ const Header = () => {
 
         {isMainnet && (
           <div className="go-bridge-container">
-            <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
-              <button className="go-bridge">{t("home.header.goBridge")}</button>
+            <a
+              className="go-bridge"
+              href={PORTAL_BRIDGE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("home.header.goBridge")}
             </a>
           </div>
         )}
@@ -172,10 +177,13 @@ const Header = () => {
           <div className="header-navigation-item">
             {isMainnet && (
               <div className="go-bridge-container">
-                <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
-                  <button className="go-bridge" data-testid="go-bridge-button">
-                    {t("home.header.goBridge")}
-                  </button>
+                <a
+                  className="go-bridge"
+                  href={PORTAL_BRIDGE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t("home.header.goBridge")}
                 </a>
               </div>
             )}

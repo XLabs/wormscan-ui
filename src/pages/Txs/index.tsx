@@ -273,7 +273,7 @@ const Txs = () => {
 
   return (
     <BaseLayout>
-      <div className="txs-page">
+      <div className="txs-page" data-testid="txs-page">
         {isLoading ? (
           <Loader />
         ) : (

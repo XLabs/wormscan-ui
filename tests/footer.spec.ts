@@ -1,25 +1,42 @@
 import { test, expect } from "@playwright/test";
 import { describe } from "node:test";
 
-// const links = ["#/", "#/about", "#/txs", "#/contact"];
-const links = ["#/", "#/txs"]; // TODO: Add rest of links
+const internalLinks = [
+  { name: "Wormhole Scan logo", href: "#/" },
+  { name: "Home", href: "#/" },
+  { name: "Txs", href: "#/txs" },
+];
 
-describe("Footer", () => {
+const externalLinks = [
+  { name: "Built by xLabs", href: "https://www.xlabs.xyz/" },
+  { name: "Careers", href: "https://boards.greenhouse.io/xlabs" },
+  { name: "Contact us", href: "https://discord.com/invite/wormholecrypto" },
+  { name: "API Doc", href: "https://docs.wormholescan.io/" },
+  { name: "Discord link", href: "https://discord.com/invite/wormholecrypto" },
+  { name: "Twitter link", href: "https://twitter.com/wormholecrypto" },
+];
+
+describe("Footer Links", () => {
   test.beforeEach(async ({ page, baseURL }) => {
-    await page.goto(String(baseURL));
+    await page.goto(`${baseURL}/#/`);
   });
 
-  test("Links should work", async ({ page, baseURL }) => {
-    // ARRANGE
+  test("Check footer links", async ({ page, baseURL }) => {
     const footer = page.getByTestId("footer");
 
-    // ACT
-    for (const link of links) {
-      await footer.locator(`a[href="${link}"]`).click();
-      expect(page.url()).toBe(`${baseURL}/${link}`);
+    // check the internal links
+    for (const internalLink of internalLinks) {
+      await footer.getByRole("link", { name: internalLink.name }).click();
+      expect(page.url()).toBe(`${baseURL}/${internalLink.href}`);
     }
 
-    // ASSERT
-    await expect(footer).toBeVisible();
+    // check the external links
+    for (const externalLink of externalLinks) {
+      const pagePromise = page.waitForEvent("popup");
+      await footer.getByRole("link", { name: externalLink.name }).click();
+      const pageOpen = await pagePromise;
+      expect(pageOpen.url()).toBe(externalLink.href);
+      await pageOpen.close();
+    }
   });
 });

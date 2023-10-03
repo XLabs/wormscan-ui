@@ -8,6 +8,7 @@ import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
 import { formatCurrency } from "src/utils/number";
+import { getExplorerLink } from "src/utils/wormhole";
 import {
   DeliveryLifecycleRecord,
   populateDeliveryLifecycleRecordByVaa,
@@ -135,6 +136,13 @@ const Information = ({ extraRawInfo, VAAData, txData }: Props) => {
   const amountSentUSD = +usdAmount ? formatCurrency(+usdAmount) : "";
   const redeemedAmount = formatCurrency(formatUnits(+amount - +fee));
 
+  const tokenLink = getExplorerLink({
+    network: currentNetwork,
+    chainId: tokenChain,
+    value: tokenAddress,
+    base: "token",
+  });
+
   const originDateParsed = formatDate(startDate);
   const destinationDateParsed = formatDate(endDate);
 
@@ -157,9 +165,8 @@ const Information = ({ extraRawInfo, VAAData, txData }: Props) => {
     redeemedAmount,
     symbol,
     toChain,
-    tokenAddress,
     tokenAmount,
-    tokenChain,
+    tokenLink,
     totalGuardiansNeeded,
     VAAId,
   };

@@ -236,6 +236,10 @@
       @include button-secondary;
       border: none;
       margin-bottom: 52px;
+
+      &:hover {
+        color: var(--color-primary-800);
+      }
     }
   }
 
