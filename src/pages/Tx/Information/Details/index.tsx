@@ -149,7 +149,7 @@ const Details = ({
             </>
           ) : (
             <>
-              {amountSent && symbol ? (
+              {tokenAmount ? (
                 <>
                   {amountSent} <span>{symbol}</span>
                   {amountSentUSD && `(${amountSentUSD} USD)`}
@@ -298,7 +298,7 @@ const Details = ({
             </>
           ) : (
             <>
-              {amountSent && symbol ? (
+              {tokenAmount ? (
                 <>
                   {amountSent} <span>{symbol}</span>
                   {amountSentUSD && `(${amountSentUSD} USD)`}
