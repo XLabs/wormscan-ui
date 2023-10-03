@@ -20,6 +20,7 @@ describe("Header", () => {
         waitForResponse: (arg0: string) => any;
         waitForURL: (arg0: string) => any;
         url: () => any;
+        waitForTimeout: (arg0: number) => any;
       },
       isByTxHash: boolean,
       inputText: string,
@@ -42,6 +43,7 @@ describe("Header", () => {
 
           await searchInput.click();
           await searchInput.fill(inputText);
+          await page.waitForTimeout(1000);
           await searchButton.click();
 
           // wait for the response or timeout
