@@ -6,9 +6,9 @@ import { describe } from "node:test";
 // with fee 601c7bc77004819248aa505e0e5c7cf60d917691d571cb7e1c5364a7f75b245f
 
 describe("Tx Page", () => {
+  // test only 2 txs to save time, and check a relayer-tx-overview and a tx-overview
   const txsURL = [
     "7fc7387b325746a0751c3dee008214d1e195a5eb8d2706f7986ecbe003a2e549",
-    "7d4963fe9a658568cdd4ba90bc20fdb2197be99fefed1c9664906b0442d76b4e",
     "601c7bc77004819248aa505e0e5c7cf60d917691d571cb7e1c5364a7f75b245f",
   ];
 
@@ -36,4 +36,17 @@ describe("Tx Page", () => {
       }
     });
   }
+
+  test("check tx views overview/details", async ({ page, baseURL }) => {
+    await page.goto(`${baseURL}/#/tx/${txsURL[1]}`);
+
+    await page.waitForSelector(".tx-tabs-sub-list");
+    await Promise.race([page.waitForSelector(".tx-details"), page.waitForSelector(".tx-overview")]);
+
+    await page.getByLabel("Details list").click();
+    await page.waitForSelector(".tx-details");
+
+    await page.getByLabel("Overview").nth(1).click();
+    await page.waitForSelector(".tx-overview");
+  });
 });

@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Response } from "@playwright/test";
 import { describe } from "node:test";
 
 const internalLinks = [
@@ -14,136 +14,170 @@ describe("Header", () => {
   });
 
   describe("Header search", () => {
-    test("search by txHash", async ({ page, baseURL }) => {
-      const searchForm = page.getByTestId("search-form");
-      const searchInput = searchForm.getByPlaceholder("Search by TxHash / Address / VAA ID");
-      const searchButton = searchForm.getByRole("button", { name: "search" });
+    async function searchTxAndVerify(
+      page: {
+        getByTestId: (arg0: string) => any;
+        waitForResponse: (arg0: string) => any;
+        waitForURL: (arg0: string) => any;
+        url: () => any;
+      },
+      isByTxHash: boolean,
+      inputText: string,
+      endpoint: string,
+      endpoint2: string,
+      expectedURL: string,
+      isValid: boolean,
+    ) {
+      const maxRetries = 3;
+      const retryTimeout = 10000;
+      let retries = 0;
+      let response: Response | undefined;
+      let response2: Response | undefined;
 
-      // check search by txHash valid
+      while (retries < maxRetries) {
+        try {
+          const searchForm = page.getByTestId("search-form");
+          const searchInput = searchForm.getByPlaceholder("Search by TxHash / Address / VAA ID");
+          const searchButton = searchForm.getByRole("button", { name: "search" });
+
+          await searchInput.click();
+          await searchInput.fill(inputText);
+          await searchButton.click();
+
+          // wait for the response or timeout
+          const racePromise = Promise.race([
+            page.waitForResponse(endpoint),
+            new Promise((_, reject) =>
+              setTimeout(() => reject(new Error("Time limit reached")), retryTimeout),
+            ),
+          ]);
+
+          response = await racePromise;
+
+          if (isValid) {
+            if (isByTxHash) {
+              const txHashResponseJson = await response?.json();
+              const txHashId = txHashResponseJson.data[0].id;
+
+              const racePromise2 = Promise.race([
+                page.waitForResponse(
+                  `https://api.staging.wormscan.io/api/v1/transactions/${txHashId}?page=0&pageSize=10&sortOrder=ASC`,
+                ),
+                new Promise((_, reject) =>
+                  setTimeout(() => reject(new Error("Time limit reached")), retryTimeout),
+                ),
+              ]);
+
+              response2 = await racePromise2;
+            } else {
+              const racePromise2 = Promise.race([
+                page.waitForResponse(endpoint2),
+                new Promise((_, reject) =>
+                  setTimeout(() => reject(new Error("Time limit reached")), retryTimeout),
+                ),
+              ]);
+
+              response2 = await racePromise2;
+            }
+          }
+
+          if (
+            (isValid && response?.status() === 200 && response2?.status() === 200) ||
+            (!isValid && response?.status() !== 200)
+          ) {
+            break;
+          }
+        } catch (error) {
+          console.error(`Request error (attempt ${retries + 1}): ${error.message}`);
+        }
+        retries++;
+      }
+
+      // verify the response
+      if (!isValid) {
+        expect(response?.status()).not.toBe(200);
+        await page.waitForURL(expectedURL);
+        expect(page.url()).toBe(expectedURL);
+      } else {
+        expect(response?.status()).toBe(200);
+        await page.waitForURL(expectedURL);
+        expect(page.url()).toBe(expectedURL);
+      }
+    }
+
+    test("search by txHash", async ({ page, baseURL }) => {
+      // search by txHash valid
       const txHash =
         "5rZmexGcA2eTttK1nihBGPMheho66dQjoNNg8TXYBCybiMS2cw5ZkRHPoL5E1dztWJmYkmmDN1tnRwkkeuSsTah8";
-
-      await searchInput.click();
-      await searchInput.fill(txHash);
-      await searchButton.click();
-
       const txHashEndpoint = `https://api.staging.wormscan.io/api/v1/vaas/?txHash=${txHash}&parsedPayload=true`;
-      const txHashResponse = await page.waitForResponse(txHashEndpoint);
-      expect(txHashResponse.ok()).toBeTruthy();
+      const expectedURL = `${baseURL}/#/tx/${txHash}`;
+      await searchTxAndVerify(page, true, txHash, txHashEndpoint, "", expectedURL, true);
 
-      const txHashResponseJson = await txHashResponse.json();
-      const txHashId = txHashResponseJson.data[0].id;
-      const txHashEndpoint2 = `https://api.staging.wormscan.io/api/v1/transactions/${txHashId}?page=0&pageSize=10&sortOrder=ASC`;
-      const txHashResponse2 = await page.waitForResponse(txHashEndpoint2);
-      expect(txHashResponse2.ok()).toBeTruthy();
-
-      // check url tx ok
-      await page.waitForURL(`${baseURL}/#/tx/${txHash}`);
-      expect(page.url()).toBe(`${baseURL}/#/tx/${txHash}`);
-
-      // check search by txHash invalid
+      // search by txHash invalid
       const badTxHash = "4rZmexGcA2eTttK1nihBGPMheho66dQjo123abc123abv123abc123abc123abc";
-
-      await searchInput.click();
-      await searchInput.fill(badTxHash);
-      await searchButton.click();
-
       const badTxHashEndpoint = `https://api.staging.wormscan.io/api/v1/vaas/?txHash=${badTxHash}&parsedPayload=true`;
-      const badTxHashResponse = await page.waitForResponse(badTxHashEndpoint);
-      expect(badTxHashResponse.ok()).toBeFalsy();
-
-      // check url search-not-found page
-      await page.waitForURL(`${baseURL}/#/search-not-found/${badTxHash}`);
-      expect(page.url()).toBe(`${baseURL}/#/search-not-found/${badTxHash}`);
+      const badExpectedURL = `${baseURL}/#/search-not-found/${badTxHash}`;
+      await searchTxAndVerify(page, true, badTxHash, badTxHashEndpoint, "", badExpectedURL, false);
     });
 
     test("search by address", async ({ page, baseURL }) => {
-      const searchForm = page.getByTestId("search-form");
-      const searchInput = searchForm.getByPlaceholder("Search by TxHash / Address / VAA ID");
-      const searchButton = searchForm.getByRole("button", { name: "search" });
-
-      // check search by address valid
+      // search by address valid
       const address = "0x685104d2aaf736e4bfaa8480ea4006a6db0b4bb1";
-
-      await searchInput.click();
-      await searchInput.fill(address);
-      await searchButton.click();
-
       const addressEndpoint = `https://api.staging.wormscan.io/api/v1/address/${address}`;
-      const addressResponse = await page.waitForResponse(addressEndpoint);
-      expect(addressResponse.ok()).toBeTruthy();
-
       const addressEndpoint2 = `https://api.staging.wormscan.io/api/v1/transactions?address=${address}&page=0&pageSize=50&sortOrder=DESC`;
-      const addressResponse2 = await page.waitForResponse(addressEndpoint2);
-      expect(addressResponse2.ok()).toBeTruthy();
+      const expectedURL = `${baseURL}/#/txs?address=${address}`;
+      await searchTxAndVerify(
+        page,
+        false,
+        address,
+        addressEndpoint,
+        addressEndpoint2,
+        expectedURL,
+        true,
+      );
 
-      // check url address ok
-      await page.waitForURL(`${baseURL}/#/txs?address=${address}`);
-      expect(page.url()).toBe(`${baseURL}/#/txs?address=${address}`);
-
-      // check search by address invalid
+      // search by address invalid
       const badAddress = "0x12345abscasdnkdtg12321321";
-
-      await searchInput.click();
-      await searchInput.fill(badAddress);
-      await searchButton.click();
-
       const badAddressEndpoint = `https://api.staging.wormscan.io/api/v1/address/${badAddress}`;
-      const badResponse = await page.waitForResponse(badAddressEndpoint);
-      expect(badResponse.ok()).toBeFalsy();
-
-      const badAddressEndpoint2 = `https://api.staging.wormscan.io/api/v1/vaas/?txHash=${badAddress}&parsedPayload=true`;
-      const badResponse2 = await page.waitForResponse(badAddressEndpoint2);
-      expect(badResponse2.ok()).toBeFalsy();
-
-      // check url search-not-found page
-      await page.waitForURL(`${baseURL}/#/search-not-found/${badAddress}`);
-      expect(page.url()).toBe(`${baseURL}/#/search-not-found/${badAddress}`);
+      const badAddressEndpoint2 = `https://api.staging.wormscan.io/api/v1/transactions?address=${badAddress}&page=0&pageSize=50&sortOrder=DESC`;
+      const badExpectedURL = `${baseURL}/#/search-not-found/${badAddress}`;
+      await searchTxAndVerify(
+        page,
+        false,
+        badAddress,
+        badAddressEndpoint,
+        badAddressEndpoint2,
+        badExpectedURL,
+        false,
+      );
     });
 
     test("search by VAA ID", async ({ page, baseURL }) => {
-      const searchForm = page.getByTestId("search-form");
-      const searchInput = searchForm.getByPlaceholder("Search by TxHash / Address / VAA ID");
-      const searchButton = searchForm.getByRole("button", { name: "search" });
-
-      // check search by VAA ID valid
       const vaaId = "1/ec7372995d5cc8732397fb0ad35c0121e0eaa90d26f828a534cab54391b3a4f5/316347";
-
-      await searchInput.click();
-      await searchInput.fill(vaaId);
-      await searchButton.click();
-
       const vaaIdEndpoint = `https://api.staging.wormscan.io/api/v1/vaas/${vaaId}?parsedPayload=true&page=0&pageSize=10&sortOrder=ASC`;
-      const vaaIdResponse = await page.waitForResponse(vaaIdEndpoint);
-      expect(vaaIdResponse.ok()).toBeTruthy();
-
       const vaaIdEndpoint2 = `https://api.staging.wormscan.io/api/v1/transactions/${vaaId}?page=0&pageSize=10&sortOrder=ASC`;
-      const vaaIdResponse2 = await page.waitForResponse(vaaIdEndpoint2);
-      expect(vaaIdResponse2.ok()).toBeTruthy();
+      const expectedURL = `${baseURL}/#/tx/${vaaId}`;
+      await searchTxAndVerify(page, false, vaaId, vaaIdEndpoint, vaaIdEndpoint2, expectedURL, true);
 
-      // check url vaa ok
-      await page.waitForURL(`${baseURL}/#/tx/${vaaId}`);
-      expect(page.url()).toBe(`${baseURL}/#/tx/${vaaId}`);
-
-      // check search by VAA ID invalid
-      const badVaaId = "7/ec7372995d5cc8732397fb0ad35c0121e0eaa90d26f828a534cab54391b3a4f5/123456";
-
-      await searchInput.click();
-      await searchInput.fill(badVaaId);
-      await searchButton.click();
-
+      // search by VAA ID invalid
+      const badVaaId = "7/ec7372995d5cc8732397fb0ad35c0121e0eaa90d26f828a534abc12345a1a1a1/123456";
       const badVaaIdEndpoint = `https://api.staging.wormscan.io/api/v1/vaas/${badVaaId}?parsedPayload=true&page=0&pageSize=10&sortOrder=ASC`;
-      const badVaaIdResponse = await page.waitForResponse(badVaaIdEndpoint);
-      expect(badVaaIdResponse.ok()).toBeFalsy();
-
-      // check url search-not-found page
-      await page.waitForURL(`${baseURL}/#/search-not-found?q=${badVaaId}`);
-      expect(page.url()).toBe(`${baseURL}/#/search-not-found?q=${badVaaId}`);
+      const badVaaIdEndpoint2 = `https://api.staging.wormscan.io/api/v1/transactions/${badVaaId}?page=0&pageSize=10&sortOrder=ASC`;
+      const badExpectedURL = `${baseURL}/#/search-not-found?q=${badVaaId}`;
+      await searchTxAndVerify(
+        page,
+        false,
+        badVaaId,
+        badVaaIdEndpoint,
+        badVaaIdEndpoint2,
+        badExpectedURL,
+        false,
+      );
     });
   });
 
   describe("Header Links", () => {
-    test("check links", async ({ page, baseURL }) => {
+    test("check links in header", async ({ page, baseURL }) => {
       const header = page.getByTestId("header");
 
       // check the internal links

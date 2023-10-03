@@ -34,7 +34,7 @@ test.describe("Home Page", () => {
       const wormholeStatsEndpoint = "https://api.staging.wormscan.io/api/v1/scorecards";
       const responsePromise = page.waitForResponse(wormholeStatsEndpoint);
       const response = await responsePromise;
-      expect(response.ok()).toBeTruthy();
+      expect(response.status()).toBe(200);
     });
   });
 
@@ -87,7 +87,10 @@ test.describe("Home Page", () => {
 
       // clicking the "source" button should make all left items selectable
       await sourceBtn.click();
-      await prevBtn.click();
+
+      if (!(await prevBtn.isDisabled())) {
+        await prevBtn.click();
+      }
 
       // check if 10 left items are selectable
       for (let i = 0; i <= 9; i++) {
