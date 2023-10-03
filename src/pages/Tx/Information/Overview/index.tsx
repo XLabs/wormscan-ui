@@ -90,13 +90,14 @@ const Overview = ({
               {tokenAmount ? (
                 <>
                   {amountSent}{" "}
-                  {symbol && tokenLink ? (
-                    <a href={tokenLink} target="_blank" rel="noopener noreferrer">
-                      {symbol}
-                    </a>
-                  ) : (
-                    <span>{symbol}</span>
-                  )}
+                  {symbol &&
+                    (tokenLink ? (
+                      <a href={tokenLink} target="_blank" rel="noopener noreferrer">
+                        {symbol}
+                      </a>
+                    ) : (
+                      <span>{symbol}</span>
+                    ))}
                   {amountSentUSD && `(${amountSentUSD} USD)`}
                 </>
               ) : (
@@ -293,22 +294,26 @@ const Overview = ({
                 {Number(fee) ? (
                   <>
                     {redeemedAmount}{" "}
-                    {symbol && (
-                      <a href={tokenLink} target="_blank" rel="noopener noreferrer">
-                        {symbol}
-                      </a>
-                    )}
+                    {symbol &&
+                      (tokenLink ? (
+                        <a href={tokenLink} target="_blank" rel="noopener noreferrer">
+                          {symbol}
+                        </a>
+                      ) : (
+                        <span>{symbol}</span>
+                      ))}
                   </>
                 ) : tokenAmount ? (
                   <>
                     {amountSent}{" "}
-                    {symbol && tokenLink ? (
-                      <a href={tokenLink} target="_blank" rel="noopener noreferrer">
-                        {symbol}
-                      </a>
-                    ) : (
-                      <span>{symbol}</span>
-                    )}
+                    {symbol &&
+                      (tokenLink ? (
+                        <a href={tokenLink} target="_blank" rel="noopener noreferrer">
+                          {symbol}
+                        </a>
+                      ) : (
+                        <span>{symbol}</span>
+                      ))}
                     {amountSentUSD && `(${amountSentUSD} USD)`}
                   </>
                 ) : (
