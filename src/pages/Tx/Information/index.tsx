@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { ChainId } from "@certusone/wormhole-sdk";
+import { useSearchParams } from "react-router-dom";
 
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { txType } from "src/consts";
@@ -34,7 +35,17 @@ interface Props {
 const UNKNOWN_APP_ID = "UNKNOWN";
 
 const Information = ({ extraRawInfo, VAAData, txData }: Props) => {
-  const [showOverview, setShowOverview] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [showOverview, setShowOverviewState] = useState(searchParams.get("view") !== "rawdata");
+  const setShowOverview = (show: boolean) => {
+    setShowOverviewState(show);
+    setSearchParams(prev => {
+      prev.set("view", show ? "overview" : "rawdata");
+      return prev;
+    });
+  };
+
   const [showOverviewDetail, setShowOverviewDetail] = useLocalStorage<boolean>(
     "showOverviewDetail",
     false,
