@@ -59,62 +59,66 @@ const Tx = () => {
 
           if (txsData) {
             const txData = await txsData[0];
-
-            setParsedVAAsData([
-              {
-                appId: "",
-                decodedVaa: null,
-                emitterAddr: txData.emitterAddress,
-                emitterChain: txData.tokenChain,
-                emitterNativeAddr: txData.emitterNattiveAddress,
-                guardianSetIndex: null,
-                id: txData.id,
-                indexedAt: null,
-                payload: null,
-                sequence: txData.sequence,
-                timestamp: new Date(txData.timestamp),
-                txHash: txData.txHash,
-                updatedAt: null,
-                vaa: "",
-                version: 1,
-              },
-            ]);
-            setEmitterChainId(txData.chain as ChainId);
-            setTxData([
-              {
-                emitterAddress: txData.emitterAddress,
-                emitterChain: txData.chain,
-                emitterNativeAddress: txData.emitterNattiveAddress,
-                globalTx: null,
-                id: txData.id,
-                payload: {
-                  payloadType: txData.payloadType,
-                  parsedPayload: {
-                    feeAmount: txData?.fee,
-                    toNativeAmount: txData?.toNativeAmount,
+            if (txData) {
+              setParsedVAAsData([
+                {
+                  appId: "",
+                  decodedVaa: null,
+                  emitterAddr: txData.emitterAddress,
+                  emitterChain: txData.tokenChain,
+                  emitterNativeAddr: txData.emitterNattiveAddress,
+                  guardianSetIndex: null,
+                  id: txData.id,
+                  indexedAt: null,
+                  payload: null,
+                  sequence: txData.sequence,
+                  timestamp: new Date(txData.timestamp),
+                  txHash: txData.txHash,
+                  updatedAt: null,
+                  vaa: "",
+                  version: 1,
+                },
+              ]);
+              setEmitterChainId(txData.chain as ChainId);
+              setTxData([
+                {
+                  emitterAddress: txData.emitterAddress,
+                  emitterChain: txData.chain,
+                  emitterNativeAddress: txData.emitterNattiveAddress,
+                  globalTx: null,
+                  id: txData.id,
+                  payload: {
+                    payloadType: txData.payloadType,
+                    parsedPayload: {
+                      feeAmount: txData?.fee,
+                      toNativeAmount: txData?.toNativeAmount,
+                    },
                   },
+                  standardizedProperties: {
+                    amount: txData.amount,
+                    appIds: txData.appIds ?? [],
+                    fee: txData.fee,
+                    feeAddress: "",
+                    feeChain: txData.chain,
+                    fromAddress: txData.fromAddress,
+                    fromChain: txData.chain,
+                    toAddress: txData.toAddress,
+                    toChain: txData.toChain,
+                    tokenAddress: txData.tokenAddress,
+                    tokenChain: txData.tokenChain,
+                  },
+                  symbol: txData.symbol,
+                  timestamp: new Date(txData.timestamp),
+                  tokenAmount: txData.amount,
+                  txHash: txData.txHash,
+                  usdAmount: txData.usdAmount,
                 },
-                standardizedProperties: {
-                  amount: txData.amount,
-                  appIds: txData.appIds ?? [],
-                  fee: txData.fee,
-                  feeAddress: "",
-                  feeChain: txData.chain,
-                  fromAddress: txData.fromAddress,
-                  fromChain: txData.chain,
-                  toAddress: txData.toAddress,
-                  toChain: txData.toChain,
-                  tokenAddress: txData.tokenAddress,
-                  tokenChain: txData.tokenChain,
-                },
-                symbol: txData.symbol,
-                timestamp: new Date(txData.timestamp),
-                tokenAmount: txData.amount,
-                txHash: txData.txHash,
-                usdAmount: txData.usdAmount,
-              },
-            ]);
-            setIsLoading(false);
+              ]);
+
+              setIsLoading(false);
+            } else {
+              navigate(`/search-not-found/${txHash}`);
+            }
           } else {
             navigate(`/search-not-found/${txHash}`);
           }
