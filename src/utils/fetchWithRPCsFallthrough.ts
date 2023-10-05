@@ -3,6 +3,7 @@ import {
   coalesceChainName,
   isCosmWasmChain,
   isEVMChain,
+  tryUint8ArrayToNative,
   uint8ArrayToHex,
 } from "@certusone/wormhole-sdk";
 import { Environment, SLOW_FINALITY_CHAINS, getChainInfo, getEthersProvider } from "./environment";
@@ -79,6 +80,12 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
       // https://github.com/wormhole-foundation/wormhole/blob/main/ethereum/contracts/Implementation.sol#L12
       const LOG_MESSAGE_PUBLISHED_TOPIC =
         "0x6eb224fb001ed210e379b335e35efe88672a8ce935d981a6896b27ffdf52a3b2";
+      const LOG_TRANSFER_TOPIC =
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+
+      const wrappedTokenAddress = result.receipt?.logs.findLast(
+        l => l.topics[0] === LOG_TRANSFER_TOPIC,
+      )?.address;
 
       const txsData = result.receipt?.logs
         .filter(
@@ -118,8 +125,21 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             const tokenChain = buff.readUInt16BE(65);
             const tokenAddress = buff.subarray(33, 65)?.toString("hex");
 
-            let toAddress = buff.subarray(67, 99)?.toString("hex");
             const toChain = buff.readUInt16BE(99);
+            let toAddress = buff.subarray(67, 99)?.toString("hex");
+
+            if (isCosmWasmChain(toChain as ChainId)) {
+              const addressBytes = ethers.utils.arrayify("0x" + toAddress);
+              /* TODO ??
+               * backend should probably NOT use last20bytes and use all bytes here.
+               * but for now, to maintain the same info with or without VAA, we use last 20 bytes */
+              const addressLast20Bytes = new Uint8Array(addressBytes.buffer.slice(-20));
+              const chainName = coalesceChainName(toChain as ChainId);
+              const cosmAddr = humanAddress(chainName, addressLast20Bytes);
+              toAddress = cosmAddr;
+            } else {
+              toAddress = tryUint8ArrayToNative(buff.subarray(67, 99), toChain as ChainId);
+            }
 
             const fee =
               payloadType === 1
@@ -144,20 +164,12 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               anyChain: true,
             });
 
-            if (isCosmWasmChain(toChain as ChainId)) {
-              const addressBytes = ethers.utils.arrayify("0x" + toAddress);
-              /* TODO ??
-               * backend should probably NOT use last20bytes and use all bytes here.
-               * but for now, to maintain the same info with or without VAA, we use last 20 bytes */
-              const addressLast20Bytes = new Uint8Array(addressBytes.buffer.slice(-20));
-              const cosmAddr = humanAddress("sei", addressLast20Bytes);
-              toAddress = cosmAddr;
-            }
-
             const { name, symbol, tokenDecimals } = await getTokenInformation(
               tokenChain,
               env,
               parsedTokenAddress,
+              wrappedTokenAddress,
+              result.chainId,
             );
             const decimals = tokenDecimals ? Math.min(8, tokenDecimals) : 8;
             return {
@@ -387,12 +399,15 @@ const getTokenInformation = async (
   tokenChain: number,
   env: Environment,
   parsedTokenAddress: string,
+  wrappedTokenAddress: string,
+  resultChain: number,
 ) => {
   // get token information
   let name: string;
   let symbol: string;
   let tokenDecimals: number;
 
+  // --- try to get REAL token information
   // evm token
   if (isEVMChain(tokenChain as ChainId)) {
     const tokenResult = await getEvmTokenDetails(env, tokenChain, parsedTokenAddress);
@@ -405,6 +420,27 @@ const getTokenInformation = async (
   // solana token
   if (tokenChain === ChainId.Solana) {
     const tokenResult = await getSolanaTokenDetails(parsedTokenAddress);
+    name = tokenResult.name;
+    symbol = tokenResult.symbol;
+  }
+
+  if (name) {
+    return { name, symbol, tokenDecimals };
+  }
+
+  // --- if wasn't possible, try to get WRAPPED token information
+  // evm wrapped token
+  if (isEVMChain(resultChain as ChainId)) {
+    const tokenResult = await getEvmTokenDetails(env, resultChain, wrappedTokenAddress);
+
+    name = tokenResult.name;
+    symbol = tokenResult.symbol;
+    tokenDecimals = tokenResult.tokenDecimals;
+  }
+
+  // solana wrapped token
+  if (resultChain === ChainId.Solana) {
+    const tokenResult = await getSolanaTokenDetails(wrappedTokenAddress);
     name = tokenResult.name;
     symbol = tokenResult.symbol;
   }
