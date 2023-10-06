@@ -21,6 +21,10 @@
   &-alerts {
     padding: 0 16px 64px 16px;
 
+    @include tablet {
+      padding: 0 40px 64px 40px;
+    }
+
     @include desktop {
       padding: 0 24px 64px 24px;
     }
@@ -30,7 +34,24 @@
     }
 
     &-unknown-payload-type {
-      max-width: 390px;
+      @include tablet {
+        max-width: 390px;
+      }
+
+      & .alert-text {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      &-link {
+        color: var(--color-primary-50);
+        text-decoration: underline;
+
+        &:hover {
+          color: var(--color-primary-90);
+        }
+      }
     }
   }
 }

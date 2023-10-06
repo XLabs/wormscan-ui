@@ -1,4 +1,5 @@
 import {
+  CHAIN_ID_ETH,
   CONTRACTS,
   coalesceChainName,
   isCosmWasmChain,
@@ -107,6 +108,10 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           const ethersProvider = getEthersProvider(getChainInfo(env, result.chainId as ChainId));
           const block = await ethersProvider.getBlock(result.receipt.blockNumber);
           const timestamp = ethers.BigNumber.from(block.timestamp).toNumber() * 1000;
+          const lastFinalizedBlock =
+            result.chainId === CHAIN_ID_ETH
+              ? (await ethersProvider.getBlock("finalized")).number
+              : await ethersProvider.getBlockNumber();
 
           let fromAddress = result.receipt.from;
           let parsedFromAddress = parseAddress({
@@ -173,8 +178,9 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             );
             const decimals = tokenDecimals ? Math.min(8, tokenDecimals) : 8;
             return {
-              appIds: ["PORTAL_TOKEN_BRIDGE"],
               amount: amount && decimals ? ethers.utils.formatUnits(amount, decimals) : null,
+              appIds: ["PORTAL_TOKEN_BRIDGE"],
+              blockNumber: result.receipt.blockNumber,
               chain: result.chainId,
               consistencyLevel,
               emitterAddress,
@@ -182,6 +188,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               fee,
               fromAddress: parsedFromAddress,
               id: `${result.chainId}/${emitterAddress}/${sequence}`,
+              lastFinalizedBlock,
               name,
               payloadType,
               sender,

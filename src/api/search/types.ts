@@ -86,6 +86,7 @@ export type CctpRelayOutput = {
 
 export type GetTransactionsOutput = {
   id: string;
+  blockNumber?: number;
   timestamp: Date;
   txHash: string;
   emitterChain: number;

@@ -9,7 +9,7 @@ import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
 import { formatCurrency } from "src/utils/number";
-import { getExplorerLink } from "src/utils/wormhole";
+import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import {
   DeliveryLifecycleRecord,
   populateDeliveryLifecycleRecordByVaa,
@@ -30,11 +30,12 @@ interface Props {
   extraRawInfo: any;
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
   txData: GetTransactionsOutput;
+  externalData: { lastFinalizedBlock: number };
 }
 
 const UNKNOWN_APP_ID = "UNKNOWN";
 
-const Information = ({ extraRawInfo, VAAData, txData }: Props) => {
+const Information = ({ extraRawInfo, VAAData, txData, externalData }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [showOverview, setShowOverviewState] = useState(searchParams.get("view") !== "rawdata");
@@ -220,7 +221,12 @@ const Information = ({ extraRawInfo, VAAData, txData }: Props) => {
   const OverviewContent = () => {
     if (isGenericRelayerTx) {
       if (loadingRelayers) return <Loader />;
-      return <RelayerOverview VAAData={VAAData} lifecycleRecord={genericRelayerInfo} />;
+      return (
+        <>
+          <RelayerOverview VAAData={VAAData} lifecycleRecord={genericRelayerInfo} />
+          <AlertsContent />
+        </>
+      );
     }
 
     if (showOverviewDetail) {
@@ -261,13 +267,53 @@ const Information = ({ extraRawInfo, VAAData, txData }: Props) => {
     if (!hasVAA && !isUnknownPayloadType) return null;
     return (
       <div className="tx-information-alerts">
-        <div className="tx-information-alerts-unknown-payload-type">
-          <Alert type="info">
-            {hasVAA
-              ? "Data being shown is incomplete because there is no emitted VAA for this transaction yet. Wait 20 minutes and try again."
-              : "This VAA comes from another multiverse, we don't have more details about it."}
-          </Alert>
-        </div>
+        <Alert type="info" className="tx-information-alerts-unknown-payload-type">
+          {hasVAA ? (
+            <>
+              <p>The VAA for this transaction has not been issued yet.</p>
+              <p>
+                Waiting for finality on {getChainName({ chainId: fromChain })} which may take up to
+                15 minutes.
+              </p>
+              <div>
+                <p>
+                  Last finalized block number{" "}
+                  <a
+                    className="tx-information-alerts-unknown-payload-type-link"
+                    href={getExplorerLink({
+                      network: currentNetwork,
+                      chainId: fromChain,
+                      value: externalData?.lastFinalizedBlock?.toString(),
+                      base: "block",
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {externalData?.lastFinalizedBlock}
+                  </a>{" "}
+                </p>
+                <p>
+                  This block number{" "}
+                  <a
+                    className="tx-information-alerts-unknown-payload-type-link"
+                    href={getExplorerLink({
+                      network: currentNetwork,
+                      chainId: fromChain,
+                      value: txData?.blockNumber?.toString(),
+                      base: "block",
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {txData?.blockNumber}
+                  </a>
+                </p>
+              </div>
+            </>
+          ) : (
+            "This VAA comes from another multiverse, we don't have more details about it."
+          )}
+        </Alert>
       </div>
     );
   };

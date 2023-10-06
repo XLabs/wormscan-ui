@@ -32,6 +32,7 @@ const Tx = () => {
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [parsedVAAsData, setParsedVAAsData] = useState<ParsedVAA[] | undefined>(undefined);
   const [extraRawInfo, setExtraRawInfo] = useState(null);
+  const [externalData, setExternalData] = useState({} as { lastFinalizedBlock: number });
 
   useEffect(() => {
     setIsLoading(true);
@@ -82,6 +83,7 @@ const Tx = () => {
               setEmitterChainId(txData.chain as ChainId);
               setTxData([
                 {
+                  blockNumber: txData.blockNumber,
                   emitterAddress: txData.emitterAddress,
                   emitterChain: txData.chain,
                   emitterNativeAddress: txData.emitterNattiveAddress,
@@ -114,6 +116,7 @@ const Tx = () => {
                   usdAmount: txData.usdAmount,
                 },
               ]);
+              setExternalData({ lastFinalizedBlock: txData.lastFinalizedBlock });
 
               setIsLoading(false);
             } else {
@@ -313,6 +316,7 @@ const Tx = () => {
                     extraRawInfo={extraRawInfo}
                     VAAData={parsedVAAData}
                     txData={txData.find(tx => tx.id === parsedVAAData.id)}
+                    externalData={externalData}
                   />
                 ),
             )}
