@@ -4,6 +4,7 @@ import { Loader } from "src/components/atoms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { EnvironmentProvider } from "src/context/EnvironmentContext";
 import { ScrollControl } from "src/utils/scrollControl";
+import { Footer, Header } from "src/components/molecules";
 
 const Home = lazy(() => import("../pages/Home"));
 const Tx = lazy(() => import("../pages/Tx"));
@@ -15,14 +16,14 @@ const Navigation = () => {
   return (
     <Router>
       <ScrollControl />
-      <Suspense
-        fallback={
-          <BaseLayout>
-            <Loader />
-          </BaseLayout>
-        }
-      >
-        <EnvironmentProvider>
+      <EnvironmentProvider>
+        <Suspense
+          fallback={
+            <BaseLayout>
+              <Loader />
+            </BaseLayout>
+          }
+        >
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/txs" element={<Txs />} />
@@ -31,8 +32,8 @@ const Navigation = () => {
             <Route path="/search-not-found" element={<SearchNotFound />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </EnvironmentProvider>
-      </Suspense>
+        </Suspense>
+      </EnvironmentProvider>
     </Router>
   );
 };
