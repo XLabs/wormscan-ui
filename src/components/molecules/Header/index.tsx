@@ -127,7 +127,7 @@ const Header = () => {
       <div className="header-actions">
         <Select
           name={"networkSelect"}
-          value={NETWORK_LIST.find(a => a.value === environment.network)}
+          value={NETWORK_LIST.find(a => a.value === currentNetwork)}
           onValueChange={(env: NetworkSelectProps) => onClickChangeNetwork(env.value)}
           items={NETWORK_LIST}
           ariaLabel={"Select Network"}

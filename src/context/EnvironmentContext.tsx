@@ -55,7 +55,6 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
       } else */ if (env === "TESTNET") {
       changeClientNetwork("TESTNET");
       setCurrentEnv(testnetEnv);
-
       setClearChildren(true);
     } else if (env === "MAINNET") {
       changeClientNetwork("MAINNET");
