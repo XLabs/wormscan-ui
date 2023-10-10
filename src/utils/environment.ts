@@ -219,7 +219,7 @@ export const testnetEnv: Environment = {
       nativeCurrencyDecimals: 18,
       nativeCurrencyName: "ETH",
       rpcUrl: TESTNET_RPCS.arbitrum || "",
-      relayerContractAddress: null,
+      relayerContractAddress: "0xad753479354283eee1b86c9470c84d42f229ff43",
     },
     {
       chainId: 24 as ChainId,
@@ -230,7 +230,7 @@ export const testnetEnv: Environment = {
       mockIntegrationAddress: "",
       nativeCurrencyDecimals: 18,
       nativeCurrencyName: "Eth",
-      relayerContractAddress: null,
+      relayerContractAddress: "0x01A957A525a5b7A72808bA9D10c389674E459891",
       rpcUrl: TESTNET_RPCS.optimism || "",
     },
   ],
