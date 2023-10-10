@@ -125,3 +125,8 @@ export type GetTransactionsOutput = {
   };
   globalTx: GlobalTxOutput;
 };
+
+export type GetBlockData = {
+  currentBlock: number;
+  lastFinalizedBlock: number;
+};

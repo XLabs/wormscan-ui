@@ -9,12 +9,12 @@ import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
 import { formatCurrency } from "src/utils/number";
-import { getExplorerLink } from "src/utils/wormhole";
+import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import {
   DeliveryLifecycleRecord,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
-import { GetTransactionsOutput } from "src/api/search/types";
+import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
 import { VAADetail } from "src/api/guardian-network/types";
 
 import Tabs from "./Tabs";
@@ -30,11 +30,12 @@ interface Props {
   extraRawInfo: any;
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
   txData: GetTransactionsOutput;
+  blockData: GetBlockData;
 }
 
 const UNKNOWN_APP_ID = "UNKNOWN";
 
-const Information = ({ extraRawInfo, VAAData, txData }: Props) => {
+const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [showOverview, setShowOverviewState] = useState(searchParams.get("view") !== "rawdata");
@@ -58,6 +59,8 @@ const Information = ({ extraRawInfo, VAAData, txData }: Props) => {
   const { guardianSignatures } = decodedVaa || {};
   const guardianSignaturesCount = guardianSignatures?.length || 0;
   const hasVAA = !vaa;
+
+  const { currentBlock, lastFinalizedBlock } = blockData || {};
 
   const {
     id: VAAId,
@@ -220,7 +223,12 @@ const Information = ({ extraRawInfo, VAAData, txData }: Props) => {
   const OverviewContent = () => {
     if (isGenericRelayerTx) {
       if (loadingRelayers) return <Loader />;
-      return <RelayerOverview VAAData={VAAData} lifecycleRecord={genericRelayerInfo} />;
+      return (
+        <>
+          <RelayerOverview VAAData={VAAData} lifecycleRecord={genericRelayerInfo} />
+          <AlertsContent />
+        </>
+      );
     }
 
     if (showOverviewDetail) {
@@ -261,13 +269,56 @@ const Information = ({ extraRawInfo, VAAData, txData }: Props) => {
     if (!hasVAA && !isUnknownPayloadType) return null;
     return (
       <div className="tx-information-alerts">
-        <div className="tx-information-alerts-unknown-payload-type">
-          <Alert type="info">
-            {hasVAA
-              ? "Data being shown is incomplete because there is no emitted VAA for this transaction yet. Wait 20 minutes and try again."
-              : "This VAA comes from another multiverse, we don't have more details about it."}
-          </Alert>
-        </div>
+        <Alert type="info" className="tx-information-alerts-unknown-payload-type">
+          {hasVAA ? (
+            <>
+              <p>The VAA for this transaction has not been issued yet.</p>
+              <p>
+                Waiting for finality on {getChainName({ chainId: fromChain })} which may take up to
+                15 minutes.
+              </p>
+              {lastFinalizedBlock && currentBlock && (
+                <div>
+                  <p>
+                    Last finalized block number{" "}
+                    <a
+                      className="tx-information-alerts-unknown-payload-type-link"
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: fromChain,
+                        value: lastFinalizedBlock.toString(),
+                        base: "block",
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {lastFinalizedBlock}
+                    </a>{" "}
+                  </p>
+
+                  <p>
+                    This block number{" "}
+                    <a
+                      className="tx-information-alerts-unknown-payload-type-link"
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: fromChain,
+                        value: currentBlock.toString(),
+                        base: "block",
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {currentBlock}
+                    </a>
+                  </p>
+                </div>
+              )}
+            </>
+          ) : (
+            "This VAA comes from another multiverse, we don't have more details about it."
+          )}
+        </Alert>
       </div>
     );
   };
