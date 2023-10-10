@@ -273,6 +273,7 @@ const Tx = () => {
         vaa,
         decodedVaa: {
           ...parsedVaa,
+          payload: parsedVaa.payload ? Buffer.from(parsedVaa.payload).toString("hex") : null,
           emitterAddress: parsedEmitterAddress,
           guardianSignatures: parsedGuardianSignatures,
           hash: parsedHash,
