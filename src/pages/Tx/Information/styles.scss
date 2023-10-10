@@ -35,7 +35,7 @@
 
     &-unknown-payload-type {
       @include tablet {
-        max-width: 390px;
+        max-width: 560px;
       }
 
       & .alert-text {
@@ -45,12 +45,8 @@
       }
 
       &-link {
-        color: var(--color-primary-50);
+        color: var(--color-information-100);
         text-decoration: underline;
-
-        &:hover {
-          color: var(--color-primary-90);
-        }
       }
     }
   }
