@@ -7,15 +7,15 @@ import { Loader } from "src/components/atoms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { fetchWithRpcFallThrough } from "src/utils/fetchWithRPCsFallthrough";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import { parseTx } from "src/utils/crypto";
 import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
 import { GlobalTxOutput, VAADetail } from "src/api/guardian-network/types";
-import { GetTransactionsOutput } from "src/api/search/types";
+import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
 import { getGuardianSet } from "../../consts";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import "./styles.scss";
-import { parseTx } from "src/utils/crypto";
 
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
@@ -32,7 +32,7 @@ const Tx = () => {
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [parsedVAAsData, setParsedVAAsData] = useState<ParsedVAA[] | undefined>(undefined);
   const [extraRawInfo, setExtraRawInfo] = useState(null);
-  const [externalData, setExternalData] = useState({} as { lastFinalizedBlock: number });
+  const [blockData, setBlockData] = useState<GetBlockData>(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -83,7 +83,6 @@ const Tx = () => {
               setEmitterChainId(txData.chain as ChainId);
               setTxData([
                 {
-                  blockNumber: txData.blockNumber,
                   emitterAddress: txData.emitterAddress,
                   emitterChain: txData.chain,
                   emitterNativeAddress: txData.emitterNattiveAddress,
@@ -116,7 +115,10 @@ const Tx = () => {
                   usdAmount: txData.usdAmount,
                 },
               ]);
-              setExternalData({ lastFinalizedBlock: txData.lastFinalizedBlock });
+              setBlockData({
+                currentBlock: txData.blockNumber,
+                lastFinalizedBlock: txData.lastFinalizedBlock,
+              });
 
               setIsLoading(false);
             } else {
@@ -317,7 +319,7 @@ const Tx = () => {
                     extraRawInfo={extraRawInfo}
                     VAAData={parsedVAAData}
                     txData={txData.find(tx => tx.id === parsedVAAData.id)}
-                    externalData={externalData}
+                    blockData={blockData}
                   />
                 ),
             )}

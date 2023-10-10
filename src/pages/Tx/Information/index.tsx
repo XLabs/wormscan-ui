@@ -14,7 +14,7 @@ import {
   DeliveryLifecycleRecord,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
-import { GetTransactionsOutput } from "src/api/search/types";
+import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
 import { VAADetail } from "src/api/guardian-network/types";
 
 import Tabs from "./Tabs";
@@ -30,12 +30,12 @@ interface Props {
   extraRawInfo: any;
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
   txData: GetTransactionsOutput;
-  externalData: { lastFinalizedBlock: number };
+  blockData: GetBlockData;
 }
 
 const UNKNOWN_APP_ID = "UNKNOWN";
 
-const Information = ({ extraRawInfo, VAAData, txData, externalData }: Props) => {
+const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [showOverview, setShowOverviewState] = useState(searchParams.get("view") !== "rawdata");
@@ -59,6 +59,8 @@ const Information = ({ extraRawInfo, VAAData, txData, externalData }: Props) => 
   const { guardianSignatures } = decodedVaa || {};
   const guardianSignaturesCount = guardianSignatures?.length || 0;
   const hasVAA = !vaa;
+
+  const { currentBlock, lastFinalizedBlock } = blockData || {};
 
   const {
     id: VAAId,
@@ -275,40 +277,43 @@ const Information = ({ extraRawInfo, VAAData, txData, externalData }: Props) => 
                 Waiting for finality on {getChainName({ chainId: fromChain })} which may take up to
                 15 minutes.
               </p>
-              <div>
-                <p>
-                  Last finalized block number{" "}
-                  <a
-                    className="tx-information-alerts-unknown-payload-type-link"
-                    href={getExplorerLink({
-                      network: currentNetwork,
-                      chainId: fromChain,
-                      value: externalData?.lastFinalizedBlock?.toString(),
-                      base: "block",
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {externalData?.lastFinalizedBlock}
-                  </a>{" "}
-                </p>
-                <p>
-                  This block number{" "}
-                  <a
-                    className="tx-information-alerts-unknown-payload-type-link"
-                    href={getExplorerLink({
-                      network: currentNetwork,
-                      chainId: fromChain,
-                      value: txData?.blockNumber?.toString(),
-                      base: "block",
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {txData?.blockNumber}
-                  </a>
-                </p>
-              </div>
+              {lastFinalizedBlock && currentBlock && (
+                <div>
+                  <p>
+                    Last finalized block number{" "}
+                    <a
+                      className="tx-information-alerts-unknown-payload-type-link"
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: fromChain,
+                        value: lastFinalizedBlock.toString(),
+                        base: "block",
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {lastFinalizedBlock}
+                    </a>{" "}
+                  </p>
+
+                  <p>
+                    This block number{" "}
+                    <a
+                      className="tx-information-alerts-unknown-payload-type-link"
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: fromChain,
+                        value: currentBlock.toString(),
+                        base: "block",
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {currentBlock}
+                    </a>
+                  </p>
+                </div>
+              )}
             </>
           ) : (
             "This VAA comes from another multiverse, we don't have more details about it."
