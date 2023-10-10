@@ -68,10 +68,8 @@ type Props = {
 const RawData = ({ extraRawInfo, VAAData, txData, lifecycleRecord }: Props) => {
   const { payload, decodedVaa, ...rest } = VAAData || {};
   const rawData = { ...rest };
-  const { payload: nestedVAAPayload, ...nestedVAARest } = decodedVaa
-    ? decodedVaa
-    : { payload: null };
-  const signedVAA = Object.values(nestedVAARest).length > 0 ? { ...nestedVAARest } : null;
+  const signedVAA = Object.values(decodedVaa).length > 0 ? decodedVaa : null;
+
   const CODE_BLOCKS = [
     {
       title: "RAW MESSAGE DATA",
