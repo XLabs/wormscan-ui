@@ -140,15 +140,20 @@ const Details = ({
           {tokenAmount ? (
             <>
               {amountSent}{" "}
-              {symbol &&
-                (tokenLink ? (
-                  <a href={tokenLink} target="_blank" rel="noopener noreferrer">
-                    {symbol}
-                  </a>
-                ) : (
-                  <span>{symbol}</span>
-                ))}
-              {amountSentUSD && `(${amountSentUSD} USD)`}
+              {symbol ? (
+                <>
+                  {tokenLink ? (
+                    <a href={tokenLink} target="_blank" rel="noopener noreferrer">
+                      {symbol}
+                    </a>
+                  ) : (
+                    <span>{symbol}</span>
+                  )}
+                  {amountSentUSD && `(${amountSentUSD} USD)`}
+                </>
+              ) : (
+                "N/A"
+              )}
             </>
           ) : (
             "N/A"
@@ -286,15 +291,20 @@ const Details = ({
           ) : tokenAmount ? (
             <>
               {amountSent}{" "}
-              {symbol &&
-                (tokenLink ? (
-                  <a href={tokenLink} target="_blank" rel="noopener noreferrer">
-                    {symbol}
-                  </a>
-                ) : (
-                  <span>{symbol}</span>
-                ))}
-              {amountSentUSD && `(${amountSentUSD} USD)`}
+              {symbol ? (
+                <>
+                  {tokenLink ? (
+                    <a href={tokenLink} target="_blank" rel="noopener noreferrer">
+                      {symbol}
+                    </a>
+                  ) : (
+                    <span>{symbol}</span>
+                  )}
+                  {amountSentUSD && `(${amountSentUSD} USD)`}
+                </>
+              ) : (
+                "N/A"
+              )}
             </>
           ) : (
             "N/A"
