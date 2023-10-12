@@ -191,7 +191,7 @@ const Header = () => {
         </div>
       </div>
 
-      <label
+      <div
         className={`header-menu-mobile-mask header-menu-mobile-mask--${
           expandMobileMenu ? "open" : "close"
         }`}

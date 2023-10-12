@@ -251,7 +251,9 @@ const Txs = () => {
                     <StatusBadge status={status as TxStatus} />
                   </div>
                 ),
-                amount: tokenAmount ? formatCurrency(Number(tokenAmount)) + " " + symbol : "-",
+                amount: tokenAmount
+                  ? formatCurrency(Number(tokenAmount)) + " " + (symbol ? symbol : "N/A")
+                  : "-",
                 time: (timestampDate && timeAgo(timestampDate)) || "-",
               };
 
