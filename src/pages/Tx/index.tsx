@@ -122,10 +122,10 @@ const Tx = () => {
 
               setIsLoading(false);
             } else {
-              navigate(`/search-not-found/${txHash}`);
+              navigate(`/search-not-found/?q=${txHash}`);
             }
           } else {
-            navigate(`/search-not-found/${txHash}`);
+            navigate(`/search-not-found/?q=${txHash}`);
           }
         }
       },
