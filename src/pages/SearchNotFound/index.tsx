@@ -13,6 +13,7 @@ const SearchNotFound = () => {
   const redirectURL = localStorage.getItem("reloadRedirect");
 
   useEffect(() => {
+    // when we reload the page, we want to redirect to the tx page
     const setReloadRedirect = () => {
       if (document.visibilityState === "hidden") {
         localStorage.setItem("reloadRedirect", `/tx/${q}`);
@@ -27,11 +28,21 @@ const SearchNotFound = () => {
   }, [q]);
 
   useEffect(() => {
+    // redirect to the tx page if we have a redirectURL (redirectURL exists when we reload the page)
     if (redirectURL) {
       navigate(redirectURL);
       localStorage.removeItem("reloadRedirect");
     }
-  }, [redirectURL, navigate]);
+
+    // redirect to tx page after 20 seconds to search the tx again
+    const timeoutId = setTimeout(() => {
+      navigate(`/tx/${q}`);
+    }, 20000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [redirectURL, navigate, q]);
 
   const goHome = (e: React.MouseEvent<HTMLButtonElement>) => {
     navigate("/");
