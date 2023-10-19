@@ -44,6 +44,19 @@ const Tx = () => {
     setIsLoading(true);
   }, [network]);
 
+  const navigateToSearchNotFound = (err: Error, param: string) => {
+    let statusCode = 400;
+    if (err.message) {
+      // get the status code from the error message
+      statusCode = parseInt(err.message.match(/\d+/)[0], 10);
+    }
+    navigate(`/search-not-found?q=${param}`, {
+      state: {
+        status: statusCode,
+      },
+    });
+  };
+
   const { data: VAADataByTx } = useQuery(
     ["getVAAbyTxHash", txHash],
     () =>
@@ -122,10 +135,10 @@ const Tx = () => {
 
               setIsLoading(false);
             } else {
-              navigate(`/search-not-found/?q=${txHash}`);
+              navigateToSearchNotFound(new Error("Request failed with status code 400"), txHash);
             }
           } else {
-            navigate(`/search-not-found/?q=${txHash}`);
+            navigateToSearchNotFound(new Error("Request failed with status code 400"), txHash);
           }
         }
       },
@@ -147,7 +160,7 @@ const Tx = () => {
       });
     },
     {
-      onError: () => navigate(`/search-not-found/?q=${VAAId}`),
+      onError: (err: Error) => navigateToSearchNotFound(err, VAAId),
       enabled: isVAAIdSearch,
     },
   );
@@ -234,7 +247,7 @@ const Tx = () => {
       onSuccess: data => {
         if (!!data.length) setIsLoading(false);
       },
-      onError: () => navigate(`/search-not-found/?q=${VAADataTxHash}`),
+      onError: (err: Error) => navigateToSearchNotFound(err, VAADataTxHash),
     },
   );
 

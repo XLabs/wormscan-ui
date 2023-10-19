@@ -15,13 +15,30 @@ const Search = () => {
   const [searchValue, setSearchValue] = useState("");
   const queryClient = useQueryClient();
 
-  const goSearchNotFound = () => {
+  const goSearchNotFound = (err: Error) => {
     const searchNotFoundURL = `/search-not-found?q=${searchString.current}`;
-    if (searchType.current === "vaaId") return navigate(searchNotFoundURL);
+    let statusCode = 400;
+
+    if (err.message) {
+      // get the status code from the error message
+      statusCode = parseInt(err.message.match(/\d+/)[0], 10);
+    }
+
+    if (searchType.current === "vaaId") {
+      return navigate(searchNotFoundURL, {
+        state: {
+          status: statusCode,
+        },
+      });
+    }
 
     errorsCount.current += 1;
     if (errorsCount.current >= 2) {
-      navigate(searchNotFoundURL);
+      navigate(searchNotFoundURL, {
+        state: {
+          status: statusCode,
+        },
+      });
     }
   };
 
@@ -39,8 +56,8 @@ const Search = () => {
       onSuccess: (_, { address }) => {
         navigate(`/txs?address=${address}`);
       },
-      onError: _ => {
-        goSearchNotFound();
+      onError: (err: Error) => {
+        goSearchNotFound(err);
       },
       onSettled: () => {
         setIsLoading(false);
@@ -100,12 +117,12 @@ const Search = () => {
             queryClient.setQueryData(["getVAA", VAAId], vaa);
             navigate(`/tx/${VAAId}`);
           } else {
-            goSearchNotFound();
+            goSearchNotFound(new Error("Request failed with status code 400"));
           }
         }
       },
-      onError: _ => {
-        goSearchNotFound();
+      onError: (err: Error) => {
+        goSearchNotFound(err);
       },
       onSettled: () => {
         setIsLoading(false);
@@ -119,6 +136,7 @@ const Search = () => {
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    localStorage.removeItem("attemptsMade");
 
     const { search } = e.target as typeof e.target & FormData;
     let { value } = search;

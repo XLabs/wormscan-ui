@@ -1,125 +1,242 @@
 @import "src/styles/globals.scss";
 
-.search-not-found-page {
-  flex: 1;
-  display: block;
+.error-page {
+  display: flex;
+  justify-content: center;
+  margin: auto 0;
   padding: 32px 0;
 
+  @include desktop {
+    padding: 96px 32px;
+
+    &-bg-503 {
+      background-repeat: no-repeat;
+      background-position: calc(50% - 136px) center;
+      background-image: url("../../assets/bg-503.svg");
+    }
+  }
+
+  @include bigDesktop {
+    padding: 96px 200px;
+  }
+
+  &-bg-500 {
+    background-repeat: no-repeat;
+    background-position: calc(50% + 116px) calc(50% - 136px);
+    background-image: url("../../assets/bg-mobile-500.svg");
+
+    @include desktop {
+      background-position: center;
+      background-image: url("../../assets/bg-500.svg");
+    }
+  }
+
   &-container {
-    @include centered-column;
-
-    align-items: center;
-    padding: 24px;
-    border-radius: 10px;
     background-color: var(--color-white-05);
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 32px 24px;
+    place-items: center;
+    width: 100%;
 
     @include desktop {
-      @include centered-row;
-
-      justify-content: space-evenly;
-      text-align: start;
-      gap: 72px;
-      padding: 96px;
+      background-color: unset;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr;
+      max-width: 1100px;
+      padding: 0;
+      place-items: start;
     }
 
-    @include bigDesktop {
-      padding: 96px 200px;
-    }
+    &-title {
+      @include text-h4;
+      color: var(--color-primary-30);
+      text-align: center;
 
-    img {
-      display: block;
-    }
-  }
-
-  &-content {
-    @include centered-column;
-
-    align-items: center;
-    text-align: center;
-    max-width: 424px;
-
-    @include desktop {
-      text-align: start;
-      align-items: unset;
-    }
-  }
-
-  &-title {
-    @include text-h4;
-
-    color: var(--color-primary-30);
-    margin-bottom: 32px;
-
-    @include desktop {
-      font-weight: 600;
-    }
-  }
-
-  &-image {
-    &-mobile {
-      margin-bottom: 32px;
-
-      > img {
-        width: 156px;
-        height: auto;
-      }
-    }
-
-    &-desktop {
-      display: none;
-    }
-
-    @include desktop {
-      &-mobile {
-        display: none;
+      @include desktop {
+        font-family: Chakra Petch;
+        text-align: left;
+        font-size: 40px;
       }
 
-      &-desktop {
+      &-400 {
+        @include text-h4;
+        color: var(--color-primary-30);
+
+        @include desktop {
+          font-weight: 600;
+        }
+      }
+
+      & span {
         display: block;
+
+        @include desktop {
+          font-family: Chakra Petch;
+        }
       }
     }
-  }
 
-  &-body {
-    @include text-p2;
+    &-image {
+      grid-row: span 2;
+      margin: 40px auto 0 auto;
+      position: relative;
 
-    margin-bottom: 48px;
-    color: var(--color-primary-50);
+      @include desktop {
+        margin: auto 0 auto auto;
+      }
 
-    > p + p {
-      margin-top: 48px;
+      &-text {
+        @include text-h5;
+        align-items: center;
+        color: var(--color-primary-90);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: center;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        font-size: 24px;
+
+        @include desktop {
+          font-size: 32px;
+        }
+
+        & span {
+          color: var(--color-primary-30);
+          display: block;
+          font-family: Chakra Petch;
+          font-size: 40px;
+        }
+      }
+
+      &-astronaut {
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 140px;
+
+        @include desktop {
+          right: 64px;
+          top: 80px;
+          width: 200px;
+        }
+      }
+
+      &-400 {
+        width: 156px;
+
+        @include desktop {
+          width: 285px;
+        }
+      }
+
+      &-500 {
+        width: 174px;
+
+        @include desktop {
+          width: 425px;
+        }
+      }
+
+      &-502 {
+        width: 174px;
+
+        @include desktop {
+          width: 312px;
+        }
+      }
+
+      &-503 {
+        width: 200px;
+
+        @include desktop {
+          width: 425px;
+        }
+      }
     }
 
-    &-id {
-      word-break: break-all;
-    }
-  }
+    &-body {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      justify-content: space-between;
+      margin-top: 36px;
+      text-align: center;
 
-  &-support {
-    @include text-p2;
+      @include desktop {
+        margin-top: 16px;
+        text-align: left;
+      }
 
-    margin-bottom: 48px;
-    color: var(--color-primary-50);
+      &-description {
+        @include text-p2;
+        color: var(--color-primary-50);
+        max-width: 324px;
 
-    > p + p {
-      margin-top: 48px;
-    }
+        @include desktop {
+          font-size: 20px;
+          max-width: 424px;
+        }
 
-    a {
-      color: var(--color-information-100);
-      text-decoration: none;
-    }
-  }
+        &-400 {
+          font-size: 16px;
 
-  &-button {
-    @include button-secondary;
+          @include desktop {
+            margin-top: 20px;
+          }
+        }
 
-    padding-left: 32px;
-    padding-right: 32px;
+        &-500 {
+          color: var(--color-primary-100);
+        }
 
-    @include desktop {
-      padding-left: 56px;
-      padding-right: 56px;
+        & span {
+          display: block;
+          word-break: break-all;
+        }
+
+        & a {
+          color: var(--color-secondary-800);
+          text-decoration-line: underline;
+        }
+
+        & .info-link {
+          color: var(--color-information-100);
+          text-decoration: none;
+        }
+      }
+
+      &-code {
+        color: var(--color-primary-10);
+        font-size: 20px;
+        margin-top: 16px;
+
+        @include desktop {
+          margin-top: 42px;
+        }
+      }
+
+      &-button {
+        @include button-secondary;
+
+        border: unset;
+        margin: 20px auto 0 auto;
+        padding-left: 32px;
+        padding-right: 32px;
+
+        @include desktop {
+          margin: 32px auto 0 0;
+          padding-left: 56px;
+          padding-right: 56px;
+        }
+      }
     }
   }
 }

@@ -118,7 +118,7 @@ describe("Header", () => {
       // search by txHash invalid
       const badTxHash = "4rZmexGcA2eTttK1nihBGPMheho66dQjo123abc123abv123abc123abc123abc";
       const badTxHashEndpoint = `https://api.staging.wormscan.io/api/v1/vaas/?txHash=${badTxHash}&parsedPayload=true`;
-      const badExpectedURL = `${baseURL}/#/search-not-found/${badTxHash}`;
+      const badExpectedURL = `${baseURL}/#/search-not-found?q=${badTxHash}`;
       await searchTxAndVerify(page, true, badTxHash, badTxHashEndpoint, "", badExpectedURL, false);
     });
 
@@ -142,7 +142,7 @@ describe("Header", () => {
       const badAddress = "0x12345abscasdnkdtg12321321";
       const badAddressEndpoint = `https://api.staging.wormscan.io/api/v1/address/${badAddress}`;
       const badAddressEndpoint2 = `https://api.staging.wormscan.io/api/v1/transactions?address=${badAddress}&page=0&pageSize=50&sortOrder=DESC`;
-      const badExpectedURL = `${baseURL}/#/search-not-found/${badAddress}`;
+      const badExpectedURL = `${baseURL}/#/search-not-found?q=${badAddress}`;
       await searchTxAndVerify(
         page,
         false,
