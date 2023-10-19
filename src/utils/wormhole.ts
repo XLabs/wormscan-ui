@@ -11,6 +11,7 @@ import BaseIcon from "src/icons/blockchains/base.svg";
 import BSCIcon from "src/icons/blockchains/bsc.svg";
 import CeloIcon from "src/icons/blockchains/celo.svg";
 import EthereumIcon from "src/icons/blockchains/eth.svg";
+import EvmosIcon from "src/icons/blockchains/evmos.svg";
 import FantomIcon from "src/icons/blockchains/fantom.svg";
 import InjectiveIcon from "src/icons/blockchains/injective.svg";
 import KaruraIcon from "src/icons/blockchains/karura.svg";
@@ -39,6 +40,7 @@ import BaseDarkIcon from "src/icons/blockchains/dark/base.svg";
 import BSCDarkIcon from "src/icons/blockchains/dark/bsc.svg";
 import CeloDarkIcon from "src/icons/blockchains/dark/celo.svg";
 import EthereumDarkIcon from "src/icons/blockchains/dark/eth.svg";
+import EvmosDarkIcon from "src/icons/blockchains/evmos.svg";
 import FantomDarkIcon from "src/icons/blockchains/dark/fantom.svg";
 import InjectiveDarkIcon from "src/icons/blockchains/dark/injective.svg";
 import KaruraDarkIcon from "src/icons/blockchains/dark/karura.svg";
@@ -147,6 +149,26 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     explorer: {
       TESTNET: "https://testnet.mintscan.io/osmosis-testnet",
       MAINNET: "https://www.mintscan.io/osmosis",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (network === "MAINNET") {
+        if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
+        if (base === "token") return this.explorer?.[network] + "/assets/ibc/" + value;
+        return this.explorer?.[network] + "/transactions/" + value;
+      } else {
+        if (base === "address") return this.explorer?.[network] + "/account/" + value;
+        if (base === "token") return this.explorer?.[network] + "/assets";
+        return this.explorer?.[network] + "/txs/" + value;
+      }
+    },
+  },
+  [ChainId.Evmos]: {
+    name: "Evmos",
+    icon: EvmosIcon,
+    darkIcon: EvmosDarkIcon,
+    explorer: {
+      TESTNET: "https://testnet.mintscan.io/evmos-testnet",
+      MAINNET: "https://www.mintscan.io/evmos",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (network === "MAINNET") {
