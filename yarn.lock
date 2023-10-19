@@ -141,9 +141,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@certusone/wormhole-sdk@npm:0.9.20":
-  version: 0.9.20
-  resolution: "@certusone/wormhole-sdk@npm:0.9.20"
+"@certusone/wormhole-sdk@npm:0.10.5":
+  version: 0.10.5
+  resolution: "@certusone/wormhole-sdk@npm:0.10.5"
   dependencies:
     "@certusone/wormhole-sdk-proto-web": 0.0.6
     "@certusone/wormhole-sdk-wasm": ^0.0.1
@@ -157,7 +157,7 @@ __metadata:
     "@solana/web3.js": ^1.66.2
     "@terra-money/terra.js": 3.1.9
     "@xpla/xpla.js": ^0.2.1
-    algosdk: ^1.15.0
+    algosdk: ^2.4.0
     aptos: 1.5.0
     axios: ^0.24.0
     bech32: ^2.0.0
@@ -173,7 +173,7 @@ __metadata:
       optional: true
     "@injectivelabs/utils":
       optional: true
-  checksum: e4bc898437e1ed6c1458778f58f831f5eda3b82781aaba50f0306d481636f93bb9f84feb164e946a910b99bc0649d177573029a36462c7362f125fd9ad95dbac
+  checksum: 3d57670479b1f40c48e6286065f9734779e247d2b132ec8467ea005facef515a29e7e7e43cc09b8cf912e254ef97fd7896863a520919d09da3420b361ac5d77b
   languageName: node
   linkType: hard
 
@@ -3607,13 +3607,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"algosdk@npm:^1.15.0":
-  version: 1.24.1
-  resolution: "algosdk@npm:1.24.1"
+"algosdk@npm:^2.4.0":
+  version: 2.6.0
+  resolution: "algosdk@npm:2.6.0"
   dependencies:
     algo-msgpack-with-bigint: ^2.1.1
-    buffer: ^6.0.2
-    cross-fetch: ^3.1.5
+    buffer: ^6.0.3
+    cross-fetch: ^4.0.0
     hi-base32: ^0.5.1
     js-sha256: ^0.9.0
     js-sha3: ^0.8.0
@@ -3621,7 +3621,7 @@ __metadata:
     json-bigint: ^1.0.0
     tweetnacl: ^1.0.3
     vlq: ^2.0.4
-  checksum: 3b6960dddec3d7d37a1505dcb3c6997740c5b02fa076a140efcf51eaddd83b7a7c8f56bab3001ec0ac7b1ccdd264e5a41d051b8bf5b9b72762e338c704547203
+  checksum: d7c79e7f05436ffc537fb8d99e4c9f8465f965920b07e6f6bfe38a84f4cbfca266d78ebf0c5b68f92e1e65f9622cd0efcd70fbef1a5d4a8471403113495a2a24
   languageName: node
   linkType: hard
 
@@ -4268,7 +4268,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"buffer@npm:6.0.3, buffer@npm:^6.0.2, buffer@npm:^6.0.3, buffer@npm:~6.0.3":
+"buffer@npm:6.0.3, buffer@npm:^6.0.3, buffer@npm:~6.0.3":
   version: 6.0.3
   resolution: "buffer@npm:6.0.3"
   dependencies:
@@ -4724,6 +4724,15 @@ __metadata:
   dependencies:
     node-fetch: ^2.6.12
   checksum: 78f993fa099eaaa041122ab037fe9503ecbbcb9daef234d1d2e0b9230a983f64d645d088c464e21a247b825a08dc444a6e7064adfa93536d3a9454b4745b3632
+  languageName: node
+  linkType: hard
+
+"cross-fetch@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "cross-fetch@npm:4.0.0"
+  dependencies:
+    node-fetch: ^2.6.12
+  checksum: ecca4f37ffa0e8283e7a8a590926b66713a7ef7892757aa36c2d20ffa27b0ac5c60dcf453119c809abe5923fc0bae3702a4d896bfb406ef1077b0d0018213e24
   languageName: node
   linkType: hard
 
@@ -10244,7 +10253,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "wormscan-ui@workspace:."
   dependencies:
-    "@certusone/wormhole-sdk": 0.9.20
+    "@certusone/wormhole-sdk": 0.10.5
     "@parcel/transformer-sass": ^2.8.3
     "@playwright/test": ^1.38.1
     "@radix-ui/react-icons": 1.1.1
