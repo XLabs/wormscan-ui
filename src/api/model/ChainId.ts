@@ -29,6 +29,7 @@ export enum ChainId {
   Btc = 29,
   Base = 30,
   Sei = 32,
+  Evmos = 4001,
   Sepolia = 10002,
   Wormchain = 3104,
 }
