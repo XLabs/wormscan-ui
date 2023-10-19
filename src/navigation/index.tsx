@@ -11,7 +11,7 @@ const Txs = lazy(() => import("../pages/Txs"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 const SearchNotFound = lazy(() => import("../pages/SearchNotFound"));
 
-const AllRoutes2 = () => {
+const HomeTxsNotFound = () => {
   // if the user moves, remove the attemptsMade
   localStorage.removeItem("attemptsMade");
 
@@ -33,7 +33,7 @@ const AllRoutes = () => {
     <Routes>
       <Route path="/tx/:txHash" element={<Tx />} />
       <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
-      <Route path="/*" element={<AllRoutes2 />} />
+      <Route path="/*" element={<HomeTxsNotFound />} />
     </Routes>
   );
 };
