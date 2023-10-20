@@ -305,11 +305,9 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             };
 
             const cctpResult = parseCCTPRelayerPayload(Buffer.from(payload.slice(2), "hex"));
-            const amount = "" + 100 * +cctpResult.amount; // this will later be formatted with 8 decimals
-            const fee = "" + 100 * +cctpResult.feeAmount; // this will later be formatted with 8 decimals
-            const toNativeAmount = "" + 100 * +cctpResult.toNativeAmount; // this will later be formatted with 8 decimals
-
-            const tokenAmount = "" + 0.000001 * +cctpResult.amount; // 6 decimals for USDC
+            const amount = "" + 0.000001 * +cctpResult.amount; // 6 decimals for USDC
+            const fee = "" + 0.000001 * +cctpResult.feeAmount; // 6 decimals for USDC
+            const toNativeAmount = "" + 0.000001 * +cctpResult.toNativeAmount; // 6 decimals for USDC
 
             return {
               amount,
@@ -328,11 +326,11 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               toAddress: cctpResult.toAddress,
               toChain: getCctpDomain(cctpResult.toDomain),
               tokenAddress: cctpResult.tokenAddress,
-              tokenAmount,
+              tokenAmount: amount,
               tokenChain: result.chainId,
               toNativeAmount,
               txHash: search,
-              usdAmount: tokenAmount,
+              usdAmount: amount,
             };
           }
           // default, no token-bridge nor cctp ones (can add other payload readers here)
