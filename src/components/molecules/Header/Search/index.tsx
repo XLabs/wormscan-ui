@@ -117,7 +117,7 @@ const Search = () => {
             queryClient.setQueryData(["getVAA", VAAId], vaa);
             navigate(`/tx/${VAAId}`);
           } else {
-            goSearchNotFound(new Error("Request failed with status code 400"));
+            goSearchNotFound(new Error("Request failed with status code 404"));
           }
         }
       },

@@ -75,7 +75,7 @@ const Tx = () => {
         },
       }),
     {
-      onSettled: async (data, error) => {
+      onSettled: async (data, error: Error) => {
         if (error || data.length === 0) {
           const txsData = await fetchWithRpcFallThrough(environment, txHash);
 
@@ -143,10 +143,10 @@ const Tx = () => {
 
               setIsLoading(false);
             } else {
-              navigateToSearchNotFound(new Error("Request failed with status code 400"), txHash);
+              navigateToSearchNotFound(error, txHash);
             }
           } else {
-            navigateToSearchNotFound(new Error("Request failed with status code 400"), txHash);
+            navigateToSearchNotFound(error, txHash);
           }
         }
       },
