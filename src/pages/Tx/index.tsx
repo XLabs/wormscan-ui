@@ -49,7 +49,7 @@ const Tx = () => {
     () =>
       getClient().guardianNetwork.getVAAbyTxHash({
         query: {
-          txHash: txHash + "caca",
+          txHash: txHash,
           parsedPayload: true,
         },
       }),
