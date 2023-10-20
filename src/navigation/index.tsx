@@ -11,33 +11,6 @@ const Txs = lazy(() => import("../pages/Txs"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 const SearchNotFound = lazy(() => import("../pages/SearchNotFound"));
 
-const HomeTxsNotFound = () => {
-  // if the user moves, remove the attemptsMade
-  localStorage.removeItem("attemptsMade");
-
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/txs" element={<Txs />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  );
-};
-
-const AllRoutes = () => {
-  // we need this because if we close the /search-not-found page we keep the reloadRedirect
-  // and we redirect to a bad url if we search for a bad tx
-  localStorage.removeItem("reloadRedirect");
-
-  return (
-    <Routes>
-      <Route path="/tx/:txHash" element={<Tx />} />
-      <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
-      <Route path="/*" element={<HomeTxsNotFound />} />
-    </Routes>
-  );
-};
-
 const Navigation = () => {
   return (
     <Router>
@@ -51,8 +24,12 @@ const Navigation = () => {
           }
         >
           <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/txs" element={<Txs />} />
+            <Route path="/tx/:txHash" element={<Tx />} />
+            <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
             <Route path="/search-not-found" element={<SearchNotFound />} />
-            <Route path="/*" element={<AllRoutes />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
       </EnvironmentProvider>

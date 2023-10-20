@@ -28,11 +28,19 @@ const Tx = () => {
   const VAAId: string = `${chainId}/${emitter}/${seq}`;
   const isTxHashSearch = Boolean(txHash);
   const isVAAIdSearch = Boolean(chainId) && Boolean(emitter) && Boolean(seq);
+  const q = isVAAIdSearch ? VAAId : txHash;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [parsedVAAsData, setParsedVAAsData] = useState<ParsedVAA[] | undefined>(undefined);
   const [extraRawInfo, setExtraRawInfo] = useState(null);
   const [blockData, setBlockData] = useState<GetBlockData>(null);
+
+  useEffect(() => {
+    if (localStorage.getItem("reloadRedirect")) {
+      localStorage.setItem("reloadRedirect", `/tx/${q}`);
+      localStorage.removeItem("attemptsMade");
+    }
+  }, [q]);
 
   useEffect(() => {
     setIsLoading(true);
