@@ -68,7 +68,7 @@ type Props = {
 const RawData = ({ extraRawInfo, VAAData, txData, lifecycleRecord }: Props) => {
   const { payload, decodedVaa, ...rest } = VAAData || {};
   const rawData = { ...rest };
-  const signedVAA = Object.values(decodedVaa).length > 0 ? decodedVaa : null;
+  const signedVAA = decodedVaa ? (Object.values(decodedVaa).length > 0 ? decodedVaa : null) : null;
 
   const CODE_BLOCKS = [
     {
@@ -149,11 +149,6 @@ const RawData = ({ extraRawInfo, VAAData, txData, lifecycleRecord }: Props) => {
                     "Source Delivery Provider": Buffer.from(
                       deliveryInstruction.sourceDeliveryProvider,
                     ).toString("hex"),
-                    "Additional Vaa Keys": deliveryInstruction.vaaKeys.map(vaaKey => ({
-                      Chain: vaaKey.chainId,
-                      Emitter: Buffer.from(vaaKey.emitterAddress).toString("hex"),
-                      Sequence: vaaKey.sequence,
-                    })),
                     "Encoded Execution Info:": decodeExecution
                       ? {
                           gasLimit: decodeExecution.gasLimit,

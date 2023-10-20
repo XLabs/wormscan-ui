@@ -110,7 +110,7 @@ const Tx = () => {
                   },
                   symbol: txData.symbol,
                   timestamp: new Date(txData.timestamp),
-                  tokenAmount: txData.amount,
+                  tokenAmount: txData.tokenAmount,
                   txHash: txData.txHash,
                   usdAmount: txData.usdAmount,
                 },

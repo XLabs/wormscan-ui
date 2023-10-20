@@ -58,7 +58,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   const { decodedVaa, vaa } = VAAData || {};
   const { guardianSignatures } = decodedVaa || {};
   const guardianSignaturesCount = guardianSignatures?.length || 0;
-  const hasVAA = !vaa;
+  const hasVAA = !!vaa;
 
   const { currentBlock, lastFinalizedBlock } = blockData || {};
 
@@ -148,7 +148,9 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
 
   const amountSent = formatCurrency(Number(tokenAmount));
   const amountSentUSD = +usdAmount ? formatCurrency(+usdAmount) : "";
-  const redeemedAmount = formatCurrency(formatUnits(+amount - +fee));
+  const redeemedAmount = hasVAA
+    ? formatCurrency(formatUnits(+amount - +fee))
+    : formatCurrency(+amount - +fee);
 
   const tokenLink = getExplorerLink({
     network: currentNetwork,
@@ -266,13 +268,14 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   };
 
   const AlertsContent = () => {
-    if (!hasVAA && !isUnknownPayloadType) return null;
+    if (hasVAA && !isUnknownPayloadType) return null;
     return (
       <div className="tx-information-alerts">
         <Alert type="info" className="tx-information-alerts-unknown-payload-type">
-          {hasVAA ? (
+          {!hasVAA ? (
             <>
               <p>The VAA for this transaction has not been issued yet.</p>
+              <p>This information can be incomplete or have wrong values.</p>
               <p>
                 Waiting for finality on {getChainName({ chainId: fromChain })} which may take up to
                 15 minutes.
