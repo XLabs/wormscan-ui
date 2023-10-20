@@ -48,6 +48,11 @@ const Txs = () => {
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
   const [parsedTxsData, setParsedTxsData] = useState<TransactionOutput[] | undefined>(undefined);
 
+  useEffect(() => {
+    localStorage.removeItem("reloadRedirect");
+    localStorage.removeItem("attemptsMade");
+  }, []);
+
   const stopPropagation = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation();
   };
