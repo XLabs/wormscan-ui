@@ -1,9 +1,11 @@
 import {
   CHAIN_ID_ETH,
+  CHAIN_ID_SUI,
   CONTRACTS,
   coalesceChainName,
   isCosmWasmChain,
   isEVMChain,
+  tryHexToNativeString,
   tryUint8ArrayToNative,
   uint8ArrayToHex,
 } from "@certusone/wormhole-sdk";
@@ -13,6 +15,7 @@ import { Implementation__factory } from "@certusone/wormhole-sdk/lib/cjs/ethers-
 import { parseAddress } from "./crypto";
 import { humanAddress } from "@certusone/wormhole-sdk/lib/cjs/cosmos";
 import { ChainId } from "src/api";
+import { isConnect, parseConnectPayload } from "./wh-connect-rpc";
 
 type TxReceiptHolder = {
   receipt: ethers.providers.TransactionReceipt;
@@ -143,10 +146,14 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               const cosmAddr = humanAddress(chainName, addressLast20Bytes);
               toAddress = cosmAddr;
             } else {
-              toAddress = tryUint8ArrayToNative(buff.subarray(67, 99), toChain as ChainId);
+              try {
+                toAddress = tryUint8ArrayToNative(buff.subarray(67, 99), toChain as ChainId);
+              } catch {
+                //
+              }
             }
 
-            const fee =
+            let fee =
               payloadType === 1
                 ? BigInt(`0x${buff.subarray(101, 133).toString("hex")}`).toString()
                 : null;
@@ -161,6 +168,21 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
 
             const tokenTransferPayload =
               payloadType === 3 ? buff.subarray(133)?.toString("hex") : null;
+
+            let appIds = ["PORTAL_TOKEN_BRIDGE"];
+            if (tokenTransferPayload) {
+              if (isConnect(env.network, result.chainId, fromAddress)) {
+                appIds = ["PORTAL_TOKEN_BRIDGE", "CONNECT"];
+                const parsed = parseConnectPayload(buff.subarray(133));
+
+                if (toChain === CHAIN_ID_SUI) {
+                  toAddress = `0x${parsed.recipientWallet}`;
+                } else {
+                  toAddress = tryHexToNativeString(parsed.recipientWallet, toChain as ChainId);
+                }
+                fee = parsed.targetRelayerFee.toString();
+              }
+            }
 
             // other values
             const parsedTokenAddress = parseAddress({
@@ -178,14 +200,19 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             );
             const decimals = tokenDecimals ? Math.min(8, tokenDecimals) : 8;
             return {
-              amount: amount && decimals ? ethers.utils.formatUnits(amount, decimals) : null,
-              appIds: ["PORTAL_TOKEN_BRIDGE"],
+              amount:
+                amount && decimals
+                  ? ethers.utils.formatUnits(amount, decimals)
+                  : amount
+                  ? amount
+                  : null,
+              appIds,
               blockNumber: result.receipt.blockNumber,
               chain: result.chainId,
               consistencyLevel,
               emitterAddress,
               emitterNattiveAddress,
-              fee,
+              fee: fee && decimals ? ethers.utils.formatUnits(fee, decimals) : fee ? fee : null,
               fromAddress: parsedFromAddress,
               id: `${result.chainId}/${emitterAddress}/${sequence}`,
               lastFinalizedBlock,
@@ -198,6 +225,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               toAddress,
               toChain,
               tokenAddress: parsedTokenAddress,
+              tokenAmount: amount && decimals ? ethers.utils.formatUnits(amount, decimals) : null,
               tokenChain,
               tokenTransferPayload,
               txHash: search,
@@ -253,6 +281,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
                 payload.subarray(offset, offset + 32),
               ).toString();
               offset += 32; // 212
+
               const recipientWalletBytes = Uint8Array.from(payload.subarray(offset, offset + 32));
               const toAddress = uint8ArrayToHex(recipientWalletBytes);
               // end payload
@@ -276,18 +305,20 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             };
 
             const cctpResult = parseCCTPRelayerPayload(Buffer.from(payload.slice(2), "hex"));
-            const amount = "" + 0.000001 * +cctpResult.amount; // 6 decimals for USDC
-            const fee = "" + 0.000001 * +cctpResult.feeAmount; // 6 decimals for USDC
-            const toNativeAmount = "" + 0.000001 * +cctpResult.toNativeAmount; // 6 decimals for USDC
+            const amount = "" + 100 * +cctpResult.amount; // this will later be formatted with 8 decimals
+            const fee = "" + 100 * +cctpResult.feeAmount; // this will later be formatted with 8 decimals
+            const toNativeAmount = "" + 100 * +cctpResult.toNativeAmount; // this will later be formatted with 8 decimals
+
+            const tokenAmount = "" + 0.000001 * +cctpResult.amount; // 6 decimals for USDC
 
             return {
-              appIds: ["CCTP_WORMHOLE_INTEGRATION"],
               amount,
+              appIds: ["CCTP_WORMHOLE_INTEGRATION"],
               chain: result.chainId,
               consistencyLevel,
               emitterAddress,
               emitterNattiveAddress,
-              fee,
+              fee: `${+fee + +toNativeAmount}`,
               fromAddress,
               id: `${result.chainId}/${emitterAddress}/${sequence}`,
               parsedFromAddress,
@@ -296,11 +327,12 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               timestamp,
               toAddress: cctpResult.toAddress,
               toChain: getCctpDomain(cctpResult.toDomain),
-              toNativeAmount,
               tokenAddress: cctpResult.tokenAddress,
+              tokenAmount,
               tokenChain: result.chainId,
+              toNativeAmount,
               txHash: search,
-              usdAmount: amount,
+              usdAmount: tokenAmount,
             };
           }
           // default, no token-bridge nor cctp ones (can add other payload readers here)
