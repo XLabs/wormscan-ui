@@ -48,6 +48,11 @@ const Txs = () => {
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
   const [parsedTxsData, setParsedTxsData] = useState<TransactionOutput[] | undefined>(undefined);
 
+  useEffect(() => {
+    localStorage.removeItem("reloadRedirect");
+    localStorage.removeItem("attemptsMade");
+  }, []);
+
   const stopPropagation = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation();
   };
@@ -82,8 +87,17 @@ const Txs = () => {
     () => getClient().search.getTransactions(getTransactionInput),
     {
       refetchInterval: () => (currentPage === 1 ? REFETCH_TIME : false),
-      onError: () => {
-        navigate(`/search-not-found?q=${address || "Txs"}`);
+      onError: (err: Error) => {
+        let statusCode = 400;
+        if (err.message) {
+          // get the status code from the error message
+          statusCode = parseInt(err.message.match(/\d+/)[0], 10);
+        }
+        navigate(`/search-not-found?q=${address || "txs"}`, {
+          state: {
+            status: statusCode,
+          },
+        });
       },
       onSuccess: (txs: GetTransactionsOutput[]) => {
         const tempRows: TransactionOutput[] = [];

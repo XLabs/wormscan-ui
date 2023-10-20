@@ -1,29 +1,39 @@
-import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import SearchNotFoundImage from "src/assets/search-not-found.svg";
-import { DISCORD_URL } from "src/consts";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import TooManyTries from "./TooManyTries";
+import Error400 from "./Error400";
+import Error500 from "./Error500";
+import Error502 from "./Error502";
+import Error503 from "./Error503";
 import "./styles.scss";
 
 const SearchNotFound = () => {
-  const [searchParams] = useSearchParams();
-  const q = searchParams.get("q");
+  const location = useLocation();
+  const [timer, setTimer] = useState<number>(15);
   const navigate = useNavigateCustom();
+  const q = new URLSearchParams(location.search).get("q") || "";
+  const { status } = location.state || {};
+  const statusCode = status || "400";
   const redirectURL = localStorage.getItem("reloadRedirect");
+  const isMaxAttempts = localStorage.getItem("attemptsMade") === "8";
 
   useEffect(() => {
     // when we reload the page, we want to redirect to the tx page
     const setReloadRedirect = () => {
       if (document.visibilityState === "hidden") {
-        localStorage.setItem("reloadRedirect", `/tx/${q}`);
+        if (q === "txs") {
+          localStorage.setItem("reloadRedirect", `/txs`);
+        } else {
+          localStorage.setItem("reloadRedirect", `/tx/${q}`);
+        }
       }
     };
 
-    window.addEventListener("visibilitychange", setReloadRedirect);
-
+    window.addEventListener("unload", setReloadRedirect);
     return () => {
-      window.removeEventListener("visibilitychange", setReloadRedirect);
+      window.removeEventListener("unload", setReloadRedirect);
     };
   }, [q]);
 
@@ -34,59 +44,52 @@ const SearchNotFound = () => {
       localStorage.removeItem("reloadRedirect");
     }
 
-    // redirect to tx page after 20 seconds to search the tx again
-    const timeoutId = setTimeout(() => {
-      navigate(`/tx/${q}`);
-    }, 20000);
+    // countdown timer
+    const intervalId = setInterval(() => {
+      if (timer <= 1) {
+        if (q === "txs") {
+          navigate("/txs");
+        } else {
+          navigate(`/tx/${q}`);
+        }
+        let attemptsMade = +localStorage.getItem("attemptsMade");
+        attemptsMade += 1;
+        localStorage.setItem("attemptsMade", attemptsMade.toString());
+        return;
+      }
+      setTimer(prev => prev - 1);
+    }, 1000);
+
+    if (isMaxAttempts) {
+      clearInterval(intervalId);
+    }
 
     return () => {
-      clearTimeout(timeoutId);
+      clearInterval(intervalId);
     };
-  }, [redirectURL, navigate, q]);
+  }, [redirectURL, navigate, timer, q, isMaxAttempts]);
 
-  const goHome = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const goHome = () => {
     navigate("/");
   };
 
   return (
     <BaseLayout>
       {!redirectURL && (
-        <div className="search-not-found-page">
-          <div className="search-not-found-page-container">
-            <div className="search-not-found-page-content">
-              <h1 className="search-not-found-page-title">Search not found</h1>
-              <div className="search-not-found-page-image-mobile">
-                <img src={SearchNotFoundImage} alt="" loading="lazy" />
-              </div>
-              <div className="search-not-found-page-body">
-                <p>
-                  Sorry! We traversed all space-time for you, however, this is likely an invalid
-                  search string because we can&apos;t find any items that match:{" "}
-                </p>
-                <div className="search-not-found-page-body-id">
-                  <strong>{q || "empty string"}</strong>
-                </div>
-              </div>
-              <div className="search-not-found-page-support">
-                <p>If you think this is a problem with us, </p>
-                <div>
-                  <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer">
-                    please tell us.
-                  </a>
-                </div>
-              </div>
-              <div>
-                <button className="search-not-found-page-button" onClick={goHome}>
-                  Back Home
-                </button>
-              </div>
-            </div>
-
-            <div className="search-not-found-page-image-desktop">
-              <img src={SearchNotFoundImage} alt="" loading="lazy" />
-            </div>
-          </div>
-        </div>
+        <>
+          {isMaxAttempts ? (
+            <TooManyTries goHome={goHome} />
+          ) : (
+            <>
+              {statusCode !== 500 && statusCode !== 502 && statusCode !== 503 && (
+                <Error400 q={q} timer={timer} goHome={goHome} />
+              )}
+              {statusCode === 500 && <Error500 timer={timer} goHome={goHome} />}
+              {statusCode === 502 && <Error502 timer={timer} goHome={goHome} />}
+              {statusCode === 503 && <Error503 timer={timer} goHome={goHome} />}
+            </>
+          )}
+        </>
       )}
     </BaseLayout>
   );

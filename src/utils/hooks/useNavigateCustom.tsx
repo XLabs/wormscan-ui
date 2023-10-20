@@ -7,8 +7,8 @@ export function useNavigateCustom() {
   const [searchParams] = useSearchParams();
   const network = searchParams.get("network")?.toUpperCase() as Network;
 
-  const navigate = (to: string | Partial<Path>) => {
-    realNavigate(parseTo(to, network));
+  const navigate = (to: string | Partial<Path>, params = {}) => {
+    realNavigate(parseTo(to, network), params);
   };
 
   return navigate;
