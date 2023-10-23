@@ -19,9 +19,9 @@ const Search = () => {
     const searchNotFoundURL = `/search-not-found?q=${searchString.current}`;
     let statusCode = 400;
 
-    if (err.message) {
+    if (err?.message) {
       // get the status code from the error message
-      statusCode = parseInt(err.message.match(/\d+/)[0], 10);
+      statusCode = parseInt(err?.message?.match(/\d+/)?.[0], 10);
     }
 
     if (searchType.current === "vaaId") {

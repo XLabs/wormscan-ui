@@ -89,9 +89,9 @@ const Txs = () => {
       refetchInterval: () => (currentPage === 1 ? REFETCH_TIME : false),
       onError: (err: Error) => {
         let statusCode = 400;
-        if (err.message) {
+        if (err?.message) {
           // get the status code from the error message
-          statusCode = parseInt(err.message.match(/\d+/)[0], 10);
+          statusCode = parseInt(err?.message?.match(/\d+/)?.[0], 10);
         }
         navigate(`/search-not-found?q=${address || "txs"}`, {
           state: {

@@ -74,11 +74,15 @@ export class Search {
       cctpURL = "https://relayer.dev.stable.io/v1/relays?txHash=";
     }
 
-    const response = await axios.get(cctpURL + txHash);
-    if (response?.data?.data) {
-      return response.data.data;
+    try {
+      const response = await axios.get(cctpURL + txHash);
+      if (response?.data?.data) {
+        return response.data.data;
+      }
+      return null;
+    } catch {
+      return null;
     }
-    return null;
   }
 
   async getToken({ chainId, tokenAddress }: GetTokenInput): Promise<GetTokenOutput> {
