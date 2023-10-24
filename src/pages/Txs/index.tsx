@@ -88,7 +88,7 @@ const Txs = () => {
     {
       refetchInterval: () => (currentPage === 1 ? REFETCH_TIME : false),
       onError: (err: Error) => {
-        let statusCode = 400;
+        let statusCode = 404;
         if (err?.message) {
           // get the status code from the error message
           statusCode = parseInt(err?.message?.match(/\d+/)?.[0], 10);

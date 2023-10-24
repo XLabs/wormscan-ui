@@ -1,5 +1,4 @@
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { vs2015 } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { JsonView } from "react-json-view-lite";
 import { CopyIcon } from "@radix-ui/react-icons";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import {
@@ -17,15 +16,28 @@ import { GetTransactionsOutput } from "src/api/search/types";
 import { VAADetail } from "src/api/guardian-network/types";
 import "./styles.scss";
 
-const CodeBlockStyles = {
-  ...vs2015,
-  "hljs-string": { color: "var(--color-white-90)" },
-  "hljs-number": { color: "var(--color-alert-100)" },
-  "hljs-attr": { color: "var(--color-primary-90)" },
-  "hljs-literal": { color: "var(--color-information-100)" },
-};
+export const BlockSection = ({ title, code }: { title: string; code: any }) => {
+  const jsonParsed = JSON.parse(code);
 
-export const BlockSection = ({ title, code }: { title: string; code: string }) => {
+  const addQuotesInKeys = (obj: any): any => {
+    if (Array.isArray(obj)) {
+      return obj.map(addQuotesInKeys);
+    } else if (typeof obj === "object" && obj !== null) {
+      // newObj = keys with quotes
+      const newObj: any = {};
+
+      for (const key in obj) {
+        // add quotes to key
+        const newKey = `"${key}"`;
+        newObj[newKey] = addQuotesInKeys(obj[key]);
+      }
+
+      return newObj;
+    } else {
+      return obj;
+    }
+  };
+
   return (
     <div className="tx-raw-data-container-block">
       <div className="tx-raw-data-container-block-top">
@@ -39,20 +51,24 @@ export const BlockSection = ({ title, code }: { title: string; code: string }) =
         </div>
       </div>
       <div className="tx-raw-data-container-block-body">
-        <SyntaxHighlighter
-          language="json"
-          style={CodeBlockStyles}
-          className="tx-raw-data-container-block-body-code"
-          customStyle={{
-            padding: "16px",
-            backgroundColor: "var(--color-primary-900)",
-            color: "var(--color-primary-90)",
-            lineHeight: "1.5",
-            fontSize: "14px",
+        <JsonView
+          data={addQuotesInKeys(jsonParsed)}
+          style={{
+            basicChildStyle: "tx-raw-data-container-block-body-row",
+            booleanValue: "tx-raw-data-container-block-body-info",
+            collapsedContent: "tx-raw-data-container-block-body-collapsedContent",
+            collapseIcon: "tx-raw-data-container-block-body-collapseIcon",
+            container: "",
+            expandIcon: "tx-raw-data-container-block-body-expandIcon",
+            label: "tx-raw-data-container-block-body-key",
+            nullValue: "tx-raw-data-container-block-body-info",
+            numberValue: "tx-raw-data-container-block-body-number",
+            otherValue: "tx-raw-data-container-block-body-string",
+            punctuation: "",
+            stringValue: "tx-raw-data-container-block-body-string",
+            undefinedValue: "tx-raw-data-container-block-body-info",
           }}
-        >
-          {code}
-        </SyntaxHighlighter>
+        />
       </div>
     </div>
   );
