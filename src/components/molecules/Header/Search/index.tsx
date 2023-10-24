@@ -17,7 +17,7 @@ const Search = () => {
 
   const goSearchNotFound = (err: Error) => {
     const searchNotFoundURL = `/search-not-found?q=${searchString.current}`;
-    let statusCode = 400;
+    let statusCode = 404;
 
     if (err?.message) {
       // get the status code from the error message
