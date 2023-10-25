@@ -34,6 +34,9 @@ interface Props {
 }
 
 const UNKNOWN_APP_ID = "UNKNOWN";
+const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
+const CONNECT_APP_ID = "CONNECT";
+const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
 
 const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -115,6 +118,13 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   const tokenChain = stdTokenChain || payloadTokenChain;
   const tokenAddress = stdTokenAddress || payloadTokenAddress;
   const isUnknownApp = callerAppId === UNKNOWN_APP_ID || appIds?.includes(UNKNOWN_APP_ID);
+  const isCCTPConnectOrPortalApp =
+    callerAppId === CCTP_APP_ID ||
+    callerAppId === CONNECT_APP_ID ||
+    callerAppId === PORTAL_APP_ID ||
+    appIds?.includes(CCTP_APP_ID) ||
+    appIds?.includes(CONNECT_APP_ID) ||
+    appIds?.includes(PORTAL_APP_ID);
   const isAttestation = txType[payloadType] === "Attestation";
   const isUnknownPayloadType = !txType[payloadType];
 
@@ -338,6 +348,8 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       <Summary
         appIds={appIds}
         currentNetwork={currentNetwork}
+        globalToRedeemTx={globalToRedeemTx}
+        isCCTPConnectOrPortalApp={isCCTPConnectOrPortalApp}
         isUnknownApp={isUnknownApp}
         parsedDestinationAddress={parsedDestinationAddress}
         toChain={toChain}
