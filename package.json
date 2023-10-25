@@ -20,7 +20,6 @@
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
     "assert": "^2.0.0",
-    "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
     "eslint": "^8.41.0",
     "eslint-plugin-react": "latest",

@@ -31,6 +31,10 @@
     gap: 40px;
 
     @include desktop {
+      gap: 8px;
+    }
+
+    @include bigDesktop {
       gap: 24px;
     }
   }
@@ -47,6 +51,7 @@
 
     @include desktop {
       flex: unset;
+      min-width: max-content;
     }
   }
 
@@ -69,6 +74,7 @@
     & .status {
       font-size: 16px;
       font-weight: 500;
+      min-width: max-content;
     }
 
     & .progress {
@@ -91,6 +97,12 @@
       }
     }
 
+    & .waiting {
+      background-color: var(--color-alert-30);
+      color: var(--color-alert-100);
+      font-weight: 600;
+    }
+
     &-tooltip {
       @include centered-row;
 
@@ -102,4 +114,12 @@
       text-decoration: none;
     }
   }
+}
+
+.status-tooltip {
+  color: var(--color-primary-30);
+  font-size: 12px;
+  line-height: normal;
+  max-width: 172px;
+  text-align: center;
 }

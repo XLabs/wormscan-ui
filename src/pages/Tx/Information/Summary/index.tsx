@@ -9,15 +9,51 @@ import "./styles.scss";
 type Props = {
   appIds: string[];
   currentNetwork: Network;
+  globalToRedeemTx: string | undefined;
+  isCCTPConnectOrPortalApp: boolean;
   isUnknownApp: boolean;
   parsedDestinationAddress: string;
   toChain: ChainId | number;
   vaa: string;
 };
 
+const StatusCompleted = () => (
+  <Chip className="status" color="completed">
+    <CheckCircledIcon height={16} width={16} />
+    COMPLETED
+  </Chip>
+);
+
+const StatusWaitingRedeem = () => (
+  <Tooltip
+    side="right"
+    tooltip={
+      <div className="status-tooltip">
+        Your transaction has been completed on the blockchain, but has not yet been redeemed.
+      </div>
+    }
+    type="info"
+  >
+    <div>
+      <Chip className="status" color="waiting">
+        WAITING TO REDEEM
+      </Chip>
+    </div>
+  </Tooltip>
+);
+
+const StatusInProgress = () => (
+  <Chip className="status" color="progress">
+    <ClockIcon height={16} width={16} />
+    IN PROGRESS
+  </Chip>
+);
+
 const Summary = ({
   appIds,
   currentNetwork,
+  globalToRedeemTx,
+  isCCTPConnectOrPortalApp,
   isUnknownApp,
   parsedDestinationAddress,
   toChain,
@@ -28,15 +64,17 @@ const Summary = ({
       <div className="key">Status:</div>
       <div className="value">
         {vaa ? (
-          <Chip className="status" color="completed">
-            <CheckCircledIcon height={16} width={16} />
-            COMPLETED
-          </Chip>
+          isCCTPConnectOrPortalApp ? (
+            globalToRedeemTx ? (
+              <StatusCompleted />
+            ) : (
+              <StatusWaitingRedeem />
+            )
+          ) : (
+            <StatusCompleted />
+          )
         ) : (
-          <Chip className="status" color="progress">
-            <ClockIcon height={16} width={16} />
-            IN PROGRESS
-          </Chip>
+          <StatusInProgress />
         )}
       </div>
     </div>
