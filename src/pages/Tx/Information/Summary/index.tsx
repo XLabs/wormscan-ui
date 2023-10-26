@@ -64,7 +64,7 @@ const Summary = ({
       <div className="key">Status:</div>
       <div className="value">
         {vaa ? (
-          isCCTPConnectOrPortalApp ? (
+          isCCTPConnectOrPortalApp && !isUnknownApp ? (
             globalToRedeemTx ? (
               <StatusCompleted />
             ) : (
