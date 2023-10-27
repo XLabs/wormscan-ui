@@ -111,10 +111,13 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           const ethersProvider = getEthersProvider(getChainInfo(env, result.chainId as ChainId));
           const block = await ethersProvider.getBlock(result.receipt.blockNumber);
           const timestamp = ethers.BigNumber.from(block.timestamp).toNumber() * 1000;
-          const lastFinalizedBlock =
-            result.chainId === CHAIN_ID_ETH
-              ? (await ethersProvider.getBlock("finalized")).number
-              : await ethersProvider.getBlockNumber();
+          let lastFinalizedBlock;
+
+          try {
+            lastFinalizedBlock = (await ethersProvider.getBlock("finalized")).number;
+          } catch (error) {
+            lastFinalizedBlock = await ethersProvider.getBlockNumber();
+          }
 
           let fromAddress = result.receipt.from;
           let parsedFromAddress = parseAddress({
