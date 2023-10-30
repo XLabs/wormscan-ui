@@ -103,6 +103,16 @@
       font-weight: 600;
     }
 
+    & .unknown {
+      background-color: #778899;
+      color: #ffffff;
+    }
+
+    & .indeterminate {
+      background-color: #808080;
+      color: #ffffff;
+    }
+
     &-tooltip {
       @include centered-row;
 
