@@ -30,6 +30,7 @@ export enum ChainId {
   Base = 30,
   Sei = 32,
   Evmos = 4001,
+  Kujira = 4002,
   Sepolia = 10002,
   Wormchain = 3104,
 }
