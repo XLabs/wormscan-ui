@@ -16,6 +16,7 @@ import FantomIcon from "src/icons/blockchains/fantom.svg";
 import InjectiveIcon from "src/icons/blockchains/injective.svg";
 import KaruraIcon from "src/icons/blockchains/karura.svg";
 import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
+import KujiraIcon from "src/icons/blockchains/kujira.svg";
 import MoonbeamIcon from "src/icons/blockchains/moonbeam.svg";
 import NearIcon from "src/icons/blockchains/near.svg";
 import NeonIcon from "src/icons/blockchains/neon.svg";
@@ -40,11 +41,12 @@ import BaseDarkIcon from "src/icons/blockchains/dark/base.svg";
 import BSCDarkIcon from "src/icons/blockchains/dark/bsc.svg";
 import CeloDarkIcon from "src/icons/blockchains/dark/celo.svg";
 import EthereumDarkIcon from "src/icons/blockchains/dark/eth.svg";
-import EvmosDarkIcon from "src/icons/blockchains/evmos.svg";
+import EvmosDarkIcon from "src/icons/blockchains/dark/evmos.svg";
 import FantomDarkIcon from "src/icons/blockchains/dark/fantom.svg";
 import InjectiveDarkIcon from "src/icons/blockchains/dark/injective.svg";
 import KaruraDarkIcon from "src/icons/blockchains/dark/karura.svg";
 import KlaytnDarkIcon from "src/icons/blockchains/dark/klaytn.svg";
+import KujiraDarkIcon from "src/icons/blockchains/dark/kujira.svg";
 import MoonbeamDarkIcon from "src/icons/blockchains/dark/moonbeam.svg";
 import NearDarkIcon from "src/icons/blockchains/dark/near.svg";
 import NeonDarkIcon from "src/icons/blockchains/dark/neon.svg";
@@ -180,6 +182,21 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
         if (base === "token") return this.explorer?.[network] + "/assets";
         return this.explorer?.[network] + "/txs/" + value;
       }
+    },
+  },
+  [ChainId.Kujira]: {
+    name: "Kujira",
+    icon: KujiraIcon,
+    darkIcon: KujiraDarkIcon,
+    explorer: {
+      TESTNET: "https://finder.kujira.network/harpoon-4",
+      MAINNET: "https://finder.kujira.network/kaiyo-1",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
     },
   },
   [ChainId.Acala]: {
