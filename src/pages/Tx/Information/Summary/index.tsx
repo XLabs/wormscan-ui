@@ -74,7 +74,7 @@ const Summary = ({
   // contract-watcher:
   // if toChain is aptos, arbitrium, avalanche, base, bsc, celo, ethereum, fantom,
   // moonbeam, oasis, optimism, polygon, solana or terra we can get destinationTx.
-  const weCanGetDestinationTx = [
+  const canWeGetDestinationTx = [
     ChainId.Aptos,
     ChainId.Arbitrum,
     ChainId.Avalanche,
@@ -102,7 +102,7 @@ const Summary = ({
             isUnknownApp || !(appIds?.length > 0) ? (
               <StatusUnknown />
             ) : isCCTPConnectOrPortalApp ? (
-              weCanGetDestinationTx ? (
+              canWeGetDestinationTx ? (
                 globalToRedeemTx ? (
                   <StatusCompleted />
                 ) : (
