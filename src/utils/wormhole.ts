@@ -190,7 +190,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     darkIcon: KujiraDarkIcon,
     explorer: {
       TESTNET: "https://finder.kujira.network/harpoon-4",
-      MAINNET: "https://finder.kujira.network/kaiyo-1/",
+      MAINNET: "https://finder.kujira.network/kaiyo-1",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
