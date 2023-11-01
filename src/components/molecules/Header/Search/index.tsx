@@ -99,6 +99,10 @@ const Search = () => {
       const emitter = String(splitId[1]);
       const seq = Number(splitId[2]);
 
+      if (isNaN(chainId) || isNaN(seq)) {
+        throw new Error("Request failed with status code 400");
+      }
+
       return getClient().guardianNetwork.getVAA({
         chainId,
         emitter,
