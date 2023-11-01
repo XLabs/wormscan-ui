@@ -255,7 +255,7 @@ const Tx = () => {
       onSuccess: data => {
         if (!!data.length) setIsLoading(false);
       },
-      onError: (err: Error) => navigateToSearchNotFound(err, VAADataTxHash),
+      onError: (err: Error) => navigateToSearchNotFound(err, VAADataTxHash || VAAId),
     },
   );
 
