@@ -1,4 +1,4 @@
-import { CheckCircledIcon, ClockIcon, InfoCircledIcon } from "@radix-ui/react-icons";
+import { CheckCircledIcon, CheckIcon, ClockIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { Network } from "@certusone/wormhole-sdk";
 import { Chip, Tooltip } from "src/components/atoms";
 import { formatAppIds, shortAddress } from "src/utils/crypto";
@@ -24,7 +24,14 @@ const StatusInProgress = () => (
   </Chip>
 );
 
-const StatusWaitingRedeem = () => (
+const StatusVaaEmitted = () => (
+  <Chip className="status" color="emitted">
+    <CheckIcon height={16} width={16} />
+    VAA EMITTED
+  </Chip>
+);
+
+const StatusPendingRedeem = () => (
   <Tooltip
     side="right"
     tooltip={
@@ -35,8 +42,9 @@ const StatusWaitingRedeem = () => (
     type="info"
   >
     <div>
-      <Chip className="status" color="waiting">
-        WAITING TO REDEEM
+      <Chip className="status" color="progress">
+        <ClockIcon height={16} width={16} />
+        PENDING TO REDEEM
       </Chip>
     </div>
   </Tooltip>
@@ -46,18 +54,6 @@ const StatusCompleted = () => (
   <Chip className="status" color="completed">
     <CheckCircledIcon height={16} width={16} />
     COMPLETED
-  </Chip>
-);
-
-const StatusUnknown = () => (
-  <Chip className="status" color="unknown">
-    UNKNOWN
-  </Chip>
-);
-
-const StatusIndeterminate = () => (
-  <Chip className="status" color="indeterminate">
-    INDETERMINATE
   </Chip>
 );
 
