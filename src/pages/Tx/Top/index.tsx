@@ -35,7 +35,7 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
     <section className="tx-top">
       <div className="tx-top-header">
         <h1 className="tx-top-header-title">{t("tx.top.title")}</h1>
-        {txType[payloadType] && <Tag color="blue">{txType[payloadType]}</Tag>}
+        {txType[payloadType] && <Tag>{txType[payloadType]}</Tag>}
       </div>
       <div className="tx-top-txId">
         <div>Tx Hash:</div>
