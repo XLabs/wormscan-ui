@@ -284,7 +284,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
               {shortAddress(deliveryStatus.toTxHash).toUpperCase()}
             </a>{" "}
             <CopyToClipboard toCopy={deliveryStatus.toTxHash}>
-              <CopyIcon />
+              <CopyIcon height={20} width={20} />
             </CopyToClipboard>
           </div>
         </div>
@@ -340,7 +340,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                       {shortAddress(deliveryParsedSenderAddress).toUpperCase()}
                     </a>{" "}
                     <CopyToClipboard toCopy={deliveryParsedSenderAddress}>
-                      <CopyIcon />
+                      <CopyIcon height={20} width={20} />
                     </CopyToClipboard>
                   </div>
                   <div>
@@ -367,7 +367,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                     {shortAddress(lifecycleRecord.sourceTxHash).toUpperCase()}
                   </a>{" "}
                   <CopyToClipboard toCopy={lifecycleRecord.sourceTxHash}>
-                    <CopyIcon />
+                    <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
                 </div>
               </div>
@@ -385,9 +385,13 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
               <div>AUTOMATIC RELAYER CONTRACT</div>
             </div>
             <div className="relayer-tx-overview-graph-step-iconWrapper">
-              <div className="relayer-tx-overview-graph-step-iconContainer">
-                <img src={WormIcon} alt="" height={32} loading="lazy" />
-              </div>
+              {fromChain && (
+                <Tooltip tooltip={<div>{getChainName({ chainId: fromChain })}</div>} type="info">
+                  <div className="relayer-tx-overview-graph-step-iconContainer">
+                    <BlockchainIcon chainId={fromChain} size={32} />
+                  </div>
+                </Tooltip>
+              )}
             </div>
             <div className="relayer-tx-overview-graph-step-data-container">
               <div>
@@ -408,7 +412,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                       {shortAddress(parsedEmitterAddress).toUpperCase()}
                     </a>{" "}
                     <CopyToClipboard toCopy={parsedEmitterAddress}>
-                      <CopyIcon />
+                      <CopyIcon height={20} width={20} />
                     </CopyToClipboard>
                   </div>
                   <div>
@@ -443,7 +447,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                 <div className="relayer-tx-overview-graph-step-description">
                   {shortAddress(VAAData.id)}
                   <CopyToClipboard toCopy={VAAData.id}>
-                    <CopyIcon />
+                    <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
                 </div>
               </div>
@@ -489,7 +493,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                           {shortAddress(deliveryParsedTargetAddress).toUpperCase()}
                         </a>{" "}
                         <CopyToClipboard toCopy={deliveryParsedTargetAddress}>
-                          <CopyIcon />
+                          <CopyIcon height={20} width={20} />
                         </CopyToClipboard>
                       </div>
                       <div className="relayer-tx-overview-graph-step-description">
@@ -524,7 +528,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                           : shortAddress(deliveryParsedSourceProviderAddress).toUpperCase()}
                       </a>{" "}
                       <CopyToClipboard toCopy={deliveryParsedSourceProviderAddress}>
-                        <CopyIcon />
+                        <CopyIcon height={20} width={20} />
                       </CopyToClipboard>
                     </div>
                   </div>
@@ -572,7 +576,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                               <div className="relayer-tx-overview-graph-step-title budget-copy">
                                 <div>Budget</div>
                                 <CopyToClipboard toCopy={copyBudgetText(metadata)}>
-                                  <CopyIcon />
+                                  <CopyIcon height={20} width={20} />
                                 </CopyToClipboard>
                               </div>
 
@@ -625,7 +629,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                           {shortAddress(deliveryParsedRefundAddress).toUpperCase()}
                         </a>{" "}
                         <CopyToClipboard toCopy={deliveryParsedRefundAddress}>
-                          <CopyIcon />
+                          <CopyIcon height={20} width={20} />
                         </CopyToClipboard>
                         <div className="relayer-tx-overview-graph-step-description">
                           (
@@ -660,7 +664,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                               {shortAddress(deliveryParsedRefundProviderAddress).toUpperCase()}
                             </a>{" "}
                             <CopyToClipboard toCopy={deliveryParsedRefundProviderAddress}>
-                              <CopyIcon />
+                              <CopyIcon height={20} width={20} />
                             </CopyToClipboard>
                           </div>
                         </div>

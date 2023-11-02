@@ -159,7 +159,7 @@ const GuardianInfo = ({
         <span>{shortAddress(showGuardian.signature)}</span>
         <span>
           <CopyToClipboard toCopy={showGuardian.signature}>
-            <CopyIcon />
+            <CopyIcon height={20} width={20} />
           </CopyToClipboard>
         </span>
       </div>

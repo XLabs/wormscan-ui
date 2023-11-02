@@ -187,7 +187,7 @@ const Txs = () => {
                           {shortAddress(parseTxHash).toUpperCase()}
                         </NavLink>
                         <CopyToClipboard toCopy={parseTxHash}>
-                          <CopyIcon />
+                          <CopyIcon height={20} width={20} />
                         </CopyToClipboard>
                       </>
                     ) : (
@@ -219,7 +219,7 @@ const Txs = () => {
                           </a>
 
                           <CopyToClipboard toCopy={sourceAddress}>
-                            <CopyIcon />
+                            <CopyIcon height={20} width={20} />
                           </CopyToClipboard>
                         </div>
                       )}
@@ -250,7 +250,7 @@ const Txs = () => {
                             </a>
 
                             <CopyToClipboard toCopy={targetAddress}>
-                              <CopyIcon />
+                              <CopyIcon height={20} width={20} />
                             </CopyToClipboard>
                           </div>
                         </div>
