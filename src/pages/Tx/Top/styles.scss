@@ -48,6 +48,11 @@
 
       > a {
         color: var(--color-information-100);
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
 
       @include tablet {
