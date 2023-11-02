@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { ethers } from "ethers";
-import { CheckboxIcon, CopyIcon } from "@radix-ui/react-icons";
+import { ArrowDownIcon, CheckboxIcon, CopyIcon } from "@radix-ui/react-icons";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
@@ -12,6 +12,7 @@ import { colorStatus, getGuardianSet } from "src/consts";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import RelayIcon from "src/icons/relayIcon.svg";
+import WormIcon from "src/icons/wormIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress } from "src/utils/crypto";
 import { parseAddress } from "src/utils/crypto";
@@ -312,9 +313,13 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
               <div>APP CONTRACT</div>
             </div>
             <div className="relayer-tx-overview-graph-step-iconWrapper">
-              <div className="relayer-tx-overview-graph-step-iconContainer">
-                {fromChain && <BlockchainIcon chainId={fromChain} size={32} />}
-              </div>
+              {fromChain && (
+                <Tooltip tooltip={<div>{getChainName({ chainId: fromChain })}</div>} type="info">
+                  <div className="relayer-tx-overview-graph-step-iconContainer">
+                    <BlockchainIcon chainId={fromChain} size={32} />
+                  </div>
+                </Tooltip>
+              )}
             </div>
             <div className={`relayer-tx-overview-graph-step-data-container`}>
               <div>
@@ -381,7 +386,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
             </div>
             <div className="relayer-tx-overview-graph-step-iconWrapper">
               <div className="relayer-tx-overview-graph-step-iconContainer">
-                {fromChain && <BlockchainIcon chainId={fromChain} size={32} />}
+                <img src={WormIcon} alt="" height={32} loading="lazy" />
               </div>
             </div>
             <div className="relayer-tx-overview-graph-step-data-container">
@@ -422,7 +427,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
             </div>
             <div className="relayer-tx-overview-graph-step-iconWrapper">
               <div className="relayer-tx-overview-graph-step-iconContainer">
-                <CheckboxIcon height={32} width={32} />
+                <CheckboxIcon height={24} width={24} />
               </div>
             </div>
 
@@ -462,7 +467,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                 </div>
                 <div className="relayer-tx-overview-graph-step-iconWrapper">
                   <div className="relayer-tx-overview-graph-step-iconContainer">
-                    <BlockchainIcon chainId={deliveryInstruction.targetChainId} size={32} />
+                    <ArrowDownIcon height={24} width={24} />
                   </div>
                 </div>
                 <div className="relayer-tx-overview-graph-step-data-container">
@@ -591,9 +596,16 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                     <div></div>
                   </div>
                   <div className="relayer-tx-overview-graph-step-iconWrapper">
-                    <div className="relayer-tx-overview-graph-step-iconContainer">
-                      <BlockchainIcon chainId={deliveryInstruction.refundChainId} size={32} />
-                    </div>
+                    <Tooltip
+                      tooltip={
+                        <div>{getChainName({ chainId: deliveryInstruction.refundChainId })}</div>
+                      }
+                      type="info"
+                    >
+                      <div className="relayer-tx-overview-graph-step-iconContainer">
+                        <BlockchainIcon chainId={deliveryInstruction.refundChainId} size={32} />
+                      </div>
+                    </Tooltip>
                   </div>
                   <div className="relayer-tx-overview-graph-step-data-container">
                     <div>
@@ -668,9 +680,18 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                         <div>DELIVERY STATUS</div>
                       </div>
                       <div className="relayer-tx-overview-graph-step-iconWrapper">
-                        <div className="relayer-tx-overview-graph-step-iconContainer">
-                          <img src={RelayIcon} alt="" height={32} loading="lazy" />
-                        </div>
+                        <Tooltip
+                          tooltip={
+                            <div>
+                              {getChainName({ chainId: deliveryInstruction.refundChainId })}
+                            </div>
+                          }
+                          type="info"
+                        >
+                          <div className="relayer-tx-overview-graph-step-iconContainer">
+                            <BlockchainIcon chainId={deliveryInstruction.refundChainId} size={32} />
+                          </div>
+                        </Tooltip>
                       </div>
 
                       {deliveryStatus.status === "failed" && (
