@@ -14,7 +14,7 @@ import { CopyToClipboard } from "src/components/molecules";
 import RelayIcon from "src/icons/relayIcon.svg";
 import WormIcon from "src/icons/wormIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import { shortAddress } from "src/utils/crypto";
+import { shortAddress, shortVaaId } from "src/utils/crypto";
 import { parseAddress } from "src/utils/crypto";
 import { DeliveryMetaData, DeliveryProviderStatus } from "src/utils/deliveryProviderStatusApi";
 import {
@@ -445,7 +445,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
               <div>
                 <div className="relayer-tx-overview-graph-step-title">VAA ID</div>
                 <div className="relayer-tx-overview-graph-step-description">
-                  {shortAddress(VAAData.id)}
+                  {shortVaaId(VAAData.id)}
                   <CopyToClipboard toCopy={VAAData.id}>
                     <CopyIcon height={20} width={20} />
                   </CopyToClipboard>

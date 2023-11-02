@@ -21,6 +21,15 @@ export const shortAddress = (address: string) => {
   return `${address?.slice(0, 6) || ""}...${address?.slice(-6) || ""}`;
 };
 
+export const shortVaaId = (vaaId: string) => {
+  if (!vaaId) return "";
+
+  const splitId = vaaId.split("/");
+  const seq = splitId[2];
+
+  return `${vaaId?.slice(0, 6) || ""}.../${seq || ""}`;
+};
+
 export const parseAddress = ({
   value,
   chainId,
