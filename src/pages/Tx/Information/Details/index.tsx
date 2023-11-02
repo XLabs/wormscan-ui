@@ -4,6 +4,7 @@ import { CHAIN_ID_WORMCHAIN, ChainId, Network } from "@certusone/wormhole-sdk";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
+import { TruncateText } from "src/utils/string";
 import "./styles.scss";
 
 type Props = {
@@ -30,45 +31,6 @@ type Props = {
   tokenLink?: string;
   totalGuardiansNeeded?: number;
   VAAId?: string;
-};
-
-const getWidthOfText = (text: string): number => {
-  const span = document.createElement("span");
-  span.textContent = text;
-  span.style.fontSize = "16px";
-  span.style.fontWeight = "400";
-
-  document.body.appendChild(span);
-  const textWidth = span.getBoundingClientRect().width;
-  document.body.removeChild(span);
-
-  return textWidth;
-};
-
-const TruncateText = ({
-  text,
-  extraWidth = 24, // width for gap and copy icon & (Wormchain) if isGatewaySource
-  lineValueWidth, // .tx-details-group-line-value width
-}: {
-  text: string;
-  extraWidth?: number;
-  lineValueWidth: number;
-}) => {
-  const textWidth = getWidthOfText(text);
-  const textWidthExtras = textWidth + extraWidth;
-
-  if (textWidthExtras <= lineValueWidth) return text;
-
-  const availableWidth = lineValueWidth - extraWidth;
-  const averageCharacterWidth = textWidth / text.length;
-  const maxLength = Math.floor(availableWidth / averageCharacterWidth);
-  const ellipsisLength = "...".length;
-  const availableSpace = maxLength - ellipsisLength;
-  const halfLen = Math.floor(availableSpace / 2) > 5 ? Math.floor(availableSpace / 2) : 5;
-  const start = text.slice(0, halfLen);
-  const end = text.slice(-halfLen);
-
-  return `${start}...${end}`;
 };
 
 const Details = ({
@@ -143,9 +105,9 @@ const Details = ({
                   <div>
                     <span>
                       <TruncateText
-                        text={parsedEmitterAddress.toUpperCase()}
+                        containerWidth={lineValueWidth}
                         extraWidth={extraWidth}
-                        lineValueWidth={lineValueWidth}
+                        text={parsedEmitterAddress.toUpperCase()}
                       />
                     </span>
                   </div>
@@ -162,9 +124,9 @@ const Details = ({
                     rel="noopener noreferrer"
                   >
                     <TruncateText
-                      text={parsedEmitterAddress.toUpperCase()}
+                      containerWidth={lineValueWidth}
                       extraWidth={extraWidth}
-                      lineValueWidth={lineValueWidth}
+                      text={parsedEmitterAddress.toUpperCase()}
                     />
                   </a>
                 )}
@@ -195,8 +157,8 @@ const Details = ({
                   rel="noopener noreferrer"
                 >
                   <TruncateText
+                    containerWidth={lineValueWidth}
                     text={parsedOriginAddress.toUpperCase()}
-                    lineValueWidth={lineValueWidth}
                   />
                 </a>{" "}
                 <CopyToClipboard toCopy={parsedOriginAddress}>
@@ -253,7 +215,7 @@ const Details = ({
           <div className="tx-details-group-line-value">
             {VAAId ? (
               <>
-                <TruncateText text={VAAId} lineValueWidth={lineValueWidth} />
+                <TruncateText containerWidth={lineValueWidth} text={VAAId} />
                 <CopyToClipboard toCopy={VAAId}>
                   <CopyIcon />
                 </CopyToClipboard>
@@ -279,8 +241,8 @@ const Details = ({
                   rel="noopener noreferrer"
                 >
                   <TruncateText
+                    containerWidth={lineValueWidth}
                     text={parsedRedeemTx.toUpperCase()}
-                    lineValueWidth={lineValueWidth}
                   />
                 </a>{" "}
                 <CopyToClipboard toCopy={parsedRedeemTx}>
@@ -327,8 +289,8 @@ const Details = ({
                   rel="noopener noreferrer"
                 >
                   <TruncateText
+                    containerWidth={lineValueWidth}
                     text={parsedDestinationAddress.toUpperCase()}
-                    lineValueWidth={lineValueWidth}
                   />
                 </a>{" "}
                 <CopyToClipboard toCopy={parsedDestinationAddress}>
