@@ -3,7 +3,7 @@ import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import WormIcon from "src/icons/wormIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import { shortAddress } from "src/utils/crypto";
+import { shortAddress, shortVaaId } from "src/utils/crypto";
 import { CHAIN_ID_WORMCHAIN, ChainId, Network } from "@certusone/wormhole-sdk";
 import { colorStatus } from "src/consts";
 import "./styles.scss";
@@ -219,7 +219,7 @@ const Overview = ({
             <div className="tx-overview-graph-step-description">
               {VAAId ? (
                 <>
-                  {shortAddress(VAAId)}
+                  {shortVaaId(VAAId)}
                   <CopyToClipboard toCopy={VAAId}>
                     <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
