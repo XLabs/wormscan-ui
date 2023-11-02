@@ -22,7 +22,7 @@ const getWidthOfText = (text: string): number => {
 
 export const TruncateText = ({
   containerWidth, // container width for text and extraWidth
-  extraWidth = 24, // width for gap and copy icon for example
+  extraWidth = 30, // width for gap and copy icon for example
   text,
 }: {
   containerWidth: number;
@@ -40,7 +40,7 @@ export const TruncateText = ({
   const ellipsis = "...";
   const ellipsisLength = ellipsis.length;
   const availableSpace = maxLength - ellipsisLength;
-  const halfLength = Math.floor(availableSpace / 2) > 5 ? Math.floor(availableSpace / 2) : 5;
+  const halfLength = Math.floor(availableSpace / 2) > 6 ? Math.floor(availableSpace / 2) : 6;
   const start = text.slice(0, halfLength);
   const end = text.slice(-halfLength);
 

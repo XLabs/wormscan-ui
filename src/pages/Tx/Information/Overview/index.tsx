@@ -129,7 +129,7 @@ const Overview = ({
                     {shortAddress(parsedOriginAddress).toUpperCase()}
                   </a>{" "}
                   <CopyToClipboard toCopy={parsedOriginAddress}>
-                    <CopyIcon />
+                    <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
                 </>
               ) : (
@@ -183,7 +183,7 @@ const Overview = ({
                       </a>
                     )}{" "}
                     <CopyToClipboard toCopy={parsedEmitterAddress}>
-                      <CopyIcon />
+                      <CopyIcon height={20} width={20} />
                     </CopyToClipboard>
                     {isGatewaySource && <span className="comment"> (Wormchain)</span>}
                   </div>
@@ -221,7 +221,7 @@ const Overview = ({
                 <>
                   {shortAddress(VAAId)}
                   <CopyToClipboard toCopy={VAAId}>
-                    <CopyIcon />
+                    <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
                 </>
               ) : (
@@ -268,7 +268,7 @@ const Overview = ({
                       {shortAddress(parsedRedeemTx).toUpperCase()}
                     </a>{" "}
                     <CopyToClipboard toCopy={parsedRedeemTx}>
-                      <CopyIcon />
+                      <CopyIcon height={20} width={20} />
                     </CopyToClipboard>
                   </>
                 ) : (
@@ -359,7 +359,7 @@ const Overview = ({
                       {shortAddress(parsedDestinationAddress).toUpperCase()}
                     </a>{" "}
                     <CopyToClipboard toCopy={parsedDestinationAddress}>
-                      <CopyIcon />
+                      <CopyIcon height={20} width={20} />
                     </CopyToClipboard>
                   </>
                 ) : (

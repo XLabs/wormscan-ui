@@ -18,7 +18,7 @@ export const formatUnits = (value: number, tokenDecimals = 8) => {
 export const shortAddress = (address: string) => {
   if (!address) return "";
 
-  return `${address?.slice(0, 6) || ""}...${address?.slice(-4) || ""}`;
+  return `${address?.slice(0, 6) || ""}...${address?.slice(-6) || ""}`;
 };
 
 export const parseAddress = ({

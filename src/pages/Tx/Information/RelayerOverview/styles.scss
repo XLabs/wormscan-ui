@@ -90,7 +90,6 @@
       display: flex;
       flex: 1;
       gap: var(--gap);
-      min-height: 350px;
       pointer-events: none;
       position: relative;
       z-index: 0;
@@ -130,8 +129,6 @@
         }
 
         &.signatures {
-          padding-top: 150px;
-          padding-bottom: 50px;
           pointer-events: none;
           min-height: 250px;
 
@@ -277,13 +274,11 @@
       &:not(:last-child) {
         #{$sbc}-iconWrapper {
           &::before {
+            border-left: 2px dashed var(--color-success-60);
             content: "";
             display: flex;
-            position: absolute;
-            left: 50%;
-            border-left: 1px dashed var(--color);
             height: calc(100%);
-            z-index: -1;
+            position: absolute;
 
             @include desktop {
               height: calc(100% + var(--y-space));

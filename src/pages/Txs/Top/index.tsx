@@ -46,7 +46,7 @@ const Top = ({ address, addressChainId }: Props) => {
             </a>
 
             <CopyToClipboard toCopy={parsedAddress}>
-              <CopyIcon />
+              <CopyIcon height={20} width={20} />
             </CopyToClipboard>
           </div>
         </div>

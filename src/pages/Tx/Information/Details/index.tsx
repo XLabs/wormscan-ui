@@ -57,7 +57,7 @@ const Details = ({
   totalGuardiansNeeded,
   VAAId,
 }: Props) => {
-  const extraWidth = isGatewaySource ? 120 : 24;
+  const extraWidth = isGatewaySource ? 125 : 30;
   const lineValueRef = useRef<HTMLDivElement>(null);
   const [lineValueWidth, setLineValueWidth] = useState<number>(0);
 
@@ -131,7 +131,7 @@ const Details = ({
                   </a>
                 )}
                 <CopyToClipboard toCopy={parsedEmitterAddress}>
-                  <CopyIcon />
+                  <CopyIcon height={20} width={20} />
                 </CopyToClipboard>
                 {isGatewaySource && <span className="comment"> (Wormchain)</span>}
               </>
@@ -162,7 +162,7 @@ const Details = ({
                   />
                 </a>{" "}
                 <CopyToClipboard toCopy={parsedOriginAddress}>
-                  <CopyIcon />
+                  <CopyIcon height={20} width={20} />
                 </CopyToClipboard>
               </>
             ) : (
@@ -217,7 +217,7 @@ const Details = ({
               <>
                 <TruncateText containerWidth={lineValueWidth} text={VAAId} />
                 <CopyToClipboard toCopy={VAAId}>
-                  <CopyIcon />
+                  <CopyIcon height={20} width={20} />
                 </CopyToClipboard>
               </>
             ) : (
@@ -246,7 +246,7 @@ const Details = ({
                   />
                 </a>{" "}
                 <CopyToClipboard toCopy={parsedRedeemTx}>
-                  <CopyIcon />
+                  <CopyIcon height={20} width={20} />
                 </CopyToClipboard>
               </>
             ) : (
@@ -294,7 +294,7 @@ const Details = ({
                   />
                 </a>{" "}
                 <CopyToClipboard toCopy={parsedDestinationAddress}>
-                  <CopyIcon />
+                  <CopyIcon height={20} width={20} />
                 </CopyToClipboard>
               </>
             ) : (
