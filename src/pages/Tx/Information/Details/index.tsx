@@ -59,18 +59,16 @@ const TruncateText = ({
 
   if (textWidthExtras <= lineValueWidth) return text;
 
-  if (textWidthExtras > lineValueWidth) {
-    const availableWidth = lineValueWidth - extraWidth;
-    const averageCharacterWidth = textWidth / text.length;
-    const maxLength = Math.floor(availableWidth / averageCharacterWidth);
-    const ellipsisLength = "...".length;
-    const availableSpace = maxLength - ellipsisLength;
-    const halfLen = Math.floor(availableSpace / 2) > 5 ? Math.floor(availableSpace / 2) : 5;
-    const start = text.slice(0, halfLen);
-    const end = text.slice(-halfLen);
+  const availableWidth = lineValueWidth - extraWidth;
+  const averageCharacterWidth = textWidth / text.length;
+  const maxLength = Math.floor(availableWidth / averageCharacterWidth);
+  const ellipsisLength = "...".length;
+  const availableSpace = maxLength - ellipsisLength;
+  const halfLen = Math.floor(availableSpace / 2) > 5 ? Math.floor(availableSpace / 2) : 5;
+  const start = text.slice(0, halfLen);
+  const end = text.slice(-halfLen);
 
-    return `${start}...${end}`;
-  }
+  return `${start}...${end}`;
 };
 
 const Details = ({
