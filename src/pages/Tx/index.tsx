@@ -203,13 +203,23 @@ const Tx = () => {
 
         // check CCTP
         if (txResponse?.standardizedProperties?.appIds?.includes("CCTP_WORMHOLE_INTEGRATION")) {
-          // if it is, get relayer information
+          // if the amount is not there, we get it from the payload
+          //     (we assume 6 decimals because its always USDC)
+          if (!txResponse.tokenAmount && !!txResponse.payload?.amount) {
+            txResponse.tokenAmount = String(+txResponse.payload?.amount * 0.000001);
+            txResponse.standardizedProperties.amount = String(+txResponse.payload?.amount * 100);
+            if (!txResponse.symbol) {
+              txResponse.symbol = "USDC";
+            }
+          }
+
+          // get CCTP relayer information
           const relayResponse = await getClient().search.getCctpRelay({
             txHash: parseTx({ value: txResponse.txHash, chainId: 2 }),
             network: network,
           });
 
-          // and add Redeem Txn information to the tx response
+          // add Redeem Txn information to the tx response
           if (relayResponse?.to?.txHash) {
             const cctpDestination: GlobalTxOutput["destinationTx"] = {
               chainId: relayResponse.to.chainId,
