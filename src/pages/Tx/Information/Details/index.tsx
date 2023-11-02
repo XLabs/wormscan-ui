@@ -103,8 +103,10 @@ const Details = ({
 
   useEffect(() => {
     const updateWidth = () => {
-      const newWidth = lineValueRef.current!.offsetWidth;
-      newWidth !== lineValueWidth && setLineValueWidth(newWidth);
+      if (lineValueRef.current) {
+        const newWidth = lineValueRef.current.offsetWidth;
+        newWidth !== lineValueWidth && setLineValueWidth(newWidth);
+      }
     };
 
     updateWidth();
