@@ -8,6 +8,10 @@ const getWidthOfText = (text: string): number => {
   span.textContent = text;
   span.style.fontSize = "16px";
   span.style.fontWeight = "400";
+  span.style.position = "absolute";
+  span.style.visibility = "hidden";
+  span.style.whiteSpace = "nowrap";
+  span.style.top = "-200px";
 
   document.body.appendChild(span);
   const textWidth = span.getBoundingClientRect().width;
