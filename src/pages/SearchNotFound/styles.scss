@@ -204,12 +204,20 @@
 
         & a {
           color: var(--color-secondary-800);
-          text-decoration-line: underline;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
         }
 
         & .info-link {
           color: var(--color-information-100);
           text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
 
