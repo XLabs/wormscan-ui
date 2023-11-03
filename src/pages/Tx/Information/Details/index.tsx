@@ -57,7 +57,8 @@ const Details = ({
   totalGuardiansNeeded,
   VAAId,
 }: Props) => {
-  const extraWidth = isGatewaySource ? 125 : 30;
+  const extraWidthGatewaySource = isGatewaySource ? 125 : 30;
+  const extraWidthUnknownApp = isUnknownApp ? 56 : 30;
   const lineValueRef = useRef<HTMLDivElement>(null);
   const [lineValueWidth, setLineValueWidth] = useState<number>(0);
 
@@ -106,7 +107,7 @@ const Details = ({
                     <span>
                       <TruncateText
                         containerWidth={lineValueWidth}
-                        extraWidth={extraWidth}
+                        extraWidth={extraWidthGatewaySource}
                         text={parsedEmitterAddress.toUpperCase()}
                       />
                     </span>
@@ -125,7 +126,7 @@ const Details = ({
                   >
                     <TruncateText
                       containerWidth={lineValueWidth}
-                      extraWidth={extraWidth}
+                      extraWidth={extraWidthGatewaySource}
                       text={parsedEmitterAddress.toUpperCase()}
                     />
                   </a>
@@ -290,6 +291,7 @@ const Details = ({
                 >
                   <TruncateText
                     containerWidth={lineValueWidth}
+                    extraWidth={extraWidthUnknownApp}
                     text={parsedDestinationAddress.toUpperCase()}
                   />
                 </a>{" "}
