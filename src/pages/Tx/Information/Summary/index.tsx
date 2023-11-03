@@ -10,69 +10,31 @@ type Props = {
   appIds: string[];
   currentNetwork: Network;
   globalToRedeemTx: string | undefined;
-  isCCTPConnectOrPortalApp: boolean;
+  hasAnotherApp: boolean;
+  isCCTP: boolean;
+  isConnectOrPortalApp: boolean;
   isUnknownApp: boolean;
   parsedDestinationAddress: string;
   toChain: ChainId | number;
   vaa: string;
 };
 
-const StatusInProgress = () => (
-  <Chip className="status" color="progress">
-    <ClockIcon height={16} width={16} />
-    IN PROGRESS
-  </Chip>
-);
-
-const StatusVaaEmitted = () => (
-  <Chip className="status" color="emitted">
-    <CheckIcon height={16} width={16} />
-    VAA EMITTED
-  </Chip>
-);
-
-const StatusPendingRedeem = () => (
-  <Tooltip
-    side="right"
-    tooltip={
-      <div className="status-tooltip">
-        Your transaction has been completed on the blockchain, but has not yet been redeemed.
-      </div>
-    }
-    type="info"
-  >
-    <div>
-      <Chip className="status" color="progress">
-        <ClockIcon height={16} width={16} />
-        PENDING TO REDEEM
-      </Chip>
-    </div>
-  </Tooltip>
-);
-
-const StatusCompleted = () => (
-  <Chip className="status" color="completed">
-    <CheckCircledIcon height={16} width={16} />
-    COMPLETED
-  </Chip>
-);
-
 const Summary = ({
   appIds,
   currentNetwork,
   globalToRedeemTx,
-  isCCTPConnectOrPortalApp,
+  hasAnotherApp,
+  isCCTP,
+  isConnectOrPortalApp,
   isUnknownApp,
   parsedDestinationAddress,
   toChain,
   vaa,
 }: Props) => {
-  // contract-watcher:
-  // if toChain is aptos, arbitrium, avalanche, base, bsc, celo, ethereum, fantom,
-  // moonbeam, oasis, optimism, polygon, solana or terra we can get destinationTx.
+  // if toChain is on this list we should be able to get destinationTx.
+  // (contract-watcher for token bridge & connect txs)
   const canWeGetDestinationTx = [
     ChainId.Aptos,
-    ChainId.Arbitrum,
     ChainId.Avalanche,
     ChainId.Base,
     ChainId.BSC,
@@ -81,10 +43,11 @@ const Summary = ({
     ChainId.Fantom,
     ChainId.Moonbeam,
     ChainId.Oasis,
-    ChainId.Optimism,
     ChainId.Polygon,
-    ChainId.Solana,
     ChainId.Terra,
+    // ChainId.Arbitrum // should be supported, but BE having problems
+    // ChainId.Optimism // should be supported, but BE having problems
+    // ChainId.Solana,  // should be supported, but BE having problems
   ].includes(toChain);
 
   return (
@@ -92,28 +55,21 @@ const Summary = ({
       <div>
         <div className="key">Status:</div>
         <div className="value">
-          {/* TODO (waiting design)
-          
           {vaa ? (
-            isUnknownApp || !(appIds?.length > 0) ? (
-              <StatusUnknown />
-            ) : isCCTPConnectOrPortalApp ? (
-              canWeGetDestinationTx ? (
-                globalToRedeemTx ? (
-                  <StatusCompleted />
-                ) : (
-                  <StatusWaitingRedeem />
-                )
+            isConnectOrPortalApp || isCCTP ? (
+              globalToRedeemTx ? (
+                <StatusCompleted />
+              ) : (canWeGetDestinationTx && !hasAnotherApp) || isCCTP ? (
+                <StatusPendingRedeem />
               ) : (
-                <StatusIndeterminate />
+                <StatusVaaEmitted />
               )
             ) : (
-              <StatusCompleted />
+              <StatusVaaEmitted />
             )
           ) : (
             <StatusInProgress />
-          )} */}
-          {vaa ? <StatusCompleted /> : <StatusInProgress />}
+          )}
         </div>
       </div>
       <div>
@@ -160,5 +116,45 @@ const Summary = ({
     </div>
   );
 };
+
+const StatusInProgress = () => (
+  <Chip className="status" color="progress">
+    <ClockIcon height={16} width={16} />
+    IN PROGRESS
+  </Chip>
+);
+
+const StatusVaaEmitted = () => (
+  <Chip className="status" color="emitted">
+    <CheckIcon height={16} width={16} />
+    VAA EMITTED
+  </Chip>
+);
+
+const StatusPendingRedeem = () => (
+  <Tooltip
+    side="right"
+    tooltip={
+      <div className="status-tooltip">
+        Your transaction has been completed on the blockchain, but has not yet been redeemed.
+      </div>
+    }
+    type="info"
+  >
+    <div>
+      <Chip className="status" color="progress">
+        <ClockIcon height={16} width={16} />
+        PENDING TO REDEEM
+      </Chip>
+    </div>
+  </Tooltip>
+);
+
+const StatusCompleted = () => (
+  <Chip className="status" color="completed">
+    <CheckCircledIcon height={16} width={16} />
+    COMPLETED
+  </Chip>
+);
 
 export default Summary;

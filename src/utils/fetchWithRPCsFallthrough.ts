@@ -460,8 +460,8 @@ const getTokenInformation = async (
   // solana token
   if (tokenChain === ChainId.Solana) {
     const tokenResult = await getSolanaTokenDetails(parsedTokenAddress);
-    name = tokenResult.name;
-    symbol = tokenResult.symbol;
+    name = tokenResult?.name ? tokenResult.name : null;
+    symbol = tokenResult?.symbol ? tokenResult.symbol : null;
   }
 
   if (name) {
@@ -481,8 +481,8 @@ const getTokenInformation = async (
   // solana wrapped token
   if (resultChain === ChainId.Solana) {
     const tokenResult = await getSolanaTokenDetails(wrappedTokenAddress);
-    name = tokenResult.name;
-    symbol = tokenResult.symbol;
+    name = tokenResult?.name ? tokenResult.name : null;
+    symbol = tokenResult?.symbol ? tokenResult.symbol : null;
   }
 
   return { name, symbol, tokenDecimals };

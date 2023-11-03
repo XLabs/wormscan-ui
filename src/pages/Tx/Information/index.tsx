@@ -117,14 +117,21 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   const endDate = globalToTimestamp;
   const tokenChain = stdTokenChain || payloadTokenChain;
   const tokenAddress = stdTokenAddress || payloadTokenAddress;
+
   const isUnknownApp = callerAppId === UNKNOWN_APP_ID || appIds?.includes(UNKNOWN_APP_ID);
-  const isCCTPConnectOrPortalApp =
-    callerAppId === CCTP_APP_ID ||
+  const isCCTP = callerAppId === CCTP_APP_ID || appIds?.includes(CCTP_APP_ID);
+  const isConnectOrPortalApp =
     callerAppId === CONNECT_APP_ID ||
     callerAppId === PORTAL_APP_ID ||
-    appIds?.includes(CCTP_APP_ID) ||
     appIds?.includes(CONNECT_APP_ID) ||
     appIds?.includes(PORTAL_APP_ID);
+  const hasAnotherApp = !!(
+    appIds &&
+    appIds.filter(
+      appId => appId !== CONNECT_APP_ID && appId !== PORTAL_APP_ID && appId !== UNKNOWN_APP_ID,
+    )?.length
+  );
+
   const isAttestation = txType[payloadType] === "Attestation";
   const isUnknownPayloadType = !txType[payloadType];
 
@@ -349,7 +356,9 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         appIds={appIds}
         currentNetwork={currentNetwork}
         globalToRedeemTx={globalToRedeemTx}
-        isCCTPConnectOrPortalApp={isCCTPConnectOrPortalApp}
+        isCCTP={isCCTP}
+        isConnectOrPortalApp={isConnectOrPortalApp}
+        hasAnotherApp={hasAnotherApp}
         isUnknownApp={isUnknownApp}
         parsedDestinationAddress={parsedDestinationAddress}
         toChain={toChain}
