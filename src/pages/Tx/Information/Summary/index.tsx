@@ -12,7 +12,10 @@ type Props = {
   globalToRedeemTx: string | undefined;
   hasAnotherApp: boolean;
   isCCTP: boolean;
-  isConnectOrPortalApp: boolean;
+  isConnect: boolean;
+  isPortal: boolean;
+  isTBTC: boolean;
+  isTransferWithPayload: boolean;
   isUnknownApp: boolean;
   parsedDestinationAddress: string;
   toChain: ChainId | number;
@@ -25,7 +28,10 @@ const Summary = ({
   globalToRedeemTx,
   hasAnotherApp,
   isCCTP,
-  isConnectOrPortalApp,
+  isConnect,
+  isPortal,
+  isTBTC,
+  isTransferWithPayload,
   isUnknownApp,
   parsedDestinationAddress,
   toChain,
@@ -56,10 +62,15 @@ const Summary = ({
         <div className="key">Status:</div>
         <div className="value">
           {vaa ? (
-            isConnectOrPortalApp || isCCTP ? (
+            isConnect || isPortal || isCCTP ? (
               globalToRedeemTx ? (
                 <StatusCompleted />
-              ) : (canWeGetDestinationTx && !hasAnotherApp) || isCCTP ? (
+              ) : (canWeGetDestinationTx &&
+                  !hasAnotherApp &&
+                  (!isTransferWithPayload ||
+                    (isTransferWithPayload && isConnect) ||
+                    (isTransferWithPayload && isTBTC))) ||
+                isCCTP ? (
                 <StatusPendingRedeem />
               ) : (
                 <StatusVaaEmitted />

@@ -120,15 +120,20 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
 
   const isUnknownApp = callerAppId === UNKNOWN_APP_ID || appIds?.includes(UNKNOWN_APP_ID);
   const isCCTP = callerAppId === CCTP_APP_ID || appIds?.includes(CCTP_APP_ID);
-  const isConnectOrPortalApp =
-    callerAppId === CONNECT_APP_ID ||
-    callerAppId === PORTAL_APP_ID ||
-    appIds?.includes(CONNECT_APP_ID) ||
-    appIds?.includes(PORTAL_APP_ID);
+  const isConnect = callerAppId === CONNECT_APP_ID || appIds?.includes(CONNECT_APP_ID);
+  const isPortal = callerAppId === PORTAL_APP_ID || appIds?.includes(PORTAL_APP_ID);
+  const isTBTC =
+    callerAppId?.toLowerCase().includes("tbtc") ||
+    !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
+  const isTransferWithPayload = payloadType === 3;
   const hasAnotherApp = !!(
     appIds &&
     appIds.filter(
-      appId => appId !== CONNECT_APP_ID && appId !== PORTAL_APP_ID && appId !== UNKNOWN_APP_ID,
+      appId =>
+        appId !== CONNECT_APP_ID &&
+        appId !== PORTAL_APP_ID &&
+        appId !== UNKNOWN_APP_ID &&
+        !appId.toLowerCase().includes("tbtc"),
     )?.length
   );
 
@@ -356,9 +361,12 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         appIds={appIds}
         currentNetwork={currentNetwork}
         globalToRedeemTx={globalToRedeemTx}
-        isCCTP={isCCTP}
-        isConnectOrPortalApp={isConnectOrPortalApp}
         hasAnotherApp={hasAnotherApp}
+        isCCTP={isCCTP}
+        isConnect={isConnect}
+        isPortal={isPortal}
+        isTBTC={isTBTC}
+        isTransferWithPayload={isTransferWithPayload}
         isUnknownApp={isUnknownApp}
         parsedDestinationAddress={parsedDestinationAddress}
         toChain={toChain}
