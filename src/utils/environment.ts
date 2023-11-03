@@ -63,11 +63,6 @@ const TESTNET_RPCS: { [key in ChainName]?: string } = {
   polygon: "https://rpc.ankr.com/polygon_mumbai",
 };
 
-const DEVNET_RPCS: { [key in ChainName]?: string } = {
-  ethereum: "http://localhost:8545",
-  bsc: "http://localhost:8546",
-};
-
 export type Environment = {
   chainInfos: ChainInfo[];
   guardianRpcs: string[];
@@ -85,39 +80,6 @@ export type ChainInfo = {
   coreBridgeAddress: string;
   mockIntegrationAddress: string;
   rpcUrl: string;
-};
-
-export const tiltDefaultDeliveryProviderContractAddress =
-  "0x1ef9e15c3bbf0555860b5009B51722027134d53a";
-export const tiltEnv: Environment = {
-  network: "DEVNET",
-  chainInfos: [
-    {
-      chainId: 2 as ChainId,
-      evmNetworkId: 1337,
-      chainName: "Eth-Tilt",
-      nativeCurrencyName: "ETH",
-      nativeCurrencyDecimals: 18,
-      relayerContractAddress: "0x53855d4b64E9A3CF59A84bc768adA716B5536BC5",
-      defaultDeliveryProviderContractAddress: tiltDefaultDeliveryProviderContractAddress,
-      coreBridgeAddress: "0xC89Ce4735882C9F0f0FE26686c53074E09B0D550",
-      mockIntegrationAddress: "0x0eb0dD3aa41bD15C706BC09bC03C002b7B85aeAC",
-      rpcUrl: DEVNET_RPCS.ethereum || "",
-    },
-    {
-      chainId: 4 as ChainId,
-      evmNetworkId: 1397,
-      chainName: "BSC-Tilt",
-      nativeCurrencyName: "BNB",
-      nativeCurrencyDecimals: 18,
-      relayerContractAddress: "0x53855d4b64E9A3CF59A84bc768adA716B5536BC5",
-      defaultDeliveryProviderContractAddress: tiltDefaultDeliveryProviderContractAddress,
-      coreBridgeAddress: "0xC89Ce4735882C9F0f0FE26686c53074E09B0D550",
-      mockIntegrationAddress: "0x0eb0dD3aa41bD15C706BC09bC03C002b7B85aeAC",
-      rpcUrl: DEVNET_RPCS.bsc || "",
-    },
-  ],
-  guardianRpcs: ["http://localhost:7071"],
 };
 
 export const testnetDefaultDeliveryProviderContractAddress =
@@ -395,10 +357,6 @@ export const mainnetEnv: Environment = {
     "https://wormhole-v2-mainnet-api.chainlayer.network",
     "https://wormhole-v2-mainnet-api.staking.fund",
   ],
-};
-
-export const getChainName = (chainId: ChainId, env: Environment) => {
-  return env.chainInfos.find(a => a.chainId === chainId);
 };
 
 export function getEthersProvider(chainInfo: ChainInfo) {
