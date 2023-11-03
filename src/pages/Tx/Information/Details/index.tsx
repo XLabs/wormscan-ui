@@ -58,7 +58,7 @@ const Details = ({
   VAAId,
 }: Props) => {
   const extraWidthGatewaySource = isGatewaySource ? 125 : 30;
-  const extraWidthUnknownApp = isUnknownApp ? 56 : 30;
+  const extraWidthUnknownApp = isUnknownApp ? 55 : 30;
   const lineValueRef = useRef<HTMLDivElement>(null);
   const [lineValueWidth, setLineValueWidth] = useState<number>(0);
 
