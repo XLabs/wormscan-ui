@@ -155,7 +155,7 @@ const StatusPendingRedeem = () => (
     <div>
       <Chip className="status" color="progress">
         <ClockIcon height={16} width={16} />
-        PENDING TO REDEEM
+        PENDING REDEEM
       </Chip>
     </div>
   </Tooltip>
