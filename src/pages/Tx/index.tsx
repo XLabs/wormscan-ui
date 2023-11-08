@@ -205,12 +205,23 @@ const Tx = () => {
         if (txResponse?.standardizedProperties?.appIds?.includes("CCTP_WORMHOLE_INTEGRATION")) {
           // if the amount is not there, we get it from the payload
           //     (we assume 6 decimals because its always USDC)
-          if (!txResponse.tokenAmount && !!txResponse.payload?.amount) {
+          if (
+            (!txResponse.tokenAmount || !txResponse.standardizedProperties?.amount) &&
+            !!txResponse.payload?.amount
+          ) {
             txResponse.tokenAmount = String(+txResponse.payload?.amount * 0.000001);
             txResponse.standardizedProperties.amount = String(+txResponse.payload?.amount * 100);
             if (!txResponse.symbol) {
               txResponse.symbol = "USDC";
             }
+          }
+
+          // the fee for CCTP is feeAmount (fee) + toNativeAmount (gas drop)
+          if (txResponse.payload?.parsedPayload?.feeAmount) {
+            txResponse.standardizedProperties.fee = `${
+              +txResponse.payload.parsedPayload.feeAmount * 100 +
+              +txResponse.payload.parsedPayload.toNativeAmount * 100
+            }`;
           }
 
           // get CCTP relayer information
@@ -244,14 +255,6 @@ const Tx = () => {
               };
             }
             setExtraRawInfo(relayResponse);
-          }
-
-          // the fee for CCTP is feeAmount (fee) + toNativeAmount (gas drop)
-          if (txResponse.payload?.parsedPayload?.feeAmount) {
-            txResponse.standardizedProperties.fee = `${
-              +txResponse.payload.parsedPayload.feeAmount * 100 +
-              +txResponse.payload.parsedPayload.toNativeAmount * 100
-            }`;
           }
         }
         return txResponse;
