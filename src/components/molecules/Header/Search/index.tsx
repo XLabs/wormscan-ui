@@ -49,9 +49,6 @@ const Search = () => {
           txHash: value,
         });
       },
-      onSettled: () => {
-        setIsLoading(false);
-      },
     },
   );
 
