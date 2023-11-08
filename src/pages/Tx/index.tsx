@@ -4,9 +4,9 @@ import { useParams } from "react-router-dom";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
+import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { fetchWithRpcFallThrough } from "src/utils/fetchWithRPCsFallthrough";
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import { parseTx } from "src/utils/crypto";
 import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
@@ -20,7 +20,6 @@ import "./styles.scss";
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
 const Tx = () => {
-  const navigate = useNavigateCustom();
   const { txHash, chainId, emitter, seq } = useParams();
   const { environment } = useEnvironment();
   const network = environment.network;
@@ -29,6 +28,10 @@ const Tx = () => {
   const isTxHashSearch = Boolean(txHash);
   const isVAAIdSearch = Boolean(chainId) && Boolean(emitter) && Boolean(seq);
   const q = isVAAIdSearch ? VAAId : txHash;
+  const storedQ = localStorage.getItem("q");
+  const storedErrorCode = localStorage.getItem("errorCode");
+  const initialErrorCode = storedErrorCode ? parseInt(storedErrorCode) : undefined;
+  const [errorCode, setErrorCode] = useState<number | undefined>(initialErrorCode);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [parsedVAAsData, setParsedVAAsData] = useState<ParsedVAA[] | undefined>(undefined);
@@ -36,33 +39,25 @@ const Tx = () => {
   const [blockData, setBlockData] = useState<GetBlockData>(null);
 
   useEffect(() => {
-    if (localStorage.getItem("reloadRedirect")) {
-      localStorage.setItem("reloadRedirect", `/tx/${q}`);
+    localStorage.removeItem("errorCode");
+
+    if (storedQ !== q) {
       localStorage.removeItem("attemptsMade");
     }
-  }, [q]);
+  }, [q, storedQ]);
 
   useEffect(() => {
     setIsLoading(true);
   }, [txHash, chainId, emitter, seq]);
 
-  useEffect(() => {
-    if (!network) return;
-
-    setIsLoading(true);
-  }, [network]);
-
-  const navigateToSearchNotFound = (err: Error, param: string) => {
+  const showSearchNotFound = (err: Error) => {
     let statusCode = 404;
     if (err?.message) {
       // get the status code from the error message
       statusCode = parseInt(err?.message?.match(/\d+/)?.[0], 10);
     }
-    navigate(`/search-not-found?q=${param}`, {
-      state: {
-        status: statusCode,
-      },
-    });
+    setErrorCode(statusCode);
+    setIsLoading(false);
   };
 
   const { data: VAADataByTx } = useQuery(
@@ -141,23 +136,28 @@ const Tx = () => {
                 lastFinalizedBlock: txData.lastFinalizedBlock,
               });
 
+              setErrorCode(undefined);
               setIsLoading(false);
             } else {
-              navigateToSearchNotFound(error, txHash);
+              showSearchNotFound(error);
             }
           } else {
-            navigateToSearchNotFound(error, txHash);
+            showSearchNotFound(error);
           }
         }
       },
       retry: 2,
-      enabled: isTxHashSearch,
+      enabled: isTxHashSearch && !errorCode,
     },
   );
 
   const { data: VAADataByVAAId }: { data: VAADetail } = useQuery(
     ["getVAA", VAAId],
     () => {
+      if (isNaN(Number(chainId)) || isNaN(Number(seq))) {
+        throw new Error("Request failed with status code 400");
+      }
+
       return getClient().guardianNetwork.getVAA({
         chainId: Number(chainId),
         emitter,
@@ -168,8 +168,8 @@ const Tx = () => {
       });
     },
     {
-      onError: (err: Error) => navigateToSearchNotFound(err, VAAId),
-      enabled: isVAAIdSearch,
+      onError: (err: Error) => showSearchNotFound(err),
+      enabled: isVAAIdSearch && !errorCode,
     },
   );
 
@@ -263,9 +263,12 @@ const Tx = () => {
     {
       enabled: false,
       onSuccess: data => {
-        if (!!data.length) setIsLoading(false);
+        if (!!data.length) {
+          setErrorCode(undefined);
+          setIsLoading(false);
+        }
       },
-      onError: (err: Error) => navigateToSearchNotFound(err, VAADataTxHash || VAAId),
+      onError: (err: Error) => showSearchNotFound(err),
     },
   );
 
@@ -277,6 +280,7 @@ const Tx = () => {
 
   useEffect(() => {
     if (!VAAData) return;
+    setErrorCode(undefined);
     refetchTxData();
   }, [VAAData, refetchTxData]);
 
@@ -332,7 +336,9 @@ const Tx = () => {
   return (
     <BaseLayout>
       <div className="tx-page">
-        {isLoading ? (
+        {errorCode ? (
+          <SearchNotFound q={q} errorCode={errorCode} />
+        ) : isLoading ? (
           <Loader />
         ) : (
           <>
@@ -342,7 +348,7 @@ const Tx = () => {
               gatewayInfo={txData?.[0]?.globalTx?.originTx?.attribute?.value}
               payloadType={payloadType}
             />
-            {parsedVAAsData.map(
+            {parsedVAAsData?.map(
               parsedVAAData =>
                 txData && (
                   <Information

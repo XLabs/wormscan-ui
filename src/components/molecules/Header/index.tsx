@@ -112,12 +112,6 @@ const Header = () => {
       navigate(`/txs?network=${network}`);
       return;
     }
-
-    // if on search not found, go to home
-    if (pathname.includes("/search-not-found")) {
-      navigate(`/?network=${network}`);
-      return;
-    }
   };
 
   return (

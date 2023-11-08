@@ -16,7 +16,7 @@ const Search = () => {
   const queryClient = useQueryClient();
 
   const goSearchNotFound = (err: Error) => {
-    const searchNotFoundURL = `/search-not-found?q=${searchString.current}`;
+    const txURL = `/tx/${searchString.current}`;
     let statusCode = 404;
 
     if (err?.message) {
@@ -24,22 +24,8 @@ const Search = () => {
       statusCode = parseInt(err?.message?.match(/\d+/)?.[0], 10);
     }
 
-    if (searchType.current === "vaaId") {
-      return navigate(searchNotFoundURL, {
-        state: {
-          status: statusCode,
-        },
-      });
-    }
-
-    errorsCount.current += 1;
-    if (errorsCount.current >= 2) {
-      navigate(searchNotFoundURL, {
-        state: {
-          status: statusCode,
-        },
-      });
-    }
+    localStorage.setItem("errorCode", statusCode.toString());
+    navigate(txURL);
   };
 
   const { mutate: mutateFindVAAByAddress } = useMutation(
@@ -56,8 +42,12 @@ const Search = () => {
       onSuccess: (_, { address }) => {
         navigate(`/txs?address=${address}`);
       },
-      onError: (err: Error) => {
-        goSearchNotFound(err);
+      onError: (_err, { address }) => {
+        // Search by txHash if by address fails
+        const value = address;
+        mutateFindVAAByTxHash({
+          txHash: value,
+        });
       },
       onSettled: () => {
         setIsLoading(false);
@@ -141,11 +131,10 @@ const Search = () => {
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     localStorage.removeItem("attemptsMade");
-    localStorage.removeItem("reloadRedirect");
 
     const { search } = e.target as typeof e.target & FormData;
     let { value } = search;
-    if (value) {
+    if (value && value.trim()) {
       value = value.trim();
       errorsCount.current = 0;
       searchString.current = value;
@@ -161,15 +150,11 @@ const Search = () => {
           id: value,
         });
       } else {
-        // Check by address and txHash
+        // Check by address, if fails, check by txHash
         mutateFindVAAByAddress({ address: value });
-        mutateFindVAAByTxHash({
-          txHash: value,
-        });
       }
-
-      setSearchValue("");
     }
+    setSearchValue("");
   };
 
   return (

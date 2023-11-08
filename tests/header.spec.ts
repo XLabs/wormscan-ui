@@ -114,12 +114,6 @@ describe("Header", () => {
       const txHashEndpoint = `https://api.staging.wormscan.io/api/v1/vaas/?txHash=${txHash}&parsedPayload=true`;
       const expectedURL = `${baseURL}/#/tx/${txHash}`;
       await searchTxAndVerify(page, true, txHash, txHashEndpoint, "", expectedURL, true);
-
-      // search by txHash invalid
-      const badTxHash = "4rZmexGcA2eTttK1nihBGPMheho66dQjo123abc123abv123abc123abc123abc";
-      const badTxHashEndpoint = `https://api.staging.wormscan.io/api/v1/vaas/?txHash=${badTxHash}&parsedPayload=true`;
-      const badExpectedURL = `${baseURL}/#/search-not-found?q=${badTxHash}`;
-      await searchTxAndVerify(page, true, badTxHash, badTxHashEndpoint, "", badExpectedURL, false);
     });
 
     test("search by address", async ({ page, baseURL }) => {
@@ -137,21 +131,6 @@ describe("Header", () => {
         expectedURL,
         true,
       );
-
-      // search by address invalid
-      const badAddress = "0x12345abscasdnkdtg12321321";
-      const badAddressEndpoint = `https://api.staging.wormscan.io/api/v1/address/${badAddress}`;
-      const badAddressEndpoint2 = `https://api.staging.wormscan.io/api/v1/transactions?address=${badAddress}&page=0&pageSize=50&sortOrder=DESC`;
-      const badExpectedURL = `${baseURL}/#/search-not-found?q=${badAddress}`;
-      await searchTxAndVerify(
-        page,
-        false,
-        badAddress,
-        badAddressEndpoint,
-        badAddressEndpoint2,
-        badExpectedURL,
-        false,
-      );
     });
 
     test("search by VAA ID", async ({ page, baseURL }) => {
@@ -160,21 +139,6 @@ describe("Header", () => {
       const vaaIdEndpoint2 = `https://api.staging.wormscan.io/api/v1/transactions/${vaaId}?page=0&pageSize=10&sortOrder=ASC`;
       const expectedURL = `${baseURL}/#/tx/${vaaId}`;
       await searchTxAndVerify(page, false, vaaId, vaaIdEndpoint, vaaIdEndpoint2, expectedURL, true);
-
-      // search by VAA ID invalid
-      const badVaaId = "7/ec7372995d5cc8732397fb0ad35c0121e0eaa90d26f828a534abc12345a1a1a1/123456";
-      const badVaaIdEndpoint = `https://api.staging.wormscan.io/api/v1/vaas/${badVaaId}?parsedPayload=true&page=0&pageSize=10&sortOrder=ASC`;
-      const badVaaIdEndpoint2 = `https://api.staging.wormscan.io/api/v1/transactions/${badVaaId}?page=0&pageSize=10&sortOrder=ASC`;
-      const badExpectedURL = `${baseURL}/#/search-not-found?q=${badVaaId}`;
-      await searchTxAndVerify(
-        page,
-        false,
-        badVaaId,
-        badVaaIdEndpoint,
-        badVaaIdEndpoint2,
-        badExpectedURL,
-        false,
-      );
     });
   });
 

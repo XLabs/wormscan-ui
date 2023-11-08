@@ -9,7 +9,6 @@ const Home = lazy(() => import("../pages/Home"));
 const Tx = lazy(() => import("../pages/Tx"));
 const Txs = lazy(() => import("../pages/Txs"));
 const NotFound = lazy(() => import("../pages/NotFound"));
-const SearchNotFound = lazy(() => import("../pages/SearchNotFound"));
 
 const Navigation = () => {
   return (
@@ -28,7 +27,6 @@ const Navigation = () => {
             <Route path="/txs" element={<Txs />} />
             <Route path="/tx/:txHash" element={<Tx />} />
             <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
-            <Route path="/search-not-found" element={<SearchNotFound />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
