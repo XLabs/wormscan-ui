@@ -40,6 +40,7 @@ const Search = () => {
     },
     {
       onSuccess: (_, { address }) => {
+        setIsLoading(false);
         navigate(`/txs?address=${address}`);
       },
       onError: (_err, { address }) => {
