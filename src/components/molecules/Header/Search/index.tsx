@@ -12,9 +12,6 @@ interface FormData {
 const Search = () => {
   const navigate = useNavigateCustom();
   const { t } = useTranslation();
-  const searchType = useRef<"vaaId" | "other">("other");
-  const searchString = useRef("");
-  const errorsCount = useRef(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState("");
 
@@ -50,16 +47,12 @@ const Search = () => {
     let { value } = search;
     if (value && value.trim()) {
       value = value.trim();
-      errorsCount.current = 0;
-      searchString.current = value;
-      searchType.current = "other";
 
       setIsLoading(true);
 
       // Check if is probably a VAA ID
       const splitId = value.split("/");
       if (splitId.length === 3) {
-        searchType.current = "vaaId";
         setIsLoading(false);
         navigate(`/tx/${value}`);
       } else {
