@@ -69,9 +69,13 @@ export class Search {
     txHash: string;
     network: Network;
   }): Promise<CctpRelayOutput> {
-    let cctpURL = "https://relayer.stable.io/v1/relays?txHash=";
+    // Remove CORS_PROXY when the endpoint stops responding with CORS err.
+    const uu = new Date().getTime();
+    const CORS_PROXY = `https://nextjs-cors-anywhere.vercel.app/api?preventcache=${uu}&endpoint=`;
+
+    let cctpURL = CORS_PROXY + "https://relayer.stable.io/v1/relays?txHash=";
     if (network === "TESTNET") {
-      cctpURL = "https://relayer.dev.stable.io/v1/relays?txHash=";
+      cctpURL = CORS_PROXY + "https://relayer.dev.stable.io/v1/relays?txHash=";
     }
 
     try {
