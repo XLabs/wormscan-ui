@@ -40,6 +40,7 @@ const Tx = () => {
   const [blockData, setBlockData] = useState<GetBlockData>(null);
 
   useEffect(() => {
+    setErrorCode(undefined);
     setIsLoading(true);
   }, [txHash, chainId, emitter, seq]);
 
