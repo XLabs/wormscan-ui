@@ -5,6 +5,10 @@ import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import { getClient } from "src/api/Client";
 import SearchBar from "../../SearchBar";
 
+interface FormData {
+  search: { value: string };
+}
+
 const Search = () => {
   const navigate = useNavigateCustom();
   const { t } = useTranslation();
@@ -13,20 +17,6 @@ const Search = () => {
   const errorsCount = useRef(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState("");
-  const queryClient = useQueryClient();
-
-  const goSearchNotFound = (err: Error) => {
-    const txURL = `/tx/${searchString.current}`;
-    let statusCode = 404;
-
-    if (err?.message) {
-      // get the status code from the error message
-      statusCode = parseInt(err?.message?.match(/\d+/)?.[0], 10);
-    }
-
-    localStorage.setItem("errorCode", statusCode.toString());
-    navigate(txURL);
-  };
 
   const { mutate: mutateFindVAAByAddress } = useMutation(
     ({ address }: { address: string }) => {
@@ -40,91 +30,18 @@ const Search = () => {
     },
     {
       onSuccess: (_, { address }) => {
-        setIsLoading(false);
         navigate(`/txs?address=${address}`);
       },
       onError: (_err, { address }) => {
-        // Search by txHash if by address fails
-        const value = address;
-        mutateFindVAAByTxHash({
-          txHash: value,
-        });
-      },
-    },
-  );
-
-  const { mutate: mutateFindVAAByTxHash } = useMutation(
-    ({ txHash }: { txHash: string }) =>
-      getClient().guardianNetwork.getVAAbyTxHash({
-        query: {
-          txHash,
-          parsedPayload: true,
-        },
-      }),
-    {
-      onSuccess: (vaa, params) => {
-        const { txHash } = vaa?.[0] || {};
-        if (txHash) {
-          queryClient.setQueryData(["getVAAbyTxHash", txHash], vaa);
-          navigate(`/tx/${txHash}`);
-        } else {
-          navigate(`/tx/${params.txHash}`);
-        }
-      },
-      onError: (_err, params) => {
-        navigate(`/tx/${params.txHash}`);
+        // Navigate to tx page if by address fails
+        const txHash = address;
+        navigate(`/tx/${txHash}`);
       },
       onSettled: () => {
         setIsLoading(false);
       },
     },
   );
-
-  const { mutate: mutateFindVAAById } = useMutation(
-    ({ id }: { id: string }) => {
-      const splitId = id.split("/");
-      const chainId = Number(splitId[0]);
-      const emitter = String(splitId[1]);
-      const seq = Number(splitId[2]);
-
-      if (isNaN(chainId) || isNaN(seq)) {
-        throw new Error("Request failed with status code 400");
-      }
-
-      return getClient().guardianNetwork.getVAA({
-        chainId,
-        emitter,
-        seq,
-        query: {
-          parsedPayload: true,
-        },
-      });
-    },
-    {
-      onSuccess: vaa => {
-        if ("id" in vaa) {
-          const { id: VAAId } = vaa || {};
-
-          if (VAAId) {
-            queryClient.setQueryData(["getVAA", VAAId], vaa);
-            navigate(`/tx/${VAAId}`);
-          } else {
-            goSearchNotFound(new Error("Request failed with status code 404"));
-          }
-        }
-      },
-      onError: (err: Error) => {
-        goSearchNotFound(err);
-      },
-      onSettled: () => {
-        setIsLoading(false);
-      },
-    },
-  );
-
-  interface FormData {
-    search: { value: string };
-  }
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -144,11 +61,10 @@ const Search = () => {
       const splitId = value.split("/");
       if (splitId.length === 3) {
         searchType.current = "vaaId";
-        mutateFindVAAById({
-          id: value,
-        });
+        setIsLoading(false);
+        navigate(`/tx/${value}`);
       } else {
-        // Check by address, if fails, check by txHash
+        // Check by address, if fails, navigate to tx page
         mutateFindVAAByAddress({ address: value });
       }
     }

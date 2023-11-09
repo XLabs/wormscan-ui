@@ -200,6 +200,7 @@ const Tx = () => {
     {
       onError: (err: Error) => showSearchNotFound(err),
       enabled: isVAAIdSearch && !errorCode,
+      retry: false,
     },
   );
 
