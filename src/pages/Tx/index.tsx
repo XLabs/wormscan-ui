@@ -52,7 +52,10 @@ const Tx = () => {
 
   useEffect(() => {
     setIsLoading(true);
-  }, [txHash, chainId, emitter, seq]);
+    if (!initialErrorCode) {
+      setErrorCode(undefined);
+    }
+  }, [txHash, chainId, emitter, seq, initialErrorCode]);
 
   const showSearchNotFound = (err: Error) => {
     let statusCode = 404;
