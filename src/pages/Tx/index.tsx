@@ -32,9 +32,7 @@ const Tx = () => {
   const isTxHashSearch = Boolean(txHash);
   const isVAAIdSearch = Boolean(chainId) && Boolean(emitter) && Boolean(seq);
   const q = isVAAIdSearch ? VAAId : txHash;
-  const storedErrorCode = localStorage.getItem("errorCode");
-  const initialErrorCode = storedErrorCode ? parseInt(storedErrorCode) : undefined;
-  const [errorCode, setErrorCode] = useState<number | undefined>(initialErrorCode);
+  const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [parsedVAAsData, setParsedVAAsData] = useState<ParsedVAA[] | undefined>(undefined);
@@ -42,15 +40,8 @@ const Tx = () => {
   const [blockData, setBlockData] = useState<GetBlockData>(null);
 
   useEffect(() => {
-    localStorage.removeItem("errorCode");
-  }, [q]);
-
-  useEffect(() => {
     setIsLoading(true);
-    if (!initialErrorCode) {
-      setErrorCode(undefined);
-    }
-  }, [txHash, chainId, emitter, seq, initialErrorCode]);
+  }, [txHash, chainId, emitter, seq]);
 
   const showSearchNotFound = (err: Error) => {
     let statusCode = 404;

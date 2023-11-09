@@ -45,7 +45,6 @@ const Search = () => {
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    localStorage.removeItem("attemptsMade");
 
     const { search } = e.target as typeof e.target & FormData;
     let { value } = search;
