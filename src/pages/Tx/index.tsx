@@ -56,7 +56,7 @@ const Tx = () => {
 
   const showSearchNotFound = (err: Error) => {
     let statusCode = 404;
-    if (err?.message) {
+    if (err?.message && !isNaN(Number(err?.message?.match(/\d+/)?.[0]))) {
       // get the status code from the error message
       statusCode = parseInt(err?.message?.match(/\d+/)?.[0], 10);
     }
