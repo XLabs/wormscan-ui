@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { useMutation, useQueryClient } from "react-query";
+import React, { useState } from "react";
+import { useMutation } from "react-query";
 import { useTranslation } from "react-i18next";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import { getClient } from "src/api/Client";
