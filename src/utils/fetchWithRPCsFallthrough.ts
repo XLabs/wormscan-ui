@@ -68,287 +68,276 @@ async function hitAllSlowChains(
 // Before this, a normal search should be performed.
 // If unsuccessful, we hit the RPCs.
 export async function fetchWithRpcFallThrough(env: Environment, searchValue: string) {
-  const search = searchValue.startsWith("0x") ? searchValue : "0x" + searchValue;
+  const result = await hitAllSlowChains(env, searchValue);
 
-  // pattern match the search value to see if it's a candidate for being an EVM transaction hash.
-  const isTxHash = !!search.match(/0x[0-9a-fA-F]{64}/);
+  if (result) {
+    const chainName = coalesceChainName(result.chainId);
 
-  //If it is, fire at all the RPC endpoints and see if any of them return a result.
-  if (isTxHash) {
-    const result = await hitAllSlowChains(env, search);
+    // This is the hash for topic[0] of the core contract event LogMessagePublished
+    // https://github.com/wormhole-foundation/wormhole/blob/main/ethereum/contracts/Implementation.sol#L12
+    const LOG_MESSAGE_PUBLISHED_TOPIC =
+      "0x6eb224fb001ed210e379b335e35efe88672a8ce935d981a6896b27ffdf52a3b2";
+    const LOG_TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
 
-    if (result) {
-      const chainName = coalesceChainName(result.chainId);
+    const wrappedTokenAddress = result.receipt?.logs.findLast(
+      l => l.topics[0] === LOG_TRANSFER_TOPIC,
+    )?.address;
 
-      // This is the hash for topic[0] of the core contract event LogMessagePublished
-      // https://github.com/wormhole-foundation/wormhole/blob/main/ethereum/contracts/Implementation.sol#L12
-      const LOG_MESSAGE_PUBLISHED_TOPIC =
-        "0x6eb224fb001ed210e379b335e35efe88672a8ce935d981a6896b27ffdf52a3b2";
-      const LOG_TRANSFER_TOPIC =
-        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+    const txsData = result.receipt?.logs
+      .filter(
+        l =>
+          l.address.toLowerCase() === CONTRACTS[env.network][chainName].core?.toLowerCase() &&
+          l.topics[0] === LOG_MESSAGE_PUBLISHED_TOPIC,
+      )
+      .map(async l => {
+        const { args } = Implementation__factory.createInterface().parseLog(l);
+        const { consistencyLevel, payload, sender, sequence } = args;
 
-      const wrappedTokenAddress = result.receipt?.logs.findLast(
-        l => l.topics[0] === LOG_TRANSFER_TOPIC,
-      )?.address;
+        const emitterAddress = l.topics[1].slice(2);
+        const emitterNattiveAddress = parseAddress({
+          chainId: result.chainId,
+          value: emitterAddress,
+        });
 
-      const txsData = result.receipt?.logs
-        .filter(
-          l =>
-            l.address.toLowerCase() === CONTRACTS[env.network][chainName].core?.toLowerCase() &&
-            l.topics[0] === LOG_MESSAGE_PUBLISHED_TOPIC,
-        )
-        .map(async l => {
-          const { args } = Implementation__factory.createInterface().parseLog(l);
-          const { consistencyLevel, payload, sender, sequence } = args;
+        // getting block to read the timestamp
+        const ethersProvider = getEthersProvider(getChainInfo(env, result.chainId as ChainId));
+        const block = await ethersProvider.getBlock(result.receipt.blockNumber);
+        const timestamp = ethers.BigNumber.from(block.timestamp).toNumber() * 1000;
+        let lastFinalizedBlock;
 
-          const emitterAddress = l.topics[1].slice(2);
-          const emitterNattiveAddress = parseAddress({
-            chainId: result.chainId,
-            value: emitterAddress,
-          });
+        try {
+          lastFinalizedBlock = (await ethersProvider.getBlock("finalized")).number;
+        } catch (error) {
+          lastFinalizedBlock = await ethersProvider.getBlockNumber();
+        }
 
-          // getting block to read the timestamp
-          const ethersProvider = getEthersProvider(getChainInfo(env, result.chainId as ChainId));
-          const block = await ethersProvider.getBlock(result.receipt.blockNumber);
-          const timestamp = ethers.BigNumber.from(block.timestamp).toNumber() * 1000;
-          let lastFinalizedBlock;
+        let fromAddress = result.receipt.from;
+        let parsedFromAddress = parseAddress({
+          chainId: result.chainId,
+          value: fromAddress,
+        });
 
-          try {
-            lastFinalizedBlock = (await ethersProvider.getBlock("finalized")).number;
-          } catch (error) {
-            lastFinalizedBlock = await ethersProvider.getBlockNumber();
+        // checking if we know how to read the payloads:
+        //   token bridge
+        const TOKEN_BRIDGE_CONTRACT = CONTRACTS[env.network][chainName].token_bridge;
+        if (emitterNattiveAddress.toUpperCase() === TOKEN_BRIDGE_CONTRACT.toUpperCase()) {
+          const buff = Buffer.from(payload.slice(2), "hex");
+          const payloadType = buff.subarray(0, 1)?.[0];
+          const amount = BigInt(`0x${buff.subarray(1, 33).toString("hex")}`).toString();
+
+          const tokenChain = buff.readUInt16BE(65);
+          const tokenAddress = buff.subarray(33, 65)?.toString("hex");
+
+          const toChain = buff.readUInt16BE(99);
+          let toAddress = buff.subarray(67, 99)?.toString("hex");
+
+          if (isCosmWasmChain(toChain as ChainId)) {
+            const addressBytes = ethers.utils.arrayify("0x" + toAddress);
+            /* TODO ??
+             * backend should probably NOT use last20bytes and use all bytes here.
+             * but for now, to maintain the same info with or without VAA, we use last 20 bytes */
+            const addressLast20Bytes = new Uint8Array(addressBytes.buffer.slice(-20));
+            const chainName = coalesceChainName(toChain as ChainId);
+            const cosmAddr = humanAddress(chainName, addressLast20Bytes);
+            toAddress = cosmAddr;
+          } else {
+            try {
+              toAddress = tryUint8ArrayToNative(buff.subarray(67, 99), toChain as ChainId);
+            } catch {
+              //
+            }
           }
 
-          let fromAddress = result.receipt.from;
-          let parsedFromAddress = parseAddress({
+          let fee =
+            payloadType === 1
+              ? BigInt(`0x${buff.subarray(101, 133).toString("hex")}`).toString()
+              : null;
+
+          fromAddress =
+            payloadType === 3 ? buff.subarray(101, 133)?.toString("hex") : result.receipt.from;
+
+          parsedFromAddress = parseAddress({
             chainId: result.chainId,
             value: fromAddress,
           });
 
-          // checking if we know how to read the payloads:
-          //   token bridge
-          const TOKEN_BRIDGE_CONTRACT = CONTRACTS[env.network][chainName].token_bridge;
-          if (emitterNattiveAddress.toUpperCase() === TOKEN_BRIDGE_CONTRACT.toUpperCase()) {
-            const buff = Buffer.from(payload.slice(2), "hex");
-            const payloadType = buff.subarray(0, 1)?.[0];
-            const amount = BigInt(`0x${buff.subarray(1, 33).toString("hex")}`).toString();
+          const tokenTransferPayload =
+            payloadType === 3 ? buff.subarray(133)?.toString("hex") : null;
 
-            const tokenChain = buff.readUInt16BE(65);
-            const tokenAddress = buff.subarray(33, 65)?.toString("hex");
+          let appIds = ["PORTAL_TOKEN_BRIDGE"];
+          if (tokenTransferPayload) {
+            if (isConnect(env.network, result.chainId, fromAddress)) {
+              appIds = ["PORTAL_TOKEN_BRIDGE", "CONNECT"];
+              const parsed = parseConnectPayload(buff.subarray(133));
 
-            const toChain = buff.readUInt16BE(99);
-            let toAddress = buff.subarray(67, 99)?.toString("hex");
-
-            if (isCosmWasmChain(toChain as ChainId)) {
-              const addressBytes = ethers.utils.arrayify("0x" + toAddress);
-              /* TODO ??
-               * backend should probably NOT use last20bytes and use all bytes here.
-               * but for now, to maintain the same info with or without VAA, we use last 20 bytes */
-              const addressLast20Bytes = new Uint8Array(addressBytes.buffer.slice(-20));
-              const chainName = coalesceChainName(toChain as ChainId);
-              const cosmAddr = humanAddress(chainName, addressLast20Bytes);
-              toAddress = cosmAddr;
-            } else {
-              try {
-                toAddress = tryUint8ArrayToNative(buff.subarray(67, 99), toChain as ChainId);
-              } catch {
-                //
+              if (toChain === CHAIN_ID_SUI) {
+                toAddress = `0x${parsed.recipientWallet}`;
+              } else {
+                toAddress = tryHexToNativeString(parsed.recipientWallet, toChain as ChainId);
               }
+              fee = parsed.targetRelayerFee.toString();
             }
+          }
 
-            let fee =
-              payloadType === 1
-                ? BigInt(`0x${buff.subarray(101, 133).toString("hex")}`).toString()
-                : null;
+          // other values
+          const parsedTokenAddress = parseAddress({
+            chainId: tokenChain as ChainId,
+            value: tokenAddress,
+            anyChain: true,
+          });
 
-            fromAddress =
-              payloadType === 3 ? buff.subarray(101, 133)?.toString("hex") : result.receipt.from;
-
-            parsedFromAddress = parseAddress({
+          const { name, symbol, tokenDecimals } = await getTokenInformation(
+            tokenChain,
+            env,
+            parsedTokenAddress,
+            wrappedTokenAddress,
+            result.chainId,
+          );
+          const decimals = tokenDecimals ? Math.min(8, tokenDecimals) : 8;
+          return {
+            amount:
+              amount && decimals
+                ? ethers.utils.formatUnits(amount, decimals)
+                : amount
+                ? amount
+                : null,
+            appIds,
+            blockNumber: result.receipt.blockNumber,
+            chain: result.chainId,
+            consistencyLevel,
+            emitterAddress,
+            emitterNattiveAddress,
+            fee: fee && decimals ? ethers.utils.formatUnits(fee, decimals) : fee ? fee : null,
+            fromAddress: parsedFromAddress,
+            id: `${result.chainId}/${emitterAddress}/${sequence}`,
+            lastFinalizedBlock,
+            name,
+            payloadType,
+            sender,
+            sequence: sequence.toString(),
+            symbol,
+            timestamp,
+            toAddress,
+            toChain,
+            tokenAddress: parsedTokenAddress,
+            tokenAmount: amount && decimals ? ethers.utils.formatUnits(amount, decimals) : null,
+            tokenChain,
+            tokenTransferPayload,
+            txHash: searchValue,
+            usdAmount: null, // TODO? should use coingecko or similar if needed.
+          };
+        }
+        // CCTP USDC-BRIDGE
+        else if (
+          emitterNattiveAddress.toUpperCase() ===
+          getCctpEmitterAddress(env, result.chainId).toUpperCase()
+        ) {
+          const parseCCTPRelayerPayload = (payloadArray: Buffer): CircleRelayerPayload => {
+            // start vaa payload
+            let offset = 0;
+            const version = payloadArray.readUint8(offset);
+            offset += 1; // 1
+            const tokenAddress = parseAddress({
               chainId: result.chainId,
-              value: fromAddress,
+              value: payloadArray.subarray(offset, offset + 32)?.toString("hex"),
             });
+            offset += 32; // 33
+            const amount = ethers.BigNumber.from(payloadArray.subarray(offset, offset + 32));
+            offset += 32; // 65
+            const fromDomain = payloadArray.readUInt32BE(offset);
+            offset += 4; // 69
+            const toDomain = payloadArray.readUInt32BE(offset);
+            offset += 4; // 73
 
-            const tokenTransferPayload =
-              payloadType === 3 ? buff.subarray(133)?.toString("hex") : null;
-
-            let appIds = ["PORTAL_TOKEN_BRIDGE"];
-            if (tokenTransferPayload) {
-              if (isConnect(env.network, result.chainId, fromAddress)) {
-                appIds = ["PORTAL_TOKEN_BRIDGE", "CONNECT"];
-                const parsed = parseConnectPayload(buff.subarray(133));
-
-                if (toChain === CHAIN_ID_SUI) {
-                  toAddress = `0x${parsed.recipientWallet}`;
-                } else {
-                  toAddress = tryHexToNativeString(parsed.recipientWallet, toChain as ChainId);
-                }
-                fee = parsed.targetRelayerFee.toString();
+            function readBigUint64BE(arr: any, offset = 0) {
+              let result = BigInt(0);
+              for (let i = 0; i < 8; i++) {
+                result = (result << BigInt(8)) + BigInt(arr[offset + i]);
               }
+              return result;
             }
+            const nonce = readBigUint64BE(payloadArray, offset).toString();
+            offset += 8; // 81
+            const fromAddressBytes = payloadArray.subarray(offset, offset + 32);
+            offset += 32; // 113
+            const mintRecipientBuff = payloadArray.subarray(offset, offset + 32);
+            offset += 32; // 145
+            offset += 2; // 147 (2 bytes for payload length)
+            const payload = payloadArray.subarray(offset);
+            // end vaa payload
 
-            // other values
-            const parsedTokenAddress = parseAddress({
-              chainId: tokenChain as ChainId,
-              value: tokenAddress,
-              anyChain: true,
-            });
+            // start payload of vaa payload reading
+            offset = 0;
+            const payloadId = payload.readUint8(offset);
+            offset += 1; // 148
+            const feeAmount = ethers.BigNumber.from(payload.subarray(offset, offset + 32));
+            offset += 32; // 180
+            const toNativeAmount = ethers.BigNumber.from(
+              payload.subarray(offset, offset + 32),
+            ).toString();
+            offset += 32; // 212
 
-            const { name, symbol, tokenDecimals } = await getTokenInformation(
-              tokenChain,
-              env,
-              parsedTokenAddress,
-              wrappedTokenAddress,
-              result.chainId,
-            );
-            const decimals = tokenDecimals ? Math.min(8, tokenDecimals) : 8;
-            return {
-              amount:
-                amount && decimals
-                  ? ethers.utils.formatUnits(amount, decimals)
-                  : amount
-                  ? amount
-                  : null,
-              appIds,
-              blockNumber: result.receipt.blockNumber,
-              chain: result.chainId,
-              consistencyLevel,
-              emitterAddress,
-              emitterNattiveAddress,
-              fee: fee && decimals ? ethers.utils.formatUnits(fee, decimals) : fee ? fee : null,
-              fromAddress: parsedFromAddress,
-              id: `${result.chainId}/${emitterAddress}/${sequence}`,
-              lastFinalizedBlock,
-              name,
-              payloadType,
-              sender,
-              sequence: sequence.toString(),
-              symbol,
-              timestamp,
-              toAddress,
-              toChain,
-              tokenAddress: parsedTokenAddress,
-              tokenAmount: amount && decimals ? ethers.utils.formatUnits(amount, decimals) : null,
-              tokenChain,
-              tokenTransferPayload,
-              txHash: search,
-              usdAmount: null, // TODO? should use coingecko or similar if needed.
-            };
-          }
-          // CCTP USDC-BRIDGE
-          else if (
-            emitterNattiveAddress.toUpperCase() ===
-            getCctpEmitterAddress(env, result.chainId).toUpperCase()
-          ) {
-            const parseCCTPRelayerPayload = (payloadArray: Buffer): CircleRelayerPayload => {
-              // start vaa payload
-              let offset = 0;
-              const version = payloadArray.readUint8(offset);
-              offset += 1; // 1
-              const tokenAddress = parseAddress({
-                chainId: result.chainId,
-                value: payloadArray.subarray(offset, offset + 32)?.toString("hex"),
-              });
-              offset += 32; // 33
-              const amount = ethers.BigNumber.from(payloadArray.subarray(offset, offset + 32));
-              offset += 32; // 65
-              const fromDomain = payloadArray.readUInt32BE(offset);
-              offset += 4; // 69
-              const toDomain = payloadArray.readUInt32BE(offset);
-              offset += 4; // 73
+            const recipientWalletBytes = Uint8Array.from(payload.subarray(offset, offset + 32));
+            const toAddress = uint8ArrayToHex(recipientWalletBytes);
+            // end payload
 
-              function readBigUint64BE(arr: any, offset = 0) {
-                let result = BigInt(0);
-                for (let i = 0; i < 8; i++) {
-                  result = (result << BigInt(8)) + BigInt(arr[offset + i]);
-                }
-                return result;
-              }
-              const nonce = readBigUint64BE(payloadArray, offset).toString();
-              offset += 8; // 81
-              const fromAddressBytes = payloadArray.subarray(offset, offset + 32);
-              offset += 32; // 113
-              const mintRecipientBuff = payloadArray.subarray(offset, offset + 32);
-              offset += 32; // 145
-              offset += 2; // 147 (2 bytes for payload length)
-              const payload = payloadArray.subarray(offset);
-              // end vaa payload
-
-              // start payload of vaa payload reading
-              offset = 0;
-              const payloadId = payload.readUint8(offset);
-              offset += 1; // 148
-              const feeAmount = ethers.BigNumber.from(payload.subarray(offset, offset + 32));
-              offset += 32; // 180
-              const toNativeAmount = ethers.BigNumber.from(
-                payload.subarray(offset, offset + 32),
-              ).toString();
-              offset += 32; // 212
-
-              const recipientWalletBytes = Uint8Array.from(payload.subarray(offset, offset + 32));
-              const toAddress = uint8ArrayToHex(recipientWalletBytes);
-              // end payload
-
-              const circleInfo = {
-                amount,
-                feeAmount,
-                fromAddressBytes,
-                fromDomain,
-                mintRecipientBuff,
-                nonce,
-                payload,
-                payloadId,
-                toAddress,
-                toDomain,
-                tokenAddress,
-                toNativeAmount,
-                version,
-              };
-              return circleInfo;
-            };
-
-            const cctpResult = parseCCTPRelayerPayload(Buffer.from(payload.slice(2), "hex"));
-            const amount = "" + 0.000001 * +cctpResult.amount; // 6 decimals for USDC
-            const fee = "" + 0.000001 * +cctpResult.feeAmount; // 6 decimals for USDC
-            const toNativeAmount = "" + 0.000001 * +cctpResult.toNativeAmount; // 6 decimals for USDC
-
-            return {
+            const circleInfo = {
               amount,
-              appIds: ["CCTP_WORMHOLE_INTEGRATION"],
-              chain: result.chainId,
-              consistencyLevel,
-              emitterAddress,
-              emitterNattiveAddress,
-              fee: `${+fee + +toNativeAmount}`,
-              fromAddress,
-              id: `${result.chainId}/${emitterAddress}/${sequence}`,
-              parsedFromAddress,
-              sequence: sequence.toString(),
-              symbol: "USDC",
-              timestamp,
-              toAddress: cctpResult.toAddress,
-              toChain: getCctpDomain(cctpResult.toDomain),
-              tokenAddress: cctpResult.tokenAddress,
-              tokenAmount: amount,
-              tokenChain: result.chainId,
+              feeAmount,
+              fromAddressBytes,
+              fromDomain,
+              mintRecipientBuff,
+              nonce,
+              payload,
+              payloadId,
+              toAddress,
+              toDomain,
+              tokenAddress,
               toNativeAmount,
-              txHash: search,
-              usdAmount: amount,
+              version,
             };
-          }
-          // default, no token-bridge nor cctp ones (can add other payload readers here)
-          else {
-            return null;
-          }
-        });
+            return circleInfo;
+          };
 
-      return !!txsData.length ? txsData : null;
-    } else {
-      return null;
-    }
+          const cctpResult = parseCCTPRelayerPayload(Buffer.from(payload.slice(2), "hex"));
+          const amount = "" + 0.000001 * +cctpResult.amount; // 6 decimals for USDC
+          const fee = "" + 0.000001 * +cctpResult.feeAmount; // 6 decimals for USDC
+          const toNativeAmount = "" + 0.000001 * +cctpResult.toNativeAmount; // 6 decimals for USDC
+
+          return {
+            amount,
+            appIds: ["CCTP_WORMHOLE_INTEGRATION"],
+            chain: result.chainId,
+            consistencyLevel,
+            emitterAddress,
+            emitterNattiveAddress,
+            fee: `${+fee + +toNativeAmount}`,
+            fromAddress,
+            id: `${result.chainId}/${emitterAddress}/${sequence}`,
+            parsedFromAddress,
+            sequence: sequence.toString(),
+            symbol: "USDC",
+            timestamp,
+            toAddress: cctpResult.toAddress,
+            toChain: getCctpDomain(cctpResult.toDomain),
+            tokenAddress: cctpResult.tokenAddress,
+            tokenAmount: amount,
+            tokenChain: result.chainId,
+            toNativeAmount,
+            txHash: searchValue,
+            usdAmount: amount,
+          };
+        }
+        // default, no token-bridge nor cctp ones (can add other payload readers here)
+        else {
+          return null;
+        }
+      });
+
+    return !!txsData.length ? txsData : null;
+  } else {
+    return null;
   }
-
-  return null;
 }
 
 // CCTP UTILS -----
