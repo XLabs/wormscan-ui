@@ -1,11 +1,10 @@
 import Error502Image from "src/assets/error502.svg";
 
 type Props = {
-  timer: number;
   goHome: () => void;
 };
 
-const Error502 = ({ timer, goHome }: Props) => {
+const Error502 = ({ goHome }: Props) => {
   return (
     <div className="error-page">
       <div className="error-page-container">
@@ -25,9 +24,6 @@ const Error502 = ({ timer, goHome }: Props) => {
         <div className="error-page-container-body">
           <p className="error-page-container-body-description">
             We couldn&apos;t reach the other side, <span>invalid response.</span>
-          </p>
-          <p className="error-page-container-body-description">
-            We&apos;ll try again in {timer} seconds.
           </p>
           <button className="error-page-container-body-button" onClick={goHome}>
             Back to Home

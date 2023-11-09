@@ -3,11 +3,10 @@ import { DISCORD_URL } from "src/consts";
 
 type Props = {
   q: string;
-  timer: number;
   goHome: () => void;
 };
 
-const Error400 = ({ q, timer, goHome }: Props) => {
+const Error400 = ({ q, goHome }: Props) => {
   return (
     <div className="error-page">
       <div className="error-page-container">
@@ -27,9 +26,6 @@ const Error400 = ({ q, timer, goHome }: Props) => {
             <span>
               <strong>{q || "empty string"}</strong>
             </span>
-          </p>
-          <p className="error-page-container-body-description error-page-container-body-description-400">
-            We&apos;ll try again in {timer} seconds.
           </p>
           <p className="error-page-container-body-description error-page-container-body-description-400">
             If you think this is a problem with us,

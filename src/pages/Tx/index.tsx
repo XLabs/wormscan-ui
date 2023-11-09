@@ -32,7 +32,6 @@ const Tx = () => {
   const isTxHashSearch = Boolean(txHash);
   const isVAAIdSearch = Boolean(chainId) && Boolean(emitter) && Boolean(seq);
   const q = isVAAIdSearch ? VAAId : txHash;
-  const storedQ = localStorage.getItem("q");
   const storedErrorCode = localStorage.getItem("errorCode");
   const initialErrorCode = storedErrorCode ? parseInt(storedErrorCode) : undefined;
   const [errorCode, setErrorCode] = useState<number | undefined>(initialErrorCode);
@@ -44,15 +43,14 @@ const Tx = () => {
 
   useEffect(() => {
     localStorage.removeItem("errorCode");
-
-    if (storedQ !== q) {
-      localStorage.removeItem("attemptsMade");
-    }
-  }, [q, storedQ]);
+  }, [q]);
 
   useEffect(() => {
     setIsLoading(true);
-  }, [txHash, chainId, emitter, seq]);
+    if (!initialErrorCode) {
+      setErrorCode(undefined);
+    }
+  }, [txHash, chainId, emitter, seq, initialErrorCode]);
 
   const showSearchNotFound = (err: Error) => {
     let statusCode = 404;
@@ -376,7 +374,7 @@ const Tx = () => {
         ) : isLoading ? (
           <>
             <Loader />
-            <p style={{ textAlign: "center" }}>
+            <p style={{ textAlign: "center", marginBottom: "48px" }}>
               {failCount === 1 && "We are searching..."}
               {failCount === 2 && "Still on it..."}
               {failCount === 3 && "We haven't found anything yet..."}
