@@ -379,7 +379,7 @@ const Tx = () => {
         ) : isLoading ? (
           <>
             <Loader />
-            <p style={{ textAlign: "center" }}>
+            <p style={{ textAlign: "center", marginBottom: "48px" }}>
               {failCount === 1 && "We are searching..."}
               {failCount === 2 && "Still on it..."}
               {failCount === 3 && "We haven't found anything yet..."}
