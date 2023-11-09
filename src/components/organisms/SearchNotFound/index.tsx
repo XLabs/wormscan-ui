@@ -19,7 +19,7 @@ const SearchNotFound = ({ q, errorCode }: SearchNotFoundProps) => {
 
   const [timer, setTimer] = useState<number>(15);
   const navigate = useNavigateCustom();
-  const isMaxAttempts = localStorage.getItem("attemptsMade") === "8";
+  const isMaxAttempts = localStorage.getItem("attemptsMade") === "4";
 
   useEffect(() => {
     setTimer(15);
