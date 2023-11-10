@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import { parseVaa } from "@certusone/wormhole-sdk";
@@ -39,6 +39,84 @@ const Tx = () => {
   const [extraRawInfo, setExtraRawInfo] = useState(null);
   const [blockData, setBlockData] = useState<GetBlockData>(null);
 
+  const cancelRequests = useRef(false);
+  const tryToGetRpcInfo = async () => {
+    const txsData = await fetchWithRpcFallThrough(environment, txHash);
+
+    if (txsData) {
+      const txData = await txsData[0];
+      if (txData) {
+        cancelRequests.current = true;
+
+        setParsedVAAsData([
+          {
+            appId: "",
+            decodedVaa: null,
+            emitterAddr: txData.emitterAddress,
+            emitterChain: txData.tokenChain,
+            emitterNativeAddr: txData.emitterNattiveAddress,
+            guardianSetIndex: null,
+            id: txData.id,
+            indexedAt: null,
+            payload: null,
+            sequence: txData.sequence,
+            timestamp: new Date(txData.timestamp),
+            txHash: txData.txHash,
+            updatedAt: null,
+            vaa: "",
+            version: 1,
+          },
+        ]);
+        setEmitterChainId(txData.chain as ChainId);
+        setTxData([
+          {
+            emitterAddress: txData.emitterAddress,
+            emitterChain: txData.chain,
+            emitterNativeAddress: txData.emitterNattiveAddress,
+            globalTx: null,
+            id: txData.id,
+            payload: {
+              payloadType: txData.payloadType,
+              parsedPayload: {
+                feeAmount: txData?.fee,
+                toNativeAmount: txData?.toNativeAmount,
+              },
+            },
+            standardizedProperties: {
+              amount: txData.amount,
+              appIds: txData.appIds ?? [],
+              fee: txData.fee,
+              feeAddress: "",
+              feeChain: txData.chain,
+              fromAddress: txData.fromAddress,
+              fromChain: txData.chain,
+              toAddress: txData.toAddress,
+              toChain: txData.toChain,
+              tokenAddress: txData.tokenAddress,
+              tokenChain: txData.tokenChain,
+            },
+            symbol: txData.symbol,
+            timestamp: new Date(txData.timestamp),
+            tokenAmount: txData.tokenAmount,
+            txHash: txData.txHash,
+            usdAmount: txData.usdAmount,
+          },
+        ]);
+        setBlockData({
+          currentBlock: txData.blockNumber,
+          lastFinalizedBlock: txData.lastFinalizedBlock,
+        });
+
+        setErrorCode(undefined);
+        setIsLoading(false);
+      } else {
+        cancelRequests.current = false;
+      }
+    } else {
+      cancelRequests.current = false;
+    }
+  };
+
   useEffect(() => {
     setErrorCode(undefined);
     setIsLoading(true);
@@ -71,99 +149,23 @@ const Tx = () => {
     {
       onSettled: async (data, error: Error) => {
         setFailCount(0);
-
-        if (error || data.length === 0) {
-          if (isEvmTxHash) {
-            const txsData = await fetchWithRpcFallThrough(environment, txHash);
-
-            if (txsData) {
-              const txData = await txsData[0];
-              if (txData) {
-                setParsedVAAsData([
-                  {
-                    appId: "",
-                    decodedVaa: null,
-                    emitterAddr: txData.emitterAddress,
-                    emitterChain: txData.tokenChain,
-                    emitterNativeAddr: txData.emitterNattiveAddress,
-                    guardianSetIndex: null,
-                    id: txData.id,
-                    indexedAt: null,
-                    payload: null,
-                    sequence: txData.sequence,
-                    timestamp: new Date(txData.timestamp),
-                    txHash: txData.txHash,
-                    updatedAt: null,
-                    vaa: "",
-                    version: 1,
-                  },
-                ]);
-                setEmitterChainId(txData.chain as ChainId);
-                setTxData([
-                  {
-                    emitterAddress: txData.emitterAddress,
-                    emitterChain: txData.chain,
-                    emitterNativeAddress: txData.emitterNattiveAddress,
-                    globalTx: null,
-                    id: txData.id,
-                    payload: {
-                      payloadType: txData.payloadType,
-                      parsedPayload: {
-                        feeAmount: txData?.fee,
-                        toNativeAmount: txData?.toNativeAmount,
-                      },
-                    },
-                    standardizedProperties: {
-                      amount: txData.amount,
-                      appIds: txData.appIds ?? [],
-                      fee: txData.fee,
-                      feeAddress: "",
-                      feeChain: txData.chain,
-                      fromAddress: txData.fromAddress,
-                      fromChain: txData.chain,
-                      toAddress: txData.toAddress,
-                      toChain: txData.toChain,
-                      tokenAddress: txData.tokenAddress,
-                      tokenChain: txData.tokenChain,
-                    },
-                    symbol: txData.symbol,
-                    timestamp: new Date(txData.timestamp),
-                    tokenAmount: txData.tokenAmount,
-                    txHash: txData.txHash,
-                    usdAmount: txData.usdAmount,
-                  },
-                ]);
-                setBlockData({
-                  currentBlock: txData.blockNumber,
-                  lastFinalizedBlock: txData.lastFinalizedBlock,
-                });
-
-                setErrorCode(undefined);
-                setIsLoading(false);
-              } else {
-                showSearchNotFound(error);
-              }
-            } else {
-              showSearchNotFound(error);
-            }
-          } else {
-            showSearchNotFound(error);
-          }
+        if ((error || data.length === 0) && !cancelRequests.current) {
+          showSearchNotFound(error);
         }
       },
       enabled: isTxHashSearch && !errorCode,
-      retryDelay: errCount => {
-        // if is evm, should go to onSettled to hit RPCs
-        if (isEvmTxHash) return 1000;
-        // if not, wait some seconds before retrying
-        return 5000 * (errCount + 1);
-      },
+      retryDelay: errCount => 5000 * (errCount + 1),
       retry: errCount => {
-        // first error just retry
+        // if request was cancelled, dont retry
+        if (cancelRequests.current) return false;
+
+        // first error, retry on every case
         if (errCount === 0) return true;
 
-        if (!isEvmTxHash) setFailCount(errCount);
+        // second error, if hash is evm-like, hit rpcs
+        if (errCount === 1 && isEvmTxHash) tryToGetRpcInfo();
 
+        setFailCount(errCount);
         // more than three fails, stop retrying
         if (errCount > 3) {
           return false;
