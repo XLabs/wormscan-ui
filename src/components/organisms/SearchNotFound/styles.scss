@@ -12,7 +12,7 @@
     &-bg-503 {
       background-repeat: no-repeat;
       background-position: calc(50% - 136px) center;
-      background-image: url("../../assets/bg-503.svg");
+      background-image: url("/src/assets/bg-503.svg");
     }
   }
 
@@ -23,11 +23,11 @@
   &-bg-500 {
     background-repeat: no-repeat;
     background-position: calc(50% + 116px) calc(50% - 136px);
-    background-image: url("../../assets/bg-mobile-500.svg");
+    background-image: url("/src/assets/bg-mobile-500.svg");
 
     @include desktop {
       background-position: center;
-      background-image: url("../../assets/bg-500.svg");
+      background-image: url("/src/assets/bg-500.svg");
     }
   }
 

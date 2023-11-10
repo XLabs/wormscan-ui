@@ -5,12 +5,12 @@ import { CopyIcon } from "@radix-ui/react-icons";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BlockchainIcon, Loader, NavLink } from "src/components/atoms";
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
+import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { formatAppIds, parseAddress, parseTx, shortAddress } from "src/utils/crypto";
 import { timeAgo } from "src/utils/date";
 import { formatCurrency } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import { ChainId, Order } from "src/api";
 import { getClient } from "src/api/Client";
 import { GetTransactionsOutput } from "src/api/search/types";
@@ -37,21 +37,17 @@ const Txs = () => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
 
-  const navigate = useNavigateCustom();
   const [searchParams, setSearchParams] = useSearchParams();
   const address = searchParams.get("address");
   const page = Number(searchParams.get("page"));
   const currentPage = page >= 1 ? page : 1;
+  const q = address ? address : "txs";
   const isTxsFiltered = address ? true : false;
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
   const [isPaginationLoading, setIsPaginationLoading] = useState<boolean>(false);
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
   const [parsedTxsData, setParsedTxsData] = useState<TransactionOutput[] | undefined>(undefined);
-
-  useEffect(() => {
-    localStorage.removeItem("reloadRedirect");
-    localStorage.removeItem("attemptsMade");
-  }, []);
 
   const stopPropagation = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation();
@@ -68,6 +64,7 @@ const Txs = () => {
   );
 
   useEffect(() => {
+    setErrorCode(undefined);
     setIsLoading(true);
   }, [address]);
 
@@ -89,15 +86,13 @@ const Txs = () => {
       refetchInterval: () => (currentPage === 1 ? REFETCH_TIME : false),
       onError: (err: Error) => {
         let statusCode = 404;
+
         if (err?.message) {
           // get the status code from the error message
           statusCode = parseInt(err?.message?.match(/\d+/)?.[0], 10);
         }
-        navigate(`/search-not-found?q=${address || "txs"}`, {
-          state: {
-            status: statusCode,
-          },
-        });
+
+        setErrorCode(statusCode);
       },
       onSuccess: (txs: GetTransactionsOutput[]) => {
         const tempRows: TransactionOutput[] = [];
@@ -280,6 +275,7 @@ const Txs = () => {
         setIsLoading(false);
         setIsPaginationLoading(false);
       },
+      enabled: !errorCode,
     },
   );
 
@@ -290,7 +286,9 @@ const Txs = () => {
   return (
     <BaseLayout>
       <div className="txs-page" data-testid="txs-page">
-        {isLoading ? (
+        {errorCode ? (
+          <SearchNotFound q={q} errorCode={errorCode} />
+        ) : isLoading ? (
           <Loader />
         ) : (
           <>

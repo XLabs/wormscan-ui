@@ -2,11 +2,10 @@ import AstronautImage from "src/assets/astronaut.svg";
 import Error500Image from "src/assets/error500.svg";
 
 type Props = {
-  timer: number;
   goHome: () => void;
 };
 
-const Error500 = ({ timer, goHome }: Props) => {
+const Error500 = ({ goHome }: Props) => {
   return (
     <div className="error-page error-page-bg-500">
       <div className="error-page-container">
@@ -31,9 +30,6 @@ const Error500 = ({ timer, goHome }: Props) => {
           <p className="error-page-container-body-description error-page-container-body-description-500">
             While traversing time and space we&apos;ve encountered an issue, we&apos;ll overcome it
             shortly.
-          </p>
-          <p className="error-page-container-body-description error-page-container-body-description-500">
-            We&apos;ll try again in {timer} seconds.
           </p>
           <p className="error-page-container-body-code">Error code: 500</p>
           <button className="error-page-container-body-button" onClick={goHome}>

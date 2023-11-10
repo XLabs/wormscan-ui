@@ -2,11 +2,10 @@ import Error503Image from "src/assets/error503.svg";
 import { DISCORD_URL } from "src/consts";
 
 type Props = {
-  timer: number;
   goHome: () => void;
 };
 
-const Error503 = ({ timer, goHome }: Props) => {
+const Error503 = ({ goHome }: Props) => {
   return (
     <div className="error-page error-page-bg-503">
       <div className="error-page-container">
@@ -29,9 +28,6 @@ const Error503 = ({ timer, goHome }: Props) => {
             <span>
               We are currently experiencing service <span>unavailability.</span>
             </span>
-          </p>
-          <p className="error-page-container-body-description">
-            We&apos;ll try again in {timer} seconds.
           </p>
           <p className="error-page-container-body-description">
             If the problem persists, please reach

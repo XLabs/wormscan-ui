@@ -4,9 +4,9 @@ import { useParams } from "react-router-dom";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
+import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { fetchWithRpcFallThrough } from "src/utils/fetchWithRPCsFallthrough";
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import { parseTx } from "src/utils/crypto";
 import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
@@ -20,19 +20,19 @@ import "./styles.scss";
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
 const Tx = () => {
-  const navigate = useNavigateCustom();
   const { txHash, chainId, emitter, seq } = useParams();
   const { environment } = useEnvironment();
   const network = environment.network;
 
   // pattern match the search value to see if it's a candidate for being an EVM transaction hash.
-  const search = txHash.startsWith("0x") ? txHash : "0x" + txHash;
+  const search = txHash ? (txHash.startsWith("0x") ? txHash : "0x" + txHash) : "";
   const isEvmTxHash = !!search.match(/0x[0-9a-fA-F]{64}/);
 
   const VAAId: string = `${chainId}/${emitter}/${seq}`;
   const isTxHashSearch = Boolean(txHash);
   const isVAAIdSearch = Boolean(chainId) && Boolean(emitter) && Boolean(seq);
   const q = isVAAIdSearch ? VAAId : txHash;
+  const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [parsedVAAsData, setParsedVAAsData] = useState<ParsedVAA[] | undefined>(undefined);
@@ -40,33 +40,18 @@ const Tx = () => {
   const [blockData, setBlockData] = useState<GetBlockData>(null);
 
   useEffect(() => {
-    if (localStorage.getItem("reloadRedirect")) {
-      localStorage.setItem("reloadRedirect", `/tx/${q}`);
-      localStorage.removeItem("attemptsMade");
-    }
-  }, [q]);
-
-  useEffect(() => {
+    setErrorCode(undefined);
     setIsLoading(true);
   }, [txHash, chainId, emitter, seq]);
 
-  useEffect(() => {
-    if (!network) return;
-
-    setIsLoading(true);
-  }, [network]);
-
-  const navigateToSearchNotFound = (err: Error, param: string) => {
+  const showSearchNotFound = (err: Error) => {
     let statusCode = 404;
-    if (err?.message) {
+    if (err?.message && !isNaN(Number(err?.message?.match(/\d+/)?.[0]))) {
       // get the status code from the error message
       statusCode = parseInt(err?.message?.match(/\d+/)?.[0], 10);
     }
-    navigate(`/search-not-found?q=${param}`, {
-      state: {
-        status: statusCode,
-      },
-    });
+    setErrorCode(statusCode);
+    setIsLoading(false);
   };
 
   const [failCount, setFailCount] = useState(0);
@@ -153,19 +138,20 @@ const Tx = () => {
                   lastFinalizedBlock: txData.lastFinalizedBlock,
                 });
 
+                setErrorCode(undefined);
                 setIsLoading(false);
               } else {
-                navigateToSearchNotFound(error, txHash);
+                showSearchNotFound(error);
               }
             } else {
-              navigateToSearchNotFound(error, txHash);
+              showSearchNotFound(error);
             }
           } else {
-            navigateToSearchNotFound(error, txHash);
+            showSearchNotFound(error);
           }
         }
       },
-      enabled: isTxHashSearch,
+      enabled: isTxHashSearch && !errorCode,
       retryDelay: errCount => {
         // if is evm, should go to onSettled to hit RPCs
         if (isEvmTxHash) return 1000;
@@ -190,6 +176,10 @@ const Tx = () => {
   const { data: VAADataByVAAId }: { data: VAADetail } = useQuery(
     ["getVAA", VAAId],
     () => {
+      if (isNaN(Number(chainId)) || isNaN(Number(seq))) {
+        throw new Error("Request failed with status code 400");
+      }
+
       return getClient().guardianNetwork.getVAA({
         chainId: Number(chainId),
         emitter,
@@ -200,8 +190,9 @@ const Tx = () => {
       });
     },
     {
-      onError: (err: Error) => navigateToSearchNotFound(err, VAAId),
-      enabled: isVAAIdSearch,
+      onError: (err: Error) => showSearchNotFound(err),
+      enabled: isVAAIdSearch && !errorCode,
+      retry: false,
     },
   );
 
@@ -298,9 +289,12 @@ const Tx = () => {
     {
       enabled: false,
       onSuccess: data => {
-        if (!!data.length) setIsLoading(false);
+        if (!!data.length) {
+          setErrorCode(undefined);
+          setIsLoading(false);
+        }
       },
-      onError: (err: Error) => navigateToSearchNotFound(err, VAADataTxHash || VAAId),
+      onError: (err: Error) => showSearchNotFound(err),
     },
   );
 
@@ -312,6 +306,7 @@ const Tx = () => {
 
   useEffect(() => {
     if (!VAAData) return;
+    setErrorCode(undefined);
     refetchTxData();
   }, [VAAData, refetchTxData]);
 
@@ -367,10 +362,12 @@ const Tx = () => {
   return (
     <BaseLayout>
       <div className="tx-page">
-        {isLoading ? (
+        {errorCode ? (
+          <SearchNotFound q={q} errorCode={errorCode} />
+        ) : isLoading ? (
           <>
             <Loader />
-            <p style={{ textAlign: "center" }}>
+            <p style={{ textAlign: "center", marginBottom: "48px" }}>
               {failCount === 1 && "We are searching..."}
               {failCount === 2 && "Still on it..."}
               {failCount === 3 && "We haven't found anything yet..."}
@@ -384,7 +381,7 @@ const Tx = () => {
               gatewayInfo={txData?.[0]?.globalTx?.originTx?.attribute?.value}
               payloadType={payloadType}
             />
-            {parsedVAAsData.map(
+            {parsedVAAsData?.map(
               parsedVAAData =>
                 txData && (
                   <Information
