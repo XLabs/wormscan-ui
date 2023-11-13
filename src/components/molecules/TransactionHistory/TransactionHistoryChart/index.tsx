@@ -148,7 +148,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                     show: false,
                     padding: {
                       // This is to make the chart look aligned to the right
-                      right: isWidthOver1200px ? seriesLabels[0].length * -2.4 : 10,
+                      right: isWidthOver1200px ? seriesLabels[0]?.length * -2.4 : 10,
                       left: -2,
                     },
                   },
