@@ -115,9 +115,10 @@ const CrossChainChart = () => {
             <ErrorPlaceholder errorType="sankey" />
           ) : (
             <Chart
+              currentNetwork={currentNetwork}
               data={data}
-              selectedType={selectedType}
               selectedDestination={selectedDestination}
+              selectedType={selectedType}
             />
           )}
         </>

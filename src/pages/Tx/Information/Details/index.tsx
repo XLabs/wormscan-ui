@@ -87,8 +87,8 @@ const Details = ({
           <div className="tx-details-group-line-value" ref={lineValueRef}>
             {fromChain ? (
               <>
-                <BlockchainIcon chainId={fromChain} size={24} />
-                {getChainName({ chainId: fromChain }).toUpperCase()}
+                <BlockchainIcon chainId={fromChain} network={currentNetwork} size={24} />
+                {getChainName({ chainId: fromChain, network: currentNetwork }).toUpperCase()}
                 {isGatewaySource && <span className="comment"> (through Wormchain)</span>}
               </>
             ) : (
@@ -262,8 +262,8 @@ const Details = ({
           <div className="tx-details-group-line-value">
             {toChain ? (
               <>
-                <BlockchainIcon chainId={toChain} size={24} />
-                {getChainName({ chainId: toChain }).toUpperCase()}
+                <BlockchainIcon chainId={toChain} network={currentNetwork} size={24} />
+                {getChainName({ chainId: toChain, network: currentNetwork }).toUpperCase()}
                 {parsedPayload?.["gateway_transfer"] && (
                   <span className="comment"> (through Wormchain)</span>
                 )}

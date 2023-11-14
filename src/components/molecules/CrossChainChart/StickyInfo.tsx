@@ -6,9 +6,11 @@ import useOutsideClick from "src/utils/hooks/useOutsideClick";
 import { ChainId } from "src/api";
 import { CrossChainBy } from "src/api/guardian-network/types";
 import { Info } from "./Chart";
+import { Network } from "@certusone/wormhole-sdk";
 
 type Props = {
   chainName: string;
+  currentNetwork: Network;
   destinations: any[];
   selectedDestination: "sources" | "destinations";
   selectedInfo: Info;
@@ -17,6 +19,7 @@ type Props = {
 
 export const StickyInfo = ({
   chainName,
+  currentNetwork,
   destinations,
   selectedDestination,
   selectedInfo,
@@ -105,10 +108,11 @@ export const StickyInfo = ({
             <div key={destination.chain} className="cross-chain-sticky-info spaced">
               <span>
                 <BlockchainIcon
+                  chainId={destination.chain}
                   className="chain-icon"
                   dark={true}
+                  network={currentNetwork}
                   size={22}
-                  chainId={destination.chain}
                 />
               </span>
               <span className="cross-chain-sticky-info-destination">

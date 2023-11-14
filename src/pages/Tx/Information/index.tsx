@@ -299,7 +299,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
               <p>The VAA for this transaction has not been issued yet.</p>
               <p>This information can be incomplete or have wrong values.</p>
               <p>
-                Waiting for finality on {getChainName({ chainId: fromChain })} which may take up to
+                Waiting for finality on {getChainName({ chainId: fromChain, network: currentNetwork })} which may take up to
                 15 minutes.
               </p>
               {lastFinalizedBlock && currentBlock && (

@@ -12,7 +12,6 @@ import { colorStatus, getGuardianSet } from "src/consts";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import RelayIcon from "src/icons/relayIcon.svg";
-import WormIcon from "src/icons/wormIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress, shortVaaId } from "src/utils/crypto";
 import { parseAddress } from "src/utils/crypto";
@@ -314,9 +313,14 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
             </div>
             <div className="relayer-tx-overview-graph-step-iconWrapper">
               {fromChain && (
-                <Tooltip tooltip={<div>{getChainName({ chainId: fromChain })}</div>} type="info">
+                <Tooltip
+                  tooltip={
+                    <div>{getChainName({ chainId: fromChain, network: currentNetwork })}</div>
+                  }
+                  type="info"
+                >
                   <div className="relayer-tx-overview-graph-step-iconContainer">
-                    <BlockchainIcon chainId={fromChain} size={32} />
+                    <BlockchainIcon chainId={fromChain} network={currentNetwork} size={32} />
                   </div>
                 </Tooltip>
               )}
@@ -345,7 +349,12 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                   </div>
                   <div>
                     (
-                    {fromChain && getChainName({ chainId: fromChain, acronym: true }).toUpperCase()}
+                    {fromChain &&
+                      getChainName({
+                        chainId: fromChain,
+                        acronym: true,
+                        network: currentNetwork,
+                      }).toUpperCase()}
                     )
                   </div>
                 </div>
@@ -386,9 +395,14 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
             </div>
             <div className="relayer-tx-overview-graph-step-iconWrapper">
               {fromChain && (
-                <Tooltip tooltip={<div>{getChainName({ chainId: fromChain })}</div>} type="info">
+                <Tooltip
+                  tooltip={
+                    <div>{getChainName({ chainId: fromChain, network: currentNetwork })}</div>
+                  }
+                  type="info"
+                >
                   <div className="relayer-tx-overview-graph-step-iconContainer">
-                    <BlockchainIcon chainId={fromChain} size={32} />
+                    <BlockchainIcon chainId={fromChain} network={currentNetwork} size={32} />
                   </div>
                 </Tooltip>
               )}
@@ -417,7 +431,12 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                   </div>
                   <div>
                     (
-                    {fromChain && getChainName({ chainId: fromChain, acronym: true }).toUpperCase()}
+                    {fromChain &&
+                      getChainName({
+                        chainId: fromChain,
+                        acronym: true,
+                        network: currentNetwork,
+                      }).toUpperCase()}
                     )
                   </div>
                 </div>
@@ -501,6 +520,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                         {getChainName({
                           chainId: deliveryInstruction.targetChainId,
                           acronym: true,
+                          network: currentNetwork,
                         }).toUpperCase()}
                         )
                       </div>
@@ -602,12 +622,21 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                   <div className="relayer-tx-overview-graph-step-iconWrapper">
                     <Tooltip
                       tooltip={
-                        <div>{getChainName({ chainId: deliveryInstruction.refundChainId })}</div>
+                        <div>
+                          {getChainName({
+                            chainId: deliveryInstruction.refundChainId,
+                            network: currentNetwork,
+                          })}
+                        </div>
                       }
                       type="info"
                     >
                       <div className="relayer-tx-overview-graph-step-iconContainer">
-                        <BlockchainIcon chainId={deliveryInstruction.refundChainId} size={32} />
+                        <BlockchainIcon
+                          chainId={deliveryInstruction.refundChainId}
+                          network={currentNetwork}
+                          size={32}
+                        />
                       </div>
                     </Tooltip>
                   </div>
@@ -636,6 +665,7 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                           {getChainName({
                             chainId: deliveryInstruction.refundChainId,
                             acronym: true,
+                            network: currentNetwork,
                           }).toUpperCase()}
                           )
                         </div>
@@ -687,13 +717,20 @@ const RelayerOverview = ({ lifecycleRecord, VAAData }: Props) => {
                         <Tooltip
                           tooltip={
                             <div>
-                              {getChainName({ chainId: deliveryInstruction.refundChainId })}
+                              {getChainName({
+                                chainId: deliveryInstruction.refundChainId,
+                                network: currentNetwork,
+                              })}
                             </div>
                           }
                           type="info"
                         >
                           <div className="relayer-tx-overview-graph-step-iconContainer">
-                            <BlockchainIcon chainId={deliveryInstruction.refundChainId} size={32} />
+                            <BlockchainIcon
+                              chainId={deliveryInstruction.refundChainId}
+                              network={currentNetwork}
+                              size={32}
+                            />
                           </div>
                         </Tooltip>
                       </div>

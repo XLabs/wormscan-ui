@@ -76,9 +76,12 @@ const Overview = ({
         </div>
         <div className="tx-overview-graph-step-iconWrapper">
           {fromChain && (
-            <Tooltip tooltip={<div>{getChainName({ chainId: fromChain })}</div>} type="info">
+            <Tooltip
+              tooltip={<div>{getChainName({ chainId: fromChain, network: currentNetwork })}</div>}
+              type="info"
+            >
               <div className="tx-overview-graph-step-iconContainer">
-                <BlockchainIcon chainId={fromChain} size={32} />
+                <BlockchainIcon chainId={fromChain} network={currentNetwork} size={32} />
               </div>
             </Tooltip>
           )}
@@ -286,9 +289,12 @@ const Overview = ({
             <div>TARGET CHAIN</div>
           </div>
           <div className="tx-overview-graph-step-iconWrapper">
-            <Tooltip tooltip={<div>{getChainName({ chainId: toChain })}</div>} type="info">
+            <Tooltip
+              tooltip={<div>{getChainName({ chainId: toChain, network: currentNetwork })}</div>}
+              type="info"
+            >
               <div className="tx-overview-graph-step-iconContainer">
-                <BlockchainIcon chainId={toChain} size={32} />
+                <BlockchainIcon chainId={toChain} network={currentNetwork} size={32} />
               </div>
             </Tooltip>
           </div>
