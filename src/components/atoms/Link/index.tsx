@@ -1,7 +1,7 @@
 import { Link as RouterLink, LinkProps, useSearchParams } from "react-router-dom";
+import { Network } from "@certusone/wormhole-sdk";
 import { parseTo } from "src/utils/route";
 import "./style.scss";
-import { Network } from "@certusone/wormhole-sdk";
 
 const Link = (props: LinkProps & { asNavLink?: boolean }) => {
   const { to, asNavLink = true, ...rest } = props;

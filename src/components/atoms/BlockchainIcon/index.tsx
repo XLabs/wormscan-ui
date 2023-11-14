@@ -1,6 +1,6 @@
+import { Network } from "@certusone/wormhole-sdk";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
 import { ChainId } from "src/api";
-import { Network } from "@certusone/wormhole-sdk";
 
 type Props = {
   chainId: ChainId;

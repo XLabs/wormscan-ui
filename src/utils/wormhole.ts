@@ -1,3 +1,4 @@
+import { Network } from "@certusone/wormhole-sdk";
 import { ChainId } from "src/api";
 
 // import NoIcon from "src/icons/blockchains/noIcon.svg";
@@ -63,7 +64,6 @@ import TerraDarkIcon from "src/icons/blockchains/dark/terra.svg";
 import XplaDarkIcon from "src/icons/blockchains/dark/xpla.svg";
 
 import { parseAddress, parseTx } from "./crypto";
-import { Network } from "@certusone/wormhole-sdk";
 
 export type ExplorerBaseURLInput = {
   network: Network;

@@ -1,6 +1,6 @@
 import { NavLink as RouterLink, NavLinkProps, useSearchParams } from "react-router-dom";
-import { parseTo } from "src/utils/route";
 import { Network } from "@certusone/wormhole-sdk";
+import { parseTo } from "src/utils/route";
 import "./style.scss";
 
 const NavLink = (props: NavLinkProps) => {

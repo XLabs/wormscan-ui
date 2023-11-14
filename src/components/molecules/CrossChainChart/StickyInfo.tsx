@@ -1,12 +1,12 @@
 import { useRef, useState } from "react";
 import Draggable from "react-draggable";
+import { Network } from "@certusone/wormhole-sdk";
 import { BlockchainIcon } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
 import useOutsideClick from "src/utils/hooks/useOutsideClick";
 import { ChainId } from "src/api";
 import { CrossChainBy } from "src/api/guardian-network/types";
 import { Info } from "./Chart";
-import { Network } from "@certusone/wormhole-sdk";
 
 type Props = {
   chainName: string;
