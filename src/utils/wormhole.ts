@@ -281,7 +281,6 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     name: "Avalanche",
     nameTestnet: "Fuji",
     acronym: "AVAX",
-    acronymTestnet: "Fuji",
     icon: AvalancheIcon,
     darkIcon: AvalancheDarkIcon,
     explorer: {
@@ -331,7 +330,6 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     name: "Ethereum",
     nameTestnet: "Goerli",
     acronym: "ETH",
-    acronymTestnet: "Goerli",
     icon: EthereumIcon,
     darkIcon: EthereumDarkIcon,
     explorer: {
@@ -630,9 +628,7 @@ export const getChainName = ({
 
   if (acronym) {
     if (network === "TESTNET")
-      return (
-        chainInfo?.acronymTestnet || chainInfo?.nameTestnet || chainInfo?.acronym || chainInfo?.name
-      );
+      return chainInfo?.nameTestnet || chainInfo?.acronym || chainInfo?.name;
 
     return chainInfo?.acronym || chainInfo?.name;
   }
