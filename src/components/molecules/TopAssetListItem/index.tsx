@@ -1,4 +1,5 @@
 import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { useEnvironment } from "src/context/EnvironmentContext";
 import { BlockchainIcon } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
 import { getChainName } from "src/utils/wormhole";
@@ -13,19 +14,23 @@ type Props = {
 };
 
 const TopAssetListItem = ({ from_chain, token_logo, symbol, volume }: Props) => {
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+
   return (
     <div className="top-asset-list-item">
       <div className="top-asset-list-item-from">
         <div className="top-asset-list-item-from-icon-container">
           <BlockchainIcon
-            size={25}
             chainId={from_chain}
             className="top-asset-list-item-from-icon"
+            network={currentNetwork}
+            size={25}
           />
         </div>
 
         <div className="top-asset-list-item-from-chain">
-          {getChainName({ chainId: from_chain, acronym: true })}
+          {getChainName({ chainId: from_chain, acronym: true, network: currentNetwork })}
         </div>
       </div>
       <div>

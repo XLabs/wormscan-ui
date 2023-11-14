@@ -1,6 +1,6 @@
 import { Path, useNavigate, useSearchParams } from "react-router-dom";
-import { parseTo } from "../route";
 import { Network } from "@certusone/wormhole-sdk";
+import { parseTo } from "../route";
 
 export function useNavigateCustom() {
   const realNavigate = useNavigate();

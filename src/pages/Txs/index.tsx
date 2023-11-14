@@ -193,9 +193,9 @@ const Txs = () => {
                 originApp: appIds?.length > 0 ? formatAppIds(appIds) : "-",
                 from: (
                   <div className="tx-from">
-                    <BlockchainIcon chainId={fromChain} size={24} />
+                    <BlockchainIcon chainId={fromChain} network={currentNetwork} size={24} />
                     <div>
-                      {getChainName({ chainId: fromChain })}
+                      {getChainName({ chainId: fromChain, network: currentNetwork })}
                       {sourceAddress && (
                         <div className="tx-from-address">
                           <a
@@ -225,9 +225,9 @@ const Txs = () => {
                   <div className="tx-to">
                     {toChain ? (
                       <>
-                        <BlockchainIcon chainId={toChain} size={24} />
+                        <BlockchainIcon chainId={toChain} network={currentNetwork} size={24} />
                         <div>
-                          {getChainName({ chainId: toChain })}
+                          {getChainName({ chainId: toChain, network: currentNetwork })}
                           <div className="tx-from-address">
                             <a
                               href={getExplorerLink({

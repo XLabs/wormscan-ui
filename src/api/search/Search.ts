@@ -1,3 +1,4 @@
+import { Network } from "@certusone/wormhole-sdk";
 import axios, { AxiosError } from "axios";
 import { APIClient } from "src/api/api-client";
 import { COINGECKO_URL } from "src/api/consts";
@@ -14,7 +15,6 @@ import {
   GetTransactionsInput,
   GetTransactionsOutput,
 } from "./types";
-import { Network } from "@certusone/wormhole-sdk";
 
 interface FindVAAByAddressInput {
   address: string;

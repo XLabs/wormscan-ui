@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Network } from "@certusone/wormhole-sdk";
 import { BREAKPOINTS } from "src/consts";
 import { BlockchainIcon, Pagination } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
+import { getChainName } from "src/utils/wormhole";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
+import { ChainId } from "src/api";
 import { CrossChainActivity, CrossChainBy } from "src/api/guardian-network/types";
 import { StickyInfo } from "./StickyInfo";
-import { getChainName, processData } from "./chartUtils";
+import { processData } from "./chartUtils";
 
 interface IChartChain {
   itemHeight: number;
@@ -19,13 +22,28 @@ const CHART_SIZE = 650;
 const MARGIN_SIZE_CANVAS = 2;
 
 type Props = {
+  currentNetwork: Network;
   data: CrossChainActivity;
   selectedType: CrossChainBy;
   selectedDestination: "sources" | "destinations";
 };
 export type Info = { percentage: number; volume: number };
 
-export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
+const getAbbreviatedName = ({
+  abbreviateIf = false,
+  chainName,
+}: {
+  abbreviateIf: boolean;
+  chainName: string;
+}) => {
+  if (abbreviateIf) {
+    const nameParts = chainName.split(" ");
+    return nameParts.length > 1 ? nameParts[0] : chainName;
+  }
+  return chainName;
+};
+
+export const Chart = ({ currentNetwork, data, selectedType, selectedDestination }: Props) => {
   const [isShowingOthers, setIsShowingOthers] = useState(false);
   const [chartData, setChartData] = useState(processData(data, false, selectedDestination));
 
@@ -271,6 +289,7 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
         className={`cross-chain-chart-side-item nonSelectable ${
           isSourcesSelected ? "right" : "left"
         }`}
+        data-network={currentNetwork}
         data-percentage={item.percentage}
         style={{
           height: (item.percentage * CHART_SIZE) / 100,
@@ -278,20 +297,33 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
           marginBottom: MARGIN_SIZE_ELEMENTS,
         }}
       >
-        <div data-selected={true} className="volume-info">
+        <div className="volume-info" data-selected={true}>
           {getAmount(item.volume)}
         </div>
-        <BlockchainIcon className="chain-icon" dark={true} size={19} chainId={item.chain} />
-        <span className="chain-name">{getChainName(item.chain)}</span>
-        {!isDesktop && <span className="mobile-separator">|</span>}
-        <span className="chain-infoTxt percentage">
-          {item.percentage.toFixed(2).replace("00.00", "00.0")}%
+        <BlockchainIcon
+          chainId={item.chain}
+          className="chain-icon"
+          dark={true}
+          network={currentNetwork}
+          size={19}
+        />
+        <span className="chain-name" style={{ direction: "rtl" }}>
+          {getAbbreviatedName({
+            abbreviateIf: !isDesktop,
+            chainName: getChainName({
+              acronym: item.chain === ChainId.BSC,
+              chainId: item.chain,
+              network: currentNetwork,
+            }),
+          })}
         </span>
+        {!isDesktop && <span className="mobile-separator">|</span>}
+        <span className="percentage">{item.percentage.toFixed(2).replace("00.00", "00.0")}%</span>
         <span className="chain-separator onlyBig">|</span>
         <span className="chain-infoTxt onlyBig">{getAmount(item.volume)}</span>
       </div>
     ),
-    [MARGIN_SIZE_ELEMENTS, getAmount, isDesktop, isSourcesSelected],
+    [MARGIN_SIZE_ELEMENTS, getAmount, isDesktop, isSourcesSelected, currentNetwork],
   );
 
   const renderChartData = useCallback(
@@ -300,6 +332,7 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
         key={item.chain}
         className={`cross-chain-chart-side-item selectable ${isSourcesSelected ? "left" : "right"}`}
         onClick={() => setSelectedChain(item.chain)}
+        data-network={currentNetwork}
         data-percentage={item.percentage}
         data-selected={selectedChain === item.chain}
         style={{
@@ -308,18 +341,33 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
           marginBottom: MARGIN_SIZE_ELEMENTS,
         }}
       >
-        <div data-selected={selectedChain === item.chain} className="volume-info">
+        <div className="volume-info" data-selected={selectedChain === item.chain}>
           {getAmount(item.volume)}
         </div>
-        <BlockchainIcon className="chain-icon" dark={true} size={19} chainId={item.chain} />
-        <span className="chain-name">{getChainName(item.chain)}</span>
+        <BlockchainIcon
+          chainId={item.chain}
+          className="chain-icon"
+          dark={true}
+          network={currentNetwork}
+          size={19}
+        />
+        <span className="chain-name">
+          {getAbbreviatedName({
+            abbreviateIf: !isDesktop,
+            chainName: getChainName({
+              acronym: item.chain === ChainId.BSC,
+              chainId: item.chain,
+              network: currentNetwork,
+            }),
+          })}
+        </span>
         {!isDesktop && <span className="mobile-separator">|</span>}
-        <span className="chain-infoTxt percentage">{item.percentage.toFixed(2)}%</span>
+        <span className="percentage">{item.percentage.toFixed(2)}%</span>
         <span className="chain-separator onlyBig">|</span>
         <span className="chain-infoTxt onlyBig">{getAmount(item.volume)}</span>
       </div>
     ),
-    [MARGIN_SIZE_ELEMENTS, getAmount, isDesktop, isSourcesSelected, selectedChain],
+    [MARGIN_SIZE_ELEMENTS, getAmount, isDesktop, isSourcesSelected, selectedChain, currentNetwork],
   );
 
   return (
@@ -329,18 +377,23 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
         <div>{t("home.crossChain.destination").toUpperCase()}</div>
       </div>
       <div className="cross-chain-chart">
-        <div className="cross-chain-chart-side" ref={originChainsRef}>
+        <div className="cross-chain-chart-side" data-network={currentNetwork} ref={originChainsRef}>
           {isSourcesSelected
             ? chartData.map(renderChartData)
             : destinations.map(renderDestinations)}
         </div>
         <canvas
           className="cross-chain-chart-graph"
+          data-network={currentNetwork}
           ref={canvasRef}
           height={CHART_SIZE}
           width={CHART_SIZE}
         />
-        <div className="cross-chain-chart-side" ref={destinyChainsRef}>
+        <div
+          className="cross-chain-chart-side"
+          data-network={currentNetwork}
+          ref={destinyChainsRef}
+        >
           {isSourcesSelected
             ? destinations.map(renderDestinations)
             : chartData.map(renderChartData)}
@@ -363,11 +416,15 @@ export const Chart = ({ data, selectedType, selectedDestination }: Props) => {
       />
 
       <StickyInfo
-        chainName={getChainName(selectedChain)}
-        selectedInfo={selectedInfo}
-        selectedType={selectedType}
+        chainName={getChainName({
+          chainId: selectedChain,
+          network: currentNetwork,
+        })}
+        currentNetwork={currentNetwork}
         destinations={destinations}
         selectedDestination={selectedDestination}
+        selectedInfo={selectedInfo}
+        selectedType={selectedType}
       />
     </div>
   );

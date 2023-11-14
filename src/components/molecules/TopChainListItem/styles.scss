@@ -21,10 +21,10 @@
   &-from {
     @include centered-column;
 
-    flex: 1;
-    row-gap: 8px;
     column-gap: 16px;
+    flex: 1;
     justify-content: flex-start;
+    row-gap: 8px;
 
     @include tablet {
       @include centered-row;
@@ -44,10 +44,10 @@
   &-to {
     @include centered-column;
 
-    flex: 1;
-    row-gap: 8px;
     column-gap: 16px;
+    flex: 1;
     justify-content: flex-start;
+    row-gap: 8px;
 
     @include tablet {
       @include centered-row;
@@ -57,10 +57,10 @@
       @include centered-row;
       justify-content: center;
 
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
       background-color: var(--color-primary-800);
+      border-radius: 50%;
+      height: 32px;
+      width: 32px;
     }
   }
 

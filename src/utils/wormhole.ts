@@ -1,3 +1,4 @@
+import { Network } from "@certusone/wormhole-sdk";
 import { ChainId } from "src/api";
 
 // import NoIcon from "src/icons/blockchains/noIcon.svg";
@@ -63,7 +64,6 @@ import TerraDarkIcon from "src/icons/blockchains/dark/terra.svg";
 import XplaDarkIcon from "src/icons/blockchains/dark/xpla.svg";
 
 import { parseAddress, parseTx } from "./crypto";
-import { Network } from "@certusone/wormhole-sdk";
 
 export type ExplorerBaseURLInput = {
   network: Network;
@@ -248,6 +248,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Arbitrum]: {
     name: "Arbitrum",
+    nameTestnet: "Arbitrum Goerli",
     icon: ArbitrumIcon,
     darkIcon: ArbitrumDarkIcon,
     explorer: {
@@ -278,6 +279,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Avalanche]: {
     name: "Avalanche",
+    nameTestnet: "Fuji",
     acronym: "AVAX",
     icon: AvalancheIcon,
     darkIcon: AvalancheDarkIcon,
@@ -310,6 +312,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Celo]: {
     name: "Celo",
+    nameTestnet: "Alfajores",
     icon: CeloIcon,
     darkIcon: CeloDarkIcon,
     explorer: {
@@ -325,6 +328,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Ethereum]: {
     name: "Ethereum",
+    nameTestnet: "Goerli",
     acronym: "ETH",
     icon: EthereumIcon,
     darkIcon: EthereumDarkIcon,
@@ -402,6 +406,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Moonbeam]: {
     name: "Moonbeam",
+    nameTestnet: "Moonbase Alpha",
     icon: MoonbeamIcon,
     darkIcon: MoonbeamDarkIcon,
     explorer: {
@@ -462,6 +467,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Optimism]: {
     name: "Optimism",
+    nameTestnet: "Optimism Goerli",
     icon: OptimismIcon,
     darkIcon: OptimismDarkIcon,
     explorer: {
@@ -477,6 +483,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Polygon]: {
     name: "Polygon",
+    nameTestnet: "Mumbai",
     icon: PolygonIcon,
     darkIcon: PolygonDarkIcon,
     explorer: {
@@ -572,6 +579,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Base]: {
     name: "Base",
+    nameTestnet: "Base Goerli",
     icon: BaseIcon,
     darkIcon: BaseDarkIcon,
     explorer: {
@@ -602,15 +610,31 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
 };
 
+const OTHERS_FAKE_CHAIN_ID = 123123123 as ChainId;
+
 export const getChainName = ({
+  network,
   chainId,
   acronym = false,
 }: {
+  network: Network;
   chainId: ChainId;
   acronym?: boolean;
 }): string => {
-  if (acronym) return WORMHOLE_CHAINS[chainId]?.acronym || WORMHOLE_CHAINS[chainId]?.name || "";
-  return WORMHOLE_CHAINS[chainId]?.name || "";
+  if (chainId === OTHERS_FAKE_CHAIN_ID) return "Others";
+
+  const chainInfo = WORMHOLE_CHAINS[chainId];
+  if (!chainInfo) return "Unset";
+
+  if (acronym) {
+    if (network === "TESTNET")
+      return chainInfo?.nameTestnet || chainInfo?.acronym || chainInfo?.name;
+
+    return chainInfo?.acronym || chainInfo?.name;
+  }
+
+  if (network === "TESTNET") return chainInfo?.nameTestnet || chainInfo?.name;
+  return chainInfo?.name;
 };
 
 export const getChainIcon = ({ chainId, dark = false }: { chainId: ChainId; dark?: boolean }) => {

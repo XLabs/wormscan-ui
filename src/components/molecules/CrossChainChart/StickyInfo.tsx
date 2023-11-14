@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import Draggable from "react-draggable";
+import { Network } from "@certusone/wormhole-sdk";
 import { BlockchainIcon } from "src/components/atoms";
 import { formatCurrency } from "src/utils/number";
 import useOutsideClick from "src/utils/hooks/useOutsideClick";
@@ -9,6 +10,7 @@ import { Info } from "./Chart";
 
 type Props = {
   chainName: string;
+  currentNetwork: Network;
   destinations: any[];
   selectedDestination: "sources" | "destinations";
   selectedInfo: Info;
@@ -17,6 +19,7 @@ type Props = {
 
 export const StickyInfo = ({
   chainName,
+  currentNetwork,
   destinations,
   selectedDestination,
   selectedInfo,
@@ -105,10 +108,11 @@ export const StickyInfo = ({
             <div key={destination.chain} className="cross-chain-sticky-info spaced">
               <span>
                 <BlockchainIcon
+                  chainId={destination.chain}
                   className="chain-icon"
                   dark={true}
+                  network={currentNetwork}
                   size={22}
-                  chainId={destination.chain}
                 />
               </span>
               <span className="cross-chain-sticky-info-destination">

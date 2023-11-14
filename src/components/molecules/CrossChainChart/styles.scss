@@ -152,6 +152,14 @@
       @include desktop {
         width: 25%;
       }
+      &[data-network="TESTNET"] {
+        @include desktop {
+          min-width: 270px;
+        }
+        @include bigDesktop {
+          min-width: 310px;
+        }
+      }
 
       &-item {
         color: var(--color-white);
@@ -173,17 +181,23 @@
         @include tablet {
           grid-template-columns: 100px 10px 80px;
         }
-
         @include desktop {
           grid-template-columns: 1.5fr 5fr 1fr;
           background: var(--color-black-20);
         }
         @include bigDesktop {
           grid-template-columns: 1.2fr 3.6fr 2fr 0.2fr 4fr;
+          &[data-network="TESTNET"] {
+            grid-template-columns: 1fr 4fr 2fr 0.2fr 1.5fr;
+          }
         }
 
         .percentage {
+          @include text-p3;
           display: none;
+          font-weight: 300;
+          justify-self: end;
+          line-height: normal;
 
           @include desktop {
             display: block;
@@ -221,6 +235,7 @@
         .chain-name {
           @include text-p2-bold;
           line-height: normal;
+          white-space: nowrap;
 
           font-size: 14px;
           @include tablet {
@@ -445,10 +460,19 @@
       left: 0px;
 
       @include desktop {
-        position: relative;
-        width: 50%;
-        right: 0px;
         left: 0px;
+        position: relative;
+        right: 0px;
+        width: 50%;
+      }
+
+      &[data-network="TESTNET"] {
+        @include desktop {
+          width: calc(100% - 540px);
+        }
+        @include bigDesktop {
+          width: calc(100% - 610px);
+        }
       }
     }
   }

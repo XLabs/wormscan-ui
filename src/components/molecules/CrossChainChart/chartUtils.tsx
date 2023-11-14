@@ -1,12 +1,6 @@
 import { ChainId } from "src/api";
 import { CrossChainActivity } from "src/api/guardian-network/types";
 
-const OTHERS_FAKE_CHAIN_ID = 123123123 as ChainId;
-export const getChainName = (id: ChainId) => {
-  if (id === OTHERS_FAKE_CHAIN_ID) return "Others";
-  return ChainId[id] ?? "Unset";
-};
-
 interface ChainEndpoints {
   [key: number]: { volume: string; destinations: any[]; chain: ChainId; percentage: number };
 }
