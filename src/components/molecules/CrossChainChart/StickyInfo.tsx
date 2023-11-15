@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import Draggable from "react-draggable";
 import { Network } from "@certusone/wormhole-sdk";
 import { BlockchainIcon } from "src/components/atoms";
-import { formatCurrency } from "src/utils/number";
+import { formatNumber } from "src/utils/number";
 import useOutsideClick from "src/utils/hooks/useOutsideClick";
 import { ChainId } from "src/api";
 import { CrossChainBy } from "src/api/guardian-network/types";
@@ -91,7 +91,7 @@ export const StickyInfo = ({
                 {selectedInfo?.percentage.toFixed(2)}% |{" "}
                 {selectedType === "tx"
                   ? selectedInfo.volume
-                  : "$" + formatCurrency(+selectedInfo.volume, 0)}
+                  : "$" + formatNumber(+selectedInfo.volume, 0)}
               </span>
             </div>
           </div>
@@ -122,7 +122,7 @@ export const StickyInfo = ({
                 {destination.percentage.toFixed(2)}% |{" "}
                 {selectedType === "tx"
                   ? destination.volume
-                  : "$" + formatCurrency(+destination.volume, 0)}
+                  : "$" + formatNumber(+destination.volume, 0)}
               </span>
             </div>
           ))}

@@ -8,7 +8,7 @@ import { Alert, Loader } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
-import { formatCurrency } from "src/utils/number";
+import { formatNumber } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import {
   DeliveryLifecycleRecord,
@@ -168,11 +168,11 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
 
   const parsedRedeemTx = parseTx({ value: globalToRedeemTx, chainId: toChain as ChainId });
 
-  const amountSent = formatCurrency(Number(tokenAmount));
-  const amountSentUSD = +usdAmount ? formatCurrency(+usdAmount) : "";
+  const amountSent = formatNumber(Number(tokenAmount));
+  const amountSentUSD = +usdAmount ? formatNumber(+usdAmount, 2) : "";
   const redeemedAmount = hasVAA
-    ? formatCurrency(formatUnits(+amount - +fee))
-    : formatCurrency(+amount - +fee);
+    ? formatNumber(formatUnits(+amount - +fee))
+    : formatNumber(+amount - +fee);
 
   const tokenLink = getExplorerLink({
     network: currentNetwork,
@@ -299,7 +299,8 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
               <p>The VAA for this transaction has not been issued yet.</p>
               <p>This information can be incomplete or have wrong values.</p>
               <p>
-                Waiting for finality on {getChainName({ chainId: fromChain, network: currentNetwork })} which may take up to
+                Waiting for finality on{" "}
+                {getChainName({ chainId: fromChain, network: currentNetwork })} which may take up to
                 15 minutes.
               </p>
               {lastFinalizedBlock && currentBlock && (

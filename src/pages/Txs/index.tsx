@@ -9,7 +9,7 @@ import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { formatAppIds, parseAddress, parseTx, shortAddress } from "src/utils/crypto";
 import { timeAgo } from "src/utils/date";
-import { formatCurrency } from "src/utils/number";
+import { formatNumber } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { ChainId, Order } from "src/api";
 import { getClient } from "src/api/Client";
@@ -261,7 +261,7 @@ const Txs = () => {
                   </div>
                 ),
                 amount: tokenAmount
-                  ? formatCurrency(Number(tokenAmount)) + " " + (symbol ? symbol : "N/A")
+                  ? formatNumber(Number(tokenAmount)) + " " + (symbol ? symbol : "N/A")
                   : "-",
                 time: (timestampDate && timeAgo(timestampDate)) || "-",
               };
