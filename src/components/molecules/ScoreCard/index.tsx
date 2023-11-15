@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
 import { Loader } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
-import { formatCurrency, formatNumber, numberToSuffix } from "src/utils/number";
+import { formatNumber, numberToSuffix } from "src/utils/number";
 import { getClient } from "src/api/Client";
 import "./styles.scss";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -99,7 +99,7 @@ const ScoreCard = () => {
                 </div>
                 <div className="home-statistics-data-container-item-value">
                   {environment.network === "MAINNET" ? (
-                    <>${volume24h ? formatCurrency(Number(volume24h), 0) : "-"}</>
+                    <>${volume24h ? formatNumber(Number(volume24h), 0) : "-"}</>
                   ) : (
                     "-"
                   )}

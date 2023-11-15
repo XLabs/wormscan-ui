@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Network } from "@certusone/wormhole-sdk";
 import { BREAKPOINTS } from "src/consts";
 import { BlockchainIcon, Pagination } from "src/components/atoms";
-import { formatCurrency } from "src/utils/number";
+import { formatNumber } from "src/utils/number";
 import { getChainName } from "src/utils/wormhole";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { ChainId } from "src/api";
@@ -278,7 +278,7 @@ export const Chart = ({ currentNetwork, data, selectedType, selectedDestination 
   useEffect(updateChainsHeight, [destinations, isDesktop, selectedDestination]);
 
   const getAmount = useCallback(
-    (vol: string | number) => (selectedType === "tx" ? vol : "$" + formatCurrency(+vol, 0)),
+    (vol: string | number) => (selectedType === "tx" ? vol : "$" + formatNumber(+vol, 0)),
     [selectedType],
   );
 

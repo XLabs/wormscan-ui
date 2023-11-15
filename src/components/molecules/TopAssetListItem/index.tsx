@@ -1,7 +1,7 @@
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BlockchainIcon } from "src/components/atoms";
-import { formatCurrency } from "src/utils/number";
+import { formatNumber } from "src/utils/number";
 import { getChainName } from "src/utils/wormhole";
 import noIconToken from "src/icons/tokens/noIcon.svg";
 import "./styles.scss";
@@ -50,7 +50,7 @@ const TopAssetListItem = ({ from_chain, token_logo, symbol, volume }: Props) => 
 
         <div className="top-asset-list-item-to-asset">{symbol}</div>
       </div>
-      <div className="top-asset-list-item-transactions">${formatCurrency(Number(volume), 0)}</div>
+      <div className="top-asset-list-item-transactions">${formatNumber(Number(volume), 0)}</div>
     </div>
   );
 };
