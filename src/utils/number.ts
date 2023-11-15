@@ -21,7 +21,7 @@ export const formatNumber = (value: number, decimals?: number) => {
     });
   }
 
-  // show formatted value with 7 digits in total
+  // show formatted value with 2 decimals
   return value.toLocaleString(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
