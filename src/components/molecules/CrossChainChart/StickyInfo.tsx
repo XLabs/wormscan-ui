@@ -79,11 +79,28 @@ export const StickyInfo = ({
         >
           <div style={{ cursor: isOpen ? "grab" : "pointer" }}>
             <div className="cross-chain-sticky-line">
-              <div className="cross-chain-sticky-line-draw" />
+              <svg
+                className={`cross-chain-sticky-line-draw ${
+                  isOpen ? "cross-chain-sticky-line-draw-open" : ""
+                }`}
+                fill="none"
+                height="40"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                width="40"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M4 13l8 -3l8 3" />
+              </svg>
             </div>
 
             <div className="cross-chain-sticky-subtitle">
-              {selectedDestination === "sources" ? "Source" : "Target"}
+              <span>{selectedDestination === "sources" ? "Source" : "Target"}</span>
+              <span>{selectedType === "tx" ? "Transactions" : "Volume"}</span>
             </div>
             <div className="cross-chain-sticky-info">
               <span className="cross-chain-sticky-info-source">{chainName}</span>

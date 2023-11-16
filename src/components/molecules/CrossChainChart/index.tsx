@@ -78,18 +78,22 @@ const CrossChainChart = () => {
         )}
 
         <div className="cross-chain-destination" aria-label="Select graphic type">
-          <div
+          <button
             onClick={() => setSelectedDestination("sources")}
-            className={isSources ? "cross-chain-destination-selected" : ""}
+            className={`cross-chain-destination-btn ${
+              isSources ? "cross-chain-destination-btn-selected" : ""
+            }`}
           >
             SOURCE
-          </div>
-          <div
+          </button>
+          <button
             onClick={() => setSelectedDestination("destinations")}
-            className={isSources ? "" : "cross-chain-destination-selected"}
+            className={`cross-chain-destination-btn ${
+              isSources ? "" : "cross-chain-destination-btn-selected"
+            }`}
           >
             TARGET
-          </div>
+          </button>
         </div>
 
         <div className="cross-chain-filters">

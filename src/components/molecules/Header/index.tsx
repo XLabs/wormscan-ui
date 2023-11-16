@@ -125,25 +125,23 @@ const Header = () => {
           onValueChange={(env: NetworkSelectProps) => onClickChangeNetwork(env.value)}
           items={NETWORK_LIST}
           ariaLabel={"Select Network"}
-          className={`header-network-select ${isMainnet ? "" : "header-network-select--active"}`}
+          className="header-network-select"
         />
 
         <div className="header-navigation">
           <HeaderLinks />
         </div>
 
-        {isMainnet && (
-          <div className="go-bridge-container">
-            <a
-              className="go-bridge"
-              href={PORTAL_BRIDGE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t("home.header.goBridge")}
-            </a>
-          </div>
-        )}
+        <div className="go-bridge-container">
+          <a
+            className={`go-bridge ${isMainnet ? "" : "go-bridge-invisible"}`}
+            href={PORTAL_BRIDGE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("home.header.goBridge")}
+          </a>
+        </div>
 
         {/* MOBILE HAMBURGER MENU */}
         <div className="header-hamburger">

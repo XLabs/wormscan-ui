@@ -2,8 +2,13 @@
 
 .select {
   @include centered-row;
+  border-radius: 5px;
   height: 56px;
   width: 100%;
+
+  &:hover {
+    background-color: var(--color-white-10);
+  }
 
   &__control {
     @include centered-row;
