@@ -567,14 +567,14 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     icon: SeiIcon,
     darkIcon: SeiDarkIcon,
     explorer: {
-      TESTNET: "https://testnet.sei.explorers.guru",
-      MAINNET: "https://sei.explorers.guru",
+      TESTNET: "https://www.seiscan.app/atlantic-2",
+      MAINNET: "https://www.seiscan.app/pacific-1",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return this.explorer?.[network] + "/account/" + value;
+      if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
       if (base === "token") return this.explorer?.[network] + "/token/" + value;
-      if (base === "block") return this.explorer?.[network] + "/block/" + value;
-      return this.explorer?.[network] + "/transaction/" + value;
+      if (base === "block") return this.explorer?.[network] + "/blocks/" + value;
+      return this.explorer?.[network] + "/txs/" + value;
     },
   },
   [ChainId.Base]: {
