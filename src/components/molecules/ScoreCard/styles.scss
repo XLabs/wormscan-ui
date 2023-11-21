@@ -16,8 +16,6 @@
   &-data {
     @include card-container;
     @include centered-column;
-
-    justify-content: space-between;
     gap: 8px;
     flex: 3;
 
@@ -26,23 +24,23 @@
     }
 
     &-container {
-      @include centered-row;
-
-      justify-content: center;
-      flex-wrap: wrap;
-      flex: 1;
       column-gap: 16px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      margin: auto 0;
       row-gap: 32px;
 
       @include desktop {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: 1fr 1px 1fr;
         padding: 0 32px;
-        row-gap: 20px;
       }
 
       hr {
-        width: 100%;
         border-color: var(--color-white-10);
         display: none;
+        grid-column: span 3;
+        width: 100%;
 
         @include desktop {
           display: block;
@@ -51,12 +49,9 @@
 
       &-item {
         @include centered-column;
-
-        flex: calc(50% - 16px);
+        justify-content: flex-start;
 
         @include desktop {
-          flex: calc(33.33% - 16px);
-
           &.start {
             align-self: flex-start;
           }
@@ -72,6 +67,37 @@
           color: var(--color-primary-100);
           font-size: 16px;
           margin-bottom: 8px;
+          /* text-wrap: balance; */
+          max-width: 140px;
+
+          &.balance {
+            max-width: 100px;
+          }
+
+          @include tablet {
+            max-width: unset;
+
+            &.balance {
+              max-width: unset;
+            }
+          }
+
+          @include desktop {
+            @media only screen and (max-width: 1666px) {
+              max-width: 140px;
+
+              /* for cases when text-wrap: balance; is not supported */
+              &.balance {
+                max-width: 100px;
+              }
+            }
+          }
+
+          & svg {
+            color: var(--color-success-100);
+            margin-right: 8px;
+            vertical-align: -2px;
+          }
         }
 
         &-value {
