@@ -1,13 +1,12 @@
 import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
-import { Loader } from "src/components/atoms";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { useEnvironment } from "src/context/EnvironmentContext";
+import { Loader, Tooltip } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber, numberToSuffix } from "src/utils/number";
 import { getClient } from "src/api/Client";
 import "./styles.scss";
-import { useEnvironment } from "src/context/EnvironmentContext";
-import { Tooltip } from "src/components/atoms";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 const ScoreCard = () => {
   const { t } = useTranslation();
