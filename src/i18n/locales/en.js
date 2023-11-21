@@ -31,7 +31,7 @@ export default {
         statistics: {
           allVolume: "Token Bridge Volume (All-Time)",
           allTxn: "Token Bridge Txns (All-time)",
-          dayTxn: "Token Bridge Txns (24 h)",
+          dayTxn: "Token Bridge Txns (24h)",
           tvl: "Token Bridge TVL",
           dayMessage: "Total Messages Sent (24h)",
           messageVolume: "Token Bridge Volume (24h)",
