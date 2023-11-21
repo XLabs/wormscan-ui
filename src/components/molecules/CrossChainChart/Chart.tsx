@@ -47,10 +47,10 @@ export const Chart = ({ currentNetwork, data, selectedType, selectedDestination 
   const [isShowingOthers, setIsShowingOthers] = useState(false);
   const [chartData, setChartData] = useState(processData(data, false, selectedDestination));
 
-  const [selectedChain, setSelectedChain] = useState(chartData[0].chain);
+  const [selectedChain, setSelectedChain] = useState(chartData[0]?.chain);
   const [selectedInfo, setSelectedInfo] = useState<Info>({
-    percentage: chartData[0].percentage,
-    volume: chartData[0].volume,
+    percentage: chartData[0]?.percentage,
+    volume: chartData[0]?.volume,
   });
 
   useEffect(() => {
@@ -252,7 +252,7 @@ export const Chart = ({ currentNetwork, data, selectedType, selectedDestination 
     const selectedItem = chartData.find(item => item.chain === selectedChain);
 
     if (!selectedItem) {
-      setSelectedChain(chartData[0].chain);
+      setSelectedChain(chartData[0]?.chain);
       return;
     }
 

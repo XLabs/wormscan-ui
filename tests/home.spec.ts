@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { describe } from "node:test";
+import { DISCORD_URL } from "../src/consts";
 
 describe("Home Page", () => {
   test.beforeEach(async ({ page, baseURL }) => {
@@ -167,7 +168,7 @@ describe("Home Page", () => {
       const pagePromise = page.waitForEvent("popup");
       await page.getByTestId("join-discord-button").click();
       const pageOpen = await pagePromise;
-      expect(pageOpen.url()).toBe("https://discord.com/invite/wormholecrypto");
+      expect(pageOpen.url()).toBe(DISCORD_URL);
       await pageOpen.close();
     });
   });
