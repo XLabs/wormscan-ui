@@ -41,7 +41,7 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
         <div>Tx Hash:</div>
         <div className="tx-top-txId-container">
           {/* delete conditional when WORMCHAIN gets an explorer */}
-          {emitterChainId === CHAIN_ID_WORMCHAIN ? (
+          {emitterChainId === CHAIN_ID_WORMCHAIN || emitterChainId === ChainId.Sei ? (
             <div>
               <span>{parseTxHash}</span>
             </div>

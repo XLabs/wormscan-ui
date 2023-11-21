@@ -70,8 +70,7 @@ export class Search {
     network: Network;
   }): Promise<CctpRelayOutput> {
     // Remove CORS_PROXY when the endpoint stops responding with CORS err.
-    const uu = new Date().getTime();
-    const CORS_PROXY = `https://nextjs-cors-anywhere.vercel.app/api?preventcache=${uu}&endpoint=`;
+    const CORS_PROXY = "https://corsproxy.io/?";
 
     let cctpURL = CORS_PROXY + "https://relayer.stable.io/v1/relays?txHash=";
     if (network === "TESTNET") {
