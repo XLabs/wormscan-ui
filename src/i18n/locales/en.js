@@ -33,7 +33,7 @@ export default {
           allTxn: "Token Bridge Txns (All-time)",
           dayTxn: "Token Bridge Txns (24 h)",
           tvl: "Token Bridge TVL",
-          dayMessage: "Total messages Sent (24h)",
+          dayMessage: "Total Messages Sent (24h)",
           messageVolume: "Token Bridge Volume (24h)",
         },
         crossChain: {
