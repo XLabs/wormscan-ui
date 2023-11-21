@@ -126,7 +126,7 @@ function getBaseUrl(environment: Environment): string {
 }
 
 // const CORS_PROXY = "";
-const CORS_PROXY = "https://nextjs-cors-anywhere.vercel.app/api?endpoint=";
+const CORS_PROXY = "https://corsproxy.io/?";
 
 //Don't call this function directly, use the wrapped functions with fewer args
 function getDeliveryProviderStatusRaw(
