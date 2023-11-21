@@ -105,7 +105,7 @@ export const StickyInfo = ({
             <div className="cross-chain-sticky-info">
               <span className="cross-chain-sticky-info-source">{chainName}</span>
               <span className="cross-chain-sticky-info-value">
-                {selectedInfo?.percentage.toFixed(2)}% |{" "}
+                {selectedInfo?.percentage?.toFixed(2)}% |{" "}
                 {selectedType === "tx"
                   ? selectedInfo.volume
                   : "$" + formatNumber(+selectedInfo.volume, 0)}

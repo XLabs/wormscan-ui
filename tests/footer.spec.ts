@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { describe } from "node:test";
+import { DISCORD_URL } from "./../src/consts";
 
 const internalLinks = [
   { name: "Wormhole Scan logo", href: "#/" },
@@ -10,9 +11,9 @@ const internalLinks = [
 const externalLinks = [
   { name: "Built by xLabs", href: "https://www.xlabs.xyz/" },
   { name: "Careers", href: "https://boards.greenhouse.io/xlabs" },
-  { name: "Contact us", href: "https://discord.com/invite/wormholecrypto" },
+  { name: "Contact us", href: DISCORD_URL },
   { name: "API Doc", href: "https://docs.wormholescan.io/" },
-  { name: "Discord link", href: "https://discord.com/invite/wormholecrypto" },
+  { name: "Discord link", href: DISCORD_URL },
   { name: "Twitter link", href: "https://twitter.com/wormholecrypto" },
 ];
 
