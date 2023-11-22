@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ErrorGeneral from "src/components/organisms/SearchNotFound/ErrorGeneral";
 import { BaseLayout } from "src/layouts/BaseLayout";
@@ -45,8 +45,37 @@ class ErrorBoundaryClass extends React.Component<ErrorBoundaryProps, ErrorBounda
 }
 
 const ErrorBoundary = ({ children }: { children: ReactNode }) => {
-  const location = useLocation();
-  return <ErrorBoundaryClass pathname={location.pathname}>{children}</ErrorBoundaryClass>;
+  const [hasError, setHasError] = useState(false);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const errorHandler = () => {
+      setHasError(true);
+    };
+
+    window.addEventListener("error", errorHandler);
+
+    return () => {
+      window.removeEventListener("error", errorHandler);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (hasError) {
+      setHasError(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  if (hasError) {
+    return (
+      <BaseLayout>
+        <ErrorGeneral />
+      </BaseLayout>
+    );
+  }
+
+  return <ErrorBoundaryClass pathname={pathname}>{children}</ErrorBoundaryClass>;
 };
 
 export default ErrorBoundary;
