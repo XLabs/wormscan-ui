@@ -1,11 +1,12 @@
 import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
-import { Loader } from "src/components/atoms";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { useEnvironment } from "src/context/EnvironmentContext";
+import { Loader, Tooltip } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber, numberToSuffix } from "src/utils/number";
 import { getClient } from "src/api/Client";
 import "./styles.scss";
-import { useEnvironment } from "src/context/EnvironmentContext";
 
 const ScoreCard = () => {
   const { t } = useTranslation();
@@ -29,7 +30,7 @@ const ScoreCard = () => {
 
   return (
     <div className="home-statistics-data" data-testid="home-score-card">
-      <div className="home-statistics-title">Wormhole stats</div>
+      <div className="home-statistics-title">Wormhole Network Stats</div>
       {isLoading ? (
         <Loader />
       ) : (
@@ -40,6 +41,17 @@ const ScoreCard = () => {
             <div className="home-statistics-data-container">
               <div className="home-statistics-data-container-item end">
                 <div className="home-statistics-data-container-item-title">
+                  <Tooltip
+                    tooltip={
+                      <div>
+                        Total number of transactions for asset bridging since the network&apos;s
+                        creation. (excludes Pyth and other messages)
+                      </div>
+                    }
+                    type="info"
+                  >
+                    <InfoCircledIcon />
+                  </Tooltip>
                   {t("home.statistics.allTxn")}
                 </div>
                 <div className="home-statistics-data-container-item-value">
@@ -49,6 +61,17 @@ const ScoreCard = () => {
 
               <div className="home-statistics-data-container-item end">
                 <div className="home-statistics-data-container-item-title">
+                  <Tooltip
+                    tooltip={
+                      <div>
+                        Number of transaction bridging assets in the last 24 hours. (does not
+                        include Pyth or other messages)
+                      </div>
+                    }
+                    type="info"
+                  >
+                    <InfoCircledIcon />
+                  </Tooltip>
                   {t("home.statistics.dayTxn")}
                 </div>
                 <div className="home-statistics-data-container-item-value">
@@ -58,6 +81,12 @@ const ScoreCard = () => {
 
               <div className="home-statistics-data-container-item end">
                 <div className="home-statistics-data-container-item-title">
+                  <Tooltip
+                    tooltip={<div>Messages transferred in the past 24 hours.</div>}
+                    type="info"
+                  >
+                    <InfoCircledIcon />
+                  </Tooltip>
                   {t("home.statistics.dayMessage")}
                 </div>
                 <div className="home-statistics-data-container-item-value">
@@ -68,7 +97,13 @@ const ScoreCard = () => {
               <hr />
 
               <div className="home-statistics-data-container-item start">
-                <div className="home-statistics-data-container-item-title">
+                <div className="home-statistics-data-container-item-title balance">
+                  <Tooltip
+                    tooltip={<div>Total USD value locked in token bridge contracts.</div>}
+                    type="info"
+                  >
+                    <InfoCircledIcon />
+                  </Tooltip>
                   {t("home.statistics.tvl")}
                 </div>
                 <div className="home-statistics-data-container-item-value">
@@ -82,6 +117,14 @@ const ScoreCard = () => {
 
               <div className="home-statistics-data-container-item start">
                 <div className="home-statistics-data-container-item-title">
+                  <Tooltip
+                    tooltip={
+                      <div>All-time total volume transferred through the token bridge in USD.</div>
+                    }
+                    type="info"
+                  >
+                    <InfoCircledIcon />
+                  </Tooltip>
                   {t("home.statistics.allVolume")}
                 </div>
                 <div className="home-statistics-data-container-item-value">
@@ -95,6 +138,16 @@ const ScoreCard = () => {
 
               <div className="home-statistics-data-container-item start">
                 <div className="home-statistics-data-container-item-title">
+                  <Tooltip
+                    tooltip={
+                      <div>
+                        Volume transferred through the token bridge in the last 24 hours, in USD.
+                      </div>
+                    }
+                    type="info"
+                  >
+                    <InfoCircledIcon />
+                  </Tooltip>
                   {t("home.statistics.messageVolume")}
                 </div>
                 <div className="home-statistics-data-container-item-value">
