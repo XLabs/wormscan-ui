@@ -10,19 +10,20 @@ interface ErrorBoundaryProps {
 
 interface ErrorBoundaryState {
   hasError: boolean;
-  initialUrl: string;
 }
 
 class ErrorBoundaryClass extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false, initialUrl: window.location.href };
+    this.state = { hasError: false };
   }
 
+  // if an error occurs, set hasError to true, show the error <ErrorGeneral />
   static getDerivedStateFromError() {
     return { hasError: true };
   }
 
+  // if the pathname changes, reset hasError to false, show the child content
   componentDidUpdate(prevProps: { pathname: string }) {
     if (this.props.pathname !== prevProps.pathname) {
       if (this.state.hasError) {
@@ -48,6 +49,7 @@ const ErrorBoundary = ({ children }: { children: ReactNode }) => {
   const [hasError, setHasError] = useState(false);
   const { pathname } = useLocation();
 
+  // if an error occurs, set hasError to true, show the error <ErrorGeneral />
   useEffect(() => {
     const errorHandler = () => {
       setHasError(true);
@@ -60,6 +62,7 @@ const ErrorBoundary = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
+  // if the pathname changes, reset hasError to false, show the child content
   useEffect(() => {
     if (hasError) {
       setHasError(false);
