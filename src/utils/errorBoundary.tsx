@@ -18,6 +18,9 @@ class ErrorBoundaryClass extends React.Component<ErrorBoundaryProps, ErrorBounda
     this.state = { hasError: false };
   }
 
+  // we handle the error with errorHandler in useEffect in the functional component and with getDerivedStateFromError here.
+  // getDerivedStateFromError focuses on React specific errors during rendering, while the global "error" event focuses on
+  // general JavaScript errors throughout the application.
   // if an error occurs, set hasError to true, show the error <ErrorGeneral />
   static getDerivedStateFromError() {
     return { hasError: true };
