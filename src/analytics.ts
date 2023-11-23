@@ -7,13 +7,13 @@ const analytics = Analytics({
   app: "awesome-app",
   plugins: [
     googleAnalytics({
-      measurementIds: ["G-XD1LW6R8X0"],
+      measurementIds: [process.env.WORMSCAN_ANALYTICS_ID],
     }),
   ],
 });
 
 analytics.on("page", pageView => {
-  console.log(pageView);
+  console.log(process.env.WORMSCAN_ANALYTICS_ID, pageView);
 });
 
 export default analytics;
