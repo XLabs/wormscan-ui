@@ -42,10 +42,12 @@
     "url": "^0.11.0"
   },
   "dependencies": {
+    "@analytics/google-analytics": "^1.0.7",
     "@certusone/wormhole-sdk": "0.10.5",
     "@radix-ui/react-icons": "1.1.1",
     "@radix-ui/react-toggle-group": "1.0.2",
     "@radix-ui/react-tooltip": "1.0.5",
+    "analytics": "^0.8.9",
     "apexcharts": "3.36.0",
     "axios": "^1.4.0",
     "i18next": "22.4.9",

@@ -12,6 +12,80 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@analytics/cookie-utils@npm:^0.2.12":
+  version: 0.2.12
+  resolution: "@analytics/cookie-utils@npm:0.2.12"
+  dependencies:
+    "@analytics/global-storage-utils": ^0.1.7
+  checksum: 2eafc326f8117b1204a39f9699ffb65c0ae8a6c37a826a51991105b320a7afc77d3f080a22af30ed3100189bcfe43a8f9dd55150ac28ff9493693cc167965b0c
+  languageName: node
+  linkType: hard
+
+"@analytics/core@npm:^0.12.7":
+  version: 0.12.7
+  resolution: "@analytics/core@npm:0.12.7"
+  dependencies:
+    "@analytics/global-storage-utils": ^0.1.7
+    "@analytics/type-utils": ^0.6.2
+    analytics-utils: ^1.0.12
+  checksum: f745cf119c316ef41ee7b1ce97847672c9b5522ec1ed314aaabf022810b288fba593f1a0391b7c48a1379cd1b7cd9866aa100439e5504d28913e29ae985671ab
+  languageName: node
+  linkType: hard
+
+"@analytics/global-storage-utils@npm:^0.1.7":
+  version: 0.1.7
+  resolution: "@analytics/global-storage-utils@npm:0.1.7"
+  dependencies:
+    "@analytics/type-utils": ^0.6.2
+  checksum: 82e52155121d46ee08fd684c2cf69e455eab7ab8ecb6c10f4777df48ea3fa1a4a08c19bf09d3d192efa1e4129fe64334410f0e8ecb637733b0c0af62cfed4c96
+  languageName: node
+  linkType: hard
+
+"@analytics/google-analytics@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "@analytics/google-analytics@npm:1.0.7"
+  checksum: f6adacaad48d938ebbe0178641791e2aaa68c9f9ab98f6efc290ea5a64419717587c4e38ff7cd7977f6fbd80a9b081e24ab0e8f016ac0069df2c77b5c1d60146
+  languageName: node
+  linkType: hard
+
+"@analytics/localstorage-utils@npm:^0.1.10":
+  version: 0.1.10
+  resolution: "@analytics/localstorage-utils@npm:0.1.10"
+  dependencies:
+    "@analytics/global-storage-utils": ^0.1.7
+  checksum: f147f643dc98452f6da0aeaa2d448735dd37a8114f4eae8719832e8daa459f5dc29a80435abe6e0313a5b6224e224ba45e1e7bbfa07259948dfeddb8c1af962a
+  languageName: node
+  linkType: hard
+
+"@analytics/session-storage-utils@npm:^0.0.7":
+  version: 0.0.7
+  resolution: "@analytics/session-storage-utils@npm:0.0.7"
+  dependencies:
+    "@analytics/global-storage-utils": ^0.1.7
+  checksum: c0389bf9c7eb13cc0ed2be125c1ffd80e8584e66f6525ed0ebbc29c7937904984032e856a0add04064722dfded1cf172c89f28125683157f3e828f6512586c40
+  languageName: node
+  linkType: hard
+
+"@analytics/storage-utils@npm:^0.4.2":
+  version: 0.4.2
+  resolution: "@analytics/storage-utils@npm:0.4.2"
+  dependencies:
+    "@analytics/cookie-utils": ^0.2.12
+    "@analytics/global-storage-utils": ^0.1.7
+    "@analytics/localstorage-utils": ^0.1.10
+    "@analytics/session-storage-utils": ^0.0.7
+    "@analytics/type-utils": ^0.6.2
+  checksum: 3e3497270eeabecbb784cf74ff7f0aa711ef4579563c34a37d3138b16eff4b1a5c2b7f95dcb27e18ae31c53a173267792548f0b687b57598aff164e1ac0f9cf6
+  languageName: node
+  linkType: hard
+
+"@analytics/type-utils@npm:^0.6.2":
+  version: 0.6.2
+  resolution: "@analytics/type-utils@npm:0.6.2"
+  checksum: 9aa10dae2ab2d444dff83c12d705672d1e7ae5d91f6c5ed98454c7ce0be9b0a76a3c420119752d33e276c718e89fca7eedecdbee025bde872ac29e2742093d17
+  languageName: node
+  linkType: hard
+
 "@apollo/client@npm:^3.5.8":
   version: 3.7.17
   resolution: "@apollo/client@npm:3.7.17"
@@ -3600,6 +3674,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"analytics-utils@npm:^1.0.12":
+  version: 1.0.12
+  resolution: "analytics-utils@npm:1.0.12"
+  dependencies:
+    "@analytics/type-utils": ^0.6.2
+    dlv: ^1.1.3
+  peerDependencies:
+    "@types/dlv": ^1.0.0
+  checksum: 852ad173c321439cd295bfd2db2e0e2a098a2b1c14fc326de6efd3a25f1fe1f4336a0c47179036c51e9d565067f86c1c17c59d10413af9acd0bf00e9876aea29
+  languageName: node
+  linkType: hard
+
+"analytics@npm:^0.8.9":
+  version: 0.8.9
+  resolution: "analytics@npm:0.8.9"
+  dependencies:
+    "@analytics/core": ^0.12.7
+    "@analytics/storage-utils": ^0.4.2
+  checksum: e2f2e68527ce31e919c22a140ab9f69cf624d70ded0d5e87c43c660488db85b3d2fff3f31eef413490c5ba0386a9fe43c39f191370eb6d8e77de576d2d2f5c11
+  languageName: node
+  linkType: hard
+
 "ansi-escapes@npm:^4.3.0":
   version: 4.3.2
   resolution: "ansi-escapes@npm:4.3.2"
@@ -4895,6 +4991,13 @@ __metadata:
   dependencies:
     path-type: ^4.0.0
   checksum: fa05e18324510d7283f55862f3161c6759a3f2f8dbce491a2fc14c8324c498286c54282c1f0e933cb930da8419b30679389499b919122952a4f8592362ef4615
+  languageName: node
+  linkType: hard
+
+"dlv@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "dlv@npm:1.1.3"
+  checksum: d7381bca22ed11933a1ccf376db7a94bee2c57aa61e490f680124fa2d1cd27e94eba641d9f45be57caab4f9a6579de0983466f620a2cd6230d7ec93312105ae7
   languageName: node
   linkType: hard
 
@@ -10055,6 +10158,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "wormscan-ui@workspace:."
   dependencies:
+    "@analytics/google-analytics": ^1.0.7
     "@certusone/wormhole-sdk": 0.10.5
     "@parcel/transformer-sass": ^2.8.3
     "@playwright/test": ^1.38.1
@@ -10067,6 +10171,7 @@ __metadata:
     "@types/react-table": ^7.7.14
     "@typescript-eslint/eslint-plugin": latest
     "@typescript-eslint/parser": latest
+    analytics: ^0.8.9
     apexcharts: 3.36.0
     assert: ^2.0.0
     axios: ^1.4.0

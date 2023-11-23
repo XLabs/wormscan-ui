@@ -18,6 +18,7 @@ import { TxStatus } from "../../types";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import "./styles.scss";
+import analytics from "src/analytics";
 
 export interface TransactionOutput {
   VAAId: string;
@@ -34,6 +35,10 @@ export const PAGE_SIZE = 50;
 const REFETCH_TIME = 1000 * 10;
 
 const Txs = () => {
+  useEffect(() => {
+    analytics.page({ title: "TXS_LIST" });
+  }, []);
+
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
 

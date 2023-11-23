@@ -1,8 +1,14 @@
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import "./styles.scss";
+import { useEffect } from "react";
+import analytics from "src/analytics";
 
 const NotFound = () => {
+  useEffect(() => {
+    analytics.page({ title: "NOT_FOUND" });
+  }, []);
+
   const navigate = useNavigateCustom();
 
   const goHome = (e: React.MouseEvent<HTMLButtonElement>) => {

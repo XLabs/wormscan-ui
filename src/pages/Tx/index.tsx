@@ -16,10 +16,15 @@ import { getGuardianSet } from "../../consts";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import "./styles.scss";
+import analytics from "src/analytics";
 
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
 const Tx = () => {
+  useEffect(() => {
+    analytics.page({ title: "TX_DETAIL" });
+  }, []);
+
   const { txHash, chainId, emitter, seq } = useParams();
   const { environment } = useEnvironment();
   const network = environment.network;
