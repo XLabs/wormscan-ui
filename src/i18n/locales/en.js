@@ -29,12 +29,12 @@ export default {
           text: "Cross-chain Explorer",
         },
         statistics: {
-          allVolume: "Token Bridge Volume (All-Time)",
-          allTxn: "Token Bridge Txns (All-time)",
-          dayTxn: "Token Bridge Txns (24h)",
-          tvl: "Token Bridge TVL",
-          dayMessage: "Total Messages Sent (24h)",
-          messageVolume: "Token Bridge Volume (24h)",
+          allVolume: "Volume (All-Time)",
+          allTxn: "Txns (All-time)",
+          dayTxn: "Txns (24h)",
+          tvl: "TVL",
+          dayMessage: "Messages Sent (24h)",
+          messageVolume: "Volume (24h)",
         },
         crossChain: {
           title: "Cross-chain activity",

@@ -67,30 +67,9 @@
           color: var(--color-primary-100);
           font-size: 16px;
           margin-bottom: 8px;
-          /* text-wrap: balance; */
-          max-width: 140px;
-
-          &.balance {
-            max-width: 100px;
-          }
-
-          @include tablet {
-            max-width: unset;
-
-            &.balance {
-              max-width: unset;
-            }
-          }
 
           @include desktop {
-            @media only screen and (max-width: 1666px) {
-              max-width: 140px;
-
-              /* for cases when text-wrap: balance; is not supported */
-              &.balance {
-                max-width: 100px;
-              }
-            }
+            min-width: max-content;
           }
 
           & svg {
