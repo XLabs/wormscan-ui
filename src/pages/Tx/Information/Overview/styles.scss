@@ -1,5 +1,9 @@
 @import "src/styles/globals.scss";
 
+.budget-copy svg {
+  color: var(--color-primary-90);
+}
+
 .budget-tooltip {
   @include centered-column;
   align-items: center;
