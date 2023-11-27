@@ -1,5 +1,6 @@
 import { ArrowDownIcon, CheckboxIcon, CopyIcon } from "@radix-ui/react-icons";
 import { Network } from "@certusone/wormhole-sdk";
+import { DeliveryInstruction } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { colorStatus } from "src/consts";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
@@ -13,7 +14,6 @@ import {
 } from "src/utils/environment";
 import { formatDate } from "src/utils/date";
 import "../styles.scss";
-import { DeliveryInstruction } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 
 type Props = {
   budgetText: (metadata: DeliveryMetaData) => string;
