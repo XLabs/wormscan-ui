@@ -304,7 +304,7 @@ const RelayerOverview = ({
                 </CopyToClipboard>
               </div>
             </div>
-            {deliveryStatus.receivedAt && (
+            {deliveryStatus?.receivedAt && (
               <div>
                 <div className="tx-overview-graph-step-title">Time</div>
                 <div className="tx-overview-graph-step-description">

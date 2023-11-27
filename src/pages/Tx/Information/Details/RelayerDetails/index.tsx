@@ -192,7 +192,7 @@ const RelayerDetails = ({
         <div className="tx-details-group-line">
           <div className="tx-details-group-line-key">Time</div>
           <div className="tx-details-group-line-value">
-            {deliveryStatus.receivedAt && formatDate(deliveryStatus.receivedAt)}
+            {deliveryStatus?.receivedAt ? formatDate(deliveryStatus.receivedAt) : "N/A"}
           </div>
         </div>
 
@@ -446,56 +446,65 @@ const RelayerDetails = ({
         <div className="tx-details-group-line">
           <div className="tx-details-group-line-key">STATUS</div>
           <div className="tx-details-group-line-value">
-            {deliveryStatus?.status == "failed" && (
+            {deliveryStatus && (
               <>
-                <div className="red">FAILED</div>
-                {formatDate(deliveryStatus?.failedAt)}
-              </>
-            )}
-
-            {deliveryStatus?.status === "waiting" && (
-              <>
-                WAITING.. | Attempts: {`${deliveryStatus?.attempts}/${deliveryStatus?.maxAttempts}`}
-              </>
-            )}
-
-            {deliveryStatus?.status !== "failed" && deliveryStatus?.status !== "waiting" && (
-              <>
-                <div
-                  className={
-                    typeof resultLog === "string"
-                      ? resultLog === "Delivery Success"
-                        ? "green"
-                        : resultLog === "Receiver Failure"
-                        ? "red"
-                        : "white"
-                      : resultLog?.status === "Delivery Success"
-                      ? "green"
-                      : resultLog?.status === "Receiver Failure"
-                      ? "red"
-                      : "white"
-                  }
-                >
-                  {typeof resultLog === "string" ? resultLog : resultLog?.status}
-                </div>
-
-                {resultLog?.refundStatus && (
+                {deliveryStatus?.status === "failed" && (
                   <>
-                    -
+                    <div className="red">FAILED</div>
+                    {formatDate(deliveryStatus?.failedAt)}
+                  </>
+                )}
+
+                {deliveryStatus?.status === "waiting" && (
+                  <>
+                    WAITING.. | Attempts:{" "}
+                    {`${deliveryStatus?.attempts}/${deliveryStatus?.maxAttempts}`}
+                  </>
+                )}
+
+                {deliveryStatus?.status !== "failed" && deliveryStatus?.status !== "waiting" && (
+                  <>
                     <div
                       className={
-                        resultLog?.refundStatus === ("Refund Sent" as any)
+                        typeof resultLog === "string"
+                          ? resultLog === "Delivery Success"
+                            ? "green"
+                            : resultLog === "Receiver Failure"
+                            ? "red"
+                            : "white"
+                          : resultLog?.status === "Delivery Success"
                           ? "green"
-                          : resultLog?.refundStatus === ("Refund Fail" as any)
+                          : resultLog?.status === "Receiver Failure"
                           ? "red"
                           : "white"
                       }
                     >
-                      {resultLog?.refundStatus}
+                      {typeof resultLog === "string" ? resultLog : resultLog?.status}
                     </div>
+
+                    {resultLog?.refundStatus && (
+                      <>
+                        -
+                        <div
+                          className={
+                            resultLog?.refundStatus === ("Refund Sent" as any)
+                              ? "green"
+                              : resultLog?.refundStatus === ("Refund Fail" as any)
+                              ? "red"
+                              : "white"
+                          }
+                        >
+                          {resultLog?.refundStatus}
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
               </>
+            )}
+
+            {!deliveryStatus && (
+              <div className="red">We were not able to get the status of your relay.</div>
             )}
           </div>
         </div>

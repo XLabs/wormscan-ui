@@ -271,7 +271,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       const metadata = deliveryStatus?.metadata;
       const resultLog = metadata?.deliveryRecord?.resultLog;
       const targetTxTimestamp =
-        genericRelayerInfo?.targetTransactions[genericRelayerInfo?.targetTransactions?.length - 1]
+        genericRelayerInfo?.targetTransactions?.[genericRelayerInfo?.targetTransactions?.length - 1]
           ?.targetTxTimestamp;
 
       const { emitterAddress, emitterChain, guardianSignatures } = parsedVaa || {};
