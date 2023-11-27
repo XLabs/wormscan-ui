@@ -301,10 +301,8 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       if (!deliveryInstruction?.targetAddress) {
         console.log({ deliveryInstruction });
         return (
-          <div className="tx-details">
-            <div className="errored-info">
-              This is either not an Automatic Relayer VAA or something&apos;s wrong with it
-            </div>
+          <div className="tx-information-errored-info">
+            This is either not an Automatic Relayer VAA or something&apos;s wrong with it
           </div>
         );
       }
