@@ -67,14 +67,11 @@
           color: var(--color-primary-100);
           font-size: 16px;
           margin-bottom: 8px;
-
-          @include desktop {
-            min-width: max-content;
-          }
+          min-width: max-content;
 
           & svg {
             color: var(--color-success-100);
-            margin-right: 8px;
+            margin-left: 8px;
             vertical-align: -2px;
           }
         }

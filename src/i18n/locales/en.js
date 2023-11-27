@@ -33,7 +33,7 @@ export default {
           allTxn: "Txns (All-time)",
           dayTxn: "Txns (24h)",
           tvl: "TVL",
-          dayMessage: "Messages Sent (24h)",
+          dayMessage: "Messages (24h)",
           messageVolume: "Volume (24h)",
         },
         crossChain: {
