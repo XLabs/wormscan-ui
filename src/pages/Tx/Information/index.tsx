@@ -383,14 +383,12 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         const receiverValueUsd = trunkStringsDecimal("" + deliveryRecord?.receiverValueUsd, 4);
 
         return deliveryRecord?.receiverValueUsd
-          ? `
-  ${receiverValue} ${
+          ? `${receiverValue} ${
               environment.chainInfos.find(
                 chain => chain.chainId === deliveryInstruction.targetChainId,
               ).nativeCurrencyName
             } (${receiverValueUsd} USD)`
-          : `
-  ${receiverValue} ${
+          : `${receiverValue} ${
               environment.chainInfos.find(
                 chain => chain.chainId === deliveryInstruction.targetChainId,
               ).nativeCurrencyName
@@ -401,25 +399,28 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         const deliveryRecord = metadata?.deliveryRecord;
 
         return deliveryRecord?.budgetUsd
-          ? `
-    ${`${trunkStringsDecimal(
-      ethers.utils.formatUnits(deliveryRecord?.budget, deliveryRecord?.targetChainDecimals || 18),
-      3,
-    )} ${
-      environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
-        .nativeCurrencyName
-    } (${deliveryRecord?.budgetUsd.toFixed(3)} USD)`}
-    `
-          : `
-    ${trunkStringsDecimal(
-      ethers.utils.formatUnits(deliveryRecord?.budget, deliveryRecord?.targetChainDecimals || 18),
-      3,
-    )} ${
+          ? `${`${trunkStringsDecimal(
+              ethers.utils.formatUnits(
+                deliveryRecord?.budget,
+                deliveryRecord?.targetChainDecimals || 18,
+              ),
+              3,
+            )} ${
               environment.chainInfos.find(
                 chain => chain.chainId === deliveryInstruction.targetChainId,
               ).nativeCurrencyName
-            }
-    `;
+            } (${deliveryRecord?.budgetUsd.toFixed(3)} USD)`}`
+          : `${trunkStringsDecimal(
+              ethers.utils.formatUnits(
+                deliveryRecord?.budget,
+                deliveryRecord?.targetChainDecimals || 18,
+              ),
+              3,
+            )} ${
+              environment.chainInfos.find(
+                chain => chain.chainId === deliveryInstruction.targetChainId,
+              ).nativeCurrencyName
+            }`;
       };
 
       const refundText = () =>
