@@ -97,7 +97,7 @@ const ScoreCard = () => {
               <hr />
 
               <div className="home-statistics-data-container-item start">
-                <div className="home-statistics-data-container-item-title balance">
+                <div className="home-statistics-data-container-item-title">
                   <Tooltip
                     tooltip={<div>Total USD value locked in token bridge contracts.</div>}
                     type="info"
