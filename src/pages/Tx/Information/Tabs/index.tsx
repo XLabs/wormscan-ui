@@ -62,7 +62,7 @@ const Tabs = ({
         RAW DATA
       </button>
 
-      {showOverview && !isGenericRelayerTx && (
+      {showOverview && (
         <div className="tx-tabs-sub-list">
           <div className="tx-tabs-sub-list-title">Views</div>
 

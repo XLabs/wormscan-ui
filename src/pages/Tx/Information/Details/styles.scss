@@ -1,5 +1,16 @@
 @import "src/styles/globals.scss";
 
+.errored-info {
+  background-color: var(--color-error-30);
+  border-radius: 4px;
+  font-size: 14px;
+  height: 60px;
+  overflow: auto;
+  padding-top: 20px;
+  padding: 8px;
+  text-align: center;
+}
+
 .tx-details {
   padding: 64px 16px;
 
@@ -85,7 +96,15 @@
           }
         }
 
-        & > .copy-to-clipboard svg {
+        .green {
+          color: var(--color-success-100);
+        }
+
+        .red {
+          color: var(--color-error-100);
+        }
+
+        & .copy-to-clipboard svg {
           color: var(--color-primary-90);
         }
       }

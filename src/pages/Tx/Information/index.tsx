@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { ChainId } from "@certusone/wormhole-sdk";
 import { useSearchParams } from "react-router-dom";
+import { ethers } from "ethers";
+import { ChainId, parseVaa } from "@certusone/wormhole-sdk";
+import {
+  DeliveryInstruction,
+  parseEVMExecutionInfoV1,
+} from "@certusone/wormhole-sdk/lib/cjs/relayer";
 
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { txType } from "src/consts";
@@ -12,8 +17,11 @@ import { formatNumber } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import {
   DeliveryLifecycleRecord,
+  isRedelivery,
+  parseGenericRelayerVaa,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
+import { DeliveryMetaData } from "src/utils/deliveryProviderStatusApi";
 import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
 import { VAADetail } from "src/api/guardian-network/types";
 
@@ -22,7 +30,8 @@ import Summary from "./Summary";
 import Overview from "./Overview/index";
 import Details from "./Details";
 import RawData from "./RawData";
-import RelayerOverview from "./RelayerOverview";
+import RelayerOverview from "./Overview/RelayerOverview";
+import RelayerDetails from "./Details/RelayerDetails";
 
 import "./styles.scss";
 
@@ -32,6 +41,11 @@ interface Props {
   txData: GetTransactionsOutput;
   blockData: GetBlockData;
 }
+
+// eslint-disable-next-line no-var
+var gasUsed: any;
+// eslint-disable-next-line no-var
+var maxRefund: any;
 
 const UNKNOWN_APP_ID = "UNKNOWN";
 const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
@@ -247,9 +261,224 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   const OverviewContent = () => {
     if (isGenericRelayerTx) {
       if (loadingRelayers) return <Loader />;
+
+      if (!genericRelayerInfo?.vaa) return <div>No VAA was found</div>;
+
+      const vaa = genericRelayerInfo.vaa;
+      const parsedVaa = parseVaa(vaa);
+      const sourceTxHash = genericRelayerInfo.sourceTxHash;
+      const deliveryStatus = genericRelayerInfo?.DeliveryStatuses?.[0];
+      const metadata = deliveryStatus?.metadata;
+      const resultLog = metadata?.deliveryRecord?.resultLog;
+      const targetTxTimestamp =
+        genericRelayerInfo?.targetTransactions[genericRelayerInfo?.targetTransactions?.length - 1]
+          ?.targetTxTimestamp;
+
+      const { emitterAddress, emitterChain, guardianSignatures } = parsedVaa || {};
+
+      const bufferEmitterAddress = Buffer.from(emitterAddress).toString("hex");
+      const parsedEmitterAddress = parseAddress({
+        value: bufferEmitterAddress,
+        chainId: emitterChain as ChainId,
+      });
+
+      const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
+      const guardianSignaturesCount = Array.isArray(guardianSignatures)
+        ? guardianSignatures?.length || 0
+        : 0;
+
+      const fromChain = emitterChain;
+
+      const instruction = parseGenericRelayerVaa(parsedVaa);
+      const deliveryInstruction = instruction as DeliveryInstruction | null;
+      const isDelivery = deliveryInstruction && !isRedelivery(deliveryInstruction);
+
+      const decodeExecution = deliveryInstruction.encodedExecutionInfo
+        ? parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0]
+        : null;
+      const gasLimit = decodeExecution ? decodeExecution.gasLimit : null;
+
+      if (!deliveryInstruction?.targetAddress) {
+        console.log({ deliveryInstruction });
+        return (
+          <div className="tx-details">
+            <div className="errored-info">
+              This is either not an Automatic Relayer VAA or something&apos;s wrong with it
+            </div>
+          </div>
+        );
+      }
+
+      const deliveryParsedTargetAddress = parseAddress({
+        value: Buffer.from(deliveryInstruction?.targetAddress).toString("hex"),
+        chainId: deliveryInstruction?.targetChainId as ChainId,
+      });
+
+      const deliveryParsedRefundAddress = parseAddress({
+        value: Buffer.from(deliveryInstruction?.refundAddress).toString("hex"),
+        chainId: deliveryInstruction?.refundChainId as ChainId,
+      });
+
+      const deliveryParsedRefundProviderAddress = parseAddress({
+        value: Buffer.from(deliveryInstruction?.refundDeliveryProvider).toString("hex"),
+        chainId: deliveryInstruction?.refundChainId as ChainId,
+      });
+
+      const deliveryParsedSenderAddress = parseAddress({
+        value: Buffer.from(deliveryInstruction?.senderAddress).toString("hex"),
+        chainId: fromChain as ChainId,
+      });
+
+      const deliveryParsedSourceProviderAddress = parseAddress({
+        value: Buffer.from(deliveryInstruction?.sourceDeliveryProvider).toString("hex"),
+        chainId: fromChain as ChainId,
+      });
+
+      const trunkStringsDecimal = (num: string, decimals: number) => {
+        const [whole, fraction] = num.split(".");
+        if (!fraction) return whole;
+        return `${whole}.${fraction.slice(0, decimals)}`;
+      };
+
+      const maxRefundText = (metadata: DeliveryMetaData) => {
+        const deliveryRecord = metadata?.deliveryRecord;
+
+        maxRefund = trunkStringsDecimal(
+          ethers.utils.formatUnits(
+            deliveryRecord?.maxRefund,
+            deliveryRecord?.targetChainDecimals || 18,
+          ),
+          3,
+        );
+
+        return deliveryRecord?.maxRefundUsd
+          ? `${maxRefund} ${
+              environment.chainInfos.find(
+                chain => chain.chainId === deliveryInstruction.targetChainId,
+              ).nativeCurrencyName
+            } (${trunkStringsDecimal("" + deliveryRecord?.maxRefundUsd, 4)} USD)`
+          : `${maxRefund} ${
+              environment.chainInfos.find(
+                chain => chain.chainId === deliveryInstruction.targetChainId,
+              ).nativeCurrencyName
+            }`;
+      };
+
+      const gasUsedText = (metadata: DeliveryMetaData) => {
+        gasUsed = `${metadata?.deliveryRecord?.resultLog?.gasUsed}`;
+        return isNaN(gasUsed) ? `${gasLimit}` : `${gasUsed}/${gasLimit}`;
+      };
+
+      const receiverValueText = (metadata: DeliveryMetaData) => {
+        const deliveryRecord = metadata?.deliveryRecord;
+
+        const receiverValue = trunkStringsDecimal(
+          ethers.utils.formatUnits(
+            deliveryRecord?.receiverValue,
+            deliveryRecord?.targetChainDecimals || 18,
+          ),
+          3,
+        );
+
+        const receiverValueUsd = trunkStringsDecimal("" + deliveryRecord?.receiverValueUsd, 4);
+
+        return deliveryRecord?.receiverValueUsd
+          ? `
+  ${receiverValue} ${
+              environment.chainInfos.find(
+                chain => chain.chainId === deliveryInstruction.targetChainId,
+              ).nativeCurrencyName
+            } (${receiverValueUsd} USD)`
+          : `
+  ${receiverValue} ${
+              environment.chainInfos.find(
+                chain => chain.chainId === deliveryInstruction.targetChainId,
+              ).nativeCurrencyName
+            }`;
+      };
+
+      const budgetText = (metadata: DeliveryMetaData) => {
+        const deliveryRecord = metadata?.deliveryRecord;
+
+        return deliveryRecord?.budgetUsd
+          ? `
+    ${`${trunkStringsDecimal(
+      ethers.utils.formatUnits(deliveryRecord?.budget, deliveryRecord?.targetChainDecimals || 18),
+      3,
+    )} ${
+      environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
+        .nativeCurrencyName
+    } (${deliveryRecord?.budgetUsd.toFixed(3)} USD)`}
+    `
+          : `
+    ${trunkStringsDecimal(
+      ethers.utils.formatUnits(deliveryRecord?.budget, deliveryRecord?.targetChainDecimals || 18),
+      3,
+    )} ${
+              environment.chainInfos.find(
+                chain => chain.chainId === deliveryInstruction.targetChainId,
+              ).nativeCurrencyName
+            }
+    `;
+      };
+
+      const refundText = () =>
+        `${(1 - gasUsed / Number(gasLimit)) * maxRefund} ${
+          environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
+            .nativeCurrencyName
+        }`;
+
+      const copyBudgetText = (metadata: DeliveryMetaData) =>
+        `Budget: ${budgetText(metadata)}\nMax Refund:\n${maxRefundText(metadata)}\n\n${
+          !isNaN(gasUsed) ? "Gas Used/" : ""
+        }Gas limit\n${gasUsedText(metadata)}\n\n${
+          !isNaN(gasUsed) ? "Refund Amount\n" + refundText() : ""
+        }\n\nReceiver Value: ${receiverValueText(metadata)}`
+          .replaceAll("  ", "")
+          .replaceAll("\n\n\n\n", "\n\n");
+
+      const genericRelayerProps = {
+        budgetText,
+        copyBudgetText,
+        currentNetwork,
+        decodeExecution,
+        deliveryInstruction,
+        deliveryParsedRefundAddress,
+        deliveryParsedRefundProviderAddress,
+        deliveryParsedSenderAddress,
+        deliveryParsedSourceProviderAddress,
+        deliveryParsedTargetAddress,
+        deliveryStatus,
+        fromChain,
+        gasUsed,
+        gasUsedText,
+        guardianSignaturesCount,
+        isDelivery,
+        maxRefundText,
+        metadata,
+        parsedEmitterAddress,
+        parsedVaa,
+        receiverValueText,
+        refundText,
+        resultLog,
+        sourceTxHash,
+        targetTxTimestamp,
+        totalGuardiansNeeded,
+        VAAId,
+      };
+
+      if (showOverviewDetail) {
+        return (
+          <>
+            <RelayerDetails {...genericRelayerProps} />
+            <AlertsContent />
+          </>
+        );
+      }
+
       return (
         <>
-          <RelayerOverview VAAData={VAAData} lifecycleRecord={genericRelayerInfo} />
+          <RelayerOverview {...genericRelayerProps} />
           <AlertsContent />
         </>
       );

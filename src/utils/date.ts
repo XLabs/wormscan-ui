@@ -42,7 +42,7 @@ export const daysAgoDate = (daysAgo: number) => {
   return new Date(today.getTime() - Number(daysAgo) * 24 * 60 * 60 * 1000);
 };
 
-export const formatDate = (date: string | Date): string => {
+export const formatDate = (date: string | number | Date): string => {
   if (!date) return;
 
   const dateObject = new Date(date);
