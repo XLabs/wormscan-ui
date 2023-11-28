@@ -242,7 +242,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   const [isGenericRelayerTx, setIsGenericRelayerTx] = useState(null);
 
   useEffect(() => {
-    if (targetContract) {
+    if (targetContract || parsedEmitterAddress) {
       const isGeneric = targetContract?.toUpperCase() === parsedEmitterAddress?.toUpperCase();
       setIsGenericRelayerTx(isGeneric);
       if (isGeneric) {
@@ -267,7 +267,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       const parsedVaa = parseVaa(vaa);
       const sourceTxHash = genericRelayerInfo.sourceTxHash;
       const deliveryStatus = genericRelayerInfo?.DeliveryStatuses?.[0];
-      const metadata = deliveryStatus?.metadata;
+      const metadata = deliveryStatus?.metadata as DeliveryMetaData;
       const deliveryRecord = metadata?.deliveryRecord;
       const resultLog = deliveryRecord?.resultLog;
       const gasUsed = Number(resultLog?.gasUsed);
@@ -508,7 +508,8 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   };
 
   const RawDataContent = () => {
-    if (isGenericRelayerTx && loadingRelayers) return <Loader />;
+    if (isGenericRelayerTx === null || (isGenericRelayerTx && loadingRelayers)) return <Loader />;
+
     return (
       <RawData
         extraRawInfo={extraRawInfo}
