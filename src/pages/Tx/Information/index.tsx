@@ -239,21 +239,25 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
     a => a.chainId === fromChain,
   )?.relayerContractAddress;
 
-  const [isGenericRelayerTx, setIsGenericRelayerTx] = useState(
-    targetContract?.toUpperCase() === parsedEmitterAddress?.toUpperCase(),
-  );
+  const [isGenericRelayerTx, setIsGenericRelayerTx] = useState(null);
 
   useEffect(() => {
-    const isGeneric = targetContract?.toUpperCase() === parsedEmitterAddress?.toUpperCase();
-    setIsGenericRelayerTx(isGeneric);
-    if (isGeneric) {
-      console.log("isGenericRelayerTx!!!");
-      getRelayerInfo();
+    if (targetContract) {
+      const isGeneric = targetContract?.toUpperCase() === parsedEmitterAddress?.toUpperCase();
+      setIsGenericRelayerTx(isGeneric);
+      if (isGeneric) {
+        console.log("isGenericRelayerTx!!!");
+        getRelayerInfo();
+      }
     }
   }, [targetContract, parsedEmitterAddress, getRelayerInfo]);
   // --- x ---
 
   const OverviewContent = () => {
+    if (isGenericRelayerTx === null) {
+      return <Loader />;
+    }
+
     if (isGenericRelayerTx) {
       if (loadingRelayers) return <Loader />;
 
@@ -479,26 +483,28 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       );
     }
 
-    if (showOverviewDetail) {
+    if (!isGenericRelayerTx) {
+      if (showOverviewDetail) {
+        return (
+          <>
+            <Details {...overviewAndDetailProps} />
+            <AlertsContent />
+          </>
+        );
+      }
+
       return (
         <>
-          <Details {...overviewAndDetailProps} />
+          <Overview
+            {...overviewAndDetailProps}
+            globalToRedeemTx={globalToRedeemTx}
+            isAttestation={isAttestation}
+            originDateParsed={originDateParsed}
+          />
           <AlertsContent />
         </>
       );
     }
-
-    return (
-      <>
-        <Overview
-          {...overviewAndDetailProps}
-          globalToRedeemTx={globalToRedeemTx}
-          isAttestation={isAttestation}
-          originDateParsed={originDateParsed}
-        />
-        <AlertsContent />
-      </>
-    );
   };
 
   const RawDataContent = () => {
