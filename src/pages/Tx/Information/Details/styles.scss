@@ -85,7 +85,15 @@
           }
         }
 
-        & > .copy-to-clipboard svg {
+        .green {
+          color: var(--color-success-100);
+        }
+
+        .red {
+          color: var(--color-error-100);
+        }
+
+        & .copy-to-clipboard svg {
           color: var(--color-primary-90);
         }
       }

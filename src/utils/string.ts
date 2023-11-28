@@ -29,6 +29,8 @@ export const TruncateText = ({
   extraWidth?: number;
   text: string;
 }) => {
+  if (!text) return;
+
   const textWidth = getWidthOfText(text);
   const textWidthExtras = textWidth + extraWidth;
 

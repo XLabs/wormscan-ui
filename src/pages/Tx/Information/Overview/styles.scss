@@ -1,5 +1,23 @@
 @import "src/styles/globals.scss";
 
+.budget-copy svg {
+  color: var(--color-primary-90);
+}
+
+.budget-tooltip {
+  @include centered-column;
+  align-items: center;
+  font-size: 14px;
+  gap: 5px;
+  height: 200px;
+  width: 250px;
+
+  &-title {
+    font-weight: bold;
+    margin-bottom: -4px;
+  }
+}
+
 .tx-overview {
   --y-space: 285px;
 
@@ -82,40 +100,30 @@
       }
 
       &-name {
-        width: 70px;
+        @include text-p3;
+
+        color: var(--color-primary-100);
+        font-weight: 600;
         height: 50px;
+        max-width: 120px;
+        width: 70px;
 
         > div {
+          @include centered-row;
+
+          flex-wrap: wrap;
+          height: inherit;
           position: absolute;
           width: inherit;
-          height: inherit;
-
-          @include centered-row;
         }
-      }
-
-      &.blue {
-        --color: red;
       }
 
       &.green {
         --color: var(--color-success-100);
       }
 
-      &.orange {
-        --color: var(--color-alert-100);
-      }
-
       &.red {
         --color: var(--color-error-100);
-      }
-
-      &-name {
-        @include text-p3;
-
-        max-width: 120px;
-        font-weight: 600;
-        color: var(--color-primary-100);
       }
 
       &-title {
@@ -139,10 +147,9 @@
             left: unset;
             transform: unset;
           }
-        }
-
-        & svg {
-          color: var(--color-success-100);
+          & svg {
+            color: var(--color-success-100);
+          }
         }
       }
 
@@ -155,8 +162,8 @@
         gap: 8px;
         color: var(--color-white);
 
-        &.orange {
-          color: var(--color-alert-100);
+        &.green {
+          color: var(--color-success-100);
         }
 
         &.red {
