@@ -271,6 +271,8 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         genericRelayerInfo?.targetTransactions?.[genericRelayerInfo?.targetTransactions?.length - 1]
           ?.targetTxTimestamp;
 
+      console.log("llega", 1);
+
       const { emitterAddress, emitterChain, guardianSignatures } = parsedVaa || {};
 
       const bufferEmitterAddress = Buffer.from(emitterAddress).toString("hex");
@@ -310,13 +312,17 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         return `${whole}.${fraction.slice(0, decimals)}`;
       };
 
-      const maxRefund = trunkStringsDecimal(
-        ethers.utils.formatUnits(
-          metadata?.deliveryRecord?.maxRefund,
-          metadata?.deliveryRecord?.targetChainDecimals || 18,
-        ),
-        3,
-      );
+      const maxRefund = deliveryRecord?.maxRefund
+        ? Number(
+            trunkStringsDecimal(
+              ethers.utils.formatUnits(
+                deliveryRecord?.maxRefund,
+                deliveryRecord?.targetChainDecimals || 18,
+              ),
+              3,
+            ),
+          )
+        : 0;
 
       const deliveryParsedTargetAddress = parseAddress({
         value: Buffer.from(deliveryInstruction?.targetAddress).toString("hex"),
@@ -412,7 +418,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       };
 
       const refundText = () => {
-        return `${(1 - gasUsed / Number(gasLimit)) * Number(maxRefund)} ${
+        return `${(1 - gasUsed / Number(gasLimit)) * maxRefund} ${
           environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
             .nativeCurrencyName
         }`;
