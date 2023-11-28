@@ -42,11 +42,6 @@ interface Props {
   blockData: GetBlockData;
 }
 
-// eslint-disable-next-line no-var
-var gasUsed: any;
-// eslint-disable-next-line no-var
-var maxRefund: any;
-
 const UNKNOWN_APP_ID = "UNKNOWN";
 const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
 const CONNECT_APP_ID = "CONNECT";
@@ -230,8 +225,8 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
     setLoadingRelayers(true);
     populateDeliveryLifecycleRecordByVaa(environment, vaa)
       .then((result: DeliveryLifecycleRecord) => {
-        setLoadingRelayers(false);
         setGenericRelayerInfo(result);
+        setLoadingRelayers(false);
       })
       .catch((e: any) => {
         setLoadingRelayers(false);
@@ -269,7 +264,9 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       const sourceTxHash = genericRelayerInfo.sourceTxHash;
       const deliveryStatus = genericRelayerInfo?.DeliveryStatuses?.[0];
       const metadata = deliveryStatus?.metadata;
-      const resultLog = metadata?.deliveryRecord?.resultLog;
+      const deliveryRecord = metadata?.deliveryRecord;
+      const resultLog = deliveryRecord?.resultLog;
+      const gasUsed = Number(resultLog?.gasUsed);
       const targetTxTimestamp =
         genericRelayerInfo?.targetTransactions?.[genericRelayerInfo?.targetTransactions?.length - 1]
           ?.targetTxTimestamp;
@@ -307,6 +304,20 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         );
       }
 
+      const trunkStringsDecimal = (num: string, decimals: number) => {
+        const [whole, fraction] = num.split(".");
+        if (!fraction) return whole;
+        return `${whole}.${fraction.slice(0, decimals)}`;
+      };
+
+      const maxRefund = trunkStringsDecimal(
+        ethers.utils.formatUnits(
+          metadata?.deliveryRecord?.maxRefund,
+          metadata?.deliveryRecord?.targetChainDecimals || 18,
+        ),
+        3,
+      );
+
       const deliveryParsedTargetAddress = parseAddress({
         value: Buffer.from(deliveryInstruction?.targetAddress).toString("hex"),
         chainId: deliveryInstruction?.targetChainId as ChainId,
@@ -332,23 +343,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         chainId: fromChain as ChainId,
       });
 
-      const trunkStringsDecimal = (num: string, decimals: number) => {
-        const [whole, fraction] = num.split(".");
-        if (!fraction) return whole;
-        return `${whole}.${fraction.slice(0, decimals)}`;
-      };
-
-      const maxRefundText = (metadata: DeliveryMetaData) => {
-        const deliveryRecord = metadata?.deliveryRecord;
-
-        maxRefund = trunkStringsDecimal(
-          ethers.utils.formatUnits(
-            deliveryRecord?.maxRefund,
-            deliveryRecord?.targetChainDecimals || 18,
-          ),
-          3,
-        );
-
+      const maxRefundText = () => {
         return deliveryRecord?.maxRefundUsd
           ? `${maxRefund} ${
               environment.chainInfos.find(
@@ -362,14 +357,11 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
             }`;
       };
 
-      const gasUsedText = (metadata: DeliveryMetaData) => {
-        gasUsed = `${metadata?.deliveryRecord?.resultLog?.gasUsed}`;
+      const gasUsedText = () => {
         return isNaN(gasUsed) ? `${gasLimit}` : `${gasUsed}/${gasLimit}`;
       };
 
-      const receiverValueText = (metadata: DeliveryMetaData) => {
-        const deliveryRecord = metadata?.deliveryRecord;
-
+      const receiverValueText = () => {
         const receiverValue = trunkStringsDecimal(
           ethers.utils.formatUnits(
             deliveryRecord?.receiverValue,
@@ -393,9 +385,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
             }`;
       };
 
-      const budgetText = (metadata: DeliveryMetaData) => {
-        const deliveryRecord = metadata?.deliveryRecord;
-
+      const budgetText = () => {
         return deliveryRecord?.budgetUsd
           ? `${`${trunkStringsDecimal(
               ethers.utils.formatUnits(
@@ -421,20 +411,22 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
             }`;
       };
 
-      const refundText = () =>
-        `${(1 - gasUsed / Number(gasLimit)) * maxRefund} ${
+      const refundText = () => {
+        return `${(1 - gasUsed / Number(gasLimit)) * Number(maxRefund)} ${
           environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
             .nativeCurrencyName
         }`;
+      };
 
-      const copyBudgetText = (metadata: DeliveryMetaData) =>
-        `Budget: ${budgetText(metadata)}\nMax Refund:\n${maxRefundText(metadata)}\n\n${
+      const copyBudgetText = () => {
+        return `Budget: ${budgetText()}\nMax Refund:\n${maxRefundText()}\n\n${
           !isNaN(gasUsed) ? "Gas Used/" : ""
-        }Gas limit\n${gasUsedText(metadata)}\n\n${
+        }Gas limit\n${gasUsedText()}\n\n${
           !isNaN(gasUsed) ? "Refund Amount\n" + refundText() : ""
-        }\n\nReceiver Value: ${receiverValueText(metadata)}`
+        }\n\nReceiver Value: ${receiverValueText()}`
           .replaceAll("  ", "")
           .replaceAll("\n\n\n\n", "\n\n");
+      };
 
       const genericRelayerProps = {
         budgetText,

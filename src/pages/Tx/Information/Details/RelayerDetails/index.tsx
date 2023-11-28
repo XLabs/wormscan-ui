@@ -15,8 +15,8 @@ import { formatDate } from "src/utils/date";
 import "../styles.scss";
 
 type Props = {
-  budgetText: (metadata: DeliveryMetaData) => string;
-  copyBudgetText: (metadata: DeliveryMetaData) => string;
+  budgetText: () => string;
+  copyBudgetText: () => string;
   currentNetwork: Network;
   decodeExecution: any;
   deliveryInstruction: DeliveryInstruction;
@@ -28,14 +28,14 @@ type Props = {
   deliveryStatus: DeliveryProviderStatus;
   fromChain: number;
   gasUsed: number;
-  gasUsedText: (metadata: DeliveryMetaData) => string;
+  gasUsedText: () => string;
   guardianSignaturesCount: number;
   isDelivery: boolean;
-  maxRefundText: (metadata: DeliveryMetaData) => string;
+  maxRefundText: () => string;
   metadata: DeliveryMetaData;
   parsedEmitterAddress: string;
   parsedVaa: any;
-  receiverValueText: (metadata: DeliveryMetaData) => string;
+  receiverValueText: () => string;
   refundText: () => string;
   resultLog: any;
   sourceTxHash: string;
@@ -255,14 +255,14 @@ const RelayerDetails = ({
                 tooltip={
                   <div className="budget-tooltip">
                     <div className="budget-tooltip-title">Max Refund:</div>
-                    <div>{maxRefundText(metadata)}</div>
+                    <div>{maxRefundText()}</div>
 
-                    {decodeExecution && gasUsedText(metadata) && (
+                    {decodeExecution && gasUsedText() && (
                       <>
                         <div className="budget-tooltip-title">
                           {isNaN(gasUsed) ? "Gas Limit" : "Gas Used/Gas Limit"}
                         </div>
-                        <div>{gasUsedText(metadata)}</div>
+                        <div>{gasUsedText()}</div>
                       </>
                     )}
 
@@ -274,7 +274,7 @@ const RelayerDetails = ({
                     )}
 
                     <div className="budget-tooltip-title">Receiver Value:</div>
-                    <div>{receiverValueText(metadata)}</div>
+                    <div>{receiverValueText()}</div>
                   </div>
                 }
                 side="bottom"
@@ -290,9 +290,9 @@ const RelayerDetails = ({
                     padding: "2px 8px",
                   }}
                 >
-                  {budgetText(metadata)}
+                  {budgetText()}
 
-                  <CopyToClipboard toCopy={copyBudgetText(metadata)}>
+                  <CopyToClipboard toCopy={copyBudgetText()}>
                     <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
                 </div>
