@@ -271,8 +271,6 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         genericRelayerInfo?.targetTransactions?.[genericRelayerInfo?.targetTransactions?.length - 1]
           ?.targetTxTimestamp;
 
-      console.log("llega", 1);
-
       const { emitterAddress, emitterChain, guardianSignatures } = parsedVaa || {};
 
       const bufferEmitterAddress = Buffer.from(emitterAddress).toString("hex");
