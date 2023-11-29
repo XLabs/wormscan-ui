@@ -287,6 +287,15 @@ const Tx = () => {
             setExtraRawInfo(relayResponse);
           }
         }
+
+        if (!txResponse?.standardizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
+          analytics.track("txDetail", {
+            appIds: txResponse?.standardizedProperties?.appIds ?? "null",
+            fromChain: txResponse?.emitterChain ?? "null",
+            toChain: txResponse?.standardizedProperties?.toChain ?? "null",
+          });
+        }
+
         return txResponse;
       });
 

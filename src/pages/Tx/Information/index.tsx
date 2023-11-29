@@ -34,6 +34,7 @@ import RelayerOverview from "./Overview/RelayerOverview";
 import RelayerDetails from "./Details/RelayerDetails";
 
 import "./styles.scss";
+import analytics from "src/analytics";
 
 interface Props {
   extraRawInfo: any;
@@ -225,6 +226,11 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
     setLoadingRelayers(true);
     populateDeliveryLifecycleRecordByVaa(environment, vaa)
       .then((result: DeliveryLifecycleRecord) => {
+        analytics.track("txDetail", {
+          appIds: ["GENERIC_RELAYER"],
+          fromChain: result?.sourceChainId ?? "null",
+          toChain: result?.targetTransactions?.[0].targetChainId ?? "null",
+        });
         setGenericRelayerInfo(result);
         setLoadingRelayers(false);
       })
