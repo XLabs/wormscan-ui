@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import analytics from "src/analytics";
 import SearchNotFoundImage from "src/assets/search-not-found.svg";
 import { DISCORD_URL } from "src/consts";
 
@@ -7,6 +9,10 @@ type Props = {
 };
 
 const Error400 = ({ q, goHome }: Props) => {
+  useEffect(() => {
+    analytics.page({ title: "SEARCH_NOT_FOUND" });
+  }, []);
+
   return (
     <div className="error-page">
       <div className="error-page-container">

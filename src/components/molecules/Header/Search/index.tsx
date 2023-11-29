@@ -4,12 +4,15 @@ import { useTranslation } from "react-i18next";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import { getClient } from "src/api/Client";
 import SearchBar from "../../SearchBar";
+import analytics from "src/analytics";
+import { useEnvironment } from "src/context/EnvironmentContext";
 
 interface FormData {
   search: { value: string };
 }
 
 const Search = () => {
+  const { environment } = useEnvironment();
   const navigate = useNavigateCustom();
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -42,6 +45,9 @@ const Search = () => {
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    analytics.track("search", {
+      network: environment.network,
+    });
 
     const { search } = e.target as typeof e.target & FormData;
     let { value } = search;

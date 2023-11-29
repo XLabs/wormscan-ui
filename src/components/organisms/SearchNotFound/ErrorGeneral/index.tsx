@@ -1,7 +1,13 @@
+import { useEffect } from "react";
+import analytics from "src/analytics";
 import ErrorGeneralImage from "src/assets/errorGeneral.svg";
 import { DISCORD_URL } from "src/consts";
 
 const ErrorGeneral = () => {
+  useEffect(() => {
+    analytics.page({ title: "ERROR_GENERAL" });
+  }, []);
+
   const reloadPage = () => {
     window.location.reload();
   };

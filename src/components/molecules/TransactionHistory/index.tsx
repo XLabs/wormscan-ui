@@ -3,6 +3,8 @@ import { ToggleGroup } from "src/components/atoms";
 import { DateRange } from "src/api/guardian-network/types";
 import { TransactionHistoryChart } from "..";
 import "./styles.scss";
+import analytics from "src/analytics";
+import { useEnvironment } from "src/context/EnvironmentContext";
 
 const RANGE_LIST = [
   { label: "1D", value: "day", ariaLabel: "One day" },
@@ -13,6 +15,7 @@ const RANGE_LIST = [
 ];
 
 const TransactionHistory = () => {
+  const { environment } = useEnvironment();
   const [selectedRange, setSelectedRange] = useState<DateRange>(RANGE_LIST[0].value as DateRange);
 
   return (
@@ -21,7 +24,13 @@ const TransactionHistory = () => {
         <div className="tx-title">Transaction History</div>
         <ToggleGroup
           value={selectedRange}
-          onValueChange={value => setSelectedRange(value)}
+          onValueChange={value => {
+            analytics.track("transactionHistory", {
+              selected: value,
+              network: environment.network,
+            });
+            setSelectedRange(value);
+          }}
           items={RANGE_LIST}
           ariaLabel="Select range"
           separatedOptions

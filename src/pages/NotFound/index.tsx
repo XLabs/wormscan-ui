@@ -6,7 +6,7 @@ import analytics from "src/analytics";
 
 const NotFound = () => {
   useEffect(() => {
-    analytics.page({ title: "NOT_FOUND" });
+    analytics.page({ title: "NOT_FOUND_PAGE" });
   }, []);
 
   const navigate = useNavigateCustom();

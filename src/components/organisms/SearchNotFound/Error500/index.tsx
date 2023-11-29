@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import analytics from "src/analytics";
 import AstronautImage from "src/assets/astronaut.svg";
 import Error500Image from "src/assets/error500.svg";
 
@@ -6,6 +8,10 @@ type Props = {
 };
 
 const Error500 = ({ goHome }: Props) => {
+  useEffect(() => {
+    analytics.page({ title: "ERROR_500" });
+  }, []);
+
   return (
     <div className="error-page error-page-bg-500">
       <div className="error-page-container">

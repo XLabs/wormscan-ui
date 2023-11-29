@@ -4,6 +4,7 @@ import { Loader } from "src/components/atoms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { EnvironmentProvider } from "src/context/EnvironmentContext";
 import { ScrollControl } from "src/utils/scrollControl";
+import { AnalyticsLinkTracker } from "src/utils/analyticsLinkTracker";
 import ErrorBoundary from "src/utils/errorBoundary";
 
 const Home = lazy(() => import("../pages/Home"));
@@ -15,25 +16,27 @@ const Navigation = () => {
   return (
     <Router>
       <ScrollControl />
-      <EnvironmentProvider>
-        <ErrorBoundary>
-          <Suspense
-            fallback={
-              <BaseLayout>
-                <Loader />
-              </BaseLayout>
-            }
-          >
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/txs" element={<Txs />} />
-              <Route path="/tx/:txHash" element={<Tx />} />
-              <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </ErrorBoundary>
-      </EnvironmentProvider>
+      <AnalyticsLinkTracker>
+        <EnvironmentProvider>
+          <ErrorBoundary>
+            <Suspense
+              fallback={
+                <BaseLayout>
+                  <Loader />
+                </BaseLayout>
+              }
+            >
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/txs" element={<Txs />} />
+                <Route path="/tx/:txHash" element={<Tx />} />
+                <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
+        </EnvironmentProvider>
+      </AnalyticsLinkTracker>
     </Router>
   );
 };

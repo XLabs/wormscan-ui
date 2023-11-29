@@ -10,6 +10,7 @@ import { ChainId } from "src/api";
 import { CrossChainActivity, CrossChainBy } from "src/api/guardian-network/types";
 import { StickyInfo } from "./StickyInfo";
 import { processData } from "./chartUtils";
+import analytics from "src/analytics";
 
 interface IChartChain {
   itemHeight: number;
@@ -26,6 +27,7 @@ type Props = {
   data: CrossChainActivity;
   selectedType: CrossChainBy;
   selectedDestination: "sources" | "destinations";
+  selectedTimeRange: string;
 };
 export type Info = { percentage: number; volume: number };
 
@@ -43,7 +45,13 @@ const getAbbreviatedName = ({
   return chainName;
 };
 
-export const Chart = ({ currentNetwork, data, selectedType, selectedDestination }: Props) => {
+export const Chart = ({
+  currentNetwork,
+  data,
+  selectedType,
+  selectedDestination,
+  selectedTimeRange,
+}: Props) => {
   const [isShowingOthers, setIsShowingOthers] = useState(false);
   const [chartData, setChartData] = useState(processData(data, false, selectedDestination));
 
@@ -331,7 +339,16 @@ export const Chart = ({ currentNetwork, data, selectedType, selectedDestination 
       <div
         key={item.chain}
         className={`cross-chain-chart-side-item selectable ${isSourcesSelected ? "left" : "right"}`}
-        onClick={() => setSelectedChain(item.chain)}
+        onClick={() => {
+          analytics.track("crossChainChart", {
+            chain: item.chain,
+            network: currentNetwork,
+            selectedType,
+            selectedDestination,
+            selectedTimeRange,
+          });
+          setSelectedChain(item.chain);
+        }}
         data-network={currentNetwork}
         data-percentage={item.percentage}
         data-selected={selectedChain === item.chain}
@@ -367,7 +384,17 @@ export const Chart = ({ currentNetwork, data, selectedType, selectedDestination 
         <span className="chain-infoTxt onlyBig">{getAmount(item.volume)}</span>
       </div>
     ),
-    [MARGIN_SIZE_ELEMENTS, getAmount, isDesktop, isSourcesSelected, selectedChain, currentNetwork],
+    [
+      isSourcesSelected,
+      currentNetwork,
+      selectedChain,
+      MARGIN_SIZE_ELEMENTS,
+      getAmount,
+      isDesktop,
+      selectedType,
+      selectedDestination,
+      selectedTimeRange,
+    ],
   );
 
   return (

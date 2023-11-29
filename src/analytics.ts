@@ -12,8 +12,4 @@ const analytics = Analytics({
   ],
 });
 
-analytics.on("page", pageView => {
-  console.log(process.env.WORMSCAN_ANALYTICS_ID, pageView);
-});
-
 export default analytics;
