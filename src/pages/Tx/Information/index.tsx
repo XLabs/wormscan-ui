@@ -15,6 +15,7 @@ import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
 import { formatNumber } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
+import analytics from "src/analytics";
 import {
   DeliveryLifecycleRecord,
   isRedelivery,
@@ -225,6 +226,11 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
     setLoadingRelayers(true);
     populateDeliveryLifecycleRecordByVaa(environment, vaa)
       .then((result: DeliveryLifecycleRecord) => {
+        analytics.track("txDetail", {
+          appIds: ["GENERIC_RELAYER"],
+          fromChain: result?.sourceChainId ?? "null",
+          toChain: result?.targetTransactions?.[0].targetChainId ?? "null",
+        });
         setGenericRelayerInfo(result);
         setLoadingRelayers(false);
       })

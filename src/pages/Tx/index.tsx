@@ -10,13 +10,13 @@ import { fetchWithRpcFallThrough } from "src/utils/fetchWithRPCsFallthrough";
 import { parseTx } from "src/utils/crypto";
 import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
+import analytics from "src/analytics";
 import { GlobalTxOutput, VAADetail } from "src/api/guardian-network/types";
 import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
 import { getGuardianSet } from "../../consts";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import "./styles.scss";
-import analytics from "src/analytics";
 
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
@@ -287,6 +287,15 @@ const Tx = () => {
             setExtraRawInfo(relayResponse);
           }
         }
+
+        if (!txResponse?.standardizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
+          analytics.track("txDetail", {
+            appIds: txResponse?.standardizedProperties?.appIds ?? "null",
+            fromChain: txResponse?.emitterChain ?? "null",
+            toChain: txResponse?.standardizedProperties?.toChain ?? "null",
+          });
+        }
+
         return txResponse;
       });
 

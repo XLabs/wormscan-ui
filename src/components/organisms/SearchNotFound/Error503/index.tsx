@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import analytics from "src/analytics";
 import Error503Image from "src/assets/error503.svg";
 import { DISCORD_URL } from "src/consts";
 
@@ -6,6 +8,10 @@ type Props = {
 };
 
 const Error503 = ({ goHome }: Props) => {
+  useEffect(() => {
+    analytics.page({ title: "ERROR_503" });
+  }, []);
+
   return (
     <div className="error-page error-page-bg-503">
       <div className="error-page-container">
