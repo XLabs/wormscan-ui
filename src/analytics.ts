@@ -8,6 +8,9 @@ const analytics = Analytics({
   plugins: [
     googleAnalytics({
       measurementIds: [process.env.WORMSCAN_ANALYTICS_ID],
+      gtagConfig: {
+        anonymize_ip: true,
+      },
     }),
   ],
 });

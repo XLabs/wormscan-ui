@@ -17,8 +17,8 @@ import { GetTransactionsOutput } from "src/api/search/types";
 import { TxStatus } from "../../types";
 import { Information } from "./Information";
 import { Top } from "./Top";
-import "./styles.scss";
 import analytics from "src/analytics";
+import "./styles.scss";
 
 export interface TransactionOutput {
   VAAId: string;

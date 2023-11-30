@@ -2,9 +2,9 @@ import { useState } from "react";
 import { ToggleGroup } from "src/components/atoms";
 import { DateRange } from "src/api/guardian-network/types";
 import { TransactionHistoryChart } from "..";
-import "./styles.scss";
-import analytics from "src/analytics";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import analytics from "src/analytics";
+import "./styles.scss";
 
 const RANGE_LIST = [
   { label: "1D", value: "day", ariaLabel: "One day" },

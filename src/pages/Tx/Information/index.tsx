@@ -15,6 +15,7 @@ import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
 import { formatNumber } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
+import analytics from "src/analytics";
 import {
   DeliveryLifecycleRecord,
   isRedelivery,
@@ -34,7 +35,6 @@ import RelayerOverview from "./Overview/RelayerOverview";
 import RelayerDetails from "./Details/RelayerDetails";
 
 import "./styles.scss";
-import analytics from "src/analytics";
 
 interface Props {
   extraRawInfo: any;

@@ -4,8 +4,8 @@ import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import OverviewIcon from "src/icons/OverviewIcon";
 import { Tooltip } from "src/components/atoms";
 import { BREAKPOINTS } from "src/consts";
-import "./styles.scss";
 import analytics from "src/analytics";
+import "./styles.scss";
 
 type TabsProps = {
   isGenericRelayerTx: boolean;
