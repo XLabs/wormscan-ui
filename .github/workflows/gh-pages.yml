@@ -25,6 +25,7 @@ jobs:
           yarn install
           NODE_ENV=development yarn build
           cp ./robots.txt ./dist/
+          cp ./src/og_image.png ./dist/
 
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
