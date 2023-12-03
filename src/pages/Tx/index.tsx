@@ -6,8 +6,8 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
 import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { fetchWithRpcFallThrough } from "src/utils/fetchWithRPCsFallthrough";
-import { parseTx } from "src/utils/crypto";
+import { fetchWithRpcFallThrough, getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
+import { formatUnits, parseTx } from "src/utils/crypto";
 import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
 import analytics from "src/analytics";
@@ -314,11 +314,51 @@ const Tx = () => {
     },
   );
 
+  const processApiTxData = useCallback(
+    async (apiTxData: GetTransactionsOutput[]) => {
+      const processedApiTxData = [];
+
+      for (const data of apiTxData) {
+        if (
+          (!data.tokenAmount || !data.symbol) &&
+          data.standardizedProperties?.tokenAddress &&
+          data.standardizedProperties?.tokenChain &&
+          (data.payload?.amount || data.standardizedProperties?.amount)
+        ) {
+          const tokenInfo = await getTokenInformation(
+            data.standardizedProperties?.tokenChain,
+            environment,
+            data.standardizedProperties.tokenAddress,
+          );
+
+          if (tokenInfo.symbol && tokenInfo.tokenDecimals) {
+            const amount = data.payload?.amount || data.standardizedProperties?.amount;
+
+            if (amount && tokenInfo.tokenDecimals) {
+              processedApiTxData.push({
+                ...data,
+                tokenAmount: "" + formatUnits(+amount, tokenInfo.tokenDecimals),
+                symbol: tokenInfo.symbol,
+              });
+            }
+          } else {
+            processedApiTxData.push(data);
+          }
+        } else {
+          processedApiTxData.push(data);
+        }
+      }
+
+      setTxData(processedApiTxData);
+    },
+    [environment],
+  );
+
   useEffect(() => {
     if (apiTxData && apiTxData.length > 0) {
-      setTxData(apiTxData);
+      processApiTxData(apiTxData);
     }
-  }, [apiTxData]);
+  }, [apiTxData, processApiTxData]);
 
   useEffect(() => {
     if (!VAAData) return;
