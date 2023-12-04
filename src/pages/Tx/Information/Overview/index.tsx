@@ -339,7 +339,7 @@ const Overview = ({
             </div>
             <div>
               <div className="tx-overview-graph-step-title">
-                Destination Wallet
+                Destination Address
                 {isUnknownApp && (
                   <div className="tx-overview-graph-step-title-tooltip">
                     <Tooltip tooltip={<NotFinalDestinationTooltip />} type="info">
