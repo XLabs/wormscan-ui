@@ -532,52 +532,59 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       <div className="tx-information-alerts">
         <Alert type="info" className="tx-information-alerts-unknown-payload-type">
           {!hasVAA ? (
-            <>
-              <p>The VAA for this transaction has not been issued yet.</p>
-              <p>This information can be incomplete or have wrong values.</p>
-              <p>
-                Waiting for finality on{" "}
-                {getChainName({ chainId: fromChain, network: currentNetwork })} which may take up to
-                15 minutes.
-              </p>
-              {lastFinalizedBlock && currentBlock && (
-                <div>
-                  <p>
-                    Last finalized block number{" "}
-                    <a
-                      className="tx-information-alerts-unknown-payload-type-link"
-                      href={getExplorerLink({
-                        network: currentNetwork,
-                        chainId: fromChain,
-                        value: lastFinalizedBlock.toString(),
-                        base: "block",
-                      })}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {lastFinalizedBlock}
-                    </a>{" "}
-                  </p>
+            appIds && appIds.includes("CCTP_MANUAL") ? (
+              <>
+                <p>This transaction is not a wormhole transaction (won&apos;t have a VAA)</p>
+                <p>This information can be incomplete or have wrong values.</p>
+              </>
+            ) : (
+              <>
+                <p>The VAA for this transaction has not been issued yet.</p>
+                <p>This information can be incomplete or have wrong values.</p>
+                <p>
+                  Waiting for finality on{" "}
+                  {getChainName({ chainId: fromChain, network: currentNetwork })} which may take up
+                  to 15 minutes.
+                </p>
+                {lastFinalizedBlock && currentBlock && (
+                  <div>
+                    <p>
+                      Last finalized block number{" "}
+                      <a
+                        className="tx-information-alerts-unknown-payload-type-link"
+                        href={getExplorerLink({
+                          network: currentNetwork,
+                          chainId: fromChain,
+                          value: lastFinalizedBlock.toString(),
+                          base: "block",
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {lastFinalizedBlock}
+                      </a>{" "}
+                    </p>
 
-                  <p>
-                    This block number{" "}
-                    <a
-                      className="tx-information-alerts-unknown-payload-type-link"
-                      href={getExplorerLink({
-                        network: currentNetwork,
-                        chainId: fromChain,
-                        value: currentBlock.toString(),
-                        base: "block",
-                      })}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {currentBlock}
-                    </a>
-                  </p>
-                </div>
-              )}
-            </>
+                    <p>
+                      This block number{" "}
+                      <a
+                        className="tx-information-alerts-unknown-payload-type-link"
+                        href={getExplorerLink({
+                          network: currentNetwork,
+                          chainId: fromChain,
+                          value: currentBlock.toString(),
+                          base: "block",
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {currentBlock}
+                      </a>
+                    </p>
+                  </div>
+                )}
+              </>
+            )
           ) : (
             "This VAA comes from another multiverse, we don't have more details about it."
           )}

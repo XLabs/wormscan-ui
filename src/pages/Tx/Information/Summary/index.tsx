@@ -61,7 +61,9 @@ const Summary = ({
       <div>
         <div className="key">Status:</div>
         <div className="value">
-          {vaa ? (
+          {appIds && appIds.includes("CCTP_MANUAL") ? (
+            <StatusExternalTx />
+          ) : vaa ? (
             isConnect || isPortal || isCCTP ? (
               globalToRedeemTx ? (
                 <StatusCompleted />
@@ -88,7 +90,7 @@ const Summary = ({
         <div className="value">{appIds?.length > 0 ? formatAppIds(appIds) : "N/A"}</div>
       </div>
       <div>
-        <div className="key">Destination Wallet:</div>
+        <div className="key">Destination Address:</div>
         <div className="value">
           {parsedDestinationAddress ? (
             <a
@@ -139,6 +141,13 @@ const StatusVaaEmitted = () => (
   <Chip className="status" color="emitted">
     <CheckIcon height={16} width={16} />
     VAA EMITTED
+  </Chip>
+);
+
+const StatusExternalTx = () => (
+  <Chip className="status" color="emitted">
+    <CheckIcon height={16} width={16} />
+    EXTERNAL TX
   </Chip>
 );
 
