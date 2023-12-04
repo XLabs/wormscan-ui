@@ -205,6 +205,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
     guardianSignaturesCount,
     isGatewaySource,
     isUnknownApp,
+    originDateParsed,
     parsedDestinationAddress,
     parsedEmitterAddress,
     parsedOriginAddress,
@@ -505,7 +506,6 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
             {...overviewAndDetailProps}
             globalToRedeemTx={globalToRedeemTx}
             isAttestation={isAttestation}
-            originDateParsed={originDateParsed}
           />
           <AlertsContent />
         </>

@@ -18,6 +18,7 @@ type Props = {
   guardianSignaturesCount?: number;
   isGatewaySource?: boolean;
   isUnknownApp?: boolean;
+  originDateParsed?: string;
   parsedDestinationAddress?: string;
   parsedEmitterAddress?: string;
   parsedOriginAddress?: string;
@@ -44,6 +45,7 @@ const Details = ({
   guardianSignaturesCount,
   isGatewaySource,
   isUnknownApp,
+  originDateParsed,
   parsedDestinationAddress,
   parsedEmitterAddress,
   parsedOriginAddress,
@@ -202,7 +204,13 @@ const Details = ({
         <div className="tx-details-group-line">
           <div className="tx-details-group-line-key">Time</div>
           <div className="tx-details-group-line-value">
-            {destinationDateParsed ? <>{destinationDateParsed}</> : "N/A"}
+            {destinationDateParsed ? (
+              <>{destinationDateParsed}</>
+            ) : originDateParsed ? (
+              <>{originDateParsed}</>
+            ) : (
+              "N/A"
+            )}
           </div>
         </div>
         <div className="tx-details-group-line">
