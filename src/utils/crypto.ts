@@ -75,10 +75,17 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
 export const formatAppIds = (appIds: string[]) =>
   appIds
     .filter(appId => appId !== "UNKNOWN")
-    .map(appId =>
-      appId
+    .map(appId => {
+      if (appId === "GENERIC_RELAYER") {
+        return "Automatic Relayer";
+      }
+      if (appId === "WORMCHAIN_GATEWAY_TRANSFER") {
+        return "Wormhole Gateway Transfer";
+      }
+
+      return appId
         .split("_")
         .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(" "),
-    )
+        .join(" ");
+    })
     .join(", ");

@@ -31,6 +31,7 @@ import SuiIcon from "src/icons/blockchains/sui.svg";
 import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
 import TerraIcon from "src/icons/blockchains/terra.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
+import WormChainIcon from "src/icons/blockchains/wormchain.svg";
 
 import AcalaDarkIcon from "src/icons/blockchains/dark/acala.svg";
 import AlgorandDarkIcon from "src/icons/blockchains/dark/algorand.svg";
@@ -62,6 +63,7 @@ import SuiDarkIcon from "src/icons/blockchains/dark/sui.svg";
 import TerraClassicDarkIcon from "src/icons/blockchains/dark/terra-classic.svg";
 import TerraDarkIcon from "src/icons/blockchains/dark/terra.svg";
 import XplaDarkIcon from "src/icons/blockchains/dark/xpla.svg";
+import WormChainDarkIcon from "src/icons/blockchains/dark/wormchain.svg";
 
 import { parseAddress, parseTx } from "./crypto";
 
@@ -131,9 +133,9 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     },
   },
   [ChainId.Wormchain]: {
-    name: "Wormchain",
-    icon: NoDarkIcon,
-    darkIcon: NoDarkIcon,
+    name: "WH Gateway",
+    icon: WormChainIcon,
+    darkIcon: WormChainDarkIcon,
     explorer: {
       TESTNET: "",
       MAINNET: "",
