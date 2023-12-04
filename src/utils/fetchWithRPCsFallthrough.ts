@@ -371,11 +371,13 @@ const getCctpEmitterAddress = (env: Environment, chain: ChainId) => {
     if (chain === ChainId.Avalanche) return "0x09fb06a271faff70a651047395aaeb6265265f13";
     if (chain === ChainId.Arbitrum) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
     if (chain === ChainId.Optimism) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
+    if (chain === ChainId.Base) return "0x03fabb06fa052557143dc28efcfc63fc12843f1d";
   } else {
     if (chain === ChainId.Ethereum) return "0x0a69146716b3a21622287efa1607424c663069a4";
     if (chain === ChainId.Avalanche) return "0x58f4c17449c90665891c42e14d34aae7a26a472e";
     if (chain === ChainId.Arbitrum) return "0x2e8f5e00a9c5d450a72700546b89e2b70dfb00f2";
     if (chain === ChainId.Optimism) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
+    if (chain === ChainId.Base) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
   }
   return null;
 };
@@ -386,15 +388,17 @@ const getSolanaTokenDetails = async (mintAddress: string) => {
   try {
     // Fetch the Solana token list
     const response = await fetch(
-      "https://raw.githubusercontent.com/solana-labs/token-list/main/src/tokens/solana.tokenlist.json",
+      "https://raw.githubusercontent.com/solflare-wallet/token-list/master/solana-tokenlist.json",
     );
     const data = await response.json();
 
     // Search for the token by its mint address
-    const token = data?.tokens?.find((token: any) => token.address === mintAddress);
+    const token = data?.tokens?.find(
+      (token: any) => token.address?.toUpperCase() === mintAddress.toUpperCase(),
+    );
 
     if (token) {
-      return { name: token.name, symbol: token.symbol };
+      return { name: token.name, symbol: token.symbol, tokenDecimals: token.decimals };
     }
     return null;
   } catch (error) {
@@ -412,6 +416,7 @@ const getEvmTokenDetails = async (env: Environment, tokenChain: ChainId, tokenAd
   try {
     const tokenEthersProvider = getEthersProvider(getChainInfo(env, tokenChain as ChainId));
     const contract = new ethers.Contract(tokenAddress, tokenInterfaceAbi, tokenEthersProvider);
+
     const [name, symbol, tokenDecimals] = await Promise.all([
       contract.name(),
       contract.symbol(),
@@ -424,12 +429,12 @@ const getEvmTokenDetails = async (env: Environment, tokenChain: ChainId, tokenAd
   }
 };
 
-const getTokenInformation = async (
+export const getTokenInformation = async (
   tokenChain: number,
   env: Environment,
   parsedTokenAddress: string,
-  wrappedTokenAddress: string,
-  resultChain: number,
+  wrappedTokenAddress?: string,
+  resultChain?: number,
 ) => {
   // get token information
   let name: string;
@@ -451,13 +456,15 @@ const getTokenInformation = async (
     const tokenResult = await getSolanaTokenDetails(parsedTokenAddress);
     name = tokenResult?.name ? tokenResult.name : null;
     symbol = tokenResult?.symbol ? tokenResult.symbol : null;
+    tokenDecimals = tokenResult?.tokenDecimals ? tokenResult.tokenDecimals : null;
   }
 
-  if (name) {
+  if (name || !wrappedTokenAddress) {
     return { name, symbol, tokenDecimals };
   }
 
-  // --- if wasn't possible, try to get WRAPPED token information
+  // if wasn't possible and wrappedTokenAddress is there,
+  //       try to get WRAPPED token information
   // evm wrapped token
   if (isEVMChain(resultChain as ChainId)) {
     const tokenResult = await getEvmTokenDetails(env, resultChain, wrappedTokenAddress);
@@ -472,6 +479,7 @@ const getTokenInformation = async (
     const tokenResult = await getSolanaTokenDetails(wrappedTokenAddress);
     name = tokenResult?.name ? tokenResult.name : null;
     symbol = tokenResult?.symbol ? tokenResult.symbol : null;
+    tokenDecimals = tokenResult?.tokenDecimals ? tokenResult.tokenDecimals : null;
   }
 
   return { name, symbol, tokenDecimals };

@@ -4,6 +4,7 @@ import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import OverviewIcon from "src/icons/OverviewIcon";
 import { Tooltip } from "src/components/atoms";
 import { BREAKPOINTS } from "src/consts";
+import analytics from "src/analytics";
 import "./styles.scss";
 
 type TabsProps = {
@@ -50,14 +51,24 @@ const Tabs = ({
       <button
         className={`tx-tabs-trigger ${showOverview ? "tx-tabs-trigger-active" : ""}`}
         aria-label="Overview"
-        onClick={() => setShowOverview(true)}
+        onClick={() => {
+          analytics.track("txView", {
+            selected: "overview",
+          });
+          setShowOverview(true);
+        }}
       >
         OVERVIEW
       </button>
       <button
         className={`tx-tabs-trigger ${!showOverview ? "tx-tabs-trigger-active" : ""}`}
         aria-label="Raw data"
-        onClick={() => setShowOverview(false)}
+        onClick={() => {
+          analytics.track("txView", {
+            selected: "raw",
+          });
+          setShowOverview(false);
+        }}
       >
         RAW DATA
       </button>
@@ -81,7 +92,12 @@ const Tabs = ({
                   !showOverviewDetail ? "tx-tabs-sub-list-divider-button-active" : ""
                 }`}
                 aria-label="Overview"
-                onClick={() => setShowOverviewDetail(false)}
+                onClick={() => {
+                  analytics.track("overviewView", {
+                    selected: "overview",
+                  });
+                  setShowOverviewDetail(false);
+                }}
               >
                 <OverviewIcon height={24} width={24} />
               </button>
@@ -102,7 +118,12 @@ const Tabs = ({
                   showOverviewDetail ? "tx-tabs-sub-list-divider-button-active" : ""
                 }`}
                 aria-label="Details list"
-                onClick={() => setShowOverviewDetail(true)}
+                onClick={() => {
+                  analytics.track("overviewView", {
+                    selected: "details",
+                  });
+                  setShowOverviewDetail(true);
+                }}
               >
                 <ListBulletIcon height={24} width={24} />
               </button>

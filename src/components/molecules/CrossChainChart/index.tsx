@@ -122,6 +122,7 @@ const CrossChainChart = () => {
               data={data}
               selectedDestination={selectedDestination}
               selectedType={selectedType}
+              selectedTimeRange={selectedTimeRange.value}
             />
           )}
         </>

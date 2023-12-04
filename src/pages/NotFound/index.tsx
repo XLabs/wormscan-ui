@@ -1,12 +1,12 @@
+import { useEffect } from "react";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
-import "./styles.scss";
-import { useEffect } from "react";
 import analytics from "src/analytics";
+import "./styles.scss";
 
 const NotFound = () => {
   useEffect(() => {
-    analytics.page({ title: "NOT_FOUND" });
+    analytics.page({ title: "NOT_FOUND_PAGE" });
   }, []);
 
   const navigate = useNavigateCustom();
