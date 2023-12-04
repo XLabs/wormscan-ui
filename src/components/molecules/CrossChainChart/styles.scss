@@ -116,13 +116,6 @@
       }
     }
 
-    &-text {
-      @include text-p2;
-
-      color: var(--color-primary-90);
-      white-space: nowrap;
-    }
-
     @include desktop {
       @include centered-row;
       width: inherit;

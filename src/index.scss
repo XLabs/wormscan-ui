@@ -71,6 +71,9 @@ html {
   background-color: var(--color-primary-900);
   scroll-behavior: smooth;
   /* scrollbar-gutter: controlled by ScrollControl; */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
 }
 
 body {

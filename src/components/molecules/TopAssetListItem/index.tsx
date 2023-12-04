@@ -1,57 +1,113 @@
-import { ArrowRightIcon } from "@radix-ui/react-icons";
-import { useEnvironment } from "src/context/EnvironmentContext";
-import { BlockchainIcon } from "src/components/atoms";
 import { formatNumber } from "src/utils/number";
-import { getChainName } from "src/utils/wormhole";
+import { TokenIconKeys, TokenIcons } from "src/types";
+import APT from "src/icons/tokens/APT.svg";
+import ARBITRUM from "src/icons/tokens/ARBITRUM.svg";
+import ATOM from "src/icons/tokens/ATOM.svg";
+import AVAX from "src/icons/tokens/AVAX.svg";
+import BASE from "src/icons/tokens/BASE.svg";
+import BNB from "src/icons/tokens/BNB.svg";
+import BONK from "src/icons/tokens/BONK.svg";
+import BSC from "src/icons/tokens/BSC.svg";
+import BUSD from "src/icons/tokens/BUSD.svg";
+import CELO from "src/icons/tokens/CELO.svg";
+import DAI from "src/icons/tokens/DAI.svg";
+import ETH from "src/icons/tokens/ETH.svg";
+import EVMOS from "src/icons/tokens/EVMOS.svg";
+import FTM from "src/icons/tokens/FTM.svg";
+import GLMR from "src/icons/tokens/GLMR.svg";
+import KUJI from "src/icons/tokens/KUJI.svg";
+import MATIC from "src/icons/tokens/MATIC.svg";
+import OPTIMISM from "src/icons/tokens/OPTIMISM.svg";
+import OSMO from "src/icons/tokens/OSMO.svg";
+import PYTH from "src/icons/tokens/PYTH.svg";
+import SEI from "src/icons/tokens/SEI.svg";
+import SOL from "src/icons/tokens/SOL.svg";
+import SUI from "src/icons/tokens/SUI.svg";
+import TBTC from "src/icons/tokens/TBTC.svg";
+import USDC from "src/icons/tokens/USDC.svg";
+import USDT from "src/icons/tokens/USDT.svg";
+import WBTC from "src/icons/tokens/WBTC.svg";
+import WETH from "src/icons/tokens/WETH.svg";
+import WSTETH from "src/icons/tokens/WSTETH.svg";
 import noIconToken from "src/icons/tokens/noIcon.svg";
 import "./styles.scss";
 
+const iconTokens = {
+  APT,
+  ARBITRUM,
+  ATOM,
+  AVAX,
+  BASE,
+  BNB,
+  BONK,
+  BSC,
+  BUSD,
+  CELO,
+  DAI,
+  ETH,
+  EVMOS,
+  FTM,
+  GLMR,
+  KUJI,
+  MATIC,
+  OPTIMISM,
+  OSMO,
+  PYTH,
+  SEI,
+  SOL,
+  SUI,
+  TBTC,
+  USDC,
+  USDT,
+  WBTC,
+  WETH,
+  WSTETH,
+} as TokenIcons;
+
 type Props = {
-  from_chain: number;
-  token_logo: string;
-  symbol: string;
+  itemIndex: number;
+  rowSelected: number;
+  showThisGraph: () => void;
+  symbol: TokenIconKeys;
+  txs: number | string;
   volume: string;
 };
 
-const TopAssetListItem = ({ from_chain, token_logo, symbol, volume }: Props) => {
-  const { environment } = useEnvironment();
-  const currentNetwork = environment.network;
-
+const TopAssetListItem = ({
+  itemIndex,
+  rowSelected,
+  showThisGraph,
+  symbol,
+  txs,
+  volume,
+}: Props) => {
   return (
-    <div className="top-asset-list-item">
-      <div className="top-asset-list-item-from">
-        <div className="top-asset-list-item-from-icon-container">
-          <BlockchainIcon
-            chainId={from_chain}
-            className="top-asset-list-item-from-icon"
-            network={currentNetwork}
-            size={25}
-          />
-        </div>
+    <tr
+      className={`top-asset-list-row ${rowSelected === itemIndex ? "active" : ""}`}
+      onClick={showThisGraph}
+    >
+      <td className="top-asset-list-row-item">{itemIndex + 1}</td>
 
-        <div className="top-asset-list-item-from-chain">
-          {getChainName({ chainId: from_chain, acronym: true, network: currentNetwork })}
+      <td className="top-asset-list-row-item">
+        <div>
+          <div className="image">
+            <img
+              src={iconTokens?.[symbol] || noIconToken}
+              alt={`${symbol} icon`}
+              height="19.20"
+              width="19.20"
+              className="top-asset-list-item-to-icon"
+              loading="lazy"
+            />
+          </div>
+          <div className="top-asset-list-item-to-asset">{symbol}</div>
         </div>
-      </div>
-      <div>
-        <ArrowRightIcon className="arrow-icon" />
-      </div>
-      <div className="top-asset-list-item-to">
-        <div className="top-asset-list-item-to-icon-container">
-          <img
-            src={token_logo || noIconToken}
-            alt={`${symbol} icon`}
-            height="25"
-            width="25"
-            className="top-asset-list-item-to-icon"
-            loading="lazy"
-          />
-        </div>
+      </td>
 
-        <div className="top-asset-list-item-to-asset">{symbol}</div>
-      </div>
-      <div className="top-asset-list-item-transactions">${formatNumber(Number(volume), 0)}</div>
-    </div>
+      <td className="top-asset-list-row-item">${formatNumber(Number(volume), 0)}</td>
+
+      <td className="top-asset-list-row-item">{txs}</td>
+    </tr>
   );
 };
 

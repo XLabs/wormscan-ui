@@ -125,9 +125,10 @@ export const StickyInfo = ({
             <div key={destination.chain} className="cross-chain-sticky-info spaced">
               <span>
                 <BlockchainIcon
+                  background="#080530"
                   chainId={destination.chain}
                   className="chain-icon"
-                  dark={true}
+                  colorless={true}
                   network={currentNetwork}
                   size={22}
                 />

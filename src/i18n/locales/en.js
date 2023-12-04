@@ -45,7 +45,6 @@ export default {
           destination: "Target",
           apps: "Apps",
           range: "Range",
-          timeRange: "Time range",
           allApps: "All apps",
           allTime: "All time",
           portalActivity: "Portal Bridge Activity",
@@ -56,15 +55,9 @@ export default {
           title: "VAAs count by blockchain",
           excluded: "The following blockchains were excluded from the chart:",
         },
-        topLists: {
-          chains: {
-            title: "Top 7 Chain pairs",
-            subtitle: "Top chain pairs by number of transfers",
-          },
-          assets: {
-            title: "Top 7 assets",
-            subtitle: "Top assets transferred by volume to each blockchain",
-          },
+        topAssets: {
+          title: "Top 7 assets",
+          subtitle: "Tap an asset and analyze the breakdown",
         },
         join: {
           initText: "Don't want to miss our releases? ",

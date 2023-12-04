@@ -123,7 +123,7 @@ describe("Home Page", () => {
     });
   });
 
-  describe("Top 7 Chain pairs", () => {
+  /* describe("Top 7 Chain pairs", () => {
     test("check endpoint top 7 chain pairs for 7d-15d-30d", async ({ page }) => {
       const topChainTimeRange = page.getByTestId("topChainTimeRange");
       const selectElement = topChainTimeRange.locator(".select__control");
@@ -141,7 +141,7 @@ describe("Home Page", () => {
       await checkTopChainPairs(1, "15d");
       await checkTopChainPairs(0, "7d");
     });
-  });
+  }); */
 
   describe("Top 7 assets", () => {
     test("check endpoint top 7 assets for 7d-15d-30d", async ({ page }) => {

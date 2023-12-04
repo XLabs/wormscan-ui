@@ -1,18 +1,10 @@
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  width="24"
-  height="24"
-  fill="none"
-  xmlns:v="https://vecta.io/nano"
->
-  <rect width="24" height="24" rx="12" fill="#080530" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" xmlns:v="https://vecta.io/nano">
   <mask id="A" maskUnits="userSpaceOnUse" x="4" y="4" width="16" height="16" mask-type="alpha">
     <path fill="#d9d9d9" d="M4 4h16v16H4z" />
   </mask>
   <g mask="url(#A)">
     <path
       d="M12.332 11.878l4.783 4.748a6.92 6.92 0 0 0 0-9.496m-5.132 5.061L7.27 16.87l4.713 1.955 4.713-1.955m-4.888-5.167l4.888-4.853L12.192 5 7.723 15.788l4.085-4.085zM5 11.878c-.003 1.766.671 3.466 1.885 4.748l4.678-11.277"
-      fill="#fff"
-    />
+      fill="#fff" />
   </g>
 </svg>

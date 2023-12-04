@@ -1,0 +1,209 @@
+@import "src/styles/globals.scss";
+
+.chart-container {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0px 4px;
+  transition: max-height 0.3s ease;
+
+  @include desktop {
+    display: none;
+    height: calc(100% - 72px);
+    max-height: unset;
+    overflow: unset;
+    padding: unset;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: unset;
+    width: 52.5%;
+  }
+
+  &-title {
+    @include text-caption1;
+    color: var(--color-primary-10);
+    font-weight: 400;
+    padding: 24px 8px 12px 8px;
+
+    @include desktop {
+      color: var(--color-primary-90);
+      font-weight: 600;
+      height: 72px;
+      padding: 24px 16px;
+      text-transform: uppercase;
+    }
+  }
+
+  &-chart {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  &-expanded {
+    background-color: var(--color-white-03);
+    border-bottom: 1px solid var(--color-white-10);
+    display: block;
+    max-height: 317.31px;
+    padding-bottom: 20px;
+
+    @include tablet {
+      max-height: 445.94px;
+    }
+
+    @include desktop {
+      background-color: unset;
+      border: none;
+      max-height: unset;
+      padding-bottom: unset;
+    }
+  }
+
+  &-chart-row {
+    display: flex;
+
+    @include desktop {
+      &:first-child {
+        height: 35%;
+      }
+
+      &:nth-child(2) {
+        height: 40%;
+      }
+
+      &:last-child {
+        height: 30%;
+      }
+    }
+
+    &-item {
+      display: flex;
+      min-width: 70px;
+
+      @include tablet {
+        min-width: 120px;
+      }
+
+      @include desktop {
+        min-width: 100px;
+      }
+
+      @include bigDesktop {
+        min-width: 120px;
+      }
+
+      display: flex;
+      flex-direction: column;
+      padding: 8px;
+      gap: 4px;
+      width: 100%;
+
+      @include desktop {
+        padding: 16px;
+      }
+
+      & div {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      &-icon {
+        height: 12px;
+        width: 12px;
+
+        @include tablet {
+          height: 24px;
+          width: 24px;
+        }
+      }
+
+      &-chain-name {
+        @include text-p2-bold;
+        font-size: 12px;
+
+        @include tablet {
+          font-size: 16px;
+        }
+      }
+
+      &-txs {
+        @include text-p3;
+        font-size: 10px;
+
+        @include tablet {
+          font-size: 14px;
+        }
+      }
+
+      &-volume {
+        @include text-p3;
+        font-size: 10px;
+        margin: 0 0 4px 0;
+        text-align: center;
+
+        @include tablet {
+          font-size: 14px;
+          margin: auto 0 26px 0;
+        }
+
+        @include desktop {
+          font-size: 12px;
+          margin: 56px 0 26px 0;
+        }
+
+        @include bigDesktop {
+          font-size: 14px;
+          margin: 56px 0 26px 0;
+        }
+      }
+    }
+
+    &-item-0 {
+      background-color: var(--color-primary-500);
+
+      @include desktop {
+        border-radius: 4px 4px 0 0;
+      }
+    }
+
+    &-item-1 {
+      background-color: var(--color-primary-400);
+    }
+
+    &-item-2 {
+      background-color: #3a3d87;
+      background-color: var(--color-primary-300);
+    }
+
+    &-item-3 {
+      background-color: #3f428d;
+      background-color: var(--color-primary-200);
+
+      @include desktop {
+        border-radius: 0 0 0 4px;
+      }
+    }
+
+    &-item-4 {
+      background-color: #565aaa;
+      background-color: var(--color-primary-100);
+    }
+
+    &-item-5 {
+      background-color: #7c81dc;
+      background-color: var(--color-primary-90);
+      color: var(--color-primary-900);
+    }
+
+    &-item-6 {
+      background-color: #989bdb;
+      background-color: var(--color-primary-50);
+      color: var(--color-primary-900);
+
+      @include desktop {
+        border-radius: 0 0 4px 0;
+      }
+    }
+  }
+}

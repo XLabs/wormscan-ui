@@ -1,5 +1,6 @@
 import ErrorGeneralImage from "src/assets/errorGeneral.svg";
 import { DISCORD_URL } from "src/consts";
+import "../styles.scss";
 
 const ErrorGeneral = () => {
   const reloadPage = () => {

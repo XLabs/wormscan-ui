@@ -1,7 +1,7 @@
 import { CrossChainChart, JoinUs } from "src/components/molecules";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { Statistics } from "./Statistics";
-import { TopLists } from "./TopLists";
+import { TopAssets } from "./TopAssets";
 import { useEffect } from "react";
 import analytics from "src/analytics";
 
@@ -14,7 +14,7 @@ const Home = () => {
     <BaseLayout>
       <Statistics />
       <CrossChainChart />
-      <TopLists />
+      <TopAssets />
       <JoinUs />
     </BaseLayout>
   );

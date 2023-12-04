@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import i18n from "src/i18n";
-import { Loader, Select, ToggleGroup } from "src/components/atoms";
+import { BlockchainIcon, Loader, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { getClient } from "src/api/Client";
 import { CrossChainBy } from "src/api/guardian-network/types";
@@ -98,7 +98,6 @@ const CrossChainChart = () => {
 
         <div className="cross-chain-filters">
           <div className="cross-chain-filters-group">
-            <span className="cross-chain-filters-text">{t("home.crossChain.timeRange")}</span>
             <Select
               name="timeRange"
               value={selectedTimeRange}

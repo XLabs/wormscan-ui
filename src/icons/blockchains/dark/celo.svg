@@ -1,34 +1,16 @@
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  width="24"
-  height="24"
-  fill="none"
-  xmlns:v="https://vecta.io/nano"
->
-  <rect width="24" height="24" rx="12" fill="#080530" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" xmlns:v="https://vecta.io/nano">
   <mask id="A" maskUnits="userSpaceOnUse" x="4" y="4" width="16" height="16" mask-type="alpha">
     <path fill="#d9d9d9" d="M4 4h16v16H4z" />
   </mask>
   <g mask="url(#A)">
-    <path
-      opacity=".8"
+    <path opacity=".8"
       d="M10.526 17.551c2.252 0 4.077-1.825 4.077-4.077a4.08 4.08 0 0 0-4.077-4.077 4.08 4.08 0 0 0-4.077 4.077c0 2.252 1.825 4.077 4.077 4.077zm0 1.425c-3.039 0-5.502-2.463-5.502-5.502s2.463-5.502 5.502-5.502 5.502 2.463 5.502 5.502-2.463 5.502-5.502 5.502z"
-      fill="#fff"
-      stroke="#fff"
-      stroke-width=".083"
-    />
-    <path
-      opacity=".8"
+      fill="#fff" stroke="#fff" stroke-width=".083" />
+    <path opacity=".8"
       d="M13.474 14.603c2.252 0 4.077-1.825 4.077-4.077s-1.825-4.077-4.077-4.077a4.08 4.08 0 0 0-4.077 4.077 4.08 4.08 0 0 0 4.077 4.077zm0 1.425c-3.039 0-5.502-2.463-5.502-5.502s2.463-5.502 5.502-5.502 5.502 2.463 5.502 5.502-2.463 5.502-5.502 5.502z"
-      fill="#fff"
-      stroke="#fff"
-      stroke-width=".083"
-    />
+      fill="#fff" stroke="#fff" stroke-width=".083" />
     <path
       d="M15.604 15.605c-.602.252-1.243.395-1.895.421a4.06 4.06 0 0 0 .771-1.547c.565-.143 1.092-.406 1.547-.771-.026.652-.169 1.293-.423 1.896zm-5.313-7.631a4.06 4.06 0 0 0-.77 1.547 4.08 4.08 0 0 0-1.547.771c.026-.652.169-1.293.423-1.895.602-.252 1.244-.395 1.895-.423z"
-      fill="#fff"
-      stroke="#fff"
-      stroke-width=".083"
-    />
+      fill="#fff" stroke="#fff" stroke-width=".083" />
   </g>
 </svg>
