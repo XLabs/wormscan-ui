@@ -371,11 +371,13 @@ const getCctpEmitterAddress = (env: Environment, chain: ChainId) => {
     if (chain === ChainId.Avalanche) return "0x09fb06a271faff70a651047395aaeb6265265f13";
     if (chain === ChainId.Arbitrum) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
     if (chain === ChainId.Optimism) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
+    if (chain === ChainId.Base) return "0x03fabb06fa052557143dc28efcfc63fc12843f1d";
   } else {
     if (chain === ChainId.Ethereum) return "0x0a69146716b3a21622287efa1607424c663069a4";
     if (chain === ChainId.Avalanche) return "0x58f4c17449c90665891c42e14d34aae7a26a472e";
     if (chain === ChainId.Arbitrum) return "0x2e8f5e00a9c5d450a72700546b89e2b70dfb00f2";
     if (chain === ChainId.Optimism) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
+    if (chain === ChainId.Base) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
   }
   return null;
 };
