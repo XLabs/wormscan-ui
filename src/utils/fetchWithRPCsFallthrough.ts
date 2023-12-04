@@ -412,6 +412,7 @@ const getCctpDomain = (dom: number) => {
   if (dom === 1) return ChainId.Avalanche;
   if (dom === 2) return ChainId.Optimism;
   if (dom === 3) return ChainId.Arbitrum;
+  if (dom === 6) return ChainId.Base;
   return null;
 };
 
