@@ -288,6 +288,7 @@ const Tx = () => {
           }
         }
 
+        // check AUTOMATIC RELAYER
         if (!txResponse?.standardizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
           analytics.track("txDetail", {
             appIds: txResponse?.standardizedProperties?.appIds ?? "null",
@@ -438,10 +439,10 @@ const Tx = () => {
               payloadType={payloadType}
             />
             {parsedVAAsData?.map(
-              parsedVAAData =>
+              (parsedVAAData, i) =>
                 txData && (
                   <Information
-                    key={parsedVAAData.id}
+                    key={parsedVAAData.id || `vaa-${i}`}
                     extraRawInfo={extraRawInfo}
                     VAAData={parsedVAAData}
                     txData={txData.find(tx => tx.id === parsedVAAData.id)}

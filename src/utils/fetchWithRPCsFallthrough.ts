@@ -1,5 +1,4 @@
 import {
-  CHAIN_ID_ETH,
   CHAIN_ID_SUI,
   CONTRACTS,
   coalesceChainName,
@@ -12,10 +11,11 @@ import {
 import { Environment, SLOW_FINALITY_CHAINS, getChainInfo, getEthersProvider } from "./environment";
 import { ethers } from "ethers";
 import { Implementation__factory } from "@certusone/wormhole-sdk/lib/cjs/ethers-contracts";
-import { parseAddress } from "./crypto";
+import { formatUnits, parseAddress } from "./crypto";
 import { humanAddress } from "@certusone/wormhole-sdk/lib/cjs/cosmos";
 import { ChainId } from "src/api";
 import { isConnect, parseConnectPayload } from "./wh-connect-rpc";
+import { TokenMessenger__factory } from "./TokenMessenger__factory";
 
 type TxReceiptHolder = {
   receipt: ethers.providers.TransactionReceipt;
@@ -78,10 +78,23 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
     const LOG_MESSAGE_PUBLISHED_TOPIC =
       "0x6eb224fb001ed210e379b335e35efe88672a8ce935d981a6896b27ffdf52a3b2";
     const LOG_TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+    const LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC =
+      "0x2fa9ca894982930190727e75500a97d8dc500233a5065e0f3126c48fbe0343c0";
 
     const wrappedTokenAddress = result.receipt?.logs.findLast(
       l => l.topics[0] === LOG_TRANSFER_TOPIC,
     )?.address;
+
+    // getting block to read the timestamp
+    const ethersProvider = getEthersProvider(getChainInfo(env, result.chainId as ChainId));
+    const block = await ethersProvider.getBlock(result.receipt.blockNumber);
+    const timestamp = ethers.BigNumber.from(block.timestamp).toNumber() * 1000;
+
+    let fromAddress = result.receipt.from;
+    let parsedFromAddress = parseAddress({
+      chainId: result.chainId,
+      value: fromAddress,
+    });
 
     const txsData = result.receipt?.logs
       .filter(
@@ -99,23 +112,12 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           value: emitterAddress,
         });
 
-        // getting block to read the timestamp
-        const ethersProvider = getEthersProvider(getChainInfo(env, result.chainId as ChainId));
-        const block = await ethersProvider.getBlock(result.receipt.blockNumber);
-        const timestamp = ethers.BigNumber.from(block.timestamp).toNumber() * 1000;
         let lastFinalizedBlock;
-
         try {
           lastFinalizedBlock = (await ethersProvider.getBlock("finalized")).number;
         } catch (error) {
           lastFinalizedBlock = await ethersProvider.getBlockNumber();
         }
-
-        let fromAddress = result.receipt.from;
-        let parsedFromAddress = parseAddress({
-          chainId: result.chainId,
-          value: fromAddress,
-        });
 
         // checking if we know how to read the payloads:
         //   token bridge
@@ -328,13 +330,61 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             usdAmount: amount,
           };
         }
-        // default, no token-bridge nor cctp ones (can add other payload readers here)
+        // default, no token-bridge nor cctp ones
+        // (can add other wormhole payload readers here)
         else {
           return null;
         }
       });
 
-    return !!txsData.length ? txsData : null;
+    if (!!txsData.length) return txsData;
+
+    // Check if receipt is from non-wormhole CCTP
+    const manualCctpData = result.receipt?.logs
+      .filter(
+        l => l.topics[0]?.toLowerCase() === LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC.toLowerCase(),
+      )
+      .map(async l => {
+        const { args } = TokenMessenger__factory.createInterface().parseLog(l);
+
+        const emitterAddress = l.address;
+        const emitterNattiveAddress = parseAddress({
+          chainId: result.chainId,
+          value: emitterAddress,
+        });
+
+        const { amount, burnToken, destinationDomain, mintRecipient } = args;
+
+        return {
+          amount: "" + formatUnits(amount.toString(), 6),
+          appIds: ["CCTP_MANUAL"],
+          chain: result.chainId,
+          emitterAddress,
+          emitterNattiveAddress,
+          fee: "0",
+          fromAddress,
+          parsedFromAddress,
+          symbol: "USDC",
+          timestamp,
+          toAddress: "0x" + mintRecipient.substring(26),
+          toChain: getCctpDomain(destinationDomain),
+          tokenAddress: burnToken,
+          tokenAmount: "" + formatUnits(amount.toString(), 6),
+          tokenChain: result.chainId,
+          txHash: searchValue,
+          usdAmount: "" + formatUnits(amount.toString(), 6),
+
+          // no data properties
+          id: null,
+          payloadType: null,
+          sequence: null,
+          toNativeAmount: null,
+          blockNumber: null,
+          lastFinalizedBlock: null,
+        };
+      });
+
+    return !!manualCctpData.length ? manualCctpData : null;
   } else {
     return null;
   }
@@ -362,6 +412,7 @@ const getCctpDomain = (dom: number) => {
   if (dom === 1) return ChainId.Avalanche;
   if (dom === 2) return ChainId.Optimism;
   if (dom === 3) return ChainId.Arbitrum;
+  if (dom === 6) return ChainId.Base;
   return null;
 };
 
