@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import ReactApexChart from "react-apexcharts";
 import { Loader } from "src/components/atoms";
-import { ErrorPlaceholder } from "src/components/molecules";
+import { ErrorPlaceholder, WormholeBrand } from "src/components/molecules";
 import { numberToSuffix } from "src/utils/number";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { getClient } from "src/api/Client";
@@ -93,6 +93,8 @@ const TransactionHistoryChart = ({ range }: Props) => {
             <ErrorPlaceholder errorType="chart" />
           ) : (
             <div className="trans-history-chart">
+              <WormholeBrand size="regular" />
+
               <ReactApexChart
                 type="area"
                 height={"100%"}

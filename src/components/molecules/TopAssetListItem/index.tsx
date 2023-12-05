@@ -1,5 +1,5 @@
 import { formatNumber } from "src/utils/number";
-import { TokenIconKeys, TokenIcons } from "src/types";
+import { TokenIconKeys } from "src/api/guardian-network/types";
 import APT from "src/icons/tokens/APT.svg";
 import ARBITRUM from "src/icons/tokens/ARBITRUM.svg";
 import ATOM from "src/icons/tokens/ATOM.svg";
@@ -20,10 +20,12 @@ import MATIC from "src/icons/tokens/MATIC.svg";
 import OPTIMISM from "src/icons/tokens/OPTIMISM.svg";
 import OSMO from "src/icons/tokens/OSMO.svg";
 import PYTH from "src/icons/tokens/PYTH.svg";
+import RNDR from "src/icons/tokens/RNDR.svg";
+import SDEX from "src/icons/tokens/SDEX.svg";
 import SEI from "src/icons/tokens/SEI.svg";
 import SOL from "src/icons/tokens/SOL.svg";
 import SUI from "src/icons/tokens/SUI.svg";
-import TBTC from "src/icons/tokens/TBTC.svg";
+import tBTC from "src/icons/tokens/tBTC.svg";
 import USDC from "src/icons/tokens/USDC.svg";
 import USDT from "src/icons/tokens/USDT.svg";
 import WBTC from "src/icons/tokens/WBTC.svg";
@@ -53,23 +55,25 @@ const iconTokens = {
   OPTIMISM,
   OSMO,
   PYTH,
+  RNDR,
+  SDEX,
   SEI,
   SOL,
   SUI,
-  TBTC,
+  tBTC,
   USDC,
   USDT,
   WBTC,
   WETH,
   WSTETH,
-} as TokenIcons;
+} as { [K in TokenIconKeys]: SVGAElement };
 
 type Props = {
   itemIndex: number;
   rowSelected: number;
   showThisGraph: () => void;
   symbol: TokenIconKeys;
-  txs: number | string;
+  txs: string;
   volume: string;
 };
 

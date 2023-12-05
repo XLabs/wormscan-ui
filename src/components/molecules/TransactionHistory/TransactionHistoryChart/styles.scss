@@ -18,8 +18,24 @@
   &-chart {
     height: 100%;
     width: 100%;
+    position: relative;
 
-    & > div {
+    & .wormhole-brand {
+      bottom: 20px;
+      height: 34px;
+      left: 40px;
+      margin: auto;
+      min-height: unset;
+      opacity: 0.3;
+      position: absolute;
+      right: 0;
+      top: 0;
+      pointer-events: none;
+      user-select: none;
+      width: 180px;
+    }
+
+    & > div:not(.wormhole-brand) {
       min-height: var(--min-height);
     }
 

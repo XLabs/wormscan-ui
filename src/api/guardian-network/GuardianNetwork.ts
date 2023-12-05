@@ -78,10 +78,10 @@ export class GuardianNetwork {
   async getAssetsByVolume(
     params: AssetsByVolumeInput = { timeSpan: "7d" },
   ): Promise<AssetsByVolumeOutput[]> {
-    const payload = await this._client.doGet<AssetsByVolumeOutput>("/top-assets-by-volume", {
+    const payload = await this._client.doGet<AssetsByVolumeOutput>("/top-symbols-by-volume", {
       ...params,
     });
-    const result = _get(payload, "assets", []);
+    const result = _get(payload, "symbols", []);
     return result;
   }
 

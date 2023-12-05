@@ -1,15 +1,15 @@
 @import "src/styles/globals.scss";
 
 .chart-container {
-  max-height: 0;
+  height: 0;
   overflow: hidden;
   padding: 0px 4px;
-  transition: max-height 0.3s ease;
+  transition: height 0.3s ease, padding 0.3s ease;
+  position: relative;
 
   @include desktop {
     display: none;
     height: calc(100% - 72px);
-    max-height: unset;
     overflow: unset;
     padding: unset;
     position: absolute;
@@ -35,27 +35,66 @@
   }
 
   &-chart {
+    border-radius: 4px;
+    border: 1px solid var(--color-primary-800);
     display: flex;
     flex-direction: column;
-    height: 100%;
+
+    @include desktop {
+      height: calc(100% - 72px);
+    }
   }
 
   &-expanded {
     background-color: var(--color-white-03);
-    border-bottom: 1px solid var(--color-white-10);
     display: block;
-    max-height: 317.31px;
     padding-bottom: 20px;
-
-    @include tablet {
-      max-height: 445.94px;
-    }
 
     @include desktop {
       background-color: unset;
       border: none;
-      max-height: unset;
+      height: 100%;
       padding-bottom: unset;
+    }
+
+    &-1row {
+      height: 190.56px;
+
+      @include tablet {
+        height: 231.17px;
+      }
+
+      @include desktop {
+        height: 100%;
+      }
+    }
+
+    &-2row {
+      height: 302.56px;
+
+      @include tablet {
+        height: 380.366px;
+      }
+
+      @include desktop {
+        height: 100%;
+      }
+    }
+
+    &-3row {
+      height: 414.56px;
+
+      @include tablet {
+        height: 529.54px;
+      }
+
+      @include desktop {
+        height: 100%;
+      }
+    }
+
+    @include desktop {
+      height: 100%;
     }
   }
 
@@ -63,20 +102,12 @@
     display: flex;
 
     @include desktop {
-      &:first-child {
-        height: 35%;
-      }
-
-      &:nth-child(2) {
-        height: 40%;
-      }
-
-      &:last-child {
-        height: 30%;
-      }
+      height: 100%;
     }
 
     &-item {
+      border: 1px solid var(--color-primary-800);
+      color: var(--color-primary-30);
       display: flex;
       min-width: 70px;
 
@@ -95,7 +126,7 @@
       display: flex;
       flex-direction: column;
       padding: 8px;
-      gap: 4px;
+      gap: 8px;
       width: 100%;
 
       @include desktop {
@@ -103,9 +134,26 @@
       }
 
       & div {
-        align-items: center;
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        gap: 4px;
+
+        @include desktop {
+          gap: 8px;
+        }
+
+        &:first-child {
+          justify-content: flex-start;
+        }
+
+        &:last-child {
+          flex-direction: column;
+          height: 100%;
+
+          @include desktop {
+            justify-content: center;
+          }
+        }
       }
 
       &-icon {
@@ -127,43 +175,87 @@
         }
       }
 
-      &-txs {
-        @include text-p3;
-        font-size: 10px;
-
-        @include tablet {
-          font-size: 14px;
-        }
-      }
-
       &-volume {
         @include text-p3;
+        display: flex;
+        flex-direction: column;
         font-size: 10px;
-        margin: 0 0 4px 0;
-        text-align: center;
+        line-height: 1.2;
 
         @include tablet {
           font-size: 14px;
-          margin: auto 0 26px 0;
         }
 
         @include desktop {
           font-size: 12px;
-          margin: 56px 0 26px 0;
         }
 
         @include bigDesktop {
           font-size: 14px;
-          margin: 56px 0 26px 0;
+        }
+
+        & span {
+          font-weight: 600;
+        }
+      }
+
+      &-txs {
+        @include text-p3;
+        display: flex;
+        flex-direction: column;
+        font-size: 10px;
+        line-height: 1.2;
+
+        @include tablet {
+          font-size: 14px;
+        }
+
+        @include desktop {
+          font-size: 12px;
+        }
+
+        @include bigDesktop {
+          font-size: 14px;
+        }
+
+        & span {
+          font-weight: 600;
         }
       }
     }
 
     &-item-0 {
       background-color: var(--color-primary-500);
+      position: relative;
 
-      @include desktop {
-        border-radius: 4px 4px 0 0;
+      & .wormhole-brand-container {
+        bottom: 8px;
+        display: block;
+        height: 34px;
+        left: 0;
+        margin: auto;
+        min-height: unset;
+        opacity: 0.1;
+        pointer-events: none;
+        position: absolute;
+        right: 0;
+        user-select: none;
+        width: 180px;
+        z-index: 10;
+
+        &-center {
+          bottom: 0;
+          left: 0;
+          right: 0;
+          top: 0;
+        }
+
+        &-centerRight {
+          bottom: 0;
+          left: unset;
+          right: 8px;
+          top: 0;
+        }
       }
     }
 
@@ -173,37 +265,24 @@
 
     &-item-2 {
       background-color: #3a3d87;
-      background-color: var(--color-primary-300);
     }
 
     &-item-3 {
       background-color: #3f428d;
-      background-color: var(--color-primary-200);
-
-      @include desktop {
-        border-radius: 0 0 0 4px;
-      }
     }
 
     &-item-4 {
       background-color: #565aaa;
-      background-color: var(--color-primary-100);
     }
 
     &-item-5 {
       background-color: #7c81dc;
-      background-color: var(--color-primary-90);
       color: var(--color-primary-900);
     }
 
     &-item-6 {
       background-color: #989bdb;
-      background-color: var(--color-primary-50);
       color: var(--color-primary-900);
-
-      @include desktop {
-        border-radius: 0 0 4px 0;
-      }
     }
   }
 }

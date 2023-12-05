@@ -77,12 +77,59 @@ export interface ScoresOutput {
 export interface AssetsByVolumeInput {
   timeSpan?: "7d" | "15d" | "30d";
 }
+
+export type TokenIconKeys =
+  | "APT"
+  | "ARBITRUM"
+  | "ATOM"
+  | "AVAX"
+  | "BASE"
+  | "BNB"
+  | "BONK"
+  | "BSC"
+  | "BUSD"
+  | "CELO"
+  | "DAI"
+  | "ETH"
+  | "EVMOS"
+  | "FTM"
+  | "GLMR"
+  | "KUJI"
+  | "MATIC"
+  | "OPTIMISM"
+  | "OSMO"
+  | "PYTH"
+  | "SEI"
+  | "SOL"
+  | "SUI"
+  | "tBTC"
+  | "USDC"
+  | "USDT"
+  | "WBTC"
+  | "WETH"
+  | "WSTETH";
 export interface AssetsByVolumeOutput {
-  emitterChain: number;
-  symbol: string;
-  tokenChain: number;
-  tokenAddress: string;
+  symbol: TokenIconKeys;
+  txs: string;
   volume: string;
+  tokens: {
+    emitter_chain: number;
+    token_address: string;
+    token_chain: number;
+    txs: string;
+    volume: string;
+  }[];
+}
+
+export interface AssetsByVolumeOrderedOutput {
+  symbol: TokenIconKeys;
+  txs: string;
+  volume: string;
+  tokens: {
+    emitter_chain: number;
+    txs: string;
+    volume: string;
+  }[];
 }
 
 export interface ChainPairsByTransfersInput {

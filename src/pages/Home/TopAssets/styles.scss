@@ -163,5 +163,9 @@
     color: var(--color-primary-100);
     text-align: end;
     padding: 0 16px;
+
+    @include desktop {
+      padding: 0;
+    }
   }
 }

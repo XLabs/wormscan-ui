@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { NavLink, Tag } from "src/components/atoms";
+import { WormholeBrand } from "src/components/molecules";
 import {
   DISCORD_URL,
   TWITTER_URL,
@@ -9,7 +10,6 @@ import {
 } from "src/consts";
 import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
-import WormholeBrand from "../WormholeBrand";
 import { PinTopIcon } from "@radix-ui/react-icons";
 import packageJson from "../../../../package.json";
 import "./styles.scss";
