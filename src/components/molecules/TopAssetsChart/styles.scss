@@ -45,6 +45,22 @@
     }
   }
 
+  .wormhole-brand {
+    height: 0;
+    margin: auto;
+    min-height: unset;
+    opacity: 0.1;
+    pointer-events: none;
+    user-select: none;
+    visibility: hidden;
+    width: 180px;
+    z-index: 10;
+
+    @include desktop {
+      display: block;
+    }
+  }
+
   &-expanded {
     background-color: var(--color-white-03);
     display: block;
@@ -53,43 +69,88 @@
     @include desktop {
       background-color: unset;
       border: none;
-      height: 100%;
+      /* height: 100%; */
       padding-bottom: unset;
     }
 
+    .wormhole-brand {
+      visibility: visible;
+
+      @include desktop {
+        bottom: -72px;
+        transition: unset;
+      }
+    }
+
     &-1row {
-      height: 190.56px;
+      height: 186.33px;
+
+      .wormhole-brand {
+        transform: translateY(110px);
+      }
 
       @include tablet {
-        height: 231.17px;
+        height: 231.15px;
+
+        .wormhole-brand {
+          transform: translateY(135px);
+        }
       }
 
       @include desktop {
         height: 100%;
+
+        .wormhole-brand {
+          transform: translateY(365px);
+        }
       }
     }
 
     &-2row {
-      height: 302.56px;
+      height: 294.09px;
+
+      .wormhole-brand {
+        transform: translateY(164px);
+      }
 
       @include tablet {
-        height: 380.366px;
+        height: 380.32px;
+
+        .wormhole-brand {
+          transform: translateY(209px);
+        }
       }
 
       @include desktop {
         height: 100%;
+
+        .wormhole-brand {
+          transform: translateY(365px);
+        }
       }
     }
 
     &-3row {
-      height: 414.56px;
+      height: 399.26px;
+
+      .wormhole-brand {
+        transform: translateY(218px);
+      }
 
       @include tablet {
-        height: 529.54px;
+        height: 524.29px;
+
+        .wormhole-brand {
+          transform: translateY(285px);
+        }
       }
 
       @include desktop {
         height: 100%;
+
+        .wormhole-brand {
+          transform: translateY(365px);
+        }
       }
     }
 
@@ -102,7 +163,51 @@
     display: flex;
 
     @include desktop {
-      height: 100%;
+      &:first-child {
+        height: 100%;
+      }
+
+      &:not(.chart-container-chart-row-h-100) {
+        height: 100%;
+      }
+
+      &-h-100 {
+        &:nth-child(2) {
+          height: 100%;
+
+          & .chart-container-chart-row-item-2 {
+            min-width: 100px;
+
+            @include tablet {
+              min-width: 150px;
+            }
+
+            @include desktop {
+              min-width: 150px;
+            }
+
+            @include bigDesktop {
+              min-width: 180px;
+            }
+          }
+
+          & .chart-container-chart-row-item-volume span {
+            font-size: 12px;
+
+            @include tablet {
+              font-size: 18px;
+            }
+
+            @include desktop {
+              font-size: 18px;
+            }
+
+            @include bigDesktop {
+              font-size: 20px;
+            }
+          }
+        }
+      }
     }
 
     &-item {
@@ -168,25 +273,26 @@
 
       &-chain-name {
         @include text-p2-bold;
-        font-size: 12px;
+        font-size: 10px;
 
         @include tablet {
-          font-size: 16px;
+          font-size: 14px;
+        }
+
+        @include bigDesktop {
+          font-size: 14px;
         }
       }
 
       &-volume {
         @include text-p3;
+        color: var(--color-primary-90);
         display: flex;
         flex-direction: column;
-        font-size: 10px;
-        line-height: 1.2;
+        font-size: 8px;
+        line-height: 1.3;
 
         @include tablet {
-          font-size: 14px;
-        }
-
-        @include desktop {
           font-size: 12px;
         }
 
@@ -195,22 +301,29 @@
         }
 
         & span {
+          color: var(--color-primary-30);
+          font-size: 10px;
           font-weight: 600;
+
+          @include tablet {
+            font-size: 14px;
+          }
+
+          @include bigDesktop {
+            font-size: 16px;
+          }
         }
       }
 
       &-txs {
         @include text-p3;
+        color: var(--color-primary-90);
         display: flex;
         flex-direction: column;
-        font-size: 10px;
-        line-height: 1.2;
+        font-size: 8px;
+        line-height: 1.3;
 
         @include tablet {
-          font-size: 14px;
-        }
-
-        @include desktop {
           font-size: 12px;
         }
 
@@ -219,6 +332,7 @@
         }
 
         & span {
+          color: var(--color-primary-30);
           font-weight: 600;
         }
       }
@@ -226,35 +340,20 @@
 
     &-item-0 {
       background-color: var(--color-primary-500);
-      position: relative;
 
-      & .wormhole-brand-container {
-        bottom: 8px;
-        display: block;
-        height: 34px;
-        left: 0;
-        margin: auto;
-        min-height: unset;
-        opacity: 0.1;
-        pointer-events: none;
-        position: absolute;
-        right: 0;
-        user-select: none;
-        width: 180px;
-        z-index: 10;
+      & .chart-container-chart-row-item-volume span {
+        font-size: 12px;
 
-        &-center {
-          bottom: 0;
-          left: 0;
-          right: 0;
-          top: 0;
+        @include tablet {
+          font-size: 18px;
         }
 
-        &-centerRight {
-          bottom: 0;
-          left: unset;
-          right: 8px;
-          top: 0;
+        @include desktop {
+          font-size: 18px;
+        }
+
+        @include bigDesktop {
+          font-size: 20px;
         }
       }
     }
@@ -278,11 +377,29 @@
     &-item-5 {
       background-color: #7c81dc;
       color: var(--color-primary-900);
+
+      & .chart-container-chart-row-item-volume,
+      .chart-container-chart-row-item-txs {
+        color: var(--color-primary-300);
+
+        & span {
+          color: var(--color-primary-900);
+        }
+      }
     }
 
     &-item-6 {
       background-color: #989bdb;
       color: var(--color-primary-900);
+
+      & .chart-container-chart-row-item-volume,
+      .chart-container-chart-row-item-txs {
+        color: var(--color-primary-300);
+
+        & span {
+          color: var(--color-primary-900);
+        }
+      }
     }
   }
 }

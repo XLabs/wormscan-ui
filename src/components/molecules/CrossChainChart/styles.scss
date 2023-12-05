@@ -142,10 +142,6 @@
       user-select: none;
       width: 180px;
       z-index: 1;
-
-      @include tablet {
-        scale: 1.5;
-      }
     }
 
     &-side {

@@ -71,9 +71,9 @@ const TopAssetsChart = ({ top7AssetsData, rowSelected, rowIndex }: Props) => {
             ? "0 0 0 4px"
             : tokensLength === 6 && tokenIndex === 5
             ? "0 0 4px 0"
-            : tokensLength === 7 && tokenIndex === 3
+            : tokensLength >= 7 && tokenIndex === 3
             ? "0 0 0 4px"
-            : tokensLength === 7 && tokenIndex === 6
+            : tokensLength >= 7 && tokenIndex === 6
             ? "0 0 4px 0"
             : "";
         };
@@ -90,7 +90,7 @@ const TopAssetsChart = ({ top7AssetsData, rowSelected, rowIndex }: Props) => {
             : tokensLength === 5 &&
               (tokenIndex === 1 || tokenIndex === 2 || tokenIndex === 3 || tokenIndex === 4)
             ? (thisVolume / sumOfVolumes1to4) * 100 + "%"
-            : (tokensLength === 6 || tokensLength === 7) && (tokenIndex === 1 || tokenIndex === 2)
+            : tokensLength >= 6 && (tokenIndex === 1 || tokenIndex === 2)
             ? (thisVolume / sumOfVolumes1to2) * 100 + "%"
             : tokensLength === 6 && (tokenIndex === 3 || tokenIndex === 4 || tokenIndex === 5)
             ? (thisVolume / sumOfVolumes3to5) * 100 + "%"
@@ -109,20 +109,6 @@ const TopAssetsChart = ({ top7AssetsData, rowSelected, rowIndex }: Props) => {
               width: `${getWidth()}`,
             }}
           >
-            {tokenIndex === 0 && (
-              <div
-                className={`wormhole-brand-container ${
-                  tokensLength === 1
-                    ? "wormhole-brand-container-center"
-                    : tokensLength !== 2
-                    ? ""
-                    : "wormhole-brand-container-centerRight"
-                }`}
-              >
-                <WormholeBrand size="regular" />
-              </div>
-            )}
-
             <div>
               <BlockchainIcon
                 background="var(--color-white-20)"
@@ -165,7 +151,12 @@ const TopAssetsChart = ({ top7AssetsData, rowSelected, rowIndex }: Props) => {
           (tokensLength === 1 && tokenIndex === 0)
         ) {
           rows.push(
-            <div key={rows.length} className="chart-container-chart-row">
+            <div
+              key={rows.length}
+              className={`chart-container-chart-row ${
+                tokensLength >= 6 ? "chart-container-chart-row-h-100" : ""
+              }`}
+            >
               {currentRow}
             </div>,
           );
@@ -193,6 +184,7 @@ const TopAssetsChart = ({ top7AssetsData, rowSelected, rowIndex }: Props) => {
           }
           `}
         >
+          <WormholeBrand size="regular" />
           <h5 className="chart-container-title">Emitter chain breakdown</h5>
           <div className="chart-container-chart">{renderChartRows()}</div>
         </div>
