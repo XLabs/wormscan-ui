@@ -53,6 +53,12 @@ const Tx = () => {
       if (txData) {
         cancelRequests.current = true;
 
+        analytics.track("txDetail", {
+          appIds: txData?.appIds ?? "null",
+          fromChain: txData?.chain ?? "null",
+          toChain: txData?.toChain ?? "null",
+        });
+
         setParsedVAAsData([
           {
             appId: "",
@@ -288,7 +294,7 @@ const Tx = () => {
           }
         }
 
-        // check AUTOMATIC RELAYER
+        // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
         if (!txResponse?.standardizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
           analytics.track("txDetail", {
             appIds: txResponse?.standardizedProperties?.appIds ?? "null",
