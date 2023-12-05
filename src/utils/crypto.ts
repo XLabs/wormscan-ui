@@ -82,6 +82,12 @@ export const formatAppIds = (appIds: string[]) =>
       if (appId === "WORMCHAIN_GATEWAY_TRANSFER") {
         return "Wormhole Gateway Transfer";
       }
+      if (appId === "CCTP_MANUAL") {
+        return "CCTP Manual";
+      }
+      if (appId === "CCTP_WORMHOLE_INTEGRATION") {
+        return "CCTP Wormhole Integration";
+      }
 
       return appId
         .split("_")
