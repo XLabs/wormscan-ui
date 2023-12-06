@@ -345,7 +345,7 @@ export const Chart = ({
             chain: item.chain,
             network: currentNetwork,
             selectedType,
-            selectedDestination,
+            selected: selectedDestination,
             selectedTimeRange,
           });
           setSelectedChain(item.chain);

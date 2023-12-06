@@ -11,7 +11,7 @@ export const AnalyticsLinkTracker = (props: { children: ReactNode }) => {
         const href = target.getAttribute("href");
 
         analytics.track("linkClicked", {
-          url: href,
+          selected: href,
         });
       }
     };

@@ -54,8 +54,8 @@ const Tx = () => {
         cancelRequests.current = true;
 
         analytics.track("txDetail", {
-          appIds: txData?.appIds ?? "null",
-          fromChain: txData?.chain ?? "null",
+          appIds: txData?.appIds?.join(", ") ? txData.appIds.join(", ") : "null",
+          chain: txData?.chain ?? "null",
           toChain: txData?.toChain ?? "null",
         });
 
@@ -297,8 +297,10 @@ const Tx = () => {
         // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
         if (!txResponse?.standardizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
           analytics.track("txDetail", {
-            appIds: txResponse?.standardizedProperties?.appIds ?? "null",
-            fromChain: txResponse?.emitterChain ?? "null",
+            appIds: txResponse?.standardizedProperties?.appIds?.join(", ")
+              ? txResponse.standardizedProperties.appIds.join(", ")
+              : "null",
+            chain: txResponse?.emitterChain ?? "null",
             toChain: txResponse?.standardizedProperties?.toChain ?? "null",
           });
         }

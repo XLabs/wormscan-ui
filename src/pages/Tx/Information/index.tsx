@@ -228,8 +228,8 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
     populateDeliveryLifecycleRecordByVaa(environment, vaa)
       .then((result: DeliveryLifecycleRecord) => {
         analytics.track("txDetail", {
-          appIds: ["GENERIC_RELAYER"],
-          fromChain: result?.sourceChainId ?? "null",
+          appIds: ["GENERIC_RELAYER"].join(", "),
+          chain: result?.sourceChainId ?? "null",
           toChain: result?.targetTransactions?.[0].targetChainId ?? "null",
         });
         setGenericRelayerInfo(result);
