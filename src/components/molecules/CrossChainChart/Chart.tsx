@@ -269,6 +269,13 @@ export const Chart = ({
       .find(item => item.chain === selectedChain)
       .destinations.sort((a, b) => b.volume - a.volume)
       .slice(0, 10);
+
+    const diff =
+      100 - newDestinationChains.map(a => a.percentage).reduce((prev, curr) => prev + curr, 0);
+    newDestinationChains.forEach(a => {
+      a.percentage = a.percentage + diff / 10;
+    });
+
     const selected = chartData.find(a => a.chain === selectedChain);
 
     setDestinations(newDestinationChains);
