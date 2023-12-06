@@ -257,6 +257,8 @@ export const Chart = ({
     }
   }, [destinyChainsHeight.length, devicePixelRatio, draw, originChainsHeight.length]);
 
+  const scalingFactor = useRef(1);
+
   useEffect(() => {
     const selectedItem = chartData.find(item => item.chain === selectedChain);
 
@@ -269,6 +271,12 @@ export const Chart = ({
       .find(item => item.chain === selectedChain)
       .destinations.sort((a, b) => b.volume - a.volume)
       .slice(0, 10);
+
+    const sumOfFirstTen = newDestinationChains
+      .map(a => a.percentage)
+      .reduce((prev, curr) => prev + curr, 0);
+    scalingFactor.current = 100 / sumOfFirstTen;
+
     const selected = chartData.find(a => a.chain === selectedChain);
 
     setDestinations(newDestinationChains);
@@ -299,7 +307,7 @@ export const Chart = ({
           isSourcesSelected ? "right" : "left"
         }`}
         data-network={currentNetwork}
-        data-percentage={item.percentage}
+        data-percentage={item.percentage * scalingFactor.current}
         style={{
           height: (item.percentage * CHART_SIZE) / 100,
           marginTop: idx === 0 ? 0 : MARGIN_SIZE_ELEMENTS,
