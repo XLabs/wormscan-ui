@@ -230,7 +230,11 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         analytics.track("txDetail", {
           appIds: ["GENERIC_RELAYER"].join(", "),
           chain: result?.sourceChainId ?? "null",
-          toChain: result?.targetTransactions?.[0].targetChainId ?? "null",
+          toChain: result?.targetTransactions?.[0]?.targetChainId
+            ? result.targetTransactions[0].targetChainId
+            : txData?.standardizedProperties?.toChain
+            ? txData.standardizedProperties.toChain
+            : "null",
         });
         setGenericRelayerInfo(result);
         setLoadingRelayers(false);
@@ -240,7 +244,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         console.error("automatic relayer tx errored:", e);
         setIsGenericRelayerTx(false);
       });
-  }, [vaa, environment]);
+  }, [environment, vaa, txData?.standardizedProperties?.toChain]);
 
   const targetContract = environment.chainInfos.find(
     a => a.chainId === fromChain,
