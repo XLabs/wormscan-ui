@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Network } from "@certusone/wormhole-sdk";
 import { BREAKPOINTS } from "src/consts";
 import { BlockchainIcon, Pagination } from "src/components/atoms";
+import { WormholeBrand } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getChainName } from "src/utils/wormhole";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
@@ -404,6 +405,8 @@ export const Chart = ({
         <div>{t("home.crossChain.destination").toUpperCase()}</div>
       </div>
       <div className="cross-chain-chart">
+        <WormholeBrand size="regular" />
+
         <div className="cross-chain-chart-side" data-network={currentNetwork} ref={originChainsRef}>
           {isSourcesSelected
             ? chartData.map(renderChartData)

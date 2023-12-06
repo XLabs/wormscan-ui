@@ -7,7 +7,7 @@ import i18n from "src/i18n";
 import { DISCORD_URL, PORTAL_BRIDGE_URL, WORMHOLE_DOCS_URL, XLABS_CAREERS_URL } from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { NavLink, Select, Tag } from "src/components/atoms";
-import WormholeBrand from "../WormholeBrand";
+import { WormholeBrand } from "src/components/molecules";
 import Search from "./Search";
 import "./styles.scss";
 
