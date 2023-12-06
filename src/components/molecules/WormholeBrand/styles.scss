@@ -2,41 +2,11 @@
 
 .wormhole-brand {
   @include centered-row;
-
-  gap: 12px;
-  font-size: 18px;
-  line-height: 1.2;
   align-items: center;
-
-  &-text {
-    @include centered-column;
-    justify-content: center;
-  }
-
-  &-title {
-    color: var(--color-white);
-    font-family: "Chakra Petch", sans-serif;
-    letter-spacing: 7px;
-    font-weight: 600;
-    text-decoration: none;
-  }
-
-  &-subtitle {
-    color: var(--color-primary-90);
-    font-family: "Chakra Petch", sans-serif;
-    letter-spacing: 7px;
-    font-weight: 600;
-    text-decoration: none;
-  }
 
   &-image {
     width: auto;
     height: 24px;
-
-    &.small {
-      width: auto;
-      height: 24px;
-    }
 
     &.regular {
       width: auto;

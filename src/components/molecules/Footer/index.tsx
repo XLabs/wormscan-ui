@@ -9,7 +9,7 @@ import {
 } from "src/consts";
 import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
-import WormholeBrand from "../WormholeBrand";
+import { WormholeBrand } from "src/components/molecules";
 import { PinTopIcon } from "@radix-ui/react-icons";
 import packageJson from "../../../../package.json";
 import "./styles.scss";

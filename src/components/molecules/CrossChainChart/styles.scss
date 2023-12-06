@@ -135,6 +135,22 @@
     width: 100%;
     position: relative;
 
+    & .wormhole-brand {
+      bottom: 0;
+      height: 34px;
+      left: 0;
+      margin: auto;
+      min-height: unset;
+      opacity: 0.2;
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      user-select: none;
+      width: 180px;
+      z-index: 1;
+    }
+
     &-side {
       width: 45%;
       z-index: 2;
@@ -579,6 +595,17 @@
 
     &-destinations {
       transition: all 0.4s ease-out;
+
+      & .wormhole-brand {
+        height: 34px;
+        margin: auto;
+        opacity: 0.2;
+        padding: 16px 0;
+        pointer-events: none;
+        user-select: none;
+        width: 180px;
+        z-index: 1;
+      }
     }
 
     &-separator {
