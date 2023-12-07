@@ -229,13 +229,24 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       .then((result: DeliveryLifecycleRecord) => {
         analytics.track("txDetail", {
           appIds: ["GENERIC_RELAYER"].join(", "),
-          chain: result?.sourceChainId ?? "null",
-          toChain: result?.targetTransactions?.[0]?.targetChainId
-            ? result.targetTransactions[0].targetChainId
-            : txData?.standardizedProperties?.toChain
-            ? txData.standardizedProperties.toChain
-            : "null",
+          chain: getChainName({
+            chainId: (result?.sourceChainId as any)
+              ? (result.sourceChainId as any)
+              : txData?.standardizedProperties?.fromChain
+              ? txData.standardizedProperties.fromChain
+              : 0,
+            network: currentNetwork,
+          }),
+          toChain: getChainName({
+            chainId: result?.targetTransactions?.[0]?.targetChainId
+              ? result.targetTransactions[0].targetChainId
+              : txData?.standardizedProperties?.toChain
+              ? txData.standardizedProperties.toChain
+              : 0,
+            network: currentNetwork,
+          }),
         });
+
         setGenericRelayerInfo(result);
         setLoadingRelayers(false);
       })
@@ -244,7 +255,13 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         console.error("automatic relayer tx errored:", e);
         setIsGenericRelayerTx(false);
       });
-  }, [environment, vaa, txData?.standardizedProperties?.toChain]);
+  }, [
+    environment,
+    vaa,
+    txData?.standardizedProperties?.fromChain,
+    txData?.standardizedProperties?.toChain,
+    currentNetwork,
+  ]);
 
   const targetContract = environment.chainInfos.find(
     a => a.chainId === fromChain,

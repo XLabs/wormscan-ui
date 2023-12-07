@@ -17,6 +17,7 @@ import { getGuardianSet } from "../../consts";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import "./styles.scss";
+import { getChainName } from "src/utils/wormhole";
 
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
@@ -55,8 +56,8 @@ const Tx = () => {
 
         analytics.track("txDetail", {
           appIds: txData?.appIds?.join(", ") ? txData.appIds.join(", ") : "null",
-          chain: txData?.chain ?? "null",
-          toChain: txData?.toChain ?? "null",
+          chain: getChainName({ chainId: txData?.chain ?? 0, network }),
+          toChain: getChainName({ chainId: txData?.toChain ?? 0, network }),
         });
 
         setParsedVAAsData([
@@ -300,8 +301,11 @@ const Tx = () => {
             appIds: txResponse?.standardizedProperties?.appIds?.join(", ")
               ? txResponse.standardizedProperties.appIds.join(", ")
               : "null",
-            chain: txResponse?.emitterChain ?? "null",
-            toChain: txResponse?.standardizedProperties?.toChain ?? "null",
+            chain: getChainName({ chainId: txResponse?.emitterChain ?? 0, network }),
+            toChain: getChainName({
+              chainId: txResponse?.standardizedProperties?.toChain ?? 0,
+              network,
+            }),
           });
         }
 

@@ -350,7 +350,7 @@ export const Chart = ({
         className={`cross-chain-chart-side-item selectable ${isSourcesSelected ? "left" : "right"}`}
         onClick={() => {
           analytics.track("crossChainChart", {
-            chain: item.chain,
+            chain: getChainName({ chainId: item.chain, network: currentNetwork }),
             network: currentNetwork,
             selectedType,
             selected: selectedDestination,
