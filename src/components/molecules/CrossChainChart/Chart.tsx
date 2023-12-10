@@ -317,13 +317,16 @@ export const Chart = ({
         <div className="volume-info" data-selected={true}>
           {getAmount(item.volume)}
         </div>
+
         <BlockchainIcon
+          background="var(--color-black-25)"
           chainId={item.chain}
           className="chain-icon"
-          dark={true}
+          colorless={true}
           network={currentNetwork}
           size={19}
         />
+
         <span className="chain-name" style={{ direction: "rtl" }}>
           {getAbbreviatedName({
             abbreviateIf: !isDesktop,
@@ -370,13 +373,16 @@ export const Chart = ({
         <div className="volume-info" data-selected={selectedChain === item.chain}>
           {getAmount(item.volume)}
         </div>
+
         <BlockchainIcon
+          background="var(--color-white-10)"
           chainId={item.chain}
           className="chain-icon"
-          dark={true}
+          colorless={true}
           network={currentNetwork}
           size={19}
         />
+
         <span className="chain-name">
           {getAbbreviatedName({
             abbreviateIf: !isDesktop,

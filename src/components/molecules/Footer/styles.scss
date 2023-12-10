@@ -5,19 +5,20 @@
 
   min-height: 570px;
   padding: 32px;
-  background-color: rgba(1, 0, 20, 0.25);
-  border-top: 1px solid var(--color-white-10);
 
   @include desktop {
-    padding: 60px 60px 40px;
     min-height: 168px;
+    padding: 60px 60px 32px 60px;
+  }
+
+  @include bigDesktop {
+    padding: 60px 76px 32px 76px;
   }
 
   &-container {
     display: grid;
     grid-template-areas:
-      "top-button"
-      "brand"
+      "top"
       "links"
       "social"
       "built"
@@ -30,11 +31,10 @@
     margin: 0 auto;
 
     @include desktop {
-      row-gap: 32px;
+      row-gap: 72px;
       grid-template-areas:
-        "brand links links top-button"
-        "brand links links social"
-        "built . . social"
+        "top top top top"
+        "social links links built"
         "copy copy copy copy";
       grid-template-columns: 1.1fr 1fr 1fr 1.1fr;
       max-width: unset;
@@ -46,55 +46,57 @@
     }
   }
 
-  &-top-button-container {
+  &-top {
     @include centered-row;
-
-    grid-area: top-button;
-    justify-content: end;
-
-    @include desktop {
-      align-items: start;
-    }
-  }
-
-  &-top-button {
-    @include text-p3;
-    @include centered-row;
-
-    color: var(--color-primary-50);
-    background-color: transparent;
-    border: none;
-    gap: 8px;
-    cursor: pointer;
-
-    &:hover {
-      color: var(--color-secondary-800);
-    }
-  }
-
-  &-brand {
-    @include centered-row;
-
-    grid-area: brand;
+    border-bottom: 1px solid var(--color-white-10);
+    grid-area: top;
     height: 100%;
+    justify-content: space-between;
+    padding-bottom: 32px;
 
-    @include desktop {
-      width: 100%;
-      margin: auto;
-      padding: 0;
-      justify-content: start;
-      align-items: start;
+    &-brand {
+      @include centered-row;
+      align-items: end;
+      height: 100%;
+
+      @include desktop {
+        align-items: start;
+        justify-content: start;
+        margin-top: unset;
+        padding: 0;
+        width: auto;
+      }
+    }
+
+    &-button-container {
+      @include centered-row;
+      justify-content: end;
+      margin-bottom: 80px;
+
+      @include desktop {
+        align-items: start;
+        margin-bottom: 0;
+      }
+    }
+
+    &-button {
+      @include text-p3;
+      @include centered-row;
+
+      color: var(--color-primary-50);
+      background-color: transparent;
+      border: none;
+      gap: 8px;
+      cursor: pointer;
+
+      &:hover {
+        color: var(--color-secondary-700);
+      }
     }
   }
 
   &-social {
     @include centered-row;
-
-    @include desktop {
-      justify-content: end;
-      grid-column: 4 / 5;
-      grid-row: 2 / 4;
-    }
 
     &-container {
       @include centered-column;
@@ -103,8 +105,8 @@
       gap: 24px;
 
       @include desktop {
-        align-items: center;
-        gap: 30px;
+        gap: 40px;
+        line-height: 1.714;
         margin-bottom: 0;
         padding: 0;
       }
@@ -113,7 +115,7 @@
     &-text {
       @include text-p3;
 
-      color: var(--color-primary-100);
+      color: #544867;
 
       @include desktop {
         flex: unset;
@@ -147,7 +149,7 @@
     grid-template-columns: 1fr 1fr;
     grid-area: links;
 
-    row-gap: 32px;
+    row-gap: 40px;
 
     @include desktop {
       column-gap: 16px;
@@ -185,39 +187,82 @@
 
     &-item {
       @include centered-row;
-      width: 100%;
-
+      align-items: start;
       display: flex;
       gap: 8px;
-      user-select: none;
       text-align: center;
+      user-select: none;
+      white-space: nowrap;
+      width: 100%;
 
       a {
         @include text-p3;
 
-        color: var(--color-primary-50);
+        color: var(--color-primary-90);
         text-decoration: none;
         text-align: center;
+        align-items: start;
 
         &:hover {
           color: var(--color-secondary-700);
         }
       }
+
+      & .chip {
+        transform: translateY(-8px);
+      }
     }
   }
 
   &-built {
-    @include text-p3;
-
+    @include centered-row;
+    align-items: flex-start;
     grid-area: built;
 
-    & a {
-      text-decoration: none;
-      color: var(--color-secondary-800);
+    @include desktop {
+      justify-content: end;
+    }
 
-      &:hover,
-      &:active {
-        text-decoration: underline;
+    &-container {
+      @include centered-column;
+
+      gap: 19px;
+
+      @include desktop {
+        align-items: center;
+        margin-bottom: 0;
+        padding: 0;
+      }
+    }
+
+    &-text {
+      @include text-p3;
+
+      color: #544867;
+
+      @include desktop {
+        flex: unset;
+      }
+    }
+
+    &-icons {
+      @include centered-row;
+
+      gap: 56px;
+
+      > a {
+        path {
+          fill: var(--color-secondary-800);
+        }
+
+        &:hover path {
+          fill: var(--color-secondary-700);
+        }
+      }
+
+      @include desktop {
+        flex: unset;
+        gap: 32px;
       }
     }
   }
@@ -235,9 +280,7 @@
 
     @include desktop {
       @include centered-row;
-
       justify-content: space-between;
-      padding-top: 20px;
 
       & > * {
         flex: 1;

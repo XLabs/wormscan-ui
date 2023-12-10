@@ -10,7 +10,8 @@
   &-title {
     @include text-p1;
 
-    color: var(--color-primary-50);
+    color: var(--color-primary-90);
+    font-weight: 500;
   }
 
   &-data {
@@ -64,10 +65,12 @@
         &-title {
           @include text-p1;
 
-          color: var(--color-primary-100);
-          font-size: 16px;
+          color: #685C7C;
+          font-size: 14px;
+          font-weight: 500;
           margin-bottom: 8px;
           min-width: max-content;
+          text-transform: uppercase;
 
           & svg {
             margin-left: 8px;
@@ -78,7 +81,8 @@
         &-value {
           @include text-h5;
 
-          font-weight: 600;
+          color: var(--color-primary-10);
+          font-weight: 500;
         }
       }
     }

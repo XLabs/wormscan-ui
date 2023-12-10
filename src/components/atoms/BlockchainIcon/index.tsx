@@ -1,27 +1,37 @@
 import { Network } from "@certusone/wormhole-sdk";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
 import { ChainId } from "src/api";
+import "./styles.scss";
 
 type Props = {
+  background?: string;
   chainId: ChainId;
   className?: string;
-  dark?: boolean;
+  colorless?: boolean;
   network: Network;
   size?: number;
 };
 
-const BlockchainIcon = ({ chainId, className = "", dark = false, network, size = 24 }: Props) => {
-  const icon = getChainIcon({ chainId, dark });
+const BlockchainIcon = ({
+  background,
+  chainId,
+  className = "",
+  colorless = false,
+  network,
+  size = 24,
+}: Props) => {
+  const icon = getChainIcon({ chainId, colorless });
   const name = getChainName({ chainId, network });
 
   return (
     <img
-      src={icon}
-      width={size}
-      height={size}
-      className={`blockchain-icon ${className}`}
       alt={`${name} icon`}
+      className={`blockchain-icon ${className}`}
+      height={size}
       loading="lazy"
+      src={icon}
+      style={{ backgroundColor: background }}
+      width={size}
     />
   );
 };

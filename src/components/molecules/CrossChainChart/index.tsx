@@ -84,7 +84,7 @@ const CrossChainChart = () => {
               isSources ? "cross-chain-destination-btn-selected" : ""
             }`}
           >
-            SOURCE
+            Source
           </button>
           <button
             onClick={() => setSelectedDestination("destinations")}
@@ -92,13 +92,12 @@ const CrossChainChart = () => {
               isSources ? "" : "cross-chain-destination-btn-selected"
             }`}
           >
-            TARGET
+            Target
           </button>
         </div>
 
         <div className="cross-chain-filters">
           <div className="cross-chain-filters-group">
-            <span className="cross-chain-filters-text">{t("home.crossChain.timeRange")}</span>
             <Select
               name="timeRange"
               value={selectedTimeRange}

@@ -43,9 +43,17 @@ const TransactionHistoryChart = ({ range }: Props) => {
 
     setDataReverse(responseReversed);
     setTotalTxs(
-      `Last ${
-        range === "day" ? "24hs" : range === "3-month" ? "3 months" : range
-      }: ${totalAmount.toLocaleString()} txs`,
+      `LAST ${
+        range === "day"
+          ? "24HS"
+          : range === "week"
+          ? "WEEK"
+          : range === "month"
+          ? "MONTH"
+          : range === "3-month"
+          ? "3 MONTHS"
+          : range
+      }: ${totalAmount.toLocaleString()} TXS`,
     );
     setSeriesData(responseReversed.map(item => item.count));
     setSeriesLabels(
@@ -93,7 +101,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
             <ErrorPlaceholder errorType="chart" />
           ) : (
             <div className="trans-history-chart">
-               <WormholeBrand size="regular" />
+              <WormholeBrand size="regular" />
 
               <ReactApexChart
                 type="area"
@@ -109,10 +117,10 @@ const TransactionHistoryChart = ({ range }: Props) => {
                     text: totalTxs,
                     align: "left",
                     style: {
-                      color: "var(--color-primary-100)",
+                      color: "#685C7C",
                       fontFamily: "IBM Plex Sans",
-                      fontSize: "16px",
-                      fontWeight: 400,
+                      fontSize: "14px",
+                      fontWeight: 500,
                     },
                     offsetX: -8,
                   },
@@ -208,7 +216,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                       formatter: numberToSuffix,
                       offsetX: -14,
                       style: {
-                        colors: "var(--color-primary-50)",
+                        colors: "#9295BB",
                         fontFamily: "IBM Plex Sans",
                         fontSize: "14px",
                       },
@@ -223,7 +231,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                     labels: {
                       offsetX: 0,
                       style: {
-                        colors: "var(--color-primary-50)",
+                        colors: "#685C7C",
                         fontFamily: "IBM Plex Sans",
                         fontSize: "14px",
                       },

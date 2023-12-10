@@ -3,7 +3,7 @@
 .select {
   @include centered-row;
   border-radius: 5px;
-  height: 56px;
+  height: 48px;
   width: 100%;
 
   &:hover {
@@ -24,7 +24,7 @@
     background-color: var(--color-white-03);
     border: 2px solid var(--color-white-10);
     border-radius: 5px;
-    color: var(--color-white);
+    color: var(--color-primary-50);
 
     &--menu-is-open {
       border: 2px solid var(--color-primary-200);

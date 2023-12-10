@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import analytics from "src/analytics";
 import ErrorGeneralImage from "src/assets/errorGeneral.svg";
 import { DISCORD_URL } from "src/consts";
+import "../styles.scss";
 
 const ErrorGeneral = () => {
   useEffect(() => {

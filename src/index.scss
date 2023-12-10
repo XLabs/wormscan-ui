@@ -71,18 +71,31 @@ html {
   background-color: var(--color-primary-900);
   scroll-behavior: smooth;
   /* scrollbar-gutter: controlled by ScrollControl; */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+::-webkit-scrollbar {
+  background-color: rgba(0, 0, 0, 0.25);
+  height: 8px;
+  width: 8px;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(78, 78, 84);
+  border-radius: 4px;
 }
 
 body {
-  margin: 0;
+  background-color: #0b0217;
   color: var(--color-white);
-  background-image: url("./assets/bg-mobile.webp");
-  background-size: cover;
+  margin: 0;
   min-width: 360px;
-
-  @include desktop {
-    background-image: url("./assets/bg.webp");
-  }
 }
 
 #app {
@@ -90,6 +103,9 @@ body {
   min-height: 100svh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
 
   > .main-content {
     display: flex;
@@ -100,5 +116,35 @@ body {
     @include tablet {
       padding: 0 60px;
     }
+
+    @include bigDesktop {
+      padding: 0 76px;
+    }
+  }
+
+  .bg-gradient-top {
+    backdrop-filter: blur(12px);
+    background: radial-gradient(50% 50% at 50% 50%, #3b234e 0%, rgba(59, 35, 78, 0) 100%);
+    border-radius: 1175px;
+    flex-shrink: 0;
+    height: 1169px;
+    left: -683px;
+    position: absolute;
+    top: -703px;
+    width: 1175px;
+    z-index: -1;
+  }
+
+  .bg-gradient-bottom {
+    backdrop-filter: blur(12px);
+    background: radial-gradient(50% 50% at 50% 50%, #3b234e 0%, rgba(59, 35, 78, 0) 100%);
+    border-radius: 1175px;
+    bottom: -650px;
+    flex-shrink: 0;
+    height: 1169px;
+    left: calc(50% - 587.5px);
+    position: absolute;
+    width: 1175px;
+    z-index: -1;
   }
 }

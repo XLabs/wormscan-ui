@@ -1,7 +1,6 @@
 import { Network } from "@certusone/wormhole-sdk";
 import { ChainId } from "src/api";
 
-// import NoIcon from "src/icons/blockchains/noIcon.svg";
 import AcalaIcon from "src/icons/blockchains/acala.svg";
 import AlgorandIcon from "src/icons/blockchains/algorand.svg";
 import AptosIcon from "src/icons/blockchains/aptos.svg";
@@ -33,37 +32,37 @@ import TerraIcon from "src/icons/blockchains/terra.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
 import WormChainIcon from "src/icons/blockchains/wormchain.svg";
 
-import AcalaDarkIcon from "src/icons/blockchains/dark/acala.svg";
-import AlgorandDarkIcon from "src/icons/blockchains/dark/algorand.svg";
-import AptosDarkIcon from "src/icons/blockchains/dark/aptos.svg";
-import ArbitrumDarkIcon from "src/icons/blockchains/dark/arbitrum.svg";
-import AuroraDarkIcon from "src/icons/blockchains/dark/aurora.svg";
-import AvalancheDarkIcon from "src/icons/blockchains/dark/avax.svg";
-import BaseDarkIcon from "src/icons/blockchains/dark/base.svg";
-import BSCDarkIcon from "src/icons/blockchains/dark/bsc.svg";
-import CeloDarkIcon from "src/icons/blockchains/dark/celo.svg";
-import EthereumDarkIcon from "src/icons/blockchains/dark/eth.svg";
-import EvmosDarkIcon from "src/icons/blockchains/dark/evmos.svg";
-import FantomDarkIcon from "src/icons/blockchains/dark/fantom.svg";
-import InjectiveDarkIcon from "src/icons/blockchains/dark/injective.svg";
-import KaruraDarkIcon from "src/icons/blockchains/dark/karura.svg";
-import KlaytnDarkIcon from "src/icons/blockchains/dark/klaytn.svg";
-import KujiraDarkIcon from "src/icons/blockchains/dark/kujira.svg";
-import MoonbeamDarkIcon from "src/icons/blockchains/dark/moonbeam.svg";
-import NearDarkIcon from "src/icons/blockchains/dark/near.svg";
-import NeonDarkIcon from "src/icons/blockchains/dark/neon.svg";
-import NoDarkIcon from "src/icons/blockchains/dark/noIcon.svg";
-import OasisDarkIcon from "src/icons/blockchains/dark/oasis.svg";
-import OptimismDarkIcon from "src/icons/blockchains/dark/optimism.svg";
-import OsmosisDarkIcon from "src/icons/blockchains/osmosis.svg";
-import PolygonDarkIcon from "src/icons/blockchains/dark/polygon.svg";
-import SeiDarkIcon from "src/icons/blockchains/dark/sei.svg";
-import SolanaDarkIcon from "src/icons/blockchains/dark/solana.svg";
-import SuiDarkIcon from "src/icons/blockchains/dark/sui.svg";
-import TerraClassicDarkIcon from "src/icons/blockchains/dark/terra-classic.svg";
-import TerraDarkIcon from "src/icons/blockchains/dark/terra.svg";
-import XplaDarkIcon from "src/icons/blockchains/dark/xpla.svg";
-import WormChainDarkIcon from "src/icons/blockchains/dark/wormchain.svg";
+import AcalaColorlessIcon from "src/icons/blockchains/colorless/acala.svg";
+import AlgorandColorlessIcon from "src/icons/blockchains/colorless/algorand.svg";
+import AptosColorlessIcon from "src/icons/blockchains/colorless/aptos.svg";
+import ArbitrumColorlessIcon from "src/icons/blockchains/colorless/arbitrum.svg";
+import AuroraColorlessIcon from "src/icons/blockchains/colorless/aurora.svg";
+import AvalancheColorlessIcon from "src/icons/blockchains/colorless/avax.svg";
+import BaseColorlessIcon from "src/icons/blockchains/colorless/base.svg";
+import BSCColorlessIcon from "src/icons/blockchains/colorless/bsc.svg";
+import CeloColorlessIcon from "src/icons/blockchains/colorless/celo.svg";
+import EthereumColorlessIcon from "src/icons/blockchains/colorless/eth.svg";
+import EvmosColorlessIcon from "src/icons/blockchains/colorless/evmos.svg";
+import FantomColorlessIcon from "src/icons/blockchains/colorless/fantom.svg";
+import InjectiveColorlessIcon from "src/icons/blockchains/colorless/injective.svg";
+import KaruraColorlessIcon from "src/icons/blockchains/colorless/karura.svg";
+import KlaytnColorlessIcon from "src/icons/blockchains/colorless/klaytn.svg";
+import KujiraColorlessIcon from "src/icons/blockchains/colorless/kujira.svg";
+import MoonbeamColorlessIcon from "src/icons/blockchains/colorless/moonbeam.svg";
+import NearColorlessIcon from "src/icons/blockchains/colorless/near.svg";
+import NeonColorlessIcon from "src/icons/blockchains/colorless/neon.svg";
+import NoColorlessIcon from "src/icons/blockchains/colorless/noIcon.svg";
+import OasisColorlessIcon from "src/icons/blockchains/colorless/oasis.svg";
+import OptimismColorlessIcon from "src/icons/blockchains/colorless/optimism.svg";
+import OsmosisColorlessIcon from "src/icons/blockchains/osmosis.svg";
+import PolygonColorlessIcon from "src/icons/blockchains/colorless/polygon.svg";
+import SeiColorlessIcon from "src/icons/blockchains/colorless/sei.svg";
+import SolanaColorlessIcon from "src/icons/blockchains/colorless/solana.svg";
+import SuiColorlessIcon from "src/icons/blockchains/colorless/sui.svg";
+import TerraClassicColorlessIcon from "src/icons/blockchains/colorless/terra-classic.svg";
+import TerraColorlessIcon from "src/icons/blockchains/colorless/terra.svg";
+import WormChainColorlessIcon from "src/icons/blockchains/colorless/wormchain.svg";
+import XplaColorlessIcon from "src/icons/blockchains/colorless/xpla.svg";
 
 import { parseAddress, parseTx } from "./crypto";
 
@@ -76,8 +75,8 @@ export type ExplorerBaseURLInput = {
 const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Unset]: {
     name: "Unset",
-    icon: NoDarkIcon,
-    darkIcon: NoDarkIcon,
+    icon: NoColorlessIcon,
+    colorlessIcon: NoColorlessIcon,
     explorer: {
       TESTNET: "",
       MAINNET: "",
@@ -91,7 +90,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Sui]: {
     name: "Sui",
     icon: SuiIcon,
-    darkIcon: SuiDarkIcon,
+    colorlessIcon: SuiColorlessIcon,
     explorer: {
       TESTNET: "https://suiexplorer.com",
       MAINNET: "https://suiexplorer.com",
@@ -106,8 +105,8 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.PythNet]: {
     name: "PythNet",
-    icon: NoDarkIcon,
-    darkIcon: NoDarkIcon,
+    icon: NoColorlessIcon,
+    colorlessIcon: NoColorlessIcon,
     explorer: {
       TESTNET: "",
       MAINNET: "",
@@ -120,8 +119,8 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Btc]: {
     name: "Btc",
-    icon: NoDarkIcon,
-    darkIcon: NoDarkIcon,
+    icon: NoColorlessIcon,
+    colorlessIcon: NoColorlessIcon,
     explorer: {
       TESTNET: "",
       MAINNET: "",
@@ -135,7 +134,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Wormchain]: {
     name: "WH Gateway",
     icon: WormChainIcon,
-    darkIcon: WormChainDarkIcon,
+    colorlessIcon: WormChainColorlessIcon,
     explorer: {
       TESTNET: "",
       MAINNET: "",
@@ -149,7 +148,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Osmosis]: {
     name: "Osmosis",
     icon: OsmosisIcon,
-    darkIcon: OsmosisDarkIcon,
+    colorlessIcon: OsmosisColorlessIcon,
     explorer: {
       TESTNET: "https://testnet.mintscan.io/osmosis-testnet",
       MAINNET: "https://www.mintscan.io/osmosis",
@@ -169,7 +168,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Evmos]: {
     name: "Evmos",
     icon: EvmosIcon,
-    darkIcon: EvmosDarkIcon,
+    colorlessIcon: EvmosColorlessIcon,
     explorer: {
       TESTNET: "https://testnet.mintscan.io/evmos-testnet",
       MAINNET: "https://www.mintscan.io/evmos",
@@ -189,7 +188,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Kujira]: {
     name: "Kujira",
     icon: KujiraIcon,
-    darkIcon: KujiraDarkIcon,
+    colorlessIcon: KujiraColorlessIcon,
     explorer: {
       TESTNET: "https://finder.kujira.network/harpoon-4",
       MAINNET: "https://finder.kujira.network/kaiyo-1",
@@ -204,7 +203,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Acala]: {
     name: "Acala",
     icon: AcalaIcon,
-    darkIcon: AcalaDarkIcon,
+    colorlessIcon: AcalaColorlessIcon,
     explorer: {
       TESTNET: "https://blockscout.acala-dev.aca-dev.network",
       MAINNET: "https://blockscout.acala.network",
@@ -220,7 +219,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     name: "Algorand",
     acronym: "ALGO",
     icon: AlgorandIcon,
-    darkIcon: AlgorandDarkIcon,
+    colorlessIcon: AlgorandColorlessIcon,
     explorer: {
       TESTNET: "https://TESTNET.algoexplorer.io",
       MAINNET: "https://algoexplorer.io",
@@ -235,7 +234,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Aptos]: {
     name: "Aptos",
     icon: AptosIcon,
-    darkIcon: AptosDarkIcon,
+    colorlessIcon: AptosColorlessIcon,
     explorer: {
       TESTNET: "https://explorer.aptoslabs.com",
       MAINNET: "https://explorer.aptoslabs.com",
@@ -252,7 +251,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     name: "Arbitrum",
     nameTestnet: "Arbitrum Goerli",
     icon: ArbitrumIcon,
-    darkIcon: ArbitrumDarkIcon,
+    colorlessIcon: ArbitrumColorlessIcon,
     explorer: {
       TESTNET: "https://goerli.arbiscan.io",
       MAINNET: "https://arbiscan.io",
@@ -267,7 +266,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Aurora]: {
     name: "Aurora",
     icon: AuroraIcon,
-    darkIcon: AuroraDarkIcon,
+    colorlessIcon: AuroraColorlessIcon,
     explorer: {
       TESTNET: "https://explorer.TESTNET.aurora.dev",
       MAINNET: "https://explorer.aurora.dev",
@@ -284,7 +283,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     nameTestnet: "Fuji",
     acronym: "AVAX",
     icon: AvalancheIcon,
-    darkIcon: AvalancheDarkIcon,
+    colorlessIcon: AvalancheColorlessIcon,
     explorer: {
       TESTNET: "https://testnet.avascan.info/blockchain/c",
       MAINNET: "https://avascan.info/blockchain/c",
@@ -300,7 +299,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     name: "BNB Smart Chain",
     acronym: "BSC",
     icon: BSCIcon,
-    darkIcon: BSCDarkIcon,
+    colorlessIcon: BSCColorlessIcon,
     explorer: {
       TESTNET: "https://TESTNET.bscscan.com",
       MAINNET: "https://bscscan.com",
@@ -316,7 +315,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     name: "Celo",
     nameTestnet: "Alfajores",
     icon: CeloIcon,
-    darkIcon: CeloDarkIcon,
+    colorlessIcon: CeloColorlessIcon,
     explorer: {
       TESTNET: "https://alfajores.celoscan.io",
       MAINNET: "https://explorer.celo.org/mainnet",
@@ -333,7 +332,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     nameTestnet: "Goerli",
     acronym: "ETH",
     icon: EthereumIcon,
-    darkIcon: EthereumDarkIcon,
+    colorlessIcon: EthereumColorlessIcon,
     explorer: {
       TESTNET: "https://goerli.etherscan.io",
       MAINNET: "https://etherscan.io",
@@ -348,7 +347,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Fantom]: {
     name: "Fantom",
     icon: FantomIcon,
-    darkIcon: FantomDarkIcon,
+    colorlessIcon: FantomColorlessIcon,
     explorer: {
       TESTNET: "https://TESTNET.ftmscan.com",
       MAINNET: "https://ftmscan.com",
@@ -364,7 +363,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     name: "Injective",
     acronym: "INJ",
     icon: InjectiveIcon,
-    darkIcon: InjectiveDarkIcon,
+    colorlessIcon: InjectiveColorlessIcon,
     explorer: {
       TESTNET: "https://TESTNET.explorer.injective.network",
       MAINNET: "https://explorer.injective.network",
@@ -379,7 +378,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Karura]: {
     name: "Karura",
     icon: KaruraIcon,
-    darkIcon: KaruraDarkIcon,
+    colorlessIcon: KaruraColorlessIcon,
     explorer: {
       TESTNET: "https://blockscout.karura-dev.aca-dev.network",
       MAINNET: "https://blockscout.karura.network",
@@ -394,7 +393,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Klaytn]: {
     name: "Klaytn",
     icon: KlaytnIcon,
-    darkIcon: KlaytnDarkIcon,
+    colorlessIcon: KlaytnColorlessIcon,
     explorer: {
       TESTNET: "https://baobab.scope.klaytn.com",
       MAINNET: "https://scope.klaytn.com",
@@ -410,7 +409,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     name: "Moonbeam",
     nameTestnet: "Moonbase Alpha",
     icon: MoonbeamIcon,
-    darkIcon: MoonbeamDarkIcon,
+    colorlessIcon: MoonbeamColorlessIcon,
     explorer: {
       TESTNET: "https://moonbase.moonscan.io",
       MAINNET: "https://moonscan.io",
@@ -425,7 +424,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Near]: {
     name: "Near",
     icon: NearIcon,
-    darkIcon: NearDarkIcon,
+    colorlessIcon: NearColorlessIcon,
     explorer: {
       TESTNET: "https://explorer.TESTNET.near.org",
       MAINNET: "https://explorer.near.org",
@@ -440,7 +439,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Neon]: {
     name: "Neon",
     icon: NeonIcon,
-    darkIcon: NeonDarkIcon,
+    colorlessIcon: NeonColorlessIcon,
     explorer: {
       TESTNET: "https://neonscan.org",
       MAINNET: "https://neonscan.org",
@@ -455,7 +454,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Oasis]: {
     name: "Oasis",
     icon: OasisIcon,
-    darkIcon: OasisDarkIcon,
+    colorlessIcon: OasisColorlessIcon,
     explorer: {
       TESTNET: "https://TESTNET.explorer.emerald.oasis.dev",
       MAINNET: "https://explorer.emerald.oasis.dev",
@@ -471,7 +470,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     name: "Optimism",
     nameTestnet: "Optimism Goerli",
     icon: OptimismIcon,
-    darkIcon: OptimismDarkIcon,
+    colorlessIcon: OptimismColorlessIcon,
     explorer: {
       TESTNET: "https://goerli-optimism.etherscan.io",
       MAINNET: "https://optimistic.etherscan.io",
@@ -487,7 +486,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     name: "Polygon",
     nameTestnet: "Mumbai",
     icon: PolygonIcon,
-    darkIcon: PolygonDarkIcon,
+    colorlessIcon: PolygonColorlessIcon,
     explorer: {
       TESTNET: "https://mumbai.polygonscan.com",
       MAINNET: "https://polygonscan.com",
@@ -503,7 +502,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     name: "Solana",
     acronym: "SOL",
     icon: SolanaIcon,
-    darkIcon: SolanaDarkIcon,
+    colorlessIcon: SolanaColorlessIcon,
     explorer: {
       TESTNET: "https://solscan.io",
       MAINNET: "https://solscan.io",
@@ -522,7 +521,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Terra]: {
     name: "Terra",
     icon: TerraClassicIcon,
-    darkIcon: TerraClassicDarkIcon,
+    colorlessIcon: TerraClassicColorlessIcon,
     explorer: {
       TESTNET: "https://finder.terra.money/columbus-5",
       MAINNET: "https://finder.terra.money/columbus-5",
@@ -537,7 +536,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Terra2]: {
     name: "Terra2",
     icon: TerraIcon,
-    darkIcon: TerraDarkIcon,
+    colorlessIcon: TerraColorlessIcon,
     explorer: {
       TESTNET: "https://finder.terra.money/pisco-1",
       MAINNET: "https://finder.terra.money/phoenix-1",
@@ -552,7 +551,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Xpla]: {
     name: "Xpla",
     icon: XplaIcon,
-    darkIcon: XplaDarkIcon,
+    colorlessIcon: XplaColorlessIcon,
     explorer: {
       TESTNET: "https://explorer.xpla.io/TESTNET",
       MAINNET: "https://explorer.xpla.io/MAINNET",
@@ -567,7 +566,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Sei]: {
     name: "Sei",
     icon: SeiIcon,
-    darkIcon: SeiDarkIcon,
+    colorlessIcon: SeiColorlessIcon,
     explorer: {
       TESTNET: "https://www.seiscan.app/atlantic-2",
       MAINNET: "https://www.seiscan.app/pacific-1",
@@ -583,7 +582,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     name: "Base",
     nameTestnet: "Base Goerli",
     icon: BaseIcon,
-    darkIcon: BaseDarkIcon,
+    colorlessIcon: BaseColorlessIcon,
     explorer: {
       TESTNET: "https://goerli.basescan.org",
       MAINNET: "https://basescan.org",
@@ -598,7 +597,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Sepolia]: {
     name: "Sepolia",
     icon: EthereumIcon,
-    darkIcon: EthereumDarkIcon,
+    colorlessIcon: EthereumColorlessIcon,
     explorer: {
       TESTNET: "https://sepolia.etherscan.io",
       MAINNET: "https://sepolia.etherscan.io",
@@ -639,11 +638,17 @@ export const getChainName = ({
   return chainInfo?.name;
 };
 
-export const getChainIcon = ({ chainId, dark = false }: { chainId: ChainId; dark?: boolean }) => {
-  if (!WORMHOLE_CHAINS[chainId]) return WORMHOLE_CHAINS[0]?.darkIcon;
+export const getChainIcon = ({
+  chainId,
+  colorless = false,
+}: {
+  chainId: ChainId;
+  colorless?: boolean;
+}) => {
+  if (!WORMHOLE_CHAINS[chainId]) return WORMHOLE_CHAINS[0]?.colorlessIcon;
 
-  if (dark) {
-    return WORMHOLE_CHAINS[chainId]?.darkIcon;
+  if (colorless) {
+    return WORMHOLE_CHAINS[chainId]?.colorlessIcon;
   }
 
   return WORMHOLE_CHAINS[chainId]?.icon;
