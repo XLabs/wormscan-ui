@@ -8,11 +8,11 @@
 
   @include desktop {
     min-height: 168px;
-    padding: 60px 60px 32px 60px;
+    padding: 24px 60px 32px 60px;
   }
 
   @include bigDesktop {
-    padding: 60px 76px 32px 76px;
+    padding: 24px 76px 32px 76px;
   }
 
   &-container {
@@ -209,7 +209,7 @@
       }
 
       & .chip {
-        transform: translateY(-8px);
+        transform: translateY(-12px);
       }
     }
   }
