@@ -122,7 +122,6 @@ body {
   }
 
   .bg-gradient-top {
-    backdrop-filter: blur(12px);
     background: radial-gradient(50% 50% at 50% 50%, #3b234e 0%, rgba(59, 35, 78, 0) 100%);
     border-radius: 1175px;
     flex-shrink: 0;
@@ -135,7 +134,6 @@ body {
   }
 
   .bg-gradient-bottom {
-    backdrop-filter: blur(12px);
     background: radial-gradient(50% 50% at 50% 50%, #3b234e 0%, rgba(59, 35, 78, 0) 100%);
     border-radius: 1175px;
     bottom: -650px;
