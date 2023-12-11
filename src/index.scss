@@ -76,8 +76,8 @@ html {
   -ms-text-size-adjust: 100%;
 }
 
-/* ::-webkit-scrollbar {
-  background-color: rgba(0, 0, 0, 0.25);
+::-webkit-scrollbar {
+  background-color: #0b0217;
   height: 8px;
   width: 8px;
 }
@@ -89,7 +89,7 @@ html {
 ::-webkit-scrollbar-thumb {
   background-color: rgb(78, 78, 84);
   border-radius: 4px;
-} */
+}
 
 body {
   background-color: #0b0217;
