@@ -8,11 +8,11 @@ type Props = {
 const BaseLayout = ({ children }: Props) => {
   return (
     <>
-      <div className="bg-gradient-top" />
-      <div className="bg-gradient-bottom" />
       <Header />
       <div className="main-content">{children}</div>
       <Footer />
+      <div className="bg-gradient-top" />
+      <div className="bg-gradient-bottom" />
     </>
   );
 };

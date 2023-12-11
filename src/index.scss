@@ -78,8 +78,7 @@ html {
 
 ::-webkit-scrollbar {
   background-color: #0b0217;
-  height: 8px;
-  width: 8px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-corner {
@@ -87,8 +86,8 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgb(78, 78, 84);
-  border-radius: 4px;
+  background-color: var(--color-white-20);
+  border-radius: 6px;
 }
 
 body {
