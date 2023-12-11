@@ -10,9 +10,9 @@ import { getClient } from "src/api/Client";
 import "./styles.scss";
 
 const RANGE_LIST: { label: string; value: "7d" | "15d" | "30d" }[] = [
-  { label: "7 days", value: "7d" },
-  { label: "15 days", value: "15d" },
-  { label: "30 days", value: "30d" },
+  { label: "Last 7 days", value: "7d" },
+  { label: "Last 15 days", value: "15d" },
+  { label: "Last 30 days", value: "30d" },
 ];
 
 const TopLists = () => {

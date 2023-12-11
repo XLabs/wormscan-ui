@@ -14,21 +14,23 @@
 
   &-title {
     @include text-p1;
-    color: var(--color-primary-50);
+    color: var(--color-primary-90);
+    font-weight: 500;
     margin-bottom: 24px;
   }
 
   &-options {
     @include centered-row;
 
-    min-height: 56px;
-    justify-content: space-between;
+    align-items: flex-start;
     flex-wrap: wrap;
     gap: 24px;
+    justify-content: space-between;
     margin-bottom: 24px;
+    min-height: 56px;
 
     &-items {
-      min-height: 56px;
+      min-height: 48px;
       width: 100%;
 
       .toggle-group-item {
@@ -43,7 +45,7 @@
 
     @include desktop {
       &-items {
-        width: auto;
+        width: 220px;
       }
     }
   }
@@ -56,7 +58,7 @@
 
   &-destination {
     align-items: center;
-    background-color: var(--color-black-25);
+    background-color: rgba(1, 0, 20, 0.65);
     border-radius: 8px;
     display: flex;
     gap: 16px;
@@ -75,9 +77,10 @@
       background-color: transparent;
       border-radius: 4px;
       border: none;
-      color: var(--color-primary-100);
+      color: var(--color-primary-150);
       display: flex;
-      font-size: 14px;
+      font-size: 16px;
+      font-weight: 400;
       justify-content: center;
       min-height: 40px;
       padding: 8px 16px;
@@ -86,6 +89,7 @@
       &-selected {
         background-color: var(--color-white-05);
         color: var(--color-primary-30);
+        font-weight: 600;
       }
     }
   }
@@ -114,13 +118,6 @@
       @include desktop {
         width: 220px;
       }
-    }
-
-    &-text {
-      @include text-p2;
-
-      color: var(--color-primary-90);
-      white-space: nowrap;
     }
 
     @include desktop {
@@ -203,6 +200,7 @@
 
         .percentage {
           @include text-p3;
+          color: var(--color-primary-90);
           display: none;
           font-weight: 300;
           justify-self: end;
@@ -254,7 +252,6 @@
           font-weight: 500;
 
           @include desktop {
-            font-size: 18px;
             opacity: 1;
             font-weight: 600;
           }
@@ -410,6 +407,9 @@
             @media only screen and (min-width: 425px) {
               display: block;
             }
+          }
+          .chain-icon {
+            background-color: var(--color-secondary-800) !important;
           }
           .chain-name {
             opacity: 1;
@@ -623,7 +623,7 @@
     flex-direction: column;
 
     @include text-p3;
-    color: var(--color-primary-100);
+    color: var(--color-primary-150);
     @include desktop {
       justify-content: space-between;
       flex-direction: row;
@@ -635,7 +635,7 @@
     justify-content: space-between;
     margin-bottom: 16px;
 
-    color: var(--color-primary-100);
+    color: var(--color-primary-150);
     @include text-p3;
 
     &.title {

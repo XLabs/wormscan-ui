@@ -46,7 +46,7 @@
 
   & > button:active {
     background-color: var(--color-secondary-800);
-    color: var(--color-white);
+    color: var(--color-primary-30);
   }
 
   & > *:disabled {
@@ -64,12 +64,12 @@
 
       &:active {
         background-color: var(--color-secondary-800);
-        color: var(--color-white);
+        color: var(--color-primary-30);
       }
     }
 
     &.current {
-      color: var(--color-white);
+      color: var(--color-primary-30);
 
       &:active {
         background-color: none;

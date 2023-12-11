@@ -119,6 +119,17 @@ const Header = () => {
       <LogoLink />
       <Search />
       <div className="header-actions">
+        <div className="header-navigation">
+          {isMainnet && (
+            <div className="header-navigation-item">
+              <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
+                {t("home.header.goBridge")}
+              </a>
+            </div>
+          )}
+          <HeaderLinks />
+        </div>
+
         <Select
           name={"networkSelect"}
           value={NETWORK_LIST.find(a => a.value === currentNetwork)}
@@ -127,21 +138,6 @@ const Header = () => {
           ariaLabel={"Select Network"}
           className="header-network-select"
         />
-
-        <div className="header-navigation">
-          <HeaderLinks />
-        </div>
-
-        <div className="go-bridge-container">
-          <a
-            className={`go-bridge ${isMainnet ? "" : "go-bridge-invisible"}`}
-            href={PORTAL_BRIDGE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t("home.header.goBridge")}
-          </a>
-        </div>
 
         {/* MOBILE HAMBURGER MENU */}
         <div className="header-hamburger">
@@ -166,20 +162,13 @@ const Header = () => {
         <div className="header-navigation-mobile-nav">
           <HeaderLinks onClickNavLink={hideMobileMenu} isMobile={true} />
 
-          <div className="header-navigation-item">
-            {isMainnet && (
-              <div className="go-bridge-container">
-                <a
-                  className="go-bridge"
-                  href={PORTAL_BRIDGE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t("home.header.goBridge")}
-                </a>
-              </div>
-            )}
-          </div>
+          {isMainnet && (
+            <div className="header-navigation-item">
+              <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
+                {t("home.header.goBridge")}
+              </a>
+            </div>
+          )}
         </div>
       </div>
 

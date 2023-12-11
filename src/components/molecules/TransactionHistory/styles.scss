@@ -4,7 +4,8 @@
   &-title {
     @include text-p1;
 
-    color: var(--color-primary-50);
+    color: var(--color-primary-90);
+    font-weight: 500;
   }
 
   &-history {

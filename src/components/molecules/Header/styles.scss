@@ -21,7 +21,7 @@
   }
 
   @include desktop {
-    grid-template-columns: auto;
+    grid-template-columns: auto 0.8fr auto;
     grid-template-areas: "brand search actions";
 
     padding: 16px 60px;
@@ -31,7 +31,8 @@
 
   @include bigDesktop {
     grid-template-areas: "brand search actions";
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: auto 0.675fr auto;
+    padding: 0 76px;
   }
 
   .wormhole-brand {
@@ -89,7 +90,12 @@
       width: fit-content;
 
       @include desktop {
-        height: 42px;
+        height: 48px;
+      }
+
+      & .select__control {
+        color: var(--color-white);
+        font-weight: 600;
       }
     }
   }
@@ -104,27 +110,7 @@
     gap: 8px;
 
     @include desktop {
-      gap: 16px;
-    }
-
-    @include bigDesktop {
-      gap: 48px;
-    }
-
-    & .go-bridge-container {
-      display: none;
-
-      @include desktop {
-        display: block;
-      }
-
-      & .go-bridge {
-        @include button-secondary;
-
-        &-invisible {
-          visibility: hidden;
-        }
-      }
+      gap: 32px;
     }
   }
 
@@ -138,12 +124,12 @@
     @include desktop {
       @include centered-row;
 
-      gap: 44px;
+      gap: 32px;
     }
 
     & > nav {
       @include centered-row;
-      gap: 44px;
+      gap: 32px;
     }
 
     &-item {
@@ -154,11 +140,8 @@
 
       a {
         @include text-p2;
-        @include desktop {
-          @include text-p2-bold;
-        }
 
-        color: var(--color-primary-50);
+        color: var(--color-primary-90);
         text-decoration: none;
 
         &:hover {
@@ -229,16 +212,6 @@
       cursor: pointer;
       width: 20px;
       height: 20px;
-    }
-
-    .go-bridge {
-      @include button-secondary;
-      border: none;
-      margin-bottom: 52px;
-
-      &:hover {
-        color: var(--color-primary-800);
-      }
     }
   }
 

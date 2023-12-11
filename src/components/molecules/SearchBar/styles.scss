@@ -4,11 +4,17 @@
   $sbc: &;
   @include centered-row;
 
+  height: 48px;
   width: 100%;
-  height: 42px;
 
   > form {
     @include centered-row;
+    box-shadow: 0 0 0 3px var(--color-white-10);
+    border-radius: 5px;
+
+    &:focus-within {
+      box-shadow: 0 0 0 3px var(--color-primary-100);
+    }
 
     height: inherit;
     width: inherit;
@@ -16,32 +22,41 @@
     > #{$sbc}-input {
       @include centered-row;
 
-      position: relative;
-      justify-content: center;
-      width: 100%;
       height: inherit;
+      justify-content: center;
+      position: relative;
+      width: 100%;
 
       > input {
         @include text-p2;
 
-        background-color: var(--color-white-03);
-        border: 1px solid var(--color-white-10);
-        border-right: none;
+        background: linear-gradient(
+          90deg,
+          var(--color-black-25) 0%,
+          var(--color-black-25) calc(100% - 2px),
+          var(--color-white-10) calc(100% - 2px),
+          var(--color-white-10) 100%
+        );
         border-radius: 5px 0 0 5px;
+        border: none;
         width: 100%;
         height: inherit;
-
         padding: 8px 16px;
         color: var(--color-primary-10);
 
         &::placeholder {
-          color: var(--color-primary-100);
+          color: var(--color-primary-150);
         }
 
         &:focus-visible {
           outline: transparent;
-          border: 1px solid var(--color-primary-100);
-          border-right: none;
+          background: linear-gradient(
+            90deg,
+            var(--color-black-25) 0%,
+            var(--color-black-25) calc(100% - 2px),
+            var(--color-primary-100) calc(100% - 2px),
+            var(--color-primary-100) 100%
+          );
         }
       }
     }
@@ -50,48 +65,37 @@
       @include button-secondary;
 
       height: inherit;
-      min-width: 50px;
+      min-width: 56px;
       border-radius: 0px 5px 5px 0px;
-      border: 1px solid var(--color-white-10);
-      border-left: none;
+      border: none;
       padding: 0;
 
       > .icon {
-        width: 18px;
-        height: 18px;
-        color: var(--color-white);
+        color: #000;
+        height: 24px;
+        width: 24px;
+      }
+
+      &:active {
+        background-color: var(--color-secondary-600);
+        border: none;
       }
 
       &:focus-visible {
         outline: transparent;
-        border: 1px solid var(--color-primary-100);
-        border-left: none;
-      }
-    }
-
-    &:focus-within {
-      > #{$sbc}-input {
-        > input {
-          border: 1px solid var(--color-primary-100);
-          border-right: none;
-        }
-      }
-      > button {
-        border: 1px solid var(--color-primary-100);
-        border-left: none;
       }
     }
   }
 
   .search-loader {
-    width: 18px;
-    height: 18px;
-    border: 2px solid #fff;
-    border-bottom-color: transparent;
-    border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
     animation: rotation 1s linear infinite;
+    border-radius: 50%;
+    border: 2px solid #000;
+    border-bottom-color: transparent;
+    box-sizing: border-box;
+    display: inline-block;
+    height: 18px;
+    width: 18px;
   }
 
   @keyframes rotation {
