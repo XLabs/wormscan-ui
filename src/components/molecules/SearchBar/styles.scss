@@ -45,7 +45,7 @@
         color: var(--color-primary-10);
 
         &::placeholder {
-          color: #685c7c;
+          color: var(--color-primary-150);
         }
 
         &:focus-visible {

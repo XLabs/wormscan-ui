@@ -34,7 +34,7 @@
   &-subtitle {
     @include text-p2;
 
-    color: #685c7c;
+    color: var(--color-primary-150);
   }
 
   &-body {

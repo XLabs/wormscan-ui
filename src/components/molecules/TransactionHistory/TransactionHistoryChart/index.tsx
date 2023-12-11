@@ -117,7 +117,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                     text: totalTxs,
                     align: "left",
                     style: {
-                      color: "#685C7C",
+                      color: "var(--color-primary-150)",
                       fontFamily: "IBM Plex Sans",
                       fontSize: "14px",
                       fontWeight: 500,
@@ -231,7 +231,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                     labels: {
                       offsetX: 0,
                       style: {
-                        colors: "#685C7C",
+                        colors: "var(--color-primary-150)",
                         fontFamily: "IBM Plex Sans",
                         fontSize: "14px",
                       },

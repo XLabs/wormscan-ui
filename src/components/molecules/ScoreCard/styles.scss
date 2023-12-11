@@ -65,7 +65,7 @@
         &-title {
           @include text-p1;
 
-          color: #685C7C;
+          color: var(--color-primary-150);
           font-size: 14px;
           font-weight: 500;
           margin-bottom: 8px;
