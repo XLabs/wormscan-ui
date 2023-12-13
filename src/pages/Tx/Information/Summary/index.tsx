@@ -93,19 +93,29 @@ const Summary = ({
         <div className="key">Destination Address:</div>
         <div className="value">
           {parsedDestinationAddress ? (
-            <a
-              href={getExplorerLink({
-                network: currentNetwork,
-                chainId: toChain,
-                value: parsedDestinationAddress,
-                base: "address",
-                isNativeAddress: true,
-              })}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Tooltip
+              maxWidth={false}
+              tooltip={
+                <div className="tx-overview-graph-step-description-tooltip-text">
+                  {parsedDestinationAddress.toUpperCase()}
+                </div>
+              }
+              type="info"
             >
-              {shortAddress(parsedDestinationAddress).toUpperCase()}
-            </a>
+              <a
+                href={getExplorerLink({
+                  network: currentNetwork,
+                  chainId: toChain,
+                  value: parsedDestinationAddress,
+                  base: "address",
+                  isNativeAddress: true,
+                })}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {shortAddress(parsedDestinationAddress).toUpperCase()}
+              </a>
+            </Tooltip>
           ) : (
             "N/A"
           )}

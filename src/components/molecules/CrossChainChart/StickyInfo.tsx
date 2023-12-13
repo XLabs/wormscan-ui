@@ -104,7 +104,15 @@ export const StickyInfo = ({
               <span>{selectedType === "tx" ? "Transactions" : "Volume"}</span>
             </div>
             <div className="cross-chain-sticky-info">
-              <span className="cross-chain-sticky-info-source">{chainName}</span>
+              <span
+                className={`cross-chain-sticky-info-source ${
+                  chainName === "BNB Smart Chain" && selectedType !== "tx"
+                    ? "cross-chain-sticky-info-source-small"
+                    : ""
+                }`}
+              >
+                {chainName}
+              </span>
               <span className="cross-chain-sticky-info-value">
                 {selectedInfo?.percentage?.toFixed(2)}% |{" "}
                 {selectedType === "tx"
