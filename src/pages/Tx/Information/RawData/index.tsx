@@ -228,35 +228,27 @@ const RawData = ({ extraRawInfo, VAAData, txData, lifecycleRecord }: Props) => {
                 )}
               />
             )}
-            {lifecycleRecord.targetTransactions &&
-              lifecycleRecord.targetTransactions.map((tx, idx) => {
-                return (
-                  <BlockSection
-                    key={idx}
-                    title={"Target Transaction " + (idx + 1)}
-                    code={JSON.stringify(
-                      {
-                        targetChain: tx.targetChainId,
-                        targetReceipt: tx.targetTxReceipt,
-                        targetTransactionHash: tx.targetTxHash,
-                      },
-                      null,
-                      4,
-                    )}
-                  />
-                );
-              })}
+            {lifecycleRecord.targetTransaction && (
+              <BlockSection
+                title={"Target Transaction"}
+                code={JSON.stringify(
+                  {
+                    targetChain: lifecycleRecord.targetTransaction.targetChainId,
+                    targetReceipt: lifecycleRecord.targetTransaction.targetTxReceipt,
+                    targetTransactionHash: lifecycleRecord.targetTransaction.targetTxHash,
+                  },
+                  null,
+                  4,
+                )}
+              />
+            )}
 
-            {lifecycleRecord.DeliveryStatuses &&
-              lifecycleRecord.DeliveryStatuses.map((info, idx) => {
-                return (
-                  <BlockSection
-                    key={idx}
-                    title={"Delivery Info " + (idx + 1)}
-                    code={JSON.stringify(info, null, 4)}
-                  />
-                );
-              })}
+            {lifecycleRecord.DeliveryStatus && (
+              <BlockSection
+                title={"Delivery Info"}
+                code={JSON.stringify(lifecycleRecord.DeliveryStatus, null, 4)}
+              />
+            )}
           </>
         )}
       </div>

@@ -22,7 +22,6 @@ import {
   parseGenericRelayerVaa,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
-import { DeliveryMetaData } from "src/utils/deliveryProviderStatusApi";
 import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
 import { VAADetail } from "src/api/guardian-network/types";
 
@@ -238,8 +237,8 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
             network: currentNetwork,
           }),
           toChain: getChainName({
-            chainId: result?.targetTransactions?.[0]?.targetChainId
-              ? result.targetTransactions[0].targetChainId
+            chainId: result?.targetTransaction?.targetChainId
+              ? result.targetTransaction?.targetChainId
               : txData?.standardizedProperties?.toChain
               ? txData.standardizedProperties.toChain
               : 0,
@@ -288,20 +287,21 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
 
     if (isGenericRelayerTx) {
       if (loadingRelayers) return <Loader />;
-
       if (!genericRelayerInfo?.vaa) return <div>No VAA was found</div>;
 
       const vaa = genericRelayerInfo.vaa;
       const parsedVaa = parseVaa(vaa);
       const sourceTxHash = genericRelayerInfo.sourceTxHash;
-      const deliveryStatus = genericRelayerInfo?.DeliveryStatuses?.[0];
-      const metadata = deliveryStatus?.metadata as DeliveryMetaData;
-      const deliveryRecord = metadata?.deliveryRecord;
-      const resultLog = deliveryRecord?.resultLog;
-      const gasUsed = Number(resultLog?.gasUsed);
-      const targetTxTimestamp =
-        genericRelayerInfo?.targetTransactions?.[genericRelayerInfo?.targetTransactions?.length - 1]
-          ?.targetTxTimestamp;
+      const deliveryStatus = genericRelayerInfo?.DeliveryStatus;
+
+      // const metadata = deliveryStatus?.metadata as DeliveryMetaData;
+      // const deliveryRecord = metadata?.deliveryRecord;
+      // const resultLog = deliveryRecord?.resultLog;
+      // const gasUsed = Number(resultLog?.gasUsed);
+
+      const gasUsed = Number(deliveryStatus?.data?.delivery?.execution?.gasUsed);
+
+      const targetTxTimestamp = genericRelayerInfo?.targetTransaction?.targetTxTimestamp;
 
       const { emitterAddress, emitterChain, guardianSignatures } = parsedVaa || {};
 
@@ -327,6 +327,18 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         : null;
       const gasLimit = decodeExecution ? decodeExecution.gasLimit : null;
 
+      console.log({
+        targetTxTimestamp,
+        genericRelayerInfo,
+        deliveryStatus,
+        gasUsed,
+        parsedEmitterAddress,
+        instruction,
+        deliveryInstruction,
+        decodeExecution,
+        gasLimit,
+      });
+
       if (!deliveryInstruction?.targetAddress) {
         console.log({ deliveryInstruction });
         return (
@@ -342,17 +354,17 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         return `${whole}.${fraction.slice(0, decimals)}`;
       };
 
-      const maxRefund = deliveryRecord?.maxRefund
-        ? Number(
-            trunkStringsDecimal(
-              ethers.utils.formatUnits(
-                deliveryRecord?.maxRefund,
-                deliveryRecord?.targetChainDecimals || 18,
-              ),
-              3,
-            ),
-          )
-        : 0;
+      // const maxRefund = deliveryRecord?.maxRefund
+      //   ? Number(
+      //       trunkStringsDecimal(
+      //         ethers.utils.formatUnits(
+      //           deliveryRecord?.maxRefund,
+      //           deliveryRecord?.targetChainDecimals || 18,
+      //         ),
+      //         3,
+      //       ),
+      //     )
+      //   : 0;
 
       const deliveryParsedTargetAddress = parseAddress({
         value: Buffer.from(deliveryInstruction?.targetAddress).toString("hex"),
@@ -379,18 +391,20 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         chainId: fromChain as ChainId,
       });
 
+      // TODO: add maxRefund here
       const maxRefundText = () => {
-        return deliveryRecord?.maxRefundUsd
-          ? `${maxRefund} ${
-              environment.chainInfos.find(
-                chain => chain.chainId === deliveryInstruction.targetChainId,
-              ).nativeCurrencyName
-            } (${trunkStringsDecimal("" + deliveryRecord?.maxRefundUsd, 4)} USD)`
-          : `${maxRefund} ${
-              environment.chainInfos.find(
-                chain => chain.chainId === deliveryInstruction.targetChainId,
-              ).nativeCurrencyName
-            }`;
+        return "";
+        // return deliveryRecord?.maxRefundUsd
+        //   ? `${maxRefund} ${
+        //       environment.chainInfos.find(
+        //         chain => chain.chainId === deliveryInstruction.targetChainId,
+        //       ).nativeCurrencyName
+        //     } (${trunkStringsDecimal("" + deliveryRecord?.maxRefundUsd, 4)} USD)`
+        //   : `${maxRefund} ${
+        //       environment.chainInfos.find(
+        //         chain => chain.chainId === deliveryInstruction.targetChainId,
+        //       ).nativeCurrencyName
+        //     }`;
       };
 
       const gasUsedText = () => {
@@ -400,58 +414,53 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       const receiverValueText = () => {
         const receiverValue = trunkStringsDecimal(
           ethers.utils.formatUnits(
-            deliveryRecord?.receiverValue,
-            deliveryRecord?.targetChainDecimals || 18,
+            deliveryStatus?.data?.instructions?.requestedReceiverValue,
+            // TODO: add targetChainDecimals as a variable:
+            // deliveryStatus?.data?.instructions?.targetChainDecimals || 18,
+            18,
           ),
           3,
         );
 
-        const receiverValueUsd = trunkStringsDecimal("" + deliveryRecord?.receiverValueUsd, 4);
+        // const receiverValueUsd = trunkStringsDecimal("" + deliveryRecord?.receiverValueUsd, 4);
 
-        return deliveryRecord?.receiverValueUsd
-          ? `${receiverValue} ${
-              environment.chainInfos.find(
-                chain => chain.chainId === deliveryInstruction.targetChainId,
-              ).nativeCurrencyName
-            } (${receiverValueUsd} USD)`
-          : `${receiverValue} ${
-              environment.chainInfos.find(
-                chain => chain.chainId === deliveryInstruction.targetChainId,
-              ).nativeCurrencyName
-            }`;
-      };
-
-      const budgetText = () => {
-        return deliveryRecord?.budgetUsd
-          ? `${`${trunkStringsDecimal(
-              ethers.utils.formatUnits(
-                deliveryRecord?.budget,
-                deliveryRecord?.targetChainDecimals || 18,
-              ),
-              3,
-            )} ${
-              environment.chainInfos.find(
-                chain => chain.chainId === deliveryInstruction.targetChainId,
-              ).nativeCurrencyName
-            } (${deliveryRecord?.budgetUsd.toFixed(3)} USD)`}`
-          : `${trunkStringsDecimal(
-              ethers.utils.formatUnits(
-                deliveryRecord?.budget,
-                deliveryRecord?.targetChainDecimals || 18,
-              ),
-              3,
-            )} ${
-              environment.chainInfos.find(
-                chain => chain.chainId === deliveryInstruction.targetChainId,
-              ).nativeCurrencyName
-            }`;
-      };
-
-      const refundText = () => {
-        return `${(1 - gasUsed / Number(gasLimit)) * maxRefund} ${
+        return `${receiverValue} ${
           environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
             .nativeCurrencyName
         }`;
+      };
+
+      // TODO: add budget and targetChainDecimals here
+      const budgetText = () => {
+        return "";
+
+        // return `${trunkStringsDecimal(
+        //       ethers.utils.formatUnits(
+        //         deliveryRecord?.budget,
+        //         deliveryRecord?.targetChainDecimals || 18,
+        //       ),
+        //       3,
+        //     )} ${
+        //       environment.chainInfos.find(
+        //         chain => chain.chainId === deliveryInstruction.targetChainId,
+        //       ).nativeCurrencyName
+        //     }`;
+      };
+
+      const refundText = () => {
+        const refundAmountRegex = deliveryStatus?.data?.delivery?.execution?.detail.match(
+          /Refund amount:\s*([0-9.]+)/,
+        );
+        const refundAmount = refundAmountRegex ? refundAmountRegex?.[1] : null;
+
+        if (refundAmount)
+          return `${refundAmount} ${
+            environment.chainInfos.find(
+              chain => chain.chainId === deliveryInstruction.targetChainId,
+            ).nativeCurrencyName
+          }`;
+
+        return "";
       };
 
       const copyBudgetText = () => {
@@ -464,11 +473,28 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
           .replaceAll("\n\n\n\n", "\n\n");
       };
 
+      const resultLogRegex =
+        deliveryStatus?.data?.delivery?.execution?.detail.match(/Status: ([^\r\n]+)/);
+      const resultLog = resultLogRegex ? resultLogRegex?.[1] : null;
+
+      const refundStatusRegex =
+        deliveryStatus?.data?.delivery?.execution?.detail.match(/Refund status: ([^\r\n]+)/);
+      const refundStatus = refundStatusRegex ? refundStatusRegex?.[1] : null;
+
+      {
+        /* TODO: THERE IS NO MAX-ATTEMPTS */
+      }
+      const deliveryAttemptRegex = deliveryStatus?.data?.delivery?.execution?.detail.match(
+        /Delivery attempt \s*([0-9.]+)/,
+      );
+      const deliveryAttempt = deliveryAttemptRegex ? deliveryAttemptRegex?.[1] : null;
+
       const genericRelayerProps = {
         budgetText,
         copyBudgetText,
         currentNetwork,
         decodeExecution,
+        deliveryAttempt,
         deliveryInstruction,
         deliveryParsedRefundAddress,
         deliveryParsedRefundProviderAddress,
@@ -482,10 +508,10 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         guardianSignaturesCount,
         isDelivery,
         maxRefundText,
-        metadata,
         parsedEmitterAddress,
         parsedVaa,
         receiverValueText,
+        refundStatus,
         refundText,
         resultLog,
         sourceTxHash,

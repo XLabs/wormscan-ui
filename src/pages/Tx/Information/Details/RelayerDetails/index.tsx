@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { CopyIcon } from "@radix-ui/react-icons";
-import { Network } from "@certusone/wormhole-sdk";
-import { DeliveryInstruction } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import { DeliveryMetaData, DeliveryProviderStatus } from "src/utils/deliveryProviderStatusApi";
 import { TruncateText } from "src/utils/string";
 import {
   mainnetDefaultDeliveryProviderContractAddress,
@@ -13,42 +10,14 @@ import {
 } from "src/utils/environment";
 import { formatDate } from "src/utils/date";
 import "../styles.scss";
-
-type Props = {
-  budgetText: () => string;
-  copyBudgetText: () => string;
-  currentNetwork: Network;
-  decodeExecution: any;
-  deliveryInstruction: DeliveryInstruction;
-  deliveryParsedRefundAddress: string;
-  deliveryParsedRefundProviderAddress: string;
-  deliveryParsedSenderAddress: string;
-  deliveryParsedSourceProviderAddress: string;
-  deliveryParsedTargetAddress: string;
-  deliveryStatus: DeliveryProviderStatus;
-  fromChain: number;
-  gasUsed: number;
-  gasUsedText: () => string;
-  guardianSignaturesCount: number;
-  isDelivery: boolean;
-  maxRefundText: () => string;
-  metadata: DeliveryMetaData;
-  parsedEmitterAddress: string;
-  parsedVaa: any;
-  receiverValueText: () => string;
-  refundText: () => string;
-  resultLog: any;
-  sourceTxHash: string;
-  targetTxTimestamp: number;
-  totalGuardiansNeeded: number;
-  VAAId: string;
-};
+import { RelayerOverviewProps } from "../../Overview/RelayerOverview";
 
 const RelayerDetails = ({
   budgetText,
   copyBudgetText,
   currentNetwork,
   decodeExecution,
+  deliveryAttempt,
   deliveryInstruction,
   deliveryParsedRefundAddress,
   deliveryParsedRefundProviderAddress,
@@ -62,17 +31,17 @@ const RelayerDetails = ({
   guardianSignaturesCount,
   isDelivery,
   maxRefundText,
-  metadata,
   parsedEmitterAddress,
   parsedVaa,
   receiverValueText,
+  refundStatus,
   refundText,
   resultLog,
   sourceTxHash,
   targetTxTimestamp,
   totalGuardiansNeeded,
   VAAId,
-}: Props) => {
+}: RelayerOverviewProps) => {
   const lineValueRef = useRef<HTMLDivElement>(null);
   const [lineValueWidth, setLineValueWidth] = useState<number>(0);
 
@@ -250,56 +219,52 @@ const RelayerDetails = ({
         <div className="tx-details-group-line">
           <div className="tx-details-group-line-key">Budget</div>
           <div className="tx-details-group-line-value">
-            {metadata ? (
-              <Tooltip
-                tooltip={
-                  <div className="budget-tooltip">
-                    <div className="budget-tooltip-title">Max Refund:</div>
-                    <div>{maxRefundText()}</div>
+            <Tooltip
+              tooltip={
+                <div className="budget-tooltip">
+                  <div className="budget-tooltip-title">Max Refund:</div>
+                  <div>{maxRefundText()}</div>
 
-                    {decodeExecution && gasUsedText() && (
-                      <>
-                        <div className="budget-tooltip-title">
-                          {isNaN(gasUsed) ? "Gas Limit" : "Gas Used/Gas Limit"}
-                        </div>
-                        <div>{gasUsedText()}</div>
-                      </>
-                    )}
+                  {decodeExecution && gasUsedText() && (
+                    <>
+                      <div className="budget-tooltip-title">
+                        {isNaN(gasUsed) ? "Gas Limit" : "Gas Used/Gas Limit"}
+                      </div>
+                      <div>{gasUsedText()}</div>
+                    </>
+                  )}
 
-                    {!isNaN(gasUsed) && (
-                      <>
-                        <div className="budget-tooltip-title">Refund amount:</div>
-                        <div>{refundText()}</div>
-                      </>
-                    )}
+                  {!isNaN(gasUsed) && (
+                    <>
+                      <div className="budget-tooltip-title">Refund amount:</div>
+                      <div>{refundText()}</div>
+                    </>
+                  )}
 
-                    <div className="budget-tooltip-title">Receiver Value:</div>
-                    <div>{receiverValueText()}</div>
-                  </div>
-                }
-                side="bottom"
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "8px",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    backgroundColor: "#ddddff05",
-                    borderRadius: 6,
-                    padding: "2px 8px",
-                  }}
-                >
-                  {budgetText()}
-
-                  <CopyToClipboard toCopy={copyBudgetText()}>
-                    <CopyIcon height={20} width={20} />
-                  </CopyToClipboard>
+                  <div className="budget-tooltip-title">Receiver Value:</div>
+                  <div>{receiverValueText()}</div>
                 </div>
-              </Tooltip>
-            ) : (
-              "N/A"
-            )}
+              }
+              side="bottom"
+            >
+              <div
+                style={{
+                  display: "flex",
+                  gap: "8px",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  backgroundColor: "#ddddff05",
+                  borderRadius: 6,
+                  padding: "2px 8px",
+                }}
+              >
+                {budgetText()}
+
+                <CopyToClipboard toCopy={copyBudgetText()}>
+                  <CopyIcon height={20} width={20} />
+                </CopyToClipboard>
+              </div>
+            </Tooltip>
           </div>
         </div>
 
@@ -416,13 +381,13 @@ const RelayerDetails = ({
           <div className="tx-details-group-line-value">
             {deliveryStatus?.status !== "failed" &&
             deliveryStatus?.status !== "waiting" &&
-            deliveryStatus?.toTxHash ? (
+            deliveryStatus?.data?.toTxHash ? (
               <>
                 <a
                   href={getExplorerLink({
                     network: currentNetwork,
                     chainId: deliveryInstruction.targetChainId,
-                    value: deliveryStatus.toTxHash,
+                    value: deliveryStatus?.data?.toTxHash,
                     isNativeAddress: true,
                   })}
                   target="_blank"
@@ -430,10 +395,10 @@ const RelayerDetails = ({
                 >
                   <TruncateText
                     containerWidth={lineValueWidth}
-                    text={deliveryStatus.toTxHash.toUpperCase()}
+                    text={deliveryStatus?.data?.toTxHash.toUpperCase()}
                   />
                 </a>
-                <CopyToClipboard toCopy={deliveryStatus.toTxHash}>
+                <CopyToClipboard toCopy={deliveryStatus?.data?.toTxHash}>
                   <CopyIcon height={20} width={20} />
                 </CopyToClipboard>
               </>
@@ -457,8 +422,9 @@ const RelayerDetails = ({
 
                 {deliveryStatus?.status === "waiting" && (
                   <>
-                    WAITING.. | Attempts:{" "}
-                    {`${deliveryStatus?.attempts}/${deliveryStatus?.maxAttempts}`}
+                    WAITING.. | Attempts: {/* TODO: MAX ATTEMPT */}
+                    {/* {`${attempt}/${deliveryStatus?.maxAttempts}`} */}
+                    {`${deliveryAttempt}`}
                   </>
                 )}
 
@@ -466,35 +432,29 @@ const RelayerDetails = ({
                   <>
                     <div
                       className={
-                        typeof resultLog === "string"
-                          ? resultLog === "Delivery Success"
-                            ? "green"
-                            : resultLog === "Receiver Failure"
-                            ? "red"
-                            : "white"
-                          : resultLog?.status === "Delivery Success"
+                        resultLog === "Delivery Success"
                           ? "green"
-                          : resultLog?.status === "Receiver Failure"
+                          : resultLog === "Receiver Failure"
                           ? "red"
                           : "white"
                       }
                     >
-                      {typeof resultLog === "string" ? resultLog : resultLog?.status}
+                      {resultLog}
                     </div>
 
-                    {resultLog?.refundStatus && (
+                    {refundStatus && (
                       <>
                         -
                         <div
                           className={
-                            resultLog?.refundStatus === ("Refund Sent" as any)
+                            refundStatus === ("Refund Sent" as any)
                               ? "green"
-                              : resultLog?.refundStatus === ("Refund Fail" as any)
+                              : refundStatus === ("Refund Fail" as any)
                               ? "red"
                               : "white"
                           }
                         >
-                          {resultLog?.refundStatus}
+                          {refundStatus}
                         </div>
                       </>
                     )}

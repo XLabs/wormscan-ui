@@ -10,12 +10,8 @@ import {
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { callWithTimeout } from "src/utils/asyncUtils";
 import { getClient } from "src/api/Client";
-import { GetTransactionsOutput } from "src/api/search/types";
+import { AutomaticRelayOutput, GetTransactionsOutput } from "src/api/search/types";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
-import {
-  DeliveryProviderStatus,
-  getDeliveryProviderStatusByVaaInfo,
-} from "./deliveryProviderStatusApi";
 
 export type WormholeTransaction = {
   chainId: ChainId;
@@ -28,13 +24,13 @@ export type DeliveryLifecycleRecord = {
   sourceChainId?: ChainId;
   sourceSequence?: number;
   vaa?: Uint8Array;
-  DeliveryStatuses?: DeliveryProviderStatus[];
-  targetTransactions?: {
+  DeliveryStatus?: AutomaticRelayOutput;
+  targetTransaction?: {
     targetTxHash?: string;
     targetTxReceipt?: ethers.providers.TransactionReceipt;
     targetChainId?: ChainId;
     targetTxTimestamp?: number;
-  }[];
+  };
 };
 
 export async function populateDeliveryLifecycleRecordByVaa(
@@ -61,90 +57,77 @@ export async function populateDeliveryLifecycleRecordByVaa(
     console.error("err on getTransaction wormhole api", e);
   }
 
-  const deliveryStatus = await getDeliveryProviderStatusByVaaInfo(
-    environment,
-    parsedVaa.emitterChain.toString(),
-    parsedVaa.emitterAddress.toString("hex"),
-    parsedVaa.sequence.toString(),
-  );
+  const relayerEndpoint = await getClient().search.getAutomaticRelay({
+    emitterChain: parsedVaa.emitterChain,
+    emitterAddress: parsedVaa.emitterAddress.toString("hex"),
+    sequence: Number(parsedVaa.sequence),
+  });
+
+  console.log({ relayerEndpoint });
 
   const sourceChainId = parsedVaa.emitterChain;
-  let preventProcess = false;
 
-  if (deliveryStatus.length === 0) {
-    preventProcess = true;
-  } else {
-    output.DeliveryStatuses = deliveryStatus;
-  }
+  output.DeliveryStatus = relayerEndpoint;
 
   const MAX_WAIT_TIME = 10000;
-  if (!preventProcess) {
-    const sourceTransactions = deliveryStatus.map(status => {
-      return status.fromTxHash;
-    });
+  const sourceTxHash = relayerEndpoint.data.fromTxHash;
 
-    //All the sourceTransactions should be the same, so just grab the first one
-    const sourceTxHash = sourceTransactions[0];
+  output.sourceTxHash = sourceTxHash || undefined;
+  output.sourceChainId = sourceChainId as ChainId;
 
-    output.sourceTxHash = sourceTxHash || undefined;
-    output.sourceChainId = sourceChainId as ChainId;
-    output.targetTransactions = [];
+  // getting target receipt and timestamp
+  const targetTxHash = relayerEndpoint.data.toTxHash;
 
-    // getting target receipts and timestamps
-    for (const status of deliveryStatus) {
-      const targetTxHash = status.toTxHash;
+  if (targetTxHash) {
+    const targetEthersProvider = getEthersProvider(
+      getChainInfo(environment, targetChain as ChainId),
+    );
+    const defaultResponse = {
+      targetChainId: targetChain as ChainId,
+      targetTxHash: targetTxHash,
+      targetTxReceipt: null as ethers.providers.TransactionReceipt,
+      targetTxTimestamp: null as number,
+    };
 
-      if (targetTxHash) {
-        const targetEthersProvider = getEthersProvider(
-          getChainInfo(environment, targetChain as ChainId),
-        );
-        const defaultResponse = {
-          targetChainId: targetChain as ChainId,
-          targetTxHash: targetTxHash,
-          targetTxReceipt: null as ethers.providers.TransactionReceipt,
-          targetTxTimestamp: null as number,
-        };
+    const getTargetReceiptAndTimestamp = new Promise<typeof defaultResponse>(resolve =>
+      targetEthersProvider
+        .getTransactionReceipt(targetTxHash)
+        .then(async receipt => {
+          try {
+            const block = await targetEthersProvider.getBlock(receipt.blockNumber);
+            resolve({
+              targetChainId: targetChain as ChainId,
+              targetTxHash: targetTxHash,
+              targetTxReceipt: receipt,
+              targetTxTimestamp: ethers.BigNumber.from(block.timestamp).toNumber(),
+            });
+          } catch (err) {
+            console.log("failed to get timestamp for target tx", err);
+            console.log("(but got receipt correctly)");
+            resolve({
+              targetChainId: targetChain as ChainId,
+              targetTxHash: targetTxHash,
+              targetTxReceipt: receipt,
+              targetTxTimestamp: null as number,
+            });
+          }
+        })
+        .catch(e => {
+          console.log("error getting target tx receipt: " + e);
+          resolve(defaultResponse);
+        }),
+    );
 
-        const getTargetReceiptAndTimestamp = new Promise<typeof defaultResponse>(resolve =>
-          targetEthersProvider
-            .getTransactionReceipt(targetTxHash)
-            .then(async receipt => {
-              try {
-                const block = await targetEthersProvider.getBlock(receipt.blockNumber);
-                resolve({
-                  targetChainId: targetChain as ChainId,
-                  targetTxHash: targetTxHash,
-                  targetTxReceipt: receipt,
-                  targetTxTimestamp: ethers.BigNumber.from(block.timestamp).toNumber(),
-                });
-              } catch (err) {
-                console.log("failed to get timestamp for target tx", err);
-                console.log("(but got receipt correctly)");
-                resolve({
-                  targetChainId: targetChain as ChainId,
-                  targetTxHash: targetTxHash,
-                  targetTxReceipt: receipt,
-                  targetTxTimestamp: null as number,
-                });
-              }
-            })
-            .catch(e => {
-              console.log("error getting target tx receipt: " + e);
-              resolve(defaultResponse);
-            }),
-        );
+    const targetTxResponse = await callWithTimeout(
+      MAX_WAIT_TIME,
+      getTargetReceiptAndTimestamp,
+      defaultResponse,
+    );
 
-        const targetTxResponse = await callWithTimeout(
-          MAX_WAIT_TIME,
-          getTargetReceiptAndTimestamp,
-          defaultResponse,
-        );
-        output.targetTransactions?.push(targetTxResponse);
-      }
-    }
+    output.targetTransaction = targetTxResponse;
   }
 
-  const noSourceTxHash = !deliveryStatus.find(status => status.fromTxHash);
+  const noSourceTxHash = !relayerEndpoint.data.fromTxHash;
   if (noSourceTxHash && tx && !!tx.txHash) {
     output.sourceTxHash = tx.txHash.startsWith("0x") ? tx.txHash : `0x${tx.txHash}`;
     output.sourceSequence = Number(parsedVaa.sequence);

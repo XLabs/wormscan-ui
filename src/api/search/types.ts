@@ -1,6 +1,7 @@
 import { GlobalTxOutput } from "src/api/guardian-network/types";
 import { PageRequest } from "src/api/model";
 import { Pagination } from "src/api/types";
+import { BigNumber } from "ethers";
 
 export interface FindVAAByAddressOutput {
   data: Data;
@@ -83,6 +84,43 @@ export type CctpRelayOutput = {
   };
   vaa: string;
 };
+
+export interface AutomaticRelayOutput {
+  completedAt: string;
+  failedAt: string;
+  id: string;
+  receivedAt: string;
+  relayer: string;
+  status: string;
+  data: {
+    fromTxHash: string;
+    toTxHash: string;
+    delivery: {
+      relayGasUsed: number;
+      execution: {
+        detail: string;
+        gasUsed: string;
+        refundStatus: string;
+        revertString: string;
+        status: string;
+        transactionHash: string;
+      };
+    };
+    instructions: {
+      encodedExecutionInfo: string;
+      refundAddress: string;
+      refundChainId: number;
+      refundDeliveryProvider: string;
+      senderAddress: string;
+      sourceDeliveryProvider: string;
+      targetAddress: string;
+      targetChainId: number;
+      vaaKeys: any;
+      extraReceiverValue: BigNumber;
+      requestedReceiverValue: BigNumber;
+    };
+  };
+}
 
 export type GetTransactionsOutput = {
   id: string;
