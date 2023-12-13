@@ -10,7 +10,7 @@ const internalLinks = [
 
 const externalLinks = [
   { name: "Built by xLabs", href: "https://www.xlabs.xyz/" },
-  { name: "Careers", href: "https://boards.greenhouse.io/xlabs" },
+  { name: "Careers", href: "https://jobs.ashbyhq.com/Xlabs" },
   { name: "Contact us", href: DISCORD_URL },
   { name: "API Doc", href: "https://docs.wormholescan.io/" },
   { name: "Discord link", href: DISCORD_URL },
