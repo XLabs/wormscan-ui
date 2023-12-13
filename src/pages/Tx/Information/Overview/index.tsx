@@ -114,23 +114,29 @@ const Overview = ({
             </div>
           </div>
           <div>
-            <div className="tx-overview-graph-step-title">Source wallet</div>
+            <div className="tx-overview-graph-step-title">Source Address</div>
             <div className="tx-overview-graph-step-description">
               {parsedOriginAddress ? (
                 <>
-                  <a
-                    href={getExplorerLink({
-                      network: currentNetwork,
-                      chainId: fromChain,
-                      value: parsedOriginAddress,
-                      base: "address",
-                      isNativeAddress: true,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Tooltip
+                    maxWidth={false}
+                    tooltip={<div>{parsedOriginAddress.toUpperCase()}</div>}
+                    type="info"
                   >
-                    {shortAddress(parsedOriginAddress).toUpperCase()}
-                  </a>{" "}
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: fromChain,
+                        value: parsedOriginAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {shortAddress(parsedOriginAddress).toUpperCase()}
+                    </a>
+                  </Tooltip>
                   <CopyToClipboard toCopy={parsedOriginAddress}>
                     <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
@@ -168,23 +174,35 @@ const Overview = ({
                     {/* delete conditional when WORMCHAIN gets an explorer */}
                     {fromChainOrig === CHAIN_ID_WORMCHAIN ? (
                       <div>
-                        <span>{shortAddress(parsedEmitterAddress).toUpperCase()}</span>
+                        <Tooltip
+                          maxWidth={false}
+                          tooltip={<div>{parsedEmitterAddress.toUpperCase()}</div>}
+                          type="info"
+                        >
+                          <span>{shortAddress(parsedEmitterAddress).toUpperCase()}</span>
+                        </Tooltip>
                       </div>
                     ) : (
-                      <a
-                        href={getExplorerLink({
-                          network: currentNetwork,
-                          chainId: fromChainOrig,
-                          value: parsedEmitterAddress,
-                          base: "address",
-                          isNativeAddress: true,
-                        })}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <Tooltip
+                        maxWidth={false}
+                        tooltip={<div>{parsedEmitterAddress.toUpperCase()}</div>}
+                        type="info"
                       >
-                        {shortAddress(parsedEmitterAddress).toUpperCase()}
-                      </a>
-                    )}{" "}
+                        <a
+                          href={getExplorerLink({
+                            network: currentNetwork,
+                            chainId: fromChainOrig,
+                            value: parsedEmitterAddress,
+                            base: "address",
+                            isNativeAddress: true,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {shortAddress(parsedEmitterAddress).toUpperCase()}
+                        </a>
+                      </Tooltip>
+                    )}
                     <CopyToClipboard toCopy={parsedEmitterAddress}>
                       <CopyIcon height={20} width={20} />
                     </CopyToClipboard>
@@ -222,7 +240,9 @@ const Overview = ({
             <div className="tx-overview-graph-step-description">
               {VAAId ? (
                 <>
-                  {shortVaaId(VAAId)}
+                  <Tooltip maxWidth={false} tooltip={<div>{VAAId}</div>} type="info">
+                    <p>{shortVaaId(VAAId)}</p>
+                  </Tooltip>
                   <CopyToClipboard toCopy={VAAId}>
                     <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
@@ -258,18 +278,24 @@ const Overview = ({
               <div className="tx-overview-graph-step-description">
                 {parsedRedeemTx ? (
                   <>
-                    <a
-                      href={getExplorerLink({
-                        network: currentNetwork,
-                        chainId: toChain,
-                        value: parsedRedeemTx,
-                        isNativeAddress: true,
-                      })}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <Tooltip
+                      maxWidth={false}
+                      tooltip={<div>{parsedRedeemTx.toUpperCase()}</div>}
+                      type="info"
                     >
-                      {shortAddress(parsedRedeemTx).toUpperCase()}
-                    </a>{" "}
+                      <a
+                        href={getExplorerLink({
+                          network: currentNetwork,
+                          chainId: toChain,
+                          value: parsedRedeemTx,
+                          isNativeAddress: true,
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {shortAddress(parsedRedeemTx).toUpperCase()}
+                      </a>
+                    </Tooltip>
                     <CopyToClipboard toCopy={parsedRedeemTx}>
                       <CopyIcon height={20} width={20} />
                     </CopyToClipboard>
@@ -351,19 +377,25 @@ const Overview = ({
               <div className="tx-overview-graph-step-description">
                 {parsedDestinationAddress ? (
                   <>
-                    <a
-                      href={getExplorerLink({
-                        network: currentNetwork,
-                        chainId: toChain,
-                        value: parsedDestinationAddress,
-                        base: "address",
-                        isNativeAddress: true,
-                      })}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <Tooltip
+                      maxWidth={false}
+                      tooltip={<div>{parsedDestinationAddress.toUpperCase()}</div>}
+                      type="info"
                     >
-                      {shortAddress(parsedDestinationAddress).toUpperCase()}
-                    </a>{" "}
+                      <a
+                        href={getExplorerLink({
+                          network: currentNetwork,
+                          chainId: toChain,
+                          value: parsedDestinationAddress,
+                          base: "address",
+                          isNativeAddress: true,
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {shortAddress(parsedDestinationAddress).toUpperCase()}
+                      </a>
+                    </Tooltip>
                     <CopyToClipboard toCopy={parsedDestinationAddress}>
                       <CopyIcon height={20} width={20} />
                     </CopyToClipboard>

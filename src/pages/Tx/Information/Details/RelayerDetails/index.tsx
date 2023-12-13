@@ -208,7 +208,7 @@ const RelayerDetails = ({
                     text={deliveryParsedSourceProviderAddress.toUpperCase()}
                   />
                 )}
-              </a>{" "}
+              </a>
               <CopyToClipboard toCopy={deliveryParsedSourceProviderAddress}>
                 <CopyIcon height={20} width={20} />
               </CopyToClipboard>
