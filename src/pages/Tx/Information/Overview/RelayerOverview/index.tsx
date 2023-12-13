@@ -47,7 +47,6 @@ export type RelayerOverviewProps = {
 };
 
 const RelayerOverview = ({
-  // metadata,
   budgetText,
   copyBudgetText,
   currentNetwork,
@@ -96,9 +95,9 @@ const RelayerOverview = ({
           {refundStatus && (
             <div
               className={`tx-overview-graph-step-description ${
-                refundStatus === ("Refund Sent" as any)
+                refundStatus === "Refund Sent"
                   ? "green"
-                  : refundStatus === ("Refund Fail" as any)
+                  : refundStatus === "Refund Fail"
                   ? "red"
                   : "white"
               }`}
@@ -574,9 +573,7 @@ const RelayerOverview = ({
                     <div>
                       <div className="tx-overview-graph-step-title">Attempts</div>
                       <div className="tx-overview-graph-step-description">
-                        {/* TODO: THERE IS NO MAX-ATTEMPTS */}
-                        {/* {`${deliveryStatus.attempts}/${deliveryStatus.maxAttempts}`} */}
-                        {`${deliveryAttempt}`}
+                        {`${deliveryAttempt}/${deliveryStatus?.data?.maxAttempts}`}
                       </div>
                     </div>
                   </div>

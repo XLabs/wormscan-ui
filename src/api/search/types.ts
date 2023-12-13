@@ -95,8 +95,12 @@ export interface AutomaticRelayOutput {
   data: {
     fromTxHash: string;
     toTxHash: string;
+    maxAttempts: number;
     delivery: {
       relayGasUsed: number;
+      targetChainDecimals: number;
+      budget: string;
+      maxRefund: string;
       execution: {
         detail: string;
         gasUsed: string;

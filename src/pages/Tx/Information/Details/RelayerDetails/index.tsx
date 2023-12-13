@@ -422,9 +422,8 @@ const RelayerDetails = ({
 
                 {deliveryStatus?.status === "waiting" && (
                   <>
-                    WAITING.. | Attempts: {/* TODO: MAX ATTEMPT */}
-                    {/* {`${attempt}/${deliveryStatus?.maxAttempts}`} */}
-                    {`${deliveryAttempt}`}
+                    WAITING.. | Attempts:
+                    {`${deliveryAttempt}/${deliveryStatus?.data?.maxAttempts}`}
                   </>
                 )}
 
@@ -447,9 +446,9 @@ const RelayerDetails = ({
                         -
                         <div
                           className={
-                            refundStatus === ("Refund Sent" as any)
+                            refundStatus === "Refund Sent"
                               ? "green"
-                              : refundStatus === ("Refund Fail" as any)
+                              : refundStatus === "Refund Fail"
                               ? "red"
                               : "white"
                           }
