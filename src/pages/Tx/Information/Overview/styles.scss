@@ -186,15 +186,6 @@
             text-decoration: underline;
           }
         }
-
-        &-tooltip-text {
-          font-size: 12px;
-          word-wrap: break-word;
-
-          @include tablet {
-            font-size: 14px;
-          }
-        }
       }
 
       &-iconWrapper {

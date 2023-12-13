@@ -95,11 +95,7 @@ const Summary = ({
           {parsedDestinationAddress ? (
             <Tooltip
               maxWidth={false}
-              tooltip={
-                <div className="tx-overview-graph-step-description-tooltip-text">
-                  {parsedDestinationAddress.toUpperCase()}
-                </div>
-              }
+              tooltip={<div>{parsedDestinationAddress.toUpperCase()}</div>}
               type="info"
             >
               <a

@@ -120,11 +120,7 @@ const Overview = ({
                 <>
                   <Tooltip
                     maxWidth={false}
-                    tooltip={
-                      <div className="tx-overview-graph-step-description-tooltip-text">
-                        {parsedOriginAddress.toUpperCase()}
-                      </div>
-                    }
+                    tooltip={<div>{parsedOriginAddress.toUpperCase()}</div>}
                     type="info"
                   >
                     <a
@@ -180,11 +176,7 @@ const Overview = ({
                       <div>
                         <Tooltip
                           maxWidth={false}
-                          tooltip={
-                            <div className="tx-overview-graph-step-description-tooltip-text">
-                              {parsedEmitterAddress.toUpperCase()}
-                            </div>
-                          }
+                          tooltip={<div>{parsedEmitterAddress.toUpperCase()}</div>}
                           type="info"
                         >
                           <span>{shortAddress(parsedEmitterAddress).toUpperCase()}</span>
@@ -193,11 +185,7 @@ const Overview = ({
                     ) : (
                       <Tooltip
                         maxWidth={false}
-                        tooltip={
-                          <div className="tx-overview-graph-step-description-tooltip-text">
-                            {parsedEmitterAddress.toUpperCase()}
-                          </div>
-                        }
+                        tooltip={<div>{parsedEmitterAddress.toUpperCase()}</div>}
                         type="info"
                       >
                         <a
@@ -252,13 +240,7 @@ const Overview = ({
             <div className="tx-overview-graph-step-description">
               {VAAId ? (
                 <>
-                  <Tooltip
-                    maxWidth={false}
-                    tooltip={
-                      <div className="tx-overview-graph-step-description-tooltip-text">{VAAId}</div>
-                    }
-                    type="info"
-                  >
+                  <Tooltip maxWidth={false} tooltip={<div>{VAAId}</div>} type="info">
                     <p>{shortVaaId(VAAId)}</p>
                   </Tooltip>
                   <CopyToClipboard toCopy={VAAId}>
@@ -298,11 +280,7 @@ const Overview = ({
                   <>
                     <Tooltip
                       maxWidth={false}
-                      tooltip={
-                        <div className="tx-overview-graph-step-description-tooltip-text">
-                          {parsedRedeemTx.toUpperCase()}
-                        </div>
-                      }
+                      tooltip={<div>{parsedRedeemTx.toUpperCase()}</div>}
                       type="info"
                     >
                       <a
@@ -401,11 +379,7 @@ const Overview = ({
                   <>
                     <Tooltip
                       maxWidth={false}
-                      tooltip={
-                        <div className="tx-overview-graph-step-description-tooltip-text">
-                          {parsedDestinationAddress.toUpperCase()}
-                        </div>
-                      }
+                      tooltip={<div>{parsedDestinationAddress.toUpperCase()}</div>}
                       type="info"
                     >
                       <a
