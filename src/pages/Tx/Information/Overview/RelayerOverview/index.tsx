@@ -115,11 +115,7 @@ const RelayerOverview = ({
           <div className="tx-overview-graph-step-description">
             <Tooltip
               maxWidth={false}
-              tooltip={
-                <div className="tx-overview-graph-step-description-tooltip-text">
-                  {deliveryStatus.toTxHash.toUpperCase()}
-                </div>
-              }
+              tooltip={<div>{deliveryStatus.toTxHash.toUpperCase()}</div>}
               type="info"
             >
               <a
@@ -178,11 +174,7 @@ const RelayerOverview = ({
                 <div className="tx-overview-graph-step-description">
                   <Tooltip
                     maxWidth={false}
-                    tooltip={
-                      <div className="tx-overview-graph-step-description-tooltip-text">
-                        {deliveryParsedSenderAddress.toUpperCase()}
-                      </div>
-                    }
+                    tooltip={<div>{deliveryParsedSenderAddress.toUpperCase()}</div>}
                     type="info"
                   >
                     <a
@@ -220,11 +212,7 @@ const RelayerOverview = ({
               <div className="tx-overview-graph-step-description">
                 <Tooltip
                   maxWidth={false}
-                  tooltip={
-                    <div className="tx-overview-graph-step-description-tooltip-text">
-                      {sourceTxHash.toUpperCase()}
-                    </div>
-                  }
+                  tooltip={<div>{sourceTxHash.toUpperCase()}</div>}
                   type="info"
                 >
                   <a
@@ -278,11 +266,7 @@ const RelayerOverview = ({
                 <div className="tx-overview-graph-step-description">
                   <Tooltip
                     maxWidth={false}
-                    tooltip={
-                      <div className="tx-overview-graph-step-description-tooltip-text">
-                        {parsedEmitterAddress.toUpperCase()}
-                      </div>
-                    }
+                    tooltip={<div>{parsedEmitterAddress.toUpperCase()}</div>}
                     type="info"
                   >
                     <a
@@ -338,13 +322,7 @@ const RelayerOverview = ({
             <div>
               <div className="tx-overview-graph-step-title">VAA ID</div>
               <div className="tx-overview-graph-step-description">
-                <Tooltip
-                  maxWidth={false}
-                  tooltip={
-                    <div className="tx-overview-graph-step-description-tooltip-text">{VAAId}</div>
-                  }
-                  type="info"
-                >
+                <Tooltip maxWidth={false} tooltip={<div>{VAAId}</div>} type="info">
                   <p>{shortVaaId(VAAId)}</p>
                 </Tooltip>
                 <CopyToClipboard toCopy={VAAId}>
@@ -383,11 +361,7 @@ const RelayerOverview = ({
                     <div className="tx-overview-graph-step-description">
                       <Tooltip
                         maxWidth={false}
-                        tooltip={
-                          <div className="tx-overview-graph-step-description-tooltip-text">
-                            {deliveryParsedTargetAddress.toUpperCase()}
-                          </div>
-                        }
+                        tooltip={<div>{deliveryParsedTargetAddress.toUpperCase()}</div>}
                         type="info"
                       >
                         <a
@@ -424,11 +398,7 @@ const RelayerOverview = ({
                   <div className="tx-overview-graph-step-description">
                     <Tooltip
                       maxWidth={false}
-                      tooltip={
-                        <div className="tx-overview-graph-step-description-tooltip-text">
-                          {deliveryParsedSourceProviderAddress.toUpperCase()}
-                        </div>
-                      }
+                      tooltip={<div>{deliveryParsedSourceProviderAddress.toUpperCase()}</div>}
                       type="info"
                     >
                       <a
@@ -539,11 +509,7 @@ const RelayerOverview = ({
                     <div className="tx-overview-graph-step-description">
                       <Tooltip
                         maxWidth={false}
-                        tooltip={
-                          <div className="tx-overview-graph-step-description-tooltip-text">
-                            {deliveryParsedRefundAddress.toUpperCase()}
-                          </div>
-                        }
+                        tooltip={<div>{deliveryParsedRefundAddress.toUpperCase()}</div>}
                         type="info"
                       >
                         <a
@@ -583,11 +549,7 @@ const RelayerOverview = ({
                         <div className="tx-overview-graph-step-description">
                           <Tooltip
                             maxWidth={false}
-                            tooltip={
-                              <div className="tx-overview-graph-step-description-tooltip-text">
-                                {deliveryParsedRefundProviderAddress.toUpperCase()}
-                              </div>
-                            }
+                            tooltip={<div>{deliveryParsedRefundProviderAddress.toUpperCase()}</div>}
                             type="info"
                           >
                             <a
