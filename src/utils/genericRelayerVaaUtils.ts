@@ -63,8 +63,6 @@ export async function populateDeliveryLifecycleRecordByVaa(
     sequence: Number(parsedVaa.sequence),
   });
 
-  console.log({ relayerEndpoint });
-
   const sourceChainId = parsedVaa.emitterChain;
 
   output.DeliveryStatus = relayerEndpoint;

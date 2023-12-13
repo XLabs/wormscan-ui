@@ -322,7 +322,6 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       const gasLimit = decodeExecution ? decodeExecution.gasLimit : null;
 
       if (!deliveryInstruction?.targetAddress) {
-        console.log({ deliveryInstruction });
         return (
           <div className="tx-information-errored-info">
             This is either not an Automatic Relayer VAA or something&apos;s wrong with it
