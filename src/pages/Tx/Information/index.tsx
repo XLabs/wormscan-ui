@@ -399,16 +399,21 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       };
 
       const budgetText = () => {
-        return `${trunkStringsDecimal(
-          ethers.utils.formatUnits(
-            deliveryStatus?.data?.delivery?.budget,
-            deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
-          ),
-          3,
-        )} ${
-          environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
-            .nativeCurrencyName
-        }`;
+        if (deliveryStatus?.data?.delivery?.budget) {
+          return `${trunkStringsDecimal(
+            ethers.utils.formatUnits(
+              deliveryStatus?.data?.delivery?.budget,
+              deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
+            ),
+            3,
+          )} ${
+            environment.chainInfos.find(
+              chain => chain.chainId === deliveryInstruction.targetChainId,
+            ).nativeCurrencyName
+          }`;
+        }
+
+        return "N/A";
       };
 
       const refundText = () => {
