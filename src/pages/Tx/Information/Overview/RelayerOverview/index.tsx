@@ -7,38 +7,39 @@ import { CopyToClipboard } from "src/components/molecules";
 import RelayIcon from "src/icons/relayIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress, shortVaaId } from "src/utils/crypto";
-import { DeliveryMetaData, DeliveryProviderStatus } from "src/utils/deliveryProviderStatusApi";
 import {
   mainnetDefaultDeliveryProviderContractAddress,
   testnetDefaultDeliveryProviderContractAddress,
 } from "src/utils/environment";
 import { formatDate } from "src/utils/date";
 import "../styles.scss";
+import { AutomaticRelayOutput } from "src/api/search/types";
 
-type Props = {
+export type RelayerOverviewProps = {
   budgetText: () => string;
   copyBudgetText: () => string;
   currentNetwork: Network;
   decodeExecution: any;
+  deliveryAttempt: string;
   deliveryInstruction: DeliveryInstruction;
   deliveryParsedRefundAddress: string;
   deliveryParsedRefundProviderAddress: string;
   deliveryParsedSenderAddress: string;
   deliveryParsedSourceProviderAddress: string;
   deliveryParsedTargetAddress: string;
-  deliveryStatus: DeliveryProviderStatus;
+  deliveryStatus: AutomaticRelayOutput;
   fromChain: number;
   gasUsed: number;
   gasUsedText: () => string;
   guardianSignaturesCount: number;
   isDelivery: boolean;
   maxRefundText: () => string;
-  metadata: DeliveryMetaData;
   parsedEmitterAddress: string;
   parsedVaa: any;
   receiverValueText: () => string;
+  refundStatus: string;
   refundText: () => string;
-  resultLog: any;
+  resultLog: string;
   sourceTxHash: string;
   targetTxTimestamp: number;
   totalGuardiansNeeded: number;
@@ -50,6 +51,7 @@ const RelayerOverview = ({
   copyBudgetText,
   currentNetwork,
   decodeExecution,
+  deliveryAttempt,
   deliveryInstruction,
   deliveryParsedRefundAddress,
   deliveryParsedRefundProviderAddress,
@@ -63,50 +65,44 @@ const RelayerOverview = ({
   guardianSignaturesCount,
   isDelivery,
   maxRefundText,
-  metadata,
   parsedEmitterAddress,
   parsedVaa,
   receiverValueText,
+  refundStatus,
   refundText,
   resultLog,
   sourceTxHash,
   targetTxTimestamp,
   totalGuardiansNeeded,
   VAAId,
-}: Props) => {
-  const renderDeliveryStatus = (deliveryStatus: DeliveryProviderStatus) => {
+}: RelayerOverviewProps) => {
+  const renderDeliveryStatus = (deliveryStatus: AutomaticRelayOutput) => {
     return (
       <div className={`tx-overview-graph-step-data-container`}>
         <div>
           <div className="tx-overview-graph-step-title">STATUS</div>
           <div
             className={`tx-overview-graph-step-description ${
-              typeof resultLog === "string"
-                ? resultLog === "Delivery Success"
-                  ? "green"
-                  : resultLog === "Receiver Failure"
-                  ? "red"
-                  : "white"
-                : resultLog?.status === "Delivery Success"
+              resultLog === "Delivery Success"
                 ? "green"
-                : resultLog?.status === "Receiver Failure"
+                : resultLog === "Receiver Failure"
                 ? "red"
                 : "white"
             }`}
           >
-            {typeof resultLog === "string" ? resultLog : resultLog?.status}
+            {resultLog}
           </div>
-          {resultLog?.refundStatus && (
+          {refundStatus && (
             <div
               className={`tx-overview-graph-step-description ${
-                resultLog?.refundStatus === ("Refund Sent" as any)
+                refundStatus === "Refund Sent"
                   ? "green"
-                  : resultLog?.refundStatus === ("Refund Fail" as any)
+                  : refundStatus === "Refund Fail"
                   ? "red"
                   : "white"
               }`}
             >
-              {resultLog?.refundStatus}
+              {refundStatus}
             </div>
           )}
         </div>
@@ -115,23 +111,23 @@ const RelayerOverview = ({
           <div className="tx-overview-graph-step-description">
             <Tooltip
               maxWidth={false}
-              tooltip={<div>{deliveryStatus.toTxHash.toUpperCase()}</div>}
+              tooltip={<div>{deliveryStatus.data?.toTxHash.toUpperCase()}</div>}
               type="info"
             >
               <a
                 href={getExplorerLink({
                   network: currentNetwork,
                   chainId: deliveryInstruction.targetChainId,
-                  value: deliveryStatus.toTxHash,
+                  value: deliveryStatus?.data?.toTxHash,
                   isNativeAddress: true,
                 })}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {shortAddress(deliveryStatus.toTxHash).toUpperCase()}
+                {shortAddress(deliveryStatus.data?.toTxHash).toUpperCase()}
               </a>
             </Tooltip>
-            <CopyToClipboard toCopy={deliveryStatus.toTxHash}>
+            <CopyToClipboard toCopy={deliveryStatus.data?.toTxHash}>
               <CopyIcon height={20} width={20} />
             </CopyToClipboard>
           </div>
@@ -425,7 +421,7 @@ const RelayerOverview = ({
                     </CopyToClipboard>
                   </div>
                 </div>
-                {deliveryStatus && metadata ? (
+                {deliveryStatus ? (
                   <Tooltip
                     tooltip={
                       <div className="budget-tooltip">
@@ -627,7 +623,7 @@ const RelayerOverview = ({
                     <div>
                       <div className="tx-overview-graph-step-title">Attempts</div>
                       <div className="tx-overview-graph-step-description">
-                        {`${deliveryStatus.attempts}/${deliveryStatus.maxAttempts}`}
+                        {`${deliveryAttempt}/${deliveryStatus?.data?.maxAttempts}`}
                       </div>
                     </div>
                   </div>
