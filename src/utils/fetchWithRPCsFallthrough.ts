@@ -234,7 +234,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
         // CCTP USDC-BRIDGE
         else if (
           emitterNattiveAddress.toUpperCase() ===
-          getCctpEmitterAddress(env, result.chainId).toUpperCase()
+          getCctpEmitterAddress(env, result.chainId)?.toUpperCase()
         ) {
           const parseCCTPRelayerPayload = (payloadArray: Buffer): CircleRelayerPayload => {
             // start vaa payload

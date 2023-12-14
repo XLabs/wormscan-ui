@@ -153,14 +153,16 @@ export class GuardianNetwork {
     },
   ) {
     const { chainId, emitter, seq } = criteria || {};
-    return [prefix, chainId, emitter, seq].filter(segment => !!segment).join("/");
+    return [prefix, chainId, emitter, seq]
+      .filter(segment => segment !== undefined && segment !== null)
+      .join("/");
   }
 
   private _observationCriteriaToPathSegmentFilter(prefix: string, criteria: VAASearchCriteria) {
     const { chainId, emmiter, specific } = criteria || {};
     const { sequence, signer, hash } = specific || {};
     return [prefix, chainId, emmiter, sequence, signer, hash]
-      .filter(segment => !!segment)
+      .filter(segment => segment !== undefined && segment !== null)
       .join("/");
   }
 
