@@ -48,6 +48,7 @@ const Tx = () => {
   const cancelRequests = useRef(false);
   const tryToGetRpcInfo = async () => {
     const txsData = await fetchWithRpcFallThrough(environment, txHash);
+    console.log({ txsData });
 
     if (txsData) {
       const txData = await txsData[0];
@@ -58,6 +59,7 @@ const Tx = () => {
           appIds: txData?.appIds?.join(", ") ? txData.appIds.join(", ") : "null",
           chain: getChainName({ chainId: txData?.chain ?? 0, network }),
           toChain: getChainName({ chainId: txData?.toChain ?? 0, network }),
+          network,
         });
 
         setParsedVAAsData([
@@ -154,6 +156,12 @@ const Tx = () => {
           parsedPayload: true,
         },
       });
+
+      const test = await getClient().guardianNetwork.getOperations({
+        txHash: txHash,
+      });
+
+      console.log("test???", test);
 
       if (!response.length) throw new Error("no data");
       return response;
@@ -306,6 +314,7 @@ const Tx = () => {
               chainId: txResponse?.standardizedProperties?.toChain ?? 0,
               network,
             }),
+            network,
           });
         }
 

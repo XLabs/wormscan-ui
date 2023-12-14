@@ -244,6 +244,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
               : 0,
             network: currentNetwork,
           }),
+          network: currentNetwork,
         });
 
         setGenericRelayerInfo(result);

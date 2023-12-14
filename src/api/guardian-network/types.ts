@@ -122,6 +122,13 @@ export type GetVAAInput = (
   pagination?: PageRequest;
 };
 
+export type GetOperationsInput = {
+  txHash?: string;
+  address?: string;
+  vaaID?: string;
+  pagination?: PageRequest;
+};
+
 export interface GetVAAByTxHashInput {
   query: {
     txHash: string;

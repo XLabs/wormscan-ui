@@ -19,6 +19,7 @@ import {
   ScoresOutput,
   VAACount,
   VAADetail,
+  GetOperationsInput,
 } from "./types";
 
 export class GuardianNetwork {
@@ -50,6 +51,23 @@ export class GuardianNetwork {
     // When returns VAADetail[] differs when returns a single VAADetail
     if (result) return result;
     return payload as VAADetail;
+  }
+
+  async getOperations({
+    txHash,
+    address,
+    vaaID,
+    pagination = DefaultPageRequest,
+  }: GetOperationsInput): Promise<any> {
+    const result = await this._client.doGet("/operations", {
+      txHash,
+      address,
+      vaaID,
+      pagination,
+    });
+
+    console.log({ result });
+    return result;
   }
 
   async getVAAbyTxHash({ query }: GetVAAByTxHashInput): Promise<VAADetail[]> {
