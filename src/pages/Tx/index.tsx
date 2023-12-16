@@ -151,7 +151,7 @@ const Tx = () => {
     async () => {
       const response = await getClient().guardianNetwork.getVAAbyTxHash({
         query: {
-          txHash: txHash + "caca",
+          txHash: txHash,
           parsedPayload: true,
         },
       });
