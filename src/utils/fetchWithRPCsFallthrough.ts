@@ -16,11 +16,45 @@ import { humanAddress } from "@certusone/wormhole-sdk/lib/cjs/cosmos";
 import { ChainId } from "src/api";
 import { isConnect, parseConnectPayload } from "./wh-connect-rpc";
 import { TokenMessenger__factory } from "./TokenMessenger__factory";
+import {
+  RelayerPayloadId,
+  parseWormholeRelayerPayloadType,
+  parseWormholeRelayerResend,
+  parseWormholeRelayerSend,
+} from "@certusone/wormhole-sdk/lib/cjs/relayer";
 
 type TxReceiptHolder = {
   receipt: ethers.providers.TransactionReceipt;
   chainId: ChainId;
 };
+
+interface RPCResponse {
+  amount?: string;
+  appIds?: string[];
+  blockNumber?: number;
+  chain?: ChainId;
+  consistencyLevel?: any;
+  emitterAddress?: string;
+  emitterNattiveAddress?: string;
+  extraRawInfo?: object;
+  fee?: string;
+  fromAddress?: string;
+  id?: string;
+  lastFinalizedBlock?: number;
+  parsedFromAddress?: string;
+  payloadType?: any;
+  sequence?: number;
+  symbol?: string;
+  timestamp?: number;
+  toAddress?: string;
+  toChain?: ChainId;
+  tokenAddress?: string;
+  tokenAmount?: string;
+  tokenChain?: ChainId;
+  toNativeAmount?: string;
+  txHash?: string;
+  usdAmount?: string;
+}
 
 async function hitAllSlowChains(
   env: Environment,
@@ -96,7 +130,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
       value: fromAddress,
     });
 
-    const txsData = result.receipt?.logs
+    const txsData: Promise<RPCResponse>[] = result.receipt?.logs
       .filter(
         l =>
           l.address.toLowerCase() === CONTRACTS[env.network][chainName].core?.toLowerCase() &&
@@ -112,7 +146,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           value: emitterAddress,
         });
 
-        let lastFinalizedBlock;
+        let lastFinalizedBlock: number;
         try {
           lastFinalizedBlock = (await ethersProvider.getBlock("finalized")).number;
         } catch (error) {
@@ -224,7 +258,6 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             tokenAddress: parsedTokenAddress,
             tokenAmount: amount && decimals ? ethers.utils.formatUnits(amount, decimals) : null,
             tokenChain,
-            tokenTransferPayload,
             txHash: searchValue,
             usdAmount: null, // TODO? should use coingecko or similar if needed.
           };
@@ -330,6 +363,104 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             usdAmount: amount,
           };
         }
+        // GENERIC-RELAYER
+        else if (
+          emitterNattiveAddress.toUpperCase() ===
+          getRelayersEmitterAddress(env, result.chainId)?.toUpperCase()
+        ) {
+          const parseGenericRelayerDelivery = async (
+            payloadArray: Buffer,
+          ): Promise<RPCResponse> => {
+            const deliveryInstructions = parseWormholeRelayerSend(payloadArray);
+
+            const extraRawInfo = {
+              targetChainId: deliveryInstructions.targetChainId,
+              targetAddress: deliveryInstructions.targetAddress.toString("hex"),
+              payload: deliveryInstructions.payload.toString("hex"),
+              requestedReceiverValue: deliveryInstructions.requestedReceiverValue.toString(),
+              extraReceiverValue: deliveryInstructions.extraReceiverValue.toString(),
+              encodedExecutionInfo: deliveryInstructions.encodedExecutionInfo.toString("hex"),
+              refundChainId: deliveryInstructions.refundChainId,
+              refundAddress: deliveryInstructions.refundAddress.toString("hex"),
+              refundDeliveryProvider: deliveryInstructions.refundDeliveryProvider.toString("hex"),
+              sourceDeliveryProvider: deliveryInstructions.sourceDeliveryProvider.toString("hex"),
+              senderAddress: deliveryInstructions.senderAddress.toString("hex"),
+              // deliveryInstructions.vaaKeys was deleted from wormholes sdk
+              //vaaKeys: serializeVaaKeys(deliveryInstructions.vaaKeys),
+            };
+
+            const deliveryResult = {
+              appIds: ["GENERIC_RELAYER"],
+              blockNumber: result.receipt.blockNumber,
+              chain: result.chainId,
+              consistencyLevel,
+              emitterAddress,
+              emitterNattiveAddress,
+              extraRawInfo,
+              fromAddress: parsedFromAddress,
+              id: `${result.chainId}/${emitterAddress}/${sequence}`,
+              lastFinalizedBlock,
+              payloadType: RelayerPayloadId.Delivery,
+              sequence: sequence.toString(),
+              timestamp,
+              toAddress: deliveryInstructions.targetAddress.toString("hex"),
+              toChain: deliveryInstructions.targetChainId,
+              tokenAddress: wrappedTokenAddress,
+              tokenChain: result.chainId,
+              txHash: searchValue,
+            };
+
+            return deliveryResult;
+          };
+
+          const parseGenericRelayerRedelivery = async (payloadArray: Buffer): Promise<any> => {
+            const redeliveryInstructions = parseWormholeRelayerResend(payloadArray);
+
+            const extraRawInfo = {
+              payloadType: RelayerPayloadId.Redelivery,
+              targetChainId: redeliveryInstructions.targetChainId,
+              newRequestedReceiverValue:
+                redeliveryInstructions.newRequestedReceiverValue.toString(),
+              newEncodedExecutionInfo:
+                redeliveryInstructions.newEncodedExecutionInfo.toString("hex"),
+              newSourceDeliveryProvider:
+                redeliveryInstructions.newSourceDeliveryProvider.toString("hex"),
+              newSenderAddress: redeliveryInstructions.newSenderAddress.toString("hex"),
+            };
+
+            const redeliveryResult = {
+              appIds: ["GENERIC_RELAYER"],
+              blockNumber: result.receipt.blockNumber,
+              chain: result.chainId,
+              consistencyLevel,
+              emitterAddress,
+              emitterNattiveAddress,
+              extraRawInfo,
+              fromAddress: parsedFromAddress,
+              id: `${result.chainId}/${emitterAddress}/${sequence}`,
+              lastFinalizedBlock,
+              payloadType: RelayerPayloadId.Redelivery,
+              sequence: sequence.toString(),
+              timestamp,
+              toChain: redeliveryInstructions.targetChainId,
+              tokenAddress: wrappedTokenAddress,
+              tokenChain: result.chainId,
+              txHash: searchValue,
+            };
+            return redeliveryResult;
+          };
+
+          const relayerVaa = Buffer.from(payload.slice(2), "hex");
+          const payloadType = parseWormholeRelayerPayloadType(relayerVaa);
+
+          if (payloadType === RelayerPayloadId.Delivery) {
+            return parseGenericRelayerDelivery(relayerVaa);
+          }
+          if (payloadType === RelayerPayloadId.Redelivery) {
+            return parseGenericRelayerRedelivery(relayerVaa);
+          }
+          throw new Error("Expected GR Delivery payload type");
+        }
         // default, no token-bridge nor cctp ones
         // (can add other wormhole payload readers here)
         else {
@@ -340,7 +471,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
     if (!!txsData.length) return txsData;
 
     // Check if receipt is from non-wormhole CCTP
-    const manualCctpData = result.receipt?.logs
+    const manualCctpData: Promise<RPCResponse>[] = result.receipt?.logs
       .filter(
         l => l.topics[0]?.toLowerCase() === LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC.toLowerCase(),
       )
@@ -435,6 +566,14 @@ const getCctpEmitterAddress = (env: Environment, chain: ChainId) => {
 // -----
 
 // RPCs UTILS -----
+const getRelayersEmitterAddress = (env: Environment, chain: ChainId) => {
+  const relayeEmitterAddress = env.chainInfos?.find(
+    a => a.chainId === chain,
+  )?.relayerContractAddress;
+
+  return relayeEmitterAddress ? relayeEmitterAddress : null;
+};
+
 const getSolanaTokenDetails = async (mintAddress: string) => {
   try {
     // Fetch the Solana token list
