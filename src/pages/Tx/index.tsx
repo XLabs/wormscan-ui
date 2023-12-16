@@ -119,6 +119,7 @@ const Tx = () => {
           lastFinalizedBlock: txData.lastFinalizedBlock,
         });
 
+        if (txData.extraRawInfo) setExtraRawInfo(txData.extraRawInfo);
         setErrorCode(undefined);
         setIsLoading(false);
       } else {
@@ -150,7 +151,7 @@ const Tx = () => {
     async () => {
       const response = await getClient().guardianNetwork.getVAAbyTxHash({
         query: {
-          txHash: txHash,
+          txHash: txHash + "caca",
           parsedPayload: true,
         },
       });
