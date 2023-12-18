@@ -129,6 +129,68 @@ export type GetOperationsInput = {
   pagination?: PageRequest;
 };
 
+export type GetOperationsOutput = {
+  id: string;
+  emitterChain: number;
+  emitterAddress: {
+    hex: string;
+    native: string;
+  };
+  sequence: string;
+  vaa: string;
+  content: {
+    payload: {
+      amount: string;
+      fee: string;
+      fromAddress: null;
+      parsedPayload: null;
+      payload: string;
+      payloadType: number;
+      toAddress: string;
+      toChain: number;
+      tokenAddress: string;
+      tokenChain: number;
+    };
+    standarizedProperties: {
+      appIds: string[];
+      fromChain: number;
+      fromAddress: string;
+      toChain: number;
+      toAddress: string;
+      tokenChain: number;
+      tokenAddress: string;
+      amount: string;
+      feeAddress: string;
+      feeChain: number;
+      fee: string;
+    };
+  };
+  sourceChain: {
+    chainId: number;
+    timestamp: string;
+    transaction: {
+      txHash: string;
+    };
+    from: string;
+    status: string;
+  };
+  targetChain: {
+    chainId: number;
+    timestamp: string;
+    transaction: {
+      txHash: string;
+    };
+    status: string;
+    from: string;
+    to: string;
+  };
+  data: {
+    symbol: string;
+    tokenAmount: string;
+    usdAmount: string;
+  };
+}[];
+
 export interface GetVAAByTxHashInput {
   query: {
     txHash: string;

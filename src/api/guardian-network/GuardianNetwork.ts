@@ -63,7 +63,7 @@ export class GuardianNetwork {
       txHash,
       address,
       vaaID,
-      pagination,
+      ...pagination,
     });
 
     console.log({ result });

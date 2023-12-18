@@ -140,8 +140,6 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
         const { args } = Implementation__factory.createInterface().parseLog(l);
         const { consistencyLevel, payload, sender, sequence } = args;
 
-        console.log("inside map");
-
         const emitterAddress = l.topics[1].slice(2);
         const emitterNattiveAddress = parseAddress({
           chainId: result.chainId,
