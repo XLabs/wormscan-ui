@@ -578,6 +578,18 @@
       &-source {
         font-size: 24px;
         font-weight: 600;
+
+        &-small {
+          align-items: center;
+          display: flex;
+          font-size: 16px;
+          height: 32px;
+
+          @include tablet {
+            font-size: 24px;
+            height: auto;
+          }
+        }
       }
 
       &-destination {

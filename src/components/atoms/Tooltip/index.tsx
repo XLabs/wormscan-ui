@@ -4,20 +4,22 @@ import "./styles.scss";
 
 type Props = {
   children: React.ReactNode;
-  tooltip: React.ReactNode;
+  controlled?: boolean;
+  maxWidth?: boolean;
   open?: boolean;
   side?: "top" | "right" | "bottom" | "left";
+  tooltip: React.ReactNode;
   type?: "info" | "default";
-  controlled?: boolean;
 };
 
 const Tooltip = ({
   children,
-  tooltip,
+  controlled = false,
+  maxWidth = true,
   open = false,
   side = "right",
+  tooltip,
   type = "default",
-  controlled = false,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(controlled ? open : undefined);
   const selectSide = type === "info" ? "top" : side;
@@ -52,7 +54,7 @@ const Tooltip = ({
         </TooltipPrimitive.Trigger>
         <TooltipPrimitive.Portal className="tooltip">
           <TooltipPrimitive.Content
-            className={`tooltip-container ${type}`}
+            className={`tooltip-container ${type} ${maxWidth ? "max-width" : ""}`}
             sideOffset={5}
             side={selectSide}
           >

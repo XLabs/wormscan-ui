@@ -22,7 +22,6 @@ import {
   parseGenericRelayerVaa,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
-import { DeliveryMetaData } from "src/utils/deliveryProviderStatusApi";
 import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
 import { VAADetail } from "src/api/guardian-network/types";
 
@@ -238,8 +237,8 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
             network: currentNetwork,
           }),
           toChain: getChainName({
-            chainId: result?.targetTransactions?.[0]?.targetChainId
-              ? result.targetTransactions[0].targetChainId
+            chainId: result?.targetTransaction?.targetChainId
+              ? result.targetTransaction?.targetChainId
               : txData?.standardizedProperties?.toChain
               ? txData.standardizedProperties.toChain
               : 0,
@@ -288,20 +287,15 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
 
     if (isGenericRelayerTx) {
       if (loadingRelayers) return <Loader />;
-
       if (!genericRelayerInfo?.vaa) return <div>No VAA was found</div>;
 
       const vaa = genericRelayerInfo.vaa;
       const parsedVaa = parseVaa(vaa);
       const sourceTxHash = genericRelayerInfo.sourceTxHash;
-      const deliveryStatus = genericRelayerInfo?.DeliveryStatuses?.[0];
-      const metadata = deliveryStatus?.metadata as DeliveryMetaData;
-      const deliveryRecord = metadata?.deliveryRecord;
-      const resultLog = deliveryRecord?.resultLog;
-      const gasUsed = Number(resultLog?.gasUsed);
-      const targetTxTimestamp =
-        genericRelayerInfo?.targetTransactions?.[genericRelayerInfo?.targetTransactions?.length - 1]
-          ?.targetTxTimestamp;
+      const deliveryStatus = genericRelayerInfo?.DeliveryStatus;
+
+      const gasUsed = Number(deliveryStatus?.data?.delivery?.execution?.gasUsed);
+      const targetTxTimestamp = genericRelayerInfo?.targetTransaction?.targetTxTimestamp;
 
       const { emitterAddress, emitterChain, guardianSignatures } = parsedVaa || {};
 
@@ -328,7 +322,6 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       const gasLimit = decodeExecution ? decodeExecution.gasLimit : null;
 
       if (!deliveryInstruction?.targetAddress) {
-        console.log({ deliveryInstruction });
         return (
           <div className="tx-information-errored-info">
             This is either not an Automatic Relayer VAA or something&apos;s wrong with it
@@ -342,12 +335,12 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         return `${whole}.${fraction.slice(0, decimals)}`;
       };
 
-      const maxRefund = deliveryRecord?.maxRefund
+      const maxRefund = deliveryStatus?.data?.delivery?.maxRefund
         ? Number(
             trunkStringsDecimal(
               ethers.utils.formatUnits(
-                deliveryRecord?.maxRefund,
-                deliveryRecord?.targetChainDecimals || 18,
+                deliveryStatus?.data?.delivery?.maxRefund,
+                deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
               ),
               3,
             ),
@@ -380,17 +373,10 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       });
 
       const maxRefundText = () => {
-        return deliveryRecord?.maxRefundUsd
-          ? `${maxRefund} ${
-              environment.chainInfos.find(
-                chain => chain.chainId === deliveryInstruction.targetChainId,
-              ).nativeCurrencyName
-            } (${trunkStringsDecimal("" + deliveryRecord?.maxRefundUsd, 4)} USD)`
-          : `${maxRefund} ${
-              environment.chainInfos.find(
-                chain => chain.chainId === deliveryInstruction.targetChainId,
-              ).nativeCurrencyName
-            }`;
+        return `${maxRefund} ${
+          environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
+            .nativeCurrencyName
+        }`;
       };
 
       const gasUsedText = () => {
@@ -400,62 +386,54 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       const receiverValueText = () => {
         const receiverValue = trunkStringsDecimal(
           ethers.utils.formatUnits(
-            deliveryRecord?.receiverValue,
-            deliveryRecord?.targetChainDecimals || 18,
+            deliveryStatus?.data?.instructions?.requestedReceiverValue,
+            deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
           ),
           3,
         );
 
-        const receiverValueUsd = trunkStringsDecimal("" + deliveryRecord?.receiverValueUsd, 4);
-
-        return deliveryRecord?.receiverValueUsd
-          ? `${receiverValue} ${
-              environment.chainInfos.find(
-                chain => chain.chainId === deliveryInstruction.targetChainId,
-              ).nativeCurrencyName
-            } (${receiverValueUsd} USD)`
-          : `${receiverValue} ${
-              environment.chainInfos.find(
-                chain => chain.chainId === deliveryInstruction.targetChainId,
-              ).nativeCurrencyName
-            }`;
-      };
-
-      const budgetText = () => {
-        return deliveryRecord?.budgetUsd
-          ? `${`${trunkStringsDecimal(
-              ethers.utils.formatUnits(
-                deliveryRecord?.budget,
-                deliveryRecord?.targetChainDecimals || 18,
-              ),
-              3,
-            )} ${
-              environment.chainInfos.find(
-                chain => chain.chainId === deliveryInstruction.targetChainId,
-              ).nativeCurrencyName
-            } (${deliveryRecord?.budgetUsd.toFixed(3)} USD)`}`
-          : `${trunkStringsDecimal(
-              ethers.utils.formatUnits(
-                deliveryRecord?.budget,
-                deliveryRecord?.targetChainDecimals || 18,
-              ),
-              3,
-            )} ${
-              environment.chainInfos.find(
-                chain => chain.chainId === deliveryInstruction.targetChainId,
-              ).nativeCurrencyName
-            }`;
-      };
-
-      const refundText = () => {
-        return `${(1 - gasUsed / Number(gasLimit)) * maxRefund} ${
+        return `${receiverValue} ${
           environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
             .nativeCurrencyName
         }`;
       };
 
+      const budgetText = () => {
+        if (deliveryStatus?.data?.delivery?.budget) {
+          return `${trunkStringsDecimal(
+            ethers.utils.formatUnits(
+              deliveryStatus?.data?.delivery?.budget,
+              deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
+            ),
+            3,
+          )} ${
+            environment.chainInfos.find(
+              chain => chain.chainId === deliveryInstruction.targetChainId,
+            ).nativeCurrencyName
+          }`;
+        }
+
+        return "N/A";
+      };
+
+      const refundText = () => {
+        const refundAmountRegex = deliveryStatus?.data?.delivery?.execution?.detail.match(
+          /Refund amount:\s*([0-9.]+)/,
+        );
+        const refundAmount = refundAmountRegex ? refundAmountRegex?.[1] : null;
+
+        if (refundAmount)
+          return `${refundAmount} ${
+            environment.chainInfos.find(
+              chain => chain.chainId === deliveryInstruction.targetChainId,
+            ).nativeCurrencyName
+          }`;
+
+        return "";
+      };
+
       const copyBudgetText = () => {
-        return `Budget: ${budgetText()}\nMax Refund:\n${maxRefundText()}\n\n${
+        return `Budget: ${budgetText()}\n\nMax Refund:\n${maxRefundText()}\n\n${
           !isNaN(gasUsed) ? "Gas Used/" : ""
         }Gas limit\n${gasUsedText()}\n\n${
           !isNaN(gasUsed) ? "Refund Amount\n" + refundText() : ""
@@ -464,11 +442,25 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
           .replaceAll("\n\n\n\n", "\n\n");
       };
 
+      const resultLogRegex =
+        deliveryStatus?.data?.delivery?.execution?.detail.match(/Status: ([^\r\n]+)/);
+      const resultLog = resultLogRegex ? resultLogRegex?.[1] : null;
+
+      const refundStatusRegex =
+        deliveryStatus?.data?.delivery?.execution?.detail.match(/Refund status: ([^\r\n]+)/);
+      const refundStatus = refundStatusRegex ? refundStatusRegex?.[1] : null;
+
+      const deliveryAttemptRegex = deliveryStatus?.data?.delivery?.execution?.detail.match(
+        /Delivery attempt \s*([0-9.]+)/,
+      );
+      const deliveryAttempt = deliveryAttemptRegex ? deliveryAttemptRegex?.[1] : null;
+
       const genericRelayerProps = {
         budgetText,
         copyBudgetText,
         currentNetwork,
         decodeExecution,
+        deliveryAttempt,
         deliveryInstruction,
         deliveryParsedRefundAddress,
         deliveryParsedRefundProviderAddress,
@@ -482,10 +474,10 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         guardianSignaturesCount,
         isDelivery,
         maxRefundText,
-        metadata,
         parsedEmitterAddress,
         parsedVaa,
         receiverValueText,
+        refundStatus,
         refundText,
         resultLog,
         sourceTxHash,

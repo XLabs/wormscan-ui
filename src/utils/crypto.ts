@@ -3,16 +3,17 @@ import { ChainId, isEVMChain, tryHexToNativeString } from "@certusone/wormhole-s
 export const formatUnits = (value: number, tokenDecimals = 8) => {
   if (!value) return 0;
 
-  const maxDecimals = Math.min(8, tokenDecimals);
-  const valueString = String(value);
-  const decimalLength = valueString.length - maxDecimals;
-  const startAmount = valueString.substring(0, decimalLength);
-  const endAmount = valueString.substring(decimalLength);
-  const parsedAmount = `${startAmount}.${endAmount}`;
-  const abbreviatedAmount = parsedAmount.replace(/\.?0+$/, "");
-  const abbreviatedAmountNumber = Number(abbreviatedAmount);
+  // const maxDecimals = Math.min(8, tokenDecimals);
+  // const valueString = String(value);
+  // const decimalLength = valueString.length - maxDecimals;
+  // const startAmount = valueString.substring(0, decimalLength);
+  // const endAmount = valueString.substring(decimalLength);
+  // const parsedAmount = `${startAmount}.${endAmount}`;
+  // const abbreviatedAmount = parsedAmount.replace(/\.?0+$/, "");
+  // const abbreviatedAmountNumber = Number(abbreviatedAmount);
+  // return abbreviatedAmountNumber;
 
-  return abbreviatedAmountNumber;
+  return value / 10 ** tokenDecimals;
 };
 
 export const shortAddress = (address: string) => {

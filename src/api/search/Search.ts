@@ -6,6 +6,7 @@ import { DefaultPageRequest } from "src/api/model";
 import { _get } from "src/api/utils/Objects";
 
 import {
+  AutomaticRelayOutput,
   CctpRelayOutput,
   FindVAAByAddressOutput,
   GetTokenInput,
@@ -86,6 +87,21 @@ export class Search {
     } catch {
       return null;
     }
+  }
+
+  async getAutomaticRelay({
+    emitterChain,
+    emitterAddress,
+    sequence,
+  }: {
+    emitterChain: number;
+    emitterAddress: string;
+    sequence: number;
+  }): Promise<AutomaticRelayOutput> {
+    const result = await this._client.doGet<any>(
+      `/relays/${emitterChain}/${emitterAddress}/${sequence}`,
+    );
+    return result;
   }
 
   async getToken({ chainId, tokenAddress }: GetTokenInput): Promise<GetTokenOutput> {

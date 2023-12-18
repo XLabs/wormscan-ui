@@ -7,38 +7,39 @@ import { CopyToClipboard } from "src/components/molecules";
 import RelayIcon from "src/icons/relayIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress, shortVaaId } from "src/utils/crypto";
-import { DeliveryMetaData, DeliveryProviderStatus } from "src/utils/deliveryProviderStatusApi";
 import {
   mainnetDefaultDeliveryProviderContractAddress,
   testnetDefaultDeliveryProviderContractAddress,
 } from "src/utils/environment";
 import { formatDate } from "src/utils/date";
 import "../styles.scss";
+import { AutomaticRelayOutput } from "src/api/search/types";
 
-type Props = {
+export type RelayerOverviewProps = {
   budgetText: () => string;
   copyBudgetText: () => string;
   currentNetwork: Network;
   decodeExecution: any;
+  deliveryAttempt: string;
   deliveryInstruction: DeliveryInstruction;
   deliveryParsedRefundAddress: string;
   deliveryParsedRefundProviderAddress: string;
   deliveryParsedSenderAddress: string;
   deliveryParsedSourceProviderAddress: string;
   deliveryParsedTargetAddress: string;
-  deliveryStatus: DeliveryProviderStatus;
+  deliveryStatus: AutomaticRelayOutput;
   fromChain: number;
   gasUsed: number;
   gasUsedText: () => string;
   guardianSignaturesCount: number;
   isDelivery: boolean;
   maxRefundText: () => string;
-  metadata: DeliveryMetaData;
   parsedEmitterAddress: string;
   parsedVaa: any;
   receiverValueText: () => string;
+  refundStatus: string;
   refundText: () => string;
-  resultLog: any;
+  resultLog: string;
   sourceTxHash: string;
   targetTxTimestamp: number;
   totalGuardiansNeeded: number;
@@ -50,6 +51,7 @@ const RelayerOverview = ({
   copyBudgetText,
   currentNetwork,
   decodeExecution,
+  deliveryAttempt,
   deliveryInstruction,
   deliveryParsedRefundAddress,
   deliveryParsedRefundProviderAddress,
@@ -63,69 +65,69 @@ const RelayerOverview = ({
   guardianSignaturesCount,
   isDelivery,
   maxRefundText,
-  metadata,
   parsedEmitterAddress,
   parsedVaa,
   receiverValueText,
+  refundStatus,
   refundText,
   resultLog,
   sourceTxHash,
   targetTxTimestamp,
   totalGuardiansNeeded,
   VAAId,
-}: Props) => {
-  const renderDeliveryStatus = (deliveryStatus: DeliveryProviderStatus) => {
+}: RelayerOverviewProps) => {
+  const renderDeliveryStatus = (deliveryStatus: AutomaticRelayOutput) => {
     return (
       <div className={`tx-overview-graph-step-data-container`}>
         <div>
           <div className="tx-overview-graph-step-title">STATUS</div>
           <div
             className={`tx-overview-graph-step-description ${
-              typeof resultLog === "string"
-                ? resultLog === "Delivery Success"
-                  ? "green"
-                  : resultLog === "Receiver Failure"
-                  ? "red"
-                  : "white"
-                : resultLog?.status === "Delivery Success"
+              resultLog === "Delivery Success"
                 ? "green"
-                : resultLog?.status === "Receiver Failure"
+                : resultLog === "Receiver Failure"
                 ? "red"
                 : "white"
             }`}
           >
-            {typeof resultLog === "string" ? resultLog : resultLog?.status}
+            {resultLog}
           </div>
-          {resultLog?.refundStatus && (
+          {refundStatus && (
             <div
               className={`tx-overview-graph-step-description ${
-                resultLog?.refundStatus === ("Refund Sent" as any)
+                refundStatus === "Refund Sent"
                   ? "green"
-                  : resultLog?.refundStatus === ("Refund Fail" as any)
+                  : refundStatus === "Refund Fail"
                   ? "red"
                   : "white"
               }`}
             >
-              {resultLog?.refundStatus}
+              {refundStatus}
             </div>
           )}
         </div>
         <div>
           <div className="tx-overview-graph-step-title">Target Tx Hash</div>
           <div className="tx-overview-graph-step-description">
-            <a
-              href={getExplorerLink({
-                network: currentNetwork,
-                chainId: deliveryInstruction.targetChainId,
-                value: deliveryStatus.toTxHash,
-                isNativeAddress: true,
-              })}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Tooltip
+              maxWidth={false}
+              tooltip={<div>{deliveryStatus.data?.toTxHash.toUpperCase()}</div>}
+              type="info"
             >
-              {shortAddress(deliveryStatus.toTxHash).toUpperCase()}
-            </a>{" "}
-            <CopyToClipboard toCopy={deliveryStatus.toTxHash}>
+              <a
+                href={getExplorerLink({
+                  network: currentNetwork,
+                  chainId: deliveryInstruction.targetChainId,
+                  value: deliveryStatus?.data?.toTxHash,
+                  isNativeAddress: true,
+                })}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {shortAddress(deliveryStatus.data?.toTxHash).toUpperCase()}
+              </a>
+            </Tooltip>
+            <CopyToClipboard toCopy={deliveryStatus.data?.toTxHash}>
               <CopyIcon height={20} width={20} />
             </CopyToClipboard>
           </div>
@@ -166,19 +168,25 @@ const RelayerOverview = ({
               <div className="tx-overview-graph-step-title">Sent from</div>
               <div className="tx-overview-graph-step-description">
                 <div className="tx-overview-graph-step-description">
-                  <a
-                    href={getExplorerLink({
-                      network: currentNetwork,
-                      chainId: fromChain,
-                      value: deliveryParsedSenderAddress,
-                      base: "address",
-                      isNativeAddress: true,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Tooltip
+                    maxWidth={false}
+                    tooltip={<div>{deliveryParsedSenderAddress.toUpperCase()}</div>}
+                    type="info"
                   >
-                    {shortAddress(deliveryParsedSenderAddress).toUpperCase()}
-                  </a>{" "}
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: fromChain,
+                        value: deliveryParsedSenderAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {shortAddress(deliveryParsedSenderAddress).toUpperCase()}
+                    </a>
+                  </Tooltip>
                   <CopyToClipboard toCopy={deliveryParsedSenderAddress}>
                     <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
@@ -198,19 +206,25 @@ const RelayerOverview = ({
             <div>
               <div className="tx-overview-graph-step-title">Source Tx Hash</div>
               <div className="tx-overview-graph-step-description">
-                <a
-                  href={getExplorerLink({
-                    network: currentNetwork,
-                    chainId: fromChain,
-                    value: sourceTxHash,
-                    base: "tx",
-                    isNativeAddress: true,
-                  })}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Tooltip
+                  maxWidth={false}
+                  tooltip={<div>{sourceTxHash.toUpperCase()}</div>}
+                  type="info"
                 >
-                  {shortAddress(sourceTxHash).toUpperCase()}
-                </a>{" "}
+                  <a
+                    href={getExplorerLink({
+                      network: currentNetwork,
+                      chainId: fromChain,
+                      value: sourceTxHash,
+                      base: "tx",
+                      isNativeAddress: true,
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {shortAddress(sourceTxHash).toUpperCase()}
+                  </a>
+                </Tooltip>
                 <CopyToClipboard toCopy={sourceTxHash}>
                   <CopyIcon height={20} width={20} />
                 </CopyToClipboard>
@@ -246,19 +260,25 @@ const RelayerOverview = ({
               <div className="tx-overview-graph-step-title">Contract Address</div>
               <div className="tx-overview-graph-step-description">
                 <div className="tx-overview-graph-step-description">
-                  <a
-                    href={getExplorerLink({
-                      network: currentNetwork,
-                      chainId: fromChain,
-                      value: parsedEmitterAddress,
-                      base: "address",
-                      isNativeAddress: true,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Tooltip
+                    maxWidth={false}
+                    tooltip={<div>{parsedEmitterAddress.toUpperCase()}</div>}
+                    type="info"
                   >
-                    {shortAddress(parsedEmitterAddress).toUpperCase()}
-                  </a>{" "}
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: fromChain,
+                        value: parsedEmitterAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {shortAddress(parsedEmitterAddress).toUpperCase()}
+                    </a>
+                  </Tooltip>
                   <CopyToClipboard toCopy={parsedEmitterAddress}>
                     <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
@@ -298,7 +318,9 @@ const RelayerOverview = ({
             <div>
               <div className="tx-overview-graph-step-title">VAA ID</div>
               <div className="tx-overview-graph-step-description">
-                {shortVaaId(VAAId)}
+                <Tooltip maxWidth={false} tooltip={<div>{VAAId}</div>} type="info">
+                  <p>{shortVaaId(VAAId)}</p>
+                </Tooltip>
                 <CopyToClipboard toCopy={VAAId}>
                   <CopyIcon height={20} width={20} />
                 </CopyToClipboard>
@@ -333,19 +355,25 @@ const RelayerOverview = ({
                   <div className="tx-overview-graph-step-title">Target Address</div>
                   <div className="tx-overview-graph-step-description">
                     <div className="tx-overview-graph-step-description">
-                      <a
-                        href={getExplorerLink({
-                          network: currentNetwork,
-                          chainId: deliveryInstruction.targetChainId,
-                          value: deliveryParsedTargetAddress,
-                          base: "address",
-                          isNativeAddress: true,
-                        })}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <Tooltip
+                        maxWidth={false}
+                        tooltip={<div>{deliveryParsedTargetAddress.toUpperCase()}</div>}
+                        type="info"
                       >
-                        {shortAddress(deliveryParsedTargetAddress).toUpperCase()}
-                      </a>{" "}
+                        <a
+                          href={getExplorerLink({
+                            network: currentNetwork,
+                            chainId: deliveryInstruction.targetChainId,
+                            value: deliveryParsedTargetAddress,
+                            base: "address",
+                            isNativeAddress: true,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {shortAddress(deliveryParsedTargetAddress).toUpperCase()}
+                        </a>
+                      </Tooltip>
                       <CopyToClipboard toCopy={deliveryParsedTargetAddress}>
                         <CopyIcon height={20} width={20} />
                       </CopyToClipboard>
@@ -364,30 +392,36 @@ const RelayerOverview = ({
                 <div>
                   <div className="tx-overview-graph-step-title">Delivery Provider</div>
                   <div className="tx-overview-graph-step-description">
-                    <a
-                      href={getExplorerLink({
-                        network: currentNetwork,
-                        chainId: deliveryInstruction.targetChainId,
-                        value: deliveryParsedSourceProviderAddress,
-                        base: "address",
-                        isNativeAddress: true,
-                      })}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <Tooltip
+                      maxWidth={false}
+                      tooltip={<div>{deliveryParsedSourceProviderAddress.toUpperCase()}</div>}
+                      type="info"
                     >
-                      {deliveryParsedSourceProviderAddress.toLowerCase() ===
-                        testnetDefaultDeliveryProviderContractAddress.toLowerCase() ||
-                      deliveryParsedSourceProviderAddress.toLowerCase() ===
-                        mainnetDefaultDeliveryProviderContractAddress.toLowerCase()
-                        ? "xLabs"
-                        : shortAddress(deliveryParsedSourceProviderAddress).toUpperCase()}
-                    </a>{" "}
+                      <a
+                        href={getExplorerLink({
+                          network: currentNetwork,
+                          chainId: deliveryInstruction.targetChainId,
+                          value: deliveryParsedSourceProviderAddress,
+                          base: "address",
+                          isNativeAddress: true,
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {deliveryParsedSourceProviderAddress.toLowerCase() ===
+                          testnetDefaultDeliveryProviderContractAddress.toLowerCase() ||
+                        deliveryParsedSourceProviderAddress.toLowerCase() ===
+                          mainnetDefaultDeliveryProviderContractAddress.toLowerCase()
+                          ? "xLabs"
+                          : shortAddress(deliveryParsedSourceProviderAddress).toUpperCase()}
+                      </a>
+                    </Tooltip>
                     <CopyToClipboard toCopy={deliveryParsedSourceProviderAddress}>
                       <CopyIcon height={20} width={20} />
                     </CopyToClipboard>
                   </div>
                 </div>
-                {deliveryStatus && metadata ? (
+                {deliveryStatus ? (
                   <Tooltip
                     tooltip={
                       <div className="budget-tooltip">
@@ -469,19 +503,25 @@ const RelayerOverview = ({
                   <div>
                     <div className="tx-overview-graph-step-title">Refund Address</div>
                     <div className="tx-overview-graph-step-description">
-                      <a
-                        href={getExplorerLink({
-                          network: currentNetwork,
-                          chainId: deliveryInstruction.refundChainId,
-                          value: deliveryParsedRefundAddress,
-                          base: "address",
-                          isNativeAddress: true,
-                        })}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <Tooltip
+                        maxWidth={false}
+                        tooltip={<div>{deliveryParsedRefundAddress.toUpperCase()}</div>}
+                        type="info"
                       >
-                        {shortAddress(deliveryParsedRefundAddress).toUpperCase()}
-                      </a>{" "}
+                        <a
+                          href={getExplorerLink({
+                            network: currentNetwork,
+                            chainId: deliveryInstruction.refundChainId,
+                            value: deliveryParsedRefundAddress,
+                            base: "address",
+                            isNativeAddress: true,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {shortAddress(deliveryParsedRefundAddress).toUpperCase()}
+                        </a>
+                      </Tooltip>
                       <CopyToClipboard toCopy={deliveryParsedRefundAddress}>
                         <CopyIcon height={20} width={20} />
                       </CopyToClipboard>
@@ -503,19 +543,25 @@ const RelayerOverview = ({
                       <div>
                         <div className="tx-overview-graph-step-title">Refund Provider</div>
                         <div className="tx-overview-graph-step-description">
-                          <a
-                            href={getExplorerLink({
-                              network: currentNetwork,
-                              chainId: deliveryInstruction.refundChainId,
-                              value: deliveryParsedRefundProviderAddress,
-                              base: "address",
-                              isNativeAddress: true,
-                            })}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <Tooltip
+                            maxWidth={false}
+                            tooltip={<div>{deliveryParsedRefundProviderAddress.toUpperCase()}</div>}
+                            type="info"
                           >
-                            {shortAddress(deliveryParsedRefundProviderAddress).toUpperCase()}
-                          </a>{" "}
+                            <a
+                              href={getExplorerLink({
+                                network: currentNetwork,
+                                chainId: deliveryInstruction.refundChainId,
+                                value: deliveryParsedRefundProviderAddress,
+                                base: "address",
+                                isNativeAddress: true,
+                              })}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {shortAddress(deliveryParsedRefundProviderAddress).toUpperCase()}
+                            </a>
+                          </Tooltip>
                           <CopyToClipboard toCopy={deliveryParsedRefundProviderAddress}>
                             <CopyIcon height={20} width={20} />
                           </CopyToClipboard>
@@ -577,7 +623,7 @@ const RelayerOverview = ({
                     <div>
                       <div className="tx-overview-graph-step-title">Attempts</div>
                       <div className="tx-overview-graph-step-description">
-                        {`${deliveryStatus.attempts}/${deliveryStatus.maxAttempts}`}
+                        {`${deliveryAttempt}/${deliveryStatus?.data?.maxAttempts}`}
                       </div>
                     </div>
                   </div>
