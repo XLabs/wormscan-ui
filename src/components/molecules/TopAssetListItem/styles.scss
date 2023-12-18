@@ -1,84 +1,83 @@
 @import "src/styles/globals.scss";
 
-.top-asset-list-item {
-  @include centered-row;
-  @include text-p3;
+.top-asset-list-row {
+  @include text-p2-bold;
+  font-size: 14px;
+  color: var(--color-primary-90);
+  background-color: var(--color-black-20);
+  border-bottom: 1px solid var(--color-white-10);
+  cursor: pointer;
 
-  align-items: end;
-  color: var(--color-primary-10);
-  width: 100%;
-  gap: 20px;
-
-  @include tablet {
-    align-items: center;
+  @include desktop {
+    font-size: 16px;
   }
 
-  .arrow-icon {
-    transform: scale(1.75);
-    color: var(--color-primary-200);
+  &:last-child {
+    border-bottom: 1px solid transparent;
   }
 
-  &-from {
-    @include centered-column;
-
-    flex: 1;
-    row-gap: 8px;
-    column-gap: 16px;
-    justify-content: flex-start;
-
-    @include tablet {
-      @include centered-row;
-    }
-
-    &-icon-container {
-      @include centered-row;
-      justify-content: center;
-
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background-color: var(--color-primary-800);
-    }
+  &:hover {
+    background-color: var(--color-white-03);
   }
 
-  &-to {
-    @include centered-column;
-
-    flex: 1;
-    row-gap: 8px;
-    column-gap: 16px;
-    justify-content: flex-start;
-
-    @include tablet {
-      @include centered-row;
-    }
-
-    &-icon-container {
-      @include centered-row;
-      justify-content: center;
-
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background-color: var(--color-primary-800);
-    }
-  }
-
-  &-chain {
-    display: none;
-
-    @include tablet {
-      display: flex;
-    }
-  }
-
-  &-transactions {
-    flex: 1;
+  & > td {
+    padding: 32px 8px;
     text-align: end;
-    font-weight: 600;
 
     @include tablet {
-      max-width: 125px;
+      padding: 32px 16px;
+    }
+
+    @include desktop {
+      padding: 32px 8px;
+    }
+
+    @include bigDesktop {
+      padding: 32px 16px;
+    }
+
+    &:first-child {
+      text-align: center;
+      color: var(--color-primary-150);
+    }
+
+    &:nth-child(2) {
+      text-align: start;
+    }
+
+    &:nth-child(3) {
+      text-align: end;
+    }
+
+    & > div {
+      align-items: center;
+      display: flex;
+      gap: 8px;
+
+      @include desktop {
+        gap: 16px;
+      }
+
+      & > .image {
+        align-items: center;
+        background-color: var(--color-primary-800);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        padding: 2.4px;
+      }
+    }
+  }
+
+  &.active {
+    background-color: var(--color-white-05);
+    border-bottom: 1px solid var(--color-secondary-800);
+    color: var(--color-primary-30);
+
+    & > td {
+      &:first-child {
+        color: var(--color-primary-90);
+      }
     }
   }
 }

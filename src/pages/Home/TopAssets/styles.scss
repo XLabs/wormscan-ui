@@ -1,0 +1,174 @@
+@import "src/styles/globals.scss";
+
+.top-assets {
+  @include card-container;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 0;
+  position: relative;
+
+  &-loader {
+    @include centered-row;
+    justify-content: center;
+    height: 100%;
+  }
+
+  &-header {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 16px;
+
+    @include desktop {
+      padding: 0;
+    }
+
+    &-title {
+      @include text-p1;
+      align-items: center;
+      color: var(--color-primary-90);
+      display: flex;
+      font-weight: 500;
+    }
+
+    &-subtitle {
+      @include text-p2;
+      color: var(--color-primary-100);
+      grid-column: span 2;
+
+      @include desktop {
+        grid-column: span 1;
+      }
+    }
+
+    &-select-container {
+      align-items: center;
+      display: flex;
+      gap: 16px;
+      justify-content: flex-end;
+
+      @include desktop {
+        grid-row: span 2;
+      }
+    }
+
+    &-select {
+      height: 40px;
+      max-width: 220px;
+
+      @include desktop {
+        height: 48px;
+      }
+    }
+  }
+
+  &-body {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px;
+    position: relative;
+
+    &-table {
+      border-collapse: collapse;
+      flex: 1;
+      width: 100%;
+
+      @include desktop {
+        flex: 0.8;
+      }
+
+      & > thead {
+        & > tr {
+          & > th {
+            @include text-caption1;
+            color: var(--color-primary-150);
+            font-size: 14px;
+            padding: 16px 8px;
+            text-align: end;
+            white-space: nowrap;
+
+            @include tablet {
+              padding: 24px 16px;
+            }
+
+            @include desktop {
+              padding: 24px 8px;
+            }
+
+            @include bigDesktop {
+              padding: 24px 16px;
+            }
+
+            &:first-child {
+              text-align: center;
+              width: 10%;
+
+              @include tablet {
+                width: 15%;
+              }
+
+              @include desktop {
+                width: 10%;
+              }
+
+              @media (min-width: 1900px) {
+                width: 15%;
+              }
+            }
+
+            &:nth-child(2) {
+              letter-spacing: 3.36px;
+              text-align: start;
+              width: 30%;
+
+              @include desktop {
+                letter-spacing: unset;
+              }
+            }
+
+            &:nth-child(3) {
+              width: 30%;
+
+              @include tablet {
+                width: 20%;
+              }
+
+              @include desktop {
+                width: 30%;
+              }
+
+              @media (min-width: 1900px) {
+                width: 20%;
+              }
+            }
+
+            &:last-child {
+              width: 30%;
+
+              @include tablet {
+                width: 35%;
+              }
+
+              @media (min-width: 1900px) {
+                width: 35%;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &-bottom-text {
+    @include text-p3;
+    color: var(--color-primary-150);
+    text-align: end;
+    padding: 0 16px;
+
+    @include desktop {
+      padding: 0;
+    }
+  }
+}

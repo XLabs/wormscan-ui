@@ -250,14 +250,8 @@
 
       gap: 56px;
 
-      > a {
-        path {
-          fill: var(--color-secondary-800);
-        }
-
-        &:hover path {
-          fill: var(--color-secondary-700);
-        }
+      > a:hover {
+        opacity: 0.6;
       }
 
       @include desktop {

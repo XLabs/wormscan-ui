@@ -1,9 +1,9 @@
-import { CrossChainChart, JoinUs } from "src/components/molecules";
-import { BaseLayout } from "src/layouts/BaseLayout";
-import { Statistics } from "./Statistics";
-import { TopLists } from "./TopLists";
 import { useEffect } from "react";
 import analytics from "src/analytics";
+import { BaseLayout } from "src/layouts/BaseLayout";
+import { CrossChainChart, JoinUs } from "src/components/molecules";
+import { Statistics } from "./Statistics";
+import { TopAssets } from "./TopAssets";
 
 const Home = () => {
   useEffect(() => {
@@ -14,7 +14,7 @@ const Home = () => {
     <BaseLayout>
       <Statistics />
       <CrossChainChart />
-      <TopLists />
+      <TopAssets />
       <JoinUs />
     </BaseLayout>
   );
