@@ -13,7 +13,11 @@
   }
 
   &:last-child {
-    border-bottom: 1px solid transparent;
+    border-bottom: 1px solid var(--color-black-20);
+
+    &:hover:not(.active) {
+      border-bottom: 1px solid var(--color-white-03);
+    }
   }
 
   &:hover {
