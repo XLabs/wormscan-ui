@@ -121,6 +121,7 @@ const Tx = () => {
           lastFinalizedBlock: txData.lastFinalizedBlock,
         });
 
+        if (txData.extraRawInfo) setExtraRawInfo(txData.extraRawInfo);
         setErrorCode(undefined);
         setIsLoading(false);
       } else {
