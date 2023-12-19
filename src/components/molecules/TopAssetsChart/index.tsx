@@ -54,7 +54,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
     const timer = setTimeout(updateLabels, 200);
 
     return () => clearTimeout(timer);
-  }, [assetsDataForChart, isTabletOrMobile, rowSelected, width]);
+  }, [assetsDataForChart, rowSelected, width]);
 
   if (!assetsDataForChart?.length) {
     return null;
