@@ -63,7 +63,6 @@ export default {
           volume: "VOLUME USD",
           txs: "TXS",
           chartTitle: "Emitter chain volume analysis for",
-          bottomMessage: "Chart shows top 7 chains",
         },
         join: {
           initText: "Want to become part of the community? ",

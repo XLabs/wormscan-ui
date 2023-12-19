@@ -185,8 +185,6 @@ const TopAssets = () => {
               </>
             )}
           </div>
-
-          {/*  <p className="top-assets-bottom-text">{t("home.topAssets.bottomMessage")}</p> */}
         </div>
       </section>
     </>
