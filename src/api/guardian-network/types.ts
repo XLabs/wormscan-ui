@@ -42,11 +42,34 @@ export interface ScoresOutput {
 export interface AssetsByVolumeInput {
   timeSpan?: "7d" | "15d" | "30d";
 }
+
 export interface AssetsByVolumeOutput {
-  emitterChain: number;
   symbol: string;
-  tokenChain: number;
-  tokenAddress: string;
+  tokens: {
+    emitter_chain: number;
+    token_address: string;
+    token_chain: number;
+    txs: string;
+    volume: string;
+  }[];
+  txs: string;
+  volume: string;
+}
+
+export interface Tokens {
+  chainImageSrc: string;
+  chainName: string;
+  emitter_chain: number;
+  txs: number;
+  txsFormatted: string;
+  volume: number;
+  volumeFormatted: string;
+}
+
+export interface AssetsByVolumeTransformed {
+  symbol: string;
+  tokens: Tokens[];
+  txs: string;
   volume: string;
 }
 

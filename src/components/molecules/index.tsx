@@ -9,7 +9,7 @@ export { default as ScoreCard } from "./ScoreCard";
 export { default as SearchBar } from "./SearchBar";
 export { default as StatusBadge } from "./StatusBadge";
 export { default as TopAssetListItem } from "./TopAssetListItem";
-export { default as TopChainListItem } from "./TopChainListItem";
+export { default as TopAssetsChart } from "./TopAssetsChart";
 export { default as TransactionHistory } from "./TransactionHistory";
 export { default as TransactionHistoryChart } from "./TransactionHistory/TransactionHistoryChart";
 export { default as VAACountChart } from "./VAACountChart";

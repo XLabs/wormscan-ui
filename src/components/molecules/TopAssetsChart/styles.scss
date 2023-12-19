@@ -1,0 +1,147 @@
+@import "src/styles/globals.scss";
+
+.apexcharts-tooltip {
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.chart-container {
+  background-color: var(--color-white-05);
+  height: 390px;
+  padding: 0 0 20px 0;
+  position: relative;
+  width: 100%;
+
+  @include desktop {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 72px,
+      var(--color-white-05) 72px,
+      var(--color-white-05) 100%
+    );
+    flex: 1.4;
+    height: unset;
+    overflow: hidden;
+    padding: unset;
+  }
+
+  @include bigDesktop {
+    flex: 1.2;
+  }
+
+  & > div:last-child {
+    max-width: calc(100vw - 44px);
+    min-height: 390px !important;
+
+    @include tablet {
+      max-width: calc(100vw - 132px);
+    }
+
+    @include desktop {
+      min-height: 695px !important;
+    }
+  }
+
+  .wormhole-brand {
+    bottom: 0;
+    height: 34px;
+    left: 0;
+    margin: auto;
+    min-height: unset;
+    opacity: 0.1;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    user-select: none;
+    width: 180px;
+    z-index: 10;
+
+    @include desktop {
+      top: 72px;
+    }
+  }
+
+  &-chain-icon img {
+    height: 16px;
+    width: 16px;
+
+    @include tablet {
+      height: 20px;
+      width: 20px;
+    }
+
+    @include bigDesktop {
+      height: 24px;
+      width: 24px;
+    }
+  }
+
+  &-tooltip {
+    background-color: var(--color-primary-900);
+    border-radius: 4px;
+    border: 1px solid var(--color-white-20);
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    padding: 16px 24px;
+
+    & > div {
+      &:first-child {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin-bottom: 16px;
+      }
+
+      &:nth-child(2) {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 8px;
+      }
+
+      &:last-child {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    &-img {
+      background-color: var(--color-white-20);
+      border-radius: 50%;
+      height: 16px;
+      padding: 1px;
+      width: 16px;
+
+      @include desktop {
+        height: 24px;
+        width: 24px;
+      }
+    }
+
+    &-label {
+      @include text-p2;
+      color: var(--color-primary-150);
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    &-chain {
+      @include text-p2-bold;
+      color: var(--color-primary-30);
+    }
+
+    &-volume {
+      @include text-p2-bold;
+      color: var(--color-primary-30);
+    }
+
+    &-txs {
+      @include text-p2-bold;
+      color: var(--color-primary-30);
+    }
+  }
+}
