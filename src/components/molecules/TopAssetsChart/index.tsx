@@ -28,10 +28,10 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
   const isDesktop = width >= BREAKPOINTS.desktop && width < BREAKPOINTS.bigDesktop;
 
   useEffect(() => {
-    const updateLabels = () => {
+    const getLabelsPos = () => {
       const labels = chartDomRef?.current?.querySelectorAll(".apexcharts-xaxis-label");
 
-      const itemsPosition = [{ x: 0, y: 0 }];
+      const itemsPosition: { x: number; y: number }[] = [];
 
       labels?.forEach((label: any) => {
         const x = Number(label?.getAttribute("x")) || 0;
@@ -45,13 +45,11 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
         itemsPosition.push({ x, y });
       });
 
-      if (itemsPosition.length > 1) {
-        setXPositionLabels(itemsPosition);
-      }
+      setXPositionLabels(itemsPosition);
     };
 
-    updateLabels();
-    const timer = setTimeout(updateLabels, 200);
+    getLabelsPos();
+    const timer = setTimeout(getLabelsPos, 200);
 
     return () => clearTimeout(timer);
   }, [assetsDataForChart, rowSelected, width]);
@@ -65,45 +63,39 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
       <WormholeBrand size="regular" />
 
       <div>
-        {XPositionLabels?.map(({ y, x }, i) => {
-          if (i === 0) {
-            return null;
-          }
-
-          return (
-            <div
-              key={i}
-              className="chart-container-chain-icon"
-              style={{
-                position: "absolute",
-                top: isMobile
-                  ? Number(y) + 35
-                  : isTabletOrMobile
-                  ? Number(y) + 30
-                  : isDesktop
-                  ? Number(y) + 86
-                  : Number(y) + 83,
-                left: isMobile
-                  ? Number(x) + 52
-                  : isTabletOrMobile
-                  ? Number(x) + 66
-                  : isDesktop
-                  ? Number(x) + 66
-                  : Number(x) + 64,
-                zIndex: 10,
-                pointerEvents: "none",
-              }}
-            >
-              <BlockchainIcon
-                background="var(--color-black-25)"
-                chainId={top7AssetsData?.[rowSelected]?.tokens?.[i - 1]?.emitter_chain}
-                colorless={true}
-                network={currentNetwork}
-                size={24}
-              />
-            </div>
-          );
-        })}
+        {XPositionLabels?.map(({ y, x }, i) => (
+          <div
+            key={i}
+            className="chart-container-chain-icon"
+            style={{
+              position: "absolute",
+              top: isMobile
+                ? Number(y) + 35
+                : isTabletOrMobile
+                ? Number(y) + 30
+                : isDesktop
+                ? Number(y) + 86
+                : Number(y) + 83,
+              left: isMobile
+                ? Number(x) + 52
+                : isTabletOrMobile
+                ? Number(x) + 66
+                : isDesktop
+                ? Number(x) + 66
+                : Number(x) + 64,
+              zIndex: 10,
+              pointerEvents: "none",
+            }}
+          >
+            <BlockchainIcon
+              background="var(--color-black-25)"
+              chainId={assetsDataForChart?.[i]?.emitter_chain}
+              colorless={true}
+              network={currentNetwork}
+              size={24}
+            />
+          </div>
+        ))}
       </div>
 
       <ReactApexChart
