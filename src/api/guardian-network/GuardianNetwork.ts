@@ -30,14 +30,14 @@ export class GuardianNetwork {
     vaaID,
     pagination = DefaultPageRequest,
   }: GetOperationsInput): Promise<GetOperationsOutput[]> {
-    const result: any = await this._client.doGet("/operations", {
+    const path = vaaID ? `/operations/${vaaID}` : "/operations";
+    const result: any = await this._client.doGet(path, {
       txHash,
       address,
-      vaaID,
       ...pagination,
     });
 
-    return result?.operations as GetOperationsOutput[];
+    return (result?.operations ? result.operations : [result]) as GetOperationsOutput[];
   }
 
   async getVAACount(): Promise<VAACount[]> {

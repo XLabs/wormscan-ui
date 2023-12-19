@@ -221,17 +221,24 @@ const Tx = () => {
 
   const { data: VAADataByVAAId } = useQuery(
     ["getVAA", VAAId],
-    () => {
+    async () => {
       if (isNaN(Number(chainId)) || isNaN(Number(seq))) {
         throw new Error("Request failed with status code 400");
       }
 
-      return getClient().guardianNetwork.getOperations({
-        vaaID: `${chainId}/${emitter}/{seq}`,
+      const result = await getClient().guardianNetwork.getOperations({
+        vaaID: `${chainId}/${emitter}/${seq}`,
       });
+
+      return result;
     },
     {
       onError: (err: Error) => showSearchNotFound(err),
+      onSuccess: data => {
+        if (!!data?.length) {
+          setErrorCode(undefined);
+        }
+      },
       enabled: isVAAIdSearch && !errorCode,
       retry: false,
     },
