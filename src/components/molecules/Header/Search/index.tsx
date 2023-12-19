@@ -21,7 +21,7 @@ const Search = () => {
   const { mutate: mutateFindVAAByAddress } = useMutation(
     ({ address }: { address: string }) => {
       try {
-        return getClient().search.findVAAByAddress({
+        return getClient().guardianNetwork.getOperations({
           address,
         });
       } catch (error) {

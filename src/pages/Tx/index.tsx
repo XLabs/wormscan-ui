@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
-import { parseVaa } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
 import { SearchNotFound } from "src/components/organisms";
@@ -11,15 +10,13 @@ import { formatUnits, parseTx } from "src/utils/crypto";
 import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
 import analytics from "src/analytics";
-import { GetOperationsOutput, GlobalTxOutput, VAADetail } from "src/api/guardian-network/types";
-import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
+import { GetOperationsOutput } from "src/api/guardian-network/types";
+import { GetBlockData } from "src/api/search/types";
 import { getGuardianSet } from "../../consts";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import "./styles.scss";
 import { getChainName } from "src/utils/wormhole";
-
-type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
 const Tx = () => {
   useEffect(() => {
@@ -40,6 +37,7 @@ const Tx = () => {
   const q = isVAAIdSearch ? VAAId : txHash;
   const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isRPC, setIsRPC] = useState(false);
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [extraRawInfo, setExtraRawInfo] = useState(null);
   const [blockData, setBlockData] = useState<GetBlockData>(null);
@@ -52,8 +50,6 @@ const Tx = () => {
       const txData = await txsData[0];
       if (txData) {
         cancelRequests.current = true;
-
-        console.log({ txData });
 
         analytics.track("txDetail", {
           appIds: txData?.appIds?.join(", ") ? txData.appIds.join(", ") : "null",
@@ -81,6 +77,7 @@ const Tx = () => {
         //     version: 1,
         //   },
         // ]);
+        setIsRPC(true);
         setEmitterChainId(txData.chain as ChainId);
         setTxData([
           {
@@ -263,7 +260,7 @@ const Tx = () => {
           (!data.data?.tokenAmount || !data.data?.symbol) &&
           data.content?.standarizedProperties?.tokenAddress &&
           data.content?.standarizedProperties?.tokenChain &&
-          (data.content?.payload?.amount || data.content?.standarizedProperties?.amount)
+          data.content?.standarizedProperties?.amount
         ) {
           const tokenInfo = await getTokenInformation(
             data.content?.standarizedProperties?.tokenChain,
@@ -271,15 +268,14 @@ const Tx = () => {
             data.content?.standarizedProperties?.tokenAddress,
           );
 
-          if (tokenInfo.symbol && tokenInfo.tokenDecimals) {
-            const amount =
-              data.content?.payload?.amount || data.content?.standarizedProperties?.amount;
+          if (tokenInfo.symbol /* && tokenInfo.tokenDecimals */) {
+            const amount = data.content?.standarizedProperties?.amount;
 
-            if (amount && tokenInfo.tokenDecimals) {
+            if (amount /* && tokenInfo.tokenDecimals */) {
               processedApiTxData.push({
                 ...data,
                 data: {
-                  tokenAmount: "" + formatUnits(+amount, tokenInfo.tokenDecimals),
+                  tokenAmount: "" + formatUnits(+amount /* , tokenInfo.tokenDecimals */),
                   symbol: tokenInfo.symbol,
                   usdAmount: data?.data?.usdAmount ? data?.data?.usdAmount : "",
                 },
@@ -450,8 +446,7 @@ const Tx = () => {
                     key={data.id || `vaa-${i}`}
                     extraRawInfo={extraRawInfo}
                     data={data}
-                    // VAAData={data}
-                    // txData={txData.find(tx => tx.id === data.id)}
+                    isRPC={isRPC}
                     blockData={blockData}
                   />
                 ),

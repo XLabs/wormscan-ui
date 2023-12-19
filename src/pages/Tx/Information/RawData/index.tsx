@@ -12,8 +12,7 @@ import {
   isRedelivery,
   parseGenericRelayerVaa,
 } from "src/utils/genericRelayerVaaUtils";
-import { GetTransactionsOutput } from "src/api/search/types";
-import { GetOperationsOutput, VAADetail } from "src/api/guardian-network/types";
+import { GetOperationsOutput } from "src/api/guardian-network/types";
 import "./styles.scss";
 
 export const BlockSection = ({ title, code }: { title: string; code: any }) => {

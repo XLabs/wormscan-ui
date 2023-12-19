@@ -22,8 +22,8 @@ import {
   parseGenericRelayerVaa,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
-import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
-import { GetOperationsOutput, VAADetail } from "src/api/guardian-network/types";
+import { GetBlockData } from "src/api/search/types";
+import { GetOperationsOutput } from "src/api/guardian-network/types";
 
 import Tabs from "./Tabs";
 import Summary from "./Summary";
@@ -37,10 +37,9 @@ import "./styles.scss";
 
 interface Props {
   extraRawInfo: any;
-  // VAAData: VAADetail & { vaa: any; decodedVaa: any };
-  // txData: GetTransactionsOutput;
   blockData: GetBlockData;
   data: GetOperationsOutput;
+  isRPC: boolean;
 }
 
 const UNKNOWN_APP_ID = "UNKNOWN";
@@ -48,7 +47,7 @@ const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
 const CONNECT_APP_ID = "CONNECT";
 const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
 
-const Information = ({ data, extraRawInfo, /* VAAData, txData, */ blockData }: Props) => {
+const Information = ({ data, extraRawInfo, isRPC, blockData }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [showOverview, setShowOverviewState] = useState(searchParams.get("view") !== "rawdata");
@@ -92,8 +91,6 @@ const Information = ({ data, extraRawInfo, /* VAAData, txData, */ blockData }: P
     tokenChain: payloadTokenChain,
   } = payload || {};
 
-  // const { originTx, destinationTx } = globalTx || {};
-
   const {
     amount,
     appIds,
@@ -105,15 +102,6 @@ const Information = ({ data, extraRawInfo, /* VAAData, txData, */ blockData }: P
     tokenAddress: stdTokenAddress,
     tokenChain: stdTokenChain,
   } = standarizedProperties || {};
-
-  // const { from: globalFrom, timestamp: globalFromTimestamp } = originTx || {};
-
-  // const {
-  //   chainId: globalToChainId,
-  //   from: globalTo,
-  //   timestamp: globalToTimestamp,
-  //   txHash: globalToRedeemTx,
-  // } = destinationTx || {};
 
   const fromChainOrig = emitterChain || stdFromChain;
   const fromAddress = data?.sourceChain?.from || stdFromAddress;
@@ -176,11 +164,10 @@ const Information = ({ data, extraRawInfo, /* VAAData, txData, */ blockData }: P
     chainId: toChain as ChainId,
   });
 
-  const amountSent = formatNumber(Number(tokenAmount));
+  const amountSent = formatNumber(Number(tokenAmount)) || formatNumber(formatUnits(+amount));
   const amountSentUSD = +usdAmount ? formatNumber(+usdAmount, 2) : "";
-  const redeemedAmount = hasVAA
-    ? formatNumber(formatUnits(+amount - +fee))
-    : formatNumber(+amount - +fee);
+  const redeemedAmount =
+    hasVAA || !isRPC ? formatNumber(formatUnits(+amount - +fee)) : formatNumber(+amount - +fee);
 
   const tokenLink = getExplorerLink({
     network: currentNetwork,
@@ -223,7 +210,6 @@ const Information = ({ data, extraRawInfo, /* VAAData, txData, */ blockData }: P
   const [loadingRelayers, setLoadingRelayers] = useState(false);
   const getRelayerInfo = useCallback(async () => {
     setLoadingRelayers(true);
-    console.log({ vaa });
     populateDeliveryLifecycleRecordByVaa(environment, vaa)
       .then((result: DeliveryLifecycleRecord) => {
         analytics.track("txDetail", {
