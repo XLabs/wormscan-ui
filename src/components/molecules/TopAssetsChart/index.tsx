@@ -84,12 +84,12 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
                   ? Number(y) + 86
                   : Number(y) + 83,
                 left: isMobile
-                  ? Number(x) + 44
+                  ? Number(x) + 52
                   : isTabletOrMobile
-                  ? Number(x) + 50
+                  ? Number(x) + 66
                   : isDesktop
-                  ? Number(x) + 50
-                  : Number(x) + 48,
+                  ? Number(x) + 66
+                  : Number(x) + 64,
                 zIndex: 10,
                 pointerEvents: "none",
               }}
@@ -241,22 +241,16 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
             tickAmount: 8,
             axisTicks: { show: false },
             labels: {
-              formatter: function (value) {
-                let result = numberToSuffix(value);
-                if (value >= 1000 && result.charAt(result.length - 2) === "0") {
-                  const lastChar = result.charAt(result.length - 1);
-                  result = result.slice(0, -3) + lastChar;
+              formatter: function (vol) {
+                let result = numberToSuffix(vol);
+                if (vol < 1000 && vol > 0) {
+                  result = Number(result).toFixed(1);
                 }
-                if (value < 1000) {
-                  result =
-                    parseFloat(result) % 1 === 0
-                      ? parseFloat(result).toFixed(0)
-                      : parseFloat(result).toFixed(1);
-                }
+
                 return `$${result}`;
               },
-              minWidth: isMobile ? 40 : 48,
-              maxWidth: isMobile ? 40 : 48,
+              minWidth: isMobile ? 48 : 64,
+              maxWidth: isMobile ? 48 : 64,
               align: "right",
               style: {
                 colors: "#9295BB",
