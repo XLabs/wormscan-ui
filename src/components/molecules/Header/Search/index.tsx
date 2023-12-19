@@ -29,8 +29,14 @@ const Search = () => {
       }
     },
     {
-      onSuccess: (_, { address }) => {
-        navigate(`/txs?address=${address}`);
+      onSuccess: (data, vars) => {
+        const address = vars.address;
+        if (!!data.length) {
+          navigate(`/txs?address=${address}`);
+        } else {
+          const txHash = address;
+          navigate(`/tx/${txHash}`);
+        }
       },
       onError: (_err, { address }) => {
         // Navigate to tx page if by address fails
