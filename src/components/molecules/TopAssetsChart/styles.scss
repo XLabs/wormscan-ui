@@ -33,8 +33,12 @@
   }
 
   & > div:last-child {
-    max-width: calc(100vw - 42px);
+    max-width: calc(100vw - 44px);
     min-height: 390px !important;
+
+    @include tablet {
+      max-width: calc(100vw - 132px);
+    }
 
     @include desktop {
       min-height: 695px !important;
