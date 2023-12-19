@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMutation } from "react-query";
 import { useTranslation } from "react-i18next";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
-import { getClient } from "src/api/Client";
+import { getClient, getOtherClient } from "src/api/Client";
 import SearchBar from "../../SearchBar";
 import analytics from "src/analytics";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -19,13 +19,22 @@ const Search = () => {
   const [searchValue, setSearchValue] = useState("");
 
   const { mutate: mutateFindVAAByAddress } = useMutation(
-    ({ address }: { address: string }) => {
-      try {
-        return getClient().search.findVAAByAddress({
-          address,
-        });
-      } catch (error) {
-        console.log(error);
+    async ({ address }: { address: string }) => {
+      const [currentNetworkResult, otherNetworkResult] = (await Promise.all([
+        getClient().search.getTransactions({ query: { ...(address && { address }) } }),
+        getOtherClient().search.getTransactions({ query: { ...(address && { address }) } }),
+      ])) as any;
+
+      if (!!currentNetworkResult?.length) {
+        return currentNetworkResult;
+      } else if (!!otherNetworkResult?.length) {
+        navigate(
+          `/txs?address=${address}?network=${
+            environment.network === "MAINNET" ? "TESTNET" : "MAINNET"
+          }`,
+        );
+      } else {
+        throw new Error("Both requests failed");
       }
     },
     {
