@@ -395,7 +395,7 @@ const RelayerDetails = ({
                 >
                   <TruncateText
                     containerWidth={lineValueWidth}
-                    text={deliveryStatus?.data?.toTxHash.toUpperCase()}
+                    text={deliveryStatus?.data?.toTxHash?.toUpperCase()}
                   />
                 </a>
                 <CopyToClipboard toCopy={deliveryStatus?.data?.toTxHash}>
