@@ -11,7 +11,7 @@ import { formatUnits, parseTx } from "src/utils/crypto";
 import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
 import analytics from "src/analytics";
-import { GlobalTxOutput, VAADetail } from "src/api/guardian-network/types";
+import { GetOperationsOutput, GlobalTxOutput, VAADetail } from "src/api/guardian-network/types";
 import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
 import { getGuardianSet } from "../../consts";
 import { Information } from "./Information";
@@ -41,19 +41,19 @@ const Tx = () => {
   const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
-  const [parsedVAAsData, setParsedVAAsData] = useState<ParsedVAA[] | undefined>(undefined);
   const [extraRawInfo, setExtraRawInfo] = useState(null);
   const [blockData, setBlockData] = useState<GetBlockData>(null);
 
   const cancelRequests = useRef(false);
   const tryToGetRpcInfo = async () => {
     const txsData = await fetchWithRpcFallThrough(environment, txHash);
-    console.log({ txsData });
 
     if (txsData) {
       const txData = await txsData[0];
       if (txData) {
         cancelRequests.current = true;
+
+        console.log({ txData });
 
         analytics.track("txDetail", {
           appIds: txData?.appIds?.join(", ") ? txData.appIds.join(", ") : "null",
@@ -62,58 +62,88 @@ const Tx = () => {
           network,
         });
 
-        setParsedVAAsData([
-          {
-            appId: "",
-            decodedVaa: null,
-            emitterAddr: txData.emitterAddress,
-            emitterChain: txData.tokenChain,
-            emitterNativeAddr: txData.emitterNattiveAddress,
-            guardianSetIndex: null,
-            id: txData.id,
-            indexedAt: null,
-            payload: null,
-            sequence: txData.sequence,
-            timestamp: new Date(txData.timestamp),
-            txHash: txData.txHash,
-            updatedAt: null,
-            vaa: "",
-            version: 1,
-          },
-        ]);
+        // setParsedVAAsData([
+        //   {
+        //     appId: "",
+        //     decodedVaa: null,
+        //     emitterAddr: txData.emitterAddress,
+        //     emitterChain: txData.tokenChain,
+        //     emitterNativeAddr: txData.emitterNattiveAddress,
+        //     guardianSetIndex: null,
+        //     id: txData.id,
+        //     indexedAt: null,
+        //     payload: null,
+        //     sequence: txData.sequence,
+        //     timestamp: new Date(txData.timestamp),
+        //     txHash: txData.txHash,
+        //     updatedAt: null,
+        //     vaa: "",
+        //     version: 1,
+        //   },
+        // ]);
         setEmitterChainId(txData.chain as ChainId);
         setTxData([
           {
-            emitterAddress: txData.emitterAddress,
+            emitterAddress: {
+              hex: txData.emitterAddress,
+              native: txData.emitterNattiveAddress,
+            },
             emitterChain: txData.chain,
-            emitterNativeAddress: txData.emitterNattiveAddress,
-            globalTx: null,
             id: txData.id,
-            payload: {
-              payloadType: txData.payloadType,
-              parsedPayload: {
-                feeAmount: txData?.fee,
-                toNativeAmount: txData?.toNativeAmount,
+            content: {
+              payload: {
+                payloadType: txData.payloadType,
+                parsedPayload: {
+                  feeAmount: txData?.fee,
+                  toNativeAmount: txData?.toNativeAmount,
+                },
+                amount: txData.amount,
+                fee: txData.fee,
+                fromAddress: txData.fromAddress,
+                payload: undefined,
+                toAddress: txData.toAddress,
+                toChain: txData.toChain,
+                tokenAddress: txData.tokenAddress,
+                tokenChain: txData.tokenChain,
+              },
+              standarizedProperties: {
+                amount: txData.amount,
+                appIds: txData.appIds ?? [],
+                fee: txData.fee,
+                feeAddress: "",
+                feeChain: txData.chain,
+                fromAddress: txData.fromAddress,
+                fromChain: txData.chain,
+                toAddress: txData.toAddress,
+                toChain: txData.toChain,
+                tokenAddress: txData.tokenAddress,
+                tokenChain: txData.tokenChain,
               },
             },
-            standardizedProperties: {
-              amount: txData.amount,
-              appIds: txData.appIds ?? [],
-              fee: txData.fee,
-              feeAddress: "",
-              feeChain: txData.chain,
-              fromAddress: txData.fromAddress,
-              fromChain: txData.chain,
-              toAddress: txData.toAddress,
-              toChain: txData.toChain,
-              tokenAddress: txData.tokenAddress,
-              tokenChain: txData.tokenChain,
+            data: {
+              symbol: txData.symbol,
+              tokenAmount: txData.tokenAmount,
+              usdAmount: txData.usdAmount,
             },
-            symbol: txData.symbol,
-            timestamp: new Date(txData.timestamp),
-            tokenAmount: txData.tokenAmount,
-            txHash: txData.txHash,
-            usdAmount: txData.usdAmount,
+            sequence: "",
+            sourceChain: {
+              chainId: txData.chain,
+              timestamp: new Date(txData.timestamp),
+              from: txData.fromAddress,
+              status: undefined,
+              transaction: {
+                txHash: txData.txHash,
+              },
+            },
+            targetChain: {
+              chainId: txData.toChain,
+              timestamp: undefined,
+              transaction: undefined,
+              from: undefined,
+              status: undefined,
+              to: undefined,
+            },
+            vaa: undefined,
           },
         ]);
         setBlockData({
@@ -151,18 +181,9 @@ const Tx = () => {
   const { data: VAADataByTx } = useQuery(
     ["getVAAbyTxHash", txHash],
     async () => {
-      const response = await getClient().guardianNetwork.getVAAbyTxHash({
-        query: {
-          txHash: txHash,
-          parsedPayload: true,
-        },
-      });
-
-      const test = await getClient().guardianNetwork.getOperations({
+      const response = await getClient().guardianNetwork.getOperations({
         txHash: txHash,
       });
-
-      console.log("test???", test);
 
       if (!response.length) throw new Error("no data");
       return response;
@@ -175,6 +196,11 @@ const Tx = () => {
         }
       },
       enabled: isTxHashSearch && !errorCode,
+      onSuccess: data => {
+        if (!!data.length) {
+          setErrorCode(undefined);
+        }
+      },
       retryDelay: errCount => 5000 * (errCount + 1),
       retry: errCount => {
         // if request was cancelled, dont retry
@@ -196,20 +222,15 @@ const Tx = () => {
     },
   );
 
-  const { data: VAADataByVAAId }: { data: VAADetail } = useQuery(
+  const { data: VAADataByVAAId } = useQuery(
     ["getVAA", VAAId],
     () => {
       if (isNaN(Number(chainId)) || isNaN(Number(seq))) {
         throw new Error("Request failed with status code 400");
       }
 
-      return getClient().guardianNetwork.getVAA({
-        chainId: Number(chainId),
-        emitter,
-        seq: Number(seq),
-        query: {
-          parsedPayload: true,
-        },
+      return getClient().guardianNetwork.getOperations({
+        vaaID: `${chainId}/${emitter}/{seq}`,
       });
     },
     {
@@ -223,145 +244,45 @@ const Tx = () => {
     if (isTxHashSearch) {
       return VAADataByTx;
     } else {
-      if (VAADataByVAAId) return [VAADataByVAAId];
+      if (VAADataByVAAId) return VAADataByVAAId;
       return null;
     }
   }, [isTxHashSearch, VAADataByTx, VAADataByVAAId]);
 
-  const VAADataTxHash = VAAData?.[0]?.txHash;
+  const VAADataTxHash = VAAData?.[0]?.sourceChain?.transaction?.txHash;
 
-  const [txData, setTxData] = useState<GetTransactionsOutput[]>([]);
-  const { data: apiTxData, refetch: refetchTxData } = useQuery(
-    ["getTransactions", isTxHashSearch ? txHash : VAAId],
-    async () => {
-      const result = VAAData.map(async tx => {
-        const VAADataId = tx.id;
-        const VAADataVaaId = VAADataId.split("/");
-        const VaaDataChainId = Number(VAADataVaaId?.[0]);
-        const VaaDataEmitter = VAADataVaaId?.[1];
-        const VaaDataSeq = Number(VAADataVaaId?.[2]);
+  const [txData, setTxData] = useState<GetOperationsOutput[]>([]);
+  const processVaaData = useCallback(
+    async (txData: GetOperationsOutput[]) => {
+      // process operations endpoint response
+      const processedApiTxData: GetOperationsOutput[] = [];
 
-        const txResponse = await getClient().search.getTransactions({
-          chainId: VaaDataChainId,
-          emitter: VaaDataEmitter,
-          seq: VaaDataSeq,
-        });
-
-        // check CCTP
-        if (txResponse?.standardizedProperties?.appIds?.includes("CCTP_WORMHOLE_INTEGRATION")) {
-          // if the amount is not there, we get it from the payload
-          //     (we assume 6 decimals because its always USDC)
-          if (
-            (!txResponse.tokenAmount || !txResponse.standardizedProperties?.amount) &&
-            !!txResponse.payload?.amount
-          ) {
-            txResponse.tokenAmount = String(+txResponse.payload?.amount * 0.000001);
-            txResponse.standardizedProperties.amount = String(+txResponse.payload?.amount * 100);
-            if (!txResponse.symbol) {
-              txResponse.symbol = "USDC";
-            }
-          }
-
-          // the fee for CCTP is feeAmount (fee) + toNativeAmount (gas drop)
-          if (txResponse.payload?.parsedPayload?.feeAmount) {
-            txResponse.standardizedProperties.fee = `${
-              +txResponse.payload.parsedPayload.feeAmount * 100 +
-              +txResponse.payload.parsedPayload.toNativeAmount * 100
-            }`;
-          }
-
-          // get CCTP relayer information
-          const relayResponse = await getClient().search.getCctpRelay({
-            txHash: parseTx({ value: txResponse.txHash, chainId: 2 }),
-            network: network,
-          });
-
-          // add Redeem Txn information to the tx response
-          if (relayResponse?.to?.txHash) {
-            const cctpDestination: GlobalTxOutput["destinationTx"] = {
-              chainId: relayResponse.to.chainId,
-              status: relayResponse.status,
-              timestamp: relayResponse.metrics?.completedAt,
-              txHash: relayResponse.to.txHash,
-              updatedAt: relayResponse.metrics?.completedAt,
-
-              blockNumber: null,
-              from: null,
-              method: null,
-              to: null,
-            };
-
-            if (txResponse.globalTx) {
-              txResponse.globalTx.destinationTx = cctpDestination;
-            } else {
-              txResponse.globalTx = {
-                id: null,
-                originTx: null,
-                destinationTx: cctpDestination,
-              };
-            }
-            setExtraRawInfo(relayResponse);
-          }
-        }
-
-        // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
-        if (!txResponse?.standardizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
-          analytics.track("txDetail", {
-            appIds: txResponse?.standardizedProperties?.appIds?.join(", ")
-              ? txResponse.standardizedProperties.appIds.join(", ")
-              : "null",
-            chain: getChainName({ chainId: txResponse?.emitterChain ?? 0, network }),
-            toChain: getChainName({
-              chainId: txResponse?.standardizedProperties?.toChain ?? 0,
-              network,
-            }),
-            network,
-          });
-        }
-
-        return txResponse;
-      });
-
-      const results = await Promise.all(result);
-      return results;
-    },
-    {
-      enabled: false,
-      onSuccess: data => {
-        if (!!data.length) {
-          setErrorCode(undefined);
-          setIsLoading(false);
-        }
-      },
-      onError: (err: Error) => showSearchNotFound(err),
-    },
-  );
-
-  const processApiTxData = useCallback(
-    async (apiTxData: GetTransactionsOutput[]) => {
-      const processedApiTxData = [];
-
-      for (const data of apiTxData) {
+      // first step, if it doesnt come and its possible, get amount and symbol
+      for (const data of txData) {
         if (
-          (!data.tokenAmount || !data.symbol) &&
-          data.standardizedProperties?.tokenAddress &&
-          data.standardizedProperties?.tokenChain &&
-          (data.payload?.amount || data.standardizedProperties?.amount)
+          (!data.data?.tokenAmount || !data.data?.symbol) &&
+          data.content?.standarizedProperties?.tokenAddress &&
+          data.content?.standarizedProperties?.tokenChain &&
+          (data.content?.payload?.amount || data.content?.standarizedProperties?.amount)
         ) {
           const tokenInfo = await getTokenInformation(
-            data.standardizedProperties?.tokenChain,
+            data.content?.standarizedProperties?.tokenChain,
             environment,
-            data.standardizedProperties.tokenAddress,
+            data.content?.standarizedProperties?.tokenAddress,
           );
 
           if (tokenInfo.symbol && tokenInfo.tokenDecimals) {
-            const amount = data.payload?.amount || data.standardizedProperties?.amount;
+            const amount =
+              data.content?.payload?.amount || data.content?.standarizedProperties?.amount;
 
             if (amount && tokenInfo.tokenDecimals) {
               processedApiTxData.push({
                 ...data,
-                tokenAmount: "" + formatUnits(+amount, tokenInfo.tokenDecimals),
-                symbol: tokenInfo.symbol,
+                data: {
+                  tokenAmount: "" + formatUnits(+amount, tokenInfo.tokenDecimals),
+                  symbol: tokenInfo.symbol,
+                  usdAmount: data?.data?.usdAmount ? data?.data?.usdAmount : "",
+                },
               });
             }
           } else {
@@ -372,71 +293,133 @@ const Tx = () => {
         }
       }
 
+      // second, check specific cases
+      processedApiTxData.forEach(async (data, idx) => {
+        // check CCTP
+        if (data?.content?.standarizedProperties?.appIds?.includes("CCTP_WORMHOLE_INTEGRATION")) {
+          // if the amount is not there, we get it from the payload
+          //     (we assume 6 decimals because its always USDC)
+          if (
+            (!data?.data?.tokenAmount || !data?.content?.standarizedProperties?.amount) &&
+            !!data?.content?.payload?.amount
+          ) {
+            data.data = {
+              tokenAmount: String(+data?.content?.payload?.amount * 0.000001),
+              symbol: "USDC",
+              usdAmount: "",
+            };
+
+            if (data?.content?.standarizedProperties) {
+              data.content.standarizedProperties.amount = String(
+                +data?.content?.payload?.amount * 100,
+              );
+            }
+          }
+
+          // the fee for CCTP is feeAmount (fee) + toNativeAmount (gas drop)
+          if (data?.content?.payload?.parsedPayload?.feeAmount) {
+            data.content.standarizedProperties.fee = `${
+              +data?.content?.payload?.parsedPayload.feeAmount * 100 +
+              +data?.content?.payload?.parsedPayload.toNativeAmount * 100
+            }`;
+          }
+
+          // get CCTP relayer information
+          const relayResponse = await getClient().search.getCctpRelay({
+            txHash: parseTx({ value: data.sourceChain?.transaction?.txHash, chainId: 2 }),
+            network: network,
+          });
+
+          // add Redeem Txn information to the tx response
+          if (relayResponse?.to?.txHash) {
+            data.targetChain = {
+              chainId: relayResponse.to.chainId,
+              status: relayResponse.status,
+              timestamp: relayResponse.metrics?.completedAt,
+              transaction: {
+                txHash: relayResponse.to.txHash,
+              },
+              from: relayResponse.to.txHash,
+              to: "",
+            };
+
+            setExtraRawInfo(relayResponse);
+          }
+        }
+
+        // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
+        if (!data?.content?.standarizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
+          analytics.track("txDetail", {
+            appIds: data?.content?.standarizedProperties?.appIds?.join(", ")
+              ? data?.content?.standarizedProperties.appIds.join(", ")
+              : "null",
+            chain: getChainName({ chainId: data?.emitterChain ?? 0, network }),
+            toChain: getChainName({
+              chainId: data?.content?.standarizedProperties?.toChain ?? 0,
+              network,
+            }),
+            network,
+          });
+        }
+
+        processedApiTxData[idx] = { ...data };
+        setIsLoading(false);
+      });
+
+      // third step, process other information
+      // TODO: BACKEND SUPPORT
+
+      // processedApiTxData.forEach((data, idx) => {
+      //   const vaa = data?.vaa;
+      //   if (!vaa) return;
+
+      //   const guardianSetIndex = tx.guardianSetIndex;
+      //   // Decode SignedVAA and get guardian signatures with name
+      //   const guardianSetList = getGuardianSet(guardianSetIndex);
+      //   const vaaBuffer = Buffer.from(vaa, "base64");
+      //   const parsedVaa = parseVaa(vaaBuffer);
+
+      //   const { emitterAddress, guardianSignatures, hash, sequence } = parsedVaa || {};
+      //   const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
+      //   const parsedHash = Buffer.from(hash).toString("hex");
+      //   const parsedSequence = Number(sequence);
+      //   const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
+      //     index,
+      //     signature: Buffer.from(signature).toString("hex"),
+      //     name: guardianSetList?.[index]?.name,
+      //   }));
+
+      //   return {
+      //     ...tx,
+      //     vaa,
+      //     decodedVaa: {
+      //       ...parsedVaa,
+      //       payload: parsedVaa.payload ? Buffer.from(parsedVaa.payload).toString("hex") : null,
+      //       emitterAddress: parsedEmitterAddress,
+      //       guardianSignatures: parsedGuardianSignatures,
+      //       hash: parsedHash,
+      //       sequence: parsedSequence,
+      //     },
+      //   };
+      // })
+
+      // return txResponse;
+
+      // const results = await Promise.all(result);
+      // return results;
+
+      setEmitterChainId(processedApiTxData.find(a => !!a?.emitterChain)?.emitterChain);
       setTxData(processedApiTxData);
     },
-    [environment],
+    [environment, network],
   );
-
-  useEffect(() => {
-    if (apiTxData && apiTxData.length > 0) {
-      processApiTxData(apiTxData);
-    }
-  }, [apiTxData, processApiTxData]);
 
   useEffect(() => {
     if (!VAAData) return;
     setErrorCode(undefined);
-    refetchTxData();
-  }, [VAAData, refetchTxData]);
 
-  const { payload } = txData?.find(tx => !!tx.payload) || {};
-  const { payloadType } = payload || {};
-
-  const processVAA = useCallback(async () => {
-    const result = VAAData.map(async tx => {
-      const vaa = tx.vaa;
-      if (!vaa) return;
-
-      const guardianSetIndex = tx.guardianSetIndex;
-      // Decode SignedVAA and get guardian signatures with name
-      const guardianSetList = getGuardianSet(guardianSetIndex);
-      const vaaBuffer = Buffer.from(vaa, "base64");
-      const parsedVaa = parseVaa(vaaBuffer);
-
-      const { emitterAddress, guardianSignatures, hash, sequence } = parsedVaa || {};
-      const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
-      const parsedHash = Buffer.from(hash).toString("hex");
-      const parsedSequence = Number(sequence);
-      const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
-        index,
-        signature: Buffer.from(signature).toString("hex"),
-        name: guardianSetList?.[index]?.name,
-      }));
-
-      return {
-        ...tx,
-        vaa,
-        decodedVaa: {
-          ...parsedVaa,
-          payload: parsedVaa.payload ? Buffer.from(parsedVaa.payload).toString("hex") : null,
-          emitterAddress: parsedEmitterAddress,
-          guardianSignatures: parsedGuardianSignatures,
-          hash: parsedHash,
-          sequence: parsedSequence,
-        },
-      };
-    });
-
-    const results = await Promise.all(result);
-    setParsedVAAsData(results);
-    setEmitterChainId(results.find(a => !!a?.emitterChain)?.emitterChain);
-  }, [VAAData]);
-
-  useEffect(() => {
-    if (VAAData) {
-      processVAA();
-    }
-  }, [VAAData, processVAA]);
+    processVaaData(VAAData);
+  }, [VAAData, processVaaData]);
 
   return (
     <BaseLayout>
@@ -455,19 +438,20 @@ const Tx = () => {
         ) : (
           <>
             <Top
-              txHash={VAADataTxHash ?? txData?.[0]?.txHash}
+              txHash={VAADataTxHash ?? txData?.[0]?.sourceChain?.transaction?.txHash}
               emitterChainId={emitterChainId}
-              gatewayInfo={txData?.[0]?.globalTx?.originTx?.attribute?.value}
-              payloadType={payloadType}
+              gatewayInfo={txData?.[0]?.sourceChain?.attribute?.value}
+              payloadType={txData?.[0]?.content?.payload?.payloadType}
             />
-            {parsedVAAsData?.map(
-              (parsedVAAData, i) =>
+            {txData?.map(
+              (data, i) =>
                 txData && (
                   <Information
-                    key={parsedVAAData.id || `vaa-${i}`}
+                    key={data.id || `vaa-${i}`}
                     extraRawInfo={extraRawInfo}
-                    VAAData={parsedVAAData}
-                    txData={txData.find(tx => tx.id === parsedVAAData.id)}
+                    data={data}
+                    // VAAData={data}
+                    // txData={txData.find(tx => tx.id === data.id)}
                     blockData={blockData}
                   />
                 ),

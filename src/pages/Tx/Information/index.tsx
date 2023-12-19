@@ -23,7 +23,7 @@ import {
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
 import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
-import { VAADetail } from "src/api/guardian-network/types";
+import { GetOperationsOutput, VAADetail } from "src/api/guardian-network/types";
 
 import Tabs from "./Tabs";
 import Summary from "./Summary";
@@ -37,9 +37,10 @@ import "./styles.scss";
 
 interface Props {
   extraRawInfo: any;
-  VAAData: VAADetail & { vaa: any; decodedVaa: any };
-  txData: GetTransactionsOutput;
+  // VAAData: VAADetail & { vaa: any; decodedVaa: any };
+  // txData: GetTransactionsOutput;
   blockData: GetBlockData;
+  data: GetOperationsOutput;
 }
 
 const UNKNOWN_APP_ID = "UNKNOWN";
@@ -47,7 +48,7 @@ const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
 const CONNECT_APP_ID = "CONNECT";
 const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
 
-const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
+const Information = ({ data, extraRawInfo, /* VAAData, txData, */ blockData }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [showOverview, setShowOverviewState] = useState(searchParams.get("view") !== "rawdata");
@@ -67,36 +68,31 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   const currentNetwork = environment.network;
 
   const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
-  const { decodedVaa, vaa } = VAAData || {};
-  const { guardianSignatures } = decodedVaa || {};
-  const guardianSignaturesCount = guardianSignatures?.length || 0;
+
+  // const { guardianSignatures } = decodedVaa || {};
+  // const { decodedVaa, vaa } = VAAData || {};
+  const vaa = data?.vaa;
+
+  const guardianSignaturesCount = /* guardianSignatures?.length || */ 0;
+
   const hasVAA = !!vaa;
 
   const { currentBlock, lastFinalizedBlock } = blockData || {};
+  const { payload, standarizedProperties } = data?.content || {};
+  const { symbol, tokenAmount, usdAmount } = data?.data || {};
+  const { hex: emitterAddress, native: emitterNativeAddress } = data?.emitterAddress || {};
+  const emitterChain = data?.emitterChain;
+  const VAAId = data?.id;
+  const { timestamp } = data?.sourceChain || {};
 
   const {
-    id: VAAId,
-    timestamp,
-    tokenAmount,
-    usdAmount,
-    symbol,
-    emitterChain,
-    emitterAddress,
-    emitterNativeAddress,
-    standardizedProperties,
-    globalTx,
-    payload,
-  } = txData || {};
-
-  const {
-    callerAppId,
     parsedPayload,
     payloadType,
     tokenAddress: payloadTokenAddress,
     tokenChain: payloadTokenChain,
   } = payload || {};
 
-  const { originTx, destinationTx } = globalTx || {};
+  // const { originTx, destinationTx } = globalTx || {};
 
   const {
     amount,
@@ -108,32 +104,30 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
     toChain: stdToChain,
     tokenAddress: stdTokenAddress,
     tokenChain: stdTokenChain,
-  } = standardizedProperties || {};
+  } = standarizedProperties || {};
 
-  const { from: globalFrom, timestamp: globalFromTimestamp } = originTx || {};
+  // const { from: globalFrom, timestamp: globalFromTimestamp } = originTx || {};
 
-  const {
-    chainId: globalToChainId,
-    from: globalTo,
-    timestamp: globalToTimestamp,
-    txHash: globalToRedeemTx,
-  } = destinationTx || {};
+  // const {
+  //   chainId: globalToChainId,
+  //   from: globalTo,
+  //   timestamp: globalToTimestamp,
+  //   txHash: globalToRedeemTx,
+  // } = destinationTx || {};
 
   const fromChainOrig = emitterChain || stdFromChain;
-  const fromAddress = globalFrom || stdFromAddress;
-  const toAddress = stdToAddress || globalTo;
-  const startDate = timestamp || globalFromTimestamp;
-  const endDate = globalToTimestamp;
+  const fromAddress = data?.sourceChain?.from || stdFromAddress;
+  const toAddress = stdToAddress || data?.targetChain?.to;
+  const startDate = timestamp || data?.sourceChain?.timestamp;
+  const endDate = data?.targetChain?.timestamp;
   const tokenChain = stdTokenChain || payloadTokenChain;
   const tokenAddress = stdTokenAddress || payloadTokenAddress;
 
-  const isUnknownApp = callerAppId === UNKNOWN_APP_ID || appIds?.includes(UNKNOWN_APP_ID);
-  const isCCTP = callerAppId === CCTP_APP_ID || appIds?.includes(CCTP_APP_ID);
-  const isConnect = callerAppId === CONNECT_APP_ID || appIds?.includes(CONNECT_APP_ID);
-  const isPortal = callerAppId === PORTAL_APP_ID || appIds?.includes(PORTAL_APP_ID);
-  const isTBTC =
-    callerAppId?.toLowerCase().includes("tbtc") ||
-    !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
+  const isUnknownApp = appIds?.includes(UNKNOWN_APP_ID);
+  const isCCTP = appIds?.includes(CCTP_APP_ID);
+  const isConnect = appIds?.includes(CONNECT_APP_ID);
+  const isPortal = appIds?.includes(PORTAL_APP_ID);
+  const isTBTC = !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
   const isTransferWithPayload = payloadType === 3;
   const hasAnotherApp = !!(
     appIds &&
@@ -153,16 +147,18 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
     value: emitterNativeAddress ? emitterNativeAddress : emitterAddress,
     chainId: emitterChain as ChainId,
   });
-  const isGatewaySource = originTx?.attribute?.type === "wormchain-gateway";
+  const isGatewaySource = data?.sourceChain?.attribute?.type === "wormchain-gateway";
 
   // Gateway Transfers
-  const fromChain = isGatewaySource ? originTx?.attribute?.value?.originChainId : fromChainOrig;
+  const fromChain = isGatewaySource
+    ? data?.sourceChain?.attribute?.value?.originChainId
+    : fromChainOrig;
   const toChain = parsedPayload?.["gateway_transfer"]?.chain
     ? parsedPayload?.["gateway_transfer"].chain
-    : stdToChain || globalToChainId;
+    : stdToChain || data?.targetChain?.chainId;
 
   const parsedOriginAddress = isGatewaySource
-    ? originTx?.attribute?.value?.originAddress
+    ? data?.sourceChain?.attribute?.value?.originAddress
     : parseAddress({
         value: fromAddress,
         chainId: fromChainOrig as ChainId,
@@ -175,7 +171,10 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       });
   // --- x ---
 
-  const parsedRedeemTx = parseTx({ value: globalToRedeemTx, chainId: toChain as ChainId });
+  const parsedRedeemTx = parseTx({
+    value: data?.targetChain?.transaction?.txHash,
+    chainId: toChain as ChainId,
+  });
 
   const amountSent = formatNumber(Number(tokenAmount));
   const amountSentUSD = +usdAmount ? formatNumber(+usdAmount, 2) : "";
@@ -224,6 +223,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   const [loadingRelayers, setLoadingRelayers] = useState(false);
   const getRelayerInfo = useCallback(async () => {
     setLoadingRelayers(true);
+    console.log({ vaa });
     populateDeliveryLifecycleRecordByVaa(environment, vaa)
       .then((result: DeliveryLifecycleRecord) => {
         analytics.track("txDetail", {
@@ -231,16 +231,16 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
           chain: getChainName({
             chainId: (result?.sourceChainId as any)
               ? (result.sourceChainId as any)
-              : txData?.standardizedProperties?.fromChain
-              ? txData.standardizedProperties.fromChain
+              : data?.content?.standarizedProperties?.fromChain
+              ? data?.content?.standarizedProperties.fromChain
               : 0,
             network: currentNetwork,
           }),
           toChain: getChainName({
             chainId: result?.targetTransaction?.targetChainId
               ? result.targetTransaction?.targetChainId
-              : txData?.standardizedProperties?.toChain
-              ? txData.standardizedProperties.toChain
+              : data?.content?.standarizedProperties?.toChain
+              ? data?.content?.standarizedProperties.toChain
               : 0,
             network: currentNetwork,
           }),
@@ -258,8 +258,8 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   }, [
     environment,
     vaa,
-    txData?.standardizedProperties?.fromChain,
-    txData?.standardizedProperties?.toChain,
+    data?.content?.standarizedProperties.fromChain,
+    data?.content?.standarizedProperties.toChain,
     currentNetwork,
   ]);
 
@@ -272,13 +272,15 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   useEffect(() => {
     if (targetContract || parsedEmitterAddress) {
       const isGeneric = targetContract?.toUpperCase() === parsedEmitterAddress?.toUpperCase();
-      setIsGenericRelayerTx(isGeneric);
-      if (isGeneric) {
+      if (isGeneric && vaa) {
+        setIsGenericRelayerTx(isGeneric);
         console.log("isGenericRelayerTx!!!");
         getRelayerInfo();
+      } else {
+        setIsGenericRelayerTx(false);
       }
     }
-  }, [targetContract, parsedEmitterAddress, getRelayerInfo]);
+  }, [targetContract, parsedEmitterAddress, getRelayerInfo, vaa]);
   // --- x ---
 
   const OverviewContent = () => {
@@ -307,9 +309,9 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       });
 
       const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
-      const guardianSignaturesCount = Array.isArray(guardianSignatures)
+      const guardianSignaturesCount = /* Array.isArray(guardianSignatures)
         ? guardianSignatures?.length || 0
-        : 0;
+        : */ 0;
 
       const fromChain = emitterChain;
 
@@ -518,7 +520,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         <>
           <Overview
             {...overviewAndDetailProps}
-            globalToRedeemTx={globalToRedeemTx}
+            globalToRedeemTx={data?.targetChain?.transaction?.txHash}
             isAttestation={isAttestation}
           />
           <AlertsContent />
@@ -530,14 +532,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
   const RawDataContent = () => {
     if (isGenericRelayerTx === null || (isGenericRelayerTx && loadingRelayers)) return <Loader />;
 
-    return (
-      <RawData
-        extraRawInfo={extraRawInfo}
-        lifecycleRecord={genericRelayerInfo}
-        txData={txData}
-        VAAData={VAAData}
-      />
-    );
+    return <RawData extraRawInfo={extraRawInfo} lifecycleRecord={genericRelayerInfo} data={data} />;
   };
 
   const AlertsContent = () => {
@@ -619,7 +614,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
       <Summary
         appIds={appIds}
         currentNetwork={currentNetwork}
-        globalToRedeemTx={globalToRedeemTx}
+        globalToRedeemTx={data?.targetChain?.transaction?.txHash}
         hasAnotherApp={hasAnotherApp}
         isCCTP={isCCTP}
         isConnect={isConnect}

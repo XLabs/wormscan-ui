@@ -111,7 +111,7 @@ const RelayerOverview = ({
           <div className="tx-overview-graph-step-description">
             <Tooltip
               maxWidth={false}
-              tooltip={<div>{deliveryStatus.data?.toTxHash.toUpperCase()}</div>}
+              tooltip={<div>{deliveryStatus.data?.toTxHash?.toUpperCase()}</div>}
               type="info"
             >
               <a

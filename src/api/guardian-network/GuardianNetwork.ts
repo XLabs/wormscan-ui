@@ -20,6 +20,7 @@ import {
   VAACount,
   VAADetail,
   GetOperationsInput,
+  GetOperationsOutput,
 } from "./types";
 
 export class GuardianNetwork {
@@ -58,16 +59,15 @@ export class GuardianNetwork {
     address,
     vaaID,
     pagination = DefaultPageRequest,
-  }: GetOperationsInput): Promise<any> {
-    const result = await this._client.doGet("/operations", {
+  }: GetOperationsInput): Promise<GetOperationsOutput[]> {
+    const result: any = await this._client.doGet("/operations", {
       txHash,
       address,
       vaaID,
       ...pagination,
     });
 
-    console.log({ result });
-    return result;
+    return result?.operations as GetOperationsOutput[];
   }
 
   async getVAAbyTxHash({ query }: GetVAAByTxHashInput): Promise<VAADetail[]> {

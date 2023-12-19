@@ -122,14 +122,14 @@ export type GetVAAInput = (
   pagination?: PageRequest;
 };
 
-export type GetOperationsInput = {
+export interface GetOperationsInput {
   txHash?: string;
   address?: string;
   vaaID?: string;
   pagination?: PageRequest;
-};
+}
 
-export type GetOperationsOutput = {
+export interface GetOperationsOutput {
   id: string;
   emitterChain: number;
   emitterAddress: {
@@ -142,8 +142,8 @@ export type GetOperationsOutput = {
     payload: {
       amount: string;
       fee: string;
-      fromAddress: null;
-      parsedPayload: null;
+      fromAddress: string | null;
+      parsedPayload: any;
       payload: string;
       payloadType: number;
       toAddress: string;
@@ -167,16 +167,25 @@ export type GetOperationsOutput = {
   };
   sourceChain: {
     chainId: number;
-    timestamp: string;
+    timestamp: Date | string;
     transaction: {
       txHash: string;
+      secondTxHash?: string;
     };
     from: string;
     status: string;
+    attribute?: {
+      type: string;
+      value?: {
+        originAddress: string;
+        originChainId: number;
+        originTxHash: string;
+      };
+    };
   };
   targetChain: {
     chainId: number;
-    timestamp: string;
+    timestamp: Date | string;
     transaction: {
       txHash: string;
     };
@@ -189,7 +198,8 @@ export type GetOperationsOutput = {
     tokenAmount: string;
     usdAmount: string;
   };
-}[];
+}
+[];
 
 export interface GetVAAByTxHashInput {
   query: {
