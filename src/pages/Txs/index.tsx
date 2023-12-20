@@ -106,7 +106,7 @@ const Txs = () => {
         const { originTx: firstOriginTx } = firstGlobalTx || {};
 
         const originChainId = firstStandardizedProperties?.fromChain || firstOriginTx?.chainId;
-        const originAddress = firstStandardizedProperties?.fromAddress || firstOriginTx?.from;
+        const originAddress = firstOriginTx?.from || firstStandardizedProperties?.fromAddress;
         const destinationChainId = firstStandardizedProperties?.toChain;
 
         const addressChainId =

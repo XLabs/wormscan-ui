@@ -28,17 +28,14 @@ const Search = () => {
       ])) as any;
 
       if (!!currentNetworkResult?.length) {
-        return currentNetworkResult;
+        navigate(`/txs?address=${address}&network=${environment.network}`);
       } else if (!!otherNetworkResult?.length) {
-        navigate(`/txs?address=${address}?network=${otherNetwork}`);
+        navigate(`/txs?address=${address}&network=${otherNetwork}`);
       } else {
         throw new Error("Both requests failed");
       }
     },
     {
-      onSuccess: (_, { address }) => {
-        navigate(`/txs?address=${address}`);
-      },
       onError: (_err, { address }) => {
         // Navigate to tx page if by address fails
         const txHash = address;

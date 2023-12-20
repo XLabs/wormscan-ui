@@ -75,6 +75,20 @@ export type CctpRelayOutput = {
     completedAt: string;
     receivedAt: string;
   };
+  fee: {
+    amount: number;
+    symbol: string;
+  };
+  from: {
+    amountSent: number;
+    amountToSwap: number;
+    chain: string;
+    chainId: number;
+    estimatedNativeAssetAmount: number;
+    senderAddress: string;
+    symbol: string;
+    txHash: string;
+  };
   to: {
     chain: string;
     chainId: number;

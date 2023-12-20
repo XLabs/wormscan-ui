@@ -325,6 +325,15 @@ const Tx = () => {
             }
             setExtraRawInfo(relayResponse);
           }
+
+          if (relayResponse?.to?.recipientAddress) {
+            txResponse.standardizedProperties.toAddress = relayResponse?.to?.recipientAddress;
+          }
+          if (relayResponse?.fee?.amount) {
+            txResponse.standardizedProperties.fee =
+              "" +
+              (relayResponse?.fee?.amount + (relayResponse?.from?.amountToSwap || 0)) * 100000000;
+          }
         }
 
         // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)

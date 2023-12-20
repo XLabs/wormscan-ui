@@ -17,10 +17,6 @@ const Top = ({ address, addressChainId }: Props) => {
   const currentNetwork = environment.network;
 
   const { t } = useTranslation();
-  const parsedAddress = parseAddress({
-    value: address,
-    chainId: addressChainId,
-  });
 
   return (
     <section className="txs-top">
@@ -35,17 +31,17 @@ const Top = ({ address, addressChainId }: Props) => {
               href={getExplorerLink({
                 network: currentNetwork,
                 chainId: addressChainId,
-                value: parsedAddress,
+                value: address,
                 isNativeAddress: true,
                 base: "address",
               })}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {parsedAddress}
+              {address}
             </a>
 
-            <CopyToClipboard toCopy={parsedAddress}>
+            <CopyToClipboard toCopy={address}>
               <CopyIcon height={20} width={20} />
             </CopyToClipboard>
           </div>
