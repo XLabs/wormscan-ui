@@ -11,8 +11,11 @@ const getBaseURL = (network: Network) => {
     : process.env.WORMSCAN_TESTNET_API_BASE_URL;
 };
 
-const mainnetClient = createClient(getBaseURL("MAINNET"));
-const testnetClient = createClient(getBaseURL("TESTNET"));
+const clients = {
+  MAINNET: createClient(getBaseURL("MAINNET")),
+  TESTNET: createClient(getBaseURL("TESTNET")),
+  DEVNET: createClient(getBaseURL("TESTNET")),
+};
 
 const resetQueries = async () => {
   await queryClient.resetQueries();
@@ -26,15 +29,13 @@ export const changeClientNetwork = (network: Network) => {
   if (currentNetwork === network) return;
   currentNetwork = network;
 
-  client = network === "MAINNET" ? mainnetClient : testnetClient;
+  client = clients[network];
   resetQueries();
 };
 
-export const getClient = () => {
+export const getClient = (network?: Network) => {
+  if (network) {
+    return clients[network];
+  }
   return client;
-};
-
-export const getOtherClient = () => {
-  if (currentNetwork === "MAINNET") return testnetClient;
-  return mainnetClient;
 };

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMutation } from "react-query";
 import { useTranslation } from "react-i18next";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
-import { getClient, getOtherClient } from "src/api/Client";
+import { getClient } from "src/api/Client";
 import SearchBar from "../../SearchBar";
 import analytics from "src/analytics";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -20,19 +20,17 @@ const Search = () => {
 
   const { mutate: mutateFindVAAByAddress } = useMutation(
     async ({ address }: { address: string }) => {
+      const otherNetwork = environment.network === "MAINNET" ? "TESTNET" : "MAINNET";
+
       const [currentNetworkResult, otherNetworkResult] = (await Promise.all([
         getClient().search.getTransactions({ query: { ...(address && { address }) } }),
-        getOtherClient().search.getTransactions({ query: { ...(address && { address }) } }),
+        getClient(otherNetwork).search.getTransactions({ query: { ...(address && { address }) } }),
       ])) as any;
 
       if (!!currentNetworkResult?.length) {
         return currentNetworkResult;
       } else if (!!otherNetworkResult?.length) {
-        navigate(
-          `/txs?address=${address}?network=${
-            environment.network === "MAINNET" ? "TESTNET" : "MAINNET"
-          }`,
-        );
+        navigate(`/txs?address=${address}?network=${otherNetwork}`);
       } else {
         throw new Error("Both requests failed");
       }

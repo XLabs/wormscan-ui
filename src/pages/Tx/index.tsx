@@ -9,7 +9,7 @@ import { BaseLayout } from "src/layouts/BaseLayout";
 import { fetchWithRpcFallThrough, getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
 import { formatUnits, parseTx } from "src/utils/crypto";
 import { ChainId } from "src/api";
-import { getClient, getOtherClient } from "src/api/Client";
+import { getClient } from "src/api/Client";
 import analytics from "src/analytics";
 import { GlobalTxOutput, VAADetail } from "src/api/guardian-network/types";
 import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
@@ -150,6 +150,7 @@ const Tx = () => {
   const { data: VAADataByTx } = useQuery(
     ["getVAAbyTxHash", txHash],
     async () => {
+      const otherNetwork = network === "MAINNET" ? "TESTNET" : "MAINNET";
       const [currentNetworkResponse, otherNetworkResponse] = await Promise.all([
         getClient().guardianNetwork.getVAAbyTxHash({
           query: {
@@ -157,7 +158,7 @@ const Tx = () => {
             parsedPayload: true,
           },
         }),
-        getOtherClient().guardianNetwork.getVAAbyTxHash({
+        getClient(otherNetwork).guardianNetwork.getVAAbyTxHash({
           query: {
             txHash: txHash,
             parsedPayload: true,
@@ -167,7 +168,7 @@ const Tx = () => {
 
       if (!!currentNetworkResponse.length) return currentNetworkResponse;
       if (!!otherNetworkResponse.length) {
-        navigate(`/tx/${txHash}?network=${network === "MAINNET" ? "TESTNET" : "MAINNET"}`);
+        navigate(`/tx/${txHash}?network=${otherNetwork}`);
       }
       throw new Error("no data");
     },
@@ -206,6 +207,7 @@ const Tx = () => {
       if (isNaN(Number(chainId)) || isNaN(Number(seq))) {
         throw new Error("Request failed with status code 400");
       }
+      const otherNetwork = network === "MAINNET" ? "TESTNET" : "MAINNET";
 
       const [currentNetworkResponse, otherNetworkResponse] = (await Promise.all([
         getClient().guardianNetwork.getVAA({
@@ -216,7 +218,7 @@ const Tx = () => {
             parsedPayload: true,
           },
         }),
-        getOtherClient().guardianNetwork.getVAA({
+        getClient(otherNetwork).guardianNetwork.getVAA({
           chainId: Number(chainId),
           emitter,
           seq: Number(seq),
@@ -228,7 +230,7 @@ const Tx = () => {
 
       if (!!currentNetworkResponse) return currentNetworkResponse;
       if (!!otherNetworkResponse) {
-        navigate(`/tx/${VAAId}?network=${network === "MAINNET" ? "TESTNET" : "MAINNET"}`);
+        navigate(`/tx/${VAAId}?network=${otherNetwork}`);
       } else {
         throw new Error("no vaaID data");
       }
