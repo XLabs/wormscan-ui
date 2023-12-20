@@ -118,7 +118,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
             align: "left",
             margin: 49,
             offsetX: 0,
-            offsetY: 2,
+            offsetY: 1,
             style: {
               color: "var(--color-primary-150)",
               fontFamily: "IBM Plex Sans",
