@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
@@ -29,6 +29,7 @@ const Tx = () => {
   const { txHash, chainId, emitter, seq } = useParams();
   const { environment } = useEnvironment();
   const network = environment.network;
+  const navigate = useNavigate();
 
   // pattern match the search value to see if it's a candidate for being an EVM transaction hash.
   const search = txHash ? (txHash.startsWith("0x") ? txHash : "0x" + txHash) : "";
@@ -149,15 +150,27 @@ const Tx = () => {
   const { data: VAADataByTx } = useQuery(
     ["getVAAbyTxHash", txHash],
     async () => {
-      const response = await getClient().guardianNetwork.getVAAbyTxHash({
-        query: {
-          txHash: txHash,
-          parsedPayload: true,
-        },
-      });
+      const otherNetwork = network === "MAINNET" ? "TESTNET" : "MAINNET";
+      const [currentNetworkResponse, otherNetworkResponse] = await Promise.all([
+        getClient().guardianNetwork.getVAAbyTxHash({
+          query: {
+            txHash: txHash,
+            parsedPayload: true,
+          },
+        }),
+        getClient(otherNetwork).guardianNetwork.getVAAbyTxHash({
+          query: {
+            txHash: txHash,
+            parsedPayload: true,
+          },
+        }),
+      ]);
 
-      if (!response.length) throw new Error("no data");
-      return response;
+      if (!!currentNetworkResponse.length) return currentNetworkResponse;
+      if (!!otherNetworkResponse.length) {
+        navigate(`/tx/${txHash}?network=${otherNetwork}`);
+      }
+      throw new Error("no data");
     },
     {
       onSettled: async (data, error: Error) => {
@@ -188,21 +201,39 @@ const Tx = () => {
     },
   );
 
-  const { data: VAADataByVAAId }: { data: VAADetail } = useQuery(
+  const { data: VAADataByVAAId } = useQuery(
     ["getVAA", VAAId],
-    () => {
+    async () => {
       if (isNaN(Number(chainId)) || isNaN(Number(seq))) {
         throw new Error("Request failed with status code 400");
       }
+      const otherNetwork = network === "MAINNET" ? "TESTNET" : "MAINNET";
 
-      return getClient().guardianNetwork.getVAA({
-        chainId: Number(chainId),
-        emitter,
-        seq: Number(seq),
-        query: {
-          parsedPayload: true,
-        },
-      });
+      const [currentNetworkResponse, otherNetworkResponse] = (await Promise.all([
+        getClient().guardianNetwork.getVAA({
+          chainId: Number(chainId),
+          emitter,
+          seq: Number(seq),
+          query: {
+            parsedPayload: true,
+          },
+        }),
+        getClient(otherNetwork).guardianNetwork.getVAA({
+          chainId: Number(chainId),
+          emitter,
+          seq: Number(seq),
+          query: {
+            parsedPayload: true,
+          },
+        }),
+      ])) as VAADetail[];
+
+      if (!!currentNetworkResponse) return currentNetworkResponse;
+      if (!!otherNetworkResponse) {
+        navigate(`/tx/${VAAId}?network=${otherNetwork}`);
+      } else {
+        throw new Error("no vaaID data");
+      }
     },
     {
       onError: (err: Error) => showSearchNotFound(err),

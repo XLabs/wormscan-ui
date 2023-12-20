@@ -40,10 +40,16 @@ export class GuardianNetwork {
       emitter,
       seq,
     });
-    const payload = await this._client.doGet(effectivePath, {
-      ...query,
-      ...pagination,
-    });
+
+    let payload;
+    try {
+      payload = await this._client.doGet(effectivePath, {
+        ...query,
+        ...pagination,
+      });
+    } catch (err) {
+      payload = null;
+    }
 
     const result = _get(payload, "data", null);
 

@@ -19,13 +19,20 @@ const Search = () => {
   const [searchValue, setSearchValue] = useState("");
 
   const { mutate: mutateFindVAAByAddress } = useMutation(
-    ({ address }: { address: string }) => {
-      try {
-        return getClient().search.findVAAByAddress({
-          address,
-        });
-      } catch (error) {
-        console.log(error);
+    async ({ address }: { address: string }) => {
+      const otherNetwork = environment.network === "MAINNET" ? "TESTNET" : "MAINNET";
+
+      const [currentNetworkResult, otherNetworkResult] = (await Promise.all([
+        getClient().search.getTransactions({ query: { ...(address && { address }) } }),
+        getClient(otherNetwork).search.getTransactions({ query: { ...(address && { address }) } }),
+      ])) as any;
+
+      if (!!currentNetworkResult?.length) {
+        return currentNetworkResult;
+      } else if (!!otherNetworkResult?.length) {
+        navigate(`/txs?address=${address}?network=${otherNetwork}`);
+      } else {
+        throw new Error("Both requests failed");
       }
     },
     {
