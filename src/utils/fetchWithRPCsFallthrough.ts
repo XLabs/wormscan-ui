@@ -1,6 +1,7 @@
 import {
   CHAIN_ID_SUI,
   CONTRACTS,
+  Network,
   coalesceChainName,
   isCosmWasmChain,
   isEVMChain,
@@ -673,4 +674,24 @@ export const getTokenInformation = async (
   }
 
   return { name, symbol, tokenDecimals };
+};
+
+interface IC3Response extends ethers.providers.Log {
+  tokenAmount: string;
+}
+export const getC3Redeem = async (
+  network: Network,
+  chain: ChainId,
+  address: string,
+  tokenAddress: string,
+  timestamp: string | Date,
+  amount: string,
+) => {
+  const WH_UTILS_URL = "https://cryptotruco.com";
+  const redeemTxn = await fetch(
+    `${WH_UTILS_URL}/get_c3_info?network=${network}&chain=${chain}&address=${address}&tokenAddress=${tokenAddress}&timestamp=${timestamp}&amount=${amount}`,
+  );
+
+  const redeemData = (await redeemTxn.json()) as IC3Response | null;
+  return redeemData;
 };

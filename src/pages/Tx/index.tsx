@@ -6,7 +6,11 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
 import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { fetchWithRpcFallThrough, getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
+import {
+  fetchWithRpcFallThrough,
+  getC3Redeem,
+  getTokenInformation,
+} from "src/utils/fetchWithRPCsFallthrough";
 import { formatUnits, parseTx } from "src/utils/crypto";
 import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
@@ -336,8 +340,61 @@ const Tx = () => {
           }
         }
 
-        // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
+        // check C3 CCTP
+        if (
+          !!txResponse?.standardizedProperties?.toChain &&
+          !!txResponse?.standardizedProperties?.toAddress &&
+          !!txResponse?.standardizedProperties?.tokenAddress &&
+          !!txResponse?.timestamp &&
+          !!txResponse?.payload?.amount &&
+          ((network === "MAINNET" &&
+            txResponse.standardizedProperties.toAddress.toLowerCase() ===
+              "0x5367066c34d487458811eFB506a7a2AFDADb8e8b".toLowerCase()) ||
+            (network === "TESTNET" &&
+              (txResponse.standardizedProperties.toAddress.toLowerCase() ===
+                "0xBedaC87507597efb371E77692AC991DB74080E30".toLowerCase() ||
+                txResponse.standardizedProperties.toAddress.toLowerCase() ===
+                  "0x5E1e43df18929920e46Bd415C929522f4Cc647F3".toLowerCase())))
+        ) {
+          console.log("is C3 transaction!");
+
+          const c3Info = await getC3Redeem(
+            network,
+            txResponse.standardizedProperties.toChain,
+            txResponse.standardizedProperties.toAddress,
+            txResponse.standardizedProperties.tokenAddress,
+            txResponse.timestamp,
+            txResponse.payload.amount,
+          );
+
+          if (c3Info) {
+            const c3Destination: GlobalTxOutput["destinationTx"] = {
+              chainId: txResponse.standardizedProperties.toChain,
+              status: "redeemed",
+              timestamp: new Date(txResponse.timestamp).toISOString(),
+              txHash: c3Info.transactionHash,
+              updatedAt: new Date(txResponse.timestamp).toISOString(),
+
+              blockNumber: "" + c3Info.blockNumber,
+              from: null,
+              method: null,
+              to: null,
+            };
+
+            if (txResponse.globalTx) {
+              txResponse.globalTx.destinationTx = c3Destination;
+            } else {
+              txResponse.globalTx = {
+                id: null,
+                originTx: null,
+                destinationTx: c3Destination,
+              };
+            }
+          }
+        }
+
         if (!txResponse?.standardizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
+          // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
           analytics.track("txDetail", {
             appIds: txResponse?.standardizedProperties?.appIds?.join(", ")
               ? txResponse.standardizedProperties.appIds.join(", ")
