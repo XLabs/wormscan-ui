@@ -6,10 +6,17 @@ interface ChainEndpoints {
 }
 
 export const processData = (
-  data: CrossChainActivity,
+  initialData: CrossChainActivity,
   showOthers: boolean,
   selectedDestination: string,
 ) => {
+  const data = initialData
+    .map(item => ({
+      ...item,
+      destinations: item.destinations.filter(dest => dest.percentage !== 0),
+    }))
+    .filter(item => item.percentage !== 0);
+
   // if showing sources -> destinations, just cut the 'data' depending on page:
   if (selectedDestination === "sources") {
     const newData = [...data].sort((a, b) => b.percentage - a.percentage);

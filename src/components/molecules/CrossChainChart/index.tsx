@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import i18n from "src/i18n";
 import { Loader, Select, ToggleGroup } from "src/components/atoms";
@@ -33,7 +32,6 @@ const CrossChainChart = () => {
   const currentNetwork = environment.network;
   const { t } = useTranslation();
 
-  const [filteredData, setFilteredData] = useState(null);
   const [TYPE_LIST, setTypeList] = useState(MAINNET_TYPE_LIST);
   const [selectedType, setSelectedType] = useState<CrossChainBy>("notional");
   const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
@@ -60,19 +58,6 @@ const CrossChainChart = () => {
       }),
     { cacheTime: 0 },
   );
-
-  useEffect(() => {
-    setFilteredData(null);
-    if (data) {
-      const result = data
-        .map(item => ({
-          ...item,
-          destinations: item.destinations.filter(dest => dest.percentage !== 0),
-        }))
-        .filter(item => item.percentage !== 0);
-      setFilteredData(result);
-    }
-  }, [data]);
 
   return (
     <div className="cross-chain" data-testid="cross-chain-card">
@@ -130,16 +115,14 @@ const CrossChainChart = () => {
         <>
           {isError ? (
             <ErrorPlaceholder errorType="sankey" />
-          ) : filteredData ? (
+          ) : (
             <Chart
               currentNetwork={currentNetwork}
-              data={filteredData}
+              data={data}
               selectedDestination={selectedDestination}
               selectedType={selectedType}
               selectedTimeRange={selectedTimeRange.value}
             />
-          ) : (
-            <Loader />
           )}
         </>
       )}
