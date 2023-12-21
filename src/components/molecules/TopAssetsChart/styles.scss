@@ -25,7 +25,7 @@
     overflow: hidden;
     padding: unset;
 
-    &::after {
+    &::before {
       content: "";
       position: absolute;
       top: 72px;
