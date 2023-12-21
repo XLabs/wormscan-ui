@@ -1,0 +1,77 @@
+@import "src/styles/globals.scss";
+
+.pp-banner {
+  @include centered-column;
+  align-items: center;
+  background-color: #010014f2;
+  bottom: 0;
+  gap: 24px;
+  left: 0;
+  margin: 0 auto;
+  padding: 24px 16px;
+  position: fixed;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+
+  @include tablet {
+    @include centered-row;
+    padding: 24px;
+  }
+
+  @include desktop {
+    align-items: center;
+    gap: 32px;
+    justify-content: center;
+    width: 98%;
+  }
+
+  @include bigDesktop {
+    gap: 56px;
+  }
+
+  &-content {
+    @include centered-row;
+    justify-content: center;
+    max-width: 320px;
+
+    @include tablet {
+      max-width: 500px;
+    }
+
+    @include desktop {
+      max-width: unset;
+    }
+
+    &-text {
+      @include text-p2;
+      color: var(--color-primary-50);
+      text-align: center;
+    }
+
+    &-link {
+      @include text-p2;
+      color: var(--color-information-100);
+      text-decoration: none;
+
+      &:hover {
+        @include text-p2-underline;
+      }
+    }
+  }
+
+  &-button {
+    @include button;
+    background-color: var(--color-primary-90);
+    border-radius: 8px;
+    border: none;
+    color: #000f25;
+    cursor: pointer;
+    max-width: 100px;
+    padding: 8px 16px;
+
+    &:hover {
+      background-color: var(--color-primary-50);
+    }
+  }
+}
