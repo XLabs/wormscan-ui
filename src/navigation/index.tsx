@@ -20,7 +20,7 @@ const Navigation = () => {
       <AnalyticsLinkTracker>
         <EnvironmentProvider>
           <ErrorBoundary>
-            <PolicyPrivacyBanner />
+            {/* TODO: uncomment when we have the privacy policy page <PolicyPrivacyBanner /> */}
             <Suspense
               fallback={
                 <BaseLayout>

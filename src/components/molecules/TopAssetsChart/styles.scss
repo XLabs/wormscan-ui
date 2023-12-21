@@ -19,17 +19,22 @@
   width: 100%;
 
   @include desktop {
-    background: linear-gradient(
-      180deg,
-      transparent 0%,
-      transparent 72px,
-      var(--color-white-05) 72px,
-      var(--color-white-05) 100%
-    );
+    background-color: transparent;
     flex: 1.4;
     height: unset;
     overflow: hidden;
     padding: unset;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 72px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--color-white-05);
+      border-radius: 5px;
+    }
   }
 
   @include bigDesktop {
