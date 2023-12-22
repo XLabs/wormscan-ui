@@ -6,33 +6,7 @@ import { CopyToClipboard } from "src/components/molecules";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { TruncateText } from "src/utils/string";
 import "./styles.scss";
-
-type Props = {
-  amountSent?: string;
-  amountSentUSD?: string;
-  currentNetwork?: Network;
-  destinationDateParsed?: string;
-  fee?: string;
-  fromChain?: ChainId | number;
-  fromChainOrig?: ChainId | number;
-  guardianSignaturesCount?: number;
-  isGatewaySource?: boolean;
-  isUnknownApp?: boolean;
-  originDateParsed?: string;
-  parsedDestinationAddress?: string;
-  parsedEmitterAddress?: string;
-  parsedOriginAddress?: string;
-  parsedPayload?: any;
-  parsedRedeemTx?: string;
-  redeemedAmount?: string;
-  redeemedAmountUSD?: string;
-  symbol?: string;
-  toChain?: ChainId | number;
-  tokenAmount?: string;
-  tokenLink?: string;
-  totalGuardiansNeeded?: number;
-  VAAId?: string;
-};
+import { OverviewProps } from "../Overview";
 
 const Details = ({
   amountSent,
@@ -52,13 +26,15 @@ const Details = ({
   parsedPayload,
   parsedRedeemTx,
   redeemedAmount,
-  symbol,
+  sourceSymbol,
+  sourceTokenLink,
+  targetSymbol,
+  targetTokenLink,
   toChain,
   tokenAmount,
-  tokenLink,
   totalGuardiansNeeded,
   VAAId,
-}: Props) => {
+}: OverviewProps) => {
   const extraWidthGatewaySource = isGatewaySource ? 125 : 30;
   const extraWidthUnknownApp = isUnknownApp ? 55 : 30;
   const lineValueRef = useRef<HTMLDivElement>(null);
@@ -179,14 +155,14 @@ const Details = ({
             {tokenAmount ? (
               <>
                 {amountSent}{" "}
-                {symbol ? (
+                {sourceSymbol ? (
                   <>
-                    {tokenLink ? (
-                      <a href={tokenLink} target="_blank" rel="noopener noreferrer">
-                        {symbol}
+                    {sourceTokenLink ? (
+                      <a href={sourceTokenLink} target="_blank" rel="noopener noreferrer">
+                        {sourceSymbol}
                       </a>
                     ) : (
-                      <span>{symbol}</span>
+                      <span>{sourceSymbol}</span>
                     )}
                     {amountSentUSD && `(${amountSentUSD} USD)`}
                   </>
@@ -331,26 +307,26 @@ const Details = ({
             {Number(fee) ? (
               <>
                 {redeemedAmount}{" "}
-                {symbol &&
-                  (tokenLink ? (
-                    <a href={tokenLink} target="_blank" rel="noopener noreferrer">
-                      {symbol}
+                {targetSymbol &&
+                  (targetTokenLink ? (
+                    <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
+                      {targetSymbol}
                     </a>
                   ) : (
-                    <span>{symbol}</span>
+                    <span>{targetSymbol}</span>
                   ))}
               </>
             ) : tokenAmount ? (
               <>
                 {amountSent}{" "}
-                {symbol ? (
+                {targetSymbol ? (
                   <>
-                    {tokenLink ? (
-                      <a href={tokenLink} target="_blank" rel="noopener noreferrer">
-                        {symbol}
+                    {targetTokenLink ? (
+                      <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
+                        {targetSymbol}
                       </a>
                     ) : (
-                      <span>{symbol}</span>
+                      <span>{targetSymbol}</span>
                     )}
                     {amountSentUSD && `(${amountSentUSD} USD)`}
                   </>

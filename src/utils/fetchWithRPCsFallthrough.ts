@@ -564,6 +564,23 @@ const getCctpEmitterAddress = (env: Environment, chain: ChainId) => {
   }
   return null;
 };
+
+export const getUsdcAddress = (network: Network, chain: ChainId) => {
+  if (network === "MAINNET") {
+    if (chain === ChainId.Ethereum) return "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
+    if (chain === ChainId.Avalanche) return "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E";
+    if (chain === ChainId.Arbitrum) return "0xaf88d065e77c8cc2239327c5edb3a432268e5831";
+    if (chain === ChainId.Optimism) return "0x0b2c639c533813f4aa9d7837caf62653d097ff85";
+    if (chain === ChainId.Base) return "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+  } else {
+    if (chain === ChainId.Ethereum) return "0x07865c6e87b9f70255377e024ace6630c1eaa37f";
+    if (chain === ChainId.Avalanche) return "0x5425890298aed601595a70ab815c96711a31bc65";
+    if (chain === ChainId.Arbitrum) return "0xfd064a18f3bf249cf1f87fc203e90d8f650f2d63";
+    if (chain === ChainId.Optimism) return "0xe05606174bac4a6364b31bd0eca4bf4dd368f8c6";
+    if (chain === ChainId.Base) return "0xf175520c52418dfe19c8098071a252da48cd1c19";
+  }
+  return null;
+};
 // -----
 
 // RPCs UTILS -----
@@ -674,24 +691,4 @@ export const getTokenInformation = async (
   }
 
   return { name, symbol, tokenDecimals };
-};
-
-interface IC3Response extends ethers.providers.Log {
-  tokenAmount: string;
-}
-export const getC3Redeem = async (
-  network: Network,
-  chain: ChainId,
-  address: string,
-  tokenAddress: string,
-  timestamp: string | Date,
-  amount: string,
-) => {
-  const WH_UTILS_URL = "https://cryptotruco.com";
-  const redeemTxn = await fetch(
-    `${WH_UTILS_URL}/get_c3_info?network=${network}&chain=${chain}&address=${address}&tokenAddress=${tokenAddress}&timestamp=${timestamp}&amount=${amount}`,
-  );
-
-  const redeemData = (await redeemTxn.json()) as IC3Response | null;
-  return redeemData;
 };

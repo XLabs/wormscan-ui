@@ -178,6 +178,8 @@ export type GetTransactionsOutput = {
     toChain: number;
     tokenAddress: string;
     tokenChain: number;
+    wrappedTokenAddress?: string;
+    wrappedTokenSymbol?: string;
   };
   globalTx: GlobalTxOutput;
 };

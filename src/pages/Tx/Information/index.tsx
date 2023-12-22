@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ethers } from "ethers";
-import { ChainId, parseVaa } from "@certusone/wormhole-sdk";
+import { ChainId, isEVMChain, parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
   parseEVMExecutionInfoV1,
@@ -23,7 +23,7 @@ import {
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
 import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
-import { VAADetail } from "src/api/guardian-network/types";
+import { GlobalTxOutput, VAADetail } from "src/api/guardian-network/types";
 
 import Tabs from "./Tabs";
 import Summary from "./Summary";
@@ -34,12 +34,14 @@ import RelayerOverview from "./Overview/RelayerOverview";
 import RelayerDetails from "./Details/RelayerDetails";
 
 import "./styles.scss";
+import { tryGetRedeemTxn } from "src/utils/cryptoToolkit";
 
 interface Props {
   extraRawInfo: any;
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
   txData: GetTransactionsOutput;
   blockData: GetBlockData;
+  setTxData: (x: any) => void;
 }
 
 const UNKNOWN_APP_ID = "UNKNOWN";
@@ -47,7 +49,7 @@ const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
 const CONNECT_APP_ID = "CONNECT";
 const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
 
-const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
+const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [showOverview, setShowOverviewState] = useState(searchParams.get("view") !== "rawdata");
@@ -108,6 +110,8 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
     toChain: stdToChain,
     tokenAddress: stdTokenAddress,
     tokenChain: stdTokenChain,
+    wrappedTokenAddress,
+    wrappedTokenSymbol,
   } = standardizedProperties || {};
 
   const { from: globalFrom, timestamp: globalFromTimestamp } = originTx || {};
@@ -183,15 +187,51 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
     ? formatNumber(formatUnits(+amount - +fee))
     : formatNumber(+amount - +fee);
 
-  const tokenLink = getExplorerLink({
+  const originDateParsed = formatDate(startDate);
+  const destinationDateParsed = formatDate(endDate);
+
+  let sourceTokenLink = getExplorerLink({
     network: currentNetwork,
     chainId: tokenChain,
     value: tokenAddress,
     base: "token",
   });
+  let targetTokenLink = getExplorerLink({
+    network: currentNetwork,
+    chainId: tokenChain,
+    value: tokenAddress,
+    base: "token",
+  });
+  let sourceSymbol = symbol;
+  let targetSymbol = symbol;
+  let targetTokenChain = tokenChain;
 
-  const originDateParsed = formatDate(startDate);
-  const destinationDateParsed = formatDate(endDate);
+  if (wrappedTokenAddress) {
+    const wrapped = tokenChain !== toChain ? "target" : "source";
+
+    if (wrapped === "target") {
+      targetTokenChain = toChain;
+      targetTokenLink = getExplorerLink({
+        network: currentNetwork,
+        chainId: toChain,
+        value: wrappedTokenAddress,
+        base: "token",
+      });
+      if (wrappedTokenSymbol) {
+        targetSymbol = wrappedTokenSymbol;
+      }
+    } else {
+      sourceTokenLink = getExplorerLink({
+        network: currentNetwork,
+        chainId: fromChain,
+        value: wrappedTokenAddress,
+        base: "token",
+      });
+      if (wrappedTokenSymbol) {
+        sourceSymbol = wrappedTokenSymbol;
+      }
+    }
+  }
 
   const overviewAndDetailProps = {
     amountSent,
@@ -211,10 +251,12 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
     parsedPayload,
     parsedRedeemTx,
     redeemedAmount,
-    symbol,
+    sourceSymbol,
+    sourceTokenLink,
+    targetSymbol,
+    targetTokenLink,
     toChain,
     tokenAmount,
-    tokenLink,
     totalGuardiansNeeded,
     VAAId,
   };
@@ -606,6 +648,63 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
     );
   };
 
+  const [loadingRedeem, setLoadingRedeem] = useState(false);
+  const canTryToGetRedeem =
+    (isEVMChain(toChain) || toChain === 1) &&
+    toChain === targetTokenChain &&
+    !!toAddress &&
+    !!tokenAddress &&
+    !!timestamp &&
+    !!txData?.payload?.amount &&
+    !!txData?.txHash &&
+    !txData?.globalTx?.destinationTx;
+
+  const getRedeem = async () => {
+    setLoadingRedeem(true);
+
+    const redeemTxHash = await tryGetRedeemTxn(
+      currentNetwork,
+      toChain,
+      toAddress,
+      tokenAddress,
+      timestamp,
+      txData.payload.amount,
+      txData.txHash,
+    );
+
+    if (redeemTxHash) {
+      console.log("REDEEM TX HASH HERE:", redeemTxHash);
+
+      const newDestinationTx: GlobalTxOutput["destinationTx"] = {
+        chainId: toChain,
+        status: "redeemed",
+        timestamp: new Date(timestamp).toISOString(),
+        txHash: redeemTxHash,
+        updatedAt: new Date(timestamp).toISOString(),
+
+        blockNumber: null,
+        from: null,
+        method: null,
+        to: null,
+      };
+
+      const newTxData = { ...txData };
+
+      if (newTxData.globalTx) {
+        newTxData.globalTx.destinationTx = newDestinationTx;
+      } else {
+        newTxData.globalTx = {
+          id: null,
+          originTx: null,
+          destinationTx: newDestinationTx,
+        };
+      }
+
+      setTxData(newTxData);
+    }
+    setLoadingRedeem(false);
+  };
+
   return (
     <section className="tx-information">
       <Tabs
@@ -616,6 +715,9 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData }: Props) => {
         showOverviewDetail={showOverviewDetail}
       />
       <Summary
+        canTryToGetRedeem={canTryToGetRedeem}
+        getRedeem={getRedeem}
+        loadingRedeem={loadingRedeem}
         appIds={appIds}
         currentNetwork={currentNetwork}
         globalToRedeemTx={globalToRedeemTx}

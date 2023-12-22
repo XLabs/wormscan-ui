@@ -8,8 +8,8 @@ import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import {
   fetchWithRpcFallThrough,
-  getC3Redeem,
   getTokenInformation,
+  getUsdcAddress,
 } from "src/utils/fetchWithRPCsFallthrough";
 import { formatUnits, parseTx } from "src/utils/crypto";
 import { ChainId } from "src/api";
@@ -22,6 +22,7 @@ import { Information } from "./Information";
 import { Top } from "./Top";
 import "./styles.scss";
 import { getChainName } from "src/utils/wormhole";
+import { tryGetRedeemTxn, tryGetWrappedToken } from "src/utils/cryptoToolkit";
 
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
@@ -297,6 +298,14 @@ const Tx = () => {
             }`;
           }
 
+          // the target token address should be native USDC
+          if (txResponse.standardizedProperties?.toChain) {
+            txResponse.standardizedProperties.wrappedTokenAddress = getUsdcAddress(
+              network,
+              txResponse.standardizedProperties?.toChain,
+            );
+          }
+
           // get CCTP relayer information
           const relayResponse = await getClient().search.getCctpRelay({
             txHash: parseTx({ value: txResponse.txHash, chainId: 2 }),
@@ -340,59 +349,6 @@ const Tx = () => {
           }
         }
 
-        // check C3 CCTP
-        if (
-          !!txResponse?.standardizedProperties?.toChain &&
-          !!txResponse?.standardizedProperties?.toAddress &&
-          !!txResponse?.standardizedProperties?.tokenAddress &&
-          !!txResponse?.timestamp &&
-          !!txResponse?.payload?.amount &&
-          ((network === "MAINNET" &&
-            txResponse.standardizedProperties.toAddress.toLowerCase() ===
-              "0x5367066c34d487458811eFB506a7a2AFDADb8e8b".toLowerCase()) ||
-            (network === "TESTNET" &&
-              (txResponse.standardizedProperties.toAddress.toLowerCase() ===
-                "0xBedaC87507597efb371E77692AC991DB74080E30".toLowerCase() ||
-                txResponse.standardizedProperties.toAddress.toLowerCase() ===
-                  "0x5E1e43df18929920e46Bd415C929522f4Cc647F3".toLowerCase())))
-        ) {
-          console.log("is C3 transaction!");
-
-          const c3Info = await getC3Redeem(
-            network,
-            txResponse.standardizedProperties.toChain,
-            txResponse.standardizedProperties.toAddress,
-            txResponse.standardizedProperties.tokenAddress,
-            txResponse.timestamp,
-            txResponse.payload.amount,
-          );
-
-          if (c3Info) {
-            const c3Destination: GlobalTxOutput["destinationTx"] = {
-              chainId: txResponse.standardizedProperties.toChain,
-              status: "redeemed",
-              timestamp: new Date(txResponse.timestamp).toISOString(),
-              txHash: c3Info.transactionHash,
-              updatedAt: new Date(txResponse.timestamp).toISOString(),
-
-              blockNumber: "" + c3Info.blockNumber,
-              from: null,
-              method: null,
-              to: null,
-            };
-
-            if (txResponse.globalTx) {
-              txResponse.globalTx.destinationTx = c3Destination;
-            } else {
-              txResponse.globalTx = {
-                id: null,
-                originTx: null,
-                destinationTx: c3Destination,
-              };
-            }
-          }
-        }
-
         if (!txResponse?.standardizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
           // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
           analytics.track("txDetail", {
@@ -429,6 +385,7 @@ const Tx = () => {
     async (apiTxData: GetTransactionsOutput[]) => {
       const processedApiTxData = [];
 
+      // if there's no tokenAmount or symbol, try to get them with RPC info
       for (const data of apiTxData) {
         if (
           (!data.tokenAmount || !data.symbol) &&
@@ -460,9 +417,40 @@ const Tx = () => {
         }
       }
 
+      // try to get wrapped token address and symbol
+      for (const data of apiTxData) {
+        if (data?.standardizedProperties?.appIds?.includes("PORTAL_TOKEN_BRIDGE")) {
+          if (
+            data?.standardizedProperties?.fromChain &&
+            data?.standardizedProperties?.tokenAddress &&
+            data?.standardizedProperties?.tokenChain &&
+            data?.standardizedProperties?.toChain
+          ) {
+            const { fromChain, tokenAddress, tokenChain, toChain } = data.standardizedProperties;
+
+            const wrapped = tokenChain !== toChain ? "target" : "source";
+
+            const wrappedToken = await tryGetWrappedToken(
+              network,
+              tokenChain as ChainId,
+              tokenAddress,
+              (wrapped === "target" ? toChain : fromChain) as ChainId,
+            );
+
+            if (wrappedToken) {
+              data.standardizedProperties.wrappedTokenAddress = wrappedToken.wrappedToken;
+              if (wrappedToken.tokenSymbol) {
+                data.standardizedProperties.wrappedTokenSymbol = wrappedToken.tokenSymbol;
+              }
+              console.log("result!", { wrappedToken });
+            }
+          }
+        }
+      }
+
       setTxData(processedApiTxData);
     },
-    [environment],
+    [environment, network],
   );
 
   useEffect(() => {
@@ -526,6 +514,12 @@ const Tx = () => {
     }
   }, [VAAData, processVAA]);
 
+  const updateTxData = (newData: GetTransactionsOutput, i: number) => {
+    const newTxData = [...txData];
+    newTxData[i] = { ...newData };
+    setTxData(newTxData);
+  };
+
   return (
     <BaseLayout>
       <div className="tx-page">
@@ -557,6 +551,7 @@ const Tx = () => {
                     VAAData={parsedVAAData}
                     txData={txData.find(tx => tx.id === parsedVAAData.id)}
                     blockData={blockData}
+                    setTxData={newData => updateTxData(newData, i)}
                   />
                 ),
             )}
