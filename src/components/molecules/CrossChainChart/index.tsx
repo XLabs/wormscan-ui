@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import i18n from "src/i18n";
 import { Loader, Select, ToggleGroup } from "src/components/atoms";
