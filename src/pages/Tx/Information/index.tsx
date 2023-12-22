@@ -668,8 +668,9 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
       toAddress,
       tokenAddress,
       timestamp,
-      txData.payload.amount,
+      txData.standardizedProperties.amount,
       txData.txHash,
+      +VAAId.split("/").pop(), //sequence
     );
 
     if (redeemTxHash) {

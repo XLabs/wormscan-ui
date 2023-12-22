@@ -17,10 +17,11 @@ export const tryGetRedeemTxn = async (
   timestamp: string | Date,
   amount: string,
   txHash: string,
+  sequence: number,
 ) => {
   try {
     const redeemTxn = await fetch(
-      `${WH_UTILS_URL}/getRedeemTxn?network=${network}&chain=${chain}&address=${address}&tokenAddress=${tokenAddress}&timestamp=${timestamp}&amount=${amount}&txHash=${txHash}`,
+      `${WH_UTILS_URL}/getRedeemTxn?network=${network}&chain=${chain}&address=${address}&tokenAddress=${tokenAddress}&timestamp=${timestamp}&amount=${amount}&txHash=${txHash}&sequence=${sequence}`,
     );
 
     const redeemData = (await redeemTxn.json()) as any;

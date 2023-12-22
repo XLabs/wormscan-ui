@@ -22,7 +22,7 @@ import { Information } from "./Information";
 import { Top } from "./Top";
 import "./styles.scss";
 import { getChainName } from "src/utils/wormhole";
-import { tryGetRedeemTxn, tryGetWrappedToken } from "src/utils/cryptoToolkit";
+import { tryGetWrappedToken } from "src/utils/cryptoToolkit";
 
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
@@ -374,7 +374,6 @@ const Tx = () => {
       onSuccess: data => {
         if (!!data.length) {
           setErrorCode(undefined);
-          setIsLoading(false);
         }
       },
       onError: (err: Error) => showSearchNotFound(err),
@@ -449,6 +448,7 @@ const Tx = () => {
       }
 
       setTxData(processedApiTxData);
+      setIsLoading(false);
     },
     [environment, network],
   );
