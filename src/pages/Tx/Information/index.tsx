@@ -667,7 +667,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
       toAddress,
       wrappedTokenAddress && wrappedSide === "target" ? wrappedTokenAddress : tokenAddress,
       timestamp,
-      txData.standardizedProperties.amount,
+      txData?.payload?.amount,
       txData.txHash,
       +VAAId.split("/").pop(), //sequence
     );
