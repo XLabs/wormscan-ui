@@ -205,11 +205,10 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
   let sourceSymbol = symbol;
   let targetSymbol = symbol;
   let targetTokenChain = tokenChain;
+  const wrappedSide = tokenChain !== toChain ? "target" : "source";
 
   if (wrappedTokenAddress) {
-    const wrapped = tokenChain !== toChain ? "target" : "source";
-
-    if (wrapped === "target") {
+    if (wrappedSide === "target") {
       targetTokenChain = toChain;
       targetTokenLink = getExplorerLink({
         network: currentNetwork,
@@ -666,7 +665,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
       currentNetwork,
       toChain,
       toAddress,
-      tokenAddress,
+      wrappedTokenAddress && wrappedSide === "target" ? wrappedTokenAddress : tokenAddress,
       timestamp,
       txData.standardizedProperties.amount,
       txData.txHash,
