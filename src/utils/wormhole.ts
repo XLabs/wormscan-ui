@@ -92,15 +92,13 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     icon: SuiIcon,
     colorlessIcon: SuiColorlessIcon,
     explorer: {
-      TESTNET: "https://suiexplorer.com",
-      MAINNET: "https://suiexplorer.com",
+      TESTNET: "https://suiscan.xyz/testnet",
+      MAINNET: "https://suiscan.xyz/mainnet",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address")
-        return this.explorer?.[network] + "/address/" + value + "?network=" + network;
-      if (base === "token")
-        return this.explorer?.[network] + "/token/" + value + "?network=" + network;
-      return this.explorer?.[network] + "/txblock/" + value + "?network=" + network;
+      if (base === "address") return this.explorer?.[network] + "/account/" + value;
+      if (base === "token") return this.explorer?.[network] + "/coin/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
     },
   },
   [ChainId.PythNet]: {
