@@ -661,7 +661,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
   const getRedeem = async () => {
     setLoadingRedeem(true);
 
-    const redeemTxHash = await tryGetRedeemTxn(
+    const redeem = await tryGetRedeemTxn(
       currentNetwork,
       fromChain as ChainId,
       toChain,
@@ -673,13 +673,17 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
       +VAAId.split("/").pop(), //sequence
     );
 
-    if (redeemTxHash) {
+    if (redeem?.redeemTxHash) {
+      const redeemTimestamp = new Date(
+        redeem.timestamp ? redeem.timestamp : timestamp,
+      ).toISOString();
+
       const newDestinationTx: GlobalTxOutput["destinationTx"] = {
         chainId: toChain,
         status: "redeemed",
-        timestamp: new Date(timestamp).toISOString(),
-        txHash: redeemTxHash,
-        updatedAt: new Date(timestamp).toISOString(),
+        timestamp: redeemTimestamp,
+        txHash: redeem.redeemTxHash,
+        updatedAt: redeemTimestamp,
 
         blockNumber: null,
         from: null,

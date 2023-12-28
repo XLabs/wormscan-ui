@@ -6,6 +6,11 @@ interface IWrappedResponse {
   tokenSymbol: string;
 }
 
+interface IRedeemResponse {
+  redeemTxHash: string;
+  timestamp: number;
+}
+
 // const WH_UTILS_URL = "http://localhost:8080";
 const WH_UTILS_URL = "https://cryptotruco.com";
 
@@ -19,14 +24,14 @@ export const tryGetRedeemTxn = async (
   amount: string,
   txHash: string,
   sequence: number,
-) => {
+): Promise<IRedeemResponse | null> => {
   try {
     const redeemTxn = await fetch(
       `${WH_UTILS_URL}/getRedeemTxn?network=${network}&fromChain=${fromChain}&toChain=${toChain}&address=${address}&tokenAddress=${tokenAddress}&timestamp=${timestamp}&amount=${amount}&txHash=${txHash}&sequence=${sequence}`,
     );
 
-    const redeemData = (await redeemTxn.json()) as any;
-    return redeemData?.redeemTxHash ? redeemData.redeemTxHash : "";
+    const redeemData = (await redeemTxn.json()) as IRedeemResponse;
+    return redeemData?.redeemTxHash ? redeemData : null;
   } catch (e) {
     return null;
   }
