@@ -649,7 +649,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
 
   const [loadingRedeem, setLoadingRedeem] = useState(false);
   const canTryToGetRedeem =
-    (isEVMChain(toChain) || toChain === 1) &&
+    (isEVMChain(toChain) || toChain === 1 || toChain === 21) &&
     toChain === targetTokenChain &&
     !!toAddress &&
     !!tokenAddress &&
@@ -663,6 +663,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
 
     const redeemTxHash = await tryGetRedeemTxn(
       currentNetwork,
+      fromChain as ChainId,
       toChain,
       toAddress,
       wrappedTokenAddress && wrappedSide === "target" ? wrappedTokenAddress : tokenAddress,
@@ -673,8 +674,6 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
     );
 
     if (redeemTxHash) {
-      console.log("REDEEM TX HASH HERE:", redeemTxHash);
-
       const newDestinationTx: GlobalTxOutput["destinationTx"] = {
         chainId: toChain,
         status: "redeemed",

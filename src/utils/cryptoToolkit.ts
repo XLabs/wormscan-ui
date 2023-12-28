@@ -11,7 +11,8 @@ const WH_UTILS_URL = "https://cryptotruco.com";
 
 export const tryGetRedeemTxn = async (
   network: Network,
-  chain: ChainId,
+  fromChain: ChainId,
+  toChain: ChainId,
   address: string,
   tokenAddress: string,
   timestamp: string | Date,
@@ -21,7 +22,7 @@ export const tryGetRedeemTxn = async (
 ) => {
   try {
     const redeemTxn = await fetch(
-      `${WH_UTILS_URL}/getRedeemTxn?network=${network}&chain=${chain}&address=${address}&tokenAddress=${tokenAddress}&timestamp=${timestamp}&amount=${amount}&txHash=${txHash}&sequence=${sequence}`,
+      `${WH_UTILS_URL}/getRedeemTxn?network=${network}&fromChain=${fromChain}&toChain=${toChain}&address=${address}&tokenAddress=${tokenAddress}&timestamp=${timestamp}&amount=${amount}&txHash=${txHash}&sequence=${sequence}`,
     );
 
     const redeemData = (await redeemTxn.json()) as any;
