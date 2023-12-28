@@ -48,14 +48,16 @@ export const formatDate = (date: string | number | Date): string => {
   const dateObject = new Date(date);
   if (isNaN(dateObject.getTime())) return;
 
-  const formattedDate = dateObject.toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+  const formattedDate = dateObject
+    .toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    })
+    .replace("24:", "0:");
 
   return formattedDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
 };
