@@ -233,6 +233,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
   }
 
   const overviewAndDetailProps = {
+    showSignatures: !(appIds && appIds.includes("CCTP_MANUAL")),
     amountSent,
     amountSentUSD,
     currentNetwork,
@@ -587,10 +588,10 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
         <Alert type="info" className="tx-information-alerts-unknown-payload-type">
           {!hasVAA ? (
             appIds && appIds.includes("CCTP_MANUAL") ? (
-              <>
-                <p>This transaction is not a wormhole transaction (won&apos;t have a VAA)</p>
-                <p>This information can be incomplete or have wrong values.</p>
-              </>
+              <p>
+                This transaction is processed by Circle&apos;s CCTP and therefore information might
+                be incomplete.
+              </p>
             ) : (
               <>
                 <p>The VAA for this transaction has not been issued yet.</p>

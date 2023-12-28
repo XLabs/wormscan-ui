@@ -28,14 +28,15 @@ export type OverviewProps = {
   parsedPayload?: any;
   parsedRedeemTx?: string;
   redeemedAmount?: string;
-  toChain?: ChainId | number;
-  tokenAmount?: string;
-  totalGuardiansNeeded?: number;
-  VAAId?: string;
+  showSignatures?: boolean;
   sourceSymbol?: string;
   sourceTokenLink?: string;
   targetSymbol?: string;
   targetTokenLink?: string;
+  toChain?: ChainId | number;
+  tokenAmount?: string;
+  totalGuardiansNeeded?: number;
+  VAAId?: string;
 };
 
 const NotFinalDestinationTooltip = () => (
@@ -64,6 +65,7 @@ const Overview = ({
   parsedOriginAddress,
   parsedRedeemTx,
   redeemedAmount,
+  showSignatures,
   sourceSymbol,
   sourceTokenLink,
   targetSymbol,
@@ -236,7 +238,7 @@ const Overview = ({
           <div>
             <div className="tx-overview-graph-step-title">Signatures</div>
             <div className="tx-overview-graph-step-description">
-              {guardianSignaturesCount} / {totalGuardiansNeeded}
+              {showSignatures ? `${guardianSignaturesCount} / ${totalGuardiansNeeded}` : "N/A"}
             </div>
           </div>
 

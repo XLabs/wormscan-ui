@@ -112,6 +112,7 @@ const Tx = () => {
               toChain: txData.toChain,
               tokenAddress: txData.tokenAddress,
               tokenChain: txData.tokenChain,
+              wrappedTokenAddress: txData.wrappedTokenAddress ?? null,
             },
             symbol: txData.symbol,
             timestamp: new Date(txData.timestamp),

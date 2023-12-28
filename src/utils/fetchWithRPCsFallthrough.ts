@@ -55,6 +55,7 @@ interface RPCResponse {
   toNativeAmount?: string;
   txHash?: string;
   usdAmount?: string;
+  wrappedTokenAddress?: string;
 }
 
 async function hitAllSlowChains(
@@ -362,6 +363,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             toNativeAmount,
             txHash: searchValue,
             usdAmount: amount,
+            wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(cctpResult.toDomain)),
           };
         }
         // GENERIC-RELAYER
@@ -513,6 +515,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           toNativeAmount: null,
           blockNumber: null,
           lastFinalizedBlock: null,
+          wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(destinationDomain)),
         };
       });
 

@@ -26,6 +26,7 @@ const Details = ({
   parsedPayload,
   parsedRedeemTx,
   redeemedAmount,
+  showSignatures,
   sourceSymbol,
   sourceTokenLink,
   targetSymbol,
@@ -192,7 +193,7 @@ const Details = ({
         <div className="tx-details-group-line">
           <div className="tx-details-group-line-key">Signatures</div>
           <div className="tx-details-group-line-value">
-            {guardianSignaturesCount} / {totalGuardiansNeeded}
+            {showSignatures ? `${guardianSignaturesCount} / ${totalGuardiansNeeded}` : "N/A"}
           </div>
         </div>
         <div className="tx-details-group-line">
