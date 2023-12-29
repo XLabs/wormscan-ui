@@ -39,19 +39,6 @@
     }
   }
 
-  &-button {
-    width: 30px;
-    height: 30px;
-    border-radius: 6px;
-    background-color: var(--color-white-10);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
-    cursor: pointer;
-  }
-
   & .key {
     @include text-p2;
 

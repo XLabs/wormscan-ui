@@ -1,12 +1,6 @@
-import {
-  CheckCircledIcon,
-  CheckIcon,
-  ClockIcon,
-  InfoCircledIcon,
-  RowSpacingIcon,
-} from "@radix-ui/react-icons";
+import { CheckCircledIcon, CheckIcon, ClockIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { Network } from "@certusone/wormhole-sdk";
-import { Chip, Loader, Tooltip } from "src/components/atoms";
+import { Chip, Tooltip } from "src/components/atoms";
 import { formatAppIds, shortAddress } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
 import { ChainId } from "src/api";
@@ -15,11 +9,8 @@ import { IStatus } from "src/consts";
 
 type Props = {
   appIds: string[];
-  canTryToGetRedeem: boolean;
   currentNetwork: Network;
-  getRedeem: () => void;
   isUnknownApp: boolean;
-  loadingRedeem: boolean;
   parsedDestinationAddress: string;
   STATUS: IStatus;
   toChain: ChainId | number;
@@ -27,11 +18,8 @@ type Props = {
 
 const Summary = ({
   appIds,
-  canTryToGetRedeem,
   currentNetwork,
-  getRedeem,
   isUnknownApp,
-  loadingRedeem,
   parsedDestinationAddress,
   STATUS,
   toChain,
@@ -95,20 +83,6 @@ const Summary = ({
           )}
         </div>
       </div>
-      {canTryToGetRedeem && (
-        <div
-          onClick={() => !loadingRedeem && getRedeem()}
-          className="tx-information-summary-button"
-        >
-          {loadingRedeem ? (
-            <Loader />
-          ) : (
-            <Tooltip tooltip={<div>Press to attempt getting redeem txn</div>} type="info">
-              <RowSpacingIcon width={18} height={18} />
-            </Tooltip>
-          )}
-        </div>
-      )}
     </div>
   );
 };

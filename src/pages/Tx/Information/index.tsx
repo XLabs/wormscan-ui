@@ -35,6 +35,7 @@ import RelayerDetails from "./Details/RelayerDetails";
 
 import "./styles.scss";
 import { tryGetRedeemTxn } from "src/utils/cryptoToolkit";
+import { GetRedeem } from "./Overview/GetRedeem";
 
 interface Props {
   extraRawInfo: any;
@@ -259,6 +260,91 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
     tokenAmount,
     totalGuardiansNeeded,
     VAAId,
+  };
+
+  const STATUS: IStatus = globalToRedeemTx
+    ? "COMPLETED"
+    : appIds && appIds.includes("CCTP_MANUAL")
+    ? "EXTERNAL_TX"
+    : vaa
+    ? isConnect || isPortal || isCCTP
+      ? (canWeGetDestinationTx(toChain) &&
+          !hasAnotherApp &&
+          (!isTransferWithPayload ||
+            (isTransferWithPayload && isConnect) ||
+            (isTransferWithPayload && isTBTC))) ||
+        isCCTP
+        ? "PENDING_REDEEM"
+        : "VAA_EMITTED"
+      : "VAA_EMITTED"
+    : "IN_PROGRESS";
+
+  const [loadingRedeem, setLoadingRedeem] = useState(false);
+  const [foundRedeem, setFoundRedeem] = useState<null | boolean>(null);
+  const canTryToGetRedeem =
+    (STATUS === "EXTERNAL_TX" || STATUS === "VAA_EMITTED") &&
+    (isEVMChain(toChain) || toChain === 1 || toChain === 21) &&
+    toChain === targetTokenChain &&
+    !!toAddress &&
+    !!tokenAddress &&
+    !!timestamp &&
+    !!txData?.payload?.amount &&
+    !!txData?.txHash &&
+    !txData?.globalTx?.destinationTx;
+
+  const getRedeem = async () => {
+    setLoadingRedeem(true);
+
+    const redeem = await tryGetRedeemTxn(
+      currentNetwork,
+      fromChain as ChainId,
+      toChain,
+      toAddress,
+      wrappedTokenAddress && wrappedSide === "target" ? wrappedTokenAddress : tokenAddress,
+      timestamp,
+      txData?.payload?.amount,
+      txData.txHash,
+      +VAAId?.split("/")?.pop() || 0, //sequence
+    );
+
+    if (redeem?.redeemTxHash) {
+      const redeemTimestamp = new Date(
+        redeem.timestamp ? redeem.timestamp : timestamp,
+      ).toISOString();
+
+      const newDestinationTx: GlobalTxOutput["destinationTx"] = {
+        chainId: toChain,
+        status: "redeemed",
+        timestamp: redeemTimestamp,
+        txHash: redeem.redeemTxHash,
+        updatedAt: redeemTimestamp,
+
+        blockNumber: null,
+        from: null,
+        method: null,
+        to: null,
+      };
+
+      const newTxData = JSON.parse(JSON.stringify(txData));
+
+      if (newTxData.globalTx) {
+        newTxData.globalTx.destinationTx = newDestinationTx;
+      } else {
+        newTxData.globalTx = {
+          id: null,
+          originTx: null,
+          destinationTx: newDestinationTx,
+        };
+      }
+
+      setFoundRedeem(true);
+      setTimeout(() => {
+        setTxData(newTxData);
+      }, 2000);
+    } else {
+      setFoundRedeem(false);
+    }
+    setLoadingRedeem(false);
   };
 
   // --- Automatic Relayer Detection and handling ---
@@ -648,86 +734,6 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
     );
   };
 
-  const STATUS: IStatus =
-    appIds && appIds.includes("CCTP_MANUAL")
-      ? "EXTERNAL_TX"
-      : vaa
-      ? isConnect || isPortal || isCCTP
-        ? globalToRedeemTx
-          ? "COMPLETED"
-          : (canWeGetDestinationTx(toChain) &&
-              !hasAnotherApp &&
-              (!isTransferWithPayload ||
-                (isTransferWithPayload && isConnect) ||
-                (isTransferWithPayload && isTBTC))) ||
-            isCCTP
-          ? "PENDING_REDEEM"
-          : "VAA_EMITTED"
-        : "VAA_EMITTED"
-      : "IN_PROGRESS";
-
-  const [loadingRedeem, setLoadingRedeem] = useState(false);
-  const canTryToGetRedeem =
-    (STATUS === "EXTERNAL_TX" || STATUS === "VAA_EMITTED") &&
-    (isEVMChain(toChain) || toChain === 1 || toChain === 21) &&
-    toChain === targetTokenChain &&
-    !!toAddress &&
-    !!tokenAddress &&
-    !!timestamp &&
-    !!txData?.payload?.amount &&
-    !!txData?.txHash &&
-    !txData?.globalTx?.destinationTx;
-
-  const getRedeem = async () => {
-    setLoadingRedeem(true);
-
-    const redeem = await tryGetRedeemTxn(
-      currentNetwork,
-      fromChain as ChainId,
-      toChain,
-      toAddress,
-      wrappedTokenAddress && wrappedSide === "target" ? wrappedTokenAddress : tokenAddress,
-      timestamp,
-      txData?.payload?.amount,
-      txData.txHash,
-      +VAAId?.split("/")?.pop() || 0, //sequence
-    );
-
-    if (redeem?.redeemTxHash) {
-      const redeemTimestamp = new Date(
-        redeem.timestamp ? redeem.timestamp : timestamp,
-      ).toISOString();
-
-      const newDestinationTx: GlobalTxOutput["destinationTx"] = {
-        chainId: toChain,
-        status: "redeemed",
-        timestamp: redeemTimestamp,
-        txHash: redeem.redeemTxHash,
-        updatedAt: redeemTimestamp,
-
-        blockNumber: null,
-        from: null,
-        method: null,
-        to: null,
-      };
-
-      const newTxData = { ...txData };
-
-      if (newTxData.globalTx) {
-        newTxData.globalTx.destinationTx = newDestinationTx;
-      } else {
-        newTxData.globalTx = {
-          id: null,
-          originTx: null,
-          destinationTx: newDestinationTx,
-        };
-      }
-
-      setTxData(newTxData);
-    }
-    setLoadingRedeem(false);
-  };
-
   return (
     <section className="tx-information">
       <Tabs
@@ -739,17 +745,22 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
       />
       <Summary
         appIds={appIds}
-        canTryToGetRedeem={canTryToGetRedeem}
         currentNetwork={currentNetwork}
-        getRedeem={getRedeem}
         isUnknownApp={isUnknownApp}
-        loadingRedeem={loadingRedeem}
         parsedDestinationAddress={parsedDestinationAddress}
         STATUS={STATUS}
         toChain={toChain}
       />
 
       {showOverview ? <OverviewContent /> : <RawDataContent />}
+      {showOverview && (
+        <GetRedeem
+          canTryToGetRedeem={canTryToGetRedeem}
+          foundRedeem={foundRedeem}
+          getRedeem={getRedeem}
+          loadingRedeem={loadingRedeem}
+        />
+      )}
     </section>
   );
 };
