@@ -671,7 +671,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
       timestamp,
       txData?.payload?.amount,
       txData.txHash,
-      +VAAId.split("/").pop(), //sequence
+      +VAAId?.split("/")?.pop() || 0, //sequence
     );
 
     if (redeem?.redeemTxHash) {

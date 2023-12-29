@@ -94,6 +94,7 @@ const Tx = () => {
             globalTx: null,
             id: txData.id,
             payload: {
+              amount: txData.payloadAmount ?? undefined,
               payloadType: txData.payloadType,
               parsedPayload: {
                 feeAmount: txData?.fee,

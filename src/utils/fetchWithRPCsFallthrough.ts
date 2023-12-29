@@ -43,6 +43,7 @@ interface RPCResponse {
   id?: string;
   lastFinalizedBlock?: number;
   parsedFromAddress?: string;
+  payloadAmount?: string;
   payloadType?: any;
   sequence?: number;
   symbol?: string;
@@ -498,6 +499,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           fee: "0",
           fromAddress,
           parsedFromAddress,
+          payloadAmount: amount.toString(),
           symbol: "USDC",
           timestamp,
           toAddress: "0x" + mintRecipient.substring(26),
@@ -507,6 +509,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           tokenChain: result.chainId,
           txHash: searchValue,
           usdAmount: "" + formatUnits(amount.toString(), 6),
+          wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(destinationDomain)),
 
           // no data properties
           id: null,
@@ -515,7 +518,6 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           toNativeAmount: null,
           blockNumber: null,
           lastFinalizedBlock: null,
-          wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(destinationDomain)),
         };
       });
 
