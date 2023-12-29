@@ -615,41 +615,23 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
       };
 
       if (showOverviewDetail) {
-        return (
-          <>
-            <RelayerDetails {...genericRelayerProps} />
-            <AlertsContent />
-          </>
-        );
+        return <RelayerDetails {...genericRelayerProps} />;
       }
 
-      return (
-        <>
-          <RelayerOverview {...genericRelayerProps} />
-          <AlertsContent />
-        </>
-      );
+      return <RelayerOverview {...genericRelayerProps} />;
     }
 
     if (!isGenericRelayerTx) {
       if (showOverviewDetail) {
-        return (
-          <>
-            <Details {...overviewAndDetailProps} />
-            <AlertsContent />
-          </>
-        );
+        return <Details {...overviewAndDetailProps} />;
       }
 
       return (
-        <>
-          <Overview
-            {...overviewAndDetailProps}
-            globalToRedeemTx={globalToRedeemTx}
-            isAttestation={isAttestation}
-          />
-          <AlertsContent />
-        </>
+        <Overview
+          {...overviewAndDetailProps}
+          globalToRedeemTx={globalToRedeemTx}
+          isAttestation={isAttestation}
+        />
       );
     }
   };
@@ -754,12 +736,15 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
 
       {showOverview ? <OverviewContent /> : <RawDataContent />}
       {showOverview && (
-        <GetRedeem
-          canTryToGetRedeem={canTryToGetRedeem}
-          foundRedeem={foundRedeem}
-          getRedeem={getRedeem}
-          loadingRedeem={loadingRedeem}
-        />
+        <>
+          <GetRedeem
+            canTryToGetRedeem={canTryToGetRedeem}
+            foundRedeem={foundRedeem}
+            getRedeem={getRedeem}
+            loadingRedeem={loadingRedeem}
+          />
+          <AlertsContent />
+        </>
       )}
     </section>
   );
