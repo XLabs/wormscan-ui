@@ -8,7 +8,7 @@ import {
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { txType } from "src/consts";
+import { IStatus, canWeGetDestinationTx, txType } from "src/consts";
 import { Alert, Loader } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
@@ -648,8 +648,27 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
     );
   };
 
+  const STATUS: IStatus =
+    appIds && appIds.includes("CCTP_MANUAL")
+      ? "EXTERNAL_TX"
+      : vaa
+      ? isConnect || isPortal || isCCTP
+        ? globalToRedeemTx
+          ? "COMPLETED"
+          : (canWeGetDestinationTx(toChain) &&
+              !hasAnotherApp &&
+              (!isTransferWithPayload ||
+                (isTransferWithPayload && isConnect) ||
+                (isTransferWithPayload && isTBTC))) ||
+            isCCTP
+          ? "PENDING_REDEEM"
+          : "VAA_EMITTED"
+        : "VAA_EMITTED"
+      : "IN_PROGRESS";
+
   const [loadingRedeem, setLoadingRedeem] = useState(false);
   const canTryToGetRedeem =
+    (STATUS === "EXTERNAL_TX" || STATUS === "VAA_EMITTED") &&
     (isEVMChain(toChain) || toChain === 1 || toChain === 21) &&
     toChain === targetTokenChain &&
     !!toAddress &&
@@ -719,22 +738,15 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
         showOverviewDetail={showOverviewDetail}
       />
       <Summary
-        canTryToGetRedeem={canTryToGetRedeem}
-        getRedeem={getRedeem}
-        loadingRedeem={loadingRedeem}
         appIds={appIds}
+        canTryToGetRedeem={canTryToGetRedeem}
         currentNetwork={currentNetwork}
-        globalToRedeemTx={globalToRedeemTx}
-        hasAnotherApp={hasAnotherApp}
-        isCCTP={isCCTP}
-        isConnect={isConnect}
-        isPortal={isPortal}
-        isTBTC={isTBTC}
-        isTransferWithPayload={isTransferWithPayload}
+        getRedeem={getRedeem}
         isUnknownApp={isUnknownApp}
+        loadingRedeem={loadingRedeem}
         parsedDestinationAddress={parsedDestinationAddress}
+        STATUS={STATUS}
         toChain={toChain}
-        vaa={vaa}
       />
 
       {showOverview ? <OverviewContent /> : <RawDataContent />}
