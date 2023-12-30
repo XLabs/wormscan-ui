@@ -333,12 +333,12 @@ const RelayerDetails = ({
           <div className="tx-details-group-line-key">Target Chain</div>
           <div className="tx-details-group-line-value">
             <BlockchainIcon
-              chainId={deliveryInstruction.refundChainId}
+              chainId={deliveryInstruction.targetChainId}
               network={currentNetwork}
               size={24}
             />
             {getChainName({
-              chainId: deliveryInstruction.refundChainId,
+              chainId: deliveryInstruction.targetChainId,
               network: currentNetwork,
             }).toUpperCase()}
           </div>
@@ -438,7 +438,7 @@ const RelayerDetails = ({
                           : "white"
                       }
                     >
-                      {resultLog}
+                      {resultLog || "We were not able to get the status of your relay."}
                     </div>
 
                     {refundStatus && (
