@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { NavLink } from "src/components/atoms";
 import "./styles.scss";
 
-const PolicyPrivacyBanner = () => {
+const PrivacyPolicyBanner = () => {
+  const { t } = useTranslation();
   const [showPolicyPrivacyBanner, setShowPolicyPrivacyBanner] = useState(true);
 
   const closeBanner = () => {
@@ -17,11 +19,12 @@ const PolicyPrivacyBanner = () => {
     <div className="pp-banner">
       <div className="pp-banner-content">
         <p className="pp-banner-content-text">
-          This website is designed to enhance your experience. By continuing to use this site, you
-          consent to our{" "}
-          <NavLink className="pp-banner-content-link" to="/privacy-policy">
-            Privacy Policy
-          </NavLink>
+          {t("privacyPolicy.title")} {t("privacyPolicy.link")}
+          {/* TODO: Uncomment this when the privacy policy page is ready
+            <NavLink className="pp-banner-content-link" to="/privacy-policy">
+              {t("privacyPolicy.link")}
+            </NavLink> 
+          */}
         </p>
       </div>
 
@@ -32,4 +35,4 @@ const PolicyPrivacyBanner = () => {
   );
 };
 
-export default PolicyPrivacyBanner;
+export default PrivacyPolicyBanner;
