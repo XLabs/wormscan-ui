@@ -22,7 +22,7 @@ import { Information } from "./Information";
 import { Top } from "./Top";
 import "./styles.scss";
 import { getChainName } from "src/utils/wormhole";
-import { tryGetWrappedToken } from "src/utils/cryptoToolkit";
+import { getAlgorandTokenInfo, tryGetWrappedToken } from "src/utils/cryptoToolkit";
 
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
@@ -384,8 +384,6 @@ const Tx = () => {
 
   const processApiTxData = useCallback(
     async (apiTxData: GetTransactionsOutput[]) => {
-      const processedApiTxData = [];
-
       // if there's no tokenAmount or symbol, try to get them with RPC info
       for (const data of apiTxData) {
         if (
@@ -404,20 +402,14 @@ const Tx = () => {
             const amount = data.payload?.amount || data.standardizedProperties?.amount;
 
             if (amount && tokenInfo.tokenDecimals) {
-              processedApiTxData.push({
-                ...data,
-                tokenAmount: "" + formatUnits(+amount, tokenInfo.tokenDecimals),
-                symbol: tokenInfo.symbol,
-              });
+              data.tokenAmount = "" + formatUnits(+amount, tokenInfo.tokenDecimals);
+              data.symbol = tokenInfo.symbol;
             }
-          } else {
-            processedApiTxData.push(data);
           }
-        } else {
-          processedApiTxData.push(data);
         }
       }
 
+      let wrappedTokenChain = null;
       // try to get wrapped token address and symbol
       for (const data of apiTxData) {
         if (data?.standardizedProperties?.appIds?.includes("PORTAL_TOKEN_BRIDGE")) {
@@ -439,6 +431,7 @@ const Tx = () => {
             );
 
             if (wrappedToken) {
+              wrappedTokenChain = wrapped === "target" ? toChain : fromChain;
               data.standardizedProperties.wrappedTokenAddress = wrappedToken.wrappedToken;
               if (wrappedToken.tokenSymbol) {
                 data.standardizedProperties.wrappedTokenSymbol = wrappedToken.tokenSymbol;
@@ -449,7 +442,41 @@ const Tx = () => {
         }
       }
 
-      setTxData(processedApiTxData);
+      for (const data of apiTxData) {
+        const { tokenAddress, wrappedTokenAddress } = data.standardizedProperties;
+
+        if (
+          data?.standardizedProperties?.tokenChain === ChainId.Algorand &&
+          data?.standardizedProperties?.tokenAddress
+        ) {
+          const tokenInfo = await getAlgorandTokenInfo(network, tokenAddress);
+
+          if (tokenInfo) {
+            data.standardizedProperties.tokenAddress =
+              tokenInfo.assetId ?? data.standardizedProperties.tokenAddress;
+
+            if (tokenInfo.decimals && !data?.tokenAmount && data?.payload?.amount) {
+              data.tokenAmount = `${+data.payload.amount / 10 ** tokenInfo.decimals}`;
+            }
+            if (tokenInfo.symbol && !data?.symbol) {
+              data.symbol = tokenInfo.symbol;
+            }
+          }
+        }
+
+        if (wrappedTokenChain === ChainId.Algorand) {
+          const tokenInfo = await getAlgorandTokenInfo(network, wrappedTokenAddress);
+          if (tokenInfo) {
+            data.standardizedProperties.wrappedTokenAddress = tokenInfo.assetId;
+
+            if (tokenInfo.symbol && !data?.standardizedProperties?.wrappedTokenSymbol) {
+              data.standardizedProperties.wrappedTokenSymbol = tokenInfo.symbol;
+            }
+          }
+        }
+      }
+
+      setTxData(apiTxData);
       setIsLoading(false);
     },
     [environment, network],

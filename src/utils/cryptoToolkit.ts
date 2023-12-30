@@ -11,6 +11,12 @@ interface IRedeemResponse {
   timestamp: number;
 }
 
+interface IAlgorandTokenResponse {
+  assetId: string;
+  decimals?: number;
+  symbol?: string;
+}
+
 // const WH_UTILS_URL = "http://localhost:8080";
 const WH_UTILS_URL = "https://cryptotruco.com";
 
@@ -50,6 +56,19 @@ export const tryGetWrappedToken = async (
 
     const wrappedTokenResponse = (await wrappedTokenRequest.json()) as IWrappedResponse | null;
     return wrappedTokenResponse;
+  } catch (e) {
+    return null;
+  }
+};
+
+export const getAlgorandTokenInfo = async (network: Network, tokenAddress: string) => {
+  try {
+    const algoTokenRequest = await fetch(
+      `${WH_UTILS_URL}/getAlgoAssetInfo?network=${network}&tokenAddress=${tokenAddress}`,
+    );
+
+    const algoTokenResponse = (await algoTokenRequest.json()) as IAlgorandTokenResponse | null;
+    return algoTokenResponse;
   } catch (e) {
     return null;
   }
