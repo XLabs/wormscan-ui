@@ -582,7 +582,7 @@ const RelayerOverview = ({
                     tooltip={
                       <div>
                         {getChainName({
-                          chainId: deliveryInstruction.refundChainId,
+                          chainId: deliveryInstruction.targetChainId,
                           network: currentNetwork,
                         })}
                       </div>
@@ -591,7 +591,7 @@ const RelayerOverview = ({
                   >
                     <div className="tx-overview-graph-step-iconContainer">
                       <BlockchainIcon
-                        chainId={deliveryInstruction.refundChainId}
+                        chainId={deliveryInstruction.targetChainId}
                         network={currentNetwork}
                         size={32}
                       />
