@@ -18,42 +18,15 @@ import { WormholeBrand } from "src/components/molecules";
 import Search from "./Search";
 import "./styles.scss";
 
-type LinkProps = { onClickNavLink?: () => void };
 type NavLinkItemProps = {
   to: string;
   label: string;
-  onClick: () => void;
 };
 type ExternalLinkItemProps = {
   href: string;
   label: string;
   children?: React.ReactNode;
 };
-
-const LogoLink = ({ onClickNavLink }: LinkProps) => (
-  <div className="header-logo-container">
-    <NavLink to="/" data-testid="header-logo-link" onClick={onClickNavLink}>
-      <WormholeBrand />
-    </NavLink>
-  </div>
-);
-
-const NavLinkItem = ({ to, label, onClick }: NavLinkItemProps) => (
-  <div className="header-navigation-item">
-    <NavLink to={to} onClick={onClick}>
-      {label}
-    </NavLink>
-  </div>
-);
-
-const ExternalLinkItem = ({ href, label, children }: ExternalLinkItemProps) => (
-  <div className="header-navigation-item">
-    <a href={href} target="_blank" rel="noopener noreferrer">
-      {label}
-    </a>
-    {children}
-  </div>
-);
 
 type NetworkSelectProps = { label: string; value: Network };
 
@@ -100,9 +73,34 @@ const Header = () => {
     }
   };
 
+  const LogoLink = () => (
+    <div className="header-logo-container">
+      <NavLink to="/" data-testid="header-logo-link" onClick={hideMobileMenu}>
+        <WormholeBrand />
+      </NavLink>
+    </div>
+  );
+
+  const NavLinkItem = ({ to, label }: NavLinkItemProps) => (
+    <div className="header-navigation-item">
+      <NavLink to={to} onClick={hideMobileMenu}>
+        {label}
+      </NavLink>
+    </div>
+  );
+
+  const ExternalLinkItem = ({ href, label, children }: ExternalLinkItemProps) => (
+    <div className="header-navigation-item">
+      <a href={href} target="_blank" rel="noopener noreferrer">
+        {label}
+      </a>
+      {children}
+    </div>
+  );
+
   const HeaderLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
     <nav data-testid="header-nav">
-      {isMobile && <NavLinkItem to="/" onClick={hideMobileMenu} label={t("home.footer.home")} />}
+      {isMobile && <NavLinkItem to="/" label={t("home.footer.home")} />}
       {isMainnet && (
         <div className="header-navigation-item">
           <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
@@ -110,7 +108,7 @@ const Header = () => {
           </a>
         </div>
       )}
-      <NavLinkItem to="/txs" onClick={hideMobileMenu} label={t("home.header.txs")} />
+      <NavLinkItem to="/txs" label={t("home.header.txs")} />
       {isMobile && (
         <>
           <ExternalLinkItem href={XLABS_CAREERS_URL} label={t("home.footer.careers")}>
@@ -119,7 +117,7 @@ const Header = () => {
             </Tag>
           </ExternalLinkItem>
           <ExternalLinkItem href={WORMHOLE_DOCS_URL} label={t("home.footer.apiDoc")} />
-          <ExternalLinkItem href="/" label={t("home.footer.policy")} />
+          {/* TODO <NavLinkItem to="/terms-of-use" label={t("home.footer.termsOfUse")} /> */}
         </>
       )}
       <Select
@@ -181,7 +179,7 @@ const Header = () => {
         }`}
       >
         <div className="header-navigation-mobile-top">
-          <LogoLink onClickNavLink={hideMobileMenu} />
+          <LogoLink />
           <div className="header-navigation-mobile-container" onClick={hideMobileMenu}>
             <Cross1Icon className="header-navigation-mobile-btn" />
           </div>

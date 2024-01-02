@@ -211,6 +211,8 @@ const TransactionHistoryChart = ({ range }: Props) => {
                   },
                   dataLabels: { enabled: false },
                   yaxis: {
+                    forceNiceScale: true,
+                    min: 0,
                     tickAmount: 4,
                     labels: {
                       formatter: numberToSuffix,

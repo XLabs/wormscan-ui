@@ -23,7 +23,7 @@ export default {
           bugBounty: "Bug Bounty",
           careers: "Careers",
           contactUs: "Contact Us",
-          policy: "Privacy Policy",
+          termsOfUse: "Terms of Use",
           hiring: "We're hiring!",
         },
         hero: {
@@ -90,10 +90,10 @@ export default {
         txs: "transactions",
         transfers: "transfers",
       },
-      privacyPolicy: {
+      termsOfUse: {
         title:
           "This website is designed to enhance your experience. By continuing to use this site, you consent to our",
-        link: "Privacy Policy",
+        link: "Terms of Use",
       },
     },
   },

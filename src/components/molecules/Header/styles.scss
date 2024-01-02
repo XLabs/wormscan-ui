@@ -104,6 +104,7 @@
 
       @include desktop {
         height: 48px;
+        width: unset;
       }
 
       & .select__control {
@@ -157,6 +158,10 @@
       padding-left: 10px;
       user-select: none;
 
+      @include desktop {
+        padding-left: 0;
+      }
+
       a {
         @include text-p2;
 
@@ -191,9 +196,16 @@
           @include centered-row;
           gap: 56px;
 
-          &-icon {
-            width: 24px;
-            height: 24px;
+          & a {
+            @include centered-column;
+
+            & svg path {
+              fill: var(--color-secondary-800);
+            }
+
+            &:hover svg path {
+              fill: var(--color-secondary-700);
+            }
           }
         }
       }
