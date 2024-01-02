@@ -96,9 +96,9 @@ const Footer = () => {
             </a>
           </div>
 
-          <div className="footer-links-item" data-link="termsOfUse">
-            {/* <NavLink to="/terms-of-use">{t("home.footer.termsOfUse")}</NavLink> */}
-          </div>
+          {/* <div className="footer-links-item" data-link="termsOfUse">
+            <NavLink to="/terms-of-use">{t("home.footer.termsOfUse")}</NavLink>
+          </div> */}
         </div>
 
         <div className="footer-built">
