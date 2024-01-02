@@ -3,8 +3,15 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { Network } from "@certusone/wormhole-sdk";
-import i18n from "src/i18n";
-import { DISCORD_URL, PORTAL_BRIDGE_URL, WORMHOLE_DOCS_URL, XLABS_CAREERS_URL } from "src/consts";
+import DiscordIcon from "src/icons/DiscordIcon";
+import TwitterIcon from "src/icons/TwitterIcon";
+import {
+  TWITTER_URL,
+  DISCORD_URL,
+  PORTAL_BRIDGE_URL,
+  WORMHOLE_DOCS_URL,
+  XLABS_CAREERS_URL,
+} from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { NavLink, Select, Tag } from "src/components/atoms";
 import { WormholeBrand } from "src/components/molecules";
@@ -12,7 +19,6 @@ import Search from "./Search";
 import "./styles.scss";
 
 type LinkProps = { onClickNavLink?: () => void };
-type HeaderLinksProps = { onClickNavLink?: () => void; isMobile?: boolean };
 type NavLinkItemProps = {
   to: string;
   label: string;
@@ -35,7 +41,7 @@ const LogoLink = ({ onClickNavLink }: LinkProps) => (
 const NavLinkItem = ({ to, label, onClick }: NavLinkItemProps) => (
   <div className="header-navigation-item">
     <NavLink to={to} onClick={onClick}>
-      {i18n.t(label)}
+      {label}
     </NavLink>
   </div>
 );
@@ -43,30 +49,10 @@ const NavLinkItem = ({ to, label, onClick }: NavLinkItemProps) => (
 const ExternalLinkItem = ({ href, label, children }: ExternalLinkItemProps) => (
   <div className="header-navigation-item">
     <a href={href} target="_blank" rel="noopener noreferrer">
-      {i18n.t(label)}
+      {label}
     </a>
     {children}
   </div>
-);
-
-const HeaderLinks = ({ onClickNavLink, isMobile }: HeaderLinksProps) => (
-  <nav data-testid="header-nav">
-    {isMobile && <NavLinkItem to="/" onClick={onClickNavLink} label="home.footer.home" />}
-    <NavLinkItem to="/txs" onClick={onClickNavLink} label="home.header.txs" />
-    {isMobile && (
-      <>
-        <ExternalLinkItem href={DISCORD_URL} label="home.footer.contactUs" />
-        <div className="header-navigation-item">
-          <ExternalLinkItem href={XLABS_CAREERS_URL} label="home.footer.careers">
-            <Tag type="chip" size="small">
-              {i18n.t("home.footer.hiring")}
-            </Tag>
-          </ExternalLinkItem>
-        </div>
-        <ExternalLinkItem href={WORMHOLE_DOCS_URL} label="home.footer.apiDoc" />
-      </>
-    )}
-  </nav>
 );
 
 type NetworkSelectProps = { label: string; value: Network };
@@ -78,10 +64,9 @@ const NETWORK_LIST: NetworkSelectProps[] = [
 
 const Header = () => {
   const [expandMobileMenu, setExpandMobileMenu] = useState<boolean>(false);
-
-  const { t } = useTranslation();
   const { environment, setEnvironment } = useEnvironment();
   const { pathname, search } = useLocation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const currentNetwork = environment.network;
@@ -100,6 +85,7 @@ const Header = () => {
   const onClickChangeNetwork = (network: Network) => {
     if (network === currentNetwork) return;
     setEnvironment(network);
+    hideMobileMenu();
 
     // if watching a transaction, go to transactions list
     if (pathname.includes("/tx/")) {
@@ -114,30 +100,72 @@ const Header = () => {
     }
   };
 
+  const HeaderLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
+    <nav data-testid="header-nav">
+      {isMobile && <NavLinkItem to="/" onClick={hideMobileMenu} label={t("home.footer.home")} />}
+      {isMainnet && (
+        <div className="header-navigation-item">
+          <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
+            {t("home.header.goBridge")}
+          </a>
+        </div>
+      )}
+      <NavLinkItem to="/txs" onClick={hideMobileMenu} label={t("home.header.txs")} />
+      {isMobile && (
+        <>
+          <ExternalLinkItem href={XLABS_CAREERS_URL} label={t("home.footer.careers")}>
+            <Tag type="chip" size="small">
+              {t("home.footer.hiring")}
+            </Tag>
+          </ExternalLinkItem>
+          <ExternalLinkItem href={WORMHOLE_DOCS_URL} label={t("home.footer.apiDoc")} />
+          <ExternalLinkItem href="/" label={t("home.footer.policy")} />
+        </>
+      )}
+      <Select
+        name={"networkSelect"}
+        value={NETWORK_LIST.find(a => a.value === currentNetwork)}
+        onValueChange={(env: NetworkSelectProps) => onClickChangeNetwork(env.value)}
+        items={NETWORK_LIST}
+        ariaLabel={"Select Network"}
+        className="header-network-select"
+      />
+
+      {isMobile && (
+        <div className="header-navigation-item-social">
+          <div className="header-navigation-item-social-text">{t("home.footer.joinUs")}</div>
+          <div className="header-navigation-item-social-icons">
+            <a
+              href={DISCORD_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Discord link"
+            >
+              <DiscordIcon />
+            </a>
+            <a
+              href={TWITTER_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter link"
+            >
+              <TwitterIcon />
+            </a>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+
   return (
     <header className="header" data-testid="header">
       <LogoLink />
+      <div className="header-mobile-line" />
       <Search />
       <div className="header-actions">
         <div className="header-navigation">
-          {isMainnet && (
-            <div className="header-navigation-item">
-              <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
-                {t("home.header.goBridge")}
-              </a>
-            </div>
-          )}
           <HeaderLinks />
         </div>
-
-        <Select
-          name={"networkSelect"}
-          value={NETWORK_LIST.find(a => a.value === currentNetwork)}
-          onValueChange={(env: NetworkSelectProps) => onClickChangeNetwork(env.value)}
-          items={NETWORK_LIST}
-          ariaLabel={"Select Network"}
-          className="header-network-select"
-        />
 
         {/* MOBILE HAMBURGER MENU */}
         <div className="header-hamburger">
@@ -160,15 +188,7 @@ const Header = () => {
         </div>
 
         <div className="header-navigation-mobile-nav">
-          <HeaderLinks onClickNavLink={hideMobileMenu} isMobile={true} />
-
-          {isMainnet && (
-            <div className="header-navigation-item">
-              <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
-                {t("home.header.goBridge")}
-              </a>
-            </div>
-          )}
+          <HeaderLinks isMobile={true} />
         </div>
       </div>
 
