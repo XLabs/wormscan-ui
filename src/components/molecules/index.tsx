@@ -5,6 +5,7 @@ export { default as ErrorPlaceholder } from "./ErrorPlaceholder";
 export { default as Footer } from "./Footer";
 export { default as Header } from "./Header";
 export { default as JoinUs } from "./JoinUs";
+export { default as PrivacyPolicyBanner } from "./PrivacyPolicyBanner";
 export { default as ScoreCard } from "./ScoreCard";
 export { default as SearchBar } from "./SearchBar";
 export { default as StatusBadge } from "./StatusBadge";

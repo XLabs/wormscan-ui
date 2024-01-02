@@ -90,6 +90,11 @@ export default {
         txs: "transactions",
         transfers: "transfers",
       },
+      privacyPolicy: {
+        title:
+          "This website is designed to enhance your experience. By continuing to use this site, you consent to our",
+        link: "Privacy Policy",
+      },
     },
   },
 };
