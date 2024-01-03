@@ -16,22 +16,38 @@
     @include text-p1;
     color: var(--color-primary-90);
     font-weight: 500;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
+
+    @include desktop {
+      margin-bottom: 24px;
+    }
   }
 
   &-options {
-    @include centered-row;
-
     align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 24px;
-    justify-content: space-between;
-    margin-bottom: 24px;
+    display: grid;
+    gap: 32px;
+    grid-template-areas:
+      "vol-transactions"
+      "filters"
+      "destination";
+    margin-bottom: 32px;
     min-height: 56px;
+    width: 100%;
+
+    @include desktop {
+      gap: 24px;
+      grid-template-areas: "vol-transactions destination filters";
+      margin-bottom: 24px;
+    }
 
     &-items {
       min-height: 48px;
       width: 100%;
+
+      @include desktop {
+        width: 220px;
+      }
 
       .toggle-group-item {
         flex: 1;
@@ -41,12 +57,6 @@
     &-txsText {
       color: var(--color-primary-100);
       font-size: 18px;
-    }
-
-    @include desktop {
-      &-items {
-        width: 220px;
-      }
     }
   }
 
@@ -66,9 +76,11 @@
     min-height: 56px;
     padding: 8px;
     width: 100%;
+    grid-area: destination;
 
     @include desktop {
       width: auto;
+      margin: 0 auto;
     }
 
     &-btn {
@@ -105,8 +117,9 @@
       @include centered-row;
 
       flex-wrap: wrap;
-      width: 100%;
       gap: 16px;
+      justify-content: flex-end;
+      width: 100%;
 
       @include desktop {
         flex-wrap: nowrap;

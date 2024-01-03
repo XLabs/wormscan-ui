@@ -65,6 +65,7 @@ const iconTokens = {
   SUI,
   tBTC,
   USDC,
+  USDbC: USDC,
   USDT,
   WAVAX,
   WBNB,
