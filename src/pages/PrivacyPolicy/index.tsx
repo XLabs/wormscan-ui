@@ -383,17 +383,19 @@ const PrivacyPolicy = () => {
                 {t("privacyPolicy.section8.text")}
               </p>
 
-              <ul>
-                <li className="privacy-policy-content-bottom-text">
-                  {t("privacyPolicy.section8.ul.li1")}
-                </li>
-                <li className="privacy-policy-content-bottom-text">
-                  {t("privacyPolicy.section8.ul.li2")}
-                </li>
-                <li className="privacy-policy-content-bottom-text">
-                  {t("privacyPolicy.section8.ul.li3")}
-                </li>
-              </ul>
+              <div className="privacy-policy-content-bottom-list">
+                <ul>
+                  <li className="privacy-policy-content-bottom-text">
+                    {t("privacyPolicy.section8.ul.li1")}
+                  </li>
+                  <li className="privacy-policy-content-bottom-text">
+                    {t("privacyPolicy.section8.ul.li2")}
+                  </li>
+                  <li className="privacy-policy-content-bottom-text">
+                    {t("privacyPolicy.section8.ul.li3")}
+                  </li>
+                </ul>
+              </div>
             </section>
 
             <section>
