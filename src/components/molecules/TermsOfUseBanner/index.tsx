@@ -10,7 +10,7 @@ const TermsOfUseBanner = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    if (pathname === "/terms-of-use") {
+    if (pathname === "/terms-of-use" || pathname === "/privacy-policy") {
       setShowTermsOfUseBanner(false);
     }
   }, [pathname]);

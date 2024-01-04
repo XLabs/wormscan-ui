@@ -134,7 +134,7 @@ export default {
                 "ON AN INDIVIDUAL BASIS TO RESOLVE DISPUTES, RATHER THAN JURY TRIALS OR CLASS ACTIONS, AND ALSO LIMIT THE REMEDIES AVAILABLE TO YOU IN THE EVENT OF A DISPUTE.",
             },
             text4:
-              "By accessing, browsing, submitting information to and/or using the Website, you accept and agree to be bound and abide by these Terms and our Privacy Policy, incorporated herein by reference, and to comply with all applicable laws including, without limitation, all federal, state and local tax and tariff laws, regulations, and/or directives. Accordingly, under Article 6 of the General Data Protection Regulation, or “GDPR,” users in the European Union acknowledge and consent to our processing of personal data as necessary for the performance of these Terms, any applicable agreements, and use of the Website. If you do not agree to the Terms, please do not use the Website. The Terms of Service are referred to herein as the “Agreement .”",
+              "By accessing, browsing, submitting information to and/or using the Website, you accept and agree to be bound and abide by these Terms and our Privacy Policy, incorporated herein by reference, and to comply with all applicable laws including, without limitation, all federal, state and local tax and tariff laws, regulations, and/or directives. Accordingly, under Article 6 of the General Data Protection Regulation, or “GDPR,” users in the European Union acknowledge and consent to our processing of personal data as necessary for the performance of these Terms, any applicable agreements, and use of the Website. If you do not agree to the Terms, please do not use the Website. The Terms of Service are referred to herein as the “Agreement.”",
           },
           section2: {
             title: "2. AMENDMENTS",
@@ -170,7 +170,8 @@ export default {
               text: {
                 strong: "Purpose of the Website",
                 normal:
-                  ". The Website is provided for the purpose of providing Users with historical data, transaction information, statistics, and information on other activities taking place on the Wormhole. The Service, and the Platform are for educational purposes only and are not meant to provide any financial advice or indicate any trading opportunity. Any reliance you place on such information is strictly at your own risk. The Company disclaims all liability and responsibility arising from any reliance placed on such content by you or any other visitor to our Website, or by anyone who may be informed of any of its contents. Any information you provide or that is collected by the Company through the Website shall be handled in accordance with the Company’s Privacy Policy.",
+                  ". The Website is provided for the purpose of providing Users with historical data, transaction information, statistics, and information on other activities taking place on the Wormhole. The Service, and the Platform are for educational purposes only and are not meant to provide any financial advice or indicate any trading opportunity. Any reliance you place on such information is strictly at your own risk. The Company disclaims all liability and responsibility arising from any reliance placed on such content by you or any other visitor to our Website, or by anyone who may be informed of any of its contents. Any information you provide or that is collected by the Company through the Website shall be handled in accordance with the ",
+                link: "Company’s Privacy Policy.",
               },
             },
             point2: {
@@ -253,7 +254,7 @@ export default {
           },
           section5: {
             title: "5. PRIVACY",
-            text: "You agree to Company’s Privacy Policy (available at https://xlabs.xyz/privacy-policy), which is incorporated by reference into this Agreement as if it were set forth herein in its entirety. The Privacy Policy describes how we collect, use, and disclose information provided by you. By using the Website or Service, you agree to, and are bound by, the terms of the Privacy Policy.",
+            text: "You agree to Company’s Privacy Policy (available at https://wormholescan.io/#/privacy-policy), which is incorporated by reference into this Agreement as if it were set forth herein in its entirety. The Privacy Policy describes how we collect, use, and disclose information provided by you. By using the Website or Service, you agree to, and are bound by, the terms of the Privacy Policy.",
           },
           section6: {
             title: "6. COMMUNICATION WITH USERS",
@@ -530,6 +531,360 @@ export default {
               normal: ". Questions can be directed to the Company at: ",
             },
           },
+        },
+      },
+      privacyPolicy: {
+        title: "Privacy Policy",
+        lastRevised: "Last Revised:",
+        header: {
+          text1:
+            "xLabs, Inc. (“Company,” “we” or “us”) is committed to protecting your privacy. We have prepared this Privacy Policy (the “Policy”) to describe to you our practices regarding the Personal Information (as defined below) we collect, why we collect it, and how we use and disclose it. This Policy should be read in conjunction with our Terms of Service (“Terms”) into which this Policy is incorporated by reference.",
+          text2:
+            "Your privacy matters to us, so please do take the time to get to know and familiarize yourself with our policies and practices. Please understand that we reserve the right to change any of our policies and practices at any time, but you can always find the latest version of this Policy here on this page. Your continued use of our Platform after we make changes is deemed to be acceptance of those changes, so please check the Policy periodically for updates.",
+          text3: "This Policy describes:",
+          ul: {
+            li1: "The types of information we collect from you or that you may provide when you visit our website at https://xlabs.xyz/ or utilize any related tools, mobile applications, web applications, decentralized applications, smart contracts, or Application Programming Interfaces (“APIs”) located at any of Company’s websites, including without limitation, successor website(s) or application(s) thereto (collectively, the “Platform”).",
+            li2: "Our practices for collecting, using, maintaining, protecting, and disclosing that information.",
+          },
+          text4:
+            "Please read this Policy carefully to understand our practices regarding your information and how we will treat it.  If you do not agree with our policies and practices, then please do not use our Platform.  By using our Platform, you agree to the terms of this Policy.",
+          list: {
+            title: "Table of contents:",
+            item1: "Personal information we collect",
+            item2: "Minor personal information",
+            item3: "How we use your personal information",
+            item4: "How we share your personal information",
+            item5: "Accessing / correcting / updating your personal data",
+            item6: "Cookies",
+            item7: "Direct marketing",
+            item8: "Withdrawing consent",
+            item9: "Information security",
+            item10: "Information for persons subject to EU data protection law",
+            item11: "Collection and transfer of data outside the EEA",
+            item12: "CCPA",
+            item13: "Contact us",
+          },
+        },
+        section1: {
+          title: "PERSONAL INFORMATION WE COLLECT",
+          text1:
+            "As used herein, “Personal Information” means information that identifies or is reasonably capable of identifying an individual, directly or indirectly, and information that is capable of being associated with an identified or reasonably identifiable individual. ",
+          point1: {
+            text: {
+              strong: "Personal Information We Collect from You",
+              normal:
+                ". We (or our Affiliates) may collect the following categories of Personal Information directly from you:",
+            },
+            ul: {
+              li1: {
+                strong: "Identification Information",
+                normal:
+                  ", such as name, email, phone number, postal address, Wallet address, social media information, and any information that may be legally required, including information required for Know Your Customer (“KYC”) verification purposes such as your social security number and date of birth;",
+              },
+              li2: {
+                strong: "Commercial Activity",
+                normal:
+                  ", such as public blockchain data, including wallet addresses and wallet activity.",
+              },
+              li3: {
+                strong: "Correspondence",
+                normal:
+                  ", such as information you provide to us in correspondence, including account opening, user feedback forms, customer support, messages, text boxes, other user content, or the like.",
+              },
+              li4: {
+                strong: "Payment information",
+                normal:
+                  ", such as credit or debit card numbers, bank account numbers, wire transfer information, and information connected to digital payment processing services such as Apple Pay or PayPal.",
+              },
+            },
+          },
+          text2:
+            "Company does not currently store or process credit or debit card information on our systems. Instead, all credit or debit card information is stored and processed by a trusted third-party PCI-DSS compliant processor.",
+          point2: {
+            text: {
+              strong: "Personal Information That May Be Collected Automatically",
+              normal:
+                ". We (or our Affiliates) may collect the following categories of Personal Information automatically through your use of our services:",
+            },
+            ul: {
+              li1: {
+                strong: "Online Identifiers",
+                normal: ", such as IP address, domain name;",
+              },
+              li2: {
+                strong: "Device Information",
+                normal:
+                  ", such as hardware, operating system, browser, device name, language preferences;",
+              },
+              li3: {
+                strong: "Usage Data",
+                normal:
+                  ", such as system activity, internal and external information related to Company pages that you visit, clickstream information; and",
+              },
+              li4: {
+                strong: "Geolocation Data",
+                normal: ", such as information about your device's location.",
+              },
+            },
+          },
+          text3:
+            "Automatic collection of Personal Information may involve the use of Cookies, described in greater detail below. To throttle the rate of requests and prevent certain types of attacks against us, we track the incoming IP addresses for very short periods of time. Company does not currently store Online Identifiers, Device Information, or Geolocation Data on our systems; however, please be aware that third-parties with which we might interact, such as vendors or payment processors, might store such information.",
+          point3: {
+            text: {
+              strong: "Personal Information We Collect from Third Parties",
+              normal:
+                ". We may collect and/or verify the following categories of Personal Information about you from third parties:",
+            },
+            ul: {
+              li1: {
+                strong: "Identification Information",
+                normal: ", such as name, email, phone number, postal address.",
+              },
+              li2: {
+                strong: "Transaction Information",
+                normal:
+                  ", such as public blockchain data (Bitcoin, Ether, Sol, and other digital assets are not truly anonymous. We, and any others who can match your public digital asset address to other Personal Information about you, may be able to identify you from a blockchain transaction because, in some circumstances, Personal Information published on a blockchain (such as your digital asset address and IP address) can be correlated with Personal Information that we and others may have. Furthermore, by using data analysis techniques on a given blockchain, it may be possible to identify other Personal Information about you); and",
+              },
+              li3: {
+                strong: "Additional Information",
+                normal: ", at our discretion to comply with legal obligations.",
+              },
+            },
+          },
+          point4: {
+            text: {
+              strong: "Accuracy and Retention of Personal Information",
+              normal:
+                ". We take reasonable and practicable steps to ensure that your Personal Information held by us is (i) accurate with regard to the purposes for which it is to be used, and (ii) not kept longer than is necessary for the fulfillment of the purpose for which it is to be used. The Company stores data in global hosting provider with servers across regions and we shall take all reasonable steps to ensure that all Personal Data is destroyed or permanently deleted when no longer required for the Purpose and prepare a disposal schedule for inactive data after 24-month period.",
+            },
+          },
+        },
+        section2: {
+          title: "MINOR PERSONAL INFORMATION",
+          text: "We do not knowingly collect data from or market to children under 18 years of age. We do not knowingly solicit data from or market to children under 18 years of age. By using the Platform, you represent that you are at least 18 or that you are the parent or guardian of such a minor and consent to such minor dependent’s use of the Platform. If we learn that personal information from users less than 18 years of age has been collected, we will deactivate the account and take reasonable measures to promptly delete such data from our records. If you become aware of any data we may have collected from children under age 18, please contact us at minor@xlabs.xyz.",
+        },
+        section3: {
+          title: "HOW WE USE YOUR PERSONAL INFORMATION",
+          text: "We collect Personal Information about you in an attempt to provide you with the best experience possible, protect you from risks related to improper use and fraud, and help us maintain and improve our Services. We may use your Personal Information to:	",
+          point1: {
+            text: {
+              strong: "Provide you with our Services",
+              normal:
+                ". We use your Personal Information to provide you with our Services pursuant to the terms of our Terms. ",
+            },
+          },
+          point2: {
+            text: {
+              strong: "Comply with legal and regulatory requirements",
+              normal:
+                ". We process your Personal Information as required by applicable laws and regulations. ",
+            },
+          },
+          point3: {
+            text: {
+              strong: "Detect and prevent fraud",
+              normal:
+                ". We process your Personal Information to detect and prevent fraud, which is especially important given the irreversible nature of cryptocurrency transactions. ",
+            },
+          },
+          point4: {
+            text: {
+              strong: "Protect the security and integrity of our Services",
+              normal:
+                ". We use your Personal Information, including information about your device and your activity on Company to maintain the security of your account and the Company platform. ",
+            },
+          },
+          point5: {
+            text: {
+              strong: "Provide you with customer support",
+              normal:
+                ". We process your Personal Information when you contact our support team with questions about or issues with your account. ",
+            },
+          },
+          point6: {
+            text: {
+              strong: "Market our products",
+              normal:
+                ". We may contact you with information about our Services. We will only do so with your permission, which can be revoked at any time. ",
+            },
+          },
+          point7: {
+            text: {
+              strong: "Other business purposes",
+              normal:
+                ". We may use your Personal Information for additional purposes if disclosed to you before we collect your Personal Information or if we obtain your consent. ",
+            },
+          },
+        },
+        section4: {
+          title: "HOW WE SHARE YOUR PERSONAL INFORMATION",
+          text1:
+            "We will never sell or trade your Personal Information with third parties for their commercial purposes. Further, we will not share your Personal Information with third-parties, except as described below:",
+          point1: {
+            text: {
+              strong: "Service Providers",
+              normal:
+                ". We may share your Personal Information with third-party service providers for business or commercial purposes, including fraud detection and prevention, security threat detection, payment processing, customer support, data analytics, Information Technology, advertising and marketing, network infrastructure, storage, transaction monitoring. We share your Personal Information with these service providers only so that they can provide us with the services, and we prohibit our service providers from using or disclosing your Personal Information for any other purpose.",
+            },
+          },
+          point2: {
+            text: {
+              strong: "Law Enforcement",
+              normal:
+                ". We may be compelled to share your Personal Information with law enforcement, government officials, and regulators. ",
+            },
+          },
+          point3: {
+            text: {
+              strong: "Corporate Transactions",
+              normal:
+                ". We may disclose Personal Information in the event of a proposed or consummated merger, acquisition, reorganization, asset sale, or similar corporate transaction, or in the event of a bankruptcy or dissolution. ",
+            },
+          },
+          point4: {
+            text: {
+              strong: "Professional Advisors",
+              normal:
+                ". We may share your Personal Information with our professional advisors, including legal, accounting, or other consulting services for purposes of audits or to comply with our legal obligations. ",
+            },
+          },
+          point5: {
+            text: {
+              strong: "Consent",
+              normal: ". We may share your Personal Information with your consent. ",
+            },
+          },
+          text2:
+            "If we decide to modify the purpose for which your Personal Information is collected and used, we will amend this Policy. ",
+        },
+        section5: {
+          title: "ACCESSING / CORRECTING / UPDATING YOUR PERSONAL DATA",
+          text1:
+            "You may request to obtain information of your personal data and also update or make amendments to your personal data. For online registered customers, you may login to your online account and update your personal data.",
+          text2:
+            "Please note that depending on the information requested, a nominal fee may be charged and/or backed by a blockchain signed message. We will endeavor to provide the information back to you as soon as practicable. However, we also reserve the right to validate all requests for the authenticity of the request.",
+        },
+        section6: {
+          title: "COOKIES",
+          text1:
+            "When you access Company, we may make use of the standard practice of placing tiny data files called cookies, flash cookies, pixel tags, or other tracking tools (herein, “Cookies”) on your computer or other devices used to visit Company. We use Cookies to help us recognize you as a customer, collect information about your use of Company to better customize our services and content for you, and collect information about your computer or other access devices to: (i) ensure that your account security has not been compromised by detecting irregular, suspicious, or potentially fraudulent account activities; (ii) assess and improve our services and advertising campaigns. Additionally, we use Cookies and/or a technology known as web bugs or clear gifs, which are typically stored in emails to help us confirm your receipt of, and response to our emails and to provide you with a more personalized experience when using our site. ",
+          text2:
+            "We also use third-party service providers to assist us in managing Cookies. Our service providers will place Cookies on the hard drive of your computer and will receive information that we select. Our service providers analyzes this information and provides us with aggregate reports. The information collected by our service providers may be linked to and combined with information that we collect about you while you are using the platform. Our service providers are contractually restricted from using information they receive from our Platform other than to assist us.",
+          text3_1:
+            "It is important that you prevent unauthorized access to your account and your computer. You should always log out after using a shared computer. You also can learn more about cookies by visiting ",
+          text3_2:
+            ", which includes additional useful information on cookies, how to block cookies, or be notified when you receive a cookie on different types of browsers and mobile devices. Please note that if you reject cookies, you will not be able to use some or all of Company. For example, any Company services or products that may require you to log in, like token holdings. If you do not consent to the placing of Cookies on your device, please do not visit, access, or use Company.",
+        },
+        section7: {
+          title: "DIRECT MARKETING",
+          text: "Subject to applicable laws and regulations, we may from time to time send direct marketing materials promoting services, products, facilities, or activities to you using information collected from or about you. It is our policy to not provide your Personal Information for those third parties’ direct marketing purposes without your consent.",
+        },
+        section8: {
+          title: "WITHDRAWING CONSENT",
+          text: "While certain data is obligatory, you may withdraw your consent relating to Company updates about future, new, and/or enhanced services and products. You may elect to stop receiving promotional activities in the ways described below:",
+          ul: {
+            li1: "unsubscribing from the mailing list;",
+            li2: "editing the relevant account settings to unsubscribe; or",
+            li3: "sending a request via Contact Us.",
+          },
+        },
+        section9: {
+          title: "INFORMATION SECURITY",
+          text: "No security is foolproof, and the Internet is an insecure medium. We cannot guarantee absolute security, but we work hard to protect Company and you from unauthorized access to or unauthorized alteration, disclosure, or destruction of Personal Information we collect and store. Measures we take include, but is not limited to, encryption of the Company website communications with SSL; optional two-factor authentication; periodic review of our Personal Information collection, storage, and processing practices; and restricted access to your Personal Information on a need-to-know basis for our employees, contractors and agents who are subject to strict contractual confidentiality obligations and may be disciplined or terminated if they fail to meet these obligations.",
+        },
+        section10: {
+          title: "INFORMATION FOR PERSONS SUBJECT TO EU DATA PROTECTION LAW",
+          text1:
+            "While customers who are located in the European Union (“EU”), European Economic Area (“EEA”) or the Channel Islands, or other locations subject to EU data protection law (collectively, “Europe”) are customers of our Panamian entity, we recognize and, to the extent applicable to us, adhere to relevant EU data protection laws. For purposes of this section, “personal data” has the meaning provided in the General Data Protection Regulation (EU) 2016/679 (“GDPR”).",
+          point1: {
+            text: {
+              strong: "Lawful Bases for Processing",
+              normal:
+                ". We process personal data subject to GDPR on one or more of the following legal bases:",
+            },
+            ul: {
+              li1: {
+                strong: "Legal Obligation",
+                normal:
+                  ": to conduct anti-fraud and to fulfill our retention and other legal obligations;",
+              },
+              li2: {
+                strong: "Contractual Obligation",
+                normal:
+                  ": to satisfy our obligations to you under our Terms, including to provide you with our Services and customer support services, and to optimize and enhance Company;",
+              },
+              li3: {
+                strong: "Legitimate Interest",
+                normal:
+                  ": to monitor the usage of Company, conduct automated and manual security checks of our Services, to protect our rights; and",
+              },
+              li4: {
+                strong: "Consent",
+                normal:
+                  ": to market Company and our Services. You may withdraw your consent at any time without affecting the lawfulness of processing based on consent before consent is withdrawn.",
+              },
+            },
+          },
+          point2: {
+            text: {
+              strong: "European Privacy Right",
+              normal:
+                ". European residents have the following rights under GDPR, subject to certain exceptions provided under the law, with respect to their personal data:",
+            },
+            ul: {
+              li1: {
+                strong: "Rights to Access and Rectification",
+                normal:
+                  ". You may submit a request that Company disclose the personal data that we process about you and correct any inaccurate personal data.",
+              },
+              li2: {
+                strong: "Right to Erasure",
+                normal:
+                  ". You may submit a request that Company delete the personal data that we have about you.",
+              },
+              li3: {
+                strong: "Right to Restriction of Processing",
+                normal:
+                  ". You have the right to restrict or object to our processing of your personal data under certain circumstances.",
+              },
+              li4: {
+                strong: "Right to Data Portability",
+                normal:
+                  ". You have the right to receive the personal data you have provided to us in an electronic format and to transmit that personal data to another data controller.",
+              },
+            },
+          },
+          text2:
+            "To submit a request to exercise these rights, please contact us using the methods described at the end of this Policy. When handling requests to exercise European privacy rights, we check the identity of the requesting party to ensure that he or she is the person legally entitled to make such request. While we maintain a policy to respond to these requests free of charge, should your request be repetitive or unduly onerous, we reserve the right to charge you a reasonable fee for compliance with your request.",
+        },
+        section11: {
+          title: "COLLECTION AND TRANSFER OF DATA OUTSIDE THE EEA",
+          text1:
+            "Company operates with many of our systems based in the EU. As a result, we may transfer personal data from Europe to third countries outside of Europe under the following conditions:",
+          ul: {
+            li1: {
+              strong: "Contractual Obligation",
+              normal:
+                ". Where transfers are necessary to satisfy our obligation to you under our Terms, including to provide you with our Services and customer support services, and to optimize and enhance Company; and",
+            },
+            li2: {
+              strong: "Consent",
+              normal:
+                ": where you have consented to the transfer of your personal data to a third country.",
+            },
+          },
+          text2:
+            "Where transfers to a third country are based on your consent, you may withdraw your consent at any time. Please understand, however, that our services may not be available if we are unable to transfer personal data to third countries.",
+          text3:
+            "When we transfer personal data to third countries, we endeavor to ensure adequate safeguards are implemented, for example through the use of standard contractual clauses or Privacy Shield certification.",
+        },
+        section12: {
+          title: "CCPA",
+          text: "Based on California law, you may have the right to request access to the personal information we collect from you, change that information, or delete it in some circumstances. To submit a request to exercise these rights, please contact us using the methods described at the end of this Privacy Policy. When handling requests to exercise CCPA privacy rights, we check the identity of the requesting party to ensure that he or she is the person legally entitled to make such request. While we maintain a policy to respond to these requests free of charge, should your request be repetitive or unduly onerous, we reserve the right to charge you a reasonable fee for compliance with your request ",
+        },
+        section13: {
+          title: "CONTACT US",
+          text: "If you have questions or concerns regarding this policy or our processing of your Personal Information, please feel free to email us at ",
         },
       },
     },

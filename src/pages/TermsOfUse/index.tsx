@@ -1,6 +1,7 @@
+import { useTranslation } from "react-i18next";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import "./styles.scss";
-import { useTranslation } from "react-i18next";
+import { NavLink } from "src/components/atoms";
 
 const TermsOfUse = () => {
   const { t } = useTranslation();
@@ -180,6 +181,9 @@ const TermsOfUse = () => {
                   <span className="terms-of-use-content-bottom-text-number">4.1.</span>
                   <strong>{t("termsOfUse.page.section4.point1.text.strong")}</strong>
                   {t("termsOfUse.page.section4.point1.text.normal")}
+                  <NavLink to={"/privacy-policy"}>
+                    {t("termsOfUse.page.section4.point1.text.link")}
+                  </NavLink>
                 </p>
                 <p className="terms-of-use-content-bottom-text">
                   <span className="terms-of-use-content-bottom-text-number">4.2.</span>
@@ -355,31 +359,31 @@ const TermsOfUse = () => {
 
                 <div className="terms-of-use-content-bottom-list">
                   <p className="terms-of-use-content-bottom-text">
-                    <span className="terms-of-use-content-bottom-text-number">8.2.1</span>
+                    <span className="terms-of-use-content-bottom-text-number">8.2.1.</span>
                     <strong>{t("termsOfUse.page.section8.point2.point1.text.strong")}</strong>
                     {t("termsOfUse.page.section8.point2.point1.text.normal")}
                   </p>
 
                   <p className="terms-of-use-content-bottom-text">
-                    <span className="terms-of-use-content-bottom-text-number">8.2.2</span>
+                    <span className="terms-of-use-content-bottom-text-number">8.2.2.</span>
                     <strong>{t("termsOfUse.page.section8.point2.point2.text.strong")}</strong>
                     {t("termsOfUse.page.section8.point2.point2.text.normal")}
                   </p>
 
                   <p className="terms-of-use-content-bottom-text">
-                    <span className="terms-of-use-content-bottom-text-number">8.2.3</span>
+                    <span className="terms-of-use-content-bottom-text-number">8.2.3.</span>
                     <strong>{t("termsOfUse.page.section8.point2.point3.text.strong")}</strong>
                     {t("termsOfUse.page.section8.point2.point3.text.normal")}
                   </p>
 
                   <p className="terms-of-use-content-bottom-text">
-                    <span className="terms-of-use-content-bottom-text-number">8.2.4</span>
+                    <span className="terms-of-use-content-bottom-text-number">8.2.4.</span>
                     <strong>{t("termsOfUse.page.section8.point2.point4.text.strong")}</strong>
                     {t("termsOfUse.page.section8.point2.point4.text.normal")}
                   </p>
 
                   <p className="terms-of-use-content-bottom-text">
-                    <span className="terms-of-use-content-bottom-text-number">8.2.5</span>
+                    <span className="terms-of-use-content-bottom-text-number">8.2.5.</span>
                     <strong>{t("termsOfUse.page.section8.point2.point5.text.strong")}</strong>
                     {t("termsOfUse.page.section8.point2.point5.text.normal")}
                   </p>
@@ -400,7 +404,7 @@ const TermsOfUse = () => {
               <h2 className="terms-of-use-content-bottom-title" id="assumptions-of-risk">
                 {t("termsOfUse.page.section10.title")}
               </h2>
-              <div className="terms-of-use-content-bottom-list">
+              <div className="terms-of-use-content-bottom-list terms-of-use-content-bottom-list-big-number">
                 <p className="terms-of-use-content-bottom-text">
                   <span className="terms-of-use-content-bottom-text-number">10.1.</span>
                   <strong>{t("termsOfUse.page.section10.point1.text.strong")}</strong>
@@ -437,7 +441,7 @@ const TermsOfUse = () => {
               <h2 className="terms-of-use-content-bottom-title" id="limitation-of-liability">
                 {t("termsOfUse.page.section11.title")}
               </h2>
-              <div className="terms-of-use-content-bottom-list">
+              <div className="terms-of-use-content-bottom-list terms-of-use-content-bottom-list-big-number">
                 <p className="terms-of-use-content-bottom-text">
                   <span className="terms-of-use-content-bottom-text-number">11.1.</span>
                   <strong>{t("termsOfUse.page.section11.point1.text1.strong")}</strong>
@@ -469,7 +473,7 @@ const TermsOfUse = () => {
               <h2 className="terms-of-use-content-bottom-title" id="general-terms">
                 {t("termsOfUse.page.section13.title")}
               </h2>
-              <div className="terms-of-use-content-bottom-list">
+              <div className="terms-of-use-content-bottom-list terms-of-use-content-bottom-list-big-number">
                 <p className="terms-of-use-content-bottom-text">
                   <span className="terms-of-use-content-bottom-text-number">13.1.</span>
                   <strong>{t("termsOfUse.page.section13.point1.text.strong")}</strong>

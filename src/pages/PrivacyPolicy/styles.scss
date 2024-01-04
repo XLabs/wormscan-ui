@@ -1,6 +1,6 @@
 @import "src/styles/globals.scss";
 
-.terms-of-use {
+.privacy-policy {
   @include card-container;
 
   @include desktop {
@@ -20,8 +20,8 @@
     &-top {
       @include desktop {
         display: grid;
-        grid-template-columns: 1fr 0.7fr;
-        gap: 60px 54px;
+        grid-template-columns: 1.1fr 0.6fr;
+        gap: 60px 32px;
         margin-bottom: 54px;
       }
 
@@ -67,15 +67,15 @@
       &-list {
         @include card-container;
         color: var(--color-primary-90);
-        margin-bottom: 32px;
-        padding-left: 32px;
         display: flex;
         flex-direction: column;
+        margin-bottom: 32px;
+        padding-left: 32px;
 
         @include desktop {
-          height: 296px;
-          margin: 0 24px 0 auto;
-          padding: 32px 8px 32px 32px;
+          height: max-content;
+          margin: 0 0 0 auto;
+          padding: 32px;
           width: 310px;
         }
 
@@ -118,6 +118,24 @@
             &:hover {
               text-decoration: underline;
             }
+          }
+        }
+      }
+
+      &-left-list {
+        color: var(--color-primary-90);
+        line-height: 24px;
+        padding-left: 33px;
+
+        @include desktop {
+          padding-left: 48px;
+        }
+
+        & > ul {
+          padding-left: 16px;
+
+          & > li {
+            margin-bottom: 32px;
           }
         }
       }

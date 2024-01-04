@@ -12,6 +12,7 @@ const Home = lazy(() => import("../pages/Home"));
 const Tx = lazy(() => import("../pages/Tx"));
 const Txs = lazy(() => import("../pages/Txs"));
 const TermsOfUse = lazy(() => import("../pages/TermsOfUse"));
+const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 
 const Navigation = () => {
@@ -35,6 +36,7 @@ const Navigation = () => {
                 <Route path="/tx/:txHash" element={<Tx />} />
                 <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
                 <Route path="/terms-of-use" element={<TermsOfUse />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
