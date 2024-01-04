@@ -27,9 +27,9 @@ const TermsOfUseBanner = () => {
     <div className="terms-banner">
       <div className="terms-banner-content">
         <p className="terms-banner-content-text">
-          {t("termsOfUse.title")}{" "}
+          {t("termsOfUse.banner.title")}{" "}
           <NavLink className="terms-banner-content-link" to="/terms-of-use">
-            {t("termsOfUse.link")}
+            {t("termsOfUse.banner.link")}
           </NavLink>
         </p>
       </div>
