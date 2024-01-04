@@ -6,7 +6,11 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
 import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { fetchWithRpcFallThrough, getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
+import {
+  fetchWithRpcFallThrough,
+  getTokenInformation,
+  getUsdcAddress,
+} from "src/utils/fetchWithRPCsFallthrough";
 import { formatUnits, parseTx } from "src/utils/crypto";
 import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
@@ -18,6 +22,7 @@ import { Information } from "./Information";
 import { Top } from "./Top";
 import "./styles.scss";
 import { getChainName } from "src/utils/wormhole";
+import { getAlgorandTokenInfo, tryGetWrappedToken } from "src/utils/cryptoToolkit";
 
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
@@ -89,6 +94,7 @@ const Tx = () => {
             globalTx: null,
             id: txData.id,
             payload: {
+              amount: txData.payloadAmount ?? undefined,
               payloadType: txData.payloadType,
               parsedPayload: {
                 feeAmount: txData?.fee,
@@ -107,6 +113,7 @@ const Tx = () => {
               toChain: txData.toChain,
               tokenAddress: txData.tokenAddress,
               tokenChain: txData.tokenChain,
+              wrappedTokenAddress: txData.wrappedTokenAddress ?? null,
             },
             symbol: txData.symbol,
             timestamp: new Date(txData.timestamp),
@@ -293,6 +300,14 @@ const Tx = () => {
             }`;
           }
 
+          // the target token address should be native USDC
+          if (txResponse.standardizedProperties?.toChain) {
+            txResponse.standardizedProperties.wrappedTokenAddress = getUsdcAddress(
+              network,
+              txResponse.standardizedProperties?.toChain,
+            );
+          }
+
           // get CCTP relayer information
           const relayResponse = await getClient().search.getCctpRelay({
             txHash: parseTx({ value: txResponse.txHash, chainId: 2 }),
@@ -336,8 +351,8 @@ const Tx = () => {
           }
         }
 
-        // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
         if (!txResponse?.standardizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
+          // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
           analytics.track("txDetail", {
             appIds: txResponse?.standardizedProperties?.appIds?.join(", ")
               ? txResponse.standardizedProperties.appIds.join(", ")
@@ -361,7 +376,6 @@ const Tx = () => {
       onSuccess: data => {
         if (!!data.length) {
           setErrorCode(undefined);
-          setIsLoading(false);
         }
       },
       onError: (err: Error) => showSearchNotFound(err),
@@ -370,8 +384,7 @@ const Tx = () => {
 
   const processApiTxData = useCallback(
     async (apiTxData: GetTransactionsOutput[]) => {
-      const processedApiTxData = [];
-
+      // if there's no tokenAmount or symbol, try to get them with RPC info
       for (const data of apiTxData) {
         if (
           (!data.tokenAmount || !data.symbol) &&
@@ -389,23 +402,88 @@ const Tx = () => {
             const amount = data.payload?.amount || data.standardizedProperties?.amount;
 
             if (amount && tokenInfo.tokenDecimals) {
-              processedApiTxData.push({
-                ...data,
-                tokenAmount: "" + formatUnits(+amount, tokenInfo.tokenDecimals),
-                symbol: tokenInfo.symbol,
-              });
+              data.tokenAmount = "" + formatUnits(+amount, tokenInfo.tokenDecimals);
+              data.symbol = tokenInfo.symbol;
             }
-          } else {
-            processedApiTxData.push(data);
           }
-        } else {
-          processedApiTxData.push(data);
         }
       }
 
-      setTxData(processedApiTxData);
+      let wrappedTokenChain = null;
+      // try to get wrapped token address and symbol
+      for (const data of apiTxData) {
+        if (data?.standardizedProperties?.appIds?.includes("PORTAL_TOKEN_BRIDGE")) {
+          if (
+            data?.standardizedProperties?.fromChain &&
+            data?.standardizedProperties?.tokenAddress &&
+            data?.standardizedProperties?.tokenChain &&
+            data?.standardizedProperties?.toChain
+          ) {
+            const { fromChain, tokenAddress, tokenChain, toChain } = data.standardizedProperties;
+
+            const wrapped = tokenChain !== toChain ? "target" : "source";
+
+            const wrappedToken = await tryGetWrappedToken(
+              network,
+              tokenChain as ChainId,
+              tokenAddress,
+              (wrapped === "target" ? toChain : fromChain) as ChainId,
+            );
+
+            if (wrappedToken) {
+              wrappedTokenChain = wrapped === "target" ? toChain : fromChain;
+              data.standardizedProperties.wrappedTokenAddress = wrappedToken.wrappedToken;
+              if (wrappedToken.tokenSymbol) {
+                data.standardizedProperties.wrappedTokenSymbol = wrappedToken.tokenSymbol;
+              }
+              console.log("result!", { wrappedToken });
+            }
+          }
+        }
+      }
+
+      for (const data of apiTxData) {
+        if (
+          data?.standardizedProperties?.tokenChain === ChainId.Algorand &&
+          data?.standardizedProperties?.tokenAddress
+        ) {
+          const tokenInfo = await getAlgorandTokenInfo(
+            network,
+            data?.standardizedProperties?.tokenAddress,
+          );
+
+          if (tokenInfo) {
+            data.standardizedProperties.tokenAddress =
+              tokenInfo.assetId ?? data.standardizedProperties.tokenAddress;
+
+            if (tokenInfo.decimals && !data?.tokenAmount && data?.payload?.amount) {
+              data.tokenAmount = `${+data.payload.amount / 10 ** tokenInfo.decimals}`;
+            }
+            if (tokenInfo.symbol && !data?.symbol) {
+              data.symbol = tokenInfo.symbol;
+            }
+          }
+        }
+
+        if (wrappedTokenChain === ChainId.Algorand) {
+          const tokenInfo = await getAlgorandTokenInfo(
+            network,
+            data?.standardizedProperties?.wrappedTokenAddress,
+          );
+          if (tokenInfo) {
+            data.standardizedProperties.wrappedTokenAddress = tokenInfo.assetId;
+
+            if (tokenInfo.symbol && !data?.standardizedProperties?.wrappedTokenSymbol) {
+              data.standardizedProperties.wrappedTokenSymbol = tokenInfo.symbol;
+            }
+          }
+        }
+      }
+
+      setTxData(apiTxData);
+      setIsLoading(false);
     },
-    [environment],
+    [environment, network],
   );
 
   useEffect(() => {
@@ -469,6 +547,12 @@ const Tx = () => {
     }
   }, [VAAData, processVAA]);
 
+  const updateTxData = (newData: GetTransactionsOutput, i: number) => {
+    const newTxData = [...txData];
+    newTxData[i] = { ...newData };
+    setTxData(newTxData);
+  };
+
   return (
     <BaseLayout>
       <div className="tx-page">
@@ -500,6 +584,7 @@ const Tx = () => {
                     VAAData={parsedVAAData}
                     txData={txData.find(tx => tx.id === parsedVAAData.id)}
                     blockData={blockData}
+                    setTxData={newData => updateTxData(newData, i)}
                   />
                 ),
             )}

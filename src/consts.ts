@@ -1,3 +1,5 @@
+import { ChainId } from "./api";
+
 export const BREAKPOINTS = {
   mobile: 320,
   tablet: 768,
@@ -129,3 +131,30 @@ export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";
 export const XLABS_URL = "https://www.xlabs.xyz";
 export const WORMHOLE_DOCS_URL = "https://docs.wormholescan.io";
 export const XLABS_CAREERS_URL = "https://jobs.ashbyhq.com/Xlabs";
+
+// if toChain is on this list we should be able to get destinationTx.
+// (contract-watcher for token bridge & connect txs)
+export const canWeGetDestinationTx = (toChain: ChainId) =>
+  [
+    ChainId.Aptos,
+    ChainId.Avalanche,
+    ChainId.Base,
+    ChainId.BSC,
+    ChainId.Celo,
+    ChainId.Ethereum,
+    ChainId.Fantom,
+    ChainId.Moonbeam,
+    ChainId.Oasis,
+    ChainId.Polygon,
+    ChainId.Terra,
+    // ChainId.Arbitrum // should be supported, but BE having problems
+    // ChainId.Optimism // should be supported, but BE having problems
+    // ChainId.Solana,  // should be supported, but BE having problems
+  ].includes(toChain);
+
+export type IStatus =
+  | "EXTERNAL_TX"
+  | "COMPLETED"
+  | "PENDING_REDEEM"
+  | "VAA_EMITTED"
+  | "IN_PROGRESS";

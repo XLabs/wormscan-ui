@@ -5,84 +5,35 @@ import { formatAppIds, shortAddress } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
 import { ChainId } from "src/api";
 import "./styles.scss";
+import { IStatus } from "src/consts";
 
 type Props = {
   appIds: string[];
   currentNetwork: Network;
-  globalToRedeemTx: string | undefined;
-  hasAnotherApp: boolean;
-  isCCTP: boolean;
-  isConnect: boolean;
-  isPortal: boolean;
-  isTBTC: boolean;
-  isTransferWithPayload: boolean;
   isUnknownApp: boolean;
   parsedDestinationAddress: string;
+  STATUS: IStatus;
   toChain: ChainId | number;
-  vaa: string;
 };
 
 const Summary = ({
   appIds,
   currentNetwork,
-  globalToRedeemTx,
-  hasAnotherApp,
-  isCCTP,
-  isConnect,
-  isPortal,
-  isTBTC,
-  isTransferWithPayload,
   isUnknownApp,
   parsedDestinationAddress,
+  STATUS,
   toChain,
-  vaa,
 }: Props) => {
-  // if toChain is on this list we should be able to get destinationTx.
-  // (contract-watcher for token bridge & connect txs)
-  const canWeGetDestinationTx = [
-    ChainId.Aptos,
-    ChainId.Avalanche,
-    ChainId.Base,
-    ChainId.BSC,
-    ChainId.Celo,
-    ChainId.Ethereum,
-    ChainId.Fantom,
-    ChainId.Moonbeam,
-    ChainId.Oasis,
-    ChainId.Polygon,
-    ChainId.Terra,
-    // ChainId.Arbitrum // should be supported, but BE having problems
-    // ChainId.Optimism // should be supported, but BE having problems
-    // ChainId.Solana,  // should be supported, but BE having problems
-  ].includes(toChain);
-
   return (
     <div className="tx-information-summary">
       <div>
         <div className="key">Status:</div>
         <div className="value">
-          {appIds && appIds.includes("CCTP_MANUAL") ? (
-            <StatusExternalTx />
-          ) : vaa ? (
-            isConnect || isPortal || isCCTP ? (
-              globalToRedeemTx ? (
-                <StatusCompleted />
-              ) : (canWeGetDestinationTx &&
-                  !hasAnotherApp &&
-                  (!isTransferWithPayload ||
-                    (isTransferWithPayload && isConnect) ||
-                    (isTransferWithPayload && isTBTC))) ||
-                isCCTP ? (
-                <StatusPendingRedeem />
-              ) : (
-                <StatusVaaEmitted />
-              )
-            ) : (
-              <StatusVaaEmitted />
-            )
-          ) : (
-            <StatusInProgress />
-          )}
+          {STATUS === "EXTERNAL_TX" && <StatusExternalTx />}
+          {STATUS === "COMPLETED" && <StatusCompleted />}
+          {STATUS === "IN_PROGRESS" && <StatusInProgress />}
+          {STATUS === "PENDING_REDEEM" && <StatusPendingRedeem />}
+          {STATUS === "VAA_EMITTED" && <StatusVaaEmitted />}
         </div>
       </div>
       <div>

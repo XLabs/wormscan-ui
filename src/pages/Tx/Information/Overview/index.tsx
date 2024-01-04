@@ -8,7 +8,7 @@ import { shortAddress, shortVaaId } from "src/utils/crypto";
 import { colorStatus } from "src/consts";
 import "./styles.scss";
 
-type Props = {
+export type OverviewProps = {
   amountSent?: string;
   amountSentUSD?: string;
   currentNetwork?: Network;
@@ -25,12 +25,16 @@ type Props = {
   parsedDestinationAddress?: string;
   parsedEmitterAddress?: string;
   parsedOriginAddress?: string;
+  parsedPayload?: any;
   parsedRedeemTx?: string;
   redeemedAmount?: string;
-  symbol?: string;
+  showSignatures?: boolean;
+  sourceSymbol?: string;
+  sourceTokenLink?: string;
+  targetSymbol?: string;
+  targetTokenLink?: string;
   toChain?: ChainId | number;
   tokenAmount?: string;
-  tokenLink?: string;
   totalGuardiansNeeded?: number;
   VAAId?: string;
 };
@@ -61,13 +65,16 @@ const Overview = ({
   parsedOriginAddress,
   parsedRedeemTx,
   redeemedAmount,
-  symbol,
+  showSignatures,
+  sourceSymbol,
+  sourceTokenLink,
+  targetSymbol,
+  targetTokenLink,
   toChain,
   tokenAmount,
-  tokenLink,
   totalGuardiansNeeded,
   VAAId,
-}: Props) => (
+}: OverviewProps) => (
   <div className="tx-overview">
     <div className="tx-overview-graph">
       <div className={`tx-overview-graph-step green source`}>
@@ -93,14 +100,14 @@ const Overview = ({
               {tokenAmount ? (
                 <>
                   {amountSent}{" "}
-                  {symbol ? (
+                  {sourceSymbol ? (
                     <>
-                      {tokenLink ? (
-                        <a href={tokenLink} target="_blank" rel="noopener noreferrer">
-                          {symbol}
+                      {sourceTokenLink ? (
+                        <a href={sourceTokenLink} target="_blank" rel="noopener noreferrer">
+                          {sourceSymbol}
                         </a>
                       ) : (
-                        <span>{symbol}</span>
+                        <span>{sourceSymbol}</span>
                       )}
                       {amountSentUSD && `(${amountSentUSD} USD)`}
                     </>
@@ -231,7 +238,7 @@ const Overview = ({
           <div>
             <div className="tx-overview-graph-step-title">Signatures</div>
             <div className="tx-overview-graph-step-description">
-              {guardianSignaturesCount} / {totalGuardiansNeeded}
+              {showSignatures ? `${guardianSignaturesCount} / ${totalGuardiansNeeded}` : "N/A"}
             </div>
           </div>
 
@@ -331,26 +338,26 @@ const Overview = ({
                 {Number(fee) ? (
                   <>
                     {redeemedAmount}{" "}
-                    {symbol &&
-                      (tokenLink ? (
-                        <a href={tokenLink} target="_blank" rel="noopener noreferrer">
-                          {symbol}
+                    {targetSymbol &&
+                      (targetTokenLink ? (
+                        <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
+                          {targetSymbol}
                         </a>
                       ) : (
-                        <span>{symbol}</span>
+                        <span>{targetSymbol}</span>
                       ))}
                   </>
                 ) : tokenAmount ? (
                   <>
                     {amountSent}{" "}
-                    {symbol ? (
+                    {targetSymbol ? (
                       <>
-                        {tokenLink ? (
-                          <a href={tokenLink} target="_blank" rel="noopener noreferrer">
-                            {symbol}
+                        {targetTokenLink ? (
+                          <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
+                            {targetSymbol}
                           </a>
                         ) : (
-                          <span>{symbol}</span>
+                          <span>{targetSymbol}</span>
                         )}
                         {amountSentUSD && `(${amountSentUSD} USD)`}
                       </>
