@@ -2,13 +2,21 @@
 
 .home-statistics {
   @include centered-column;
+  gap: 32px;
+  margin-bottom: 32px;
+  min-height: 330px;
+
   @include desktop {
     @include centered-row;
     align-items: stretch;
+    gap: 24px;
+    margin-bottom: 24px;
+    margin-top: 24px;
   }
 
-  gap: 24px;
-  margin-top: 24px;
-  margin-bottom: 24px;
-  min-height: 330px;
+  @include bigDesktop {
+    gap: 32px;
+    margin-bottom: 32px;
+    margin-top: 32px;
+  }
 }

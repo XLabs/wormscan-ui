@@ -2,7 +2,15 @@
 
 .cross-chain {
   @include card-container;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+
+  @include desktop {
+    margin-bottom: 24px;
+  }
+
+  @include bigDesktop {
+    margin-bottom: 32px;
+  }
 
   &-relative {
     position: relative;

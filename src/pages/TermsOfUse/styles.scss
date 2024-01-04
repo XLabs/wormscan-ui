@@ -1,13 +1,179 @@
 @import "src/styles/globals.scss";
 
 .terms-of-use {
-  h2 {
-    @include text-h2;
+  @include card-container;
+
+  @include desktop {
+    max-width: 1096px;
+    margin: 48px auto;
   }
 
-  p {
-    @include text-p2;
+  &-content {
+    @include desktop {
+      padding: 10px 40px;
+    }
 
-    margin-bottom: 16px;
+    @include bigDesktop {
+      padding: 10px 80px;
+    }
+
+    &-top {
+      @include desktop {
+        display: grid;
+        grid-template-columns: 1fr 0.7fr;
+        gap: 60px 54px;
+        margin-bottom: 54px;
+      }
+
+      &-header {
+        grid-column: span 2;
+        display: flex;
+        flex-direction: column;
+
+        &-title {
+          @include text-p2-bold;
+          color: var(--color-primary-30);
+          font-size: 18px;
+          margin-bottom: 8px;
+
+          @include desktop {
+            font-size: 32px;
+          }
+        }
+
+        &-subtitle {
+          @include text-p2;
+          color: var(--color-primary-50);
+
+          @include desktop {
+            font-size: 20px;
+          }
+        }
+      }
+
+      &-text {
+        @include text-p3;
+        color: var(--color-primary-90);
+        margin-bottom: 32px;
+
+        @include desktop {
+          font-size: 16px;
+        }
+      }
+
+      &-list {
+        @include card-container;
+        color: var(--color-primary-90);
+        margin-bottom: 32px;
+        padding-left: 32px;
+        display: flex;
+        flex-direction: column;
+
+        @include desktop {
+          height: 296px;
+          margin: 0 24px 0 auto;
+          padding: 32px 8px 32px 32px;
+          width: 310px;
+
+        }
+
+        &-title {
+          @include text-p2-bold;
+          color: var(--color-primary-50);
+          margin-bottom: 24px;
+        }
+
+        & > ul {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+
+          @include desktop {
+            overflow-y: auto;
+
+            &::-webkit-scrollbar {
+              width: 8px;
+              background-color: transparent;
+            }
+          }
+        }
+
+        &-item {
+          list-style: none;
+
+          & > p {
+            @include text-p3;
+            background-color: transparent;
+            border: none;
+            color: var(--color-information-100);
+            cursor: pointer;
+            line-height: 24px;
+
+            @include desktop {
+              font-size: 16px;
+            }
+
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+
+    &-bottom {
+      border-top: 1px solid var(--color-white-10);
+      padding: 24px 51px 24px 0;
+
+      &-title {
+        @include text-p2-bold;
+        color: var(--color-primary-30);
+        font-size: 18px;
+        margin-bottom: 8px;
+        padding-top: 8px;
+
+        @include desktop {
+          margin-bottom: 24px;
+          padding-top: 24px;
+        }
+      }
+
+      &-text {
+        @include text-p3;
+        color: var(--color-primary-30);
+        margin-bottom: 24px;
+        position: relative;
+
+        & > a {
+          @include text-p2;
+          color: var(--color-information-100);
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        &-number {
+          position: absolute;
+          left: -72px;
+          text-align: right;
+          min-width: 64px;
+        }
+      }
+
+      &-list {
+        padding-left: 32px;
+
+        @include desktop {
+          padding-left: 48px;
+        }
+
+        & > ul {
+          // list-style-position: inside;
+          padding-left: 16px;
+        }
+      }
+    }
   }
 }
