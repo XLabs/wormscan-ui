@@ -17,7 +17,7 @@
   &-data {
     @include card-container;
     @include centered-column;
-    gap: 8px;
+    gap: 32px;
     flex: 3;
 
     @include desktop {
@@ -29,7 +29,7 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       margin: auto 0;
-      row-gap: 32px;
+      row-gap: 40px;
 
       @include desktop {
         grid-template-columns: repeat(3, 1fr);

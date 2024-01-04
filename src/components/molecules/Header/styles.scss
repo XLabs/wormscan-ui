@@ -1,32 +1,31 @@
 @import "src/styles/globals.scss";
 
 .header {
+  align-items: center;
+  column-gap: 4px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-areas:
     "brand actions"
     "search search";
-  align-items: center;
-  width: 100%;
   min-height: 64px;
-  row-gap: 20px;
-  column-gap: 4px;
-  background-color: rgba(1, 0, 20, 0.2);
-  border-bottom: 1px solid var(--color-white-10);
   padding: 16px 16px 24px;
+  row-gap: 32px;
+  width: 100%;
 
   @include tablet {
-    padding: 16 60px;
-    gap: 16px;
+    padding: 16px 60px;
   }
 
   @include desktop {
     grid-template-columns: auto 0.8fr auto;
     grid-template-areas: "brand search actions";
 
-    padding: 16px 60px;
-    min-height: 96px;
+    background-color: rgba(1, 0, 20, 0.2);
+    border-bottom: 1px solid var(--color-white-10);
     gap: 8px;
+    min-height: 96px;
+    padding: 16px 60px;
   }
 
   @include bigDesktop {
@@ -41,6 +40,19 @@
 
     @include desktop {
       padding: 0;
+    }
+  }
+
+  &-mobile-line {
+    background-color: var(--color-white-10);
+    height: 1px;
+    left: 0;
+    position: absolute;
+    top: 80px;
+    width: 100vw;
+
+    @include desktop {
+      display: none;
     }
   }
 
@@ -86,16 +98,23 @@
     }
 
     &-select {
-      height: 36px;
       width: fit-content;
+      height: 60px;
+      width: 168px;
 
       @include desktop {
         height: 48px;
+        width: unset;
       }
 
       & .select__control {
         color: var(--color-white);
         font-weight: 600;
+        padding: 16px 24px;
+
+        @include desktop {
+          padding: 4px 8px 4px 16px;
+        }
       }
     }
   }
@@ -136,25 +155,67 @@
       @include centered-row;
       align-items: flex-start;
       gap: 8px;
+      padding-left: 10px;
       user-select: none;
+
+      @include desktop {
+        padding-left: 0;
+      }
 
       a {
         @include text-p2;
 
         color: var(--color-primary-90);
         text-decoration: none;
+        font-size: 18px;
+        font-weight: 600;
+
+        @include desktop {
+          font-size: 16px;
+          font-weight: 400;
+        }
 
         &:hover {
           color: var(--color-secondary-700);
+        }
+      }
+
+      &-social {
+        @include centered-row;
+        gap: 42px;
+        margin: 5vh 0 16px 0;
+        margin: 5svh 0 16px 0;
+
+        &-text {
+          @include text-p3;
+
+          color: #544867;
+        }
+
+        &-icons {
+          @include centered-row;
+          gap: 56px;
+
+          & a {
+            @include centered-column;
+
+            & svg path {
+              fill: var(--color-secondary-800);
+            }
+
+            &:hover svg path {
+              fill: var(--color-secondary-700);
+            }
+          }
         }
       }
     }
   }
 
   &-navigation-mobile {
-    background-color: var(--color-primary-900);
+    background-color: var(--color-primary-950);
     border-left: 2px solid var(--color-white-10);
-    box-shadow: -8px 2px 16px 15px rgba(2, 3, 30, 0.51);
+    box-shadow: -8px 2px 16px 15px rgba(22, 9, 36, 0.5);
     min-height: 100vh;
     position: fixed;
     right: 0;
@@ -192,12 +253,12 @@
       max-height: calc(100svh - 90px);
       justify-content: start;
       overflow-y: auto;
-      padding-left: 48px;
+      padding-left: 32px;
 
       > nav {
         @include centered-column;
         gap: 32px;
-        padding-top: 52px;
+        padding-top: 42px;
       }
     }
 
@@ -216,7 +277,7 @@
   }
 
   &-menu-mobile-mask {
-    background-color: var(--color-primary-900);
+    background-color: var(--color-primary-950);
 
     bottom: 0;
     left: 0;
