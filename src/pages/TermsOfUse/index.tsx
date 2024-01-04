@@ -294,7 +294,9 @@ const TermsOfUse = () => {
                 {t("termsOfUse.page.section5.title")}
               </h2>
               <p className="terms-of-use-content-bottom-text">
-                {t("termsOfUse.page.section5.text")}
+                {t("termsOfUse.page.section5.text1_1")}
+                <NavLink to={"/privacy-policy"}>https://wormholescan.io/#/privacy-policy</NavLink>
+                {t("termsOfUse.page.section5.text1_2")}
               </p>
             </section>
 
