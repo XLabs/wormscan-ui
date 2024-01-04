@@ -1,5 +1,4 @@
 import { ChainId, Network } from "@certusone/wormhole-sdk";
-import { ethers } from "ethers";
 
 interface IWrappedResponse {
   wrappedToken: string;
@@ -17,8 +16,7 @@ interface IAlgorandTokenResponse {
   symbol?: string;
 }
 
-// const WH_UTILS_URL = "http://localhost:8080";
-const WH_UTILS_URL = "https://cryptotruco.com";
+const BFF_URL = process.env.WORMSCAN_BFF_URL;
 
 export const tryGetRedeemTxn = async (
   network: Network,
@@ -33,7 +31,7 @@ export const tryGetRedeemTxn = async (
 ): Promise<IRedeemResponse | null> => {
   try {
     const redeemTxn = await fetch(
-      `${WH_UTILS_URL}/getRedeemTxn?network=${network}&fromChain=${fromChain}&toChain=${toChain}&address=${address}&tokenAddress=${tokenAddress}&timestamp=${timestamp}&amount=${amount}&txHash=${txHash}&sequence=${sequence}`,
+      `${BFF_URL}/getRedeemTxn?network=${network}&fromChain=${fromChain}&toChain=${toChain}&address=${address}&tokenAddress=${tokenAddress}&timestamp=${timestamp}&amount=${amount}&txHash=${txHash}&sequence=${sequence}`,
     );
 
     const redeemData = (await redeemTxn.json()) as IRedeemResponse;
@@ -51,7 +49,7 @@ export const tryGetWrappedToken = async (
 ) => {
   try {
     const wrappedTokenRequest = await fetch(
-      `${WH_UTILS_URL}/getWrappedAsset?network=${network}&tokenChain=${tokenChain}&tokenAddress=${tokenAddress}&targetChain=${targetChain}`,
+      `${BFF_URL}/getWrappedAsset?network=${network}&tokenChain=${tokenChain}&tokenAddress=${tokenAddress}&targetChain=${targetChain}`,
     );
 
     const wrappedTokenResponse = (await wrappedTokenRequest.json()) as IWrappedResponse | null;
@@ -64,7 +62,7 @@ export const tryGetWrappedToken = async (
 export const getAlgorandTokenInfo = async (network: Network, tokenAddress: string) => {
   try {
     const algoTokenRequest = await fetch(
-      `${WH_UTILS_URL}/getAlgoAssetInfo?network=${network}&tokenAddress=${tokenAddress}`,
+      `${BFF_URL}/getAlgoAssetInfo?network=${network}&tokenAddress=${tokenAddress}`,
     );
 
     const algoTokenResponse = (await algoTokenRequest.json()) as IAlgorandTokenResponse | null;
