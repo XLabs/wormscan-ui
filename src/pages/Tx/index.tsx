@@ -443,13 +443,14 @@ const Tx = () => {
       }
 
       for (const data of apiTxData) {
-        const { tokenAddress, wrappedTokenAddress } = data.standardizedProperties;
-
         if (
           data?.standardizedProperties?.tokenChain === ChainId.Algorand &&
           data?.standardizedProperties?.tokenAddress
         ) {
-          const tokenInfo = await getAlgorandTokenInfo(network, tokenAddress);
+          const tokenInfo = await getAlgorandTokenInfo(
+            network,
+            data?.standardizedProperties?.tokenAddress,
+          );
 
           if (tokenInfo) {
             data.standardizedProperties.tokenAddress =
@@ -465,7 +466,10 @@ const Tx = () => {
         }
 
         if (wrappedTokenChain === ChainId.Algorand) {
-          const tokenInfo = await getAlgorandTokenInfo(network, wrappedTokenAddress);
+          const tokenInfo = await getAlgorandTokenInfo(
+            network,
+            data?.standardizedProperties?.wrappedTokenAddress,
+          );
           if (tokenInfo) {
             data.standardizedProperties.wrappedTokenAddress = tokenInfo.assetId;
 
