@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import "./styles.scss";
 import { NavLink } from "src/components/atoms";
+import "./styles.scss";
 
 const TermsOfUse = () => {
   const { t } = useTranslation();
