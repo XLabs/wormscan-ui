@@ -1,4 +1,5 @@
 import { ChainId, Network } from "@certusone/wormhole-sdk";
+import { fetchWithTimeout } from "./asyncUtils";
 
 interface IWrappedResponse {
   wrappedToken: string;
@@ -48,7 +49,7 @@ export const tryGetWrappedToken = async (
   targetChain: ChainId,
 ) => {
   try {
-    const wrappedTokenRequest = await fetch(
+    const wrappedTokenRequest = await fetchWithTimeout(
       `${BFF_URL}/getWrappedAsset?network=${network}&tokenChain=${tokenChain}&tokenAddress=${tokenAddress}&targetChain=${targetChain}`,
     );
 
@@ -61,7 +62,7 @@ export const tryGetWrappedToken = async (
 
 export const getAlgorandTokenInfo = async (network: Network, tokenAddress: string) => {
   try {
-    const algoTokenRequest = await fetch(
+    const algoTokenRequest = await fetchWithTimeout(
       `${BFF_URL}/getAlgoAssetInfo?network=${network}&tokenAddress=${tokenAddress}`,
     );
 

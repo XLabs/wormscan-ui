@@ -409,8 +409,8 @@ const Tx = () => {
         }
       }
 
-      let wrappedTokenChain = null;
       // try to get wrapped token address and symbol
+      let wrappedTokenChain = null;
       for (const data of apiTxData) {
         if (data?.standardizedProperties?.appIds?.includes("PORTAL_TOKEN_BRIDGE")) {
           if (
