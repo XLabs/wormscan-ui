@@ -158,9 +158,8 @@ const Tx = () => {
     ["getVAAbyTxHash", txHash],
     async () => {
       const otherNetwork = network === "MAINNET" ? "TESTNET" : "MAINNET";
-      let hasResponse = false;
 
-      const currentNetworkPromise = getClient()
+      const currentNetworkResponse: VAADetail[] = await getClient()
         .guardianNetwork.getVAAbyTxHash({
           query: {
             txHash: txHash,
@@ -168,14 +167,21 @@ const Tx = () => {
           },
         })
         .then(response => {
+          console.log("OTRA RESPONSE");
           if (!!response.length) {
-            hasResponse = true;
             return response;
           }
           return null;
+        })
+        .catch(() => {
+          return null;
         });
 
-      const otherNetworkPromise = getClient(otherNetwork)
+      if (currentNetworkResponse) {
+        return currentNetworkResponse;
+      }
+
+      const otherNetworkResponse: VAADetail[] = await getClient(otherNetwork)
         .guardianNetwork.getVAAbyTxHash({
           query: {
             txHash: txHash,
@@ -184,20 +190,18 @@ const Tx = () => {
         })
         .then(response => {
           if (!!response.length) {
-            hasResponse = true;
+            console.log("NAVEGANDO!");
             navigate(`/tx/${txHash}?network=${otherNetwork}`);
             return response;
           }
           return null;
+        })
+        .catch(() => {
+          return null;
         });
 
-      const [currentNetworkResponse, otherNetworkResponse] = await Promise.race([
-        currentNetworkPromise,
-        otherNetworkPromise,
-      ]);
-
-      if (hasResponse) {
-        return [currentNetworkResponse || otherNetworkResponse];
+      if (otherNetworkResponse) {
+        return otherNetworkResponse;
       }
 
       throw new Error("no data");
