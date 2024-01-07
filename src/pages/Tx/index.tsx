@@ -158,25 +158,48 @@ const Tx = () => {
     ["getVAAbyTxHash", txHash],
     async () => {
       const otherNetwork = network === "MAINNET" ? "TESTNET" : "MAINNET";
-      const [currentNetworkResponse, otherNetworkResponse] = await Promise.all([
-        getClient().guardianNetwork.getVAAbyTxHash({
+      let hasResponse = false;
+
+      const currentNetworkPromise = getClient()
+        .guardianNetwork.getVAAbyTxHash({
           query: {
             txHash: txHash,
             parsedPayload: true,
           },
-        }),
-        getClient(otherNetwork).guardianNetwork.getVAAbyTxHash({
+        })
+        .then(response => {
+          if (!!response.length) {
+            hasResponse = true;
+            return response;
+          }
+          return null;
+        });
+
+      const otherNetworkPromise = getClient(otherNetwork)
+        .guardianNetwork.getVAAbyTxHash({
           query: {
             txHash: txHash,
             parsedPayload: true,
           },
-        }),
+        })
+        .then(response => {
+          if (!!response.length) {
+            hasResponse = true;
+            navigate(`/tx/${txHash}?network=${otherNetwork}`);
+            return response;
+          }
+          return null;
+        });
+
+      const [currentNetworkResponse, otherNetworkResponse] = await Promise.race([
+        currentNetworkPromise,
+        otherNetworkPromise,
       ]);
 
-      if (!!currentNetworkResponse.length) return currentNetworkResponse;
-      if (!!otherNetworkResponse.length) {
-        navigate(`/tx/${txHash}?network=${otherNetwork}`);
+      if (hasResponse) {
+        return [currentNetworkResponse || otherNetworkResponse];
       }
+
       throw new Error("no data");
     },
     {
@@ -436,7 +459,6 @@ const Tx = () => {
               if (wrappedToken.tokenSymbol) {
                 data.standardizedProperties.wrappedTokenSymbol = wrappedToken.tokenSymbol;
               }
-              console.log("result!", { wrappedToken });
             }
           }
         }
