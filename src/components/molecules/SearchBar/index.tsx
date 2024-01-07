@@ -28,6 +28,7 @@ const SearchBar = ({
         <div className="search-bar-input">
           <input
             type="text"
+            disabled={isLoading}
             value={value}
             onChange={e => onValueChange(e.target.value)}
             name={name}

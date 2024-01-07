@@ -6,6 +6,12 @@ import { getClient } from "src/api/Client";
 import SearchBar from "../../SearchBar";
 import analytics from "src/analytics";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { atom, useRecoilState } from "recoil";
+
+export const loadPageState = atom({
+  key: "loadPageState",
+  default: false,
+});
 
 interface FormData {
   search: { value: string };
@@ -15,8 +21,21 @@ const Search = () => {
   const { environment } = useEnvironment();
   const navigate = useNavigateCustom();
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [, setLoadingPage] = useRecoilState(loadPageState);
+
+  const setSearch = (val: boolean) => {
+    if (val) {
+      setIsLoading(true);
+      setLoadingPage(true);
+    } else {
+      setIsLoading(false);
+      setTimeout(() => {
+        setLoadingPage(false);
+      }, 1500);
+    }
+  };
 
   const { mutate: mutateFindVAAByAddress } = useMutation(
     async ({ address }: { address: string }) => {
@@ -42,7 +61,7 @@ const Search = () => {
         navigate(`/tx/${txHash}`);
       },
       onSettled: () => {
-        setIsLoading(false);
+        setSearch(false);
       },
     },
   );
@@ -58,12 +77,12 @@ const Search = () => {
     if (value && value.trim()) {
       value = value.trim();
 
-      setIsLoading(true);
+      setSearch(true);
 
       // Check if is probably a VAA ID
       const splitId = value.split("/");
       if (splitId.length === 3) {
-        setIsLoading(false);
+        setSearch(false);
         navigate(`/tx/${value}`);
       } else {
         // Check by address, if fails, navigate to tx page
