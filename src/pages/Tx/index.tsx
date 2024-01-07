@@ -167,7 +167,6 @@ const Tx = () => {
           },
         })
         .then(response => {
-          console.log("OTRA RESPONSE");
           if (!!response.length) {
             return response;
           }
@@ -190,7 +189,6 @@ const Tx = () => {
         })
         .then(response => {
           if (!!response.length) {
-            console.log("NAVEGANDO!");
             navigate(`/tx/${txHash}?network=${otherNetwork}`);
             return response;
           }
