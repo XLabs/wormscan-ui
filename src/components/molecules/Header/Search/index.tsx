@@ -23,7 +23,7 @@ const Search = () => {
   const { t } = useTranslation();
   const [searchValue, setSearchValue] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [, setLoadingPage] = useRecoilState(loadPageState);
+  const [loadingPage, setLoadingPage] = useRecoilState(loadPageState);
 
   const setSearch = (val: boolean) => {
     if (val) {
@@ -101,7 +101,7 @@ const Search = () => {
       name="search"
       placeholder={t("home.header.search.placeholder")}
       ariaLabel={t("home.header.search.ariaLabel")}
-      isLoading={isLoading}
+      isLoading={isLoading || loadingPage}
     />
   );
 };
