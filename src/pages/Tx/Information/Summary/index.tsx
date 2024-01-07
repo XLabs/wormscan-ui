@@ -6,6 +6,7 @@ import { getExplorerLink } from "src/utils/wormhole";
 import { ChainId } from "src/api";
 import "./styles.scss";
 import { IStatus } from "src/consts";
+import { GetRedeem } from "./GetRedeem";
 
 type Props = {
   appIds: string[];
@@ -14,6 +15,11 @@ type Props = {
   parsedDestinationAddress: string;
   STATUS: IStatus;
   toChain: ChainId | number;
+
+  canTryToGetRedeem: boolean;
+  foundRedeem: boolean;
+  getRedeem: () => Promise<void>;
+  loadingRedeem: boolean;
 };
 
 const Summary = ({
@@ -23,6 +29,11 @@ const Summary = ({
   parsedDestinationAddress,
   STATUS,
   toChain,
+
+  canTryToGetRedeem,
+  foundRedeem,
+  getRedeem,
+  loadingRedeem,
 }: Props) => {
   return (
     <div className="tx-information-summary">
@@ -83,6 +94,13 @@ const Summary = ({
           )}
         </div>
       </div>
+
+      <GetRedeem
+        canTryToGetRedeem={canTryToGetRedeem}
+        foundRedeem={foundRedeem}
+        getRedeem={getRedeem}
+        loadingRedeem={loadingRedeem}
+      />
     </div>
   );
 };

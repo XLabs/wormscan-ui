@@ -1,0 +1,80 @@
+@import "src/styles/globals.scss";
+
+.getRedeem {
+  @include button-secondary;
+  display: flex;
+  flex-direction: row;
+  gap: 8px !important;
+
+  &-find-txt {
+    display: block;
+    @media only screen and (min-width: 1024px) and (max-width: 1170px) {
+      display: none;
+    }
+  }
+
+  height: 44px;
+  color: var(--color-white);
+  font-weight: 500;
+  font-size: 16px;
+
+  &.dissapearing {
+    animation: dissapearing 3.5s forwards linear;
+    cursor: default;
+  }
+
+  &-button {
+    position: relative;
+
+    margin-top: 16px;
+    margin-bottom: 16px;
+
+    height: 30px;
+    width: 30px;
+
+    &.loading {
+      animation: uPattern 2s infinite linear;
+    }
+
+    &-icon {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      left: 3px;
+      right: 3px;
+
+      transition: 0.5s opacity ease-out;
+    }
+  }
+}
+
+@keyframes uPattern {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(3px) translateX(-6px) rotate(-35deg);
+  }
+  50% {
+    transform: translateY(0) translateX(0);
+  }
+  75% {
+    transform: translateY(3px) translateX(6px) rotate(35deg);
+  }
+}
+
+@keyframes dissapearing {
+  0% {
+    opacity: 1;
+  }
+  65% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

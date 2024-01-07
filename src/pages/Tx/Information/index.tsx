@@ -35,7 +35,6 @@ import RelayerDetails from "./Details/RelayerDetails";
 
 import "./styles.scss";
 import { tryGetRedeemTxn } from "src/utils/cryptoToolkit";
-import { GetRedeem } from "./Overview/GetRedeem";
 
 interface Props {
   extraRawInfo: any;
@@ -732,20 +731,14 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
         parsedDestinationAddress={parsedDestinationAddress}
         STATUS={STATUS}
         toChain={toChain}
+        canTryToGetRedeem={canTryToGetRedeem}
+        foundRedeem={foundRedeem}
+        getRedeem={getRedeem}
+        loadingRedeem={loadingRedeem}
       />
 
       {showOverview ? <OverviewContent /> : <RawDataContent />}
-      {showOverview && (
-        <>
-          <GetRedeem
-            canTryToGetRedeem={canTryToGetRedeem}
-            foundRedeem={foundRedeem}
-            getRedeem={getRedeem}
-            loadingRedeem={loadingRedeem}
-          />
-          <AlertsContent />
-        </>
-      )}
+      {showOverview && <AlertsContent />}
     </section>
   );
 };
