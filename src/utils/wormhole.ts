@@ -154,7 +154,8 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (network === "MAINNET") {
         if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
-        if (base === "token") return this.explorer?.[network] + "/assets/ibc/" + value;
+        if (base === "token")
+          return this.explorer?.[network] + "/assets/ibc/" + btoa(value.replace("ibc/", ""));
         return this.explorer?.[network] + "/transactions/" + value;
       } else {
         if (base === "address") return this.explorer?.[network] + "/account/" + value;
@@ -174,7 +175,8 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (network === "MAINNET") {
         if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
-        if (base === "token") return this.explorer?.[network] + "/assets/ibc/" + value;
+        if (base === "token")
+          return this.explorer?.[network] + "/assets/ibc/" + btoa(value.replace("ibc/", ""));
         return this.explorer?.[network] + "/transactions/" + value;
       } else {
         if (base === "address") return this.explorer?.[network] + "/account/" + value;
@@ -193,7 +195,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
-      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + encodeURIComponent(value);
       if (base === "block") return this.explorer?.[network] + "/block/" + value;
       return this.explorer?.[network] + "/tx/" + value;
     },

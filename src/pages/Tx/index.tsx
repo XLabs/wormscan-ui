@@ -448,11 +448,18 @@ const Tx = () => {
 
             const wrapped = tokenChain !== toChain ? "target" : "source";
 
+            // wormhole gateway detect (for ibc token)
+            let gatewayChain: ChainId = null;
+            if (wrapped === "target" && !!data.payload?.parsedPayload?.gateway_transfer?.chain) {
+              gatewayChain = data.payload?.parsedPayload?.gateway_transfer?.chain;
+            }
+
             const wrappedToken = await tryGetWrappedToken(
               network,
               tokenChain as ChainId,
               tokenAddress,
               (wrapped === "target" ? toChain : fromChain) as ChainId,
+              gatewayChain,
             );
 
             if (wrappedToken) {

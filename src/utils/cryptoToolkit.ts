@@ -47,10 +47,13 @@ export const tryGetWrappedToken = async (
   tokenChain: ChainId,
   tokenAddress: string,
   targetChain: ChainId,
+  gatewayChain?: ChainId,
 ) => {
   try {
     const wrappedTokenRequest = await fetchWithTimeout(
-      `${BFF_URL}/getWrappedAsset?network=${network}&tokenChain=${tokenChain}&tokenAddress=${tokenAddress}&targetChain=${targetChain}`,
+      `${BFF_URL}/getWrappedAsset?network=${network}&tokenChain=${tokenChain}&tokenAddress=${tokenAddress}&targetChain=${targetChain}${
+        gatewayChain ? `&gatewayChain=${gatewayChain}` : ""
+      }`,
     );
 
     const wrappedTokenResponse = (await wrappedTokenRequest.json()) as IWrappedResponse | null;
