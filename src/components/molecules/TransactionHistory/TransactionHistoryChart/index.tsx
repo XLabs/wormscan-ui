@@ -22,10 +22,10 @@ const TransactionHistoryChart = ({ range }: Props) => {
   const [seriesData, setSeriesData] = useState([0]);
   const [seriesLabels, setSeriesLabels] = useState([""]);
   const [totalTxs, setTotalTxs] = useState("");
+  const [dataReverse, setDataReverse] = useState([]);
   const tickAmount = range === "3-month" ? 3 : range === "month" ? 4 : 5;
   const size = useWindowSize();
   const isWidthOver1200px = size.width >= 1200;
-  const [dataReverse, setDataReverse] = useState([]);
 
   const { data, isError, isLoading, isFetching } = useQuery(
     ["getLastTxs", range],

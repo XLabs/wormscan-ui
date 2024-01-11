@@ -117,7 +117,7 @@ const Header = () => {
             </Tag>
           </ExternalLinkItem>
           <ExternalLinkItem href={WORMHOLE_DOCS_URL} label={t("home.footer.apiDoc")} />
-          {/* TODO <NavLinkItem to="/terms-of-use" label={t("home.footer.termsOfUse")} /> */}
+          <NavLinkItem to="/terms-of-use" label={t("home.footer.termsOfUse")} />
         </>
       )}
       <Select

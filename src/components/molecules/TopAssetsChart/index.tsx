@@ -196,6 +196,12 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
             onDatasetHover: {
               highlightDataSeries: true,
             },
+            x: {
+              show: false,
+            },
+            y: {
+              formatter: val => String(val),
+            },
             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
               const chainName = assetsDataForChart?.[dataPointIndex]?.chainName;
               const txsFormatted = assetsDataForChart?.[dataPointIndex]?.txsFormatted;

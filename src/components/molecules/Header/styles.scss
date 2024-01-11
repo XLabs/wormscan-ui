@@ -9,12 +9,12 @@
     "brand actions"
     "search search";
   min-height: 64px;
-  padding: 16px 16px 24px;
-  row-gap: 32px;
+  padding: 16px 16px 32px;
+  row-gap: 41px;
   width: 100%;
 
   @include tablet {
-    padding: 16px 60px;
+    padding: 16px 60px 32px 60px;
   }
 
   @include desktop {
