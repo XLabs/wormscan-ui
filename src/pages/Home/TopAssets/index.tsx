@@ -12,12 +12,15 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import { ChainId } from "src/api";
 import { formatNumber } from "src/utils/number";
 import "./styles.scss";
+import analytics from "src/analytics";
 
 const RANGE_LIST: { label: string; value: "7d" | "15d" | "30d" }[] = [
   { label: "Last 7 days", value: "7d" },
   { label: "Last 15 days", value: "15d" },
   { label: "Last 30 days", value: "30d" },
 ];
+
+const HIDDEN_ROW = -1;
 
 const TopAssets = () => {
   const [selectedTopAssetTimeRange, setSelectedTopAssetTimeRange] = useState(RANGE_LIST[0]);
@@ -27,7 +30,6 @@ const TopAssets = () => {
   const { width } = useWindowSize();
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
-  const hiddenRow = -1;
 
   const { isLoading, isFetching, isError, data } = useQuery(
     ["assetsByVolume", selectedTopAssetTimeRange.value],
@@ -39,10 +41,10 @@ const TopAssets = () => {
   );
 
   useEffect(() => {
-    if (width >= BREAKPOINTS.desktop && rowSelected === hiddenRow) {
+    if (width >= BREAKPOINTS.desktop && rowSelected === HIDDEN_ROW) {
       setRowSelected(0);
     }
-  }, [width, rowSelected, hiddenRow]);
+  }, [width, rowSelected]);
 
   useEffect(() => {
     const processApiAssetsData = async (data: AssetsByVolumeOutput[]) => {
@@ -148,8 +150,14 @@ const TopAssets = () => {
                               itemIndex={rowIndex}
                               rowSelected={rowSelected}
                               showThisGraph={() => {
+                                analytics.track("topSevenAsset", {
+                                  network: currentNetwork,
+                                  selectedTimeRange: selectedTopAssetTimeRange.value,
+                                  selected: symbol,
+                                });
+
                                 if (width < BREAKPOINTS.desktop && rowSelected === rowIndex) {
-                                  return setRowSelected(hiddenRow);
+                                  return setRowSelected(HIDDEN_ROW);
                                 }
 
                                 return setRowSelected(rowIndex);

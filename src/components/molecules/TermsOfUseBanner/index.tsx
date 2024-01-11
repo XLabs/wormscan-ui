@@ -3,20 +3,29 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "src/components/atoms";
 import "./styles.scss";
+import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 
 const TermsOfUseBanner = () => {
   const { t } = useTranslation();
-  const [showTermsOfUseBanner, setShowTermsOfUseBanner] = useState(true);
+
+  const [shouldSeeTermsAndCond, setShouldSeeTermsAndCond] = useLocalStorage<boolean>(
+    "showOverviewDetail",
+    true,
+  );
+
+  const [showTermsOfUseBanner, setShowTermsOfUseBanner] = useState(shouldSeeTermsAndCond);
   const { pathname } = useLocation();
 
   useEffect(() => {
     if (pathname === "/terms-of-use" || pathname === "/privacy-policy") {
       setShowTermsOfUseBanner(false);
+      setShouldSeeTermsAndCond(false);
     }
-  }, [pathname]);
+  }, [pathname, setShouldSeeTermsAndCond]);
 
   const closeBanner = () => {
     setShowTermsOfUseBanner(false);
+    setShouldSeeTermsAndCond(false);
   };
 
   if (!showTermsOfUseBanner) {
