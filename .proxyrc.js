@@ -1,7 +1,7 @@
 module.exports = function (app) {
   const isDev = process.env.NODE_ENV === "development";
 
-  const CSP = `default-src 'self' https:; object-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' ${
+  const CSP = `default-src 'self' https:; object-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' https://www.googletagmanager.com/gtag/js ${
     isDev ? `'unsafe-inline' 'unsafe-eval'` : ""
   } 'wasm-unsafe-eval'; connect-src * data:; frame-ancestors 'none';`;
 
