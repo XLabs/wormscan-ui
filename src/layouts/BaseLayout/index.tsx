@@ -2,7 +2,7 @@ import React from "react";
 import { useRecoilState } from "recoil";
 import { Loader } from "src/components/atoms";
 import { Header, Footer } from "src/components/molecules";
-import { loadPageState } from "src/components/molecules/Header/Search";
+import { loadPageState } from "src/utils/recoilStates";
 
 type Props = {
   children: React.ReactNode;

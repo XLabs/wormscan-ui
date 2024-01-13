@@ -23,6 +23,9 @@ import { Top } from "./Top";
 import "./styles.scss";
 import { getChainName } from "src/utils/wormhole";
 import { getAlgorandTokenInfo, tryGetWrappedToken } from "src/utils/cryptoToolkit";
+import { getPorticoInfo, isPortico } from "src/utils/wh-portico-rpc";
+import { useRecoilState } from "recoil";
+import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
 
 type ParsedVAA = VAADetail & { vaa: any; decodedVaa: any };
 
@@ -35,6 +38,9 @@ const Tx = () => {
   const { environment } = useEnvironment();
   const network = environment.network;
   const navigate = useNavigate();
+
+  const [, setShowSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
+  const [, setShowTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
 
   // pattern match the search value to see if it's a candidate for being an EVM transaction hash.
   const search = txHash ? (txHash.startsWith("0x") ? txHash : "0x" + txHash) : "";
@@ -473,6 +479,7 @@ const Tx = () => {
         }
       }
 
+      // get algorand asset information if needed
       for (const data of apiTxData) {
         if (
           data?.standardizedProperties?.tokenChain === ChainId.Algorand &&
@@ -511,10 +518,56 @@ const Tx = () => {
         }
       }
 
+      // check Portico
+      for (const data of apiTxData) {
+        if (
+          isPortico(
+            network,
+            data?.standardizedProperties?.toChain as ChainId,
+            data?.standardizedProperties?.toAddress,
+          )
+        ) {
+          const {
+            formattedFinalUserAmount,
+            formattedRelayerFee,
+            parsedPayload,
+            redeemTokenAddress,
+            shouldShowSourceTokenUrl,
+            shouldShowTargetTokenUrl,
+            sourceSymbol,
+            targetSymbol,
+            tokenAddress,
+          } = await getPorticoInfo(environment, data);
+
+          data.standardizedProperties.overwriteSourceTokenAddress = tokenAddress;
+          data.standardizedProperties.overwriteSourceTokenChain = data?.standardizedProperties
+            ?.fromChain as ChainId;
+
+          data.standardizedProperties.overwriteTargetTokenAddress = redeemTokenAddress;
+          data.standardizedProperties.overwriteTargetTokenChain = data?.standardizedProperties
+            ?.toChain as ChainId;
+
+          data.payload.parsedPayload = parsedPayload;
+          if (!data.standardizedProperties.appIds.includes("ETH_BRIDGE")) {
+            data.standardizedProperties.appIds.push("ETH_BRIDGE");
+          }
+
+          setShowSourceTokenUrl(shouldShowSourceTokenUrl);
+          setShowTargetTokenUrl(shouldShowTargetTokenUrl);
+
+          if (sourceSymbol) data.standardizedProperties.overwriteSourceSymbol = sourceSymbol;
+          if (targetSymbol) data.standardizedProperties.overwriteTargetSymbol = targetSymbol;
+
+          if (formattedFinalUserAmount)
+            data.standardizedProperties.overwriteRedeemAmount = formattedFinalUserAmount;
+          data.standardizedProperties.overwriteFee = formattedRelayerFee;
+        }
+      }
+
       setTxData(apiTxData);
       setIsLoading(false);
     },
-    [environment, network],
+    [environment, network, setShowSourceTokenUrl, setShowTargetTokenUrl],
   );
 
   useEffect(() => {

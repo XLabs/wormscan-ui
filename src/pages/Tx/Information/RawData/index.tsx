@@ -85,6 +85,7 @@ const RawData = ({ extraRawInfo, VAAData, txData, lifecycleRecord }: Props) => {
   const { payload, decodedVaa, ...rest } = VAAData || {};
   const rawData = { ...rest };
   const signedVAA = decodedVaa ? (Object.values(decodedVaa).length > 0 ? decodedVaa : null) : null;
+  const rawDataPayload = txData.payload ? txData.payload : payload;
 
   const CODE_BLOCKS = [
     {
@@ -93,7 +94,7 @@ const RawData = ({ extraRawInfo, VAAData, txData, lifecycleRecord }: Props) => {
     },
     {
       title: "PAYLOAD",
-      code: payload && JSON.stringify(payload, null, 4),
+      code: rawDataPayload && JSON.stringify(rawDataPayload, null, 4),
     },
     {
       title: "SIGNED VAA",

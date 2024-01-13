@@ -6,12 +6,8 @@ import { getClient } from "src/api/Client";
 import SearchBar from "../../SearchBar";
 import analytics from "src/analytics";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { atom, useRecoilState } from "recoil";
-
-export const loadPageState = atom({
-  key: "loadPageState",
-  default: false,
-});
+import { useRecoilState } from "recoil";
+import { loadPageState } from "src/utils/recoilStates";
 
 interface FormData {
   search: { value: string };

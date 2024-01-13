@@ -180,6 +180,15 @@ export type GetTransactionsOutput = {
     tokenChain: number;
     wrappedTokenAddress?: string;
     wrappedTokenSymbol?: string;
+
+    overwriteFee?: string;
+    overwriteRedeemAmount?: string;
+    overwriteSourceSymbol?: string;
+    overwriteSourceTokenAddress?: string;
+    overwriteSourceTokenChain?: number;
+    overwriteTargetSymbol?: string;
+    overwriteTargetTokenAddress?: string;
+    overwriteTargetTokenChain?: number;
   };
   globalTx: GlobalTxOutput;
 };
