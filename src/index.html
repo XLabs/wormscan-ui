@@ -1,55 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#010014" />
+    <link rel="icon" href="favicon_dark.png" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href="favicon_light.png" media="(prefers-color-scheme: dark)" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#010014" />
-  <link rel="icon" href="favicon_dark.png" media="(prefers-color-scheme: light)" />
-  <link rel="icon" href="favicon_light.png" media="(prefers-color-scheme: dark)" />
+    <title>Wormholescan | Wormhole Explorer</title>
 
-  <title>Wormholescan | Wormhole Explorer</title>
+    <meta
+      name="description"
+      content="Wormholescan is a block Explorer and analytics platform for Wormhole. It enables users to search, visualize and analyze all activity related to Wormhole. Additionally, it provides robust APIs for builders to seamlessly integrate this functionality into their applications."
+    />
+    <link rel="canonical" href="https://wormholescan.io/" />
 
-  <meta name="description"
-    content="Wormholescan is a block Explorer and analytics platform for Wormhole. It enables users to search, visualize and analyze all activity related to Wormhole. Additionally, it provides robust APIs for builders to seamlessly integrate this functionality into their applications." />
-  <link rel="canonical" href="https://wormholescan.io/" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' https://www.googletagmanager.com/gtag/js; script-src-elem https://www.googletagmanager.com/gtag/js 'self'"
+    />
 
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://www.googletagmanager.com/gtag/js; script-src-elem 'self'">
+    <meta property="og:title" content="Wormholescan | Wormhole Explorer" />
+    <meta
+      property="og:description"
+      content="Wormholescan is a block Explorer and analytics platform for Wormhole. It enables users to search, visualize and analyze all activity related to Wormhole. Additionally, it provides robust APIs for builders to seamlessly integrate this functionality into their applications."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://wormholescan.io/" />
+    <meta property="og:site_name" content="https://wormholescan.io/" />
+    <meta property="og:image" content="https://wormholescan.io/og_image.png" />
+    <meta property="og:image:width" content="600" />
+    <meta property="og:image:height" content="600" />
 
-  <meta property="og:title" content="Wormholescan | Wormhole Explorer" />
-  <meta property="og:description"
-    content="Wormholescan is a block Explorer and analytics platform for Wormhole. It enables users to search, visualize and analyze all activity related to Wormhole. Additionally, it provides robust APIs for builders to seamlessly integrate this functionality into their applications." />
-  <meta property="og:type" content="website" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:url" content="https://wormholescan.io/" />
-  <meta property="og:site_name" content="https://wormholescan.io/" />
-  <meta property="og:image" content="https://wormholescan.io/og_image.png" />
-  <meta property="og:image:width" content="600" />
-  <meta property="og:image:height" content="600" />
+    <meta name="twitter:title" content="Wormholescan | Wormhole Explorer" />
+    <meta
+      name="twitter:description"
+      content="Wormholescan is a block Explorer and analytics platform for Wormhole. It enables users to search, visualize and analyze all activity related to Wormhole. Additionally, it provides robust APIs for builders to seamlessly integrate this functionality into their applications."
+    />
+    <meta name="twitter:image" content="https://wormholescan.io/og_image.png" />
+    <meta name="twitter:image:alt" content="Wormholescan | Wormhole Explorer" />
+    <meta name="twitter:site" content="https://wormholescan.io/" />
+    <meta name="twitter:card" content="summary" />
 
-  <meta name="twitter:title" content="Wormholescan | Wormhole Explorer" />
-  <meta name="twitter:description"
-    content="Wormholescan is a block Explorer and analytics platform for Wormhole. It enables users to search, visualize and analyze all activity related to Wormhole. Additionally, it provides robust APIs for builders to seamlessly integrate this functionality into their applications." />
-  <meta name="twitter:image" content="https://wormholescan.io/og_image.png" />
-  <meta name="twitter:image:alt" content="Wormholescan | Wormhole Explorer" />
-  <meta name="twitter:site" content="https://wormholescan.io/" />
-  <meta name="twitter:card" content="summary" />
+    <!-- App -->
+    <script type="module" src="index.tsx"></script>
 
-  <!-- App -->
-  <script type="module" src="index.tsx"></script>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet" />
-</head>
-
-<body>
-  <div id="app"></div>
-</body>
-
+  <body>
+    <div id="app"></div>
+  </body>
 </html>
