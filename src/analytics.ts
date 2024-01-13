@@ -15,12 +15,4 @@ const analytics = Analytics({
   ],
 });
 
-analytics.on("page", pageView => {
-  console.log("page view", pageView?.payload?.properties?.title);
-});
-
-analytics.on("track", trackEvent => {
-  console.log("event track", trackEvent?.payload?.event, trackEvent?.payload?.properties);
-});
-
 export default analytics;
