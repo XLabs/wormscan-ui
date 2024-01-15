@@ -1,18 +1,18 @@
 import { Fragment, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
+import { useEnvironment } from "src/context/EnvironmentContext";
 import { BREAKPOINTS } from "src/consts";
 import { Loader, Select } from "src/components/atoms";
 import { ErrorPlaceholder, TopAssetListItem, TopAssetsChart } from "src/components/molecules";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
+import { getChainIcon, getChainName } from "src/utils/wormhole";
+import { formatNumber } from "src/utils/number";
+import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
 import { AssetsByVolumeOutput, Tokens } from "src/api/guardian-network/types";
-import { getChainIcon, getChainName } from "src/utils/wormhole";
-import { useEnvironment } from "src/context/EnvironmentContext";
-import { ChainId } from "src/api";
-import { formatNumber } from "src/utils/number";
-import "./styles.scss";
 import analytics from "src/analytics";
+import "./styles.scss";
 
 const RANGE_LIST: { label: string; value: "7d" | "15d" | "30d" }[] = [
   { label: "Last 7 days", value: "7d" },

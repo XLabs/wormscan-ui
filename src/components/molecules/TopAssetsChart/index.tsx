@@ -16,6 +16,9 @@ type Props = {
   width: number;
 };
 
+let allMillionsYIncludesPointZero = false;
+let allThousandsYIncludesPointZero = false;
+
 const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
   const { t } = useTranslation();
   const [XPositionLabels, setXPositionLabels] = useState([]);
@@ -239,9 +242,33 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
             tickAmount: 8,
             axisTicks: { show: false },
             labels: {
-              formatter: function (vol) {
+              formatter: function (vol, opts) {
                 let result = numberToSuffix(vol);
-                if (vol < 1000 && vol > 0) {
+                const allYAxis = opts?.w?.globals?.yAxisScale?.[0]?.result;
+
+                if (allYAxis && Array.isArray(allYAxis)) {
+                  const allYAxisFormatted = allYAxis?.map((value: number) => {
+                    return numberToSuffix(value);
+                  });
+
+                  allMillionsYIncludesPointZero = allYAxisFormatted
+                    .filter((value: string) => value.includes("M"))
+                    .every((value: string) => value.includes(".0"));
+
+                  allThousandsYIncludesPointZero = allYAxisFormatted
+                    .filter((value: string) => value.includes("K"))
+                    .every((value: string) => value.includes(".0"));
+                }
+
+                if (vol >= 1000000 && allMillionsYIncludesPointZero) {
+                  result = result.replace(".0", "");
+                }
+
+                if (vol >= 1000 && vol < 1000000 && allThousandsYIncludesPointZero) {
+                  result = result.replace(".0", "");
+                }
+
+                if (vol < 1 && vol > 0) {
                   result = Number(result).toFixed(1);
                 }
 
