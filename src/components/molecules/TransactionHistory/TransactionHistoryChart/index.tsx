@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import ReactApexChart from "react-apexcharts";
 import { Loader } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeBrand } from "src/components/molecules";
-import { numberToSuffix } from "src/utils/number";
+import { formatterYAxisTransactionHistory } from "src/utils/apexChartUtils";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { getClient } from "src/api/Client";
 import { DateRange } from "src/api/guardian-network/types";
@@ -26,7 +26,6 @@ const TransactionHistoryChart = ({ range }: Props) => {
   const tickAmount = range === "3-month" ? 3 : range === "month" ? 4 : 5;
   const size = useWindowSize();
   const isWidthOver1200px = size.width >= 1200;
-  let allYIncludesPointZero = false;
 
   const { data, isError, isLoading, isFetching } = useQuery(
     ["getLastTxs", range],
@@ -216,27 +215,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                     min: 0,
                     tickAmount: 4,
                     labels: {
-                      formatter: function (val, opts) {
-                        let result = numberToSuffix(val);
-
-                        const allYAxis = opts?.w?.globals?.yAxisScale?.[0]?.result;
-
-                        if (allYAxis && Array.isArray(allYAxis)) {
-                          const allYAxisFormatted = allYAxis?.map((value: number) => {
-                            return numberToSuffix(value);
-                          });
-
-                          allYIncludesPointZero = allYAxisFormatted.every(
-                            (item: string) => item.includes(".0") || item === "0",
-                          );
-                        }
-
-                        if (allYIncludesPointZero) {
-                          result = result.replace(".0", "");
-                        }
-
-                        return result;
-                      },
+                      formatter: formatterYAxisTransactionHistory,
                       offsetX: -14,
                       style: {
                         colors: "#9295BB",
