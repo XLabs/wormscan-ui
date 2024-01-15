@@ -190,7 +190,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
   const amountSent = formatNumber(Number(tokenAmount));
   const amountSentUSD = +usdAmount ? formatNumber(+usdAmount, 2) : "";
   const redeemedAmount = txData.standardizedProperties?.overwriteRedeemAmount
-    ? formatNumber(+txData.standardizedProperties.overwriteRedeemAmount, 7)
+    ? formatNumber(+txData.standardizedProperties?.overwriteRedeemAmount, 7)
     : hasVAA
     ? formatNumber(formatUnits(+amount - +fee))
     : formatNumber(+amount - +fee);
@@ -220,7 +220,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
   let targetTokenChain = tokenChain;
   const wrappedSide = tokenChain !== toChain ? "target" : "source";
 
-  if (wrappedTokenAddress && !txData.standardizedProperties.appIds.includes("ETH_BRIDGE")) {
+  if (wrappedTokenAddress && !txData.standardizedProperties?.appIds.includes("ETH_BRIDGE")) {
     if (wrappedSide === "target") {
       targetTokenChain = toChain;
       targetTokenLink = showTargetTokenUrl
@@ -410,7 +410,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
             chainId: (result?.sourceChainId as any)
               ? (result.sourceChainId as any)
               : txData?.standardizedProperties?.fromChain
-              ? txData.standardizedProperties.fromChain
+              ? txData.standardizedProperties?.fromChain
               : 0,
             network: currentNetwork,
           }),
@@ -418,7 +418,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
             chainId: result?.targetTransaction?.targetChainId
               ? result.targetTransaction?.targetChainId
               : txData?.standardizedProperties?.toChain
-              ? txData.standardizedProperties.toChain
+              ? txData.standardizedProperties?.toChain
               : 0,
             network: currentNetwork,
           }),
