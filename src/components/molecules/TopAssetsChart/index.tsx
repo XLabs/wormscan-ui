@@ -16,9 +16,6 @@ type Props = {
   width: number;
 };
 
-let allMillionsYIncludesPointZero = false;
-let allThousandsYIncludesPointZero = false;
-
 const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
   const { t } = useTranslation();
   const [XPositionLabels, setXPositionLabels] = useState([]);
@@ -29,6 +26,8 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
   const isMobile = width < BREAKPOINTS.tablet;
   const isTabletOrMobile = width < BREAKPOINTS.desktop;
   const isDesktop = width >= BREAKPOINTS.desktop && width < BREAKPOINTS.bigDesktop;
+  let allMillionsYIncludesPointZero = false;
+  let allThousandsYIncludesPointZero = false;
 
   useEffect(() => {
     const getLabelsPos = () => {
