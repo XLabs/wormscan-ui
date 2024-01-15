@@ -222,7 +222,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
 
                         const allYAxis = opts?.w?.globals?.yAxisScale?.[0]?.result;
 
-                        if (allYAxis) {
+                        if (allYAxis && Array.isArray(allYAxis)) {
                           const allYAxisFormatted = allYAxis?.map((value: number) => {
                             return numberToSuffix(value);
                           });
