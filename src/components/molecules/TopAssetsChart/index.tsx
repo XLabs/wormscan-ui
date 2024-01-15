@@ -26,8 +26,46 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
   const isMobile = width < BREAKPOINTS.tablet;
   const isTabletOrMobile = width < BREAKPOINTS.desktop;
   const isDesktop = width >= BREAKPOINTS.desktop && width < BREAKPOINTS.bigDesktop;
-  let allMillionsYIncludesPointZero = false;
-  let allThousandsYIncludesPointZero = false;
+  /*  let allMillionsYIncludePointZero = false;
+  let allThousandsYIncludesPointZero = false; */
+
+  const formatter = (() => {
+    let allMillionsYIncludePointZero = false;
+    let allThousandsYIncludePointZero = false;
+
+    return function (vol: number, opts: any) {
+      let result = numberToSuffix(vol);
+      const allYAxis = opts?.w?.globals?.yAxisScale?.[0]?.result;
+
+      if (allYAxis && Array.isArray(allYAxis)) {
+        const allYAxisFormatted = allYAxis?.map((value: number) => {
+          return numberToSuffix(value);
+        });
+
+        allMillionsYIncludePointZero = allYAxisFormatted
+          .filter((value: string) => value.includes("M"))
+          .every((value: string) => value.includes(".0"));
+
+        allThousandsYIncludePointZero = allYAxisFormatted
+          .filter((value: string) => value.includes("K"))
+          .every((value: string) => value.includes(".0"));
+      }
+
+      if (vol >= 1000000 && allMillionsYIncludePointZero) {
+        result = result.replace(".0", "");
+      }
+
+      if (vol >= 1000 && vol < 1000000 && allThousandsYIncludePointZero) {
+        result = result.replace(".0", "");
+      }
+
+      if (vol < 1 && vol > 0) {
+        result = Number(result).toFixed(1);
+      }
+
+      return `$${result}`;
+    };
+  })();
 
   useEffect(() => {
     const getLabelsPos = () => {
@@ -241,38 +279,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
             tickAmount: 8,
             axisTicks: { show: false },
             labels: {
-              formatter: function (vol, opts) {
-                let result = numberToSuffix(vol);
-                const allYAxis = opts?.w?.globals?.yAxisScale?.[0]?.result;
-
-                if (allYAxis && Array.isArray(allYAxis)) {
-                  const allYAxisFormatted = allYAxis?.map((value: number) => {
-                    return numberToSuffix(value);
-                  });
-
-                  allMillionsYIncludesPointZero = allYAxisFormatted
-                    .filter((value: string) => value.includes("M"))
-                    .every((value: string) => value.includes(".0"));
-
-                  allThousandsYIncludesPointZero = allYAxisFormatted
-                    .filter((value: string) => value.includes("K"))
-                    .every((value: string) => value.includes(".0"));
-                }
-
-                if (vol >= 1000000 && allMillionsYIncludesPointZero) {
-                  result = result.replace(".0", "");
-                }
-
-                if (vol >= 1000 && vol < 1000000 && allThousandsYIncludesPointZero) {
-                  result = result.replace(".0", "");
-                }
-
-                if (vol < 1 && vol > 0) {
-                  result = Number(result).toFixed(1);
-                }
-
-                return `$${result}`;
-              },
+              formatter: formatter,
               minWidth: isMobile ? 48 : 64,
               maxWidth: isMobile ? 48 : 64,
               align: "right",
