@@ -226,10 +226,10 @@ const TransactionHistoryChart = ({ range }: Props) => {
                           const allYAxisFormatted = allYAxis?.map((value: number) => {
                             return numberToSuffix(value);
                           });
-                          const allYAxisIncludesPointZero = allYAxisFormatted.every(
+
+                          allYIncludesPointZero = allYAxisFormatted.every(
                             (item: string) => item.includes(".0") || item === "0",
                           );
-                          allYIncludesPointZero = allYAxisIncludesPointZero;
                         }
 
                         if (allYIncludesPointZero) {
