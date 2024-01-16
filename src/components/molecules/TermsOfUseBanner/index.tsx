@@ -9,7 +9,7 @@ const TermsOfUseBanner = () => {
   const { t } = useTranslation();
 
   const [shouldSeeTermsAndCond, setShouldSeeTermsAndCond] = useLocalStorage<boolean>(
-    "showOverviewDetail",
+    "showTermsAndConds",
     true,
   );
 
