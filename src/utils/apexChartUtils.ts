@@ -3,14 +3,15 @@ import { numberToSuffix } from "./number";
 export const formatterYAxisTopAssets = (() => {
   let allMillionsYIncludePointZero = false;
   let allThousandsYIncludePointZero = false;
+  let allUnderThousandYIncludePointZero = false;
 
   return function (vol: number, opts: any) {
-    let result = numberToSuffix(vol);
+    let result = vol < 1000 && vol > 0 ? Number(vol).toFixed(1) : numberToSuffix(vol);
     const allYAxis = opts?.w?.globals?.yAxisScale?.[0]?.result;
 
     if (allYAxis && Array.isArray(allYAxis)) {
       const allYAxisFormatted = allYAxis?.map((value: number) => {
-        return numberToSuffix(value);
+        return value < 1000 ? Number(value).toFixed(1) : numberToSuffix(value);
       });
 
       allMillionsYIncludePointZero = allYAxisFormatted
@@ -20,6 +21,10 @@ export const formatterYAxisTopAssets = (() => {
       allThousandsYIncludePointZero = allYAxisFormatted
         .filter((value: string) => value.includes("K"))
         .every((value: string) => value.includes(".0"));
+
+      allUnderThousandYIncludePointZero = allYAxisFormatted
+        .filter((value: string) => !value.includes("K") && !value.includes("M"))
+        .every((value: string) => value.includes(".0"));
     }
 
     if (vol >= 1000000 && allMillionsYIncludePointZero) {
@@ -27,6 +32,10 @@ export const formatterYAxisTopAssets = (() => {
     }
 
     if (vol >= 1000 && vol < 1000000 && allThousandsYIncludePointZero) {
+      result = result.replace(".0", "");
+    }
+
+    if (vol >= 1 && vol < 1000 && allUnderThousandYIncludePointZero) {
       result = result.replace(".0", "");
     }
 
