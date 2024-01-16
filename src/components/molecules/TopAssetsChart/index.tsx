@@ -5,7 +5,7 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import { BREAKPOINTS } from "src/consts";
 import { BlockchainIcon } from "src/components/atoms";
 import { WormholeBrand } from "src/components/molecules";
-import { formatterYAxisTopAssets } from "src/utils/apexChartUtils";
+import { formatterYAxis } from "src/utils/apexChartUtils";
 import { AssetsByVolumeTransformed } from "src/api/guardian-network/types";
 import NoColorlessIcon from "src/icons/blockchains/colorless/noIcon.svg";
 import "./styles.scss";
@@ -239,7 +239,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
             tickAmount: 8,
             axisTicks: { show: false },
             labels: {
-              formatter: formatterYAxisTopAssets,
+              formatter: (vol, opts) => `$${formatterYAxis(vol, opts)}`,
               minWidth: isMobile ? 48 : 64,
               maxWidth: isMobile ? 48 : 64,
               align: "right",

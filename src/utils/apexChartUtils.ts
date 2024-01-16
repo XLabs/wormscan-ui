@@ -1,6 +1,6 @@
 import { numberToSuffix } from "./number";
 
-export const formatterYAxisTopAssets = (() => {
+export const formatterYAxis = (() => {
   let allMillionsYIncludePointZero = false;
   let allThousandsYIncludePointZero = false;
   let allUnderThousandYIncludePointZero = false;
@@ -41,32 +41,6 @@ export const formatterYAxisTopAssets = (() => {
 
     if (vol < 1 && vol > 0) {
       result = Number(result).toFixed(1);
-    }
-
-    return `$${result}`;
-  };
-})();
-
-export const formatterYAxisTransactionHistory = (() => {
-  let allYIncludesPointZero = false;
-
-  return function (val: number, opts: any) {
-    let result = numberToSuffix(val);
-
-    const allYAxis = opts?.w?.globals?.yAxisScale?.[0]?.result;
-
-    if (allYAxis && Array.isArray(allYAxis)) {
-      const allYAxisFormatted = allYAxis?.map((value: number) => {
-        return numberToSuffix(value);
-      });
-
-      allYIncludesPointZero = allYAxisFormatted.every(
-        (item: string) => item.includes(".0") || item === "0",
-      );
-    }
-
-    if (allYIncludesPointZero) {
-      result = result.replace(".0", "");
     }
 
     return result;
