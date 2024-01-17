@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import ReactApexChart from "react-apexcharts";
 import { Loader } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeBrand } from "src/components/molecules";
-import { numberToSuffix } from "src/utils/number";
+import { formatterYAxis } from "src/utils/apexChartUtils";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { getClient } from "src/api/Client";
 import { DateRange } from "src/api/guardian-network/types";
@@ -215,7 +215,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                     min: 0,
                     tickAmount: 4,
                     labels: {
-                      formatter: numberToSuffix,
+                      formatter: formatterYAxis,
                       offsetX: -14,
                       style: {
                         colors: "#9295BB",
