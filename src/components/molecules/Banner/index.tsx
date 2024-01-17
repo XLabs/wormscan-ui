@@ -111,6 +111,51 @@ const BannerSuccess = () => (
   </div>
 );
 
+const EthBridgeBanner = () => (
+  <div className="banner banner-success">
+    <div className="banner-icon">
+      <ExclamationTriangleIcon color="var(--color-success-100)" width={24} height={24} />
+    </div>
+    <div className="banner-content">
+      <h2 className="banner-content-title">
+        Native ETH transfers now live
+        {/* <span className="banner-content-title-span">Back Online</span> */}
+      </h2>
+      <div className="banner-content-description">
+        <p>
+          Native ETH transfers now live across Eth, Arb, Base, OP, Polygon, BNB, and Avax!{" "}
+          <a
+            className="banner-content-description-link"
+            target="_blank"
+            rel="noreferrer"
+            href="https://wormhole.com/wormhole-launches-native-token-transfers-starting-with-native-eth-and-wsteth-across-7-evm-chains/"
+          >
+            Learn more
+          </a>{" "}
+          about native Eth transfers and{" "}
+          <a
+            className="banner-content-description-link"
+            target="_blank"
+            rel="noreferrer"
+            href="http://portalbridge.com/"
+          >
+            get started today!
+          </a>{" "}
+          Want to integrate into your own Dapps?{" "}
+          <a
+            className="banner-content-description-link"
+            target="_blank"
+            rel="noreferrer"
+            href="https://docs.wormhole.com/wormhole/quick-start/wh-connect"
+          >
+            Find out more here.
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+);
+
 const Banner = () => {
   function isWarningRange(): boolean {
     const currentDate = new Date();
@@ -136,9 +181,18 @@ const Banner = () => {
     return currentDate >= startDate && currentDate <= endDate;
   }
 
+  function isEthBridgeDate(): boolean {
+    const currentDate = new Date();
+    const startDate = new Date("2024-01-17T10:00:00-05:00"); // January 17, 2024, 10:00 AM EST
+    const endDate = new Date("2024-01-24T10:00:00-05:00"); // January 24, 2024, 10:00 AM EST
+
+    return currentDate >= startDate && currentDate <= endDate;
+  }
+
   const isWarning = isWarningRange();
   const isError = isErrorRange();
   const isSuccess = isSuccessRange();
+  const isEthBridge = isEthBridgeDate();
 
   if (isWarning) {
     return <BannerWarning />;
@@ -146,6 +200,8 @@ const Banner = () => {
     return <BannerError />;
   } else if (isSuccess) {
     return <BannerSuccess />;
+  } else if (isEthBridge) {
+    return <EthBridgeBanner />;
   }
 };
 

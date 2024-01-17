@@ -100,7 +100,8 @@
       }
 
       &-link {
-        color: inherit;
+        // color: inherit;
+        color: var(--color-primary-90);
       }
 
       &-span {

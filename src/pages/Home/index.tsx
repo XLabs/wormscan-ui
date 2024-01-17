@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import analytics from "src/analytics";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { CrossChainChart, JoinUs } from "src/components/molecules";
+import { Banner, CrossChainChart, JoinUs } from "src/components/molecules";
 import { Statistics } from "./Statistics";
 import { TopAssets } from "./TopAssets";
 
@@ -12,6 +12,7 @@ const Home = () => {
 
   return (
     <BaseLayout>
+      <Banner />
       <Statistics />
       <CrossChainChart />
       <TopAssets />
