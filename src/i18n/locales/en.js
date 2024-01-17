@@ -65,7 +65,7 @@ export default {
           chartTitle: "Emitter chain volume analysis for",
         },
         join: {
-          initText: "Want to become part of the community? ",
+          initText: "Want to join the Wormhole community? ",
           endText: "Join us.",
           discord: "Join Discord",
         },

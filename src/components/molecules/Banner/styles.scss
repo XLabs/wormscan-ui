@@ -6,14 +6,20 @@
   border-radius: 5px;
   gap: 16px;
   justify-content: center;
-  margin-top: 24px;
+  margin-bottom: 32px;
   padding: 24px 16px;
   width: 100%;
 
   @include desktop {
     @include centered-row;
 
+    margin-bottom: 0;
+    margin-top: 24px;
     padding: 32px;
+  }
+
+  @include bigDesktop {
+    margin-top: 32px;
   }
 
   &-warning {
