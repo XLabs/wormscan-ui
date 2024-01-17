@@ -288,8 +288,8 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     icon: AvalancheIcon,
     colorlessIcon: AvalancheColorlessIcon,
     explorer: {
-      TESTNET: "https://testnet.snowtrace.io/",
-      MAINNET: "https://snowtrace.io/",
+      TESTNET: "https://testnet.snowtrace.io",
+      MAINNET: "https://snowtrace.io",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
