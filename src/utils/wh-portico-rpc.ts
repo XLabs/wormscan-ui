@@ -1,5 +1,6 @@
 import {
   CHAIN_ID_ARBITRUM,
+  CHAIN_ID_AVAX,
   CHAIN_ID_BASE,
   CHAIN_ID_BSC,
   CHAIN_ID_ETH,
@@ -25,6 +26,7 @@ const porticoAddresses: any = {
     [CHAIN_ID_ARBITRUM]: ["0x48fa7528bfd6164ddf09df0ed22451cf59c84130"],
     [CHAIN_ID_OPTIMISM]: ["0x9ae506cddd27dee1275fd1fe6627e5dc65257061"],
     [CHAIN_ID_BASE]: ["0x610d4dfac3ec32e0be98d18ddb280dacd76a1889"],
+    [CHAIN_ID_AVAX]: ["0xe565e118e75304dd3cf83dff409c90034b7ea18a"],
   },
   // TODO: PORTICO TESTNET ADDRESSES
   TESTNET: {
