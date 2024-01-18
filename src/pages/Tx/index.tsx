@@ -382,20 +382,6 @@ const Tx = () => {
           }
         }
 
-        if (!txResponse?.standardizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
-          // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
-          analytics.track("txDetail", {
-            appIds: txResponse?.standardizedProperties?.appIds?.join(", ")
-              ? txResponse.standardizedProperties.appIds.join(", ")
-              : "null",
-            chain: getChainName({ chainId: txResponse?.emitterChain ?? 0, network }),
-            toChain: getChainName({
-              chainId: txResponse?.standardizedProperties?.toChain ?? 0,
-              network,
-            }),
-          });
-        }
-
         return txResponse;
       });
 
@@ -561,6 +547,22 @@ const Tx = () => {
           if (formattedFinalUserAmount)
             data.standardizedProperties.overwriteRedeemAmount = formattedFinalUserAmount;
           data.standardizedProperties.overwriteFee = formattedRelayerFee;
+        }
+      }
+
+      // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
+      for (const data of apiTxData) {
+        if (!data?.standardizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
+          const appIds = data?.standardizedProperties?.appIds.filter(a => a !== "UNKNOWN");
+
+          analytics.track("txDetail", {
+            appIds: appIds?.join(", ") ? appIds.join(", ") : "null",
+            chain: getChainName({ chainId: data?.emitterChain ?? 0, network }),
+            toChain: getChainName({
+              chainId: data?.standardizedProperties?.toChain ?? 0,
+              network,
+            }),
+          });
         }
       }
 
