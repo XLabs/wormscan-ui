@@ -504,6 +504,29 @@ const Tx = () => {
         }
       }
 
+      // parse algorand wallet address if needed
+      for (const data of apiTxData) {
+        if (
+          data.payload?.toChain === 8 &&
+          data.payload?.toAddress?.includes("00000000000000000000000000000000000000000")
+        ) {
+          const appId = BigInt(`0x${data.payload?.toAddress?.replace("0x", "")}`)?.toString();
+          if (appId) {
+            data.standardizedProperties.toAddress = appId;
+          }
+        }
+
+        if (
+          data.emitterChain === 8 &&
+          data.globalTx?.originTx?.from?.includes("00000000000000000000000000000000000000000")
+        ) {
+          const appId = BigInt(`0x${data.globalTx?.originTx?.from?.replace("0x", "")}`)?.toString();
+          if (appId) {
+            data.globalTx.originTx.from = appId;
+          }
+        }
+      }
+
       // check Portico
       for (const data of apiTxData) {
         if (

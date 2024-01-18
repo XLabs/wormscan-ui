@@ -226,6 +226,8 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") {
+        if (value.length <= 12) return this.explorer?.[network] + "/application/" + value;
+
         if (network === "MAINNET") return this.explorer?.[network] + "/account/" + value;
         return this.explorer?.[network] + "/address/" + value;
       }
