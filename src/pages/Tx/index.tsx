@@ -579,7 +579,7 @@ const Tx = () => {
       // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
       for (const data of apiTxData) {
         if (!data?.standardizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
-          const appIds = data?.standardizedProperties?.appIds.filter(a => a !== "UNKNOWN");
+          const appIds = data?.standardizedProperties?.appIds?.filter(a => a !== "UNKNOWN");
 
           analytics.track("txDetail", {
             appIds: appIds?.join(", ") ? appIds.join(", ") : "null",
