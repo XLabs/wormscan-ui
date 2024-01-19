@@ -308,80 +308,6 @@ const Tx = () => {
           seq: VaaDataSeq,
         });
 
-        // check CCTP
-        if (txResponse?.standardizedProperties?.appIds?.includes("CCTP_WORMHOLE_INTEGRATION")) {
-          // if the amount is not there, we get it from the payload
-          //     (we assume 6 decimals because its always USDC)
-          if (
-            (!txResponse.tokenAmount || !txResponse.standardizedProperties?.amount) &&
-            !!txResponse.payload?.amount
-          ) {
-            txResponse.tokenAmount = String(+txResponse.payload?.amount * 0.000001);
-            txResponse.standardizedProperties.amount = String(+txResponse.payload?.amount * 100);
-            if (!txResponse.symbol) {
-              txResponse.symbol = "USDC";
-            }
-          }
-
-          // the fee for CCTP is feeAmount (fee) + toNativeAmount (gas drop)
-          if (txResponse.payload?.parsedPayload?.feeAmount) {
-            txResponse.standardizedProperties.fee = `${
-              +txResponse.payload.parsedPayload.feeAmount * 100 +
-              +txResponse.payload.parsedPayload.toNativeAmount * 100
-            }`;
-          }
-
-          // the target token address should be native USDC
-          if (txResponse.standardizedProperties?.toChain) {
-            txResponse.standardizedProperties.wrappedTokenAddress = getUsdcAddress(
-              network,
-              txResponse.standardizedProperties?.toChain,
-            );
-          }
-
-          // get CCTP relayer information
-          const relayResponse = await getClient().search.getCctpRelay({
-            txHash: parseTx({ value: txResponse.txHash, chainId: 2 }),
-            network: network,
-          });
-
-          // add Redeem Txn information to the tx response
-          if (relayResponse?.to?.txHash) {
-            const cctpDestination: GlobalTxOutput["destinationTx"] = {
-              chainId: relayResponse.to.chainId,
-              status: relayResponse.status,
-              timestamp: relayResponse.metrics?.completedAt,
-              txHash: relayResponse.to.txHash,
-              updatedAt: relayResponse.metrics?.completedAt,
-
-              blockNumber: null,
-              from: null,
-              method: null,
-              to: null,
-            };
-
-            if (txResponse.globalTx) {
-              txResponse.globalTx.destinationTx = cctpDestination;
-            } else {
-              txResponse.globalTx = {
-                id: null,
-                originTx: null,
-                destinationTx: cctpDestination,
-              };
-            }
-            setExtraRawInfo(relayResponse);
-          }
-
-          if (relayResponse?.to?.recipientAddress) {
-            txResponse.standardizedProperties.toAddress = relayResponse?.to?.recipientAddress;
-          }
-          if (relayResponse?.fee?.amount) {
-            txResponse.standardizedProperties.fee =
-              "" +
-              (relayResponse?.fee?.amount + (relayResponse?.from?.amountToSwap || 0)) * 100000000;
-          }
-        }
-
         return txResponse;
       });
 
@@ -401,6 +327,85 @@ const Tx = () => {
 
   const processApiTxData = useCallback(
     async (apiTxData: GetTransactionsOutput[]) => {
+      // check CCTP
+      for (const data of apiTxData) {
+        if (data?.standardizedProperties?.appIds?.includes("CCTP_WORMHOLE_INTEGRATION")) {
+          // if the amount is not there, we get it from the payload
+          //     (we assume 6 decimals because its always USDC)
+          if (
+            (!data.tokenAmount || !data.standardizedProperties?.amount) &&
+            !!data.payload?.amount
+          ) {
+            data.tokenAmount = String(+data.payload?.amount * 0.000001);
+            data.standardizedProperties.amount = String(+data.payload?.amount * 100);
+            if (!data.symbol) {
+              data.symbol = "USDC";
+            }
+          }
+
+          // the fee for CCTP is feeAmount (fee) + toNativeAmount (gas drop)
+          if (data.payload?.parsedPayload?.feeAmount) {
+            data.standardizedProperties.fee = `${
+              +data.payload.parsedPayload.feeAmount * 100 +
+              +data.payload.parsedPayload.toNativeAmount * 100
+            }`;
+          }
+
+          // the target token address should be native USDC
+          if (data.standardizedProperties?.toChain) {
+            data.standardizedProperties.wrappedTokenAddress = getUsdcAddress(
+              network,
+              data.standardizedProperties?.toChain,
+            );
+          }
+
+          // if destinationTx is not there, we get it from relayer endpoint
+          if (!data.globalTx?.destinationTx?.txHash) {
+            // get CCTP relayer information
+            const relayResponse = await getClient().search.getCctpRelay({
+              txHash: parseTx({ value: data.txHash, chainId: 2 }),
+              network: network,
+            });
+
+            // add Redeem Txn information to the tx response
+            if (relayResponse?.to?.txHash) {
+              const cctpDestination: GlobalTxOutput["destinationTx"] = {
+                chainId: relayResponse.to.chainId,
+                status: relayResponse.status,
+                timestamp: relayResponse.metrics?.completedAt,
+                txHash: relayResponse.to.txHash,
+                updatedAt: relayResponse.metrics?.completedAt,
+
+                blockNumber: null,
+                from: null,
+                method: null,
+                to: null,
+              };
+
+              if (data.globalTx) {
+                data.globalTx.destinationTx = cctpDestination;
+              } else {
+                data.globalTx = {
+                  id: null,
+                  originTx: null,
+                  destinationTx: cctpDestination,
+                };
+              }
+              setExtraRawInfo(relayResponse);
+            }
+
+            if (relayResponse?.to?.recipientAddress) {
+              data.standardizedProperties.toAddress = relayResponse?.to?.recipientAddress;
+            }
+            if (relayResponse?.fee?.amount) {
+              data.standardizedProperties.fee =
+                "" +
+                (relayResponse?.fee?.amount + (relayResponse?.from?.amountToSwap || 0)) * 100000000;
+            }
+          }
+        }
+      }
+
       // if there's no tokenAmount or symbol, try to get them with RPC info
       for (const data of apiTxData) {
         if (
@@ -465,7 +470,7 @@ const Tx = () => {
         }
       }
 
-      // get algorand asset information if needed
+      // get algorand extra informations needed
       for (const data of apiTxData) {
         if (
           data?.standardizedProperties?.tokenChain === ChainId.Algorand &&
@@ -502,10 +507,8 @@ const Tx = () => {
             }
           }
         }
-      }
 
-      // parse algorand wallet address if needed
-      for (const data of apiTxData) {
+        // parse algorand wallet address if needed
         if (
           data.payload?.toChain === 8 &&
           data.payload?.toAddress?.includes("00000000000000000000000000000000000000000")
