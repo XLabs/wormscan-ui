@@ -40,7 +40,7 @@ const porticoAddresses: any = {
 };
 
 export function isPortico(network: any, toChain: ChainId, toAddress: string) {
-  const address = toAddress.toLowerCase();
+  const address = toAddress?.toLowerCase();
   return porticoAddresses[network][toChain]?.includes(address.toLowerCase()) ?? false;
 }
 
