@@ -268,6 +268,22 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
+  [ChainId.ArbitrumSepolia]: {
+    name: "Arbitrum",
+    nameTestnet: "Arbitrum Sepolia",
+    icon: ArbitrumIcon,
+    colorlessIcon: ArbitrumColorlessIcon,
+    explorer: {
+      TESTNET: "https://sepolia.arbiscan.io/",
+      MAINNET: "https://arbiscan.io",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
   [ChainId.Aurora]: {
     name: "Aurora",
     icon: AuroraIcon,
@@ -487,6 +503,22 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
+  [ChainId.OptimismSepolia]: {
+    name: "Optimism",
+    nameTestnet: "Optimism Sepolia",
+    icon: OptimismIcon,
+    colorlessIcon: OptimismColorlessIcon,
+    explorer: {
+      TESTNET: "https://sepolia-optimism.etherscan.io",
+      MAINNET: "https://optimistic.etherscan.io",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
   [ChainId.Polygon]: {
     name: "Polygon",
     nameTestnet: "Mumbai",
@@ -590,6 +622,22 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     colorlessIcon: BaseColorlessIcon,
     explorer: {
       TESTNET: "https://goerli.basescan.org",
+      MAINNET: "https://basescan.org",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.BaseSepolia]: {
+    name: "Base",
+    nameTestnet: "Base Sepolia",
+    icon: BaseIcon,
+    colorlessIcon: BaseColorlessIcon,
+    explorer: {
+      TESTNET: "https://sepolia.basescan.org",
       MAINNET: "https://basescan.org",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {

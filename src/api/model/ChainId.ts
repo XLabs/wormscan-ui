@@ -32,5 +32,8 @@ export enum ChainId {
   Evmos = 4001,
   Kujira = 4002,
   Sepolia = 10002,
+  ArbitrumSepolia = 10003,
+  BaseSepolia = 10004,
+  OptimismSepolia = 10005,
   Wormchain = 3104,
 }

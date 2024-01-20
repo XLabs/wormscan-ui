@@ -198,10 +198,16 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
   const originDateParsed = formatDate(startDate);
   const destinationDateParsed = formatDate(endDate);
 
+  const fromSepoliaChainId = extraRawInfo?.from?.chainId || null;
+  const ToSepoliaChainId = extraRawInfo?.to?.chainId || null;
+
   let sourceTokenLink = showSourceTokenUrl
     ? getExplorerLink({
         network: currentNetwork,
-        chainId: txData?.standardizedProperties?.overwriteSourceTokenChain || tokenChain,
+        chainId:
+          fromSepoliaChainId ||
+          txData?.standardizedProperties?.overwriteSourceTokenChain ||
+          tokenChain,
         value: txData?.standardizedProperties?.overwriteSourceTokenAddress || tokenAddress,
         base: "token",
       })
@@ -209,7 +215,10 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
   let targetTokenLink = showTargetTokenUrl
     ? getExplorerLink({
         network: currentNetwork,
-        chainId: txData?.standardizedProperties?.overwriteTargetTokenChain || tokenChain,
+        chainId:
+          ToSepoliaChainId ||
+          txData?.standardizedProperties?.overwriteTargetTokenChain ||
+          tokenChain,
         value: txData?.standardizedProperties?.overwriteTargetTokenAddress || tokenAddress,
         base: "token",
       })
@@ -226,7 +235,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
       targetTokenLink = showTargetTokenUrl
         ? getExplorerLink({
             network: currentNetwork,
-            chainId: toChain,
+            chainId: ToSepoliaChainId || toChain,
             value: wrappedTokenAddress,
             base: "token",
           })
@@ -238,7 +247,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
       sourceTokenLink = showSourceTokenUrl
         ? getExplorerLink({
             network: currentNetwork,
-            chainId: fromChain,
+            chainId: fromSepoliaChainId || fromChain,
             value: wrappedTokenAddress,
             base: "token",
           })
@@ -269,7 +278,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
     currentNetwork,
     destinationDateParsed,
     fee,
-    fromChain,
+    fromChain: fromSepoliaChainId || fromChain,
     fromChainOrig,
     guardianSignaturesCount,
     isGatewaySource,
@@ -285,7 +294,7 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
     sourceTokenLink,
     targetSymbol,
     targetTokenLink,
-    toChain,
+    toChain: ToSepoliaChainId || toChain,
     tokenAmount,
     totalGuardiansNeeded,
     VAAId,

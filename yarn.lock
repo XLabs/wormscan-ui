@@ -194,14 +194,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@certusone/wormhole-sdk-proto-web@npm:0.0.6":
-  version: 0.0.6
-  resolution: "@certusone/wormhole-sdk-proto-web@npm:0.0.6"
+"@certusone/wormhole-sdk-proto-web@npm:0.0.7":
+  version: 0.0.7
+  resolution: "@certusone/wormhole-sdk-proto-web@npm:0.0.7"
   dependencies:
     "@improbable-eng/grpc-web": ^0.15.0
     protobufjs: ^7.0.0
     rxjs: ^7.5.6
-  checksum: ef648a7716ab333aba2a66e9b5f10da47c36ef76778ee72609518e269ebf737ad936aa6238fa40096bc48663de02ca6796a13080c1ee1454395636f255e95f1a
+  checksum: 85462f50ba21ed80281baa1c7f83a3dc717b22c0a4ae6e5333ed7555e4da917843c6ae42570c0defe4cc7cbb6a46bbcd79030a30db5aa5f739e0b69f0fb0f0a3
   languageName: node
   linkType: hard
 
@@ -215,11 +215,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@certusone/wormhole-sdk@npm:0.10.5":
-  version: 0.10.5
-  resolution: "@certusone/wormhole-sdk@npm:0.10.5"
+"@certusone/wormhole-sdk@npm:^0.10.9":
+  version: 0.10.9
+  resolution: "@certusone/wormhole-sdk@npm:0.10.9"
   dependencies:
-    "@certusone/wormhole-sdk-proto-web": 0.0.6
+    "@certusone/wormhole-sdk-proto-web": 0.0.7
     "@certusone/wormhole-sdk-wasm": ^0.0.1
     "@coral-xyz/borsh": 0.2.6
     "@injectivelabs/networks": 1.10.12
@@ -247,7 +247,7 @@ __metadata:
       optional: true
     "@injectivelabs/utils":
       optional: true
-  checksum: 3d57670479b1f40c48e6286065f9734779e247d2b132ec8467ea005facef515a29e7e7e43cc09b8cf912e254ef97fd7896863a520919d09da3420b361ac5d77b
+  checksum: 5a372632e92db9b75911ebdda5b605d809139ebffd48a59411995ff036acef570a56143628194afad941c62903b628996f3900dd7961c5cd13cd5deca2e3d26d
   languageName: node
   linkType: hard
 
@@ -10159,7 +10159,7 @@ __metadata:
   resolution: "wormscan-ui@workspace:."
   dependencies:
     "@analytics/google-analytics": ^1.0.7
-    "@certusone/wormhole-sdk": 0.10.5
+    "@certusone/wormhole-sdk": ^0.10.9
     "@parcel/transformer-sass": ^2.8.3
     "@playwright/test": ^1.38.1
     "@radix-ui/react-icons": 1.1.1
