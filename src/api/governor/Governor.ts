@@ -74,9 +74,21 @@ export type EmitterStatus = {
   totalEnqueuedVAAs: number;
 };
 
+export type ChainLimit = {
+  chainId: number;
+  availableNotional: number;
+  notionalLimit: number;
+  maxTransactionSize: number;
+};
+
+export type WormholeTokenList = {
+  originChainId: ChainId;
+  originAddress: string;
+  price: number;
+};
+
 export class Governor {
   constructor(private readonly _client: APIClient) {}
-
   async getConfiguration(): Promise<NodeConfiguration[]>;
   async getConfiguration(guardianId: string): Promise<NodeConfiguration>;
   async getConfiguration(guardianId: string = null) {
@@ -139,7 +151,15 @@ export class Governor {
   async getLimit(): Promise<NotionalLimit[]> {
     const payload = await this._client.doGet<{ data: any }>("/governor/limit");
     const result = _get(payload, "data", []);
-    return result.map(this._mapNotionalLimit);
+    return result;
+  }
+
+  async getTokenList(): Promise<WormholeTokenList[]> {
+    const payload = await this._client.doGet<any>(
+      "https://api.wormholescan.io/v1/governor/token_list",
+    );
+    const result = _get(payload, "entries", []);
+    return result;
   }
 
   private _mapNodeConfiguration = ({
