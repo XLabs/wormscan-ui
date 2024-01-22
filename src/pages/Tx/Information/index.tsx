@@ -77,7 +77,8 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
   const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
   const { decodedVaa, vaa } = VAAData || {};
   const { guardianSignatures } = decodedVaa || {};
-  const guardianSignaturesCount = guardianSignatures?.length || 0;
+  const guardianSignaturesCount =
+    guardianSignatures?.length || extraRawInfo?.signatures?.length || 0;
   const hasVAA = !!vaa;
 
   const { currentBlock, lastFinalizedBlock } = blockData || {};
