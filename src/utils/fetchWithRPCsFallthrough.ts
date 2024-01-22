@@ -9,22 +9,22 @@ import {
   tryUint8ArrayToNative,
   uint8ArrayToHex,
 } from "@certusone/wormhole-sdk";
-import { Environment, SLOW_FINALITY_CHAINS, getChainInfo, getEthersProvider } from "./environment";
-import { ethers } from "ethers";
-import { Implementation__factory } from "@certusone/wormhole-sdk/lib/cjs/ethers-contracts";
-import { formatUnits, parseAddress } from "./crypto";
-import { humanAddress } from "@certusone/wormhole-sdk/lib/cjs/cosmos";
-import { ChainId, Order } from "src/api";
-import { isConnect, parseConnectPayload } from "./wh-connect-rpc";
-import { TokenMessenger__factory } from "./TokenMessenger__factory";
 import {
   RelayerPayloadId,
   parseWormholeRelayerPayloadType,
   parseWormholeRelayerResend,
   parseWormholeRelayerSend,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
-import { getClient } from "src/api/Client";
+import { Implementation__factory } from "@certusone/wormhole-sdk/lib/cjs/ethers-contracts";
+import { humanAddress } from "@certusone/wormhole-sdk/lib/cjs/cosmos";
+import { ethers } from "ethers";
 import { getGuardianSet } from "src/consts";
+import { ChainId, Order, WormholeTokenList } from "src/api";
+import { getClient } from "src/api/Client";
+import { Environment, SLOW_FINALITY_CHAINS, getChainInfo, getEthersProvider } from "./environment";
+import { formatUnits, parseAddress } from "./crypto";
+import { isConnect, parseConnectPayload } from "./wh-connect-rpc";
+import { TokenMessenger__factory } from "./TokenMessenger__factory";
 
 type TxReceiptHolder = {
   receipt: ethers.providers.TransactionReceipt;
@@ -129,6 +129,9 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
     const ethersProvider = getEthersProvider(getChainInfo(env, result.chainId as ChainId));
     const block = await ethersProvider.getBlock(result.receipt.blockNumber);
     const timestamp = ethers.BigNumber.from(block.timestamp).toNumber() * 1000;
+    const tokenList = await getClient()
+      .governor.getTokenList()
+      .catch(() => null);
 
     let fromAddress = result.receipt.from;
     let parsedFromAddress = parseAddress({
@@ -265,6 +268,17 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             result.chainId,
           );
           const decimals = tokenDecimals ? Math.min(8, tokenDecimals) : 8;
+
+          const tokenAmount =
+            amount && decimals ? ethers.utils.formatUnits(amount, decimals) : null;
+
+          const usdAmount =
+            "" +
+              tokenList?.find((t: WormholeTokenList) =>
+                t.originAddress.toLowerCase().includes(tokenAddress.toLowerCase()),
+              )?.price *
+                Number(tokenAmount) || null;
+
           return {
             amount:
               amount && decimals
@@ -292,10 +306,10 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             toAddress,
             toChain,
             tokenAddress: parsedTokenAddress,
-            tokenAmount: amount && decimals ? ethers.utils.formatUnits(amount, decimals) : null,
+            tokenAmount,
             tokenChain,
             txHash: searchValue,
-            usdAmount: null, // TODO? should use coingecko or similar if needed.
+            usdAmount,
           };
         }
         // CCTP USDC-BRIDGE
@@ -386,7 +400,15 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           const amount = "" + 0.000001 * +cctpResult.amount; // 6 decimals for USDC
           const fee = "" + 0.000001 * +cctpResult.feeAmount; // 6 decimals for USDC
           const toNativeAmount = "" + 0.000001 * +cctpResult.toNativeAmount; // 6 decimals for USDC
-          console.log({ cctpResult, fee, toNativeAmount });
+
+          const usdAmount =
+            "" +
+              tokenList?.find((t: WormholeTokenList) =>
+                t.originAddress
+                  .toLowerCase()
+                  .includes(cctpResult.tokenAddress.slice(2).toLowerCase()),
+              )?.price *
+                Number(amount) || amount;
 
           return {
             amount,
@@ -410,7 +432,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             tokenChain: result.chainId,
             toNativeAmount,
             txHash: searchValue,
-            usdAmount: amount,
+            usdAmount,
             wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(cctpResult.toDomain)),
           };
         }

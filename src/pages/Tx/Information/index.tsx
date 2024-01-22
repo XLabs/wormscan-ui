@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ethers } from "ethers";
+import { useRecoilState } from "recoil";
 import { ChainId, isEVMChain, parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
@@ -8,7 +9,7 @@ import {
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { IStatus, canWeGetDestinationTx, txType } from "src/consts";
+import { DISCORD_URL, IStatus, canWeGetDestinationTx, txType } from "src/consts";
 import { Alert, Loader } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
@@ -22,8 +23,12 @@ import {
   parseGenericRelayerVaa,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
+import { tryGetRedeemTxn } from "src/utils/cryptoToolkit";
+import { getPorticoInfo, isPortico } from "src/utils/wh-portico-rpc";
+import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
 import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
 import { GlobalTxOutput, VAADetail } from "src/api/guardian-network/types";
+import { ChainLimit } from "src/api";
 
 import Tabs from "./Tabs";
 import Summary from "./Summary";
@@ -34,17 +39,14 @@ import RelayerOverview from "./Overview/RelayerOverview";
 import RelayerDetails from "./Details/RelayerDetails";
 
 import "./styles.scss";
-import { tryGetRedeemTxn } from "src/utils/cryptoToolkit";
-import { getPorticoInfo, isPortico } from "src/utils/wh-portico-rpc";
-import { useRecoilState } from "recoil";
-import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
 
 interface Props {
-  extraRawInfo: any;
-  VAAData: VAADetail & { vaa: any; decodedVaa: any };
-  txData: GetTransactionsOutput;
   blockData: GetBlockData;
+  chainLimitsData?: ChainLimit[];
+  extraRawInfo: any;
   setTxData: (x: any) => void;
+  txData: GetTransactionsOutput;
+  VAAData: VAADetail & { vaa: any; decodedVaa: any };
 }
 
 const UNKNOWN_APP_ID = "UNKNOWN";
@@ -52,7 +54,19 @@ const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
 const CONNECT_APP_ID = "CONNECT";
 const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
 
-const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Props) => {
+const ETH_LIMIT = {
+  maxTransactionSize: 5000000,
+  availableNotional: 50000000,
+};
+
+const Information = ({
+  blockData,
+  chainLimitsData,
+  extraRawInfo,
+  setTxData,
+  txData,
+  VAAData,
+}: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [showSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
@@ -398,6 +412,14 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
     setLoadingRedeem(false);
   };
 
+  const isLatestBlockHigherThanVaaEmitBlock = lastFinalizedBlock > currentBlock;
+  const limitDataForChain = chainLimitsData
+    ? chainLimitsData.find((data: ChainLimit) => data.chainId === fromChain)
+    : ETH_LIMIT;
+  const transactionLimit = limitDataForChain?.maxTransactionSize;
+  const isBigTransaction = transactionLimit < Number(usdAmount);
+  const isDailyLimitExceeded = limitDataForChain?.availableNotional < Number(usdAmount);
+
   // --- Automatic Relayer Detection and handling ---
   const [genericRelayerInfo, setGenericRelayerInfo] = useState<DeliveryLifecycleRecord>(null);
   const [loadingRelayers, setLoadingRelayers] = useState(false);
@@ -715,11 +737,13 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
               <>
                 <p>The VAA for this transaction has not been issued yet.</p>
                 <p>This information can be incomplete or have wrong values.</p>
-                <p>
-                  Waiting for finality on{" "}
-                  {getChainName({ chainId: fromChain, network: currentNetwork })} which may take up
-                  to 15 minutes.
-                </p>
+                {!isLatestBlockHigherThanVaaEmitBlock && (
+                  <p>
+                    Waiting for finality on{" "}
+                    {getChainName({ chainId: fromChain, network: currentNetwork })} which may take
+                    up to 15 minutes.
+                  </p>
+                )}
                 {lastFinalizedBlock && currentBlock && (
                   <div>
                     <p>
@@ -756,6 +780,31 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
                       </a>
                     </p>
                   </div>
+                )}
+                {isLatestBlockHigherThanVaaEmitBlock && (
+                  <>
+                    {isBigTransaction && currentNetwork === "MAINNET" ? (
+                      <p>
+                        This transaction will take 24 hours to process, as it exceeds the Wormhole
+                        network&apos;s temporary transaction limit of ${transactionLimit} on{" "}
+                        {getChainName({ chainId: fromChain, network: currentNetwork })} for security
+                        reasons. <LearnMoreLink /> about this temporary security measure.
+                      </p>
+                    ) : isDailyLimitExceeded && currentNetwork === "MAINNET" ? (
+                      <p>
+                        This transaction will take up to 24 hours to process as Wormhole has reached
+                        the daily limit for source Blockchain{" "}
+                        {getChainName({ chainId: fromChain, network: currentNetwork })}. This is a
+                        normal and temporary security feature by the Wormhole network.{" "}
+                        <LearnMoreLink /> about this security measure.
+                      </p>
+                    ) : (
+                      <p>
+                        Since the latest block number is higher than this transaction&apos;s, there
+                        might be an extra delay. You can contact support on <DiscordSupportLink />.
+                      </p>
+                    )}
+                  </>
                 )}
               </>
             )
@@ -796,3 +845,25 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
 };
 
 export { Information };
+
+const DiscordSupportLink = () => (
+  <a
+    className="tx-information-alerts-unknown-payload-type-link"
+    href={DISCORD_URL}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Discord
+  </a>
+);
+
+const LearnMoreLink = () => (
+  <a
+    className="tx-information-alerts-unknown-payload-type-link"
+    href="https://github.com/wormhole-foundation/wormhole/blob/main/whitepapers/0007_governor.md"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Learn more
+  </a>
+);
