@@ -213,10 +213,18 @@ const Information = ({
   const originDateParsed = formatDate(startDate);
   const destinationDateParsed = formatDate(endDate);
 
+  // TODO - when the backend supports all chainIds, remove
+  const extraRawInfoFromChainId = extraRawInfo?.from?.chainId || null;
+  const extraRawInfoToChainId = extraRawInfo?.to?.chainId || null;
+  // ---
+
   let sourceTokenLink = showSourceTokenUrl
     ? getExplorerLink({
         network: currentNetwork,
-        chainId: txData?.standardizedProperties?.overwriteSourceTokenChain || tokenChain,
+        chainId:
+          extraRawInfoFromChainId ||
+          txData?.standardizedProperties?.overwriteSourceTokenChain ||
+          tokenChain,
         value: txData?.standardizedProperties?.overwriteSourceTokenAddress || tokenAddress,
         base: "token",
       })
@@ -224,7 +232,10 @@ const Information = ({
   let targetTokenLink = showTargetTokenUrl
     ? getExplorerLink({
         network: currentNetwork,
-        chainId: txData?.standardizedProperties?.overwriteTargetTokenChain || tokenChain,
+        chainId:
+          extraRawInfoToChainId ||
+          txData?.standardizedProperties?.overwriteTargetTokenChain ||
+          tokenChain,
         value: txData?.standardizedProperties?.overwriteTargetTokenAddress || tokenAddress,
         base: "token",
       })
@@ -241,7 +252,7 @@ const Information = ({
       targetTokenLink = showTargetTokenUrl
         ? getExplorerLink({
             network: currentNetwork,
-            chainId: toChain,
+            chainId: extraRawInfoToChainId || toChain,
             value: wrappedTokenAddress,
             base: "token",
           })
@@ -253,7 +264,7 @@ const Information = ({
       sourceTokenLink = showSourceTokenUrl
         ? getExplorerLink({
             network: currentNetwork,
-            chainId: fromChain,
+            chainId: extraRawInfoFromChainId || fromChain,
             value: wrappedTokenAddress,
             base: "token",
           })
@@ -284,7 +295,7 @@ const Information = ({
     currentNetwork,
     destinationDateParsed,
     fee,
-    fromChain,
+    fromChain: extraRawInfoFromChainId || fromChain,
     fromChainOrig,
     guardianSignaturesCount,
     isGatewaySource,
@@ -300,7 +311,7 @@ const Information = ({
     sourceTokenLink,
     targetSymbol,
     targetTokenLink,
-    toChain,
+    toChain: extraRawInfoToChainId || toChain,
     tokenAmount,
     totalGuardiansNeeded,
     VAAId,

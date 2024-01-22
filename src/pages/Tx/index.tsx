@@ -369,7 +369,17 @@ const Tx = () => {
           }
 
           // if destinationTx is not there, we get it from relayer endpoint
-          if (!data.globalTx?.destinationTx?.txHash) {
+          // or if the real chainId is probably ArbitrumSepolia, BaseSepolia or OptimismSepolia
+          if (
+            !data.globalTx?.destinationTx?.txHash ||
+            (network === "TESTNET" &&
+              (data.standardizedProperties.fromChain === ChainId.Arbitrum ||
+                data.standardizedProperties.fromChain === ChainId.Base ||
+                data.standardizedProperties.fromChain === ChainId.Optimism ||
+                data.standardizedProperties.toChain === ChainId.Arbitrum ||
+                data.standardizedProperties.toChain === ChainId.Base ||
+                data.standardizedProperties.toChain === ChainId.Optimism))
+          ) {
             // get CCTP relayer information
             const relayResponse = await getClient().search.getCctpRelay({
               txHash: parseTx({ value: data.txHash, chainId: 2 }),
