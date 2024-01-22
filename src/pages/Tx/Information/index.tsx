@@ -54,6 +54,11 @@ const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
 const CONNECT_APP_ID = "CONNECT";
 const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
 
+const ETH_LIMIT = {
+  maxTransactionSize: 5000000,
+  availableNotional: 50000000,
+};
+
 const Information = ({
   blockData,
   chainLimitsData,
@@ -410,13 +415,10 @@ const Information = ({
   const isLatestBlockHigherThanVaaEmitBlock = lastFinalizedBlock > currentBlock;
   const limitDataForChain = chainLimitsData
     ? chainLimitsData.find((data: ChainLimit) => data.chainId === fromChain)
-    : {
-        maxTransactionSize: 5000000,
-        availableNotional: 50000000,
-      };
+    : ETH_LIMIT;
   const transactionLimit = limitDataForChain?.maxTransactionSize;
   const isBigTransaction = transactionLimit < Number(usdAmount);
-  const isDailyLimitExceeded = limitDataForChain?.availableNotional < Number(usdAmount);
+  const isDailyLimitExceeded = limitDataForChain?.availableNotional < Number(99999999);
 
   // --- Automatic Relayer Detection and handling ---
   const [genericRelayerInfo, setGenericRelayerInfo] = useState<DeliveryLifecycleRecord>(null);
