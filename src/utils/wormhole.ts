@@ -274,7 +274,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     icon: ArbitrumIcon,
     colorlessIcon: ArbitrumColorlessIcon,
     explorer: {
-      TESTNET: "https://sepolia.arbiscan.io/",
+      TESTNET: "https://sepolia.arbiscan.io",
       MAINNET: "https://arbiscan.io",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
