@@ -203,8 +203,6 @@ const Information = ({ extraRawInfo, VAAData, txData, blockData, setTxData }: Pr
   const extraRawInfoToChainId = extraRawInfo?.to?.chainId || null;
   // ---
 
-  console.log({ extraRawInfoFromChainId, extraRawInfoToChainId });
-
   let sourceTokenLink = showSourceTokenUrl
     ? getExplorerLink({
         network: currentNetwork,
