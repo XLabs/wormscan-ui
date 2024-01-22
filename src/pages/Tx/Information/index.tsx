@@ -418,7 +418,7 @@ const Information = ({
     : ETH_LIMIT;
   const transactionLimit = limitDataForChain?.maxTransactionSize;
   const isBigTransaction = transactionLimit < Number(usdAmount);
-  const isDailyLimitExceeded = limitDataForChain?.availableNotional < Number(99999999);
+  const isDailyLimitExceeded = limitDataForChain?.availableNotional < Number(usdAmount);
 
   // --- Automatic Relayer Detection and handling ---
   const [genericRelayerInfo, setGenericRelayerInfo] = useState<DeliveryLifecycleRecord>(null);
