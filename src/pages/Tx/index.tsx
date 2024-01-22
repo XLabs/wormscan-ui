@@ -280,6 +280,15 @@ const Tx = () => {
     },
   );
 
+  const { data: chainLimitsData } = useQuery(
+    ["getLimit"],
+    () =>
+      getClient()
+        .governor.getLimit()
+        .catch(() => null),
+    { enabled: failCount > 0 },
+  );
+
   const VAAData = useMemo(() => {
     if (isTxHashSearch) {
       return VAADataByTx;
@@ -539,40 +548,43 @@ const Tx = () => {
             data?.standardizedProperties?.toAddress,
           )
         ) {
-          const {
-            formattedFinalUserAmount,
-            formattedRelayerFee,
-            parsedPayload,
-            redeemTokenAddress,
-            shouldShowSourceTokenUrl,
-            shouldShowTargetTokenUrl,
-            sourceSymbol,
-            targetSymbol,
-            tokenAddress,
-          } = await getPorticoInfo(environment, data);
+          const porticoInfo = await getPorticoInfo(environment, data);
+          if (porticoInfo) {
+            const {
+              formattedFinalUserAmount,
+              formattedRelayerFee,
+              parsedPayload,
+              redeemTokenAddress,
+              shouldShowSourceTokenUrl,
+              shouldShowTargetTokenUrl,
+              sourceSymbol,
+              targetSymbol,
+              tokenAddress,
+            } = await getPorticoInfo(environment, data);
 
-          data.standardizedProperties.overwriteSourceTokenAddress = tokenAddress;
-          data.standardizedProperties.overwriteSourceTokenChain = data?.standardizedProperties
-            ?.fromChain as ChainId;
+            data.standardizedProperties.overwriteSourceTokenAddress = tokenAddress;
+            data.standardizedProperties.overwriteSourceTokenChain = data?.standardizedProperties
+              ?.fromChain as ChainId;
 
-          data.standardizedProperties.overwriteTargetTokenAddress = redeemTokenAddress;
-          data.standardizedProperties.overwriteTargetTokenChain = data?.standardizedProperties
-            ?.toChain as ChainId;
+            data.standardizedProperties.overwriteTargetTokenAddress = redeemTokenAddress;
+            data.standardizedProperties.overwriteTargetTokenChain = data?.standardizedProperties
+              ?.toChain as ChainId;
 
-          data.payload.parsedPayload = parsedPayload;
-          if (!data.standardizedProperties.appIds.includes("ETH_BRIDGE")) {
-            data.standardizedProperties.appIds.push("ETH_BRIDGE");
+            data.payload.parsedPayload = parsedPayload;
+            if (!data.standardizedProperties.appIds.includes("ETH_BRIDGE")) {
+              data.standardizedProperties.appIds.push("ETH_BRIDGE");
+            }
+
+            setShowSourceTokenUrl(shouldShowSourceTokenUrl);
+            setShowTargetTokenUrl(shouldShowTargetTokenUrl);
+
+            if (sourceSymbol) data.standardizedProperties.overwriteSourceSymbol = sourceSymbol;
+            if (targetSymbol) data.standardizedProperties.overwriteTargetSymbol = targetSymbol;
+
+            if (formattedFinalUserAmount)
+              data.standardizedProperties.overwriteRedeemAmount = formattedFinalUserAmount;
+            data.standardizedProperties.overwriteFee = formattedRelayerFee;
           }
-
-          setShowSourceTokenUrl(shouldShowSourceTokenUrl);
-          setShowTargetTokenUrl(shouldShowTargetTokenUrl);
-
-          if (sourceSymbol) data.standardizedProperties.overwriteSourceSymbol = sourceSymbol;
-          if (targetSymbol) data.standardizedProperties.overwriteTargetSymbol = targetSymbol;
-
-          if (formattedFinalUserAmount)
-            data.standardizedProperties.overwriteRedeemAmount = formattedFinalUserAmount;
-          data.standardizedProperties.overwriteFee = formattedRelayerFee;
         }
       }
 
@@ -697,6 +709,7 @@ const Tx = () => {
                     txData={txData.find(tx => tx.id === parsedVAAData.id)}
                     blockData={blockData}
                     setTxData={newData => updateTxData(newData, i)}
+                    chainLimitsData={chainLimitsData}
                   />
                 ),
             )}
