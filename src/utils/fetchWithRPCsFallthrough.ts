@@ -18,9 +18,10 @@ import {
 import { Implementation__factory } from "@certusone/wormhole-sdk/lib/cjs/ethers-contracts";
 import { humanAddress } from "@certusone/wormhole-sdk/lib/cjs/cosmos";
 import { ethers } from "ethers";
-import { Environment, SLOW_FINALITY_CHAINS, getChainInfo, getEthersProvider } from "./environment";
-import { ChainId, WormholeTokenList } from "src/api";
+import { getGuardianSet } from "src/consts";
+import { ChainId, Order, WormholeTokenList } from "src/api";
 import { getClient } from "src/api/Client";
+import { Environment, SLOW_FINALITY_CHAINS, getChainInfo, getEthersProvider } from "./environment";
 import { formatUnits, parseAddress } from "./crypto";
 import { isConnect, parseConnectPayload } from "./wh-connect-rpc";
 import { TokenMessenger__factory } from "./TokenMessenger__factory";
@@ -38,7 +39,7 @@ interface RPCResponse {
   consistencyLevel?: any;
   emitterAddress?: string;
   emitterNattiveAddress?: string;
-  extraRawInfo?: object;
+  extraRawInfo?: any;
   fee?: string;
   fromAddress?: string;
   id?: string;
@@ -47,6 +48,7 @@ interface RPCResponse {
   payloadAmount?: string;
   payloadType?: any;
   sequence?: number;
+  signaturesCount?: number;
   symbol?: string;
   timestamp?: number;
   toAddress?: string;
@@ -153,6 +155,35 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           value: emitterAddress,
         });
 
+        const VAA_ID = `${result.chainId}/${emitterAddress}/${sequence}`;
+        let extraRawInfo = {};
+
+        // get already signed guardians
+        try {
+          const observations = await getClient().guardianNetwork.getObservation(
+            {
+              chainId: result.chainId,
+              emmiter: emitterAddress,
+              specific: { sequence: sequence },
+            },
+            { pageSize: 20, page: 0, sortOrder: Order.ASC },
+          );
+
+          if (!!observations.length) {
+            const guardianSetList = getGuardianSet(3);
+
+            const signedGuardians = observations.map(({ guardianAddr, signature }) => ({
+              signature: Buffer.from(signature).toString(),
+              name: guardianSetList?.find(a => a.pubkey === guardianAddr)?.name,
+            }));
+
+            extraRawInfo = { ...extraRawInfo, signatures: signedGuardians };
+          }
+        } catch (error) {
+          console.log("no observations");
+        }
+
+        // block info
         let lastFinalizedBlock: number;
         try {
           lastFinalizedBlock = (await ethersProvider.getBlock("finalized")).number;
@@ -261,9 +292,10 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             consistencyLevel,
             emitterAddress,
             emitterNattiveAddress,
+            extraRawInfo,
             fee: fee && decimals ? ethers.utils.formatUnits(fee, decimals) : fee ? fee : null,
             fromAddress: parsedFromAddress,
-            id: `${result.chainId}/${emitterAddress}/${sequence}`,
+            id: VAA_ID,
             lastFinalizedBlock,
             name,
             payloadType,
@@ -385,9 +417,10 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             consistencyLevel,
             emitterAddress,
             emitterNattiveAddress,
+            extraRawInfo,
             fee: `${+fee + +toNativeAmount}`,
             fromAddress,
-            id: `${result.chainId}/${emitterAddress}/${sequence}`,
+            id: VAA_ID,
             parsedFromAddress,
             sequence: sequence.toString(),
             symbol: "USDC",
@@ -413,7 +446,8 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           ): Promise<RPCResponse> => {
             const deliveryInstructions = parseWormholeRelayerSend(payloadArray);
 
-            const extraRawInfo = {
+            extraRawInfo = {
+              ...extraRawInfo,
               targetChainId: deliveryInstructions.targetChainId,
               targetAddress: deliveryInstructions.targetAddress.toString("hex"),
               payload: deliveryInstructions.payload.toString("hex"),
@@ -438,7 +472,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               emitterNattiveAddress,
               extraRawInfo,
               fromAddress: parsedFromAddress,
-              id: `${result.chainId}/${emitterAddress}/${sequence}`,
+              id: VAA_ID,
               lastFinalizedBlock,
               payloadType: RelayerPayloadId.Delivery,
               sequence: sequence.toString(),
@@ -456,7 +490,8 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           const parseGenericRelayerRedelivery = async (payloadArray: Buffer): Promise<any> => {
             const redeliveryInstructions = parseWormholeRelayerResend(payloadArray);
 
-            const extraRawInfo = {
+            extraRawInfo = {
+              ...extraRawInfo,
               payloadType: RelayerPayloadId.Redelivery,
               targetChainId: redeliveryInstructions.targetChainId,
               newRequestedReceiverValue:
@@ -477,7 +512,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               emitterNattiveAddress,
               extraRawInfo,
               fromAddress: parsedFromAddress,
-              id: `${result.chainId}/${emitterAddress}/${sequence}`,
+              id: VAA_ID,
               lastFinalizedBlock,
               payloadType: RelayerPayloadId.Redelivery,
               sequence: sequence.toString(),
