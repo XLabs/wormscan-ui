@@ -4,8 +4,8 @@ import "./styles.scss";
 
 type Props<T extends object> = {
   className?: string;
-  columns?: Column<T>[];
-  data?: T[];
+  columns: Column<T>[];
+  data: T[];
   emptyMessage?: string;
   isLoading?: boolean;
   onRowClick?: (row: any) => void;
