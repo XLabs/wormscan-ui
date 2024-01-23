@@ -16,7 +16,7 @@ const Table = <T extends object>({
   columns,
   data,
   emptyMessage = "No items found.",
-  isLoading,
+  isLoading = false,
   onRowClick,
 }: Props<T>) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
