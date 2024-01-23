@@ -125,19 +125,17 @@ const Information = ({
               </div>
             </div>
           </div>
-          {isPaginationLoading ? (
-            <Loader />
-          ) : (
-            <div className="table-container">
-              <Table
-                columns={columns}
-                data={parsedTxsData}
-                className="txs"
-                emptyMessage="No txs found."
-                onRowClick={onRowClick}
-              />
-            </div>
-          )}
+
+          <div className="table-container">
+            <Table
+              className="txs"
+              columns={columns}
+              data={parsedTxsData}
+              emptyMessage="No txs found."
+              isLoading={isPaginationLoading}
+              onRowClick={onRowClick}
+            />
+          </div>
 
           <div className="txs-pagination">
             <PaginationComponent />

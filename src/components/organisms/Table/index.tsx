@@ -3,19 +3,21 @@ import { useTable, Column } from "react-table";
 import "./styles.scss";
 
 type Props<T extends object> = {
-  columns: Column<T>[];
-  data: T[];
   className?: string;
-  onRowClick?: (row: any) => void;
+  columns?: Column<T>[];
+  data?: T[];
   emptyMessage?: string;
+  isLoading?: boolean;
+  onRowClick?: (row: any) => void;
 };
 
 const Table = <T extends object>({
+  className,
   columns,
   data,
-  className,
-  onRowClick,
   emptyMessage = "No items found.",
+  isLoading,
+  onRowClick,
 }: Props<T>) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
@@ -40,31 +42,43 @@ const Table = <T extends object>({
             </tr>
           ))}
         </thead>
-        {rows?.length > 0 && (
-          <tbody {...getTableBodyProps()} className="table-body">
-            {rows.map((row, index) => {
-              prepareRow(row);
-              return (
-                <tr
-                  key={index}
-                  {...row.getRowProps()}
-                  onClick={() => onRowClick && onRowClick(row.original)}
-                >
-                  {row.cells.map((cell, index) => {
-                    const style: CSSProperties = (cell.column as any).style;
-                    return (
-                      <td key={index} {...cell.getCellProps()} style={{ ...style }}>
-                        {cell.render("Cell")}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
+        {isLoading ? (
+          <tbody>
+            {[...Array(50)].map((_, index) => (
+              <tr key={index}>
+                <td className="table-row-loading" colSpan={6}>
+                  <span className="loading-animation"></span>
+                </td>
+              </tr>
+            ))}
           </tbody>
+        ) : (
+          rows?.length > 0 && (
+            <tbody {...getTableBodyProps()}>
+              {rows.map((row, index) => {
+                prepareRow(row);
+                return (
+                  <tr
+                    key={index}
+                    {...row.getRowProps()}
+                    onClick={() => onRowClick && onRowClick(row.original)}
+                  >
+                    {row.cells.map((cell, index) => {
+                      const style: CSSProperties = (cell.column as any).style;
+                      return (
+                        <td key={index} {...cell.getCellProps()} style={{ ...style }}>
+                          {cell.render("Cell")}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          )
         )}
       </table>
-      {rows?.length <= 0 && <div className="table-body-empty">{emptyMessage}</div>}
+      {!isLoading && rows?.length <= 0 && <div className="table-body-empty">{emptyMessage}</div>}
     </>
   );
 };
