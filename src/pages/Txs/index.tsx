@@ -73,6 +73,10 @@ const Txs = () => {
     setIsLoading(true);
   }, [address]);
 
+  useEffect(() => {
+    setIsPaginationLoading(true);
+  }, [currentNetwork]);
+
   const getTransactionInput = {
     query: {
       ...(address && { address }),
