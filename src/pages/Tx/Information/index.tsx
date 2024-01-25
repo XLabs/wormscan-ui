@@ -98,17 +98,18 @@ const Information = ({
   const { currentBlock, lastFinalizedBlock } = blockData || {};
 
   const {
+    emitterAddress,
+    emitterChain,
+    emitterNativeAddress,
+    globalTx,
     id: VAAId,
+    payload,
+    standardizedProperties,
+    symbol,
     timestamp,
     tokenAmount,
+    txHash,
     usdAmount,
-    symbol,
-    emitterChain,
-    emitterAddress,
-    emitterNativeAddress,
-    standardizedProperties,
-    globalTx,
-    payload,
   } = txData || {};
 
   const {
@@ -156,6 +157,11 @@ const Information = ({
   const isCCTP = callerAppId === CCTP_APP_ID || appIds?.includes(CCTP_APP_ID);
   const isConnect = callerAppId === CONNECT_APP_ID || appIds?.includes(CONNECT_APP_ID);
   const isPortal = callerAppId === PORTAL_APP_ID || appIds?.includes(PORTAL_APP_ID);
+  const isJustPortalUnknown =
+    callerAppId === PORTAL_APP_ID ||
+    (appIds?.includes(PORTAL_APP_ID) && appIds.length === 1) ||
+    (appIds?.includes(PORTAL_APP_ID) && appIds?.includes(UNKNOWN_APP_ID) && appIds.length === 2);
+
   const isTBTC =
     callerAppId?.toLowerCase().includes("tbtc") ||
     !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
@@ -847,6 +853,10 @@ const Information = ({
         foundRedeem={foundRedeem}
         getRedeem={getRedeem}
         loadingRedeem={loadingRedeem}
+        fromChain={fromChain}
+        isJustPortalUnknown={isJustPortalUnknown}
+        txHash={txHash}
+        vaa={vaa}
       />
 
       {showOverview ? <OverviewContent /> : <RawDataContent />}
