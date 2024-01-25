@@ -4,9 +4,10 @@ import { Chip, Tooltip } from "src/components/atoms";
 import { formatAppIds, shortAddress } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
 import { ChainId } from "src/api";
-import "./styles.scss";
 import { IStatus } from "src/consts";
 import { GetRedeem } from "./GetRedeem";
+import { VerifyRedemption } from "./VerifyRedemption";
+import "./styles.scss";
 
 type Props = {
   appIds: string[];
@@ -20,6 +21,11 @@ type Props = {
   foundRedeem: boolean;
   getRedeem: () => Promise<void>;
   loadingRedeem: boolean;
+
+  fromChain: ChainId | number;
+  isJustPortalUnknown: boolean;
+  txHash: string;
+  vaa: string;
 };
 
 const Summary = ({
@@ -34,6 +40,11 @@ const Summary = ({
   foundRedeem,
   getRedeem,
   loadingRedeem,
+
+  fromChain,
+  isJustPortalUnknown,
+  txHash,
+  vaa,
 }: Props) => {
   return (
     <div className="tx-information-summary">
@@ -101,6 +112,17 @@ const Summary = ({
         getRedeem={getRedeem}
         loadingRedeem={loadingRedeem}
       />
+
+      {STATUS === "VAA_EMITTED" &&
+        isJustPortalUnknown &&
+        (foundRedeem === false || !canTryToGetRedeem) && (
+          <VerifyRedemption
+            canTryToGetRedeem={canTryToGetRedeem}
+            fromChain={fromChain}
+            txHash={txHash}
+            vaa={vaa}
+          />
+        )}
     </div>
   );
 };

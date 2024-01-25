@@ -1,0 +1,9 @@
+@import "src/styles/globals.scss";
+
+.verify-redemption {
+  @include button-secondary;
+  color: var(--color-white);
+  display: flex;
+  flex-direction: row;
+  text-decoration: none;
+}

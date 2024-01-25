@@ -3,15 +3,10 @@ import i18n from "src/i18n";
 import { Column } from "react-table";
 import { PAGE_SIZE, TransactionOutput } from "..";
 import { Dispatch, SetStateAction } from "react";
-import { Loader, Pagination } from "src/components/atoms";
+import { Pagination } from "src/components/atoms";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import { useLocation } from "react-router-dom";
 import "./styles.scss";
-
-const TXS_TAB_HEADERS = [
-  i18n.t("common.transfers").toUpperCase(),
-  // i18n.t("common.messages").toUpperCase(),
-];
 
 const columns: Column<TransactionOutput>[] | any = [
   {
@@ -105,7 +100,7 @@ const Information = ({
         // goLastPage={() => goLastPage()}
         goPage={isTxsFiltered ? null : goPage}
         disabled={isPaginationLoading}
-        disableNextButton={parsedTxsData.length <= 0 || parsedTxsData.length < PAGE_SIZE}
+        disableNextButton={parsedTxsData?.length <= 0 || parsedTxsData?.length < PAGE_SIZE}
         className={className}
       />
     );
