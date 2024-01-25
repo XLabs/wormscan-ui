@@ -297,16 +297,14 @@ const Txs = () => {
       <div className="txs-page" data-testid="txs-page">
         {errorCode ? (
           <SearchNotFound q={q} errorCode={errorCode} />
-        ) : isLoading ? (
-          <Loader />
         ) : (
           <>
             <Top address={address} addressChainId={addressChainId} />
             <Information
-              parsedTxsData={parsedTxsData}
+              parsedTxsData={isLoading ? [] : parsedTxsData}
               currentPage={currentPage}
               onChangePagination={onChangePagination}
-              isPaginationLoading={isPaginationLoading}
+              isPaginationLoading={isLoading || isPaginationLoading}
               setIsPaginationLoading={setIsPaginationLoading}
               isTxsFiltered={isTxsFiltered}
             />
