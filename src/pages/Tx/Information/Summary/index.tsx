@@ -15,14 +15,14 @@ type Props = {
   isUnknownApp: boolean;
   parsedDestinationAddress: string;
   STATUS: IStatus;
-  toChain: ChainId | number;
+  toChain: ChainId;
 
   canTryToGetRedeem: boolean;
   foundRedeem: boolean;
   getRedeem: () => Promise<void>;
   loadingRedeem: boolean;
 
-  fromChain: ChainId | number;
+  fromChain: ChainId;
   isJustPortalUnknown: boolean;
   txHash: string;
   vaa: string;

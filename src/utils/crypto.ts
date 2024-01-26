@@ -1,4 +1,5 @@
-import { ChainId, isEVMChain, tryHexToNativeString } from "@certusone/wormhole-sdk";
+import { isEVMChain, tryHexToNativeString } from "@certusone/wormhole-sdk";
+import { ChainId } from "src/api";
 
 export const formatUnits = (value: number, tokenDecimals = 8) => {
   if (!value) return 0;

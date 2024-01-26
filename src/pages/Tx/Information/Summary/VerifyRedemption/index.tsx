@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { ChainId } from "@certusone/wormhole-sdk";
 import { Tooltip } from "src/components/atoms";
+import { ChainId } from "src/api";
 import "./styles.scss";
 
 interface Props {
   canTryToGetRedeem: boolean;
-  fromChain: ChainId | number;
+  fromChain: ChainId;
   txHash: string;
   vaa: string;
 }

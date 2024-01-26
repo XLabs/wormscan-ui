@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import { CopyIcon } from "@radix-ui/react-icons";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { CopyToClipboard } from "src/components/molecules";
-import { parseAddress } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
 import { ChainId } from "src/api";
 import "./styles.scss";

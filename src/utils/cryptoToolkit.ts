@@ -1,4 +1,5 @@
-import { ChainId, Network } from "@certusone/wormhole-sdk";
+import { Network } from "@certusone/wormhole-sdk";
+import { ChainId } from "src/api";
 import { fetchWithTimeout } from "./asyncUtils";
 
 interface IWrappedResponse {

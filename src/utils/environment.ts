@@ -1,28 +1,16 @@
-import {
-  CHAIN_ID_ARBITRUM,
-  CHAIN_ID_AVAX,
-  CHAIN_ID_BASE,
-  CHAIN_ID_BSC,
-  CHAIN_ID_CELO,
-  CHAIN_ID_ETH,
-  CHAIN_ID_OPTIMISM,
-  CHAIN_ID_POLYGON,
-  CONTRACTS,
-  ChainId,
-  ChainName,
-  Network,
-} from "@certusone/wormhole-sdk";
+import { CONTRACTS, ChainName, Network } from "@certusone/wormhole-sdk";
+import { ChainId } from "src/api";
 import { ethers } from "ethers";
 
 export const SLOW_FINALITY_CHAINS = [
-  CHAIN_ID_ETH,
-  CHAIN_ID_POLYGON,
-  CHAIN_ID_BSC,
-  CHAIN_ID_OPTIMISM,
-  CHAIN_ID_ARBITRUM,
-  CHAIN_ID_AVAX,
-  CHAIN_ID_BASE,
-  CHAIN_ID_CELO,
+  ChainId.Ethereum,
+  ChainId.Polygon,
+  ChainId.BSC,
+  ChainId.Optimism,
+  ChainId.Arbitrum,
+  ChainId.Avalanche,
+  ChainId.Base,
+  ChainId.Celo,
 ];
 
 const MAINNET_RPCS: { [key in ChainName]?: string } = {

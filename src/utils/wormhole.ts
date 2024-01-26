@@ -73,133 +73,6 @@ export type ExplorerBaseURLInput = {
 };
 
 const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
-  [ChainId.Unset]: {
-    name: "Unset",
-    icon: NoColorlessIcon,
-    colorlessIcon: NoColorlessIcon,
-    explorer: {
-      TESTNET: "",
-      MAINNET: "",
-    },
-    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return "";
-      if (base === "token") return "";
-      return "";
-    },
-  },
-  [ChainId.Sui]: {
-    name: "Sui",
-    icon: SuiIcon,
-    colorlessIcon: SuiColorlessIcon,
-    explorer: {
-      TESTNET: "https://suiscan.xyz/testnet",
-      MAINNET: "https://suiscan.xyz/mainnet",
-    },
-    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return this.explorer?.[network] + "/account/" + value;
-      if (base === "token") return this.explorer?.[network] + "/coin/" + value;
-      return this.explorer?.[network] + "/tx/" + value;
-    },
-  },
-  [ChainId.PythNet]: {
-    name: "PythNet",
-    icon: NoColorlessIcon,
-    colorlessIcon: NoColorlessIcon,
-    explorer: {
-      TESTNET: "",
-      MAINNET: "",
-    },
-    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return "";
-      if (base === "token") return "";
-      return "";
-    },
-  },
-  [ChainId.Btc]: {
-    name: "Btc",
-    icon: NoColorlessIcon,
-    colorlessIcon: NoColorlessIcon,
-    explorer: {
-      TESTNET: "",
-      MAINNET: "",
-    },
-    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return "";
-      if (base === "token") return "";
-      return "";
-    },
-  },
-  [ChainId.Wormchain]: {
-    name: "WH Gateway",
-    icon: WormChainIcon,
-    colorlessIcon: WormChainColorlessIcon,
-    explorer: {
-      TESTNET: "",
-      MAINNET: "",
-    },
-    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return "";
-      if (base === "token") return "";
-      return "";
-    },
-  },
-  [ChainId.Osmosis]: {
-    name: "Osmosis",
-    icon: OsmosisIcon,
-    colorlessIcon: OsmosisColorlessIcon,
-    explorer: {
-      TESTNET: "https://testnet.mintscan.io/osmosis-testnet",
-      MAINNET: "https://www.mintscan.io/osmosis",
-    },
-    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (network === "MAINNET") {
-        if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
-        if (base === "token")
-          return this.explorer?.[network] + "/assets/ibc/" + btoa(value.replace("ibc/", ""));
-        return this.explorer?.[network] + "/transactions/" + value;
-      } else {
-        if (base === "address") return this.explorer?.[network] + "/account/" + value;
-        if (base === "token") return this.explorer?.[network] + "/assets";
-        return this.explorer?.[network] + "/txs/" + value;
-      }
-    },
-  },
-  [ChainId.Evmos]: {
-    name: "Evmos",
-    icon: EvmosIcon,
-    colorlessIcon: EvmosColorlessIcon,
-    explorer: {
-      TESTNET: "https://testnet.mintscan.io/evmos-testnet",
-      MAINNET: "https://www.mintscan.io/evmos",
-    },
-    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (network === "MAINNET") {
-        if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
-        if (base === "token")
-          return this.explorer?.[network] + "/assets/ibc/" + btoa(value.replace("ibc/", ""));
-        return this.explorer?.[network] + "/transactions/" + value;
-      } else {
-        if (base === "address") return this.explorer?.[network] + "/account/" + value;
-        if (base === "token") return this.explorer?.[network] + "/assets";
-        return this.explorer?.[network] + "/txs/" + value;
-      }
-    },
-  },
-  [ChainId.Kujira]: {
-    name: "Kujira",
-    icon: KujiraIcon,
-    colorlessIcon: KujiraColorlessIcon,
-    explorer: {
-      TESTNET: "https://finder.kujira.network/harpoon-4",
-      MAINNET: "https://finder.kujira.network/kaiyo-1",
-    },
-    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return this.explorer?.[network] + "/address/" + value;
-      if (base === "token") return this.explorer?.[network] + "/token/" + encodeURIComponent(value);
-      if (base === "block") return this.explorer?.[network] + "/block/" + value;
-      return this.explorer?.[network] + "/tx/" + value;
-    },
-  },
   [ChainId.Acala]: {
     name: "Acala",
     icon: AcalaIcon,
@@ -316,6 +189,38 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
+  [ChainId.Base]: {
+    name: "Base",
+    nameTestnet: "Base Goerli",
+    icon: BaseIcon,
+    colorlessIcon: BaseColorlessIcon,
+    explorer: {
+      TESTNET: "https://goerli.basescan.org",
+      MAINNET: "https://basescan.org",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.BaseSepolia]: {
+    name: "Base",
+    nameTestnet: "Base Sepolia",
+    icon: BaseIcon,
+    colorlessIcon: BaseColorlessIcon,
+    explorer: {
+      TESTNET: "https://sepolia.basescan.org",
+      MAINNET: "https://basescan.org",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
   [ChainId.BSC]: {
     name: "BNB Smart Chain",
     acronym: "BSC",
@@ -324,6 +229,35 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     explorer: {
       TESTNET: "https://TESTNET.bscscan.com",
       MAINNET: "https://bscscan.com",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.Btc]: {
+    name: "Btc",
+    icon: NoColorlessIcon,
+    colorlessIcon: NoColorlessIcon,
+    explorer: {
+      TESTNET: "",
+      MAINNET: "",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return "";
+      if (base === "token") return "";
+      return "";
+    },
+  },
+  [ChainId.Celestia]: {
+    name: "Celestia",
+    icon: "",
+    colorlessIcon: "",
+    explorer: {
+      TESTNET: "https://testnet.celestia.explorers.guru",
+      MAINNET: "https://celestia.explorers.guru/",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
@@ -348,6 +282,21 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
+  [ChainId.Cosmoshub]: {
+    name: "Cosmoshub",
+    icon: "",
+    colorlessIcon: "",
+    explorer: {
+      TESTNET: "https://atomscan.com",
+      MAINNET: "https://atomscan.com",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/blocks/" + value;
+      return this.explorer?.[network] + "/transactions/" + value;
+    },
+  },
   [ChainId.Ethereum]: {
     name: "Ethereum",
     nameTestnet: "Goerli",
@@ -365,6 +314,27 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
+  [ChainId.Evmos]: {
+    name: "Evmos",
+    icon: EvmosIcon,
+    colorlessIcon: EvmosColorlessIcon,
+    explorer: {
+      TESTNET: "https://testnet.mintscan.io/evmos-testnet",
+      MAINNET: "https://www.mintscan.io/evmos",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (network === "MAINNET") {
+        if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
+        if (base === "token")
+          return this.explorer?.[network] + "/assets/ibc/" + btoa(value.replace("ibc/", ""));
+        return this.explorer?.[network] + "/transactions/" + value;
+      } else {
+        if (base === "address") return this.explorer?.[network] + "/account/" + value;
+        if (base === "token") return this.explorer?.[network] + "/assets";
+        return this.explorer?.[network] + "/txs/" + value;
+      }
+    },
+  },
   [ChainId.Fantom]: {
     name: "Fantom",
     icon: FantomIcon,
@@ -372,6 +342,36 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     explorer: {
       TESTNET: "https://TESTNET.ftmscan.com",
       MAINNET: "https://ftmscan.com",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.Gnosis]: {
+    name: "Gnosis",
+    icon: "",
+    colorlessIcon: "",
+    explorer: {
+      TESTNET: "https://gnosis-chiado.blockscout.com",
+      MAINNET: "https://gnosis.blockscout.com",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.Holesky]: {
+    name: "Holesky",
+    icon: "",
+    colorlessIcon: "",
+    explorer: {
+      TESTNET: "https://holesky.etherscan.io",
+      MAINNET: "https://holesky.etherscan.io",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
@@ -426,6 +426,36 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
+  [ChainId.Kujira]: {
+    name: "Kujira",
+    icon: KujiraIcon,
+    colorlessIcon: KujiraColorlessIcon,
+    explorer: {
+      TESTNET: "https://finder.kujira.network/harpoon-4",
+      MAINNET: "https://finder.kujira.network/kaiyo-1",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + encodeURIComponent(value);
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.Mantle]: {
+    name: "Mantle",
+    icon: "",
+    colorlessIcon: "",
+    explorer: {
+      TESTNET: "https://explorer.testnet.mantle.xyz",
+      MAINNET: "https://explorer.mantle.xyz",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
   [ChainId.Moonbeam]: {
     name: "Moonbeam",
     nameTestnet: "Moonbase Alpha",
@@ -464,6 +494,21 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     explorer: {
       TESTNET: "https://neonscan.org",
       MAINNET: "https://neonscan.org",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.Neutron]: {
+    name: "Neutron",
+    icon: "",
+    colorlessIcon: "",
+    explorer: {
+      TESTNET: "https://dev.mintscan.io/neutron",
+      MAINNET: "https://www.mintscan.io/neutron",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
@@ -519,6 +564,27 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
+  [ChainId.Osmosis]: {
+    name: "Osmosis",
+    icon: OsmosisIcon,
+    colorlessIcon: OsmosisColorlessIcon,
+    explorer: {
+      TESTNET: "https://testnet.mintscan.io/osmosis-testnet",
+      MAINNET: "https://www.mintscan.io/osmosis",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (network === "MAINNET") {
+        if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
+        if (base === "token")
+          return this.explorer?.[network] + "/assets/ibc/" + btoa(value.replace("ibc/", ""));
+        return this.explorer?.[network] + "/transactions/" + value;
+      } else {
+        if (base === "address") return this.explorer?.[network] + "/account/" + value;
+        if (base === "token") return this.explorer?.[network] + "/assets";
+        return this.explorer?.[network] + "/txs/" + value;
+      }
+    },
+  },
   [ChainId.Polygon]: {
     name: "Polygon",
     nameTestnet: "Mumbai",
@@ -527,6 +593,80 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     explorer: {
       TESTNET: "https://mumbai.polygonscan.com",
       MAINNET: "https://polygonscan.com",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.PythNet]: {
+    name: "PythNet",
+    icon: NoColorlessIcon,
+    colorlessIcon: NoColorlessIcon,
+    explorer: {
+      TESTNET: "",
+      MAINNET: "",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return "";
+      if (base === "token") return "";
+      return "";
+    },
+  },
+  [ChainId.Rootstock]: {
+    name: "Rootstock",
+    icon: "",
+    colorlessIcon: "",
+    explorer: {
+      TESTNET: "https://rootstock-testnet.blockscout.com",
+      MAINNET: "https://rootstock.blockscout.com",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.Scroll]: {
+    name: "Scroll",
+    icon: "",
+    colorlessIcon: "",
+    explorer: {
+      TESTNET: "https://sepolia.scrollscan.com",
+      MAINNET: "https://scrollscan.com",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.Sei]: {
+    name: "Sei",
+    icon: SeiIcon,
+    colorlessIcon: SeiColorlessIcon,
+    explorer: {
+      TESTNET: "https://www.seiscan.app/atlantic-2",
+      MAINNET: "https://www.seiscan.app/pacific-1",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
+      if (base === "token") return this.explorer?.[network] + "/contracts/" + value;
+      if (base === "block") return this.explorer?.[network] + "/blocks/" + value;
+      return this.explorer?.[network] + "/txs/" + value;
+    },
+  },
+  [ChainId.Sepolia]: {
+    name: "Sepolia",
+    icon: EthereumIcon,
+    colorlessIcon: EthereumColorlessIcon,
+    explorer: {
+      TESTNET: "https://sepolia.etherscan.io",
+      MAINNET: "https://sepolia.etherscan.io",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
@@ -553,6 +693,20 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       if (base === "token")
         return this.explorer?.[network] + "/token/" + value + "?cluster=" + solNetwork;
       return this.explorer?.[network] + "/tx/" + value + "?cluster=" + solNetwork;
+    },
+  },
+  [ChainId.Sui]: {
+    name: "Sui",
+    icon: SuiIcon,
+    colorlessIcon: SuiColorlessIcon,
+    explorer: {
+      TESTNET: "https://suiscan.xyz/testnet",
+      MAINNET: "https://suiscan.xyz/mainnet",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/account/" + value;
+      if (base === "token") return this.explorer?.[network] + "/coin/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
     },
   },
   [ChainId.Terra]: {
@@ -585,6 +739,34 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
+  [ChainId.Unset]: {
+    name: "Unset",
+    icon: NoColorlessIcon,
+    colorlessIcon: NoColorlessIcon,
+    explorer: {
+      TESTNET: "",
+      MAINNET: "",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return "";
+      if (base === "token") return "";
+      return "";
+    },
+  },
+  [ChainId.Wormchain]: {
+    name: "WH Gateway",
+    icon: WormChainIcon,
+    colorlessIcon: WormChainColorlessIcon,
+    explorer: {
+      TESTNET: "",
+      MAINNET: "",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return "";
+      if (base === "token") return "";
+      return "";
+    },
+  },
   [ChainId.Xpla]: {
     name: "Xpla",
     icon: XplaIcon,
@@ -592,68 +774,6 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     explorer: {
       TESTNET: "https://explorer.xpla.io/TESTNET",
       MAINNET: "https://explorer.xpla.io/MAINNET",
-    },
-    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return this.explorer?.[network] + "/address/" + value;
-      if (base === "token") return this.explorer?.[network] + "/token/" + value;
-      if (base === "block") return this.explorer?.[network] + "/block/" + value;
-      return this.explorer?.[network] + "/tx/" + value;
-    },
-  },
-  [ChainId.Sei]: {
-    name: "Sei",
-    icon: SeiIcon,
-    colorlessIcon: SeiColorlessIcon,
-    explorer: {
-      TESTNET: "https://www.seiscan.app/atlantic-2",
-      MAINNET: "https://www.seiscan.app/pacific-1",
-    },
-    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
-      if (base === "token") return this.explorer?.[network] + "/contracts/" + value;
-      if (base === "block") return this.explorer?.[network] + "/blocks/" + value;
-      return this.explorer?.[network] + "/txs/" + value;
-    },
-  },
-  [ChainId.Base]: {
-    name: "Base",
-    nameTestnet: "Base Goerli",
-    icon: BaseIcon,
-    colorlessIcon: BaseColorlessIcon,
-    explorer: {
-      TESTNET: "https://goerli.basescan.org",
-      MAINNET: "https://basescan.org",
-    },
-    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return this.explorer?.[network] + "/address/" + value;
-      if (base === "token") return this.explorer?.[network] + "/token/" + value;
-      if (base === "block") return this.explorer?.[network] + "/block/" + value;
-      return this.explorer?.[network] + "/tx/" + value;
-    },
-  },
-  [ChainId.BaseSepolia]: {
-    name: "Base",
-    nameTestnet: "Base Sepolia",
-    icon: BaseIcon,
-    colorlessIcon: BaseColorlessIcon,
-    explorer: {
-      TESTNET: "https://sepolia.basescan.org",
-      MAINNET: "https://basescan.org",
-    },
-    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return this.explorer?.[network] + "/address/" + value;
-      if (base === "token") return this.explorer?.[network] + "/token/" + value;
-      if (base === "block") return this.explorer?.[network] + "/block/" + value;
-      return this.explorer?.[network] + "/tx/" + value;
-    },
-  },
-  [ChainId.Sepolia]: {
-    name: "Sepolia",
-    icon: EthereumIcon,
-    colorlessIcon: EthereumColorlessIcon,
-    explorer: {
-      TESTNET: "https://sepolia.etherscan.io",
-      MAINNET: "https://sepolia.etherscan.io",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;

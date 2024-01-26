@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
-import { ChainId, isEVMChain, parseVaa } from "@certusone/wormhole-sdk";
+import { isEVMChain, parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
   parseEVMExecutionInfoV1,
@@ -28,7 +28,7 @@ import { getPorticoInfo, isPortico } from "src/utils/wh-portico-rpc";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
 import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
 import { GlobalTxOutput, VAADetail } from "src/api/guardian-network/types";
-import { ChainLimit } from "src/api";
+import { ChainId, ChainLimit } from "src/api";
 
 import Tabs from "./Tabs";
 import Summary from "./Summary";

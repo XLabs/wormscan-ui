@@ -1,11 +1,12 @@
 import { ArrowDownIcon, CheckboxIcon, CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { CHAIN_ID_WORMCHAIN, ChainId, Network } from "@certusone/wormhole-sdk";
+import { CHAIN_ID_WORMCHAIN, Network } from "@certusone/wormhole-sdk";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import WormIcon from "src/icons/wormIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress, shortVaaId } from "src/utils/crypto";
 import { colorStatus } from "src/consts";
+import { ChainId } from "src/api";
 import "./styles.scss";
 
 export type OverviewProps = {
@@ -14,8 +15,8 @@ export type OverviewProps = {
   currentNetwork?: Network;
   destinationDateParsed?: string;
   fee?: string;
-  fromChain?: ChainId | number;
-  fromChainOrig?: ChainId | number;
+  fromChain?: ChainId;
+  fromChainOrig?: ChainId;
   globalToRedeemTx?: string;
   guardianSignaturesCount?: number;
   isAttestation?: boolean;
@@ -33,7 +34,7 @@ export type OverviewProps = {
   sourceTokenLink?: string;
   targetSymbol?: string;
   targetTokenLink?: string;
-  toChain?: ChainId | number;
+  toChain?: ChainId;
   tokenAmount?: string;
   totalGuardiansNeeded?: number;
   VAAId?: string;

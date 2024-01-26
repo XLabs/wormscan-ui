@@ -126,11 +126,6 @@
 
     display: flex;
     justify-content: end;
-    gap: 8px;
-
-    @include desktop {
-      gap: 32px;
-    }
   }
 
   &-navigation {
@@ -143,12 +138,12 @@
     @include desktop {
       @include centered-row;
 
-      gap: 32px;
+      gap: 24px;
     }
 
     & > nav {
       @include centered-row;
-      gap: 32px;
+      gap: 24px;
     }
 
     &-item {
@@ -243,12 +238,12 @@
       border-bottom: 2px solid var(--color-white-10);
       justify-content: space-between;
       min-height: 64px;
-      padding: 16px;
+      padding: 16px 16px 8px 16px;
     }
 
     &-nav {
       @include centered-column;
-      gap: 32px;
+      gap: 24px;
       max-height: calc(100vh - 90px);
       max-height: calc(100svh - 90px);
       justify-content: start;
@@ -257,8 +252,8 @@
 
       > nav {
         @include centered-column;
-        gap: 32px;
-        padding-top: 42px;
+        gap: 24px;
+        padding-top: 32px;
       }
     }
 

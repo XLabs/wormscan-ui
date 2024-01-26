@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { ChainId, ParsedVaa, parseVaa } from "@certusone/wormhole-sdk";
+import { ParsedVaa, parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
   RedeliveryInstruction,
@@ -9,6 +9,7 @@ import {
   parseWormholeRelayerSend,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { callWithTimeout } from "src/utils/asyncUtils";
+import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
 import { AutomaticRelayOutput, GetTransactionsOutput } from "src/api/search/types";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";

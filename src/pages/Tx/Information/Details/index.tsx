@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { CHAIN_ID_WORMCHAIN, ChainId, Network } from "@certusone/wormhole-sdk";
+import { CHAIN_ID_WORMCHAIN } from "@certusone/wormhole-sdk";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";

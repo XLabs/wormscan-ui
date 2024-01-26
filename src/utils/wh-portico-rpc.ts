@@ -1,16 +1,7 @@
-import {
-  CHAIN_ID_ARBITRUM,
-  CHAIN_ID_AVAX,
-  CHAIN_ID_BASE,
-  CHAIN_ID_BSC,
-  CHAIN_ID_ETH,
-  CHAIN_ID_OPTIMISM,
-  CHAIN_ID_POLYGON,
-  ChainId,
-} from "@certusone/wormhole-sdk";
 import { hexStripZeros } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
+import { ChainId } from "src/api";
 import { GetTransactionsOutput } from "src/api/search/types";
 import { parseTx } from "./crypto";
 import { getTokenInformation } from "./fetchWithRPCsFallthrough";
@@ -20,23 +11,23 @@ const porticoSwapFinishedEvent =
 
 const porticoAddresses: any = {
   MAINNET: {
-    [CHAIN_ID_ARBITRUM]: ["0x48fa7528bfd6164ddf09df0ed22451cf59c84130"],
-    [CHAIN_ID_AVAX]: ["0xe565e118e75304dd3cf83dff409c90034b7ea18a"],
-    [CHAIN_ID_BASE]: ["0x610d4dfac3ec32e0be98d18ddb280dacd76a1889"],
-    [CHAIN_ID_BSC]: ["0x05498574bd0fa99eecb01e1241661e7ee58f8a85"],
-    [CHAIN_ID_ETH]: ["0x48b6101128c0ed1e208b7c910e60542a2ee6f476"],
-    [CHAIN_ID_OPTIMISM]: ["0x9ae506cddd27dee1275fd1fe6627e5dc65257061"],
-    [CHAIN_ID_POLYGON]: ["0x227babe533fa9a1085f5261210e0b7137e44437b"],
+    [ChainId.Arbitrum]: ["0x48fa7528bfd6164ddf09df0ed22451cf59c84130"],
+    [ChainId.Avalanche]: ["0xe565e118e75304dd3cf83dff409c90034b7ea18a"],
+    [ChainId.Base]: ["0x610d4dfac3ec32e0be98d18ddb280dacd76a1889"],
+    [ChainId.BSC]: ["0x05498574bd0fa99eecb01e1241661e7ee58f8a85"],
+    [ChainId.Ethereum]: ["0x48b6101128c0ed1e208b7c910e60542a2ee6f476"],
+    [ChainId.Optimism]: ["0x9ae506cddd27dee1275fd1fe6627e5dc65257061"],
+    [ChainId.Polygon]: ["0x227babe533fa9a1085f5261210e0b7137e44437b"],
   },
   // TODO: PORTICO TESTNET ADDRESSES
   TESTNET: {
-    [CHAIN_ID_ARBITRUM]: ["0x0000000000000000000000000000000000000000"],
-    [CHAIN_ID_AVAX]: ["0x0000000000000000000000000000000000000000"],
-    [CHAIN_ID_BASE]: ["0x0000000000000000000000000000000000000000"],
-    [CHAIN_ID_BSC]: ["0x0000000000000000000000000000000000000000"],
-    [CHAIN_ID_ETH]: ["0x0000000000000000000000000000000000000000"],
-    [CHAIN_ID_OPTIMISM]: ["0x0000000000000000000000000000000000000000"],
-    [CHAIN_ID_POLYGON]: ["0x0000000000000000000000000000000000000000"],
+    [ChainId.Arbitrum]: ["0x0000000000000000000000000000000000000000"],
+    [ChainId.Avalanche]: ["0x0000000000000000000000000000000000000000"],
+    [ChainId.Base]: ["0x0000000000000000000000000000000000000000"],
+    [ChainId.BSC]: ["0x0000000000000000000000000000000000000000"],
+    [ChainId.Ethereum]: ["0x0000000000000000000000000000000000000000"],
+    [ChainId.Optimism]: ["0x0000000000000000000000000000000000000000"],
+    [ChainId.Polygon]: ["0x0000000000000000000000000000000000000000"],
   },
 };
 
