@@ -8,6 +8,7 @@ export default {
           analytics: "Analytics",
           guardians: "Guardians",
           goBridge: "Portal Bridge",
+          goWormhole: "Wormhole",
           search: {
             placeholder: "Search by Tx Hash / Address / VAA ID",
             ariaLabel: "search",
