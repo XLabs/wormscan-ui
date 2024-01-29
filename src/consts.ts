@@ -131,6 +131,7 @@ export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";
 export const XLABS_URL = "https://www.xlabs.xyz";
 export const WORMHOLE_DOCS_URL = "https://docs.wormholescan.io";
 export const XLABS_CAREERS_URL = "https://jobs.ashbyhq.com/Xlabs";
+export const WORMHOLE_PAGE_URL = "https://wormhole.com";
 
 // if toChain is on this list we should be able to get destinationTx.
 // (contract-watcher for token bridge & connect txs)
