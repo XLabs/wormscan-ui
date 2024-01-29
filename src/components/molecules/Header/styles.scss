@@ -18,7 +18,7 @@
   }
 
   @include desktop {
-    grid-template-columns: auto 0.8fr auto;
+    grid-template-columns: auto 0.9fr auto;
     grid-template-areas: "brand search actions";
 
     background-color: rgba(1, 0, 20, 0.2);
@@ -126,11 +126,6 @@
 
     display: flex;
     justify-content: end;
-    gap: 8px;
-
-    @include desktop {
-      gap: 32px;
-    }
   }
 
   &-navigation {
@@ -142,13 +137,11 @@
 
     @include desktop {
       @include centered-row;
-
-      gap: 32px;
     }
 
     & > nav {
       @include centered-row;
-      gap: 32px;
+      gap: 24px;
     }
 
     &-item {
@@ -257,7 +250,7 @@
 
       > nav {
         @include centered-column;
-        gap: 32px;
+        gap: 24px;
         padding-top: 42px;
       }
     }

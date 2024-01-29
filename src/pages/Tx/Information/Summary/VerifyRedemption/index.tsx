@@ -54,7 +54,7 @@ export const VerifyRedemption = ({ canTryToGetRedeem, fromChain, txHash, vaa }: 
         target="_blank"
         rel="noopener noreferrer"
       >
-        <p>VERIFY REDEMPTION</p>
+        <p>RESUME TRANSACTION</p>
       </a>
     </Tooltip>
   );

@@ -11,6 +11,7 @@ import {
   PORTAL_BRIDGE_URL,
   WORMHOLE_DOCS_URL,
   XLABS_CAREERS_URL,
+  WORMHOLE_PAGE_URL,
 } from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { NavLink, Select, Tag } from "src/components/atoms";
@@ -101,6 +102,11 @@ const Header = () => {
   const HeaderLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
     <nav data-testid="header-nav">
       {isMobile && <NavLinkItem to="/" label={t("home.footer.home")} />}
+      <div className="header-navigation-item">
+        <a href={WORMHOLE_PAGE_URL} target="_blank" rel="noopener noreferrer">
+          {t("home.header.goWormhole")}
+        </a>
+      </div>
       {isMainnet && (
         <div className="header-navigation-item">
           <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
