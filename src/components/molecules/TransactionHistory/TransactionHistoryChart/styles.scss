@@ -21,7 +21,7 @@
     width: 100%;
 
     & .wormhole-brand {
-      bottom: 20px;
+      bottom: 56px;
       height: 34px;
       left: 0;
       margin: auto;
@@ -33,10 +33,31 @@
       pointer-events: none;
       user-select: none;
       width: 180px;
+
+      @include desktop {
+        bottom: 20px;
+      }
     }
 
-    & > div:not(.wormhole-brand) {
+    & > div:not(.wormhole-brand, .trans-history-chart-text) {
       min-height: var(--min-height);
+    }
+
+    &-text {
+      color: var(--color-primary-150);
+      font-size: 12px;
+      font-weight: 400;
+      margin: 24px 0;
+      text-align: center;
+
+      @include desktop {
+        height: 15px;
+        margin: 0;
+        position: absolute;
+        right: 0;
+        top: 4.5px;
+        width: 148px;
+      }
     }
 
     &-info {
