@@ -248,6 +248,8 @@ const TransactionHistoryChart = ({ range }: Props) => {
                   },
                 }}
               />
+
+              <div className="trans-history-chart-text">Portal Token Bridge Metrics</div>
             </div>
           )}
         </>

@@ -1,0 +1,76 @@
+@import "src/styles/globals.scss";
+
+.wormhole-stats {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 56px 0;
+  justify-content: space-between;
+  margin: auto 0;
+  width: 100%;
+
+  @include desktop {
+    align-items: flex-start;
+    flex-direction: row;
+  }
+
+  &-loader {
+    @include centered-row;
+    justify-content: center;
+    height: 100%;
+  }
+
+  &-title {
+    @include text-p1;
+
+    color: var(--color-primary-90);
+    font-weight: 500;
+  }
+
+  &-container {
+    @include centered-column;
+    align-items: center;
+    gap: 56px 80px;
+
+    @include desktop {
+      align-items: flex-start;
+      flex-direction: row;
+    }
+
+    &-item {
+      @include centered-column;
+      align-items: center;
+      justify-content: flex-start;
+
+      @include desktop {
+        align-items: flex-start;
+      }
+
+      &-title {
+        @include text-p1;
+
+        color: var(--color-primary-150);
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+        min-width: max-content;
+        text-transform: uppercase;
+
+        & svg {
+          margin-left: 16px;
+          vertical-align: -3.5px;
+        }
+      }
+
+      &-value {
+        @include text-h2;
+
+        color: var(--color-primary-10);
+      }
+    }
+  }
+
+  & .w-132 {
+    width: 132px;
+  }
+}

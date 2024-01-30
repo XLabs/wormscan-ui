@@ -9,15 +9,17 @@
   }
 
   &-history {
-    @include card-container;
     @include centered-column;
     justify-content: start;
 
     flex: 2;
     gap: 24px;
+    margin-top: 75px;
 
     @include desktop {
+      margin-top: 0;
       gap: 16px;
+      margin-left: 4vw;
     }
 
     &-options {
