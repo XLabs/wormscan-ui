@@ -29,6 +29,7 @@ const WormholeStats = ({ isLoading, isError, messages24h }: Props) => {
 
   // TODO: remove this once our api brings the info
   useEffect(() => {
+    setAllMessages(0);
     fetch(isMainnet ? MESSAGE_COUNTS_MAINNET : MESSAGE_COUNTS_TESTNET)
       .then(response => response.json())
       .then(data => {
@@ -37,8 +38,8 @@ const WormholeStats = ({ isLoading, isError, messages24h }: Props) => {
           if (data.DailyTotals[date]["*"]) {
             sum += data.DailyTotals[date]["*"];
           }
-          setAllMessages(sum);
         }
+        setAllMessages(sum);
       })
       .catch(_err => {
         setAllMessagesError(true);
