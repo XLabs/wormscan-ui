@@ -12,7 +12,6 @@ const Home = () => {
 
   return (
     <BaseLayout>
-      {/* <Banner /> */}
       <Statistics />
       <CrossChainChart />
       <TopAssets />
