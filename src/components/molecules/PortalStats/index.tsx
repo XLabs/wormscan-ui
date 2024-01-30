@@ -1,31 +1,26 @@
-import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import PortalStatsImage from "src/assets/portal-stats.svg";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader, Tooltip } from "src/components/atoms";
-import { ErrorPlaceholder, TransactionHistory } from "src/components/molecules";
-import { formatNumber, numberToSuffix } from "src/utils/number";
-import { getClient } from "src/api/Client";
+import { ErrorPlaceholder } from "src/components/molecules";
+import { formatNumber } from "src/utils/number";
 import "./styles.scss";
 
-const PortalStats = () => {
+type Props = {
+  isError: boolean;
+  isLoading: boolean;
+  total_volume: string;
+  volume24h: string;
+};
+
+const PortalStats = ({ isLoading, isError, total_volume, volume24h }: Props) => {
   const { t } = useTranslation();
-
-  const {
-    isLoading,
-    isError,
-    data: scoreData,
-  } = useQuery("scoresResponse", () => getClient().guardianNetwork.getScores());
-
-  const { total_volume, "24h_volume": volume24h } = scoreData || {};
-
   const { environment } = useEnvironment();
 
   return (
     <div className="portal-data">
       <div className="portal-title">
-        {" "}
         <img src={PortalStatsImage} alt="portal logo" width="101" />
       </div>
       {isLoading ? (

@@ -6,18 +6,27 @@
   flex-direction: column;
   gap: 56px 0;
   justify-content: space-between;
-  margin: auto 0;
   width: 100%;
 
   @include desktop {
     align-items: flex-start;
     flex-direction: row;
+    padding: 10.5px 0;
   }
 
   &-loader {
-    @include centered-row;
-    justify-content: center;
-    height: 100%;
+    @include centered-column;
+    margin: auto 0;
+    max-height: 48px;
+    overflow: hidden;
+  }
+
+  &-error {
+    width: 100%;
+
+    @include desktop {
+      max-width: 500px;
+    }
   }
 
   &-title {
