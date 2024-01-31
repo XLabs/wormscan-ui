@@ -41,6 +41,10 @@
         align-items: center;
         justify-content: flex-start;
 
+        @include desktop {
+          align-items: flex-start;
+        }
+
         &-title {
           @include text-p1;
 
@@ -53,7 +57,7 @@
 
           & svg {
             margin-left: 16px;
-            vertical-align: -2px;
+            vertical-align: -3.5px;
           }
         }
 

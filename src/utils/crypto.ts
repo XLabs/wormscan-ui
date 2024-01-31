@@ -66,7 +66,7 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
 
 export const formatAppIds = (appIds: string[]) =>
   appIds
-    .filter(appId => appId !== "UNKNOWN")
+    .filter(appId => appId !== "UNKNOWN" && appId !== "STABLE")
     .map(appId => {
       if (appId === "GENERIC_RELAYER") {
         return "Automatic Relayer";
