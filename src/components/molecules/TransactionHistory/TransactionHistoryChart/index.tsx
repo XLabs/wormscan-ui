@@ -103,87 +103,86 @@ const TransactionHistoryChart = ({ range }: Props) => {
           {range !== "3-month" && isError ? (
             <ErrorPlaceholder errorType="chart" />
           ) : (
-            <>
-              <div className="trans-history-chart">
-                <WormholeBrand size="regular" />
+            <div className="trans-history-chart">
+              <WormholeBrand size="regular" />
 
-                <ReactApexChart
-                  type="area"
-                  height={"100%"}
-                  series={[
-                    {
-                      name: "Transactions",
-                      data: seriesData,
+              <ReactApexChart
+                type="area"
+                height={"100%"}
+                series={[
+                  {
+                    name: "Transactions",
+                    data: seriesData,
+                  },
+                ]}
+                options={{
+                  title: {
+                    text: totalTxs,
+                    align: "left",
+                    style: {
+                      color: "var(--color-primary-150)",
+                      fontFamily: "IBM Plex Sans",
+                      fontSize: "14px",
+                      fontWeight: 500,
                     },
-                  ]}
-                  options={{
-                    title: {
-                      text: totalTxs,
-                      align: "left",
-                      style: {
-                        color: "var(--color-primary-150)",
-                        fontFamily: "IBM Plex Sans",
-                        fontSize: "14px",
-                        fontWeight: 500,
-                      },
-                      offsetX: -8,
+                    offsetX: -8,
+                  },
+                  fill: {
+                    type: "gradient",
+                    gradient: {
+                      type: "vertical",
+                      shade: "light",
+                      inverseColors: false,
+                      opacityFrom: 1,
+                      opacityTo: 0,
+                      stops: [0, 75, 100],
+                      colorStops: [
+                        {
+                          offset: 0,
+                          color: "#09FECB",
+                        },
+                        {
+                          offset: 75,
+                          color: "#09FECB25",
+                        },
+                        {
+                          offset: 100,
+                          color: "transparent",
+                        },
+                      ],
                     },
-                    fill: {
-                      type: "gradient",
-                      gradient: {
-                        type: "vertical",
-                        shade: "light",
-                        inverseColors: false,
-                        opacityFrom: 1,
-                        opacityTo: 0,
-                        stops: [0, 75, 100],
-                        colorStops: [
-                          {
-                            offset: 0,
-                            color: "#09FECB",
-                          },
-                          {
-                            offset: 75,
-                            color: "#09FECB25",
-                          },
-                          {
-                            offset: 100,
-                            color: "transparent",
-                          },
-                        ],
-                      },
+                  },
+                  labels: seriesLabels,
+                  chart: {
+                    zoom: { enabled: false },
+                    toolbar: { show: false },
+                  },
+                  grid: {
+                    show: false,
+                    padding: {
+                      // This is to make the chart look aligned to the right
+                      right: isWidthOver1200px ? seriesLabels[0]?.length * -2.4 : 10,
+                      left: -2,
                     },
-                    labels: seriesLabels,
-                    chart: {
-                      zoom: { enabled: false },
-                      toolbar: { show: false },
-                    },
-                    grid: {
-                      show: false,
-                      padding: {
-                        // This is to make the chart look aligned to the right
-                        right: isWidthOver1200px ? seriesLabels[0]?.length * -2.4 : 10,
-                        left: -2,
-                      },
-                    },
-                    tooltip: {
-                      custom: function ({ series, seriesIndex, dataPointIndex, w }) {
-                        const index = w.globals.labels[dataPointIndex] - 1;
+                  },
+                  tooltip: {
+                    custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                      const index = w.globals.labels[dataPointIndex] - 1;
 
-                        const date = dataReverse[index].time;
-                        const transactions = series[seriesIndex][dataPointIndex];
+                      const date = dataReverse[index].time;
+                      const transactions = series[seriesIndex][dataPointIndex];
 
-                        const parsedDate = new Date(date);
-                        const formattedDate = parsedDate.toLocaleString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        });
+                      const parsedDate = new Date(date);
+                      const formattedDate = parsedDate.toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      });
 
-                        return `
+                      return `
                         <div class="trans-history-chart-info">
                           <p class="trans-history-chart-info-paragraph">#Transactions: ${transactions}</p>
                           ${
@@ -196,64 +195,63 @@ const TransactionHistoryChart = ({ range }: Props) => {
                          
                         </div>
                       `;
-                      },
-                      enabled: true,
-                      x: {
-                        show: false,
-                      },
-                      y: {
-                        formatter: val => String(val),
-                      },
-                      marker: {
-                        show: false,
+                    },
+                    enabled: true,
+                    x: {
+                      show: false,
+                    },
+                    y: {
+                      formatter: val => String(val),
+                    },
+                    marker: {
+                      show: false,
+                    },
+                  },
+                  stroke: {
+                    curve: "smooth",
+                    width: 2,
+                    colors: ["#28DFDF"],
+                  },
+                  dataLabels: { enabled: false },
+                  yaxis: {
+                    forceNiceScale: true,
+                    min: 0,
+                    tickAmount: 4,
+                    labels: {
+                      formatter: formatterYAxis,
+                      offsetX: -14,
+                      style: {
+                        colors: "#9295BB",
+                        fontFamily: "IBM Plex Sans",
+                        fontSize: "14px",
                       },
                     },
-                    stroke: {
-                      curve: "smooth",
-                      width: 2,
-                      colors: ["#28DFDF"],
+                    axisBorder: {
+                      show: true,
+                      width: 1,
+                      color: "#FFFFFF25",
                     },
-                    dataLabels: { enabled: false },
-                    yaxis: {
-                      forceNiceScale: true,
-                      min: 0,
-                      tickAmount: 4,
-                      labels: {
-                        formatter: formatterYAxis,
-                        offsetX: -14,
-                        style: {
-                          colors: "#9295BB",
-                          fontFamily: "IBM Plex Sans",
-                          fontSize: "14px",
-                        },
+                  },
+                  xaxis: {
+                    labels: {
+                      offsetX: 0,
+                      style: {
+                        colors: "var(--color-primary-150)",
+                        fontFamily: "IBM Plex Sans",
+                        fontSize: "14px",
                       },
-                      axisBorder: {
-                        show: true,
-                        width: 1,
-                        color: "#FFFFFF25",
-                      },
+                      rotate: isWidthOver1200px ? 0 : -45,
+                      rotateAlways: !isWidthOver1200px,
                     },
-                    xaxis: {
-                      labels: {
-                        offsetX: 0,
-                        style: {
-                          colors: "var(--color-primary-150)",
-                          fontFamily: "IBM Plex Sans",
-                          fontSize: "14px",
-                        },
-                        rotate: isWidthOver1200px ? 0 : -45,
-                        rotateAlways: !isWidthOver1200px,
-                      },
-                      tickAmount,
-                      tickPlacement: "on",
-                      axisTicks: { show: false },
-                      axisBorder: { show: true, strokeWidth: 4, color: "#FFFFFF25" },
-                      tooltip: { enabled: false },
-                    },
-                  }}
-                />
-              </div>
-            </>
+                    tickAmount,
+                    tickPlacement: "on",
+                    axisTicks: { show: false },
+                    axisBorder: { show: true, strokeWidth: 4, color: "#FFFFFF25" },
+                    tooltip: { enabled: false },
+                  },
+                }}
+              />
+            </div>
           )}
         </>
       )}
