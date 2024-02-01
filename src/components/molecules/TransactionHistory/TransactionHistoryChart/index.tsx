@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import { useTranslation } from "react-i18next";
 import ReactApexChart from "react-apexcharts";
+import { DISCORD_URL } from "src/consts";
 import { Loader } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeBrand } from "src/components/molecules";
 import { formatterYAxis } from "src/utils/apexChartUtils";
@@ -23,6 +25,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
   const [seriesLabels, setSeriesLabels] = useState([""]);
   const [totalTxs, setTotalTxs] = useState("");
   const [dataReverse, setDataReverse] = useState([]);
+  const { t } = useTranslation();
   const tickAmount = range === "3-month" ? 3 : range === "month" ? 4 : 5;
   const size = useWindowSize();
   const isWidthOver1200px = size.width >= 1200;
@@ -248,12 +251,19 @@ const TransactionHistoryChart = ({ range }: Props) => {
                   },
                 }}
               />
-
-              <div className="trans-history-chart-text">Portal Token Bridge Metrics</div>
             </div>
           )}
         </>
       )}
+      <div className="trans-history-coming">
+        <h3 className="trans-history-coming-title">MORE APPS COMING SOON</h3>
+        <div className="trans-history-coming-container">
+          <p>Do you want to add metrics for your protocol?</p>
+          <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer">
+            {t("home.footer.contactUs")}
+          </a>
+        </div>
+      </div>
     </div>
   );
 };

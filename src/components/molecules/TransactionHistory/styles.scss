@@ -2,10 +2,12 @@
 
 .tx {
   &-title {
+    @include centered-row;
     @include text-p1;
 
     color: var(--color-primary-90);
     font-weight: 500;
+    gap: 16px;
   }
 
   &-history {
@@ -17,9 +19,14 @@
     margin-top: 75px;
 
     @include desktop {
-      margin-top: 0;
+      flex: 3;
       gap: 16px;
       margin-left: 4vw;
+      margin-top: 0;
+    }
+
+    @include bigDesktop {
+      flex: 2;
     }
 
     &-options {
@@ -30,6 +37,7 @@
 
       @include desktop {
         gap: 16px;
+        padding-right: 18.5px;
       }
 
       justify-content: space-between;
