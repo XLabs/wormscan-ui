@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PortalStatsImage from "src/assets/portal-stats.svg";
 import { ToggleGroup } from "src/components/atoms";
 import { DateRange } from "src/api/guardian-network/types";
 import { TransactionHistoryChart } from "..";
@@ -21,7 +22,9 @@ const TransactionHistory = () => {
   return (
     <div className="tx-history">
       <div className="tx-history-options">
-        <div className="tx-title">Transaction History</div>
+        <div className="tx-title">
+          Transaction History <img src={PortalStatsImage} alt="portal logo" width="101" />
+        </div>
         <ToggleGroup
           value={selectedRange}
           onValueChange={value => {
