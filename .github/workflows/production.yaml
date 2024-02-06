@@ -1,0 +1,58 @@
+name: Upload Content
+
+env:
+  DIST_FOLDER: dist
+  AWS_CF_DIST_ID: ${{ secrets.AWS_CF_DIST_ID }}
+  AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build_deploy:
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout wormscan-ui repository
+        uses: actions/checkout@v4
+
+      - name: Set environment vars
+        run: |
+          cat .env.production >> .env
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          cache: yarn
+
+      - name: Install Dependencies
+        run: |
+          node --version
+          yarn install
+
+      - name: Build Static Website
+        run: |
+         NODE_ENV=production yarn build
+         cp ./robots.txt ./dist/
+         cp ./src/og_image.png ./dist/
+
+      - name: Configure AWS CLI + credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.IAM_ROLE_ARN }}
+          aws-access-key-id: ${{ secrets.OPS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.OPS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-duration-seconds: 3600
+
+      - name: Upload Content
+        run: |
+          aws s3 sync --delete ${{ env.DIST_FOLDER }} s3://${{ env.AWS_BUCKET_NAME }}
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ env.AWS_CF_DIST_ID }} \
+            --paths "/*" 
