@@ -1,63 +1,33 @@
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import WormholeStatsImage from "src/assets/wormhole-stats.svg";
-import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader, Tooltip } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import "./styles.scss";
 
-const MESSAGE_COUNTS_MAINNET =
-  "https://europe-west3-wormhole-message-db-mainnet.cloudfunctions.net/message-count-history";
-
-const MESSAGE_COUNTS_TESTNET =
-  "https://europe-west3-wormhole-message-db-testnet.cloudfunctions.net/message-count-history";
-
 type Props = {
   isError: boolean;
   isLoading: boolean;
   messages24h: string;
+  total_messages: string;
 };
 
-const WormholeStats = ({ isLoading, isError, messages24h }: Props) => {
-  const [allMessages, setAllMessages] = useState(0);
-  const [allMessagesError, setAllMessagesError] = useState(false);
+const WormholeStats = ({ isLoading, isError, messages24h, total_messages }: Props) => {
   const { t } = useTranslation();
-  const { environment } = useEnvironment();
-  const isMainnet = environment.network === "MAINNET";
-
-  // TODO: remove this once our api brings the info
-  useEffect(() => {
-    setAllMessages(0);
-    fetch(isMainnet ? MESSAGE_COUNTS_MAINNET : MESSAGE_COUNTS_TESTNET)
-      .then(response => response.json())
-      .then(data => {
-        let sum = 0;
-        for (const date in data.DailyTotals) {
-          if (data.DailyTotals[date]["*"]) {
-            sum += data.DailyTotals[date]["*"];
-          }
-        }
-        setAllMessages(sum);
-      })
-      .catch(_err => {
-        setAllMessagesError(true);
-      });
-  }, [isMainnet]);
 
   return (
     <div className="wormhole-stats">
       <div className="wormhole-stats-title">
         <img src={WormholeStatsImage} alt="wormhole logo" width="132" />
       </div>
-      {isLoading || !allMessages ? (
+      {isLoading ? (
         <div className="wormhole-stats-loader">
           <Loader />
         </div>
       ) : (
         <>
-          {isError || allMessagesError ? (
+          {isError ? (
             <div className="wormhole-stats-error">
               <ErrorPlaceholder />
             </div>
@@ -79,7 +49,7 @@ const WormholeStats = ({ isLoading, isError, messages24h }: Props) => {
                   </Tooltip>
                 </div>
                 <div className="wormhole-stats-container-item-value">
-                  {allMessages ? formatNumber(Number(allMessages), 0) : "-"}
+                  {total_messages ? formatNumber(Number(total_messages), 0) : "-"}
                 </div>
               </div>
 
