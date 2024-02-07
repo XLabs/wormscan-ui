@@ -117,79 +117,95 @@ export interface ChainPairsByTransfersOutput {
   numberOfTransfers: string;
 }
 
-export type GetVAAInput = (
-  | {
-      chainId?: number;
-      emitter?: string;
-      seq?: number;
-    }
-  | {
-      chainId: number;
-      emitter?: string;
-      seq?: number;
-    }
-  | {
-      chainId: number;
-      emitter: string;
-      seq?: number;
-    }
-  | {
-      chainId: number;
-      emitter: string;
-      seq: number;
-    }
-) & {
-  query?: {
-    parsedPayload?: boolean;
-  };
+export interface GetOperationsInput {
+  txHash?: string;
+  address?: string;
+  vaaID?: string;
   pagination?: PageRequest;
-};
-
-export interface GetVAAByTxHashInput {
-  query: {
-    txHash: string;
-    parsedPayload?: boolean;
-  };
 }
 
-export interface GlobalTxInput {
-  chainId: number;
-  emitter: string;
-  seq: number;
-  query?: {
-    parsedPayload?: boolean;
-  };
-}
-
-export interface GlobalTxOutput {
+export interface GetOperationsOutput {
   id: string;
-  originTx: {
+  emitterChain: number;
+  emitterAddress: {
+    hex: string;
+    native: string;
+  };
+  sequence: string;
+  vaa: {
+    guardianSetIndex: number;
+    raw: string;
+  };
+  content: {
+    payload: {
+      amount: string;
+      fee: string;
+      fromAddress: string | null;
+      parsedPayload: any;
+      payload: string;
+      payloadType: number;
+      toAddress: string;
+      toChain: number;
+      tokenAddress: string;
+      tokenChain: number;
+    };
+    standarizedProperties: {
+      appIds: string[];
+      fromChain: number;
+      fromAddress: string;
+      toChain: number;
+      toAddress: string;
+      tokenChain: number;
+      tokenAddress: string;
+      amount: string;
+      feeAddress: string;
+      feeChain: number;
+      fee: string;
+
+      wrappedTokenAddress?: string;
+      wrappedTokenSymbol?: string;
+      overwriteFee?: string;
+      overwriteRedeemAmount?: string;
+      overwriteSourceSymbol?: string;
+      overwriteSourceTokenAddress?: string;
+      overwriteSourceTokenChain?: number;
+      overwriteTargetSymbol?: string;
+      overwriteTargetTokenAddress?: string;
+      overwriteTargetTokenChain?: number;
+    };
+  };
+  sourceChain: {
+    chainId: number;
+    timestamp: Date | string;
+    transaction: {
+      txHash: string;
+      secondTxHash?: string;
+    };
+    from: string;
+    status: string;
     attribute?: {
       type: string;
-      from: string;
-      status: string;
-      txHash: string;
-      value: {
+      value?: {
         originAddress: string;
-        originChainId: ChainId;
+        originChainId: number;
         originTxHash: string;
       };
     };
-    chainId: number;
-    txHash: string;
-    timestamp: string;
-    from: string;
-    status: string;
   };
-  destinationTx: {
+  targetChain: {
     chainId: number;
+    timestamp: Date | string;
+    transaction: {
+      txHash: string;
+    };
     status: string;
-    method: string;
-    txHash: string;
     from: string;
     to: string;
-    blockNumber: string;
-    timestamp: string;
-    updatedAt: string;
+  };
+  data: {
+    symbol: string;
+    tokenAmount: string;
+    usdAmount: string;
   };
 }
+[];

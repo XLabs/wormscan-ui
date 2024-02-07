@@ -12,8 +12,7 @@ import {
   isRedelivery,
   parseGenericRelayerVaa,
 } from "src/utils/genericRelayerVaaUtils";
-import { GetTransactionsOutput } from "src/api/search/types";
-import { VAADetail } from "src/api/guardian-network/types";
+import { GetOperationsOutput } from "src/api/guardian-network/types";
 import "./styles.scss";
 
 export const BlockSection = ({ title, code }: { title: string; code: any }) => {
@@ -77,32 +76,27 @@ export const BlockSection = ({ title, code }: { title: string; code: any }) => {
 type Props = {
   extraRawInfo: any;
   lifecycleRecord: DeliveryLifecycleRecord;
-  txData: GetTransactionsOutput;
-  VAAData: VAADetail & { vaa: any; decodedVaa: any };
+  data: GetOperationsOutput;
 };
 
-const RawData = ({ extraRawInfo, VAAData, txData, lifecycleRecord }: Props) => {
-  const { payload, decodedVaa, ...rest } = VAAData || {};
-  const rawData = { ...rest };
-  const signedVAA = decodedVaa ? (Object.values(decodedVaa).length > 0 ? decodedVaa : null) : null;
-  const rawDataPayload = txData.payload ? txData.payload : payload;
+const RawData = ({ extraRawInfo, data, lifecycleRecord }: Props) => {
+  const payload = data?.content?.payload;
+  const dataNoPayload = JSON.parse(JSON.stringify(data)) as GetOperationsOutput;
+  if (dataNoPayload.content) dataNoPayload.content.payload = undefined;
+  // const signedVAA = decodedVaa ? (Object.values(decodedVaa).length > 0 ? decodedVaa : null) : null;
 
   const CODE_BLOCKS = [
     {
-      title: "RAW MESSAGE DATA",
-      code: rawData && JSON.stringify(rawData, null, 4),
-    },
-    {
       title: "PAYLOAD",
-      code: rawDataPayload && JSON.stringify(rawDataPayload, null, 4),
+      code: payload && JSON.stringify(payload, null, 4),
     },
-    {
-      title: "SIGNED VAA",
-      code: signedVAA && JSON.stringify(signedVAA, null, 4),
-    },
+    // {
+    //   title: "SIGNED VAA",
+    //   code: signedVAA && JSON.stringify(signedVAA, null, 4),
+    // },
     {
       title: "TX DATA",
-      code: !signedVAA && JSON.stringify(txData, null, 4),
+      code: JSON.stringify(dataNoPayload, null, 4),
     },
   ];
 
