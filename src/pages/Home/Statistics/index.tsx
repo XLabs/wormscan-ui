@@ -10,12 +10,22 @@ const Statistics = () => {
     data: scoreData,
   } = useQuery("scoresResponse", () => getClient().guardianNetwork.getScores());
 
-  const { "24h_messages": messages24h, total_volume, "24h_volume": volume24h } = scoreData || {};
+  const {
+    "24h_messages": messages24h,
+    "24h_volume": volume24h,
+    total_messages,
+    total_volume,
+  } = scoreData || {};
 
   return (
     <section className="home-statistics">
       <div>
-        <WormholeStats isError={isError} isLoading={isLoading} messages24h={messages24h} />
+        <WormholeStats
+          isError={isError}
+          isLoading={isLoading}
+          messages24h={messages24h}
+          total_messages={total_messages}
+        />
       </div>
       <div>
         <PortalStats
