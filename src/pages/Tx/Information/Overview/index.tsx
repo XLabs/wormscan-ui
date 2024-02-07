@@ -5,6 +5,7 @@ import { CopyToClipboard } from "src/components/molecules";
 import WormIcon from "src/icons/wormIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress, shortVaaId } from "src/utils/crypto";
+import { TokenInfo } from "src/utils/metaMaskUtils";
 import { colorStatus } from "src/consts";
 import "./styles.scss";
 
@@ -28,7 +29,7 @@ export type OverviewProps = {
   parsedPayload?: any;
   parsedRedeemTx?: string;
   redeemedAmount?: string;
-  showMetaMaskBtn: boolean;
+  showMetaMaskBtn?: boolean;
   showSignatures?: boolean;
   sourceSymbol?: string;
   sourceTokenLink?: string;
@@ -36,7 +37,7 @@ export type OverviewProps = {
   targetTokenLink?: string;
   toChain?: ChainId | number;
   tokenAmount?: string;
-  tokenInfo?: any;
+  tokenInfo?: TokenInfo;
   totalGuardiansNeeded?: number;
   VAAId?: string;
 };
