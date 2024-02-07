@@ -221,14 +221,12 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     icon: AlgorandIcon,
     colorlessIcon: AlgorandColorlessIcon,
     explorer: {
-      TESTNET: "https://TESTNET.algoexplorer.io",
-      MAINNET: "https://allo.info",
+      TESTNET: "https://testnet.explorer.perawallet.app",
+      MAINNET: "https://explorer.perawallet.app",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") {
         if (value.length <= 12) return this.explorer?.[network] + "/application/" + value;
-
-        if (network === "MAINNET") return this.explorer?.[network] + "/account/" + value;
         return this.explorer?.[network] + "/address/" + value;
       }
       if (base === "token") return this.explorer?.[network] + "/asset/" + value;

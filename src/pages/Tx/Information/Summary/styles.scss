@@ -33,10 +33,6 @@
     @include desktop {
       gap: 8px;
     }
-
-    @include bigDesktop {
-      gap: 24px;
-    }
   }
 
   & .key {

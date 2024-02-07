@@ -17,4 +17,8 @@
     margin-bottom: 32px;
     margin-top: 32px;
   }
+
+  &:last-child {
+    min-height: 410px;
+  }
 }
