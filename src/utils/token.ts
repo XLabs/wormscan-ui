@@ -11,10 +11,10 @@ import CELO from "src/icons/tokens/CELO.svg";
 import DAI from "src/icons/tokens/DAI.svg";
 import ETH from "src/icons/tokens/ETH.svg";
 import EVMOS from "src/icons/tokens/EVMOS.svg";
-import WFTM from "src/icons/tokens/WFTM.svg";
 import FTM from "src/icons/tokens/FTM.svg";
 import GLMR from "src/icons/tokens/GLMR.svg";
 import IDIA from "src/icons/tokens/IDIA.svg";
+import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KUJI from "src/icons/tokens/KUJI.svg";
 import MATIC from "src/icons/tokens/MATIC.svg";
 import OPTIMISM from "src/icons/tokens/OPTIMISM.svg";
@@ -29,9 +29,9 @@ import tBTC from "src/icons/tokens/tBTC.svg";
 import USDC from "src/icons/tokens/USDC.svg";
 import USDT from "src/icons/tokens/USDT.svg";
 import WAVAX from "src/icons/tokens/WAVAX.svg";
-import WBNB from "src/icons/tokens/BNB.svg";
 import WBTC from "src/icons/tokens/WBTC.svg";
 import WETH from "src/icons/tokens/WETH.svg";
+import WFTM from "src/icons/tokens/WFTM.svg";
 import WMATIC from "src/icons/tokens/WMATIC.svg";
 import WSTETH from "src/icons/tokens/WSTETH.svg";
 import noIconToken from "src/icons/tokens/noIcon.svg";
@@ -53,6 +53,7 @@ const iconTokens = {
   FTM,
   GLMR,
   IDIA,
+  KLAY: KlaytnIcon,
   KUJI,
   MATIC,
   OPTIMISM,
@@ -64,16 +65,22 @@ const iconTokens = {
   SOL,
   SUI,
   tBTC,
-  USDC,
   USDbC: USDC,
+  USDC,
+  USDCbs: USDC,
+  USDCpo: USDC,
+  USDCso: USDC,
   USDT,
   WAVAX,
-  WBNB,
+  WBNB: BNB,
   WBTC,
   WETH,
   WFTM,
+  WGLMR: GLMR,
+  WKLAY: KlaytnIcon,
   WMATIC,
   WSTETH,
+  wstETH: WSTETH,
 } as { [K in string]: SVGAElement };
 
 export const getTokenIcon = (token: string) => {
