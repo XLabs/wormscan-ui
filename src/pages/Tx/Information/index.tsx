@@ -461,11 +461,22 @@ const Information = ({
         newTxData.standardizedProperties.overwriteFee = formattedRelayerFee;
       }
 
+      analytics.track("findRedeem", {
+        chain: getChainName({ chainId: toChain, network: currentNetwork }),
+        network: currentNetwork,
+        found: true,
+      });
       setFoundRedeem(true);
+
       setTimeout(() => {
         setTxData(newTxData);
       }, 2000);
     } else {
+      analytics.track("findRedeem", {
+        chain: getChainName({ chainId: toChain, network: currentNetwork }),
+        network: currentNetwork,
+        found: false,
+      });
       setFoundRedeem(false);
     }
     setLoadingRedeem(false);
