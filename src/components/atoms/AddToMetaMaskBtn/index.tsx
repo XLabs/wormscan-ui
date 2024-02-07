@@ -18,7 +18,7 @@ type Props = {
 const AddToMetaMaskBtn = ({ className, currentNetwork, toChain, tokenInfo }: Props) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
-  const handleMouseEnter = () => {
+  const openTooltip = () => {
     setIsTooltipOpen(true);
   };
 
@@ -54,7 +54,7 @@ const AddToMetaMaskBtn = ({ className, currentNetwork, toChain, tokenInfo }: Pro
       open={!Boolean(tokenInfo.tokenSymbol) && isTooltipOpen}
       type="info"
     >
-      <div className={`metamask-btn ${className}`} onMouseEnter={handleMouseEnter}>
+      <div className={`metamask-btn ${className}`} onMouseEnter={openTooltip}>
         <button
           disabled={!Boolean(tokenInfo.tokenSymbol)}
           onClick={async () => {
