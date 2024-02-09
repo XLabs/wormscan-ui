@@ -1,10 +1,11 @@
 import { ArrowDownIcon, CheckboxIcon, CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { CHAIN_ID_WORMCHAIN, ChainId, Network } from "@certusone/wormhole-sdk";
-import { BlockchainIcon, Tooltip } from "src/components/atoms";
+import { AddToMetaMaskBtn, BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import WormIcon from "src/icons/wormIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress, shortVaaId } from "src/utils/crypto";
+import { TokenInfo } from "src/utils/metaMaskUtils";
 import { colorStatus } from "src/consts";
 import "./styles.scss";
 
@@ -28,6 +29,7 @@ export type OverviewProps = {
   parsedPayload?: any;
   parsedRedeemTx?: string;
   redeemedAmount?: string;
+  showMetaMaskBtn?: boolean;
   showSignatures?: boolean;
   sourceSymbol?: string;
   sourceTokenLink?: string;
@@ -35,6 +37,7 @@ export type OverviewProps = {
   targetTokenLink?: string;
   toChain?: ChainId | number;
   tokenAmount?: string;
+  tokenInfo?: TokenInfo;
   totalGuardiansNeeded?: number;
   VAAId?: string;
 };
@@ -65,6 +68,7 @@ const Overview = ({
   parsedOriginAddress,
   parsedRedeemTx,
   redeemedAmount,
+  showMetaMaskBtn,
   showSignatures,
   sourceSymbol,
   sourceTokenLink,
@@ -72,6 +76,7 @@ const Overview = ({
   targetTokenLink,
   toChain,
   tokenAmount,
+  tokenInfo,
   totalGuardiansNeeded,
   VAAId,
 }: OverviewProps) => (
@@ -335,22 +340,10 @@ const Overview = ({
             <div>
               <div className="tx-overview-graph-step-title">Redeem Amount</div>
               <div className="tx-overview-graph-step-description">
-                {Number(fee) ? (
+                {Number(fee) || tokenAmount ? (
                   <>
-                    {redeemedAmount}{" "}
-                    {targetSymbol &&
-                      (targetTokenLink ? (
-                        <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
-                          {targetSymbol}
-                        </a>
-                      ) : (
-                        <span>{targetSymbol}</span>
-                      ))}
-                  </>
-                ) : tokenAmount ? (
-                  <>
-                    {amountSent}{" "}
-                    {targetSymbol ? (
+                    {Number(fee) ? redeemedAmount : amountSent}{" "}
+                    {targetSymbol && (
                       <>
                         {targetTokenLink ? (
                           <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
@@ -359,10 +352,18 @@ const Overview = ({
                         ) : (
                           <span>{targetSymbol}</span>
                         )}
-                        {amountSentUSD && `(${amountSentUSD} USD)`}
+                        {Number(fee) ? null : amountSentUSD && ` (${amountSentUSD} USD)`}
                       </>
-                    ) : (
-                      "N/A"
+                    )}
+                    {showMetaMaskBtn && (
+                      <div className="tx-overview-graph-step-description-btn-container">
+                        <AddToMetaMaskBtn
+                          className="metamask-btn-mt-16"
+                          currentNetwork={currentNetwork}
+                          toChain={toChain as ChainId}
+                          tokenInfo={tokenInfo}
+                        />
+                      </div>
                     )}
                   </>
                 ) : (
