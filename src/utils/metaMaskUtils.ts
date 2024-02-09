@@ -343,7 +343,6 @@ export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number
   };
 
   const evmChainId = chainNetworks[chainId as keyof typeof chainNetworks];
-
   if (evmChainId) return evmChainId;
 
   return undefined;
