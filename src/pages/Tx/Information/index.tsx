@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
-import { ChainId, isEVMChain, parseVaa } from "@certusone/wormhole-sdk";
+import { CHAIN_ID_SOLANA, ChainId, isEVMChain, parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
   parseEVMExecutionInfoV1,
@@ -303,7 +303,7 @@ const Information = ({
   const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
   const tokenEffectiveAddress = wrappedSide === "target" ? wrappedTokenAddress : tokenAddress;
   const showMetaMaskBtn =
-    isEVMChain(fromChain as ChainId) &&
+    (isEVMChain(fromChain as ChainId) || fromChain === CHAIN_ID_SOLANA) &&
     isEVMChain(toChain) &&
     tokenInfo?.tokenDecimals &&
     toChain === targetTokenChain;

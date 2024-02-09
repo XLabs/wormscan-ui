@@ -322,40 +322,32 @@ export const CHAIN_IDS: ChainIds = {
   BASE_NETWORK_CHAIN_ID: { MAINNET: 8453, TESTNET: 84531, DEVNET: 84531 },
 };
 
-export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number | undefined =>
-  chainId === CHAIN_ID_ETH
-    ? CHAIN_IDS.ETH_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_BSC
-    ? CHAIN_IDS.BSC_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_POLYGON
-    ? CHAIN_IDS.POLYGON_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_AVAX
-    ? CHAIN_IDS.AVAX_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_OASIS
-    ? CHAIN_IDS.OASIS_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_AURORA
-    ? CHAIN_IDS.AURORA_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_FANTOM
-    ? CHAIN_IDS.FANTOM_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_KARURA
-    ? CHAIN_IDS.KARURA_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_ACALA
-    ? CHAIN_IDS.ACALA_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_KLAYTN
-    ? CHAIN_IDS.KLAYTN_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_CELO
-    ? CHAIN_IDS.CELO_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_NEON
-    ? CHAIN_IDS.NEON_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_MOONBEAM
-    ? CHAIN_IDS.MOONBEAM_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_ARBITRUM
-    ? CHAIN_IDS.ARBITRUM_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_OPTIMISM
-    ? CHAIN_IDS.OPTIMISM_NETWORK_CHAIN_ID[currentNetwork]
-    : chainId === CHAIN_ID_BASE
-    ? CHAIN_IDS.BASE_NETWORK_CHAIN_ID[currentNetwork]
-    : undefined;
+export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number | undefined => {
+  const chainNetworks = {
+    [CHAIN_ID_ETH]: CHAIN_IDS.ETH_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_BSC]: CHAIN_IDS.BSC_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_POLYGON]: CHAIN_IDS.POLYGON_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_AVAX]: CHAIN_IDS.AVAX_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_OASIS]: CHAIN_IDS.OASIS_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_AURORA]: CHAIN_IDS.AURORA_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_FANTOM]: CHAIN_IDS.FANTOM_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_KARURA]: CHAIN_IDS.KARURA_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_ACALA]: CHAIN_IDS.ACALA_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_KLAYTN]: CHAIN_IDS.KLAYTN_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_CELO]: CHAIN_IDS.CELO_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_NEON]: CHAIN_IDS.NEON_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_MOONBEAM]: CHAIN_IDS.MOONBEAM_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_ARBITRUM]: CHAIN_IDS.ARBITRUM_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_OPTIMISM]: CHAIN_IDS.OPTIMISM_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_BASE]: CHAIN_IDS.BASE_NETWORK_CHAIN_ID[currentNetwork],
+  };
+
+  const evmChainId = chainNetworks[chainId as keyof typeof chainNetworks];
+
+  if (evmChainId) return evmChainId;
+
+  return undefined;
+};
 
 export const getTokenLogo = async ({ tokenAddress }: { tokenAddress: string }) => {
   const data = await fetch(process.env.WORMHOLE_MARKET_TOKENS_URL).then(res => res.json());

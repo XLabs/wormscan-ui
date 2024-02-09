@@ -51,12 +51,12 @@ const AddToMetaMaskBtn = ({ className, currentNetwork, toChain, tokenInfo }: Pro
       }
       controlled={true}
       maxWidth={false}
-      open={!Boolean(tokenInfo.tokenSymbol) && isTooltipOpen}
+      open={!tokenInfo.tokenSymbol && isTooltipOpen}
       type="info"
     >
       <div className={`metamask-btn ${className}`} onMouseEnter={openTooltip}>
         <button
-          disabled={!Boolean(tokenInfo.tokenSymbol)}
+          disabled={!tokenInfo.tokenSymbol}
           onClick={async () => {
             try {
               await addToken({
