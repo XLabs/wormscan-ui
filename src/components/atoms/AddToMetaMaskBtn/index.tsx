@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChainId, Network } from "@certusone/wormhole-sdk";
-import { CopyIcon, Cross1Icon, Cross2Icon } from "@radix-ui/react-icons";
-import MetaMaskIcon from "src/icons/MetaMaskIcon";
+import { CopyIcon, Cross2Icon } from "@radix-ui/react-icons";
+import MetaMaskIcon from "src/icons/MetaMaskIcon.svg";
 import { Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { shortAddress } from "src/utils/crypto";
@@ -69,7 +69,7 @@ const AddToMetaMaskBtn = ({ className, currentNetwork, toChain, tokenInfo }: Pro
             }
           }}
         >
-          <MetaMaskIcon />
+          <img src={MetaMaskIcon} alt="MetaMask" height={24} width={24} />
           Add to MetaMask
         </button>
       </div>
