@@ -303,10 +303,7 @@ const Information = ({
   const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
   const tokenEffectiveAddress = wrappedSide === "target" ? wrappedTokenAddress : tokenAddress;
   const showMetaMaskBtn =
-    (isEVMChain(fromChain as ChainId) || fromChain === CHAIN_ID_SOLANA) &&
-    isEVMChain(toChain) &&
-    tokenInfo?.tokenDecimals &&
-    toChain === targetTokenChain;
+    isEVMChain(toChain) && tokenInfo?.tokenDecimals && toChain === targetTokenChain;
 
   useEffect(() => {
     if (isEVMChain(toChain)) {
