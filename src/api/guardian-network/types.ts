@@ -66,12 +66,13 @@ export type LastTxs = {
 export type DateRange = "day" | "week" | "month" | "3-month";
 
 export interface ScoresOutput {
-  tvl: string;
-  total_volume: string;
-  total_tx_count: string;
-  "24h_volume": string;
-  "24h_tx_count": string;
   "24h_messages": string;
+  "24h_tx_count": string;
+  "24h_volume": string;
+  total_messages: string;
+  total_tx_count: string;
+  total_volume: string;
+  tvl: string;
 }
 
 export interface AssetsByVolumeInput {
