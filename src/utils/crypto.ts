@@ -69,7 +69,7 @@ export const formatAppIds = (appIds: string[]) =>
     .filter(appId => appId !== "UNKNOWN" && appId !== "STABLE")
     .map(appId => {
       if (appId === "GENERIC_RELAYER") {
-        return "Automatic Relayer";
+        return "Standard Relayer";
       }
       if (appId === "WORMCHAIN_GATEWAY_TRANSFER") {
         return "Wormhole Gateway Transfer";

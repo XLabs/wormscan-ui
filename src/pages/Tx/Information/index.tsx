@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
-import { ChainId, isEVMChain, parseVaa } from "@certusone/wormhole-sdk";
+import { CHAIN_ID_SOLANA, ChainId, isEVMChain, parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
   parseEVMExecutionInfoV1,
@@ -28,6 +28,8 @@ import { getPorticoInfo, isPortico } from "src/utils/wh-portico-rpc";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
 import { GetBlockData } from "src/api/search/types";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
+import { getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
+import { TokenInfo, getTokenLogo } from "src/utils/metaMaskUtils";
 import { ChainLimit } from "src/api";
 
 import Tabs from "./Tabs";
@@ -212,12 +214,13 @@ const Information = ({
         base: "token",
       })
     : "";
+  let targetTokenAddress = standarizedProperties?.overwriteTargetTokenAddress || tokenAddress;
   let targetTokenLink = showTargetTokenUrl
     ? getExplorerLink({
         network: currentNetwork,
         chainId:
           extraRawInfoToChainId || standarizedProperties?.overwriteTargetTokenChain || tokenChain,
-        value: standarizedProperties?.overwriteTargetTokenAddress || tokenAddress,
+        value: targetTokenAddress,
         base: "token",
       })
     : "";
@@ -230,11 +233,12 @@ const Information = ({
   if (wrappedTokenAddress && !standarizedProperties?.appIds.includes("ETH_BRIDGE")) {
     if (wrappedSide === "target") {
       targetTokenChain = toChain;
+      targetTokenAddress = wrappedTokenAddress;
       targetTokenLink = showTargetTokenUrl
         ? getExplorerLink({
             network: currentNetwork,
             chainId: extraRawInfoToChainId || toChain,
-            value: wrappedTokenAddress,
+            value: targetTokenAddress,
             base: "token",
           })
         : "";
@@ -269,8 +273,39 @@ const Information = ({
     targetSymbol = standarizedProperties?.overwriteTargetSymbol;
   }
 
+  // --- ⬇ Add to MetaMask ⬇ ---
+  const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
+  const tokenEffectiveAddress = wrappedSide === "target" ? wrappedTokenAddress : tokenAddress;
+  const showMetaMaskBtn =
+    isEVMChain(toChain) && tokenInfo?.tokenDecimals && toChain === targetTokenChain;
+
+  useEffect(() => {
+    if (isEVMChain(toChain)) {
+      getTokenInformation(targetTokenChain, environment, targetTokenAddress).then(data => {
+        if (data) {
+          getTokenLogo({ tokenAddress: targetTokenAddress }).then(tokenImage => {
+            setTokenInfo({
+              targetSymbol: targetSymbol,
+              tokenAddress: tokenEffectiveAddress,
+              tokenDecimals: data.tokenDecimals,
+              tokenImage: tokenImage,
+              tokenSymbol: data.symbol,
+            });
+          });
+        }
+      });
+    }
+  }, [
+    toChain,
+    targetTokenChain,
+    environment,
+    targetTokenAddress,
+    targetSymbol,
+    tokenEffectiveAddress,
+  ]);
+  // --- ⬆ Add to MetaMask ⬆ ---
+
   const overviewAndDetailProps = {
-    showSignatures: !(appIds && appIds.includes("CCTP_MANUAL")),
     amountSent,
     amountSentUSD,
     currentNetwork,
@@ -288,12 +323,15 @@ const Information = ({
     parsedPayload,
     parsedRedeemTx,
     redeemedAmount,
+    showMetaMaskBtn,
+    showSignatures: !(appIds && appIds.includes("CCTP_MANUAL")),
     sourceSymbol,
     sourceTokenLink,
     targetSymbol,
     targetTokenLink,
     toChain: extraRawInfoToChainId || toChain,
     tokenAmount,
+    tokenInfo,
     totalGuardiansNeeded,
     VAAId,
   };
@@ -322,7 +360,7 @@ const Information = ({
     (isEVMChain(toChain) || toChain === 1 || toChain === 21) &&
     toChain === targetTokenChain &&
     !!toAddress &&
-    !!(wrappedTokenAddress && wrappedSide === "target" ? wrappedTokenAddress : tokenAddress) &&
+    !!(wrappedTokenAddress && tokenEffectiveAddress) &&
     !!timestamp &&
     !!payload?.amount &&
     !!data?.sourceChain?.transaction?.txHash &&
@@ -336,7 +374,7 @@ const Information = ({
       fromChain as ChainId,
       toChain,
       toAddress,
-      wrappedTokenAddress && wrappedSide === "target" ? wrappedTokenAddress : tokenAddress,
+      wrappedTokenAddress && tokenEffectiveAddress,
       timestamp,
       payload?.amount,
       data?.sourceChain?.transaction?.txHash,
