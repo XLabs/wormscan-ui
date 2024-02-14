@@ -484,7 +484,7 @@ const Information = ({
     ? chainLimitsData.find((data: ChainLimit) => data.chainId === fromChain)
     : ETH_LIMIT;
   const transactionLimit = limitDataForChain?.maxTransactionSize;
-  const isBigTransaction = transactionLimit < Number(usdAmount);
+  const isBigTransaction = transactionLimit <= Number(usdAmount);
   const isDailyLimitExceeded = limitDataForChain?.availableNotional < Number(usdAmount);
 
   // --- Automatic Relayer Detection and handling ---

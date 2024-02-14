@@ -123,7 +123,7 @@ const Details = ({
           </div>
         </div>
         <div className="tx-details-group-line">
-          <div className="tx-details-group-line-key">From</div>
+          <div className="tx-details-group-line-key">Source Address</div>
           <div className="tx-details-group-line-value">
             {parsedOriginAddress ? (
               <>
