@@ -212,7 +212,7 @@ const Information = ({
 
   const amountSent = formatNumber(Number(tokenAmount));
   const amountSentUSD = +usdAmount ? formatNumber(+usdAmount, 2) : "";
-  const redeemedAmount = txData.standardizedProperties?.overwriteRedeemAmount
+  const redeemedAmount = txData?.standardizedProperties?.overwriteRedeemAmount
     ? formatNumber(+txData.standardizedProperties?.overwriteRedeemAmount, 7)
     : hasVAA
     ? formatNumber(formatUnits(+amount - +fee))
