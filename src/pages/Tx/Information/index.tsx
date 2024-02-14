@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
-import { CHAIN_ID_SOLANA, ChainId, isEVMChain, parseVaa } from "@certusone/wormhole-sdk";
+import { ChainId, isEVMChain, parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
   parseEVMExecutionInfoV1,
