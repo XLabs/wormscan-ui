@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
-import { CHAIN_ID_SOLANA, ChainId, isEVMChain, parseVaa } from "@certusone/wormhole-sdk";
+import { ChainId, isEVMChain, parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
   parseEVMExecutionInfoV1,
@@ -212,7 +212,7 @@ const Information = ({
 
   const amountSent = formatNumber(Number(tokenAmount));
   const amountSentUSD = +usdAmount ? formatNumber(+usdAmount, 2) : "";
-  const redeemedAmount = txData.standardizedProperties?.overwriteRedeemAmount
+  const redeemedAmount = txData?.standardizedProperties?.overwriteRedeemAmount
     ? formatNumber(+txData.standardizedProperties?.overwriteRedeemAmount, 7)
     : hasVAA
     ? formatNumber(formatUnits(+amount - +fee))
@@ -484,7 +484,7 @@ const Information = ({
     ? chainLimitsData.find((data: ChainLimit) => data.chainId === fromChain)
     : ETH_LIMIT;
   const transactionLimit = limitDataForChain?.maxTransactionSize;
-  const isBigTransaction = transactionLimit < Number(usdAmount);
+  const isBigTransaction = transactionLimit <= Number(usdAmount);
   const isDailyLimitExceeded = limitDataForChain?.availableNotional < Number(usdAmount);
 
   // --- Automatic Relayer Detection and handling ---
