@@ -1,8 +1,9 @@
 import { CheckCircledIcon, CheckIcon, ClockIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { ChainId, Network } from "@certusone/wormhole-sdk";
+import { Network } from "@certusone/wormhole-sdk";
 import { Chip, Tooltip } from "src/components/atoms";
 import { formatAppIds, shortAddress } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
+import { ChainId } from "src/api";
 import { IStatus } from "src/consts";
 import { GetRedeem } from "./GetRedeem";
 import { VerifyRedemption } from "./VerifyRedemption";
