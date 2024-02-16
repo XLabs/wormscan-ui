@@ -48,9 +48,8 @@ const Txs = () => {
   const currentPage = page >= 1 ? page : 1;
   const q = address ? address : "txs";
   const isTxsFiltered = address ? true : false;
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
-  const [isPaginationLoading, setIsPaginationLoading] = useState<boolean>(false);
+  const [isPaginationLoading, setIsPaginationLoading] = useState<boolean>(true);
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
   const [parsedTxsData, setParsedTxsData] = useState<TransactionOutput[] | undefined>(undefined);
 
@@ -70,12 +69,11 @@ const Txs = () => {
 
   useEffect(() => {
     setErrorCode(undefined);
-    setIsLoading(true);
   }, [address]);
 
   useEffect(() => {
     setIsPaginationLoading(true);
-  }, [currentNetwork]);
+  }, [currentNetwork, currentPage]);
 
   const getTransactionInput = {
     query: {
@@ -281,7 +279,6 @@ const Txs = () => {
 
         setParsedTxsData(tempRows);
         setAddressChainId(addressChainId as ChainId);
-        setIsLoading(false);
         setIsPaginationLoading(false);
       },
       enabled: !errorCode,
@@ -301,10 +298,10 @@ const Txs = () => {
           <>
             <Top address={address} addressChainId={addressChainId} />
             <Information
-              parsedTxsData={isLoading ? [] : parsedTxsData}
+              parsedTxsData={isPaginationLoading ? [] : parsedTxsData}
               currentPage={currentPage}
               onChangePagination={onChangePagination}
-              isPaginationLoading={isLoading || isPaginationLoading}
+              isPaginationLoading={isPaginationLoading}
               setIsPaginationLoading={setIsPaginationLoading}
               isTxsFiltered={isTxsFiltered}
             />
