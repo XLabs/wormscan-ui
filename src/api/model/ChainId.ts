@@ -31,6 +31,7 @@ export enum ChainId {
   Sei = 32,
   Evmos = 4001,
   Kujira = 4002,
+  Dymension = 4007,
   Sepolia = 10002,
   ArbitrumSepolia = 10003,
   BaseSepolia = 10004,
