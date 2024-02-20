@@ -215,9 +215,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@certusone/wormhole-sdk@npm:^0.10.9":
-  version: 0.10.9
-  resolution: "@certusone/wormhole-sdk@npm:0.10.9"
+"@certusone/wormhole-sdk@npm:0.10.11":
+  version: 0.10.11
+  resolution: "@certusone/wormhole-sdk@npm:0.10.11"
   dependencies:
     "@certusone/wormhole-sdk-proto-web": 0.0.7
     "@certusone/wormhole-sdk-wasm": ^0.0.1
@@ -247,7 +247,7 @@ __metadata:
       optional: true
     "@injectivelabs/utils":
       optional: true
-  checksum: 5a372632e92db9b75911ebdda5b605d809139ebffd48a59411995ff036acef570a56143628194afad941c62903b628996f3900dd7961c5cd13cd5deca2e3d26d
+  checksum: b1c35b54a8817cdc276cc90534cfee29e632bac13227f1bf5e5e1908f7b1c300cb02c167d49225686bb85f5cfc84ce422337f3acb7f6b755538f17177520fb40
   languageName: node
   linkType: hard
 
@@ -10185,7 +10185,7 @@ __metadata:
   resolution: "wormscan-ui@workspace:."
   dependencies:
     "@analytics/google-analytics": ^1.0.7
-    "@certusone/wormhole-sdk": ^0.10.9
+    "@certusone/wormhole-sdk": 0.10.11
     "@metamask/detect-provider": ^2.0.0
     "@parcel/transformer-sass": ^2.8.3
     "@playwright/test": ^1.38.1
