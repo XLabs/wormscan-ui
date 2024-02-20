@@ -5,7 +5,7 @@
   --min-height: 242px;
 
   flex: 1;
-  gap: 24px 3vw;
+  gap: 24px 0;
   min-height: var(--min-height);
   width: 100%;
 
@@ -74,50 +74,13 @@
     }
   }
 
-  &-coming {
-    @include centered-column;
-    align-items: center;
-    gap: 24px;
-    height: 100%;
-    justify-content: space-evenly;
-    padding-bottom: 18px;
+  &-coming-title {
+    @include text-caption1;
 
-    &-title {
-      @include text-caption1;
-      color: var(--color-primary-150);
-    }
-
-    &-container {
-      @include centered-column;
-      align-items: center;
-      background-color: var(--color-white-05);
-      font-size: 14px;
-      font-weight: 400;
-      gap: 24px;
-      justify-content: flex-start;
-      line-height: 18px;
-      padding: 32px 40px;
-      width: 100%;
-
-      @include desktop {
-        width: 237px;
-      }
-
-      & > p {
-        color: var(--color-primary-90);
-        max-width: 160px;
-        text-align: center;
-      }
-
-      & > a {
-        color: var(--color-secondary-800);
-        text-decoration: none;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
+    color: var(--color-primary-150);
+    position: absolute;
+    right: 3px;
+    top: 1px;
   }
 
   &[data-range="day"],
