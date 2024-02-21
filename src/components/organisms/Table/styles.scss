@@ -71,14 +71,14 @@
           padding-left: 16px;
         }
 
-        &:nth-child(2) {
-          white-space: nowrap;
+        // &:nth-child(2) {
+        //   white-space: nowrap;
 
-          @include desktop {
-            max-width: 120px;
-            white-space: normal;
-          }
-        }
+        //   @include desktop {
+        //     max-width: 120px;
+        //     white-space: normal;
+        //   }
+        // }
 
         &:last-child {
           padding-right: 16px;
