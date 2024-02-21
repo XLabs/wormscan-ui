@@ -14,7 +14,7 @@ const columns: Column<TransactionOutput>[] | any = [
   //   accessor: "status",
   // },
   {
-    Header: "TX HASH",
+    Header: "SOURCE TX HASH",
     accessor: "txHash",
   },
   {
