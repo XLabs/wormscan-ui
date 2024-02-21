@@ -10,14 +10,14 @@ import {
 
 import { useEnvironment } from "src/context/EnvironmentContext";
 import {
+  canWeGetDestinationTx,
   CCTP_APP_ID,
   CONNECT_APP_ID,
   DISCORD_URL,
   IStatus,
   PORTAL_APP_ID,
-  UNKNOWN_APP_ID,
-  canWeGetDestinationTx,
   txType,
+  UNKNOWN_APP_ID,
 } from "src/consts";
 import { Alert, Loader } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
