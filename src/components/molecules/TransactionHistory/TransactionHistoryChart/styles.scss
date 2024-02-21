@@ -78,9 +78,11 @@
     @include text-caption1;
 
     color: var(--color-primary-150);
+    font-size: 10px;
+    line-height: 24px;
     position: absolute;
     right: 3px;
-    top: 1px;
+    top: 0;
   }
 
   &[data-range="day"],

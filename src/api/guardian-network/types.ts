@@ -75,14 +75,15 @@ export interface ScoresOutput {
   tvl: string;
 }
 
-export type ProtocolKey = "cctp" | "allbridge" | "portal" | "mayan";
+export type ProtocolName = "cctp" | "allbridge" | "portal" | "mayan";
+
 export interface ProtocolsStatsOutput {
-  protocol: ProtocolKey;
-  total_value_locked: string;
-  total_value_secured: string;
-  total_value_transferred: string;
-  total_messages: string;
-  last_day_messages: string;
+  protocol: ProtocolName;
+  total_value_locked: number;
+  total_value_secured: number;
+  total_value_transferred: number;
+  total_messages: number;
+  last_day_messages: number;
   last_day_diff_percentage: string;
 }
 

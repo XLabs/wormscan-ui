@@ -9,17 +9,17 @@ import { Loader } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getClient } from "src/api/Client";
-import { ProtocolKey, ProtocolsStatsOutput } from "src/api/guardian-network/types";
+import { ProtocolName, ProtocolsStatsOutput } from "src/api/guardian-network/types";
 import "./styles.scss";
 
-const protocolIcons: Record<ProtocolKey, string> = {
+const protocolIcons: Record<ProtocolName, string> = {
   allbridge: allBridgeIcon,
   cctp: cctpIcon,
   mayan: mayanIcon,
   portal: portalIcon,
 };
 
-const protocolNames: Record<ProtocolKey, string> = {
+const protocolNames: Record<ProtocolName, string> = {
   allbridge: "Allbridge",
   cctp: "CCTP",
   mayan: "Mayan",
