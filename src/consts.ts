@@ -117,14 +117,6 @@ export const txType: { [key: number]: "Transfer" | "Attestation" | "Transfer wit
   3: "Transfer with payload",
 } as const;
 
-export const colorStatus: any = {
-  SUCCESSFUL: "green",
-  COMPLETED: "green",
-  ONGOING: "orange",
-  FAILED: "red",
-  ERROR: "red",
-} as const;
-
 export const PORTAL_BRIDGE_URL = "https://www.portalbridge.com";
 export const TWITTER_URL = "https://twitter.com/wormholecrypto";
 export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";
@@ -159,3 +151,8 @@ export type IStatus =
   | "PENDING_REDEEM"
   | "VAA_EMITTED"
   | "IN_PROGRESS";
+
+export const UNKNOWN_APP_ID = "UNKNOWN";
+export const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
+export const CONNECT_APP_ID = "CONNECT";
+export const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
