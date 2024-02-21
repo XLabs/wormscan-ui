@@ -146,6 +146,17 @@
   }
 
   @media (min-width: 1200px) {
+    &[data-range="day"] {
+      .apexcharts-xaxis-texts-g text {
+        &:first-child {
+          transform: translateX(12px);
+        }
+        &:last-child {
+          transform: translateX(-12px);
+        }
+      }
+    }
+
     &[data-range="week"] {
       .apexcharts-xaxis-texts-g text {
         &:first-child {

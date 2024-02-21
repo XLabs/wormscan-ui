@@ -1,6 +1,6 @@
 {
   "name": "wormscan-ui",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "private": true,
   "source": "src/index.html",
   "scripts": {
@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@analytics/google-analytics": "^1.0.7",
-    "@certusone/wormhole-sdk": "^0.10.9",
+    "@certusone/wormhole-sdk": "0.10.11",
     "@metamask/detect-provider": "^2.0.0",
     "@radix-ui/react-icons": "1.1.1",
     "@radix-ui/react-toggle-group": "1.0.2",
@@ -59,7 +59,7 @@
     "react-i18next": "12.1.5",
     "react-json-view-lite": "^1.1.0",
     "react-query": "3.39.3",
-    "react-router-dom": "6.7.0",
+    "react-router-dom": "6.22.0",
     "react-select": "5.7.2",
     "react-table": "7.8.0",
     "react-toastify": "^10.0.4",

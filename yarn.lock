@@ -215,9 +215,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@certusone/wormhole-sdk@npm:^0.10.9":
-  version: 0.10.9
-  resolution: "@certusone/wormhole-sdk@npm:0.10.9"
+"@certusone/wormhole-sdk@npm:0.10.11":
+  version: 0.10.11
+  resolution: "@certusone/wormhole-sdk@npm:0.10.11"
   dependencies:
     "@certusone/wormhole-sdk-proto-web": 0.0.7
     "@certusone/wormhole-sdk-wasm": ^0.0.1
@@ -247,7 +247,7 @@ __metadata:
       optional: true
     "@injectivelabs/utils":
       optional: true
-  checksum: 5a372632e92db9b75911ebdda5b605d809139ebffd48a59411995ff036acef570a56143628194afad941c62903b628996f3900dd7961c5cd13cd5deca2e3d26d
+  checksum: b1c35b54a8817cdc276cc90534cfee29e632bac13227f1bf5e5e1908f7b1c300cb02c167d49225686bb85f5cfc84ce422337f3acb7f6b755538f17177520fb40
   languageName: node
   linkType: hard
 
@@ -2889,10 +2889,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.3.0":
-  version: 1.3.0
-  resolution: "@remix-run/router@npm:1.3.0"
-  checksum: 5141e9703d29cd29334ccb9e5f22ee6973bf121574e06509489b7623a12549bd188cfc322eac1263f913353087f132a641579280e94558f346adc2b0b65080d0
+"@remix-run/router@npm:1.15.0":
+  version: 1.15.0
+  resolution: "@remix-run/router@npm:1.15.0"
+  checksum: 0b5ea6b2e7bb7f3266005e033337a6fed29c458aa5ddc9a97a90ff19813ae6dfb4392871722d66d7e8db93a29760a8257830a9af58824b3a3363ed58e1e471d8
   languageName: node
   linkType: hard
 
@@ -8580,27 +8580,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:6.7.0":
-  version: 6.7.0
-  resolution: "react-router-dom@npm:6.7.0"
+"react-router-dom@npm:6.22.0":
+  version: 6.22.0
+  resolution: "react-router-dom@npm:6.22.0"
   dependencies:
-    "@remix-run/router": 1.3.0
-    react-router: 6.7.0
+    "@remix-run/router": 1.15.0
+    react-router: 6.22.0
   peerDependencies:
     react: ">=16.8"
     react-dom: ">=16.8"
-  checksum: b5175b0c0560a45ee5b1f924af038b48bb29711839cbe65e2859a299f74740598bd90db438e205517b9568e7c5e6e6cb22fe1554f9763d60f6e347a8883940f9
+  checksum: 21cbdda0070dffb50845a97e2688648a9925c7ebabd1f9335523a1f8ae66048c1d9d06442f1b0ec35a266d1c63ed3b56b437db70807f73440a185f3e2d3c632f
   languageName: node
   linkType: hard
 
-"react-router@npm:6.7.0":
-  version: 6.7.0
-  resolution: "react-router@npm:6.7.0"
+"react-router@npm:6.22.0":
+  version: 6.22.0
+  resolution: "react-router@npm:6.22.0"
   dependencies:
-    "@remix-run/router": 1.3.0
+    "@remix-run/router": 1.15.0
   peerDependencies:
     react: ">=16.8"
-  checksum: 6dda5f084e04355c8deacb631fcd8472f3590dbd54d19175401aa1ed6bc6a2a244cd4d70cdb4fc81d2d800d75923461189e9e6a853c1838af78eff3021e4efbe
+  checksum: 94f382f3fa6fcb8525c143d83d4c3a3b010979f417cac0bbe7a63f906b3809e2bb56e8c329b9b3fd3212a498670ab278aea72893e921b827dcf00024c3d115dd
   languageName: node
   linkType: hard
 
@@ -10185,7 +10185,7 @@ __metadata:
   resolution: "wormscan-ui@workspace:."
   dependencies:
     "@analytics/google-analytics": ^1.0.7
-    "@certusone/wormhole-sdk": ^0.10.9
+    "@certusone/wormhole-sdk": 0.10.11
     "@metamask/detect-provider": ^2.0.0
     "@parcel/transformer-sass": ^2.8.3
     "@playwright/test": ^1.38.1
@@ -10224,7 +10224,7 @@ __metadata:
     react-i18next: 12.1.5
     react-json-view-lite: ^1.1.0
     react-query: 3.39.3
-    react-router-dom: 6.7.0
+    react-router-dom: 6.22.0
     react-select: 5.7.2
     react-table: 7.8.0
     react-toastify: ^10.0.4
