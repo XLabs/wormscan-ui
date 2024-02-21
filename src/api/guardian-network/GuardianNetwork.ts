@@ -77,7 +77,7 @@ export class GuardianNetwork {
     return new Promise(resolve => {
       setTimeout(() => {
         resolve(test);
-      }, 1000);
+      }, 2000);
     });
   }
 

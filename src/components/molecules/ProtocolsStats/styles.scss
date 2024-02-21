@@ -96,7 +96,7 @@
         &-name {
           @include text-p2;
 
-          @include desktop {
+          @include tablet {
             @include text-p1;
             font-weight: 500;
           }
