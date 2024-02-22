@@ -68,7 +68,6 @@
         &.active {
           background-color: var(--color-white-05);
           border-bottom: 1px solid var(--color-secondary-800);
-          /* color: var(--color-primary-30); */
           color: var(--color-primary-30);
         }
 
@@ -145,7 +144,6 @@
         &-value {
           @include text-h5;
           color: var(--color-primary-30);
-          /* color: var(--color-primary-50); */
           font-weight: 500;
 
           &-diff {
