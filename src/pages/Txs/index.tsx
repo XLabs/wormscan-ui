@@ -13,12 +13,19 @@ import { formatNumber } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { ChainId, Order } from "src/api";
 import { getClient } from "src/api/Client";
-import { TxStatus } from "../../types";
 import { GetOperationsInput, GetOperationsOutput } from "src/api/guardian-network/types";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import analytics from "src/analytics";
 import "./styles.scss";
+import {
+  CCTP_APP_ID,
+  CONNECT_APP_ID,
+  IStatus,
+  PORTAL_APP_ID,
+  UNKNOWN_APP_ID,
+  canWeGetDestinationTx,
+} from "src/consts";
 
 export interface TransactionOutput {
   VAAId: string;
@@ -32,7 +39,6 @@ export interface TransactionOutput {
 }
 
 export const PAGE_SIZE = 50;
-const REFETCH_TIME = 1000 * 10;
 
 const Txs = () => {
   useEffect(() => {
@@ -48,6 +54,8 @@ const Txs = () => {
   const currentPage = page >= 1 ? page : 1;
   const q = address ? address : "txs";
   const isTxsFiltered = address ? true : false;
+  const REFETCH_TIME = 1000 * (isTxsFiltered ? 120 : 10);
+
   const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
   const [isPaginationLoading, setIsPaginationLoading] = useState<boolean>(true);
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
@@ -176,6 +184,41 @@ const Txs = () => {
                 : parsedDestinationAddress;
               // -----
 
+              // --- Status Logic
+              const isCCTP = appIds?.includes(CCTP_APP_ID);
+              const isConnect = appIds?.includes(CONNECT_APP_ID);
+              const isPortal = appIds?.includes(PORTAL_APP_ID);
+              const isTBTC = !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
+              const isTransferWithPayload = false; /* payloadType === 3; */ // Operations has it
+              const hasAnotherApp = !!(
+                appIds &&
+                appIds.filter(
+                  appId =>
+                    appId !== CONNECT_APP_ID &&
+                    appId !== PORTAL_APP_ID &&
+                    appId !== UNKNOWN_APP_ID &&
+                    !appId.toLowerCase().includes("tbtc"),
+                )?.length
+              );
+
+              const STATUS: IStatus = tx?.targetChain?.transaction?.txHash
+                ? "COMPLETED"
+                : appIds && appIds.includes("CCTP_MANUAL")
+                ? "EXTERNAL_TX"
+                : /* vaa ? */ // Operations endpoint has vaa in it
+                isConnect || isPortal || isCCTP
+                ? (canWeGetDestinationTx(toChain) &&
+                    !hasAnotherApp &&
+                    (!isTransferWithPayload ||
+                      (isTransferWithPayload && isConnect) ||
+                      (isTransferWithPayload && isTBTC))) ||
+                  isCCTP
+                  ? "PENDING_REDEEM"
+                  : "VAA_EMITTED"
+                : "VAA_EMITTED";
+              /* : "IN_PROGRESS"; */ // Operations endpoint has vaa in it
+              // -----
+
               const timestampDate = new Date(timestamp);
               const row = {
                 VAAId: VAAId,
@@ -263,7 +306,7 @@ const Txs = () => {
                 ),
                 status: (
                   <div className="tx-status">
-                    <StatusBadge status={status as TxStatus} />
+                    <StatusBadge STATUS={STATUS} />
                   </div>
                 ),
                 amount: tokenAmount

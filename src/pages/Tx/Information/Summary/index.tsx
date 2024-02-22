@@ -1,12 +1,13 @@
-import { CheckCircledIcon, CheckIcon, ClockIcon, InfoCircledIcon } from "@radix-ui/react-icons";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { Network } from "@certusone/wormhole-sdk";
-import { Chip, Tooltip } from "src/components/atoms";
+import { Tooltip } from "src/components/atoms";
 import { formatAppIds, shortAddress } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
 import { ChainId } from "src/api";
 import { IStatus } from "src/consts";
 import { GetRedeem } from "./GetRedeem";
 import { VerifyRedemption } from "./VerifyRedemption";
+import { StatusBadge } from "src/components/molecules";
 import "./styles.scss";
 
 type Props = {
@@ -51,11 +52,7 @@ const Summary = ({
       <div>
         <div className="key">Status:</div>
         <div className="value">
-          {STATUS === "EXTERNAL_TX" && <StatusExternalTx />}
-          {STATUS === "COMPLETED" && <StatusCompleted />}
-          {STATUS === "IN_PROGRESS" && <StatusInProgress />}
-          {STATUS === "PENDING_REDEEM" && <StatusPendingRedeem />}
-          {STATUS === "VAA_EMITTED" && <StatusVaaEmitted />}
+          <StatusBadge STATUS={STATUS} />
         </div>
       </div>
       <div>
@@ -126,52 +123,5 @@ const Summary = ({
     </div>
   );
 };
-
-const StatusInProgress = () => (
-  <Chip className="status" color="progress">
-    <ClockIcon height={16} width={16} />
-    IN PROGRESS
-  </Chip>
-);
-
-const StatusVaaEmitted = () => (
-  <Chip className="status" color="emitted">
-    <CheckIcon height={16} width={16} />
-    VAA EMITTED
-  </Chip>
-);
-
-const StatusExternalTx = () => (
-  <Chip className="status" color="emitted">
-    <CheckIcon height={16} width={16} />
-    EXTERNAL TX
-  </Chip>
-);
-
-const StatusPendingRedeem = () => (
-  <Tooltip
-    side="right"
-    tooltip={
-      <div className="status-tooltip">
-        Your transaction has been completed on the blockchain, but has not yet been redeemed.
-      </div>
-    }
-    type="info"
-  >
-    <div>
-      <Chip className="status" color="progress">
-        <ClockIcon height={16} width={16} />
-        PENDING REDEEM
-      </Chip>
-    </div>
-  </Tooltip>
-);
-
-const StatusCompleted = () => (
-  <Chip className="status" color="completed">
-    <CheckCircledIcon height={16} width={16} />
-    COMPLETED
-  </Chip>
-);
 
 export default Summary;

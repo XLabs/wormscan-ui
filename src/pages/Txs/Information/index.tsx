@@ -9,13 +9,13 @@ import { useLocation } from "react-router-dom";
 import "./styles.scss";
 
 const columns: Column<TransactionOutput>[] | any = [
+  // {
+  //   Header: "STATUS",
+  //   accessor: "status",
+  // },
   {
-    Header: "TX HASH",
+    Header: "SOURCE TX HASH",
     accessor: "txHash",
-  },
-  {
-    Header: "ORIGIN APP",
-    accessor: "originApp",
   },
   {
     Header: "FROM",
@@ -25,19 +25,18 @@ const columns: Column<TransactionOutput>[] | any = [
     Header: "TO",
     accessor: "to",
   },
-  // {
-  //   Header: "STATUS",
-  //   accessor: "status",
-  // },
   {
-    Header: "AMOUNT",
-    accessor: "amount",
-    style: { textAlign: "right" },
+    Header: "PROTOCOL",
+    accessor: "originApp",
   },
+  // {
+  //   Header: "AMOUNT",
+  //   accessor: "amount",
+  //   style: { textAlign: "right" },
+  // },
   {
     Header: "TIME",
     accessor: "time",
-    style: { textAlign: "right" },
   },
 ];
 
@@ -113,7 +112,7 @@ const Information = ({
           <div>
             <div className="txs-information-top">
               <div className="txs-information-top-title">
-                {i18n.t("common.transfers").toUpperCase()}
+                {/* {i18n.t("common.transfers").toUpperCase()} */}
               </div>
               <div>
                 <PaginationComponent className="txs-information-top-pagination" />

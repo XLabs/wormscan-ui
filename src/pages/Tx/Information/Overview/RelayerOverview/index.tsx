@@ -1,7 +1,6 @@
 import { ArrowDownIcon, CheckboxIcon, CopyIcon } from "@radix-ui/react-icons";
 import { Network } from "@certusone/wormhole-sdk";
 import { DeliveryInstruction } from "@certusone/wormhole-sdk/lib/cjs/relayer";
-import { colorStatus } from "src/consts";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import RelayIcon from "src/icons/relayIcon.svg";
@@ -300,7 +299,7 @@ const RelayerOverview = ({
           </div>
         </div>
 
-        <div className={`tx-overview-graph-step signatures ${colorStatus["COMPLETED"]}`}>
+        <div className={`tx-overview-graph-step signatures green`}>
           <div className="tx-overview-graph-step-name">
             <div>SIGNED VAA</div>
           </div>

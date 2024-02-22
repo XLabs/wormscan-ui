@@ -1,23 +1,45 @@
 .status-badge {
-  &.blue {
-    --color: var(--color-information-100);
+  &-tooltip {
+    color: var(--color-primary-30);
+    font-size: 12px;
+    line-height: normal;
+    max-width: 172px;
+    text-align: center;
   }
 
-  &.green {
-    --color: var(--color-success-100);
+  &-status {
+    font-size: 16px;
+    font-weight: 500;
+    min-width: max-content;
   }
 
-  &.orange {
-    --color: var(--color-alert-100);
+  .progress {
+    background-color: #ffd600;
+    color: #473c01;
+
+    & > svg > path {
+      stroke-width: 0.3;
+      stroke: #473c01;
+    }
   }
 
-  &.red {
-    --color: var(--color-error-100);
+  .completed {
+    background-color: #00ffa3;
+    color: #023523;
+
+    & > svg > path {
+      stroke-width: 0.3;
+      stroke: #023523;
+    }
   }
 
-  color: var(--color);
+  .emitted {
+    background-color: #0078e8;
+    color: #ebf4fc;
 
-  & path {
-    fill: var(--color);
+    & > svg > path {
+      stroke-width: 0.3;
+      stroke: #ebf4fc;
+    }
   }
 }

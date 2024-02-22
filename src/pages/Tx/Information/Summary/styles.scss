@@ -67,42 +67,6 @@
       flex: 4;
     }
 
-    & .status {
-      font-size: 16px;
-      font-weight: 500;
-      min-width: max-content;
-    }
-
-    & .progress {
-      background-color: #ffd600;
-      color: #473c01;
-
-      & > svg > path {
-        stroke-width: 0.3;
-        stroke: #473c01;
-      }
-    }
-
-    & .completed {
-      background-color: #00ffa3;
-      color: #023523;
-
-      & > svg > path {
-        stroke-width: 0.3;
-        stroke: #023523;
-      }
-    }
-
-    & .emitted {
-      background-color: #0078e8;
-      color: #ebf4fc;
-
-      & > svg > path {
-        stroke-width: 0.3;
-        stroke: #ebf4fc;
-      }
-    }
-
     &-tooltip {
       @include centered-row;
 
@@ -118,12 +82,4 @@
       }
     }
   }
-}
-
-.status-tooltip {
-  color: var(--color-primary-30);
-  font-size: 12px;
-  line-height: normal;
-  max-width: 172px;
-  text-align: center;
 }

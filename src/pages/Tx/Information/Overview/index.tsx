@@ -6,7 +6,6 @@ import WormIcon from "src/icons/wormIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress, shortVaaId } from "src/utils/crypto";
 import { TokenInfo } from "src/utils/metaMaskUtils";
-import { colorStatus } from "src/consts";
 import "./styles.scss";
 
 export type OverviewProps = {
@@ -229,7 +228,7 @@ const Overview = ({
         </div>
       )}
 
-      <div className={`tx-overview-graph-step signatures ${colorStatus["COMPLETED"]}`}>
+      <div className={`tx-overview-graph-step signatures green`}>
         <div className="tx-overview-graph-step-name">
           <div>SIGNED VAA</div>
         </div>
@@ -268,7 +267,7 @@ const Overview = ({
       </div>
 
       {globalToRedeemTx && (
-        <div className={`tx-overview-graph-step ${colorStatus["COMPLETED"]}`}>
+        <div className={`tx-overview-graph-step green`}>
           <div className="tx-overview-graph-step-name">
             <div>RELAYING</div>
           </div>

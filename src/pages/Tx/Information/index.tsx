@@ -9,7 +9,16 @@ import {
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { DISCORD_URL, IStatus, canWeGetDestinationTx, txType } from "src/consts";
+import {
+  canWeGetDestinationTx,
+  CCTP_APP_ID,
+  CONNECT_APP_ID,
+  DISCORD_URL,
+  IStatus,
+  PORTAL_APP_ID,
+  txType,
+  UNKNOWN_APP_ID,
+} from "src/consts";
 import { Alert, Loader } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
@@ -50,11 +59,6 @@ interface Props {
   data: GetOperationsOutput;
   isRPC: boolean;
 }
-
-const UNKNOWN_APP_ID = "UNKNOWN";
-const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
-const CONNECT_APP_ID = "CONNECT";
-const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
 
 const ETH_LIMIT = {
   maxTransactionSize: 5000000,
