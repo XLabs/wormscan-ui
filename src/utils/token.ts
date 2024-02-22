@@ -19,6 +19,7 @@ import KUJI from "src/icons/tokens/KUJI.svg";
 import MATIC from "src/icons/tokens/MATIC.svg";
 import OPTIMISM from "src/icons/tokens/OPTIMISM.svg";
 import OSMO from "src/icons/tokens/OSMO.svg";
+import PENDLE from "src/icons/tokens/PENDLE.svg";
 import PYTH from "src/icons/tokens/PYTH.svg";
 import RNDR from "src/icons/tokens/RNDR.svg";
 import SDEX from "src/icons/tokens/SDEX.svg";
@@ -58,6 +59,7 @@ const iconTokens = {
   MATIC,
   OPTIMISM,
   OSMO,
+  PENDLE,
   PYTH,
   RNDR,
   SDEX,
