@@ -36,16 +36,15 @@ const ProtocolsStats = () => {
 
   useEffect(() => {
     if (data && data.length > 0) {
-      setSortedData(
-        data.sort(
-          (a: ProtocolsStatsOutput, b: ProtocolsStatsOutput) =>
-            +b.total_value_transferred - +a.total_value_transferred,
-        ),
+      const orderedData = [...data].sort(
+        (a: ProtocolsStatsOutput, b: ProtocolsStatsOutput) =>
+          +b.total_value_transferred - +a.total_value_transferred,
       );
 
-      setProtocolSelected(sortedData[0]);
+      setSortedData(orderedData);
+      setProtocolSelected(orderedData[0]);
     }
-  }, [data, sortedData]);
+  }, [data]);
 
   const handleClick = (item: ProtocolsStatsOutput) => {
     setProtocolSelected(item);
