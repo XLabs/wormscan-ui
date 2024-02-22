@@ -51,8 +51,6 @@ const ProtocolsStats = () => {
     setProtocolSelected(item);
   };
 
-  console.log({ data, sortedData });
-
   return (
     <div className="protocols-stats">
       <h3 className="protocols-stats-title">Featured Protocols Stats</h3>
