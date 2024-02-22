@@ -30,16 +30,14 @@ export class GuardianNetwork {
     return await this._client.doGet<ScoresOutput>("/scorecards");
   }
 
-  /*   async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
-    return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
-  } */
-
   async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
+    return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
+  }
+
+  /* async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
     const test = [
       {
         protocol: "allbridge" as ProtocolName,
-        total_value_locked: 0,
-        total_value_secured: 0,
         total_value_transferred: 1287115.6149863105,
         total_messages: 33124,
         last_day_messages: 142,
@@ -79,7 +77,7 @@ export class GuardianNetwork {
         resolve(test);
       }, 2000);
     });
-  }
+  } */
 
   async getVAA({
     chainId,

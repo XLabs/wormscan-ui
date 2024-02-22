@@ -79,19 +79,19 @@ const ProtocolsStats = () => {
             <div className="protocols-stats-container-info-item">
               <h4 className="protocols-stats-container-info-item-title">TVT</h4>
               <p className="protocols-stats-container-info-item-value">
-                ${formatNumber(+protocolSelected?.total_value_transferred)}
+                ${formatNumber(+protocolSelected?.total_value_transferred, 0)}
               </p>
             </div>
             <div className="protocols-stats-container-info-item">
               <h4 className="protocols-stats-container-info-item-title">TOTAL MESSAGES</h4>
               <p className="protocols-stats-container-info-item-value">
-                {formatNumber(+protocolSelected?.total_messages)}
+                {formatNumber(+protocolSelected?.total_messages, 0)}
               </p>
             </div>
             <div className="protocols-stats-container-info-item">
               <h4 className="protocols-stats-container-info-item-title">24H MESSAGES</h4>
               <p className="protocols-stats-container-info-item-value">
-                {formatNumber(+protocolSelected?.last_day_messages)}
+                {formatNumber(+protocolSelected?.last_day_messages, 0)}
                 <span
                   className={`protocols-stats-container-info-item-value-diff ${
                     protocolSelected?.last_day_diff_percentage === "0.00%"
