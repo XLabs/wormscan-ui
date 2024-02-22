@@ -82,7 +82,7 @@ const WormholeStats = () => {
               {t("home.statistics.allVolume")}
               <Tooltip
                 tooltip={
-                  <div>All-time total volume transferred through the token bridge in USD.</div>
+                  <div>This metric calculates the all-time total USD value of VAA transfers.</div>
                 }
                 type="info"
               >
@@ -102,11 +102,7 @@ const WormholeStats = () => {
             <div className="wormhole-stats-container-item-title">
               {t("home.statistics.messageVolume")}
               <Tooltip
-                tooltip={
-                  <div>
-                    Volume transferred through the token bridge in the last 24 hours, in USD.
-                  </div>
-                }
+                tooltip={<div>This metric calculates the last 24h USD value of VAA transfers.</div>}
                 type="info"
               >
                 <InfoCircledIcon height={18} width={18} />
