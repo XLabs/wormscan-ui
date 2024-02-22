@@ -21,6 +21,8 @@ interface Props {
   payloadType: number;
 }
 
+const BIGDIPPER_TRANSACTIONS = "https://bigdipper.live/wormhole/transactions";
+
 const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
@@ -30,6 +32,7 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
     value: txHash,
     chainId: emitterChainId,
   });
+  const parseTxHashUpperCase = parseTxHash.toUpperCase();
 
   return (
     <section className="tx-top">
@@ -41,7 +44,8 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
         <div>Tx Hash:</div>
         <div className="tx-top-txId-container">
           {/* delete conditional when WORMCHAIN gets an explorer */}
-          {emitterChainId === CHAIN_ID_WORMCHAIN || emitterChainId === ChainId.Sei ? (
+          {(emitterChainId === CHAIN_ID_WORMCHAIN || emitterChainId === ChainId.Sei) &&
+          !gatewayInfo?.originTxHash ? (
             <div>
               <span>{parseTxHash}</span>
             </div>
@@ -49,17 +53,17 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
             <a
               href={getExplorerLink({
                 network: currentNetwork,
-                chainId: emitterChainId,
-                value: parseTxHash,
+                chainId: gatewayInfo?.originChainId || emitterChainId,
+                value: gatewayInfo?.originTxHash || parseTxHash,
                 isNativeAddress: true,
               })}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {parseTxHash}
+              {gatewayInfo?.originTxHash || parseTxHash}
             </a>
           )}
-          <CopyToClipboard toCopy={parseTxHash}>
+          <CopyToClipboard toCopy={gatewayInfo?.originTxHash || parseTxHash}>
             <CopyIcon height={20} width={20} />
           </CopyToClipboard>
         </div>
@@ -70,18 +74,13 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
           <div>Gateway Tx Hash:</div>
           <div className="tx-top-txId-container">
             <a
-              href={getExplorerLink({
-                network: currentNetwork,
-                chainId: gatewayInfo?.originChainId,
-                value: gatewayInfo?.originTxHash,
-                isNativeAddress: true,
-              })}
+              href={`${BIGDIPPER_TRANSACTIONS}/${parseTxHashUpperCase}`}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {gatewayInfo?.originTxHash}
+              {parseTxHashUpperCase}
             </a>
-            <CopyToClipboard toCopy={gatewayInfo?.originTxHash}>
+            <CopyToClipboard toCopy={parseTxHashUpperCase}>
               <CopyIcon height={20} width={20} />
             </CopyToClipboard>
           </div>

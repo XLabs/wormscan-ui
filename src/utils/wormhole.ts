@@ -10,6 +10,7 @@ import AvalancheIcon from "src/icons/blockchains/avax.svg";
 import BaseIcon from "src/icons/blockchains/base.svg";
 import BSCIcon from "src/icons/blockchains/bsc.svg";
 import CeloIcon from "src/icons/blockchains/celo.svg";
+import DymensionIcon from "src/icons/blockchains/dymension.svg";
 import EthereumIcon from "src/icons/blockchains/eth.svg";
 import EvmosIcon from "src/icons/blockchains/evmos.svg";
 import FantomIcon from "src/icons/blockchains/fantom.svg";
@@ -29,8 +30,8 @@ import SolanaIcon from "src/icons/blockchains/solana.svg";
 import SuiIcon from "src/icons/blockchains/sui.svg";
 import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
 import TerraIcon from "src/icons/blockchains/terra.svg";
-import XplaIcon from "src/icons/blockchains/xpla.svg";
 import WormChainIcon from "src/icons/blockchains/wormchain.svg";
+import XplaIcon from "src/icons/blockchains/xpla.svg";
 
 import AcalaColorlessIcon from "src/icons/blockchains/colorless/acala.svg";
 import AlgorandColorlessIcon from "src/icons/blockchains/colorless/algorand.svg";
@@ -196,6 +197,22 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
       if (base === "token") return this.explorer?.[network] + "/token/" + encodeURIComponent(value);
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.Dymension]: {
+    name: "Dymension",
+    icon: DymensionIcon,
+    colorlessIcon: DymensionIcon,
+    explorer: {
+      TESTNET: "https://www.mintscan.io/dymension", // TODO: EXPLORER CHANGES WHEN EXISTS
+      MAINNET: "https://www.mintscan.io/dymension", // TODO: EXPLORER CHANGES WHEN EXISTS
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token")
+        return this.explorer?.[network] + "/assets"; /* + encodeURIComponent(value); */
       if (base === "block") return this.explorer?.[network] + "/block/" + value;
       return this.explorer?.[network] + "/tx/" + value;
     },

@@ -9,7 +9,16 @@ import {
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { DISCORD_URL, IStatus, canWeGetDestinationTx, txType } from "src/consts";
+import {
+  canWeGetDestinationTx,
+  CCTP_APP_ID,
+  CONNECT_APP_ID,
+  DISCORD_URL,
+  IStatus,
+  PORTAL_APP_ID,
+  txType,
+  UNKNOWN_APP_ID,
+} from "src/consts";
 import { Alert, Loader } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
@@ -26,6 +35,8 @@ import {
 import { tryGetRedeemTxn } from "src/utils/cryptoToolkit";
 import { getPorticoInfo, isPortico } from "src/utils/wh-portico-rpc";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
+import { getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
+import { TokenInfo, getTokenLogo } from "src/utils/metaMaskUtils";
 import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
 import { GlobalTxOutput, VAADetail } from "src/api/guardian-network/types";
 import { ChainLimit } from "src/api";
@@ -48,11 +59,6 @@ interface Props {
   txData: GetTransactionsOutput;
   VAAData: VAADetail & { vaa: any; decodedVaa: any };
 }
-
-const UNKNOWN_APP_ID = "UNKNOWN";
-const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
-const CONNECT_APP_ID = "CONNECT";
-const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
 
 const ETH_LIMIT = {
   maxTransactionSize: 5000000,
@@ -210,7 +216,7 @@ const Information = ({
 
   const amountSent = formatNumber(Number(tokenAmount));
   const amountSentUSD = +usdAmount ? formatNumber(+usdAmount, 2) : "";
-  const redeemedAmount = txData.standardizedProperties?.overwriteRedeemAmount
+  const redeemedAmount = txData?.standardizedProperties?.overwriteRedeemAmount
     ? formatNumber(+txData.standardizedProperties?.overwriteRedeemAmount, 7)
     : hasVAA
     ? formatNumber(formatUnits(+amount - +fee))
@@ -235,6 +241,8 @@ const Information = ({
         base: "token",
       })
     : "";
+  let targetTokenAddress =
+    txData?.standardizedProperties?.overwriteTargetTokenAddress || tokenAddress;
   let targetTokenLink = showTargetTokenUrl
     ? getExplorerLink({
         network: currentNetwork,
@@ -242,7 +250,7 @@ const Information = ({
           extraRawInfoToChainId ||
           txData?.standardizedProperties?.overwriteTargetTokenChain ||
           tokenChain,
-        value: txData?.standardizedProperties?.overwriteTargetTokenAddress || tokenAddress,
+        value: targetTokenAddress,
         base: "token",
       })
     : "";
@@ -255,11 +263,12 @@ const Information = ({
   if (wrappedTokenAddress && !txData.standardizedProperties?.appIds.includes("ETH_BRIDGE")) {
     if (wrappedSide === "target") {
       targetTokenChain = toChain;
+      targetTokenAddress = wrappedTokenAddress;
       targetTokenLink = showTargetTokenUrl
         ? getExplorerLink({
             network: currentNetwork,
             chainId: extraRawInfoToChainId || toChain,
-            value: wrappedTokenAddress,
+            value: targetTokenAddress,
             base: "token",
           })
         : "";
@@ -294,8 +303,39 @@ const Information = ({
     targetSymbol = txData.standardizedProperties?.overwriteTargetSymbol;
   }
 
+  // --- ⬇ Add to MetaMask ⬇ ---
+  const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
+  const tokenEffectiveAddress = wrappedSide === "target" ? wrappedTokenAddress : tokenAddress;
+  const showMetaMaskBtn =
+    isEVMChain(toChain) && tokenInfo?.tokenDecimals && toChain === targetTokenChain;
+
+  useEffect(() => {
+    if (isEVMChain(toChain)) {
+      getTokenInformation(targetTokenChain, environment, targetTokenAddress).then(data => {
+        if (data) {
+          getTokenLogo({ tokenAddress: targetTokenAddress }).then(tokenImage => {
+            setTokenInfo({
+              targetSymbol: targetSymbol,
+              tokenAddress: tokenEffectiveAddress,
+              tokenDecimals: data.tokenDecimals,
+              tokenImage: tokenImage,
+              tokenSymbol: data.symbol,
+            });
+          });
+        }
+      });
+    }
+  }, [
+    toChain,
+    targetTokenChain,
+    environment,
+    targetTokenAddress,
+    targetSymbol,
+    tokenEffectiveAddress,
+  ]);
+  // --- ⬆ Add to MetaMask ⬆ ---
+
   const overviewAndDetailProps = {
-    showSignatures: !(appIds && appIds.includes("CCTP_MANUAL")),
     amountSent,
     amountSentUSD,
     currentNetwork,
@@ -313,12 +353,15 @@ const Information = ({
     parsedPayload,
     parsedRedeemTx,
     redeemedAmount,
+    showMetaMaskBtn,
+    showSignatures: !(appIds && appIds.includes("CCTP_MANUAL")),
     sourceSymbol,
     sourceTokenLink,
     targetSymbol,
     targetTokenLink,
     toChain: extraRawInfoToChainId || toChain,
     tokenAmount,
+    tokenInfo,
     totalGuardiansNeeded,
     VAAId,
   };
@@ -347,7 +390,7 @@ const Information = ({
     (isEVMChain(toChain) || toChain === 1 || toChain === 21) &&
     toChain === targetTokenChain &&
     !!toAddress &&
-    !!(wrappedTokenAddress && wrappedSide === "target" ? wrappedTokenAddress : tokenAddress) &&
+    !!(wrappedTokenAddress && tokenEffectiveAddress) &&
     !!timestamp &&
     !!txData?.payload?.amount &&
     !!txData?.txHash &&
@@ -361,7 +404,7 @@ const Information = ({
       fromChain as ChainId,
       toChain,
       toAddress,
-      wrappedTokenAddress && wrappedSide === "target" ? wrappedTokenAddress : tokenAddress,
+      wrappedTokenAddress && tokenEffectiveAddress,
       timestamp,
       txData?.payload?.amount,
       txData.txHash,
@@ -445,7 +488,7 @@ const Information = ({
     ? chainLimitsData.find((data: ChainLimit) => data.chainId === fromChain)
     : ETH_LIMIT;
   const transactionLimit = limitDataForChain?.maxTransactionSize;
-  const isBigTransaction = transactionLimit < Number(usdAmount);
+  const isBigTransaction = transactionLimit <= Number(usdAmount);
   const isDailyLimitExceeded = limitDataForChain?.availableNotional < Number(usdAmount);
 
   // --- Automatic Relayer Detection and handling ---

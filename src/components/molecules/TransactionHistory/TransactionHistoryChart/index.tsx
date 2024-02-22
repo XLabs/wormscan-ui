@@ -112,7 +112,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                 series={[
                   {
                     name: "Transactions",
-                    data: seriesData,
+                    data: range === "day" ? seriesData.slice(0, -1) : seriesData,
                   },
                 ]}
                 options={{
@@ -152,7 +152,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                       ],
                     },
                   },
-                  labels: seriesLabels,
+                  labels: range === "day" ? seriesLabels.slice(0, -1) : seriesLabels,
                   chart: {
                     zoom: { enabled: false },
                     toolbar: { show: false },

@@ -478,6 +478,13 @@ const Tx = () => {
               gatewayChain,
             );
 
+            if (
+              data.globalTx?.originTx?.attribute?.value &&
+              !data.standardizedProperties.appIds?.includes("WORMCHAIN_GATEWAY_TRANSFER")
+            ) {
+              data.standardizedProperties.appIds.push("WORMCHAIN_GATEWAY_TRANSFER");
+            }
+
             if (wrappedToken) {
               wrappedTokenChain = wrapped === "target" ? toChain : fromChain;
               data.standardizedProperties.wrappedTokenAddress = wrappedToken.wrappedToken;

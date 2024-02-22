@@ -70,6 +70,18 @@
   }
 
   .table {
+    th {
+      text-align: center;
+
+      &:first-child {
+        width: 80px;
+      }
+    }
+
+    td {
+      text-align: center;
+    }
+
     & a {
       color: var(--color-information-100);
       text-decoration: none;
@@ -86,28 +98,22 @@
     &.txs {
       .tx-hash {
         @include centered-row;
-
         gap: 12px;
+        justify-content: center;
       }
 
       .tx-from,
       .tx-to {
         @include centered-row;
-
         gap: 12px;
+        justify-content: center;
+        text-align: left;
 
         &-address {
           @include centered-row;
 
           gap: 12px;
         }
-      }
-
-      .tx-status {
-        display: flex;
-        gap: 12;
-        align-items: center;
-        color: var(--color);
       }
     }
   }

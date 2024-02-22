@@ -150,6 +150,7 @@
       gap: 8px;
       padding-left: 10px;
       user-select: none;
+      white-space: nowrap;
 
       @include desktop {
         padding-left: 0;

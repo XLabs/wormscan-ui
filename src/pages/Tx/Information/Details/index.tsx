@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { CHAIN_ID_WORMCHAIN, ChainId, Network } from "@certusone/wormhole-sdk";
-import { BlockchainIcon, Tooltip } from "src/components/atoms";
+import { CHAIN_ID_WORMCHAIN, ChainId } from "@certusone/wormhole-sdk";
+import { AddToMetaMaskBtn, BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { TruncateText } from "src/utils/string";
-import "./styles.scss";
 import { OverviewProps } from "../Overview";
+import "./styles.scss";
 
 const Details = ({
   amountSent,
@@ -26,6 +26,7 @@ const Details = ({
   parsedPayload,
   parsedRedeemTx,
   redeemedAmount,
+  showMetaMaskBtn,
   showSignatures,
   sourceSymbol,
   sourceTokenLink,
@@ -33,6 +34,7 @@ const Details = ({
   targetTokenLink,
   toChain,
   tokenAmount,
+  tokenInfo,
   totalGuardiansNeeded,
   VAAId,
 }: OverviewProps) => {
@@ -121,7 +123,7 @@ const Details = ({
           </div>
         </div>
         <div className="tx-details-group-line">
-          <div className="tx-details-group-line-key">From</div>
+          <div className="tx-details-group-line-key">Source Address</div>
           <div className="tx-details-group-line-value">
             {parsedOriginAddress ? (
               <>
@@ -259,7 +261,7 @@ const Details = ({
           </div>
         </div>
         <div className="tx-details-group-line">
-          <div className="tx-details-group-line-key">To</div>
+          <div className="tx-details-group-line-key">Destination Address</div>
           <div className="tx-details-group-line-value">
             {parsedDestinationAddress ? (
               <>
@@ -337,6 +339,18 @@ const Details = ({
               </>
             ) : (
               "N/A"
+            )}
+          </div>
+        </div>
+        <div className="tx-details-group-line">
+          <div className="tx-details-group-line-key"></div>
+          <div className="tx-details-group-line-value">
+            {showMetaMaskBtn && (
+              <AddToMetaMaskBtn
+                currentNetwork={currentNetwork}
+                toChain={toChain as ChainId}
+                tokenInfo={tokenInfo}
+              />
             )}
           </div>
         </div>
