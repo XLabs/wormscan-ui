@@ -28,6 +28,7 @@ const protocolNames: Record<ProtocolName, string> = {
 
 const ProtocolsStats = () => {
   const [protocolSelected, setProtocolSelected] = useState<ProtocolsStatsOutput>();
+  const [sortedData, setSortedData] = useState([]);
 
   const { isLoading, isError, data } = useQuery("protocolsStats", () =>
     getClient().guardianNetwork.getProtocolsStats(),
@@ -35,9 +36,16 @@ const ProtocolsStats = () => {
 
   useEffect(() => {
     if (data && data.length > 0) {
-      setProtocolSelected(data[0]);
+      setSortedData(
+        data.sort(
+          (a: ProtocolsStatsOutput, b: ProtocolsStatsOutput) =>
+            +b.total_value_transferred - +a.total_value_transferred,
+        ),
+      );
+
+      setProtocolSelected(sortedData[0]);
     }
-  }, [data]);
+  }, [data, sortedData]);
 
   const handleClick = (item: ProtocolsStatsOutput) => {
     setProtocolSelected(item);
@@ -57,7 +65,7 @@ const ProtocolsStats = () => {
       ) : (
         <div className="protocols-stats-container">
           <div className="protocols-stats-container-list">
-            {data?.map((item: ProtocolsStatsOutput) => (
+            {sortedData?.map((item: ProtocolsStatsOutput) => (
               <div
                 key={item.protocol}
                 className={`protocols-stats-container-list-item ${

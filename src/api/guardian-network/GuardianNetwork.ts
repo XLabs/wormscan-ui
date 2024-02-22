@@ -34,7 +34,7 @@ export class GuardianNetwork {
     return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
   }
 
-  /* async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
+  /*  async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
     const test = [
       {
         protocol: "allbridge" as ProtocolName,
