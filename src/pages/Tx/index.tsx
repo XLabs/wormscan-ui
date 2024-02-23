@@ -629,7 +629,7 @@ const Tx = () => {
       setTxData(apiTxData);
       setIsLoading(false);
     },
-    [environment, network, setShowSourceTokenUrl, setShowTargetTokenUrl],
+    [environment, network, setShowSourceTokenUrl, setShowTargetTokenUrl, tryToGetRpcInfo],
   );
 
   useEffect(() => {

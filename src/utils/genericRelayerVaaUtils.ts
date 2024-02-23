@@ -8,7 +8,7 @@ import {
   parseWormholeRelayerResend,
   parseWormholeRelayerSend,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
-import { callWithTimeout } from "src/utils/asyncUtils";
+import { callWithTimeout, wait } from "src/utils/asyncUtils";
 import { getClient } from "src/api/Client";
 import { AutomaticRelayOutput } from "src/api/search/types";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
@@ -60,15 +60,30 @@ export async function populateDeliveryLifecycleRecordByVaa(
     console.error("err on getTransaction wormhole api", e);
   }
 
-  const relayerEndpoint = await getClient().search.getAutomaticRelay({
-    emitterChain: parsedVaa.emitterChain,
-    emitterAddress: parsedVaa.emitterAddress.toString("hex"),
-    sequence: Number(parsedVaa.sequence),
-  });
+  let count = 0;
+  let relayerEndpoint;
+  // retry relayer endpoint cause newest transactions take around 15 sec to be there
+  while (count <= 4) {
+    count++;
+    relayerEndpoint = await getClient().search.getAutomaticRelay({
+      emitterChain: parsedVaa.emitterChain,
+      emitterAddress: parsedVaa.emitterAddress.toString("hex"),
+      sequence: Number(parsedVaa.sequence),
+    });
 
-  const sourceChainId = parsedVaa.emitterChain;
+    if (relayerEndpoint.data) {
+      count = 5;
+    } else {
+      await wait(5500);
+    }
+  }
 
   output.DeliveryStatus = relayerEndpoint;
+  if (!relayerEndpoint.data) {
+    return;
+  }
+
+  const sourceChainId = parsedVaa.emitterChain;
 
   const MAX_WAIT_TIME = 10000;
   const sourceTxHash = relayerEndpoint.data.fromTxHash;

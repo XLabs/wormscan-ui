@@ -532,7 +532,14 @@ const Information = ({
 
     if (isGenericRelayerTx) {
       if (loadingRelayers) return <Loader />;
-      if (!genericRelayerInfo?.vaa) return <div>No VAA was found</div>;
+      if (!genericRelayerInfo?.vaa) {
+        setIsGenericRelayerTx(false);
+        setTxData({
+          ...data,
+          vaa: null,
+        } as GetOperationsOutput);
+        return <div>No VAA was found</div>;
+      }
 
       const vaa = genericRelayerInfo.vaa;
       const parsedVaa = parseVaa(vaa);

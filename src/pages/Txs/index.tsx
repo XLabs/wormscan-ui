@@ -25,6 +25,7 @@ import {
   PORTAL_APP_ID,
   UNKNOWN_APP_ID,
   canWeGetDestinationTx,
+  txType,
 } from "src/consts";
 
 export interface TransactionOutput {
@@ -34,7 +35,7 @@ export interface TransactionOutput {
   from: React.ReactNode;
   to: React.ReactNode;
   status: React.ReactNode;
-  amount: number | string;
+  amount: React.ReactNode;
   time: Date | string;
 }
 
@@ -127,6 +128,10 @@ const Txs = () => {
               const { emitterChain, id: VAAId } = tx;
               const payload = tx?.content?.payload;
               const standarizedProperties = tx?.content?.standarizedProperties;
+<<<<<<< HEAD
+=======
+              const payloadType = tx?.content?.payload?.payloadType;
+>>>>>>> a9a645bf4da0f02328dadb9217a1a739f6fe4682
               const symbol = tx?.data?.symbol;
               const tokenAmount = tx?.data?.tokenAmount;
               const timestamp = tx?.sourceChain?.timestamp;
@@ -201,22 +206,26 @@ const Txs = () => {
                 )?.length
               );
 
+<<<<<<< HEAD
               const STATUS: IStatus = tx?.targetChain?.transaction?.txHash
+=======
+              const STATUS: IStatus = tx.targetChain?.transaction?.txHash
+>>>>>>> a9a645bf4da0f02328dadb9217a1a739f6fe4682
                 ? "COMPLETED"
                 : appIds && appIds.includes("CCTP_MANUAL")
                 ? "EXTERNAL_TX"
-                : /* vaa ? */ // Operations endpoint has vaa in it
-                isConnect || isPortal || isCCTP
-                ? (canWeGetDestinationTx(toChain) &&
-                    !hasAnotherApp &&
-                    (!isTransferWithPayload ||
-                      (isTransferWithPayload && isConnect) ||
-                      (isTransferWithPayload && isTBTC))) ||
-                  isCCTP
-                  ? "PENDING_REDEEM"
+                : tx.vaa?.raw
+                ? isConnect || isPortal || isCCTP
+                  ? (canWeGetDestinationTx(toChain) &&
+                      !hasAnotherApp &&
+                      (!isTransferWithPayload ||
+                        (isTransferWithPayload && isConnect) ||
+                        (isTransferWithPayload && isTBTC))) ||
+                    isCCTP
+                    ? "PENDING_REDEEM"
+                    : "VAA_EMITTED"
                   : "VAA_EMITTED"
-                : "VAA_EMITTED";
-              /* : "IN_PROGRESS"; */ // Operations endpoint has vaa in it
+                : "IN_PROGRESS";
               // -----
 
               const timestampDate = new Date(timestamp);
@@ -304,14 +313,18 @@ const Txs = () => {
                     )}
                   </div>
                 ),
-                status: (
-                  <div className="tx-status">
-                    <StatusBadge STATUS={STATUS} />
-                  </div>
+                status: <StatusBadge STATUS={STATUS} small />,
+                amount: (
+                  <>
+                    {payloadType && <div>{txType[payloadType]}</div>}
+                    {tokenAmount && (
+                      <div>
+                        {formatNumber(Number(tokenAmount)) + " " + (symbol ? symbol : "N/A")}
+                      </div>
+                    )}
+                    {!payloadType && !tokenAmount && "-"}
+                  </>
                 ),
-                amount: tokenAmount
-                  ? formatNumber(Number(tokenAmount)) + " " + (symbol ? symbol : "N/A")
-                  : "-",
                 time: (timestampDate && timeAgo(timestampDate)) || "-",
               };
 
