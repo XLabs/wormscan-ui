@@ -20,7 +20,6 @@ import {
   VAACount,
   VAADetail,
   ProtocolsStatsOutput,
-  ProtocolName,
 } from "./types";
 
 export class GuardianNetwork {
@@ -33,51 +32,6 @@ export class GuardianNetwork {
   async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
     return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
   }
-
-  /*  async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
-    const test = [
-      {
-        protocol: "allbridge" as ProtocolName,
-        total_value_transferred: 1287115.6149863105,
-        total_messages: 33124,
-        last_day_messages: 142,
-        last_day_diff_percentage: "-5.30%",
-      },
-      {
-        protocol: "cctp" as ProtocolName,
-        total_value_locked: 0,
-        total_value_secured: 0,
-        total_value_transferred: 123123123.123123,
-        total_messages: 432432,
-        last_day_messages: 543,
-        last_day_diff_percentage: "15.21%",
-      },
-      {
-        protocol: "portal" as ProtocolName,
-        total_value_locked: 0,
-        total_value_secured: 0,
-        total_value_transferred: 78978978.987987,
-        total_messages: 567765,
-        last_day_messages: 0,
-        last_day_diff_percentage: "0.00%",
-      },
-      {
-        protocol: "mayan" as ProtocolName,
-        total_value_locked: 0,
-        total_value_secured: 0,
-        total_value_transferred: 5555555.55555,
-        total_messages: 4444,
-        last_day_messages: 333,
-        last_day_diff_percentage: "2.11%",
-      },
-    ];
-
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(test);
-      }, 2000);
-    });
-  } */
 
   async getVAA({
     chainId,
