@@ -217,7 +217,7 @@ const Overview = ({
                     <CopyToClipboard toCopy={parsedEmitterAddress}>
                       <CopyIcon height={20} width={20} />
                     </CopyToClipboard>
-                    {isGatewaySource && <span className="comment"> (Wormchain)</span>}
+                    {isGatewaySource && <span className="comment"> (Gateway)</span>}
                   </div>
                 </>
               ) : (

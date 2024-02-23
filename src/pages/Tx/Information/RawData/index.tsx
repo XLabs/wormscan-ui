@@ -83,20 +83,26 @@ const RawData = ({ extraRawInfo, data, lifecycleRecord }: Props) => {
   const payload = data?.content?.payload;
   const dataNoPayload = JSON.parse(JSON.stringify(data)) as GetOperationsOutput;
   if (dataNoPayload.content) dataNoPayload.content.payload = undefined;
-  // const signedVAA = decodedVaa ? (Object.values(decodedVaa).length > 0 ? decodedVaa : null) : null;
+  if (dataNoPayload.decodedVaa) dataNoPayload.decodedVaa = undefined;
+
+  const signedVAA = data.decodedVaa
+    ? Object.values(data.decodedVaa).length > 0
+      ? data.decodedVaa
+      : null
+    : null;
 
   const CODE_BLOCKS = [
+    {
+      title: "TX DATA",
+      code: JSON.stringify(dataNoPayload, null, 4),
+    },
     {
       title: "PAYLOAD",
       code: payload && JSON.stringify(payload, null, 4),
     },
-    // {
-    //   title: "SIGNED VAA",
-    //   code: signedVAA && JSON.stringify(signedVAA, null, 4),
-    // },
     {
-      title: "TX DATA",
-      code: JSON.stringify(dataNoPayload, null, 4),
+      title: "SIGNED VAA",
+      code: signedVAA && JSON.stringify(signedVAA, null, 4),
     },
   ];
 

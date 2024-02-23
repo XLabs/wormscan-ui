@@ -460,6 +460,15 @@ const Information = ({
   const [loadingRelayers, setLoadingRelayers] = useState(false);
   const getRelayerInfo = useCallback(async () => {
     setLoadingRelayers(true);
+
+    // TODO: handle generic relayer non-vaa txns without rpcs
+    if (!vaa || !vaa.raw) {
+      setLoadingRelayers(false);
+      setIsGenericRelayerTx(false);
+      console.log("automatic relayer tx without vaa yet");
+      return;
+    }
+
     populateDeliveryLifecycleRecordByVaa(environment, vaa.raw)
       .then((result: DeliveryLifecycleRecord) => {
         analytics.track("txDetail", {

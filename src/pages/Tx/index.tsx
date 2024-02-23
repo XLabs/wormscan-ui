@@ -24,6 +24,8 @@ import { getAlgorandTokenInfo, tryGetWrappedToken } from "src/utils/cryptoToolki
 import { getPorticoInfo, isPortico } from "src/utils/wh-portico-rpc";
 import { useRecoilState } from "recoil";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
+import { getGuardianSet } from "src/consts";
+import { parseVaa } from "@certusone/wormhole-sdk";
 
 const Tx = () => {
   useEffect(() => {
@@ -139,6 +141,8 @@ const Tx = () => {
           lastFinalizedBlock: txData.lastFinalizedBlock,
         });
 
+        console.log("hola??");
+
         if (txData.extraRawInfo) setExtraRawInfo(txData.extraRawInfo);
         setErrorCode(undefined);
         setIsLoading(false);
@@ -186,6 +190,7 @@ const Tx = () => {
         });
 
       if (currentNetworkResponse) {
+        console.log({ currentNetworkResponse });
         return currentNetworkResponse;
       }
 
@@ -292,6 +297,49 @@ const Tx = () => {
 
   const processVaaData = useCallback(
     async (apiTxData: GetOperationsOutput[]) => {
+      // Check if its generic relayer tx without vaa and go with RPCs
+      // TODO: handle generic relayer no-vaa txns without RPCs
+      for (const data of apiTxData) {
+        if (
+          data?.content?.standarizedProperties?.appIds?.includes("GENERIC_RELAYER") &&
+          !data?.vaa?.raw
+        ) {
+          tryToGetRpcInfo();
+          return;
+        }
+      }
+
+      // Signed VAA logic
+      for (const data of apiTxData) {
+        const vaa = data.vaa?.raw;
+        if (!vaa) break;
+
+        const guardianSetIndex = data.vaa.guardianSetIndex;
+        // Decode SignedVAA and get guardian signatures with name
+        const guardianSetList = getGuardianSet(guardianSetIndex);
+        const vaaBuffer = Buffer.from(vaa, "base64");
+        const parsedVaa = parseVaa(vaaBuffer);
+
+        const { emitterAddress, guardianSignatures, hash, sequence } = parsedVaa || {};
+        const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
+        const parsedHash = Buffer.from(hash).toString("hex");
+        const parsedSequence = Number(sequence);
+        const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
+          index,
+          signature: Buffer.from(signature).toString("hex"),
+          name: guardianSetList?.[index]?.name,
+        }));
+
+        data.decodedVaa = {
+          ...parsedVaa,
+          payload: parsedVaa.payload ? Buffer.from(parsedVaa.payload).toString("hex") : null,
+          emitterAddress: parsedEmitterAddress,
+          guardianSignatures: parsedGuardianSignatures,
+          hash: parsedHash,
+          sequence: parsedSequence,
+        };
+      }
+
       // check CCTP
       for (const data of apiTxData) {
         if (data?.content?.standarizedProperties?.appIds?.includes("CCTP_WORMHOLE_INTEGRATION")) {
@@ -432,10 +480,10 @@ const Tx = () => {
             );
 
             if (
-              data.globalTx?.originTx?.attribute?.value &&
-              !data.standardizedProperties.appIds?.includes("WORMCHAIN_GATEWAY_TRANSFER")
+              data?.sourceChain?.attribute?.value &&
+              !data?.content?.standarizedProperties?.appIds?.includes("WORMCHAIN_GATEWAY_TRANSFER")
             ) {
-              data.standardizedProperties.appIds.push("WORMCHAIN_GATEWAY_TRANSFER");
+              data?.content?.standarizedProperties?.appIds?.push("WORMCHAIN_GATEWAY_TRANSFER");
             }
 
             if (wrappedToken) {

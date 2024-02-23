@@ -208,5 +208,6 @@ export interface GetOperationsOutput {
     tokenAmount: string;
     usdAmount: string;
   };
+  decodedVaa?: any;
 }
 [];
