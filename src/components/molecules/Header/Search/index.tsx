@@ -38,8 +38,8 @@ const Search = () => {
       const otherNetwork = environment.network === "MAINNET" ? "TESTNET" : "MAINNET";
 
       const [currentNetworkResult, otherNetworkResult] = (await Promise.all([
-        getClient().search.getTransactions({ query: { ...(address && { address }) } }),
-        getClient(otherNetwork).search.getTransactions({ query: { ...(address && { address }) } }),
+        getClient().guardianNetwork.getOperations({ address }),
+        getClient(otherNetwork).guardianNetwork.getOperations({ address }),
       ])) as any;
 
       if (!!currentNetworkResult?.length) {

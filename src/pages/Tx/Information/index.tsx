@@ -35,10 +35,10 @@ import {
 import { tryGetRedeemTxn } from "src/utils/cryptoToolkit";
 import { getPorticoInfo, isPortico } from "src/utils/wh-portico-rpc";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
+import { GetBlockData } from "src/api/search/types";
+import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
 import { TokenInfo, getTokenLogo } from "src/utils/metaMaskUtils";
-import { GetBlockData, GetTransactionsOutput } from "src/api/search/types";
-import { GlobalTxOutput, VAADetail } from "src/api/guardian-network/types";
 import { ChainLimit } from "src/api";
 
 import Tabs from "./Tabs";
@@ -56,8 +56,8 @@ interface Props {
   chainLimitsData?: ChainLimit[];
   extraRawInfo: any;
   setTxData: (x: any) => void;
-  txData: GetTransactionsOutput;
-  VAAData: VAADetail & { vaa: any; decodedVaa: any };
+  data: GetOperationsOutput;
+  isRPC: boolean;
 }
 
 const ETH_LIMIT = {
@@ -70,8 +70,8 @@ const Information = ({
   chainLimitsData,
   extraRawInfo,
   setTxData,
-  txData,
-  VAAData,
+  data,
+  isRPC,
 }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -95,40 +95,26 @@ const Information = ({
   const currentNetwork = environment.network;
 
   const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
-  const { decodedVaa, vaa } = VAAData || {};
-  const { guardianSignatures } = decodedVaa || {};
-  const guardianSignaturesCount =
-    guardianSignatures?.length || extraRawInfo?.signatures?.length || 0;
+  const vaa = data?.vaa;
+  const guardianSignaturesCount = 0; // TODO: ADD GUARDIAN SIGNATURES?
   const hasVAA = !!vaa;
 
   const { currentBlock, lastFinalizedBlock } = blockData || {};
+  const { payload, standarizedProperties } = data?.content || {};
+  const { symbol, tokenAmount, usdAmount } = data?.data || {};
+  const { hex: emitterAddress, native: emitterNativeAddress } = data?.emitterAddress || {};
+  const emitterChain = data?.emitterChain;
+  const VAAId = data?.id;
+  const { timestamp } = data?.sourceChain || {};
 
   const {
-    emitterAddress,
-    emitterChain,
-    emitterNativeAddress,
-    globalTx,
-    id: VAAId,
-    payload,
-    standardizedProperties,
-    symbol,
-    timestamp,
-    tokenAmount,
-    txHash,
-    usdAmount,
-  } = txData || {};
-
-  const {
-    callerAppId,
     parsedPayload,
     payloadType,
     tokenAddress: payloadTokenAddress,
     tokenChain: payloadTokenChain,
   } = payload || {};
 
-  const { originTx, destinationTx } = globalTx || {};
-
-  const fee = txData?.standardizedProperties?.overwriteFee || standardizedProperties?.fee || "";
+  const fee = standarizedProperties?.overwriteFee || standarizedProperties?.fee || "";
   const {
     amount,
     appIds,
@@ -140,37 +126,25 @@ const Information = ({
     tokenChain: stdTokenChain,
     wrappedTokenAddress,
     wrappedTokenSymbol,
-  } = standardizedProperties || {};
-
-  const { from: globalFrom, timestamp: globalFromTimestamp } = originTx || {};
-
-  const {
-    chainId: globalToChainId,
-    from: globalTo,
-    timestamp: globalToTimestamp,
-    txHash: globalToRedeemTx,
-  } = destinationTx || {};
+  } = standarizedProperties || {};
 
   const fromChainOrig = emitterChain || stdFromChain;
-  const fromAddress = globalFrom || stdFromAddress;
-  const toAddress = stdToAddress || globalTo;
-  const startDate = timestamp || globalFromTimestamp;
-  const endDate = globalToTimestamp;
+  const fromAddress = data?.sourceChain?.from || stdFromAddress;
+  const toAddress = stdToAddress || data?.targetChain?.to;
+  const startDate = timestamp || data?.sourceChain?.timestamp;
+  const endDate = data?.targetChain?.timestamp;
   let tokenChain = stdTokenChain || payloadTokenChain;
   const tokenAddress = stdTokenAddress || payloadTokenAddress;
 
-  const isUnknownApp = callerAppId === UNKNOWN_APP_ID || appIds?.includes(UNKNOWN_APP_ID);
-  const isCCTP = callerAppId === CCTP_APP_ID || appIds?.includes(CCTP_APP_ID);
-  const isConnect = callerAppId === CONNECT_APP_ID || appIds?.includes(CONNECT_APP_ID);
-  const isPortal = callerAppId === PORTAL_APP_ID || appIds?.includes(PORTAL_APP_ID);
+  const isUnknownApp = appIds?.includes(UNKNOWN_APP_ID);
+  const isCCTP = appIds?.includes(CCTP_APP_ID);
+  const isConnect = appIds?.includes(CONNECT_APP_ID);
+  const isPortal = appIds?.includes(PORTAL_APP_ID);
+  const isTBTC = !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
   const isJustPortalUnknown =
-    callerAppId === PORTAL_APP_ID ||
     (appIds?.includes(PORTAL_APP_ID) && appIds.length === 1) ||
     (appIds?.includes(PORTAL_APP_ID) && appIds?.includes(UNKNOWN_APP_ID) && appIds.length === 2);
 
-  const isTBTC =
-    callerAppId?.toLowerCase().includes("tbtc") ||
-    !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
   const isTransferWithPayload = payloadType === 3;
   const hasAnotherApp = !!(
     appIds &&
@@ -190,16 +164,18 @@ const Information = ({
     value: emitterNativeAddress ? emitterNativeAddress : emitterAddress,
     chainId: emitterChain as ChainId,
   });
-  const isGatewaySource = originTx?.attribute?.type === "wormchain-gateway";
+  const isGatewaySource = data?.sourceChain?.attribute?.type === "wormchain-gateway";
 
   // Gateway Transfers
-  const fromChain = isGatewaySource ? originTx?.attribute?.value?.originChainId : fromChainOrig;
+  const fromChain = isGatewaySource
+    ? data?.sourceChain?.attribute?.value?.originChainId
+    : fromChainOrig;
   const toChain = parsedPayload?.["gateway_transfer"]?.chain
     ? parsedPayload?.["gateway_transfer"].chain
-    : stdToChain || globalToChainId;
+    : stdToChain || data?.targetChain?.chainId;
 
   const parsedOriginAddress = isGatewaySource
-    ? originTx?.attribute?.value?.originAddress
+    ? data?.sourceChain?.attribute?.value?.originAddress
     : parseAddress({
         value: fromAddress,
         chainId: fromChainOrig as ChainId,
@@ -212,13 +188,16 @@ const Information = ({
       });
   // --- x ---
 
-  const parsedRedeemTx = parseTx({ value: globalToRedeemTx, chainId: toChain as ChainId });
+  const parsedRedeemTx = parseTx({
+    value: data?.targetChain?.transaction?.txHash,
+    chainId: toChain as ChainId,
+  });
 
-  const amountSent = formatNumber(Number(tokenAmount));
+  const amountSent = formatNumber(Number(tokenAmount)) || formatNumber(formatUnits(+amount));
   const amountSentUSD = +usdAmount ? formatNumber(+usdAmount, 2) : "";
-  const redeemedAmount = txData?.standardizedProperties?.overwriteRedeemAmount
-    ? formatNumber(+txData.standardizedProperties?.overwriteRedeemAmount, 7)
-    : hasVAA
+  const redeemedAmount = standarizedProperties?.overwriteRedeemAmount
+    ? formatNumber(+standarizedProperties?.overwriteRedeemAmount, 7)
+    : hasVAA || !isRPC
     ? formatNumber(formatUnits(+amount - +fee))
     : formatNumber(+amount - +fee);
 
@@ -234,22 +213,17 @@ const Information = ({
     ? getExplorerLink({
         network: currentNetwork,
         chainId:
-          extraRawInfoFromChainId ||
-          txData?.standardizedProperties?.overwriteSourceTokenChain ||
-          tokenChain,
-        value: txData?.standardizedProperties?.overwriteSourceTokenAddress || tokenAddress,
+          extraRawInfoFromChainId || standarizedProperties?.overwriteSourceTokenChain || tokenChain,
+        value: standarizedProperties?.overwriteSourceTokenAddress || tokenAddress,
         base: "token",
       })
     : "";
-  let targetTokenAddress =
-    txData?.standardizedProperties?.overwriteTargetTokenAddress || tokenAddress;
+  let targetTokenAddress = standarizedProperties?.overwriteTargetTokenAddress || tokenAddress;
   let targetTokenLink = showTargetTokenUrl
     ? getExplorerLink({
         network: currentNetwork,
         chainId:
-          extraRawInfoToChainId ||
-          txData?.standardizedProperties?.overwriteTargetTokenChain ||
-          tokenChain,
+          extraRawInfoToChainId || standarizedProperties?.overwriteTargetTokenChain || tokenChain,
         value: targetTokenAddress,
         base: "token",
       })
@@ -260,7 +234,7 @@ const Information = ({
   let targetTokenChain = tokenChain;
   const wrappedSide = tokenChain !== toChain ? "target" : "source";
 
-  if (wrappedTokenAddress && !txData.standardizedProperties?.appIds.includes("ETH_BRIDGE")) {
+  if (wrappedTokenAddress && !standarizedProperties?.appIds.includes("ETH_BRIDGE")) {
     if (wrappedSide === "target") {
       targetTokenChain = toChain;
       targetTokenAddress = wrappedTokenAddress;
@@ -290,17 +264,17 @@ const Information = ({
     }
   }
 
-  if (txData.standardizedProperties?.overwriteSourceTokenChain) {
-    tokenChain = txData.standardizedProperties?.overwriteSourceTokenChain;
+  if (standarizedProperties?.overwriteSourceTokenChain) {
+    tokenChain = standarizedProperties?.overwriteSourceTokenChain;
   }
-  if (txData.standardizedProperties?.overwriteSourceSymbol) {
-    sourceSymbol = txData.standardizedProperties?.overwriteSourceSymbol;
+  if (standarizedProperties?.overwriteSourceSymbol) {
+    sourceSymbol = standarizedProperties?.overwriteSourceSymbol;
   }
-  if (txData.standardizedProperties?.overwriteTargetTokenChain) {
-    targetTokenChain = txData.standardizedProperties?.overwriteTargetTokenChain;
+  if (standarizedProperties?.overwriteTargetTokenChain) {
+    targetTokenChain = standarizedProperties?.overwriteTargetTokenChain;
   }
-  if (txData.standardizedProperties?.overwriteTargetSymbol) {
-    targetSymbol = txData.standardizedProperties?.overwriteTargetSymbol;
+  if (standarizedProperties?.overwriteTargetSymbol) {
+    targetSymbol = standarizedProperties?.overwriteTargetSymbol;
   }
 
   // --- ⬇ Add to MetaMask ⬇ ---
@@ -366,7 +340,7 @@ const Information = ({
     VAAId,
   };
 
-  const STATUS: IStatus = globalToRedeemTx
+  const STATUS: IStatus = data.targetChain?.transaction?.txHash
     ? "COMPLETED"
     : appIds && appIds.includes("CCTP_MANUAL")
     ? "EXTERNAL_TX"
@@ -392,9 +366,9 @@ const Information = ({
     !!toAddress &&
     !!(wrappedTokenAddress && tokenEffectiveAddress) &&
     !!timestamp &&
-    !!txData?.payload?.amount &&
-    !!txData?.txHash &&
-    !txData?.globalTx?.destinationTx;
+    !!payload?.amount &&
+    !!data?.sourceChain?.transaction?.txHash &&
+    !data?.targetChain?.transaction?.txHash;
 
   const getRedeem = async () => {
     setLoadingRedeem(true);
@@ -406,8 +380,8 @@ const Information = ({
       toAddress,
       wrappedTokenAddress && tokenEffectiveAddress,
       timestamp,
-      txData?.payload?.amount,
-      txData.txHash,
+      payload?.amount,
+      data?.sourceChain?.transaction?.txHash,
       +VAAId?.split("/")?.pop() || 0, //sequence
     );
 
@@ -416,50 +390,40 @@ const Information = ({
         redeem.timestamp ? redeem.timestamp : timestamp,
       ).toISOString();
 
-      const newDestinationTx: GlobalTxOutput["destinationTx"] = {
+      const newDestinationTx: GetOperationsOutput["targetChain"] = {
         chainId: toChain,
         status: "redeemed",
         timestamp: redeemTimestamp,
-        txHash: redeem.redeemTxHash,
-        updatedAt: redeemTimestamp,
-
-        blockNumber: null,
+        transaction: {
+          txHash: redeem.redeemTxHash,
+        },
         from: null,
-        method: null,
         to: null,
       };
 
-      const newTxData: GetTransactionsOutput = JSON.parse(JSON.stringify(txData));
+      const newData: GetOperationsOutput = JSON.parse(JSON.stringify(data));
 
-      if (newTxData.globalTx) {
-        newTxData.globalTx.destinationTx = newDestinationTx;
-      } else {
-        newTxData.globalTx = {
-          id: null,
-          originTx: null,
-          destinationTx: newDestinationTx,
-        };
-      }
+      newData.targetChain = newDestinationTx;
 
       if (
         isPortico(
           currentNetwork,
-          newTxData?.standardizedProperties?.toChain as ChainId,
-          newTxData?.standardizedProperties?.toAddress,
+          newData?.content?.standarizedProperties?.toChain as ChainId,
+          newData?.content?.standarizedProperties?.toAddress,
         )
       ) {
         const { formattedFinalUserAmount, formattedRelayerFee } = await getPorticoInfo(
           environment,
-          newTxData,
+          newData,
           true,
         );
 
         if (formattedFinalUserAmount) {
-          newTxData.standardizedProperties.overwriteRedeemAmount = formattedFinalUserAmount;
+          newData.content.standarizedProperties.overwriteRedeemAmount = formattedFinalUserAmount;
           if (formattedRelayerFee)
-            newTxData.standardizedProperties.overwriteFee = formattedRelayerFee;
+            newData.content.standarizedProperties.overwriteFee = formattedRelayerFee;
         }
-        newTxData.standardizedProperties.overwriteFee = formattedRelayerFee;
+        newData.content.standarizedProperties.overwriteFee = formattedRelayerFee;
       }
 
       analytics.track("findRedeem", {
@@ -470,7 +434,7 @@ const Information = ({
       setFoundRedeem(true);
 
       setTimeout(() => {
-        setTxData(newTxData);
+        setTxData(newData);
       }, 2000);
     } else {
       analytics.track("findRedeem", {
@@ -496,23 +460,32 @@ const Information = ({
   const [loadingRelayers, setLoadingRelayers] = useState(false);
   const getRelayerInfo = useCallback(async () => {
     setLoadingRelayers(true);
-    populateDeliveryLifecycleRecordByVaa(environment, vaa)
+
+    // TODO: handle generic relayer non-vaa txns without rpcs
+    if (!vaa || !vaa.raw) {
+      setLoadingRelayers(false);
+      setIsGenericRelayerTx(false);
+      console.log("automatic relayer tx without vaa yet");
+      return;
+    }
+
+    populateDeliveryLifecycleRecordByVaa(environment, vaa.raw)
       .then((result: DeliveryLifecycleRecord) => {
         analytics.track("txDetail", {
           appIds: ["GENERIC_RELAYER"].join(", "),
           chain: getChainName({
             chainId: (result?.sourceChainId as any)
               ? (result.sourceChainId as any)
-              : txData?.standardizedProperties?.fromChain
-              ? txData.standardizedProperties?.fromChain
+              : standarizedProperties?.fromChain
+              ? standarizedProperties?.fromChain
               : 0,
             network: currentNetwork,
           }),
           toChain: getChainName({
             chainId: result?.targetTransaction?.targetChainId
               ? result.targetTransaction?.targetChainId
-              : txData?.standardizedProperties?.toChain
-              ? txData.standardizedProperties?.toChain
+              : standarizedProperties?.toChain
+              ? standarizedProperties?.toChain
               : 0,
             network: currentNetwork,
           }),
@@ -529,8 +502,8 @@ const Information = ({
   }, [
     environment,
     vaa,
-    txData?.standardizedProperties?.fromChain,
-    txData?.standardizedProperties?.toChain,
+    standarizedProperties?.fromChain,
+    standarizedProperties?.toChain,
     currentNetwork,
   ]);
 
@@ -773,7 +746,7 @@ const Information = ({
       return (
         <Overview
           {...overviewAndDetailProps}
-          globalToRedeemTx={globalToRedeemTx}
+          globalToRedeemTx={data?.targetChain?.transaction?.txHash}
           isAttestation={isAttestation}
         />
       );
@@ -783,14 +756,7 @@ const Information = ({
   const RawDataContent = () => {
     if (isGenericRelayerTx === null || (isGenericRelayerTx && loadingRelayers)) return <Loader />;
 
-    return (
-      <RawData
-        extraRawInfo={extraRawInfo}
-        lifecycleRecord={genericRelayerInfo}
-        txData={txData}
-        VAAData={VAAData}
-      />
-    );
+    return <RawData extraRawInfo={extraRawInfo} lifecycleRecord={genericRelayerInfo} data={data} />;
   };
 
   const AlertsContent = () => {
@@ -909,8 +875,8 @@ const Information = ({
         loadingRedeem={loadingRedeem}
         fromChain={fromChain}
         isJustPortalUnknown={isJustPortalUnknown}
-        txHash={txHash}
-        vaa={vaa}
+        txHash={data?.sourceChain?.transaction?.txHash}
+        vaa={vaa?.raw}
       />
 
       {showOverview ? <OverviewContent /> : <RawDataContent />}

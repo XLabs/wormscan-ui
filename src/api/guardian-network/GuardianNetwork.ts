@@ -7,18 +7,15 @@ import {
   AssetsByVolumeOutput,
   ChainPairsByTransfersInput,
   ChainPairsByTransfersOutput,
-  CrossChainActivityInput,
   CrossChainActivity,
+  CrossChainActivityInput,
   DateRange,
-  GetVAAByTxHashInput,
-  GetVAAInput,
-  GlobalTxInput,
-  GlobalTxOutput,
+  GetOperationsInput,
+  GetOperationsOutput,
   LastTxs,
   Observation,
   ScoresOutput,
   VAACount,
-  VAADetail,
   ProtocolsStatsOutput,
 } from "./types";
 
@@ -29,51 +26,24 @@ export class GuardianNetwork {
     return await this._client.doGet<ScoresOutput>("/scorecards");
   }
 
-  async getVAA({
-    chainId,
-    emitter,
-    seq,
-    query,
+  async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
+    return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
+  }
+
+  async getOperations({
+    txHash,
+    address,
+    vaaID,
     pagination = DefaultPageRequest,
-  }: GetVAAInput): Promise<VAADetail | VAADetail[]> {
-    const effectivePath = this._vaaSearchCriteriaToPathSegmentFilter("/vaas", {
-      chainId,
-      emitter,
-      seq,
+  }: GetOperationsInput): Promise<GetOperationsOutput[]> {
+    const path = vaaID ? `/operations/${vaaID}` : "/operations";
+    const result: any = await this._client.doGet(path, {
+      txHash,
+      address,
+      ...pagination,
     });
 
-    let payload;
-    try {
-      payload = await this._client.doGet(effectivePath, {
-        ...query,
-        ...pagination,
-      });
-    } catch (err) {
-      payload = null;
-    }
-
-    const result = _get(payload, "data", null);
-
-    // When returns VAADetail[] differs when returns a single VAADetail
-    if (result) return result;
-    return payload as VAADetail;
-  }
-
-  async getVAAbyTxHash({ query }: GetVAAByTxHashInput): Promise<VAADetail[]> {
-    const payload = await this._client.doGet<VAADetail>("/vaas/", { ...query });
-    const result = _get(payload, "data", []);
-
-    return result;
-  }
-
-  async getGlobalTx({ chainId, emitter, seq, query }: GlobalTxInput): Promise<GlobalTxOutput> {
-    const payload = await this._client.doGet<GlobalTxOutput>(
-      `/global-tx/${chainId}/${emitter}/${seq}`,
-      {
-        ...query,
-      },
-    );
-    return payload;
+    return (result?.operations ? result.operations : [result]) as GetOperationsOutput[];
   }
 
   async getVAACount(): Promise<VAACount[]> {
