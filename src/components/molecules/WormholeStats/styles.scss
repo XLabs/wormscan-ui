@@ -1,6 +1,7 @@
 @import "src/styles/globals.scss";
 
 .wormhole-stats {
+  @include card-container;
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -11,7 +12,8 @@
   @include desktop {
     align-items: flex-start;
     flex-direction: row;
-    padding: 10.5px 0;
+    flex-wrap: wrap;
+    gap: 0;
   }
 
   &-loader {
@@ -34,6 +36,7 @@
 
     color: var(--color-primary-90);
     font-weight: 500;
+    padding: 0 24px 24px 0;
   }
 
   &-container {
@@ -44,6 +47,13 @@
     @include desktop {
       align-items: flex-start;
       flex-direction: row;
+      flex-wrap: wrap;
+      margin: 0 auto;
+      gap: 24px 50px;
+    }
+
+    @include bigDesktop {
+      gap: 24px 80px;
     }
 
     &-item {
@@ -72,14 +82,15 @@
       }
 
       &-value {
-        @include text-h2;
+        @include text-h5;
 
         color: var(--color-primary-10);
+        font-weight: 500;
       }
     }
   }
 
-  & .w-132 {
-    width: 132px;
+  & .w-156 {
+    width: 156px;
   }
 }
