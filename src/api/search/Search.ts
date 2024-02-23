@@ -2,66 +2,19 @@ import { Network } from "@certusone/wormhole-sdk";
 import axios, { AxiosError } from "axios";
 import { APIClient } from "src/api/api-client";
 import { COINGECKO_URL } from "src/api/consts";
-import { DefaultPageRequest } from "src/api/model";
 import { _get } from "src/api/utils/Objects";
 
 import {
   AutomaticRelayOutput,
   CctpRelayOutput,
-  FindVAAByAddressOutput,
   GetTokenInput,
   GetTokenOutput,
   GetTokenPriceInput,
   GetTokenPriceOutput,
-  GetTransactionsInput,
-  GetTransactionsOutput,
 } from "./types";
-
-interface FindVAAByAddressInput {
-  address: string;
-  page?: number;
-  pageSize?: number;
-}
 
 export class Search {
   constructor(private readonly _client: APIClient) {}
-
-  async findVAAByAddress({
-    address,
-    page,
-    pageSize,
-  }: FindVAAByAddressInput): Promise<FindVAAByAddressOutput> {
-    const result = await this._client.doGet<FindVAAByAddressOutput>(`/address/${address}`, {
-      page,
-      pageSize,
-    });
-    return result;
-  }
-
-  async getTransactions({
-    chainId,
-    emitter,
-    seq,
-    query,
-    pagination = DefaultPageRequest,
-  }: GetTransactionsInput): Promise<GetTransactionsOutput> {
-    const effectivePath = this._vaaSearchCriteriaToPathSegmentFilter("/transactions", {
-      chainId,
-      emitter,
-      seq,
-    });
-
-    const payload = await this._client.doGet(effectivePath, {
-      ...query,
-      ...pagination,
-    });
-
-    const result = _get(payload, "transactions", null);
-
-    // When returns GetTransactionsOutput[] differs when returns a single GetTransactionsOutput
-    if (result) return result;
-    return payload as GetTransactionsOutput;
-  }
 
   async getCctpRelay({
     txHash,
@@ -125,18 +78,5 @@ export class Search {
       const errors = e as Error | AxiosError;
       throw new Error(errors.message);
     }
-  }
-
-  private _vaaSearchCriteriaToPathSegmentFilter(
-    prefix: string,
-    criteria: {
-      chainId: number;
-      emitter: string;
-      seq: number;
-    },
-  ) {
-    const { chainId, emitter, seq } = criteria || {};
-    const seqValue = seq === 0 ? "0" : seq;
-    return [prefix, chainId, emitter, seqValue].filter(segment => !!segment).join("/");
   }
 }

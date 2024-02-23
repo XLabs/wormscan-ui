@@ -11,9 +11,9 @@ import {
 import { hexStripZeros } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
-import { GetTransactionsOutput } from "src/api/search/types";
 import { parseTx } from "./crypto";
 import { getTokenInformation } from "./fetchWithRPCsFallthrough";
+import { GetOperationsOutput } from "src/api/guardian-network/types";
 
 const porticoSwapFinishedEvent =
   "0xc2addcb063016f6dc1647fc8cd7206c3436cc4293c4acffe4feac288459ca7fc";
@@ -47,14 +47,14 @@ export function isPortico(network: any, toChain: ChainId, toAddress: string) {
 
 export async function getPorticoInfo(
   env: Environment,
-  data: GetTransactionsOutput,
+  data: GetOperationsOutput,
   onlyTarget = false,
 ) {
-  const sourceChain = data?.standardizedProperties?.fromChain as ChainId;
-  const targetChain = data?.standardizedProperties?.toChain as ChainId;
-  const sourceTxHash = parseTx({ chainId: 2, value: data.txHash });
-  const targetTxHash = parseTx({ chainId: 2, value: data.globalTx?.destinationTx?.txHash });
-  const payload = data?.payload?.payload;
+  const sourceChain = data?.content?.standarizedProperties?.fromChain as ChainId;
+  const targetChain = data?.content?.standarizedProperties?.toChain as ChainId;
+  const sourceTxHash = parseTx({ chainId: 2, value: data.sourceChain?.transaction?.txHash });
+  const targetTxHash = parseTx({ chainId: 2, value: data.targetChain?.transaction?.txHash });
+  const payload = data?.content?.payload?.payload;
 
   const sourceProvider = getEthersProvider(getChainInfo(env, sourceChain as ChainId));
   const targetProvider = getEthersProvider(getChainInfo(env, targetChain as ChainId));
@@ -73,8 +73,6 @@ export async function getPorticoInfo(
 
     const shouldWrapNative = parsedPayload?.flagSet?.shouldWrapNative;
     const shouldUnwrapNative = parsedPayload?.flagSet?.shouldUnwrapNative;
-
-    console.log({ shouldWrapNative, shouldUnwrapNative });
 
     if (shouldWrapNative) {
       shouldShowSourceTokenUrl = false;
@@ -111,8 +109,6 @@ export async function getPorticoInfo(
         throw new Error("Swap finished log not found");
       }
 
-      console.log({ swapFinishedLog, targetReceipt });
-
       // handle the case for when the swap failed
       const swapCompleted = swapFinishedLog.data.slice(0, 66).endsWith("1");
       if (!swapCompleted) {
@@ -140,8 +136,6 @@ export async function getPorticoInfo(
         const parsedSourceTransfer = parsePorticoTransfer(sourceTransferBuffer);
 
         const tokenAddress = parsedSourceTransfer.startTokenAddress;
-
-        console.log({ parsedSourceTransfer, parsedPayload });
 
         if (targetTxHash) {
           await processTarget();

@@ -70,7 +70,7 @@ const Details = ({
               <>
                 <BlockchainIcon chainId={fromChain} network={currentNetwork} size={24} />
                 {getChainName({ chainId: fromChain, network: currentNetwork }).toUpperCase()}
-                {isGatewaySource && <span className="comment"> (through Wormchain)</span>}
+                {isGatewaySource && <span className="comment"> (through Gateway)</span>}
               </>
             ) : (
               "N/A"
@@ -115,7 +115,7 @@ const Details = ({
                 <CopyToClipboard toCopy={parsedEmitterAddress}>
                   <CopyIcon height={20} width={20} />
                 </CopyToClipboard>
-                {isGatewaySource && <span className="comment"> (Wormchain)</span>}
+                {isGatewaySource && <span className="comment"> (Gateway)</span>}
               </>
             ) : (
               "N/A"
@@ -252,7 +252,7 @@ const Details = ({
                 <BlockchainIcon chainId={toChain} network={currentNetwork} size={24} />
                 {getChainName({ chainId: toChain, network: currentNetwork }).toUpperCase()}
                 {parsedPayload?.["gateway_transfer"] && (
-                  <span className="comment"> (through Wormchain)</span>
+                  <span className="comment"> (through Gateway)</span>
                 )}
               </>
             ) : (

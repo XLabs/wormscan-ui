@@ -10,7 +10,8 @@ import {
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { callWithTimeout } from "src/utils/asyncUtils";
 import { getClient } from "src/api/Client";
-import { AutomaticRelayOutput, GetTransactionsOutput } from "src/api/search/types";
+import { AutomaticRelayOutput } from "src/api/search/types";
+import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
 
 export type WormholeTransaction = {
@@ -46,13 +47,15 @@ export async function populateDeliveryLifecycleRecordByVaa(
 
   vaa = Buffer.from(rawVaa).toString("hex");
 
-  let tx;
+  let tx: GetOperationsOutput;
   try {
-    tx = (await getClient().search.getTransactions({
-      chainId: parsedVaa.emitterChain,
-      emitter: parsedVaa.emitterAddress.toString("hex"),
-      seq: Number(parsedVaa.sequence),
-    })) as GetTransactionsOutput;
+    tx = (
+      await getClient().guardianNetwork.getOperations({
+        vaaID: `${parsedVaa.emitterChain}/${parsedVaa.emitterAddress.toString("hex")}/${
+          parsedVaa.sequence
+        }`,
+      })
+    )[0];
   } catch (e) {
     console.error("err on getTransaction wormhole api", e);
   }
@@ -126,8 +129,10 @@ export async function populateDeliveryLifecycleRecordByVaa(
   }
 
   const noSourceTxHash = !relayerEndpoint.data.fromTxHash;
-  if (noSourceTxHash && tx && !!tx.txHash) {
-    output.sourceTxHash = tx.txHash.startsWith("0x") ? tx.txHash : `0x${tx.txHash}`;
+  if (noSourceTxHash && tx && !!tx.sourceChain?.transaction?.txHash) {
+    output.sourceTxHash = tx.sourceChain?.transaction?.txHash.startsWith("0x")
+      ? tx.sourceChain?.transaction?.txHash
+      : `0x${tx.sourceChain?.transaction?.txHash}`;
     output.sourceSequence = Number(parsedVaa.sequence);
   }
 

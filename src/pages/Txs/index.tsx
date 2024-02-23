@@ -13,7 +13,7 @@ import { formatNumber } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { ChainId, Order } from "src/api";
 import { getClient } from "src/api/Client";
-import { GetTransactionsOutput } from "src/api/search/types";
+import { GetOperationsInput, GetOperationsOutput } from "src/api/guardian-network/types";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import analytics from "src/analytics";
@@ -83,10 +83,8 @@ const Txs = () => {
     setIsPaginationLoading(true);
   }, [currentNetwork, currentPage]);
 
-  const getTransactionInput = {
-    query: {
-      ...(address && { address }),
-    },
+  const getOperationsInput: GetOperationsInput = {
+    address: address || null,
     pagination: {
       page: currentPage - 1,
       pageSize: PAGE_SIZE,
@@ -95,8 +93,8 @@ const Txs = () => {
   };
 
   useQuery(
-    ["getTxs", getTransactionInput],
-    () => getClient().search.getTransactions(getTransactionInput),
+    ["getTxs", getOperationsInput],
+    () => getClient().guardianNetwork.getOperations(getOperationsInput),
     {
       refetchInterval: () => (currentPage === 1 ? REFETCH_TIME : false),
       onError: (err: Error) => {
@@ -109,15 +107,15 @@ const Txs = () => {
 
         setErrorCode(statusCode);
       },
-      onSuccess: (txs: GetTransactionsOutput[]) => {
+      onSuccess: (txs: GetOperationsOutput[]) => {
         const tempRows: TransactionOutput[] = [];
-        const { standardizedProperties: firstStandardizedProperties, globalTx: firstGlobalTx } =
-          txs?.[0] || {};
-        const { originTx: firstOriginTx } = firstGlobalTx || {};
 
-        const originChainId = firstStandardizedProperties?.fromChain || firstOriginTx?.chainId;
-        const originAddress = firstOriginTx?.from || firstStandardizedProperties?.fromAddress;
-        const destinationChainId = firstStandardizedProperties?.toChain;
+        const firstStandarizedProperties = { ...txs?.[0]?.content?.standarizedProperties };
+        const firstOriginTx = { ...txs?.[0]?.sourceChain };
+
+        const originChainId = firstStandarizedProperties?.fromChain || firstOriginTx?.chainId;
+        const originAddress = firstStandarizedProperties?.fromAddress || firstOriginTx?.from;
+        const destinationChainId = firstStandarizedProperties?.toChain;
 
         const addressChainId =
           String(address).toLowerCase() === String(originAddress).toLowerCase()
@@ -126,36 +124,37 @@ const Txs = () => {
 
         txs?.length > 0
           ? txs?.forEach(tx => {
-              const {
-                id: VAAId,
-                txHash,
-                timestamp,
-                tokenAmount,
-                symbol,
-                emitterChain,
-                payload,
-                standardizedProperties,
-                globalTx,
-              } = tx || {};
+              const { emitterChain, id: VAAId } = tx;
+              const payload = tx?.content?.payload;
+              const standarizedProperties = tx?.content?.standarizedProperties;
+              const symbol = tx?.data?.symbol;
+              const tokenAmount = tx?.data?.tokenAmount;
+              const timestamp = tx?.sourceChain?.timestamp;
+              const txHash = tx?.sourceChain?.transaction?.txHash;
+
               const {
                 appIds,
                 fromChain: stdFromChain,
                 toChain: stdToChain,
                 toAddress: stdToAddress,
-              } = standardizedProperties || {};
-              const { originTx, destinationTx } = globalTx || {};
-              const { from: globalFrom } = originTx || {};
-              const { chainId: globalToChainId, from: globalTo } = destinationTx || {};
+              } = standarizedProperties || {};
+
+              const globalFrom = tx.sourceChain?.from;
+              const globalToChainId = tx.targetChain?.chainId;
+              const globalTo = tx.targetChain?.to;
 
               const parsedPayload = payload?.parsedPayload;
               const fromChainOrig = emitterChain || stdFromChain;
               const fromAddress = globalFrom;
               const toAddress = stdToAddress || globalTo;
 
+              const attributeType = tx.sourceChain?.attribute?.type;
+              const attributeValue = tx.sourceChain?.attribute?.value;
+
               // --- Gateway Transfers
               const fromChain =
-                originTx?.attribute?.type === "wormchain-gateway"
-                  ? originTx?.attribute?.value?.originChainId
+                attributeType === "wormchain-gateway"
+                  ? attributeValue?.originChainId
                   : fromChainOrig;
               const toChain = parsedPayload?.["gateway_transfer"]?.chain
                 ? parsedPayload?.["gateway_transfer"].chain
@@ -177,8 +176,8 @@ const Txs = () => {
 
               // --- Gateway Transfers
               const sourceAddress =
-                originTx?.attribute?.type === "wormchain-gateway"
-                  ? originTx?.attribute?.value?.originAddress
+                attributeType === "wormchain-gateway"
+                  ? attributeValue?.originAddress
                   : parsedOriginAddress;
               const targetAddress = parsedPayload?.["gateway_transfer"]?.recipient
                 ? parsedPayload?.["gateway_transfer"].recipient
@@ -202,7 +201,7 @@ const Txs = () => {
                 )?.length
               );
 
-              const STATUS: IStatus = destinationTx
+              const STATUS: IStatus = tx?.targetChain?.transaction?.txHash
                 ? "COMPLETED"
                 : appIds && appIds.includes("CCTP_MANUAL")
                 ? "EXTERNAL_TX"
