@@ -84,7 +84,7 @@ const Txs = () => {
   }, [currentNetwork, currentPage]);
 
   const getOperationsInput: GetOperationsInput = {
-    address: address ?? null,
+    address: address || null,
     pagination: {
       page: currentPage - 1,
       pageSize: PAGE_SIZE,
