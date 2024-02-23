@@ -9,7 +9,7 @@ type Props = {
   open?: boolean;
   side?: "top" | "right" | "bottom" | "left";
   tooltip: React.ReactNode;
-  type?: "info" | "default";
+  type?: "info" | "default" | "onlyContent";
 };
 
 const Tooltip = ({

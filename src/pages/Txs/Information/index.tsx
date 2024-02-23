@@ -9,10 +9,10 @@ import { useLocation } from "react-router-dom";
 import "./styles.scss";
 
 const columns: Column<TransactionOutput>[] | any = [
-  // {
-  //   Header: "STATUS",
-  //   accessor: "status",
-  // },
+  {
+    Header: "STATUS",
+    accessor: "status",
+  },
   {
     Header: "SOURCE TX HASH",
     accessor: "txHash",
@@ -29,11 +29,10 @@ const columns: Column<TransactionOutput>[] | any = [
     Header: "PROTOCOL",
     accessor: "originApp",
   },
-  // {
-  //   Header: "AMOUNT",
-  //   accessor: "amount",
-  //   style: { textAlign: "right" },
-  // },
+  {
+    Header: "TYPE",
+    accessor: "amount",
+  },
   {
     Header: "TIME",
     accessor: "time",

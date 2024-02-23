@@ -141,8 +141,6 @@ const Tx = () => {
           lastFinalizedBlock: txData.lastFinalizedBlock,
         });
 
-        console.log("hola??");
-
         if (txData.extraRawInfo) setExtraRawInfo(txData.extraRawInfo);
         setErrorCode(undefined);
         setIsLoading(false);
@@ -190,7 +188,6 @@ const Tx = () => {
         });
 
       if (currentNetworkResponse) {
-        console.log({ currentNetworkResponse });
         return currentNetworkResponse;
       }
 

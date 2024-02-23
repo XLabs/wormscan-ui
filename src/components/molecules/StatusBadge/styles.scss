@@ -11,35 +11,63 @@
     font-size: 16px;
     font-weight: 500;
     min-width: max-content;
-  }
 
-  .progress {
-    background-color: #ffd600;
-    color: #473c01;
+    &.progress {
+      background-color: #ffd600;
+      color: #473c01;
 
-    & > svg > path {
-      stroke-width: 0.3;
-      stroke: #473c01;
+      & > svg > path {
+        stroke-width: 0.3;
+        stroke: #473c01;
+      }
+    }
+
+    &.completed {
+      background-color: #00ffa3;
+      color: #023523;
+
+      & > svg > path {
+        stroke-width: 0.3;
+        stroke: #023523;
+      }
+    }
+
+    &.emitted {
+      background-color: #0078e8;
+      color: #ebf4fc;
+
+      & > svg > path {
+        stroke-width: 0.3;
+        stroke: #ebf4fc;
+      }
     }
   }
 
-  .completed {
-    background-color: #00ffa3;
-    color: #023523;
+  &-small {
+    border-radius: 40px;
+    width: 40px;
+    height: 40px;
 
-    & > svg > path {
-      stroke-width: 0.3;
-      stroke: #023523;
+    font-size: 24px;
+    font-weight: 500;
+    margin: auto;
+
+    &.progress {
+      & > svg {
+        color: #ffd600 !important;
+      }
     }
-  }
 
-  .emitted {
-    background-color: #0078e8;
-    color: #ebf4fc;
+    &.completed {
+      & > svg {
+        color: #00ffa3 !important;
+      }
+    }
 
-    & > svg > path {
-      stroke-width: 0.3;
-      stroke: #ebf4fc;
+    &.emitted {
+      & > svg {
+        color: #0078e8 !important;
+      }
     }
   }
 }

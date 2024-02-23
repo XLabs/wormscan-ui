@@ -46,7 +46,7 @@ const Table = <T extends object>({
           <tbody>
             {[...Array(50)].map((_, index) => (
               <tr key={index}>
-                <td className="table-row-loading" colSpan={6}>
+                <td className="table-row-loading" colSpan={7}>
                   <span className="loading-animation"></span>
                 </td>
               </tr>
