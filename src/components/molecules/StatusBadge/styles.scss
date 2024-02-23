@@ -66,6 +66,8 @@
 
     &.emitted {
       & > svg {
+        border-radius: 10px;
+        border: 1px solid #0078e8;
         color: #0078e8 !important;
       }
     }
