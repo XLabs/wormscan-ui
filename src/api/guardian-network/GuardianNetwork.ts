@@ -29,10 +29,6 @@ export class GuardianNetwork {
     return await this._client.doGet<ScoresOutput>("/scorecards");
   }
 
-  async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
-    return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
-  }
-
   async getVAA({
     chainId,
     emitter,
