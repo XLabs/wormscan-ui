@@ -56,7 +56,7 @@ const Tx = () => {
   const [blockData, setBlockData] = useState<GetBlockData>(null);
 
   const cancelRequests = useRef(false);
-  const tryToGetRpcInfo = async () => {
+  const tryToGetRpcInfo = useCallback(async () => {
     const txsData = await fetchWithRpcFallThrough(environment, txHash);
 
     if (txsData) {
@@ -150,7 +150,7 @@ const Tx = () => {
     } else {
       cancelRequests.current = false;
     }
-  };
+  }, [environment, network, txHash]);
 
   useEffect(() => {
     setErrorCode(undefined);
@@ -301,8 +301,7 @@ const Tx = () => {
           data?.content?.standarizedProperties?.appIds?.includes("GENERIC_RELAYER") &&
           !data?.vaa?.raw
         ) {
-          tryToGetRpcInfo();
-          return;
+          await tryToGetRpcInfo();
         }
       }
 
