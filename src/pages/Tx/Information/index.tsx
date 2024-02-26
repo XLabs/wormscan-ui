@@ -96,7 +96,7 @@ const Information = ({
 
   const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
   const vaa = data?.vaa;
-  const guardianSignaturesCount = 0; // TODO: ADD GUARDIAN SIGNATURES?
+  const guardianSignaturesCount = data?.decodedVaa?.guardianSignatures?.length || 0;
   const hasVAA = !!vaa;
 
   const { currentBlock, lastFinalizedBlock } = blockData || {};
