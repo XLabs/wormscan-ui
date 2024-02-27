@@ -661,7 +661,7 @@ const Tx = () => {
           ? "EXTERNAL_TX"
           : vaa
           ? isConnect || isPortal || isCCTP
-            ? (canWeGetDestinationTx(data.content?.standarizedProperties?.toChain) &&
+            ? (canWeGetDestinationTx(data?.content?.standarizedProperties?.toChain) &&
                 !hasAnotherApp &&
                 (!isTransferWithPayload ||
                   (isTransferWithPayload && isConnect) ||
@@ -676,7 +676,7 @@ const Tx = () => {
         setIsInProgress(STATUS === "IN_PROGRESS");
 
         if (STATUS === "IN_PROGRESS" && isEvmTxHash) {
-          const timestamp = new Date(data.sourceChain.timestamp);
+          const timestamp = new Date(data?.sourceChain?.timestamp);
           const now = new Date();
           const differenceInMinutes = (now.getTime() - timestamp.getTime()) / 60000;
 
