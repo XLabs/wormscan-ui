@@ -791,21 +791,18 @@ export async function getEvmBlockInfo(env: Environment, fromChain: ChainId, txHa
   const ethersProvider = getEthersProvider(getChainInfo(env, fromChain));
 
   let lastFinalizedBlock;
+  let currentBlock;
+
   try {
     lastFinalizedBlock = (await ethersProvider.getBlock("finalized")).number;
   } catch (_err) {
     try {
-      lastFinalizedBlock = (await ethersProvider.getBlock("safe")).number;
+      lastFinalizedBlock = await ethersProvider.getBlockNumber();
     } catch (_err) {
-      try {
-        lastFinalizedBlock = await ethersProvider.getBlockNumber();
-      } catch (_err) {
-        lastFinalizedBlock = null;
-      }
+      lastFinalizedBlock = null;
     }
   }
 
-  let currentBlock;
   try {
     currentBlock = (await ethersProvider.getTransactionReceipt(txHash)).blockNumber;
   } catch (_err) {

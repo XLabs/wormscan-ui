@@ -741,13 +741,15 @@ const Information = ({
               <>
                 <p>The VAA for this transaction has not been issued yet.</p>
                 <p>This information can be incomplete or have wrong values.</p>
-                {!isLatestBlockHigherThanVaaEmitBlock && (
-                  <p>
-                    Waiting for finality on{" "}
-                    {getChainName({ chainId: fromChain, network: currentNetwork })} which may take
-                    up to 15 minutes.
-                  </p>
-                )}
+                {!isLatestBlockHigherThanVaaEmitBlock &&
+                  !isBigTransaction &&
+                  !isDailyLimitExceeded && (
+                    <p>
+                      Waiting for finality on{" "}
+                      {getChainName({ chainId: fromChain, network: currentNetwork })} which may take
+                      up to 15 minutes.
+                    </p>
+                  )}
                 {lastFinalizedBlock && currentBlock && (
                   <div>
                     <p>

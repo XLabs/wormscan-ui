@@ -673,21 +673,34 @@ const Tx = () => {
         data.STATUS = STATUS;
         setIsInProgress(STATUS === "IN_PROGRESS");
 
-        if (STATUS === "IN_PROGRESS") {
-          const blockInfo = await getEvmBlockInfo(
-            environment,
-            fromChain,
-            data?.sourceChain?.transaction?.txHash,
-          );
+        if (STATUS === "IN_PROGRESS" && isEvmTxHash) {
+          const timestamp = new Date(data.sourceChain.timestamp);
+          const now = new Date();
+          const differenceInMinutes = (now.getTime() - timestamp.getTime()) / 60000;
 
-          setBlockData(blockInfo);
+          if (differenceInMinutes >= 5) {
+            getEvmBlockInfo(environment, fromChain, data?.sourceChain?.transaction?.txHash)
+              .then(blockInfo => {
+                setBlockData(blockInfo);
+              })
+              .catch(_err => {
+                console.error("Error fetching block info");
+              });
+          }
         }
       }
 
       setTxData(apiTxData);
       setIsLoading(false);
     },
-    [environment, network, setShowSourceTokenUrl, setShowTargetTokenUrl, tryToGetRpcInfo],
+    [
+      environment,
+      isEvmTxHash,
+      network,
+      setShowSourceTokenUrl,
+      setShowTargetTokenUrl,
+      tryToGetRpcInfo,
+    ],
   );
 
   useEffect(() => {
