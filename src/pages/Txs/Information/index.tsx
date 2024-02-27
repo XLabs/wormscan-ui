@@ -1,9 +1,8 @@
 import { Table } from "src/components/organisms";
-import i18n from "src/i18n";
 import { Column } from "react-table";
 import { PAGE_SIZE, TransactionOutput } from "..";
 import { Dispatch, SetStateAction } from "react";
-import { Pagination } from "src/components/atoms";
+import { Pagination, Switch } from "src/components/atoms";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import { useLocation } from "react-router-dom";
 import "./styles.scss";
@@ -40,21 +39,25 @@ const columns: Column<TransactionOutput>[] | any = [
 ];
 
 interface Props {
-  parsedTxsData: TransactionOutput[] | undefined;
   currentPage: number;
-  onChangePagination: (pageNumber: number) => void;
   isPaginationLoading: boolean;
-  setIsPaginationLoading: Dispatch<SetStateAction<boolean>>;
   isTxsFiltered: boolean;
+  liveMode: boolean;
+  onChangePagination: (pageNumber: number) => void;
+  parsedTxsData: TransactionOutput[] | undefined;
+  setIsPaginationLoading: Dispatch<SetStateAction<boolean>>;
+  setLiveMode: (b: boolean) => void;
 }
 
 const Information = ({
-  parsedTxsData,
   currentPage = 1,
-  onChangePagination,
   isPaginationLoading,
-  setIsPaginationLoading,
   isTxsFiltered = false,
+  liveMode,
+  onChangePagination,
+  parsedTxsData,
+  setIsPaginationLoading,
+  setLiveMode,
 }: Props) => {
   const navigate = useNavigateCustom();
   const location = useLocation();
@@ -110,8 +113,14 @@ const Information = ({
         <>
           <div>
             <div className="txs-information-top">
-              <div className="txs-information-top-title">
-                {/* {i18n.t("common.transfers").toUpperCase()} */}
+              <div
+                className="txs-information-top-title"
+                onClick={() => {
+                  if (!liveMode && currentPage > 1) goPage(1);
+                  setLiveMode(!liveMode);
+                }}
+              >
+                <Switch label={`LIVE MODE ${liveMode ? "ON" : "OFF"}`} value={liveMode} />
               </div>
               <div>
                 <PaginationComponent className="txs-information-top-pagination" />

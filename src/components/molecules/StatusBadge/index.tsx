@@ -6,11 +6,12 @@ import "./styles.scss";
 type Props = {
   STATUS: IStatus;
   small?: boolean;
+  className?: string;
 };
 
-const StatusBadge = ({ STATUS, small = false }: Props) => {
+const StatusBadge = ({ STATUS, className, small = false }: Props) => {
   return (
-    <div className="status-badge">
+    <div className={`status-badge ${className ?? ""}`}>
       {small ? (
         <>
           {STATUS === "EXTERNAL_TX" && <StatusExternalTxSmall />}
