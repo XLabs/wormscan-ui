@@ -680,7 +680,8 @@ const Tx = () => {
           const now = new Date();
           const differenceInMinutes = (now.getTime() - timestamp.getTime()) / 60000;
 
-          if (differenceInMinutes >= 5) {
+          // if fromChain is 5 (Polygon), wait 5 minutes before fetching block info
+          if (fromChain !== 5 || differenceInMinutes >= 5) {
             getEvmBlockInfo(environment, fromChain, data?.sourceChain?.transaction?.txHash)
               .then(blockInfo => {
                 setBlockData(blockInfo);
@@ -696,6 +697,7 @@ const Tx = () => {
       setIsLoading(false);
     },
     [
+      emitterChainId,
       environment,
       isEvmTxHash,
       network,
