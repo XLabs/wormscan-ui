@@ -210,7 +210,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       MAINNET: "https://www.mintscan.io/dymension", // TODO: EXPLORER CHANGES WHEN EXISTS
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "address") return this.explorer?.[network] + "/address/" + btoa(value);
       if (base === "token")
         return this.explorer?.[network] + "/assets"; /* + encodeURIComponent(value); */
       if (base === "block") return this.explorer?.[network] + "/block/" + value;
