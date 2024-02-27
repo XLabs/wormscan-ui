@@ -304,6 +304,8 @@ const Tx = () => {
 
   const processVaaData = useCallback(
     async (apiTxData: GetOperationsOutput[]) => {
+      if (!emitterChainId) setEmitterChainId(apiTxData[0].emitterChain);
+
       // Check if its generic relayer tx without vaa and go with RPCs
       // TODO: handle generic relayer no-vaa txns without RPCs
       for (const data of apiTxData) {
