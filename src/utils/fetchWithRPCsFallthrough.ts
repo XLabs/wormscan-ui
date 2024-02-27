@@ -805,42 +805,6 @@ export async function getEvmBlockInfo(env: Environment, fromChain: ChainId, txHa
     }
   }
 
-  let test1, test2, test3, test4, test5;
-
-  try {
-    test1 = (await ethersProvider.getBlock("finalized")).number;
-  } catch (error) {
-    console.error("1");
-  }
-  try {
-    test2 = (await ethersProvider.getBlock("safe")).number;
-  } catch (error) {
-    console.error("3");
-  }
-  try {
-    test3 = (await ethersProvider.getBlock("earliest")).number;
-  } catch (error) {
-    console.error("3");
-  }
-  try {
-    test4 = (await ethersProvider.getBlock("pending")).number;
-  } catch (error) {
-    console.error("2");
-  }
-  try {
-    test5 = await ethersProvider.getBlockNumber();
-  } catch (error) {
-    console.error("2");
-  }
-
-  console.log({
-    test1,
-    test2,
-    test3,
-    test4,
-    test5,
-  });
-
   let currentBlock;
   try {
     currentBlock = (await ethersProvider.getTransactionReceipt(txHash)).blockNumber;
