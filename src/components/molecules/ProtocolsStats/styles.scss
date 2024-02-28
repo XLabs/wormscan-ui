@@ -6,7 +6,11 @@
   flex: 2;
   gap: 24px 0;
   justify-content: flex-start;
-  min-height: 364px;
+  min-height: 332px;
+
+  @include tablet {
+    min-height: 364px;
+  }
 
   @include desktop {
     min-width: 485px;
