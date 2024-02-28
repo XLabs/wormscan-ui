@@ -9,7 +9,14 @@ import {
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { CONNECT_APP_ID, DISCORD_URL, GATEWAY_APP_ID, PORTAL_APP_ID, txType, UNKNOWN_APP_ID } from "src/consts";
+import {
+  CONNECT_APP_ID,
+  DISCORD_URL,
+  GATEWAY_APP_ID,
+  PORTAL_APP_ID,
+  txType,
+  UNKNOWN_APP_ID,
+} from "src/consts";
 import { Alert, Loader } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
@@ -793,7 +800,8 @@ const Information = ({
                 {isBigTransaction && currentNetwork === "MAINNET" ? (
                   <p>
                     This transaction will take 24 hours to process, as it exceeds the Wormhole
-                    network&apos;s temporary transaction limit of ${transactionLimit} on{" "}
+                    network&apos;s temporary transaction limit of $
+                    {formatNumber(transactionLimit, 0)} on{" "}
                     {getChainName({ chainId: fromChain, network: currentNetwork })} for security
                     reasons. <LearnMoreLink /> about this temporary security measure.
                   </p>
