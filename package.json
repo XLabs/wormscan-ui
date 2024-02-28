@@ -1,6 +1,6 @@
 {
   "name": "wormscan-ui",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "private": true,
   "source": "src/index.html",
   "scripts": {
@@ -46,6 +46,7 @@
     "@certusone/wormhole-sdk": "0.10.11",
     "@metamask/detect-provider": "^2.0.0",
     "@radix-ui/react-icons": "1.1.1",
+    "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-toggle-group": "1.0.2",
     "@radix-ui/react-tooltip": "1.0.5",
     "analytics": "^0.8.9",

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { CopyIcon } from "@radix-ui/react-icons";
@@ -30,11 +30,13 @@ import {
 
 export interface TransactionOutput {
   VAAId: string;
+  justAppeared: boolean;
   txHashId: string;
   txHash: React.ReactNode;
   from: React.ReactNode;
   to: React.ReactNode;
   status: React.ReactNode;
+  statusString: string;
   amount: React.ReactNode;
   time: Date | string;
 }
@@ -55,12 +57,16 @@ const Txs = () => {
   const currentPage = page >= 1 ? page : 1;
   const q = address ? address : "txs";
   const isTxsFiltered = address ? true : false;
-  const REFETCH_TIME = 1000 * (isTxsFiltered ? 120 : 10);
+  const REFETCH_TIME = 1000 * 8;
 
   const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
   const [isPaginationLoading, setIsPaginationLoading] = useState<boolean>(true);
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
   const [parsedTxsData, setParsedTxsData] = useState<TransactionOutput[] | undefined>(undefined);
+
+  const [liveMode, setLiveMode] = useState(!isTxsFiltered);
+  const [lastUpdatedList, setLastUpdatedList] =
+    useState<{ txHash: string; status: string }[]>(null);
 
   const stopPropagation = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation();
@@ -93,11 +99,11 @@ const Txs = () => {
     },
   };
 
-  useQuery(
+  const { refetch } = useQuery(
     ["getTxs", getOperationsInput],
     () => getClient().guardianNetwork.getOperations(getOperationsInput),
     {
-      refetchInterval: () => (currentPage === 1 ? REFETCH_TIME : false),
+      refetchInterval: () => (currentPage === 1 && liveMode ? REFETCH_TIME : false),
       onError: (err: Error) => {
         let statusCode = 404;
 
@@ -221,9 +227,25 @@ const Txs = () => {
                 : "IN_PROGRESS";
               // -----
 
+              let statusChanged = false;
+              let justAppeared = false;
+              if (liveMode && page <= 1) {
+                if (
+                  lastUpdatedList &&
+                  lastUpdatedList.find(a => a.txHash === parseTxHash && a.status !== STATUS)
+                ) {
+                  statusChanged = true;
+                }
+
+                if (lastUpdatedList && !lastUpdatedList.find(a => a.txHash === parseTxHash)) {
+                  justAppeared = true;
+                }
+              }
+
               const timestampDate = new Date(timestamp);
               const row = {
                 VAAId: VAAId,
+                justAppeared: justAppeared,
                 txHashId: parseTxHash,
                 txHash: (
                   <div className="tx-hash">
@@ -306,7 +328,15 @@ const Txs = () => {
                     )}
                   </div>
                 ),
-                status: <StatusBadge STATUS={STATUS} small />,
+                statusString: STATUS,
+                status: (
+                  <StatusBadge
+                    key={`${tx.sequence} ${STATUS}`}
+                    className={statusChanged ? "appear" : ""}
+                    STATUS={STATUS}
+                    small
+                  />
+                ),
                 amount: (
                   <>
                     {payloadType && <div>{txType[payloadType]}</div>}
@@ -325,6 +355,12 @@ const Txs = () => {
             })
           : [];
 
+        setLastUpdatedList(
+          tempRows.map(a => ({
+            txHash: a.txHashId,
+            status: a.statusString,
+          })),
+        );
         setParsedTxsData(tempRows);
         setAddressChainId(addressChainId as ChainId);
         setIsPaginationLoading(false);
@@ -332,6 +368,16 @@ const Txs = () => {
       enabled: !errorCode,
     },
   );
+
+  useEffect(() => {
+    if (liveMode) {
+      if (page <= 1) {
+        refetch();
+      } else {
+        setLiveMode(false);
+      }
+    }
+  }, [isTxsFiltered, liveMode, page, refetch]);
 
   const onChangePagination = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -346,6 +392,8 @@ const Txs = () => {
           <>
             <Top address={address} addressChainId={addressChainId} />
             <Information
+              liveMode={liveMode}
+              setLiveMode={setLiveMode}
               parsedTxsData={isPaginationLoading ? [] : parsedTxsData}
               currentPage={currentPage}
               onChangePagination={onChangePagination}

@@ -7,6 +7,7 @@ import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import {
   fetchWithRpcFallThrough,
+  getEvmBlockInfo,
   getTokenInformation,
   getUsdcAddress,
 } from "src/utils/fetchWithRPCsFallthrough";
@@ -24,7 +25,15 @@ import { getAlgorandTokenInfo, tryGetWrappedToken } from "src/utils/cryptoToolki
 import { getPorticoInfo, isPortico } from "src/utils/wh-portico-rpc";
 import { useRecoilState } from "recoil";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
-import { getGuardianSet } from "src/consts";
+import {
+  CCTP_APP_ID,
+  CONNECT_APP_ID,
+  IStatus,
+  PORTAL_APP_ID,
+  UNKNOWN_APP_ID,
+  canWeGetDestinationTx,
+  getGuardianSet,
+} from "src/consts";
 import { parseVaa } from "@certusone/wormhole-sdk";
 
 const Tx = () => {
@@ -56,7 +65,7 @@ const Tx = () => {
   const [blockData, setBlockData] = useState<GetBlockData>(null);
 
   const cancelRequests = useRef(false);
-  const tryToGetRpcInfo = async () => {
+  const tryToGetRpcInfo = useCallback(async () => {
     const txsData = await fetchWithRpcFallThrough(environment, txHash);
 
     if (txsData) {
@@ -152,7 +161,7 @@ const Tx = () => {
     } else {
       cancelRequests.current = false;
     }
-  };
+  }, [environment, network, txHash]);
 
   useEffect(() => {
     setErrorCode(undefined);
@@ -169,6 +178,7 @@ const Tx = () => {
     setIsLoading(false);
   };
 
+  const [isInProgress, setIsInProgress] = useState(false);
   const [failCount, setFailCount] = useState(0);
   const { data: VAADataByTx } = useQuery(
     ["getVAAbyTxHash", txHash],
@@ -280,7 +290,7 @@ const Tx = () => {
       getClient()
         .governor.getLimit()
         .catch(() => null),
-    { enabled: failCount > 0 },
+    { enabled: failCount > 0 || isInProgress },
   );
 
   const VAAData: GetOperationsOutput[] = useMemo(() => {
@@ -297,6 +307,8 @@ const Tx = () => {
 
   const processVaaData = useCallback(
     async (apiTxData: GetOperationsOutput[]) => {
+      if (!emitterChainId && !!apiTxData.length) setEmitterChainId(apiTxData[0].emitterChain);
+
       // Check if its generic relayer tx without vaa and go with RPCs
       // TODO: handle generic relayer no-vaa txns without RPCs
       for (const data of apiTxData) {
@@ -304,8 +316,7 @@ const Tx = () => {
           data?.content?.standarizedProperties?.appIds?.includes("GENERIC_RELAYER") &&
           !data?.vaa?.raw
         ) {
-          tryToGetRpcInfo();
-          return;
+          await tryToGetRpcInfo();
         }
       }
 
@@ -626,10 +637,77 @@ const Tx = () => {
         }
       }
 
+      for (const data of apiTxData) {
+        const { fromChain, appIds } = data?.content?.standarizedProperties || {};
+        const payloadType = data?.content?.payload?.payloadType;
+        const isTransferWithPayload = payloadType === 3;
+        const vaa = data?.vaa?.raw;
+
+        const isCCTP = appIds?.includes(CCTP_APP_ID);
+        const isConnect = appIds?.includes(CONNECT_APP_ID);
+        const isPortal = appIds?.includes(PORTAL_APP_ID);
+        const isTBTC = !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
+        const hasAnotherApp = !!(
+          appIds &&
+          appIds.filter(
+            appId =>
+              appId !== CONNECT_APP_ID &&
+              appId !== PORTAL_APP_ID &&
+              appId !== UNKNOWN_APP_ID &&
+              !appId.toLowerCase().includes("tbtc"),
+          )?.length
+        );
+
+        const STATUS: IStatus = data?.targetChain?.transaction?.txHash
+          ? "COMPLETED"
+          : appIds && appIds.includes("CCTP_MANUAL")
+          ? "EXTERNAL_TX"
+          : vaa
+          ? isConnect || isPortal || isCCTP
+            ? (canWeGetDestinationTx(data?.content?.standarizedProperties?.toChain) &&
+                !hasAnotherApp &&
+                (!isTransferWithPayload ||
+                  (isTransferWithPayload && isConnect) ||
+                  (isTransferWithPayload && isTBTC))) ||
+              isCCTP
+              ? "PENDING_REDEEM"
+              : "VAA_EMITTED"
+            : "VAA_EMITTED"
+          : "IN_PROGRESS";
+
+        data.STATUS = STATUS;
+        setIsInProgress(STATUS === "IN_PROGRESS");
+
+        if (STATUS === "IN_PROGRESS" && isEvmTxHash) {
+          const timestamp = new Date(data?.sourceChain?.timestamp);
+          const now = new Date();
+          const differenceInMinutes = (now.getTime() - timestamp.getTime()) / 60000;
+
+          // if fromChain is 5 (Polygon), wait 5 minutes before fetching block info
+          if (fromChain !== 5 || differenceInMinutes >= 5) {
+            getEvmBlockInfo(environment, fromChain, data?.sourceChain?.transaction?.txHash)
+              .then(blockInfo => {
+                setBlockData(blockInfo);
+              })
+              .catch(_err => {
+                console.error("Error fetching block info");
+              });
+          }
+        }
+      }
+
       setTxData(apiTxData);
       setIsLoading(false);
     },
-    [environment, network, setShowSourceTokenUrl, setShowTargetTokenUrl, tryToGetRpcInfo],
+    [
+      emitterChainId,
+      environment,
+      isEvmTxHash,
+      network,
+      setShowSourceTokenUrl,
+      setShowTargetTokenUrl,
+      tryToGetRpcInfo,
+    ],
   );
 
   useEffect(() => {

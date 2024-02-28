@@ -6,11 +6,18 @@ import "./styles.scss";
 interface Props {
   canTryToGetRedeem: boolean;
   fromChain: ChainId | number;
+  isJustPortalUnknown: boolean;
   txHash: string;
   vaa: string;
 }
 
-export const VerifyRedemption = ({ canTryToGetRedeem, fromChain, txHash, vaa }: Props) => {
+export const VerifyRedemption = ({
+  canTryToGetRedeem,
+  fromChain,
+  isJustPortalUnknown,
+  txHash,
+  vaa,
+}: Props) => {
   const [shouldShow, setShouldShow] = useState(false);
   const [hex, setHex] = useState("");
 
@@ -47,9 +54,11 @@ export const VerifyRedemption = ({ canTryToGetRedeem, fromChain, txHash, vaa }: 
       <a
         className="verify-redemption"
         href={
-          vaa && hex
-            ? `https://www.portalbridge.com/#/redeem?vaa=${hex}`
-            : `https://www.portalbridge.com/#/redeem?sourceChain=${fromChain}&transactionId=${txHash}`
+          isJustPortalUnknown
+            ? vaa && hex
+              ? `https://www.portalbridge.com/#/redeem?vaa=${hex}`
+              : `https://www.portalbridge.com/#/redeem?sourceChain=${fromChain}&transactionId=${txHash}`
+            : `https://portalbridge.com/?sourceChain=${fromChain}&txHash=${txHash}`
         }
         target="_blank"
         rel="noopener noreferrer"

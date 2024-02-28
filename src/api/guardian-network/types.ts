@@ -1,4 +1,5 @@
 import { ChainId, PageRequest } from "src/api/model";
+import { IStatus } from "src/consts";
 
 export type Observation = {
   hash: string;
@@ -221,5 +222,6 @@ export interface GetOperationsOutput {
     usdAmount: string;
   };
   decodedVaa?: any;
+  STATUS?: IStatus;
 }
 [];

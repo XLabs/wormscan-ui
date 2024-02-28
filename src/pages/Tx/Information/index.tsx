@@ -10,11 +10,9 @@ import {
 
 import { useEnvironment } from "src/context/EnvironmentContext";
 import {
-  canWeGetDestinationTx,
-  CCTP_APP_ID,
   CONNECT_APP_ID,
   DISCORD_URL,
-  IStatus,
+  GATEWAY_APP_ID,
   PORTAL_APP_ID,
   txType,
   UNKNOWN_APP_ID,
@@ -96,7 +94,7 @@ const Information = ({
 
   const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
   const vaa = data?.vaa;
-  const guardianSignaturesCount = 0; // TODO: ADD GUARDIAN SIGNATURES?
+  const guardianSignaturesCount = data?.decodedVaa?.guardianSignatures?.length || 0;
   const hasVAA = !!vaa;
 
   const { currentBlock, lastFinalizedBlock } = blockData || {};
@@ -128,6 +126,8 @@ const Information = ({
     wrappedTokenSymbol,
   } = standarizedProperties || {};
 
+  const { STATUS } = data;
+
   const fromChainOrig = emitterChain || stdFromChain;
   const fromAddress = data?.sourceChain?.from || stdFromAddress;
   const toAddress = stdToAddress || data?.targetChain?.to;
@@ -137,25 +137,11 @@ const Information = ({
   const tokenAddress = stdTokenAddress || payloadTokenAddress;
 
   const isUnknownApp = appIds?.includes(UNKNOWN_APP_ID);
-  const isCCTP = appIds?.includes(CCTP_APP_ID);
   const isConnect = appIds?.includes(CONNECT_APP_ID);
-  const isPortal = appIds?.includes(PORTAL_APP_ID);
-  const isTBTC = !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
+  const isGateway = appIds?.includes(GATEWAY_APP_ID);
   const isJustPortalUnknown =
     (appIds?.includes(PORTAL_APP_ID) && appIds.length === 1) ||
     (appIds?.includes(PORTAL_APP_ID) && appIds?.includes(UNKNOWN_APP_ID) && appIds.length === 2);
-
-  const isTransferWithPayload = payloadType === 3;
-  const hasAnotherApp = !!(
-    appIds &&
-    appIds.filter(
-      appId =>
-        appId !== CONNECT_APP_ID &&
-        appId !== PORTAL_APP_ID &&
-        appId !== UNKNOWN_APP_ID &&
-        !appId.toLowerCase().includes("tbtc"),
-    )?.length
-  );
 
   const isAttestation = txType[payloadType] === "Attestation";
   const isUnknownPayloadType = !txType[payloadType];
@@ -339,23 +325,6 @@ const Information = ({
     totalGuardiansNeeded,
     VAAId,
   };
-
-  const STATUS: IStatus = data.targetChain?.transaction?.txHash
-    ? "COMPLETED"
-    : appIds && appIds.includes("CCTP_MANUAL")
-    ? "EXTERNAL_TX"
-    : vaa
-    ? isConnect || isPortal || isCCTP
-      ? (canWeGetDestinationTx(toChain) &&
-          !hasAnotherApp &&
-          (!isTransferWithPayload ||
-            (isTransferWithPayload && isConnect) ||
-            (isTransferWithPayload && isTBTC))) ||
-        isCCTP
-        ? "PENDING_REDEEM"
-        : "VAA_EMITTED"
-      : "VAA_EMITTED"
-    : "IN_PROGRESS";
 
   const [loadingRedeem, setLoadingRedeem] = useState(false);
   const [foundRedeem, setFoundRedeem] = useState<null | boolean>(null);
@@ -781,13 +750,15 @@ const Information = ({
               <>
                 <p>The VAA for this transaction has not been issued yet.</p>
                 <p>This information can be incomplete or have wrong values.</p>
-                {!isLatestBlockHigherThanVaaEmitBlock && (
-                  <p>
-                    Waiting for finality on{" "}
-                    {getChainName({ chainId: fromChain, network: currentNetwork })} which may take
-                    up to 15 minutes.
-                  </p>
-                )}
+                {!isLatestBlockHigherThanVaaEmitBlock &&
+                  !isBigTransaction &&
+                  !isDailyLimitExceeded && (
+                    <p>
+                      Waiting for finality on{" "}
+                      {getChainName({ chainId: fromChain, network: currentNetwork })} which may take
+                      up to 15 minutes.
+                    </p>
+                  )}
                 {lastFinalizedBlock && currentBlock && (
                   <div>
                     <p>
@@ -825,30 +796,30 @@ const Information = ({
                     </p>
                   </div>
                 )}
-                {isLatestBlockHigherThanVaaEmitBlock && (
-                  <>
-                    {isBigTransaction && currentNetwork === "MAINNET" ? (
-                      <p>
-                        This transaction will take 24 hours to process, as it exceeds the Wormhole
-                        network&apos;s temporary transaction limit of ${transactionLimit} on{" "}
-                        {getChainName({ chainId: fromChain, network: currentNetwork })} for security
-                        reasons. <LearnMoreLink /> about this temporary security measure.
-                      </p>
-                    ) : isDailyLimitExceeded && currentNetwork === "MAINNET" ? (
-                      <p>
-                        This transaction will take up to 24 hours to process as Wormhole has reached
-                        the daily limit for source Blockchain{" "}
-                        {getChainName({ chainId: fromChain, network: currentNetwork })}. This is a
-                        normal and temporary security feature by the Wormhole network.{" "}
-                        <LearnMoreLink /> about this security measure.
-                      </p>
-                    ) : (
-                      <p>
-                        Since the latest block number is higher than this transaction&apos;s, there
-                        might be an extra delay. You can contact support on <DiscordSupportLink />.
-                      </p>
-                    )}
-                  </>
+
+                {isBigTransaction && currentNetwork === "MAINNET" ? (
+                  <p>
+                    This transaction will take 24 hours to process, as it exceeds the Wormhole
+                    network&apos;s temporary transaction limit of $
+                    {formatNumber(transactionLimit, 0)} on{" "}
+                    {getChainName({ chainId: fromChain, network: currentNetwork })} for security
+                    reasons. <LearnMoreLink /> about this temporary security measure.
+                  </p>
+                ) : isDailyLimitExceeded && currentNetwork === "MAINNET" ? (
+                  <p>
+                    This transaction will take up to 24 hours to process as Wormhole has reached the
+                    daily limit for source Blockchain{" "}
+                    {getChainName({ chainId: fromChain, network: currentNetwork })}. This is a
+                    normal and temporary security feature by the Wormhole network. <LearnMoreLink />{" "}
+                    about this security measure.
+                  </p>
+                ) : (
+                  isLatestBlockHigherThanVaaEmitBlock && (
+                    <p>
+                      Since the latest block number is higher than this transaction&apos;s, there
+                      might be an extra delay. You can contact support on <DiscordSupportLink />.
+                    </p>
+                  )
                 )}
               </>
             )
@@ -882,6 +853,8 @@ const Information = ({
         loadingRedeem={loadingRedeem}
         fromChain={fromChain}
         isJustPortalUnknown={isJustPortalUnknown}
+        isConnect={isConnect}
+        isGateway={isGateway}
         txHash={data?.sourceChain?.transaction?.txHash}
         vaa={vaa?.raw}
       />
