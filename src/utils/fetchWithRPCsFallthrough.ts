@@ -786,3 +786,28 @@ export const getTokenInformation = async (
 
   return { name, symbol, tokenDecimals };
 };
+
+export async function getEvmBlockInfo(env: Environment, fromChain: ChainId, txHash: string) {
+  const ethersProvider = getEthersProvider(getChainInfo(env, fromChain));
+
+  let lastFinalizedBlock;
+  let currentBlock;
+
+  try {
+    lastFinalizedBlock = (await ethersProvider.getBlock("finalized")).number;
+  } catch (_err) {
+    try {
+      lastFinalizedBlock = await ethersProvider.getBlockNumber();
+    } catch (_err) {
+      lastFinalizedBlock = null;
+    }
+  }
+
+  try {
+    currentBlock = (await ethersProvider.getTransactionReceipt(txHash)).blockNumber;
+  } catch (_err) {
+    currentBlock = null;
+  }
+
+  return { lastFinalizedBlock, currentBlock };
+}
