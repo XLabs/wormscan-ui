@@ -9,7 +9,14 @@ import {
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { DISCORD_URL, PORTAL_APP_ID, txType, UNKNOWN_APP_ID } from "src/consts";
+import {
+  CONNECT_APP_ID,
+  DISCORD_URL,
+  GATEWAY_APP_ID,
+  PORTAL_APP_ID,
+  txType,
+  UNKNOWN_APP_ID,
+} from "src/consts";
 import { Alert, Loader } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
@@ -130,6 +137,8 @@ const Information = ({
   const tokenAddress = stdTokenAddress || payloadTokenAddress;
 
   const isUnknownApp = appIds?.includes(UNKNOWN_APP_ID);
+  const isConnect = appIds?.includes(CONNECT_APP_ID);
+  const isGateway = appIds?.includes(GATEWAY_APP_ID);
   const isJustPortalUnknown =
     (appIds?.includes(PORTAL_APP_ID) && appIds.length === 1) ||
     (appIds?.includes(PORTAL_APP_ID) && appIds?.includes(UNKNOWN_APP_ID) && appIds.length === 2);
@@ -791,7 +800,8 @@ const Information = ({
                 {isBigTransaction && currentNetwork === "MAINNET" ? (
                   <p>
                     This transaction will take 24 hours to process, as it exceeds the Wormhole
-                    network&apos;s temporary transaction limit of ${transactionLimit} on{" "}
+                    network&apos;s temporary transaction limit of $
+                    {formatNumber(transactionLimit, 0)} on{" "}
                     {getChainName({ chainId: fromChain, network: currentNetwork })} for security
                     reasons. <LearnMoreLink /> about this temporary security measure.
                   </p>
@@ -843,6 +853,8 @@ const Information = ({
         loadingRedeem={loadingRedeem}
         fromChain={fromChain}
         isJustPortalUnknown={isJustPortalUnknown}
+        isConnect={isConnect}
+        isGateway={isGateway}
         txHash={data?.sourceChain?.transaction?.txHash}
         vaa={vaa?.raw}
       />
