@@ -118,7 +118,7 @@ const Summary = ({
 
       {STATUS === "VAA_EMITTED" &&
         (isJustPortalUnknown || isConnect || isGateway) &&
-        (foundRedeem === false || !canTryToGetRedeem) && (
+        (foundRedeem === false || (!canTryToGetRedeem && !foundRedeem)) && (
           <VerifyRedemption
             canTryToGetRedeem={canTryToGetRedeem}
             fromChain={fromChain}
