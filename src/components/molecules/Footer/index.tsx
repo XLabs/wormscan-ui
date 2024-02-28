@@ -8,9 +8,9 @@ import {
   XLABS_CAREERS_URL,
   XLABS_URL,
 } from "src/consts";
-import xLabsImage from "src/assets/xlabs-footer.svg";
 import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
+import XlabsIcon from "src/icons/XlabsIcon";
 import { WormholeBrand } from "src/components/molecules";
 import packageJson from "../../../../package.json";
 import "./styles.scss";
@@ -106,7 +106,7 @@ const Footer = () => {
             <div className="footer-built-text">Built by</div>
             <div className="footer-built-icons">
               <a href={XLABS_URL} target="_blank" rel="noopener noreferrer" aria-label="xLabs link">
-                <img src={xLabsImage} alt="xLabs logo" />
+                <XlabsIcon width={36} height={44} />
               </a>
             </div>
           </div>

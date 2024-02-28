@@ -57,9 +57,17 @@ const Table = <T extends object>({
             <tbody {...getTableBodyProps()}>
               {rows.map((row, index) => {
                 prepareRow(row);
+                const justAppeared = (row?.original as any)?.justAppeared;
+                const txHash = (row?.original as any)?.txHashId;
+
+                if (justAppeared) {
+                  (row.original as any).justAppeared = false;
+                }
+
                 return (
                   <tr
-                    key={index}
+                    key={index + txHash}
+                    className={justAppeared ? "appear" : ""}
                     {...row.getRowProps()}
                     onClick={() => onRowClick && onRowClick(row.original)}
                   >

@@ -59,6 +59,15 @@
       height: inherit;
       border-bottom: 1px solid var(--color-white-10);
 
+      &.appear {
+        animation: appear 2s forwards;
+      }
+
+      .status-badge.appear {
+        border-radius: 6px;
+        animation: appear 2s forwards;
+      }
+
       &:hover {
         background: var(--color-white-03);
         cursor: pointer;
@@ -134,6 +143,21 @@
   }
   100% {
     transform: translateX(-50%);
+  }
+}
+
+@keyframes appear {
+  0% {
+    background-color: none;
+  }
+  30% {
+    background-color: var(--color-white-10);
+  }
+  70% {
+    background-color: var(--color-white-10);
+  }
+  100% {
+    background-color: none;
   }
 }
 
