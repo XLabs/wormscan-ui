@@ -106,7 +106,7 @@ const Footer = () => {
             <div className="footer-built-text">Built by</div>
             <div className="footer-built-icons">
               <a href={XLABS_URL} target="_blank" rel="noopener noreferrer" aria-label="xLabs link">
-                <XlabsIcon width={36} height={42} />
+                <XlabsIcon width={36} height={44} />
               </a>
             </div>
           </div>
