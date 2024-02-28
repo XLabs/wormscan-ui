@@ -2,7 +2,7 @@
 
 .trans-history {
   @include centered-column;
-  --min-height: 242px;
+  --min-height: 260px;
 
   flex: 1;
   gap: 24px 0;
@@ -75,14 +75,23 @@
   }
 
   &-coming-title {
-    @include text-caption1;
-
     color: var(--color-primary-150);
     font-size: 10px;
+    font-weight: 500;
     line-height: 24px;
     position: absolute;
     right: 3px;
     top: 0;
+
+    @include tablet {
+      font-size: 14px;
+    }
+
+    @include desktop {
+      @media screen and (max-width: 1040px) {
+        right: -8px;
+      }
+    }
   }
 
   &[data-range="day"],

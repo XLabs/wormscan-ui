@@ -1,20 +1,29 @@
 @import "src/styles/globals.scss";
 
-.home-statistics > div {
-  @include centered-column;
-  margin-bottom: 32px;
-  gap: 32px 0;
-  min-height: 110px;
+.home-statistics {
+  display: grid;
+  gap: 32px;
+  grid-template-rows: auto auto auto;
+  margin: 0 0 32px 0;
 
   @include desktop {
-    @include centered-row;
-    align-items: stretch;
-    margin-bottom: 24px;
-    margin-top: 24px;
-    gap: 0 24px;
-  }
+    gap: 24px;
+    grid-template-columns: 2fr 3fr;
+    grid-template-rows: auto auto;
+    margin: 24px 0 24px 0;
 
-  &:last-child {
-    min-height: 368px;
+    & > div:first-child {
+      grid-column: span 2;
+    }
+  }
+}
+
+.home-statistics-testnet {
+  grid-template-rows: auto;
+
+  @include desktop {
+    & > div:first-child {
+      grid-column: span 1;
+    }
   }
 }

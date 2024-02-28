@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { DashIcon, TriangleDownIcon } from "@radix-ui/react-icons";
+import { DashIcon, ExternalLinkIcon, TriangleDownIcon } from "@radix-ui/react-icons";
 import allBridgeIcon from "src/icons/Protocols/allBridgeIcon.svg";
 import cctpIcon from "src/icons/Protocols/cctpIcon.svg";
 import mayanIcon from "src/icons/Protocols/mayanIcon.svg";
 import portalIcon from "src/icons/Protocols/portalIcon.svg";
+import { ALLBRIDGE_URL, CCTP_URL, MAYAN_URL, PORTAL_BRIDGE_URL } from "src/consts";
 import { Loader } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
@@ -24,6 +25,13 @@ const protocolNames: Record<ProtocolName, string> = {
   cctp: "CCTP",
   mayan: "Mayan",
   portal: "Portal",
+};
+
+const protocolLinks: Record<ProtocolName, string> = {
+  allbridge: ALLBRIDGE_URL,
+  cctp: CCTP_URL,
+  mayan: MAYAN_URL,
+  portal: PORTAL_BRIDGE_URL,
 };
 
 const ProtocolsStats = () => {
@@ -58,7 +66,7 @@ const ProtocolsStats = () => {
           <Loader />
         </div>
       ) : isError ? (
-        <div className="wormhole-stats-error">
+        <div className="protocols-stats-error">
           <ErrorPlaceholder />
         </div>
       ) : (
@@ -80,11 +88,22 @@ const ProtocolsStats = () => {
                 </div>
               </div>
             ))}
-            {/* <p className="protocols-stats-container-list-soon">MORE PROTOCOLS COMING SOON</p> */}
           </div>
           <div className="protocols-stats-container-info">
+            <a
+              className="protocols-stats-container-info-link"
+              href={protocolLinks[protocolSelected?.protocol]}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {protocolNames[protocolSelected?.protocol]}
+              <ExternalLinkIcon height={15} width={15} />
+            </a>
             <div className="protocols-stats-container-info-item">
-              <h4 className="protocols-stats-container-info-item-title">TVT</h4>
+              <h4 className="protocols-stats-container-info-item-title">
+                <span>TOTAL TRANSFERRED</span>
+                <span>TOTAL VALUE TRANSFERRED</span>
+              </h4>
               <p className="protocols-stats-container-info-item-value">
                 ${formatNumber(+protocolSelected?.total_value_transferred, 0)}
               </p>

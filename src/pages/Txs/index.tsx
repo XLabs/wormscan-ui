@@ -128,10 +128,7 @@ const Txs = () => {
               const { emitterChain, id: VAAId } = tx;
               const payload = tx?.content?.payload;
               const standarizedProperties = tx?.content?.standarizedProperties;
-<<<<<<< HEAD
-=======
               const payloadType = tx?.content?.payload?.payloadType;
->>>>>>> a9a645bf4da0f02328dadb9217a1a739f6fe4682
               const symbol = tx?.data?.symbol;
               const tokenAmount = tx?.data?.tokenAmount;
               const timestamp = tx?.sourceChain?.timestamp;
@@ -206,11 +203,7 @@ const Txs = () => {
                 )?.length
               );
 
-<<<<<<< HEAD
               const STATUS: IStatus = tx?.targetChain?.transaction?.txHash
-=======
-              const STATUS: IStatus = tx.targetChain?.transaction?.txHash
->>>>>>> a9a645bf4da0f02328dadb9217a1a739f6fe4682
                 ? "COMPLETED"
                 : appIds && appIds.includes("CCTP_MANUAL")
                 ? "EXTERNAL_TX"

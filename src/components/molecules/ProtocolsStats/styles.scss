@@ -3,12 +3,13 @@
 .protocols-stats {
   @include card-container;
   @include centered-column;
-  justify-content: flex-start;
-  gap: 24px 0;
   flex: 2;
+  gap: 24px 0;
+  justify-content: flex-start;
+  min-height: 364px;
 
   @include desktop {
-    min-width: max-content;
+    min-width: 485px;
   }
 
   &-title {
@@ -50,7 +51,7 @@
         color: var(--color-primary-90);
         cursor: pointer;
         gap: 0 8px;
-        padding: 16px;
+        padding: 16px 12px;
 
         &:last-of-type {
           border-bottom: 1px solid transparent;
@@ -101,35 +102,42 @@
           }
         }
       }
-
-      &-soon {
-        @include text-p3;
-        color: var(--color-primary-150);
-        font-size: 10px;
-        margin: 24px auto;
-        text-wrap: balance;
-
-        @include tablet {
-          font-size: 12px;
-        }
-      }
     }
 
     &-info {
       @include centered-column;
       background-color: var(--color-white-05);
       border-radius: 5px;
-      gap: 24px 0;
       height: 100%;
+      justify-content: space-between;
       margin: 0 auto;
       min-width: max-content;
-      padding: 24px 16px;
+      padding: 24px 0 24px 12px;
+      position: relative;
       width: 100%;
 
       @include tablet {
-        min-width: 210px;
+        min-width: 240px;
         padding: 24px;
         width: 60%;
+      }
+
+      &-link {
+        @include text-p3;
+        color: var(--color-information-100);
+        text-decoration: none;
+        position: absolute;
+        top: -24px;
+        right: 0;
+
+        &:hover {
+          text-decoration: underline;
+        }
+
+        & svg {
+          margin-left: 8px;
+          vertical-align: middle;
+        }
       }
 
       &-item {
@@ -139,6 +147,20 @@
           font-size: 14px;
           font-weight: 500;
           text-transform: uppercase;
+
+          & > span:first-child {
+            @include tablet {
+              display: none;
+            }
+          }
+
+          & > span:last-child {
+            display: none;
+
+            @include tablet {
+              display: inline;
+            }
+          }
         }
 
         &-value {
@@ -165,7 +187,7 @@
             }
 
             & svg {
-              vertical-align: middle;
+              vertical-align: sub;
             }
           }
         }

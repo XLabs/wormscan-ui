@@ -15,6 +15,7 @@
     flex: 3;
     gap: 24px;
     justify-content: start;
+    min-height: 364px;
 
     &-options {
       @include centered-row;

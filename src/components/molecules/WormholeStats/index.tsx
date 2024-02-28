@@ -12,6 +12,7 @@ import "./styles.scss";
 const WormholeStats = () => {
   const { t } = useTranslation();
   const { environment } = useEnvironment();
+  const isMainnet = environment.network === "MAINNET";
 
   const {
     isLoading,
@@ -27,7 +28,7 @@ const WormholeStats = () => {
   } = scoreData || {};
 
   return (
-    <div className="wormhole-stats">
+    <div className={`wormhole-stats ${isMainnet ? "" : "wormhole-stats-testnet"}`}>
       <div className="wormhole-stats-title">
         <img src={WormholeStatsImage} alt="wormhole logo" width="132" />
       </div>
@@ -90,11 +91,7 @@ const WormholeStats = () => {
               </Tooltip>
             </div>
             <div className="wormhole-stats-container-item-value">
-              {environment.network === "MAINNET" ? (
-                <>${total_volume ? formatNumber(Number(total_volume)) : "-"}</>
-              ) : (
-                "-"
-              )}
+              {isMainnet ? <>${total_volume ? formatNumber(Number(total_volume)) : "-"}</> : "-"}
             </div>
           </div>
 
@@ -109,11 +106,7 @@ const WormholeStats = () => {
               </Tooltip>
             </div>
             <div className="wormhole-stats-container-item-value">
-              {environment.network === "MAINNET" ? (
-                <>${volume24h ? formatNumber(Number(volume24h), 0) : "-"}</>
-              ) : (
-                "-"
-              )}
+              {isMainnet ? <>${volume24h ? formatNumber(Number(volume24h), 0) : "-"}</> : "-"}
             </div>
           </div>
         </div>
