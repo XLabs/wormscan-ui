@@ -14,6 +14,7 @@ import {
   CCTP_APP_ID,
   CONNECT_APP_ID,
   DISCORD_URL,
+  GATEWAY_APP_ID,
   IStatus,
   PORTAL_APP_ID,
   txType,
@@ -139,6 +140,7 @@ const Information = ({
   const isUnknownApp = appIds?.includes(UNKNOWN_APP_ID);
   const isCCTP = appIds?.includes(CCTP_APP_ID);
   const isConnect = appIds?.includes(CONNECT_APP_ID);
+  const isGateway = appIds?.includes(GATEWAY_APP_ID);
   const isPortal = appIds?.includes(PORTAL_APP_ID);
   const isTBTC = !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
   const isJustPortalUnknown =
@@ -875,6 +877,8 @@ const Information = ({
         loadingRedeem={loadingRedeem}
         fromChain={fromChain}
         isJustPortalUnknown={isJustPortalUnknown}
+        isConnect={isConnect}
+        isGateway={isGateway}
         txHash={data?.sourceChain?.transaction?.txHash}
         vaa={vaa?.raw}
       />

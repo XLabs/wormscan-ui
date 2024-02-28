@@ -19,10 +19,14 @@
     justify-content: start;
     padding: 16px 0px 16px 24px;
     row-gap: 16px;
+
+    @media only screen and (max-width: 1059px) {
+      column-gap: 24px;
+    }
   }
 
   @include bigDesktop {
-    column-gap: 64px;
+    column-gap: 48px;
     padding: 16px 0px 16px 112px;
   }
 
@@ -32,6 +36,12 @@
 
     @include desktop {
       gap: 8px;
+
+      & > .value-origin-app {
+        @media only screen and (max-width: 1640px) {
+          max-width: 210px;
+        }
+      }
     }
   }
 

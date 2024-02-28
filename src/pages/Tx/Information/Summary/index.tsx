@@ -25,6 +25,8 @@ type Props = {
 
   fromChain: ChainId | number;
   isJustPortalUnknown: boolean;
+  isConnect: boolean;
+  isGateway: boolean;
   txHash: string;
   vaa: string;
 };
@@ -44,6 +46,8 @@ const Summary = ({
 
   fromChain,
   isJustPortalUnknown,
+  isConnect,
+  isGateway,
   txHash,
   vaa,
 }: Props) => {
@@ -57,7 +61,9 @@ const Summary = ({
       </div>
       <div>
         <div className="key">Origin App:</div>
-        <div className="value">{appIds?.length > 0 ? formatAppIds(appIds) : "N/A"}</div>
+        <div className="value value-origin-app">
+          {appIds?.length > 0 ? formatAppIds(appIds) : "N/A"}
+        </div>
       </div>
       <div>
         <div className="key">Destination Address:</div>
@@ -111,11 +117,12 @@ const Summary = ({
       />
 
       {STATUS === "VAA_EMITTED" &&
-        isJustPortalUnknown &&
+        (isJustPortalUnknown || isConnect || isGateway) &&
         (foundRedeem === false || !canTryToGetRedeem) && (
           <VerifyRedemption
             canTryToGetRedeem={canTryToGetRedeem}
             fromChain={fromChain}
+            isJustPortalUnknown={isJustPortalUnknown}
             txHash={txHash}
             vaa={vaa}
           />
