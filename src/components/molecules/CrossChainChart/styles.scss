@@ -135,7 +135,7 @@
       }
     }
 
-    &-select {
+    &-select.select {
       @include desktop {
         width: 220px;
       }
