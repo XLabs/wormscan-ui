@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -9,6 +9,7 @@ import { getClient } from "src/api/Client";
 import { CrossChainBy } from "src/api/guardian-network/types";
 import { Chart } from "./Chart";
 import "./styles.scss";
+import { ChainId } from "src/api";
 
 const MAINNET_TYPE_LIST = [
   { label: i18n.t("home.crossChain.volume"), value: "notional", ariaLabel: "Volume" },
@@ -39,6 +40,7 @@ const CrossChainChart = () => {
     "sources",
   );
   const isSources = selectedDestination === "sources";
+  const prevChain = useRef<ChainId>(null);
 
   useEffect(() => {
     if (currentNetwork === "MAINNET") {
@@ -119,6 +121,7 @@ const CrossChainChart = () => {
             <Chart
               currentNetwork={currentNetwork}
               data={data}
+              prevChain={prevChain}
               selectedDestination={selectedDestination}
               selectedType={selectedType}
               selectedTimeRange={selectedTimeRange.value}

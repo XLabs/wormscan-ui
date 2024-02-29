@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Network } from "@certusone/wormhole-sdk";
 import { BREAKPOINTS } from "src/consts";
@@ -29,6 +29,7 @@ type Props = {
   selectedType: CrossChainBy;
   selectedDestination: "sources" | "destinations";
   selectedTimeRange: string;
+  prevChain: MutableRefObject<ChainId>;
 };
 export type Info = { percentage: number; volume: number };
 
@@ -52,27 +53,36 @@ export const Chart = ({
   selectedType,
   selectedDestination,
   selectedTimeRange,
+  prevChain,
 }: Props) => {
   const [isShowingOthers, setIsShowingOthers] = useState(false);
   const [chartData, setChartData] = useState(processData(data, false, selectedDestination));
 
   const [selectedChain, setSelectedChain] = useState(chartData[0]?.chain);
+  if (!prevChain?.current) {
+    prevChain.current = chartData[0]?.chain;
+  }
   const [selectedInfo, setSelectedInfo] = useState<Info>({
     percentage: chartData[0]?.percentage,
     volume: chartData[0]?.volume,
   });
 
   useEffect(() => {
+    const chainToSearch = prevChain?.current || selectedChain;
+
     let newChartData = processData(data, false, selectedDestination);
-    if (newChartData.find(a => a.chain === selectedChain)) {
+    if (newChartData.find(a => a.chain === chainToSearch)) {
       setIsShowingOthers(false);
     } else {
       setIsShowingOthers(true);
       newChartData = processData(data, true, selectedDestination);
     }
 
+    if (selectedChain !== chainToSearch) {
+      setSelectedChain(chainToSearch);
+    }
     setChartData(newChartData);
-  }, [data, selectedChain, selectedDestination]);
+  }, [data, prevChain, selectedChain, selectedDestination]);
 
   const [destinations, setDestinations] = useState([]);
   const [originChainsHeight, setOriginChainsHeight] = useState<IChartChain[]>([]);
@@ -264,6 +274,7 @@ export const Chart = ({
 
     if (!selectedItem) {
       setSelectedChain(chartData[0]?.chain);
+      prevChain.current = chartData[0]?.chain;
       return;
     }
 
@@ -284,7 +295,7 @@ export const Chart = ({
       percentage: selected.percentage,
       volume: selected.volume,
     });
-  }, [chartData, selectedChain]);
+  }, [chartData, prevChain, selectedChain]);
 
   useEffect(() => {
     if (size.width >= BREAKPOINTS.desktop && !isDesktop) setIsDesktop(true);
@@ -360,6 +371,7 @@ export const Chart = ({
             selectedTimeRange,
           });
           setSelectedChain(item.chain);
+          prevChain.current = item.chain;
         }}
         data-network={currentNetwork}
         data-percentage={item.percentage}
@@ -409,6 +421,7 @@ export const Chart = ({
       selectedType,
       selectedDestination,
       selectedTimeRange,
+      prevChain,
     ],
   );
 
