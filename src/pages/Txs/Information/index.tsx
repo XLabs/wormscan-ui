@@ -116,7 +116,6 @@ const Information = ({
               <div
                 className="txs-information-top-title"
                 onClick={() => {
-                  if (!liveMode && currentPage > 1) goPage(1);
                   setLiveMode(!liveMode);
                 }}
               >
