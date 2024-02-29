@@ -30,10 +30,13 @@
   }
 
   &-title {
-    @include text-p1;
-
+    @include centered-row;
+    gap: 16px;
     color: var(--color-primary-90);
-    font-weight: 500;
+
+    &:hover {
+      color: var(--color-primary-30);
+    }
   }
 
   &-container {
@@ -79,7 +82,7 @@
     }
   }
 
-  & .w-132 {
-    width: 132px;
+  & .w-163 {
+    width: 163px;
   }
 }

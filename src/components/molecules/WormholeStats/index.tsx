@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { ExternalLinkIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import WormholeStatsImage from "src/assets/wormhole-stats.svg";
+import { WORMHOLE_PAGE_URL } from "src/consts";
 import { Loader, Tooltip } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
@@ -18,9 +19,16 @@ const WormholeStats = ({ isLoading, isError, messages24h, total_messages }: Prop
 
   return (
     <div className="wormhole-stats">
-      <div className="wormhole-stats-title">
+      <a
+        className="wormhole-stats-title"
+        href={WORMHOLE_PAGE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <img src={WormholeStatsImage} alt="wormhole logo" width="132" />
-      </div>
+        <ExternalLinkIcon height={15} width={15} />
+      </a>
+
       {isLoading ? (
         <div className="wormhole-stats-loader">
           <Loader />
@@ -75,7 +83,7 @@ const WormholeStats = ({ isLoading, isError, messages24h, total_messages }: Prop
           )}
         </>
       )}
-      <div className="w-132" />
+      <div className="w-163" />
     </div>
   );
 };

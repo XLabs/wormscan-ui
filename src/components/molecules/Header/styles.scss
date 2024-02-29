@@ -91,30 +91,22 @@
     width: 100%;
   }
 
-  &-network {
-    &-container {
-      display: flex;
-      justify-content: end;
+  & .select {
+    height: 60px;
+    width: 168px;
+
+    @include desktop {
+      height: 48px;
+      width: unset;
     }
 
-    &-select {
-      width: fit-content;
-      height: 60px;
-      width: 168px;
+    & .select__control {
+      color: var(--color-white);
+      font-weight: 600;
+      padding: 10px 24px;
 
       @include desktop {
-        height: 48px;
-        width: unset;
-      }
-
-      & .select__control {
-        color: var(--color-white);
-        font-weight: 600;
-        padding: 10px 24px;
-
-        @include desktop {
-          padding: 4px 8px 4px 16px;
-        }
+        padding: 4px 8px 4px 16px;
       }
     }
   }
