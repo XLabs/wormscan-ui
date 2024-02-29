@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { ExternalLinkIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import PortalStatsImage from "src/assets/portal-stats.svg";
+import { PORTAL_BRIDGE_URL } from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader, Tooltip } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
@@ -20,9 +21,15 @@ const PortalStats = ({ isLoading, isError, total_volume, volume24h }: Props) => 
 
   return (
     <div className="portal-data">
-      <div className="portal-title">
+      <a
+        className="portal-title"
+        href={PORTAL_BRIDGE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <img src={PortalStatsImage} alt="portal logo" width="101" />
-      </div>
+        <ExternalLinkIcon height={15} width={15} />
+      </a>
       {isLoading ? (
         <Loader />
       ) : (

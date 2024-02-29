@@ -5,14 +5,7 @@ import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { Network } from "@certusone/wormhole-sdk";
 import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
-import {
-  TWITTER_URL,
-  DISCORD_URL,
-  PORTAL_BRIDGE_URL,
-  WORMHOLE_DOCS_URL,
-  XLABS_CAREERS_URL,
-  WORMHOLE_PAGE_URL,
-} from "src/consts";
+import { TWITTER_URL, DISCORD_URL, WORMHOLE_DOCS_URL, XLABS_CAREERS_URL } from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { NavLink, Select, Tag } from "src/components/atoms";
 import { WormholeBrand } from "src/components/molecules";
@@ -102,18 +95,6 @@ const Header = () => {
   const HeaderLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
     <nav data-testid="header-nav">
       {isMobile && <NavLinkItem to="/" label={t("home.footer.home")} />}
-      <div className="header-navigation-item">
-        <a href={WORMHOLE_PAGE_URL} target="_blank" rel="noopener noreferrer">
-          {t("home.header.goWormhole")}
-        </a>
-      </div>
-      {isMainnet && (
-        <div className="header-navigation-item">
-          <a href={PORTAL_BRIDGE_URL} target="_blank" rel="noopener noreferrer">
-            {t("home.header.goBridge")}
-          </a>
-        </div>
-      )}
       <NavLinkItem to="/txs" label={t("home.header.txs")} />
       {isMobile && (
         <>

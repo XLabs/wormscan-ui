@@ -7,6 +7,16 @@
     height: 100%;
   }
 
+  &-title {
+    @include centered-row;
+    gap: 12px;
+    color: var(--color-primary-90);
+
+    &:hover {
+      color: var(--color-primary-30);
+    }
+  }
+
   &-data {
     align-items: center;
     display: flex;
