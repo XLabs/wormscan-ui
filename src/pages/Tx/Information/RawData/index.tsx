@@ -16,6 +16,7 @@ import { GetOperationsOutput } from "src/api/guardian-network/types";
 import "./styles.scss";
 
 export const BlockSection = ({ title, code }: { title: string; code: any }) => {
+  if (!code) return null;
   const jsonParsed = JSON.parse(code);
 
   const addQuotesInKeys = (obj: any): any => {
@@ -91,21 +92,6 @@ const RawData = ({ extraRawInfo, data, lifecycleRecord }: Props) => {
       : null
     : null;
 
-  const CODE_BLOCKS = [
-    {
-      title: "TX DATA",
-      code: JSON.stringify(dataNoPayload, null, 4),
-    },
-    {
-      title: "PAYLOAD",
-      code: payload && JSON.stringify(payload, null, 4),
-    },
-    {
-      title: "SIGNED VAA",
-      code: signedVAA && JSON.stringify(signedVAA, null, 4),
-    },
-  ];
-
   const readVAA = (record: DeliveryLifecycleRecord) => {
     const vaa = record.vaa;
     const parsedVaa = parseVaa(vaa);
@@ -130,11 +116,9 @@ const RawData = ({ extraRawInfo, data, lifecycleRecord }: Props) => {
   return (
     <div className="tx-raw-data">
       <div className="tx-raw-data-container">
-        {CODE_BLOCKS?.length > 0 &&
-          CODE_BLOCKS.map(
-            ({ title, code }, index) =>
-              code && <BlockSection key={index} title={title} code={code} />,
-          )}
+        <BlockSection title="TX DATA" code={JSON.stringify(dataNoPayload, null, 4)} />
+
+        <BlockSection title="PAYLOAD" code={payload && JSON.stringify(payload, null, 4)} />
 
         {!!extraRawInfo && (
           <BlockSection code={JSON.stringify(extraRawInfo, null, 4)} title="Extra info" />
@@ -144,7 +128,7 @@ const RawData = ({ extraRawInfo, data, lifecycleRecord }: Props) => {
           <>
             {relayerInfo.isDelivery ? (
               <BlockSection
-                title="VAA Delivery Instructions"
+                title="VAA DELIVERY INSTRUCTIONS"
                 code={JSON.stringify(
                   {
                     "Target Chain": deliveryInstruction.targetChainId,
@@ -181,7 +165,7 @@ const RawData = ({ extraRawInfo, data, lifecycleRecord }: Props) => {
               />
             ) : (
               <BlockSection
-                title="VAA Redelivery Instructions"
+                title="VAA REDELIVERY INSTRUCTIONS"
                 code={JSON.stringify(
                   {
                     "Original Chain": redeliveryInstruction.deliveryVaaKey.chainId,
@@ -211,12 +195,19 @@ const RawData = ({ extraRawInfo, data, lifecycleRecord }: Props) => {
               />
             )}
 
+            {lifecycleRecord.DeliveryStatus && (
+              <BlockSection
+                title={"DELIVERY INFO"}
+                code={JSON.stringify(lifecycleRecord.DeliveryStatus, null, 4)}
+              />
+            )}
+
             {(lifecycleRecord.sourceTxHash ||
               lifecycleRecord.sourceChainId ||
               lifecycleRecord.sourceSequence ||
               lifecycleRecord.sourceTxReceipt) && (
               <BlockSection
-                title="Source Transaction"
+                title="SOURCE TRANSACTION"
                 code={JSON.stringify(
                   {
                     sourceChain: lifecycleRecord.sourceChainId,
@@ -231,7 +222,7 @@ const RawData = ({ extraRawInfo, data, lifecycleRecord }: Props) => {
             )}
             {lifecycleRecord.targetTransaction && (
               <BlockSection
-                title={"Target Transaction"}
+                title={"TARGET TRANSACTION"}
                 code={JSON.stringify(
                   {
                     targetChain: lifecycleRecord.targetTransaction.targetChainId,
@@ -243,15 +234,10 @@ const RawData = ({ extraRawInfo, data, lifecycleRecord }: Props) => {
                 )}
               />
             )}
-
-            {lifecycleRecord.DeliveryStatus && (
-              <BlockSection
-                title={"Delivery Info"}
-                code={JSON.stringify(lifecycleRecord.DeliveryStatus, null, 4)}
-              />
-            )}
           </>
         )}
+
+        <BlockSection title="SIGNED VAA" code={signedVAA && JSON.stringify(signedVAA, null, 4)} />
       </div>
     </div>
   );
