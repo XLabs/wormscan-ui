@@ -12,7 +12,6 @@ const WormholeBrand = ({ size = "auto" }: Props) => {
         src={BrandImage}
         alt="Wormhole Scan logo"
         className={`wormhole-brand-image ${size}`}
-        loading="lazy"
         width="180"
         height="34"
       />
