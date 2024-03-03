@@ -1,0 +1,118 @@
+@import "src/styles/globals.scss";
+
+.devtools-page {
+  flex: 1;
+  display: block;
+
+  &-container {
+    padding: 64px 24px;
+  }
+
+  &-title {
+    @include text-h2;
+
+    color: var(--color-primary-30);
+    margin-bottom: 8px;
+  }
+
+  &-body {
+    @include text-p1;
+    color: var(--color-primary-50);
+  }
+
+  .parse {
+    display: flex;
+    flex: 1;
+
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    &-input {
+      display: flex;
+
+      background-image: linear-gradient(to top, var(--color-primary-700), var(--color-primary-900));
+
+      width: 90%;
+      height: 620px;
+      @include desktop {
+        width: 48%;
+      }
+
+      border: 1px solid var(--color-white-20);
+      border-radius: 4px;
+
+      color: var(--color-white-90);
+      font-size: 16px;
+      padding: 10px;
+
+      resize: none;
+
+      &:focus {
+        outline: 1px solid var(--color-white-40);
+      }
+    }
+
+    &-result {
+      display: flex;
+      justify-content: start;
+
+      position: relative;
+
+      position: relative;
+      margin-top: 24px;
+
+      width: 90%;
+      height: 620px;
+      @include desktop {
+        width: 48%;
+        margin-top: 0px;
+      }
+
+      border: 1px solid var(--color-white-20);
+      border-radius: 4px;
+
+      &-title {
+        position: absolute;
+        top: -32px;
+        color: var(--color-primary-50);
+        cursor: default;
+      }
+
+      &-bottom {
+        position: absolute;
+        bottom: -32px;
+        right: 0px;
+        color: var(--color-primary-90);
+        cursor: pointer;
+
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        &:hover {
+          color: var(--color-secondary-700);
+        }
+      }
+
+      &-copy {
+        position: absolute;
+        top: 16px;
+        right: 18px;
+        z-index: 4;
+        background-color: var(--color-primary-800);
+        border-radius: 4px;
+      }
+
+      &-json {
+        background-color: var(--color-primary-900);
+        color: var(--color-primary-90);
+        width: 100%;
+        font-size: 14px;
+        line-height: 1.5;
+        overflow: scroll;
+      }
+    }
+  }
+}

@@ -136,6 +136,59 @@
       gap: 24px;
     }
 
+    .dropdown-menu {
+      > li {
+        display: block;
+      }
+
+      &-trigger {
+        position: relative;
+        cursor: pointer;
+        padding-right: 16px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+
+        .icon {
+          position: absolute;
+          width: 20px;
+          height: 22px;
+        }
+
+        &[data-state="closed"] {
+          border-bottom: 1px solid transparent;
+        }
+
+        &[data-state="open"] {
+          border-bottom: 1px solid var(--color-white-40);
+
+          .icon {
+            rotate: 180deg;
+          }
+        }
+      }
+
+      &-content {
+        position: absolute;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        width: 130%;
+        margin-left: -15%;
+
+        background-color: var(--color-white-10);
+        border-radius: 6px;
+
+        display: flex;
+        justify-content: center;
+      }
+
+      button {
+        border: 0px;
+        background: none;
+        color: var(--color-primary-90);
+        font-size: 16px;
+      }
+    }
+
     &-item {
       @include centered-row;
       align-items: flex-start;

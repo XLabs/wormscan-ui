@@ -1,0 +1,159 @@
+import { useEffect, useState } from "react";
+import { BaseLayout } from "src/layouts/BaseLayout";
+import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import analytics from "src/analytics";
+import "./styles.scss";
+import { useQuery } from "react-query";
+import { getClient } from "src/api/Client";
+import { GetParsedVaaOutput } from "src/api/guardian-network/types";
+import { JsonText, Loader, NavLink } from "src/components/atoms";
+import { CopyIcon, ExternalLinkIcon } from "@radix-ui/react-icons";
+import { CopyToClipboard } from "src/components/molecules";
+import { getChainName } from "src/utils/wormhole";
+import { ChainId } from "src/api";
+import { txType } from "src/consts";
+import { formatDate } from "src/utils/date";
+
+const VaaParser = () => {
+  useEffect(() => {
+    analytics.page({ title: "VAA_PARSER" });
+  }, []);
+
+  const navigate = useNavigateCustom();
+  // const goHome = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   navigate("/");
+  // };
+
+  const [input, setInput] = useState("");
+  const [result, setResult] = useState<GetParsedVaaOutput>(null);
+
+  const { isError, isLoading, isFetching } = useQuery(
+    ["getParsedVaa", input],
+    () => getClient().guardianNetwork.getParsedVaa(input),
+    {
+      enabled: !!input,
+      onSuccess: data => {
+        setResult(data);
+        setTimeout(() => {
+          document.querySelectorAll(".json-view-key").forEach(a => {
+            // Add chain names to decoded VAA
+            if (
+              a.innerHTML?.includes("fromChain") ||
+              a.innerHTML?.includes("toChain") ||
+              a.innerHTML?.includes("tokenChain") ||
+              a.innerHTML?.includes("emitterChain") ||
+              a.innerHTML?.includes("feeChain")
+            ) {
+              const parentElement = a.parentElement;
+
+              const chain = getChainName({
+                chainId: +parentElement.children?.[1]?.innerHTML as ChainId,
+                network: "MAINNET",
+              });
+
+              if (chain) {
+                const newText = document.createElement("span");
+                newText.textContent = ` // ${chain}`;
+
+                a.parentElement?.appendChild(newText);
+              }
+            }
+
+            // Add payload types to decoded VAA
+            if (a.innerHTML?.includes("payloadType")) {
+              const parentElement = a.parentElement;
+
+              const type = txType[+parentElement.children?.[1]?.innerHTML] ?? false;
+
+              if (type) {
+                const newText = document.createElement("span");
+                newText.textContent = ` // ${type}`;
+
+                a.parentElement?.appendChild(newText);
+              }
+            }
+
+            // Add timestamps as texts in decoded VAA
+            if (a.innerHTML?.includes("timestamp")) {
+              const parentElement = a.parentElement;
+
+              const timestamp = parentElement.children?.[1]?.innerHTML?.replaceAll('"', "");
+              const time = new Date(timestamp);
+              const formatted = formatDate(time);
+
+              if (formatted) {
+                const newText = document.createElement("span");
+                newText.textContent = ` // ${formatted}`;
+
+                a.parentElement?.appendChild(newText);
+              }
+            }
+          });
+        }, 150);
+      },
+    },
+  );
+
+  const VAA_ID =
+    result?.vaa?.sequence && result?.vaa?.emitterChain && result?.vaa?.emitterAddress
+      ? `${result?.vaa?.emitterChain}/${result?.vaa?.emitterAddress}/${result?.vaa?.sequence}`
+      : "";
+
+  return (
+    <BaseLayout>
+      <div className="devtools-page">
+        <div className="devtools-page-container">
+          <h1 className="devtools-page-title">VAA Parser</h1>
+          <div className="devtools-page-body">
+            <label htmlFor="parse-input">Base64 Encoded VAA</label>
+            <div className="parse">
+              <textarea
+                className="parse-input"
+                id="parse-input"
+                disabled={false}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                name="VAA-Input"
+                placeholder="AQAA..."
+                aria-label="Text input"
+                draggable={false}
+                spellCheck={false}
+              />
+              <div className="parse-result" id="parse-result" aria-label="Parsed result">
+                <div className="parse-result-title">Decoded VAA</div>
+
+                <div className="parse-result-copy">
+                  <CopyToClipboard toCopy={result ? JSON.stringify(result) : "{}"}>
+                    <CopyIcon height={24} width={24} />
+                  </CopyToClipboard>
+                </div>
+
+                {isError ? (
+                  "Can't parse"
+                ) : isLoading || isFetching ? (
+                  <Loader />
+                ) : (
+                  <div className="parse-result-json">
+                    {!!result && input && VAA_ID && (
+                      <div>
+                        <JsonText data={result} />
+                        <NavLink target="_blank" to={`/tx/${VAA_ID}`}>
+                          <div className="parse-result-bottom">
+                            <span>View on Transactions</span>
+                            <ExternalLinkIcon height={15} width={15} />
+                          </div>
+                        </NavLink>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </BaseLayout>
+  );
+};
+
+export default VaaParser;

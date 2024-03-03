@@ -14,6 +14,7 @@ const Txs = lazy(() => import("../pages/Txs"));
 const TermsOfUse = lazy(() => import("../pages/TermsOfUse"));
 const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy"));
 const NotFound = lazy(() => import("../pages/NotFound"));
+const VaaParser = lazy(() => import("../pages/VaaParser"));
 
 const Navigation = () => {
   return (
@@ -37,6 +38,7 @@ const Navigation = () => {
                 <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
                 <Route path="/terms-of-use" element={<TermsOfUse />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/vaa-parser" element={<VaaParser />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

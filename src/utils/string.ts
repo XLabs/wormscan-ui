@@ -48,3 +48,22 @@ export const TruncateText = ({
 
   return `${start}${ellipsis}${end}`;
 };
+
+export const addQuotesInKeys = (obj: any): any => {
+  if (Array.isArray(obj)) {
+    return obj.map(addQuotesInKeys);
+  } else if (typeof obj === "object" && obj !== null) {
+    // newObj = keys with quotes
+    const newObj: any = {};
+
+    for (const key in obj) {
+      // add quotes to key
+      const newKey = `"${key}"`;
+      newObj[newKey] = addQuotesInKeys(obj[key]);
+    }
+
+    return newObj;
+  } else {
+    return obj;
+  }
+};

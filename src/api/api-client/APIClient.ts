@@ -2,6 +2,7 @@ import axios, { Axios, AxiosError } from "axios";
 
 export interface APIClient {
   doGet<T>(path: string, params?: any): Promise<T> | T;
+  doPost<T>(path: string, params?: any): Promise<T> | T;
 }
 
 export class AxiosClient implements APIClient {
@@ -14,6 +15,16 @@ export class AxiosClient implements APIClient {
   async doGet<T>(path: string, params?: any): Promise<T> {
     try {
       const response = await this._client.get(path, { params });
+      return response.data;
+    } catch (e: any) {
+      const errors = e as Error | AxiosError;
+      throw new Error(errors.message);
+    }
+  }
+
+  async doPost<T>(path: string, body?: any): Promise<T> {
+    try {
+      const response = await this._client.post(path, body);
       return response.data;
     } catch (e: any) {
       const errors = e as Error | AxiosError;

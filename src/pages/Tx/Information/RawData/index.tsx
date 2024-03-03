@@ -1,4 +1,3 @@
-import { JsonView } from "react-json-view-lite";
 import { CopyIcon } from "@radix-ui/react-icons";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import {
@@ -14,29 +13,11 @@ import {
 } from "src/utils/genericRelayerVaaUtils";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import "./styles.scss";
+import { JsonText } from "src/components/atoms";
 
 export const BlockSection = ({ title, code }: { title: string; code: any }) => {
   if (!code) return null;
   const jsonParsed = JSON.parse(code);
-
-  const addQuotesInKeys = (obj: any): any => {
-    if (Array.isArray(obj)) {
-      return obj.map(addQuotesInKeys);
-    } else if (typeof obj === "object" && obj !== null) {
-      // newObj = keys with quotes
-      const newObj: any = {};
-
-      for (const key in obj) {
-        // add quotes to key
-        const newKey = `"${key}"`;
-        newObj[newKey] = addQuotesInKeys(obj[key]);
-      }
-
-      return newObj;
-    } else {
-      return obj;
-    }
-  };
 
   return (
     <div className="tx-raw-data-container-block">
@@ -51,24 +32,7 @@ export const BlockSection = ({ title, code }: { title: string; code: any }) => {
         </div>
       </div>
       <div className="tx-raw-data-container-block-body">
-        <JsonView
-          data={addQuotesInKeys(jsonParsed)}
-          style={{
-            basicChildStyle: "tx-raw-data-container-block-body-row",
-            booleanValue: "tx-raw-data-container-block-body-info",
-            collapsedContent: "tx-raw-data-container-block-body-collapsedContent",
-            collapseIcon: "tx-raw-data-container-block-body-collapseIcon",
-            container: "",
-            expandIcon: "tx-raw-data-container-block-body-expandIcon",
-            label: "tx-raw-data-container-block-body-key",
-            nullValue: "tx-raw-data-container-block-body-info",
-            numberValue: "tx-raw-data-container-block-body-number",
-            otherValue: "tx-raw-data-container-block-body-string",
-            punctuation: "",
-            stringValue: "tx-raw-data-container-block-body-string",
-            undefinedValue: "tx-raw-data-container-block-body-info",
-          }}
-        />
+        <JsonText data={jsonParsed} />
       </div>
     </div>
   );

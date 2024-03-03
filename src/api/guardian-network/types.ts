@@ -119,6 +119,13 @@ export interface ChainPairsByTransfersOutput {
   numberOfTransfers: string;
 }
 
+export interface GetParsedVaaOutput {
+  appIds?: string[];
+  parsedPayload?: any;
+  standardizedProperties?: any;
+  vaa?: any;
+}
+
 export interface GetOperationsInput {
   txHash?: string;
   address?: string;
