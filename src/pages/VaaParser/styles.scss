@@ -80,6 +80,10 @@
         cursor: default;
       }
 
+      &-not-found {
+        margin-left: 8px;
+      }
+
       &-bottom {
         position: absolute;
         bottom: -32px;

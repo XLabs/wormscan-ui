@@ -32,6 +32,7 @@ const VaaParser = () => {
     () => getClient().guardianNetwork.getParsedVaa(input),
     {
       enabled: !!input,
+      retry: 0,
       onSuccess: data => {
         setResult(data);
         setTimeout(() => {
@@ -131,7 +132,7 @@ const VaaParser = () => {
                 </div>
 
                 {isError ? (
-                  "Can't parse"
+                  <span className="parse-result-not-found">Parsing failed</span>
                 ) : isLoading || isFetching ? (
                   <Loader />
                 ) : (
