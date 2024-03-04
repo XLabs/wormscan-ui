@@ -144,15 +144,19 @@
       &-trigger {
         position: relative;
         cursor: pointer;
-        padding-right: 16px;
-        padding-top: 4px;
-        padding-bottom: 4px;
+        padding-left: 12px;
+        padding-right: 30px;
+        padding-top: 8px;
+        padding-bottom: 8px;
 
         .icon {
           position: absolute;
-          width: 20px;
-          height: 22px;
+          width: 24px;
+          height: 24px;
+          color: var(--color-secondary-800);
         }
+
+        // background-color: pink !important;
 
         &[data-state="closed"] {
           border-bottom: 1px solid transparent;
@@ -178,13 +182,19 @@
         border-radius: 6px;
 
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+
+        .active {
+          color: var(--color-secondary-700);
+        }
       }
 
       button {
         border: 0px;
         background: none;
-        color: var(--color-primary-90);
+        color: var(--color-white-100);
         font-size: 16px;
       }
     }

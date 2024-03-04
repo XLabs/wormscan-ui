@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import analytics from "src/analytics";
@@ -24,6 +24,8 @@ const VaaParser = () => {
   const params = useParams();
   const vaaParam = params?.["*"];
   const navigate = useNavigateCustom();
+
+  const textareaRef = useRef(null);
 
   const [input, setInput] = useState(processInput(vaaParam));
   const [result, setResult] = useState<GetParsedVaaOutput>(null);
@@ -117,10 +119,12 @@ const VaaParser = () => {
                 id="parse-input"
                 disabled={false}
                 value={input}
+                ref={textareaRef}
                 onChange={e => {
                   const newInput = processInput(e.target.value);
                   setInput(newInput);
                   navigate(`/vaa-parser/${newInput}`, { replace: true });
+                  textareaRef?.current?.blur();
                 }}
                 name="VAA-Input"
                 placeholder="AQAA..."

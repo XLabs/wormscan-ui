@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-import { HamburgerMenuIcon, Cross1Icon, CaretDownIcon } from "@radix-ui/react-icons";
+import { HamburgerMenuIcon, Cross1Icon, TriangleDownIcon } from "@radix-ui/react-icons";
 import { Network } from "@certusone/wormhole-sdk";
 import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
@@ -105,11 +105,12 @@ const Header = () => {
           <NavigationMenu.List className="dropdown-menu">
             <NavigationMenu.Item>
               <NavigationMenu.Trigger className="dropdown-menu-trigger">
-                Dev Tools <CaretDownIcon className="icon" />
+                Dev Tools <TriangleDownIcon className="icon" />
               </NavigationMenu.Trigger>
 
               <NavigationMenu.Content className="dropdown-menu-content">
                 <NavLinkItem to="/vaa-parser" label="VAA Parser" />
+                <NavLinkItem to="/docs" label="API Docs" />
               </NavigationMenu.Content>
             </NavigationMenu.Item>
           </NavigationMenu.List>
