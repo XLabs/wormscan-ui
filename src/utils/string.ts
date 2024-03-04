@@ -82,3 +82,19 @@ export const hexToBase64 = (hexString: string) => {
 
   return base64String;
 };
+
+export const base64ToHex = (base64String: string) => {
+  try {
+    // Decode the Base64 string to a binary string.
+    const binaryString = atob(base64String);
+
+    // Convert each character to its char code, then to its Hex representation, and pad with zeros if necessary.
+    const hexString = Array.from(binaryString)
+      .map(char => char.charCodeAt(0).toString(16).padStart(2, "0"))
+      .join("");
+
+    return hexString;
+  } catch (e) {
+    return "";
+  }
+};

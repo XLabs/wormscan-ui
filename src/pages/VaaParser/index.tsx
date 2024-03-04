@@ -13,7 +13,7 @@ import { ChainId } from "src/api";
 import { txType } from "src/consts";
 import { formatDate } from "src/utils/date";
 import { useParams } from "react-router-dom";
-import { hexToBase64 } from "src/utils/string";
+import { base64ToHex, hexToBase64 } from "src/utils/string";
 import "./styles.scss";
 
 const VaaParser = () => {
@@ -26,6 +26,7 @@ const VaaParser = () => {
   const navigate = useNavigateCustom();
 
   const textareaRef = useRef(null);
+  const textareaHexRef = useRef(null);
 
   const [input, setInput] = useState(processInput(vaaParam));
   const [result, setResult] = useState<GetParsedVaaOutput>(null);
@@ -112,28 +113,50 @@ const VaaParser = () => {
         <div className="devtools-page-container">
           <h1 className="devtools-page-title">VAA Parser</h1>
           <div className="devtools-page-body">
-            <label htmlFor="parse-input">Base64 Encoded VAA</label>
             <div className="parse">
-              <textarea
-                className="parse-input"
-                id="parse-input"
-                disabled={false}
-                value={input}
-                ref={textareaRef}
-                onChange={e => {
-                  const newInput = processInput(e.target.value);
-                  setInput(newInput);
-                  navigate(`/vaa-parser/${newInput}`, { replace: true });
-                  textareaRef?.current?.blur();
-                }}
-                name="VAA-Input"
-                placeholder="AQAA..."
-                aria-label="Text input"
-                draggable={false}
-                spellCheck={false}
-              />
+              <div className="parse-input-container">
+                <label htmlFor="parse-input">Base64 Encoded VAA</label>
+                <textarea
+                  className="parse-input"
+                  id="parse-input"
+                  disabled={false}
+                  value={input}
+                  ref={textareaRef}
+                  onChange={e => {
+                    const newInput = processInput(e.target.value);
+                    setInput(newInput);
+                    navigate(`/vaa-parser/${newInput}`, { replace: true });
+                    textareaRef?.current?.blur();
+                  }}
+                  name="VAA-Input"
+                  placeholder="AQA..."
+                  aria-label="Base64 VAA input"
+                  draggable={false}
+                  spellCheck={false}
+                />
+                <label htmlFor="parse-input-hex">Hex Encoded VAA</label>
+                <textarea
+                  className="parse-input"
+                  id="parse-input-hex"
+                  disabled={false}
+                  value={input ? "0x" + base64ToHex(input) : input}
+                  ref={textareaHexRef}
+                  onChange={e => {
+                    const newInput = processInput(e.target.value);
+                    setInput(newInput);
+                    navigate(`/vaa-parser/${newInput}`, { replace: true });
+                    textareaHexRef?.current?.blur();
+                  }}
+                  name="VAA-Input-Hex"
+                  placeholder="0x..."
+                  aria-label="Hex VAA input"
+                  draggable={false}
+                  spellCheck={false}
+                />
+              </div>
               <div className="parse-result" id="parse-result" aria-label="Parsed result">
                 <div className="parse-result-title">Decoded VAA</div>
+                <div className="parse-result-title"></div>
 
                 <div className="parse-result-copy">
                   <CopyToClipboard toCopy={result ? JSON.stringify(result) : "{}"}>
@@ -176,7 +199,7 @@ const processInput = (str: string) => {
   const hexRegExp = /^[0-9a-fA-F]+$/;
 
   // isHex (ensuring even length)
-  if (hexRegExp.test(input) && input.length % 2 === 0) {
+  if (hexRegExp.test(input) /* && input.length % 2 === 0 */) {
     return hexToBase64(input);
   }
 
