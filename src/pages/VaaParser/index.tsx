@@ -44,6 +44,7 @@ const VaaParser = () => {
               a.innerHTML?.includes("tokenChain") ||
               a.innerHTML?.includes("emitterChain") ||
               a.innerHTML?.includes("refundChainId") ||
+              a.innerHTML?.includes("recipientChain") ||
               a.innerHTML?.includes("targetChainId") ||
               a.innerHTML?.includes("feeChain")
             ) {
