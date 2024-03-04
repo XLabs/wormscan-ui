@@ -67,3 +67,18 @@ export const addQuotesInKeys = (obj: any): any => {
     return obj;
   }
 };
+
+export const hexToBase64 = (hexString: string) => {
+  // Convert the hex string to a byte array.
+  const byteArray = new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+
+  // Convert the byte array to a string.
+  const binaryString = Array.from(byteArray)
+    .map(byte => String.fromCharCode(byte))
+    .join("");
+
+  // Encode the binary string to Base64.
+  const base64String = btoa(binaryString);
+
+  return base64String;
+};

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import analytics from "src/analytics";
-import "./styles.scss";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
 import { GetParsedVaaOutput } from "src/api/guardian-network/types";
@@ -14,6 +13,8 @@ import { ChainId } from "src/api";
 import { txType } from "src/consts";
 import { formatDate } from "src/utils/date";
 import { useParams } from "react-router-dom";
+import { hexToBase64 } from "src/utils/string";
+import "./styles.scss";
 
 const VaaParser = () => {
   useEffect(() => {
@@ -24,7 +25,7 @@ const VaaParser = () => {
   const vaaParam = params?.["*"];
   const navigate = useNavigateCustom();
 
-  const [input, setInput] = useState(vaaParam || "");
+  const [input, setInput] = useState(processInput(vaaParam));
   const [result, setResult] = useState<GetParsedVaaOutput>(null);
 
   const { isError, isLoading, isFetching } = useQuery(
@@ -117,8 +118,9 @@ const VaaParser = () => {
                 disabled={false}
                 value={input}
                 onChange={e => {
-                  setInput(e.target.value);
-                  navigate(`/vaa-parser/${e.target.value}`, { replace: true });
+                  const newInput = processInput(e.target.value);
+                  setInput(newInput);
+                  navigate(`/vaa-parser/${newInput}`, { replace: true });
                 }}
                 name="VAA-Input"
                 placeholder="AQAA..."
@@ -164,3 +166,15 @@ const VaaParser = () => {
 };
 
 export default VaaParser;
+
+const processInput = (str: string) => {
+  const input = str?.startsWith("0x") ? str.replace("0x", "") : str;
+  const hexRegExp = /^[0-9a-fA-F]+$/;
+
+  // isHex (ensuring even length)
+  if (hexRegExp.test(input) && input.length % 2 === 0) {
+    return hexToBase64(input);
+  }
+
+  return input || "";
+};
