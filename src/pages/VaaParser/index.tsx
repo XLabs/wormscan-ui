@@ -13,18 +13,22 @@ import { getChainName } from "src/utils/wormhole";
 import { ChainId } from "src/api";
 import { txType } from "src/consts";
 import { formatDate } from "src/utils/date";
+import { useParams } from "react-router-dom";
 
 const VaaParser = () => {
   useEffect(() => {
     analytics.page({ title: "VAA_PARSER" });
   }, []);
 
+  const params = useParams();
+  const vaaParam = params?.["*"];
+
   const navigate = useNavigateCustom();
   // const goHome = (e: React.MouseEvent<HTMLButtonElement>) => {
   //   navigate("/");
   // };
 
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(vaaParam || "");
   const [result, setResult] = useState<GetParsedVaaOutput>(null);
 
   const { isError, isLoading, isFetching } = useQuery(

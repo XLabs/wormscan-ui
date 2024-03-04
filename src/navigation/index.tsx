@@ -39,6 +39,7 @@ const Navigation = () => {
                 <Route path="/terms-of-use" element={<TermsOfUse />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/vaa-parser" element={<VaaParser />} />
+                <Route path="/vaa-parser/*" element={<VaaParser />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
