@@ -22,11 +22,7 @@ const VaaParser = () => {
 
   const params = useParams();
   const vaaParam = params?.["*"];
-
   const navigate = useNavigateCustom();
-  // const goHome = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   navigate("/");
-  // };
 
   const [input, setInput] = useState(vaaParam || "");
   const [result, setResult] = useState<GetParsedVaaOutput>(null);
@@ -119,7 +115,10 @@ const VaaParser = () => {
                 id="parse-input"
                 disabled={false}
                 value={input}
-                onChange={e => setInput(e.target.value)}
+                onChange={e => {
+                  setInput(e.target.value);
+                  navigate(`/vaa-parser/${e.target.value}`, { replace: true });
+                }}
                 name="VAA-Input"
                 placeholder="AQAA..."
                 aria-label="Text input"
