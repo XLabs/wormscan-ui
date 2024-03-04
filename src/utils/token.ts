@@ -27,6 +27,7 @@ import SEI from "src/icons/tokens/SEI.svg";
 import SOL from "src/icons/tokens/SOL.svg";
 import SUI from "src/icons/tokens/SUI.svg";
 import tBTC from "src/icons/tokens/tBTC.svg";
+import TRUMP from "src/icons/tokens/TRUMP.webp";
 import USDC from "src/icons/tokens/USDC.svg";
 import USDT from "src/icons/tokens/USDT.svg";
 import WAVAX from "src/icons/tokens/WAVAX.svg";
@@ -67,6 +68,7 @@ const iconTokens = {
   SOL,
   SUI,
   tBTC,
+  TRUMP,
   USDbC: USDC,
   USDC,
   USDCbs: USDC,
