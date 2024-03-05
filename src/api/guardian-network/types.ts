@@ -163,7 +163,7 @@ export interface GetOperationsOutput {
         toChain: number;
         trimmedAmount: {
           amount: string;
-          decimals: number; // NUMBER OF DECIMALS TRIMMED OF ORIGINAL TOKEN !
+          decimals: number;
         };
       };
       transceiverMessage?: any;

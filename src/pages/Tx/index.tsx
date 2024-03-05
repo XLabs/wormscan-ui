@@ -436,8 +436,6 @@ const Tx = () => {
       // check NTT
       for (const data of apiTxData) {
         if (data?.content?.standarizedProperties?.appIds?.includes(NTT_APP_ID)) {
-          // if the amount is not there, we get it from the payload
-          //     (we assume 6 decimals because its always USDC)
           if (
             (!data.data?.tokenAmount || !data.content?.standarizedProperties?.amount) &&
             !!data.content?.payload?.nttMessage?.trimmedAmount?.amount
@@ -447,8 +445,6 @@ const Tx = () => {
               environment,
               data.content?.standarizedProperties?.tokenAddress,
             );
-
-            console.log({ data, tokenInfo });
 
             if (/* tokenInfo.tokenDecimals &&  */ tokenInfo.symbol) {
               const decimals =
