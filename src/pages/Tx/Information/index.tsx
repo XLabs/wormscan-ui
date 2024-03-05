@@ -864,7 +864,7 @@ const Information = ({
         vaa={vaa?.raw}
       />
 
-      {appIds.includes(NTT_APP_ID) && appIds.includes("GENERIC_RELAYER") && (
+      {showOverview && appIds.includes(NTT_APP_ID) && appIds.includes("GENERIC_RELAYER") && (
         <div className="tx-information-button">
           <Tooltip
             tooltip={isGenericRelayerTx ? "Switch to Transfer view" : "Switch to Relayer view"}
