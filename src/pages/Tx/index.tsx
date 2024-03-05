@@ -37,7 +37,7 @@ import {
   canWeGetDestinationTx,
   getGuardianSet,
 } from "src/consts";
-import { parseVaa } from "@certusone/wormhole-sdk";
+import { CHAIN_ID_SOLANA, parseVaa } from "@certusone/wormhole-sdk";
 import { getNttInfo } from "src/utils/wh-ntt-rpc";
 
 const Tx = () => {
@@ -444,39 +444,44 @@ const Tx = () => {
             (!data.data?.tokenAmount || !data.content?.standarizedProperties?.amount) &&
             !!parsedPayload?.nttMessage?.trimmedAmount?.amount
           ) {
-            const tokenInfo = await getTokenInformation(
-              data.sourceChain?.chainId,
-              environment,
-              data.content?.standarizedProperties?.tokenAddress,
+            const decimals = parsedPayload?.nttMessage?.trimmedAmount?.decimals;
+
+            const amount = String(
+              +parsedPayload?.nttMessage?.trimmedAmount?.amount / 10 ** decimals,
             );
 
-            if (/* tokenInfo.tokenDecimals &&  */ tokenInfo.symbol) {
-              const decimals =
-                // tokenInfo.tokenDecimals -
-                parsedPayload?.nttMessage?.trimmedAmount?.decimals;
+            data.content.payload = {
+              ...data.content.payload,
+              payloadType: 1,
+              amount: parsedPayload?.nttMessage?.trimmedAmount?.amount,
+            };
 
-              const amount = String(
-                +parsedPayload?.nttMessage?.trimmedAmount?.amount / 10 ** decimals,
+            const nttInfo = await getNttInfo(environment, data, parsedPayload);
+
+            let tokenInfo = { symbol: "" };
+            if (data.sourceChain?.chainId !== CHAIN_ID_SOLANA) {
+              tokenInfo = await getTokenInformation(
+                data.sourceChain?.chainId,
+                environment,
+                data.content?.standarizedProperties?.tokenAddress,
               );
+            } else {
+              tokenInfo = await getTokenInformation(
+                data.content?.standarizedProperties?.toChain,
+                environment,
+                nttInfo?.targetTokenAddress,
+              );
+            }
 
-              data.data = {
-                tokenAmount: amount,
-                symbol: tokenInfo.symbol,
-                usdAmount: null,
-              };
+            data.data = {
+              tokenAmount: amount,
+              symbol: tokenInfo.symbol,
+              usdAmount: null,
+            };
 
-              data.content.payload = {
-                ...data.content.payload,
-                payloadType: 1,
-                amount: parsedPayload?.nttMessage?.trimmedAmount?.amount,
-              };
-
-              const nttInfo = await getNttInfo(environment, data, parsedPayload);
-
-              if (nttInfo?.targetTokenAddress) {
-                data.content.standarizedProperties.wrappedTokenAddress = nttInfo.targetTokenAddress;
-                data.content.standarizedProperties.wrappedTokenSymbol = tokenInfo.symbol;
-              }
+            if (nttInfo?.targetTokenAddress) {
+              data.content.standarizedProperties.wrappedTokenAddress = nttInfo.targetTokenAddress;
+              data.content.standarizedProperties.wrappedTokenSymbol = tokenInfo.symbol;
             }
           }
         }

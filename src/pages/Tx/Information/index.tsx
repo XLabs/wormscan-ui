@@ -490,7 +490,7 @@ const Information = ({
     if (targetContract || parsedEmitterAddress) {
       const isGeneric = targetContract?.toUpperCase() === parsedEmitterAddress?.toUpperCase();
 
-      setIsGenericRelayerTx(isGeneric && !appIds.includes(NTT_APP_ID));
+      setIsGenericRelayerTx(isGeneric && !appIds?.includes(NTT_APP_ID));
       if (isGeneric) {
         console.log("isGenericRelayerTx!!!");
         getRelayerInfo();
@@ -864,7 +864,7 @@ const Information = ({
         vaa={vaa?.raw}
       />
 
-      {showOverview && appIds.includes(NTT_APP_ID) && appIds.includes("GENERIC_RELAYER") && (
+      {showOverview && appIds?.includes(NTT_APP_ID) && appIds?.includes("GENERIC_RELAYER") && (
         <div className="tx-information-button">
           <Tooltip
             tooltip={isGenericRelayerTx ? "Switch to Transfer view" : "Switch to Relayer view"}
