@@ -143,13 +143,13 @@ export const Chart = ({
           ctx.beginPath();
 
           // drawing graph
-          const START = START_POINT + counter;
+          const START = START_POINT + counter || 0;
           const END = END_POINTS[i] + i * MARGIN_SIZE_ELEMENTS * 2;
 
           ctx.moveTo(0, START);
           ctx.bezierCurveTo(CHART_SIZE / 2, START, CHART_SIZE / 2, END, CHART_SIZE, END);
 
-          const excess = (selected.itemHeight * +destinyChainsHeight[i].percentage) / 100;
+          const excess = (selected?.itemHeight * +destinyChainsHeight[i]?.percentage) / 100;
           const START2 = START + excess - MARGIN_SIZE_CANVAS * 2;
           counter += excess;
 
@@ -200,13 +200,13 @@ export const Chart = ({
           ctx.beginPath();
 
           // drawing graph
-          const START = START_POINT + counter;
+          const START = START_POINT + counter || 0;
           const END = END_POINTS[i] + i * MARGIN_SIZE_ELEMENTS * 2;
 
           ctx.moveTo(CHART_SIZE, START);
           ctx.bezierCurveTo(CHART_SIZE / 2, START, CHART_SIZE / 2, END, 0, END);
 
-          const excess = (selected.itemHeight * +originChainsHeight[i].percentage) / 100;
+          const excess = (selected?.itemHeight * +originChainsHeight[i]?.percentage) / 100;
           const START2 = START + excess - MARGIN_SIZE_CANVAS * 2;
           counter += excess;
 
