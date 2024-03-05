@@ -467,7 +467,7 @@ const Tx = () => {
 
               data.content.payload = {
                 ...data.content.payload,
-                payloadType: 3,
+                payloadType: 1,
                 amount: parsedPayload?.nttMessage?.trimmedAmount?.amount,
               };
 
