@@ -140,16 +140,34 @@ export interface GetOperationsOutput {
   };
   content: {
     payload: {
-      amount: string;
-      fee: string;
-      fromAddress: string | null;
-      parsedPayload: any;
-      payload: string;
-      payloadType: number;
-      toAddress: string;
-      toChain: number;
-      tokenAddress: string;
-      tokenChain: number;
+      amount?: string;
+      fee?: string;
+      fromAddress?: string | null;
+      parsedPayload?: any;
+      payload?: string;
+      payloadType?: number;
+      toAddress?: string;
+      toChain?: number;
+      tokenAddress?: string;
+      tokenChain?: number;
+
+      // --- NTT ---
+      nttManagerMessage?: {
+        id: string;
+        sender: string;
+      };
+      nttMessage?: {
+        prefix: string;
+        sourceToken: string;
+        to: string;
+        toChain: number;
+        trimmedAmount: {
+          amount: string;
+          decimals: number; // NUMBER OF DECIMALS TRIMMED OF ORIGINAL TOKEN !
+        };
+      };
+      transceiverMessage?: any;
+      // ---     ---
     };
     standarizedProperties: {
       appIds: string[];
