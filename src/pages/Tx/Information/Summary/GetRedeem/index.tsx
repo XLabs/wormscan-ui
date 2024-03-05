@@ -1,5 +1,6 @@
-import { CheckIcon, Cross2Icon, CubeIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { CheckIcon, Cross2Icon, CubeIcon } from "@radix-ui/react-icons";
 import { Tooltip } from "src/components/atoms";
 import "./styles.scss";
 
@@ -26,10 +27,24 @@ export const GetRedeem = ({ canTryToGetRedeem, foundRedeem, loadingRedeem, getRe
 
     setTimeout(() => {
       setShouldShow(false);
-    }, 3500);
+    }, 5000);
   }, [foundRedeem]);
 
   const showTooltip = !loadingRedeem && !showCheck && !showCross;
+
+  useEffect(() => {
+    if (showCross) {
+      toast("Redeem Transaction Not Found", {
+        type: "error",
+        theme: "dark",
+        style: {
+          background: "var(--color-primary-500)",
+          color: "var(--color-primary-10)",
+        },
+        autoClose: 4300,
+      });
+    }
+  }, [showCross]);
 
   return (
     <>
