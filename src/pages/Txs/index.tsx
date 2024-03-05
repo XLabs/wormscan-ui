@@ -165,7 +165,7 @@ const Txs = () => {
 
               // --- NTT Transfer
               if (appIds?.includes(NTT_APP_ID)) {
-                payloadType = 3;
+                payloadType = 1;
 
                 const decimals =
                   tx.content?.payload?.nttMessage?.trimmedAmount?.decimals ||
@@ -179,6 +179,7 @@ const Txs = () => {
                     10 ** decimals,
                 );
 
+                // TODO: REAL SYMBOL FOR NTT
                 symbol = "TEST_NTT";
               }
               // ---
