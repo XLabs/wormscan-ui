@@ -436,9 +436,13 @@ const Tx = () => {
       // check NTT
       for (const data of apiTxData) {
         if (data?.content?.standarizedProperties?.appIds?.includes(NTT_APP_ID)) {
+          const parsedPayload = data?.content?.payload?.nttMessage
+            ? data?.content?.payload
+            : data?.content?.payload?.parsedPayload;
+
           if (
             (!data.data?.tokenAmount || !data.content?.standarizedProperties?.amount) &&
-            !!data.content?.payload?.nttMessage?.trimmedAmount?.amount
+            !!parsedPayload?.nttMessage?.trimmedAmount?.amount
           ) {
             const tokenInfo = await getTokenInformation(
               data.sourceChain?.chainId,
@@ -449,10 +453,10 @@ const Tx = () => {
             if (/* tokenInfo.tokenDecimals &&  */ tokenInfo.symbol) {
               const decimals =
                 // tokenInfo.tokenDecimals -
-                data.content?.payload?.nttMessage?.trimmedAmount?.decimals;
+                parsedPayload?.nttMessage?.trimmedAmount?.decimals;
 
               const amount = String(
-                +data.content?.payload?.nttMessage?.trimmedAmount?.amount / 10 ** decimals,
+                +parsedPayload?.nttMessage?.trimmedAmount?.amount / 10 ** decimals,
               );
 
               data.data = {
@@ -464,10 +468,10 @@ const Tx = () => {
               data.content.payload = {
                 ...data.content.payload,
                 payloadType: 3,
-                amount: data.content?.payload?.nttMessage?.trimmedAmount?.amount,
+                amount: parsedPayload?.nttMessage?.trimmedAmount?.amount,
               };
 
-              const nttInfo = await getNttInfo(environment, data);
+              const nttInfo = await getNttInfo(environment, data, parsedPayload);
 
               if (nttInfo?.targetTokenAddress) {
                 data.content.standarizedProperties.wrappedTokenAddress = nttInfo.targetTokenAddress;

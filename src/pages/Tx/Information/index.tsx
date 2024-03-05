@@ -13,11 +13,12 @@ import {
   CONNECT_APP_ID,
   DISCORD_URL,
   GATEWAY_APP_ID,
+  NTT_APP_ID,
   PORTAL_APP_ID,
   txType,
   UNKNOWN_APP_ID,
 } from "src/consts";
-import { Alert, Loader } from "src/components/atoms";
+import { Alert, Loader, Tooltip } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
@@ -48,6 +49,7 @@ import RelayerOverview from "./Overview/RelayerOverview";
 import RelayerDetails from "./Details/RelayerDetails";
 
 import "./styles.scss";
+import { CardStackMinusIcon, CardStackPlusIcon } from "@radix-ui/react-icons";
 
 interface Props {
   blockData: GetBlockData;
@@ -372,6 +374,7 @@ const Information = ({
 
       const newData: GetOperationsOutput = JSON.parse(JSON.stringify(data));
 
+      newData.STATUS = "COMPLETED";
       newData.targetChain = newDestinationTx;
 
       if (
@@ -403,6 +406,7 @@ const Information = ({
       setFoundRedeem(true);
 
       setTimeout(() => {
+        setIsGenericRelayerTx(false);
         setTxData(newData);
       }, 2000);
     } else {
@@ -485,13 +489,14 @@ const Information = ({
   useEffect(() => {
     if (targetContract || parsedEmitterAddress) {
       const isGeneric = targetContract?.toUpperCase() === parsedEmitterAddress?.toUpperCase();
-      setIsGenericRelayerTx(isGeneric);
+
+      setIsGenericRelayerTx(isGeneric && !appIds.includes(NTT_APP_ID));
       if (isGeneric) {
         console.log("isGenericRelayerTx!!!");
         getRelayerInfo();
       }
     }
-  }, [targetContract, parsedEmitterAddress, getRelayerInfo]);
+  }, [targetContract, parsedEmitterAddress, getRelayerInfo, appIds]);
   // --- x ---
 
   const OverviewContent = () => {
@@ -858,6 +863,28 @@ const Information = ({
         txHash={data?.sourceChain?.transaction?.txHash}
         vaa={vaa?.raw}
       />
+
+      {appIds.includes(NTT_APP_ID) && appIds.includes("GENERIC_RELAYER") && (
+        <div className="tx-information-button">
+          <Tooltip
+            tooltip={isGenericRelayerTx ? "Switch to Transfer view" : "Switch to Relayer view"}
+            type="info"
+          >
+            <div
+              className="tx-information-button-btn"
+              onClick={() => {
+                setIsGenericRelayerTx(!isGenericRelayerTx);
+              }}
+            >
+              {isGenericRelayerTx ? (
+                <CardStackMinusIcon height={24} width={24} />
+              ) : (
+                <CardStackPlusIcon height={24} width={24} />
+              )}
+            </div>
+          </Tooltip>
+        </div>
+      )}
 
       {showOverview ? <OverviewContent /> : <RawDataContent />}
       {showOverview && <AlertsContent />}

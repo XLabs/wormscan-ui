@@ -3,11 +3,11 @@ import { ethers } from "ethers";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 
-export async function getNttInfo(env: Environment, data: GetOperationsOutput) {
+export async function getNttInfo(env: Environment, data: GetOperationsOutput, parsedPayload: any) {
   const targetChain = data?.content?.standarizedProperties?.toChain as ChainId;
 
   try {
-    let contractAddress = data?.content?.payload?.transceiverMessage?.recipientNttManager;
+    let contractAddress = parsedPayload?.transceiverMessage?.recipientNttManager;
     contractAddress = tryHexToNativeString(contractAddress, targetChain);
 
     const contractProvider = getEthersProvider(getChainInfo(env, targetChain as ChainId));
