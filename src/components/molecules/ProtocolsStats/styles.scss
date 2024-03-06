@@ -34,6 +34,7 @@
     @include centered-row;
     align-items: flex-start;
     gap: 8px;
+    height: 100%;
 
     @include tablet {
       gap: 16px;

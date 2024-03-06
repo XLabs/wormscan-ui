@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
 import WormholeStatsImage from "src/assets/wormhole-stats.svg";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { ExternalLinkIcon, InfoCircledIcon } from "@radix-ui/react-icons";
+import { WORMHOLE_PAGE_URL } from "src/consts";
 import { Loader, Tooltip } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
@@ -29,9 +30,16 @@ const WormholeStats = () => {
 
   return (
     <div className={`wormhole-stats ${isMainnet ? "" : "wormhole-stats-testnet"}`}>
-      <div className="wormhole-stats-title">
+      <a
+        className="wormhole-stats-title"
+        href={WORMHOLE_PAGE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <img src={WormholeStatsImage} alt="wormhole logo" width="132" />
-      </div>
+        <ExternalLinkIcon height={15} width={15} />
+      </a>
+
       {isLoading ? (
         <div className="wormhole-stats-loader">
           <Loader />
@@ -111,7 +119,8 @@ const WormholeStats = () => {
           </div>
         </div>
       )}
-      <div className="w-156" />
+
+      <div className="w-187" />
     </div>
   );
 };

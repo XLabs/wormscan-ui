@@ -76,7 +76,7 @@ export interface ScoresOutput {
   tvl: string;
 }
 
-export type ProtocolName = "cctp" | "allbridge" | "portal" | "mayan";
+export type ProtocolName = "cctp" | "allbridge" | "portal_token_bridge" | "mayan";
 
 export interface ProtocolsStatsOutput {
   protocol: ProtocolName;

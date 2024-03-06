@@ -53,8 +53,11 @@ const Txs = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const address = searchParams.get("address");
+
   const page = Number(searchParams.get("page"));
   const currentPage = page >= 1 ? page : 1;
+  const prevPage = useRef(currentPage);
+
   const q = address ? address : "txs";
   const isTxsFiltered = address ? true : false;
   const REFETCH_TIME = 1000 * 8;
@@ -103,7 +106,7 @@ const Txs = () => {
     ["getTxs", getOperationsInput],
     () => getClient().guardianNetwork.getOperations(getOperationsInput),
     {
-      refetchInterval: () => (currentPage === 1 && liveMode ? REFETCH_TIME : false),
+      refetchInterval: () => (liveMode ? REFETCH_TIME : false),
       onError: (err: Error) => {
         let statusCode = 404;
 
@@ -229,7 +232,7 @@ const Txs = () => {
 
               let statusChanged = false;
               let justAppeared = false;
-              if (liveMode && page <= 1) {
+              if (liveMode && prevPage.current === currentPage) {
                 if (
                   lastUpdatedList &&
                   lastUpdatedList.find(a => a.txHash === parseTxHash && a.status !== STATUS)
@@ -355,6 +358,7 @@ const Txs = () => {
             })
           : [];
 
+        prevPage.current = currentPage;
         setLastUpdatedList(
           tempRows.map(a => ({
             txHash: a.txHashId,
@@ -371,17 +375,9 @@ const Txs = () => {
 
   useEffect(() => {
     if (liveMode) {
-      if (page <= 1) {
-        refetch();
-      } else {
-        setLiveMode(false);
-      }
+      refetch();
     }
   }, [isTxsFiltered, liveMode, page, refetch]);
-
-  const onChangePagination = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
 
   return (
     <BaseLayout>
@@ -396,7 +392,7 @@ const Txs = () => {
               setLiveMode={setLiveMode}
               parsedTxsData={isPaginationLoading ? [] : parsedTxsData}
               currentPage={currentPage}
-              onChangePagination={onChangePagination}
+              onChangePagination={setCurrentPage}
               isPaginationLoading={isPaginationLoading}
               setIsPaginationLoading={setIsPaginationLoading}
               isTxsFiltered={isTxsFiltered}

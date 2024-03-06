@@ -17,21 +17,21 @@ const protocolIcons: Record<ProtocolName, string> = {
   allbridge: allBridgeIcon,
   cctp: cctpIcon,
   mayan: mayanIcon,
-  portal: portalIcon,
+  portal_token_bridge: portalIcon,
 };
 
 const protocolNames: Record<ProtocolName, string> = {
   allbridge: "Allbridge",
   cctp: "CCTP",
   mayan: "Mayan",
-  portal: "Portal",
+  portal_token_bridge: "Portal",
 };
 
 const protocolLinks: Record<ProtocolName, string> = {
   allbridge: ALLBRIDGE_URL,
   cctp: CCTP_URL,
   mayan: MAYAN_URL,
-  portal: PORTAL_BRIDGE_URL,
+  portal_token_bridge: PORTAL_BRIDGE_URL,
 };
 
 const ProtocolsStats = () => {

@@ -26,11 +26,11 @@ export class GuardianNetwork {
     return await this._client.doGet<ScoresOutput>("/scorecards");
   }
 
-  /*  async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
-    return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
-  } */
-
   async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
+    return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
+  }
+
+  /*  async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
     const test = [
       {
         protocol: "allbridge",
@@ -51,7 +51,7 @@ export class GuardianNetwork {
         last_day_diff_percentage: "15.21%",
       },
       {
-        protocol: "portal",
+        protocol: "portal_token_bridge",
         total_value_locked: "0",
         total_value_secured: "0",
         total_value_transferred: "378978978.987987",
@@ -75,7 +75,7 @@ export class GuardianNetwork {
         resolve(test);
       }, 3000);
     });
-  }
+  } */
 
   async getOperations({
     txHash,

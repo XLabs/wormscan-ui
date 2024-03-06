@@ -39,7 +39,7 @@ export const VerifyRedemption = ({
       () => {
         setShouldShow(true);
       },
-      canTryToGetRedeem ? 3500 : 0,
+      canTryToGetRedeem ? 5000 : 0,
     );
   }, [canTryToGetRedeem, vaa]);
 
