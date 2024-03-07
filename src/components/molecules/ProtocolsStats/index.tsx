@@ -36,7 +36,7 @@ const protocolLinks: Record<ProtocolName, string> = {
 
 const ProtocolsStats = () => {
   const [protocolSelected, setProtocolSelected] = useState<ProtocolsStatsOutput>();
-  const [sortedData, setSortedData] = useState([]);
+  const [sortedData, setSortedData] = useState<ProtocolsStatsOutput[]>([]);
 
   const { isLoading, isError, data } = useQuery("protocolsStats", () =>
     getClient().guardianNetwork.getProtocolsStats(),
@@ -74,7 +74,7 @@ const ProtocolsStats = () => {
         <div className="protocols-stats-container">
           <div className="protocols-stats-container-list">
             {sortedData?.map((item: ProtocolsStatsOutput) => (
-              <div
+              <button
                 key={item.protocol}
                 className={`protocols-stats-container-list-item ${
                   protocolSelected?.protocol === item.protocol ? "active" : ""
@@ -87,7 +87,7 @@ const ProtocolsStats = () => {
                 <div className="protocols-stats-container-list-item-name">
                   {protocolNames[item.protocol]}
                 </div>
-              </div>
+              </button>
             ))}
           </div>
           <div className="protocols-stats-container-info">
