@@ -7,7 +7,7 @@ import mayanIcon from "src/icons/Protocols/mayanIcon.svg";
 import portalIcon from "src/icons/Protocols/portalIcon.svg";
 import { ALLBRIDGE_URL, CCTP_URL, MAYAN_URL, PORTAL_BRIDGE_URL } from "src/consts";
 import { Loader } from "src/components/atoms";
-import { ErrorPlaceholder } from "src/components/molecules";
+import { ErrorPlaceholder, WormholeBrand } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getClient } from "src/api/Client";
 import { ProtocolName, ProtocolsStatsOutput } from "src/api/guardian-network/types";
@@ -46,7 +46,7 @@ const ProtocolsStats = () => {
     if (data && data.length > 0) {
       const orderedData = [...data].sort(
         (a: ProtocolsStatsOutput, b: ProtocolsStatsOutput) =>
-          +b.total_value_transferred - +a.total_value_transferred,
+          b.total_value_transferred - a.total_value_transferred,
       );
 
       setSortedData(orderedData);
@@ -99,44 +99,57 @@ const ProtocolsStats = () => {
               {protocolNames[protocolSelected?.protocol]}
               <ExternalLinkIcon height={15} width={15} />
             </a>
+            <WormholeBrand size="regular" />
             <div className="protocols-stats-container-info-item">
               <h4 className="protocols-stats-container-info-item-title">
                 <span>TOTAL TRANSFERRED</span>
                 <span>TOTAL VALUE TRANSFERRED</span>
               </h4>
               <p className="protocols-stats-container-info-item-value">
-                ${formatNumber(+protocolSelected?.total_value_transferred, 0)}
+                $
+                {protocolSelected?.total_value_transferred
+                  ? formatNumber(protocolSelected?.total_value_transferred, 0)
+                  : " -"}
               </p>
             </div>
             <div className="protocols-stats-container-info-item">
               <h4 className="protocols-stats-container-info-item-title">TOTAL MESSAGES</h4>
               <p className="protocols-stats-container-info-item-value">
-                {formatNumber(+protocolSelected?.total_messages, 0)}
+                {protocolSelected?.total_messages
+                  ? formatNumber(protocolSelected?.total_messages, 0)
+                  : "-"}
               </p>
             </div>
             <div className="protocols-stats-container-info-item">
               <h4 className="protocols-stats-container-info-item-title">24H MESSAGES</h4>
               <p className="protocols-stats-container-info-item-value">
-                {formatNumber(+protocolSelected?.last_day_messages, 0)}
-                <span
-                  className={`protocols-stats-container-info-item-value-diff ${
-                    protocolSelected?.last_day_diff_percentage === "0.00%"
-                      ? ""
-                      : protocolSelected?.last_day_diff_percentage.startsWith("-")
-                      ? "negative"
-                      : "positive"
-                  }`}
-                >
-                  {protocolSelected?.last_day_diff_percentage === "0.00%" ? (
-                    <DashIcon height={15} width={15} />
-                  ) : (
-                    <TriangleDownIcon height={15} width={15} />
-                  )}
+                {protocolSelected?.last_day_messages &&
+                protocolSelected?.last_day_diff_percentage ? (
+                  <>
+                    {formatNumber(protocolSelected?.last_day_messages, 0)}
+                    <span
+                      className={`protocols-stats-container-info-item-value-diff ${
+                        protocolSelected?.last_day_diff_percentage === "0.00%"
+                          ? ""
+                          : protocolSelected?.last_day_diff_percentage.startsWith("-")
+                          ? "negative"
+                          : "positive"
+                      }`}
+                    >
+                      {protocolSelected?.last_day_diff_percentage === "0.00%" ? (
+                        <DashIcon height={15} width={15} />
+                      ) : (
+                        <TriangleDownIcon height={15} width={15} />
+                      )}
 
-                  {protocolSelected?.last_day_diff_percentage.startsWith("-")
-                    ? protocolSelected?.last_day_diff_percentage.slice(1)
-                    : protocolSelected?.last_day_diff_percentage}
-                </span>
+                      {protocolSelected?.last_day_diff_percentage.startsWith("-")
+                        ? protocolSelected?.last_day_diff_percentage.slice(1)
+                        : protocolSelected?.last_day_diff_percentage}
+                    </span>
+                  </>
+                ) : (
+                  "-"
+                )}
               </p>
             </div>
           </div>

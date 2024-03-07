@@ -145,6 +145,22 @@
         }
       }
 
+      & .wormhole-brand {
+        bottom: 0;
+        height: 34px;
+        left: 0;
+        margin: auto;
+        min-height: unset;
+        opacity: 0.2;
+        pointer-events: none;
+        position: absolute;
+        right: 0;
+        top: 0;
+        user-select: none;
+        width: 180px;
+        z-index: 1;
+      }
+
       &-item {
         &-title {
           @include text-p1;
