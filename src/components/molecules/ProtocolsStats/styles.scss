@@ -151,14 +151,18 @@
         left: 0;
         margin: auto;
         min-height: unset;
-        opacity: 0.2;
+        opacity: 0.05;
         pointer-events: none;
         position: absolute;
         right: 0;
         top: 0;
         user-select: none;
-        width: 180px;
+        width: 128px;
         z-index: 1;
+
+        @include desktop {
+          width: 180px;
+        }
       }
 
       &-item {

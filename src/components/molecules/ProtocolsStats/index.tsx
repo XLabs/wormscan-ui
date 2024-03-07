@@ -44,10 +44,11 @@ const ProtocolsStats = () => {
 
   useEffect(() => {
     if (data && data.length > 0) {
-      const orderedData = [...data].sort(
-        (a: ProtocolsStatsOutput, b: ProtocolsStatsOutput) =>
-          b.total_value_transferred - a.total_value_transferred,
-      );
+      const orderedData = [...data].sort((a: ProtocolsStatsOutput, b: ProtocolsStatsOutput) => {
+        const aValue = a.total_value_transferred || 0;
+        const bValue = b.total_value_transferred || 0;
+        return bValue - aValue;
+      });
 
       setSortedData(orderedData);
       setProtocolSelected(orderedData[0]);
@@ -99,7 +100,7 @@ const ProtocolsStats = () => {
               {protocolNames[protocolSelected?.protocol]}
               <ExternalLinkIcon height={15} width={15} />
             </a>
-            <WormholeBrand size="regular" />
+            <WormholeBrand />
             <div className="protocols-stats-container-info-item">
               <h4 className="protocols-stats-container-info-item-title">
                 <span>TOTAL TRANSFERRED</span>
