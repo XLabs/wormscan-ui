@@ -76,6 +76,18 @@ export interface ScoresOutput {
   tvl: string;
 }
 
+export type ProtocolName = "cctp" | "allbridge" | "portal_token_bridge" | "mayan";
+
+export interface ProtocolsStatsOutput {
+  protocol: ProtocolName;
+  total_value_locked?: number;
+  total_value_secured?: number;
+  total_value_transferred: number;
+  total_messages: number;
+  last_day_messages: number;
+  last_day_diff_percentage: string;
+}
+
 export interface AssetsByVolumeInput {
   timeSpan?: "7d" | "15d" | "30d";
 }
