@@ -234,7 +234,7 @@ const Txs = () => {
                 )?.length
               );
 
-              const STATUS: IStatus = tx.targetChain?.transaction?.txHash
+              const STATUS: IStatus = tx?.targetChain?.transaction?.txHash
                 ? "COMPLETED"
                 : appIds && appIds.includes("CCTP_MANUAL")
                 ? "EXTERNAL_TX"

@@ -754,7 +754,7 @@ const Information = ({
             ) : (
               <>
                 <p>The VAA for this transaction has not been issued yet.</p>
-                <p>This information can be incomplete or have wrong values.</p>
+                {isRPC && <p>This information can be incomplete or have wrong values.</p>}
                 {!isLatestBlockHigherThanVaaEmitBlock &&
                   !isBigTransaction &&
                   !isDailyLimitExceeded && (

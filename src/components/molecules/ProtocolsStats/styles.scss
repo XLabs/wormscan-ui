@@ -1,0 +1,223 @@
+@import "src/styles/globals.scss";
+
+.protocols-stats {
+  @include card-container;
+  @include centered-column;
+  flex: 2;
+  gap: 24px 0;
+  justify-content: flex-start;
+  min-height: 332px;
+
+  @include tablet {
+    min-height: 364px;
+  }
+
+  @include desktop {
+    min-width: 485px;
+  }
+
+  &-title {
+    @include text-p1;
+    color: var(--color-primary-90);
+    font-weight: 500;
+  }
+
+  &-loader {
+    margin: auto 0;
+
+    @include desktop {
+      min-width: 414px;
+    }
+  }
+
+  &-container {
+    @include centered-row;
+    align-items: flex-start;
+    gap: 8px;
+    height: 100%;
+
+    @include tablet {
+      gap: 16px;
+    }
+
+    &-list {
+      @include centered-column;
+      justify-content: start;
+
+      @include tablet {
+        min-width: max-content;
+        width: 40%;
+      }
+
+      &-item {
+        @include centered-row;
+        background-color: var(--color-black-20);
+        border-bottom: 1px solid var(--color-white-10);
+        border: none;
+        color: var(--color-primary-90);
+        cursor: pointer;
+        gap: 0 8px;
+        padding: 16px 12px;
+
+        &:last-of-type {
+          border-bottom: 1px solid transparent;
+        }
+
+        @include tablet {
+          gap: 0 16px;
+          padding: 16px 24px;
+        }
+
+        &:hover {
+          background-color: var(--color-white-03);
+        }
+
+        &.active {
+          background-color: var(--color-white-05);
+          border-bottom: 1px solid var(--color-secondary-800);
+          color: var(--color-primary-30);
+        }
+
+        &-logo {
+          @include centered-column;
+          align-items: center;
+          background-color: var(--color-primary-800);
+          border-radius: 50%;
+          height: 24px;
+          padding: 4px;
+          width: 24px;
+
+          @include desktop {
+            height: 32px;
+            padding: 6px;
+            width: 32px;
+          }
+
+          & img {
+            height: 100%;
+            width: 100%;
+          }
+        }
+
+        &-name {
+          @include text-p2;
+
+          @include tablet {
+            @include text-p1;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+
+    &-info {
+      @include centered-column;
+      background-color: var(--color-white-05);
+      border-radius: 5px;
+      height: 100%;
+      justify-content: space-between;
+      margin: 0 auto;
+      min-width: max-content;
+      padding: 24px 0 24px 12px;
+      position: relative;
+      width: 100%;
+
+      @include tablet {
+        min-width: 240px;
+        padding: 24px;
+        width: 60%;
+      }
+
+      &-link {
+        @include text-p3;
+        color: var(--color-information-100);
+        text-decoration: none;
+        position: absolute;
+        top: -24px;
+        right: 0;
+
+        &:hover {
+          text-decoration: underline;
+        }
+
+        & svg {
+          margin-left: 8px;
+          vertical-align: -3px;
+        }
+      }
+
+      & .wormhole-brand {
+        bottom: 0;
+        height: 34px;
+        left: 0;
+        margin: auto;
+        min-height: unset;
+        opacity: 0.05;
+        pointer-events: none;
+        position: absolute;
+        right: 0;
+        top: 0;
+        user-select: none;
+        width: 128px;
+        z-index: 1;
+
+        @include desktop {
+          width: 180px;
+        }
+      }
+
+      &-item {
+        &-title {
+          @include text-p1;
+          color: var(--color-primary-150);
+          font-size: 14px;
+          font-weight: 500;
+          text-transform: uppercase;
+
+          & > span:first-child {
+            @include tablet {
+              display: none;
+            }
+          }
+
+          & > span:last-child {
+            display: none;
+
+            @include tablet {
+              display: inline;
+            }
+          }
+        }
+
+        &-value {
+          @include text-h5;
+          color: var(--color-primary-30);
+          font-weight: 500;
+
+          &-diff {
+            @include text-p3;
+            color: var(--color-primary-150);
+            font-size: 12px;
+            margin-left: 8px;
+
+            &.negative {
+              color: var(--color-error-100);
+            }
+
+            &.positive {
+              color: var(--color-success-100);
+
+              & svg {
+                rotate: 180deg;
+              }
+            }
+
+            & svg {
+              vertical-align: sub;
+            }
+          }
+        }
+      }
+    }
+  }
+}

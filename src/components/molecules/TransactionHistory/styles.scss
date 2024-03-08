@@ -4,44 +4,29 @@
   &-title {
     @include centered-row;
     @include text-p1;
-
     color: var(--color-primary-90);
     font-weight: 500;
     gap: 16px;
   }
 
   &-history {
+    @include card-container;
     @include centered-column;
-    justify-content: start;
-
-    flex: 2;
+    flex: 3;
     gap: 24px;
-    margin-top: 75px;
-
-    @include desktop {
-      flex: 3;
-      gap: 16px;
-      margin-left: 4vw;
-      margin-top: 0;
-    }
-
-    @include bigDesktop {
-      flex: 2;
-    }
+    justify-content: start;
+    min-height: 364px;
 
     &-options {
       @include centered-row;
-
       column-gap: 8px;
+      flex-wrap: wrap;
+      justify-content: space-between;
       row-gap: 32px;
 
       @include desktop {
         gap: 16px;
-        padding-right: 18.5px;
       }
-
-      justify-content: space-between;
-      flex-wrap: wrap;
     }
   }
 }

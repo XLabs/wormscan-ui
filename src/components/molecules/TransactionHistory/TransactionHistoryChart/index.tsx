@@ -106,6 +106,8 @@ const TransactionHistoryChart = ({ range }: Props) => {
             <div className="trans-history-chart">
               <WormholeBrand size="regular" />
 
+              <h3 className="trans-history-coming-title">MORE APPS COMING SOON</h3>
+
               <ReactApexChart
                 type="area"
                 height={"100%"}
@@ -255,15 +257,6 @@ const TransactionHistoryChart = ({ range }: Props) => {
           )}
         </>
       )}
-      <div className="trans-history-coming">
-        <h3 className="trans-history-coming-title">MORE APPS COMING SOON</h3>
-        <div className="trans-history-coming-container">
-          <p>Do you want to add metrics for your protocol?</p>
-          <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer">
-            {t("home.footer.contactUs")}
-          </a>
-        </div>
-      </div>
     </div>
   );
 };

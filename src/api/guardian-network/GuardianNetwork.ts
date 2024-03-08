@@ -17,6 +17,7 @@ import {
   Observation,
   ScoresOutput,
   VAACount,
+  ProtocolsStatsOutput,
 } from "./types";
 
 export class GuardianNetwork {
@@ -24,6 +25,10 @@ export class GuardianNetwork {
 
   async getScores(): Promise<ScoresOutput> {
     return await this._client.doGet<ScoresOutput>("/scorecards");
+  }
+
+  async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
+    return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
   }
 
   async getOperations({

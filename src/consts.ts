@@ -117,6 +117,9 @@ export const txType: { [key: number]: "Transfer" | "Attestation" | "Transfer wit
   3: "Transfer with payload",
 } as const;
 
+export const ALLBRIDGE_URL = "https://allbridge.io";
+export const CCTP_URL = "https://portalbridge.com/usdc-bridge";
+export const MAYAN_URL = "https://mayan.finance";
 export const PORTAL_BRIDGE_URL = "https://www.portalbridge.com";
 export const TWITTER_URL = "https://twitter.com/wormholecrypto";
 export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";
