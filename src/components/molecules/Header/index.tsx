@@ -99,7 +99,10 @@ const Header = () => {
       <NavLinkItem to="/txs" label={t("home.header.txs")} />
 
       {isMobile ? (
-        <NavLinkItem to="/vaa-parser" label="VAA Parser" />
+        <>
+          <NavLinkItem to="/vaa-parser" label="VAA Parser" />
+          <ExternalLinkItem href="https://docs.wormhole.com/wormhole" label="Wormhole Docs" />
+        </>
       ) : (
         <NavigationMenu.Root>
           <NavigationMenu.List className="dropdown-menu">
@@ -110,7 +113,8 @@ const Header = () => {
 
               <NavigationMenu.Content className="dropdown-menu-content">
                 <NavLinkItem to="/vaa-parser" label="VAA Parser" />
-                <NavLinkItem to="/docs" label="API Docs" />
+                <ExternalLinkItem href="https://docs.wormholescan.io/" label="API Docs" />
+                <ExternalLinkItem href="https://docs.wormhole.com/wormhole" label="Wormhole Docs" />
               </NavigationMenu.Content>
             </NavigationMenu.Item>
           </NavigationMenu.List>
