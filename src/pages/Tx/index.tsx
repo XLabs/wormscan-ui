@@ -28,13 +28,17 @@ import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/reco
 import {
   CCTP_APP_ID,
   CONNECT_APP_ID,
+  ETH_BRIDGE_APP_ID,
+  GATEWAY_APP_ID,
   IStatus,
+  NTT_APP_ID,
   PORTAL_APP_ID,
   UNKNOWN_APP_ID,
   canWeGetDestinationTx,
   getGuardianSet,
 } from "src/consts";
-import { parseVaa } from "@certusone/wormhole-sdk";
+import { CHAIN_ID_SOLANA, parseVaa } from "@certusone/wormhole-sdk";
+import { getNttInfo } from "src/utils/wh-ntt-rpc";
 
 const Tx = () => {
   useEffect(() => {
@@ -304,7 +308,10 @@ const Tx = () => {
 
   const processVaaData = useCallback(
     async (apiTxData: GetOperationsOutput[]) => {
-      if (!emitterChainId && !!apiTxData.length) setEmitterChainId(apiTxData[0].emitterChain);
+      if (!emitterChainId && !!apiTxData.length) {
+        setEmitterChainId(apiTxData[0].emitterChain);
+        return;
+      }
 
       // Check if its generic relayer tx without vaa and go with RPCs
       // TODO: handle generic relayer no-vaa txns without RPCs
@@ -350,7 +357,7 @@ const Tx = () => {
 
       // check CCTP
       for (const data of apiTxData) {
-        if (data?.content?.standarizedProperties?.appIds?.includes("CCTP_WORMHOLE_INTEGRATION")) {
+        if (data?.content?.standarizedProperties?.appIds?.includes(CCTP_APP_ID)) {
           // if the amount is not there, we get it from the payload
           //     (we assume 6 decimals because its always USDC)
           if (
@@ -426,6 +433,60 @@ const Tx = () => {
         }
       }
 
+      // check NTT
+      for (const data of apiTxData) {
+        if (data?.content?.standarizedProperties?.appIds?.includes(NTT_APP_ID)) {
+          const parsedPayload = data?.content?.payload?.nttMessage
+            ? data?.content?.payload
+            : data?.content?.payload?.parsedPayload;
+
+          if (
+            (!data.data?.tokenAmount || !data.content?.standarizedProperties?.amount) &&
+            !!parsedPayload?.nttMessage?.trimmedAmount?.amount
+          ) {
+            const decimals = parsedPayload?.nttMessage?.trimmedAmount?.decimals;
+
+            const amount = String(
+              +parsedPayload?.nttMessage?.trimmedAmount?.amount / 10 ** decimals,
+            );
+
+            data.content.payload = {
+              ...data.content.payload,
+              payloadType: 1,
+              amount: parsedPayload?.nttMessage?.trimmedAmount?.amount,
+            };
+
+            const nttInfo = await getNttInfo(environment, data, parsedPayload);
+
+            let tokenInfo = { symbol: "" };
+            if (data.sourceChain?.chainId !== CHAIN_ID_SOLANA) {
+              tokenInfo = await getTokenInformation(
+                data.sourceChain?.chainId,
+                environment,
+                data.content?.standarizedProperties?.tokenAddress,
+              );
+            } else {
+              tokenInfo = await getTokenInformation(
+                data.content?.standarizedProperties?.toChain,
+                environment,
+                nttInfo?.targetTokenAddress,
+              );
+            }
+
+            data.data = {
+              tokenAmount: amount,
+              symbol: tokenInfo.symbol,
+              usdAmount: null,
+            };
+
+            if (nttInfo?.targetTokenAddress) {
+              data.content.standarizedProperties.wrappedTokenAddress = nttInfo.targetTokenAddress;
+              data.content.standarizedProperties.wrappedTokenSymbol = tokenInfo.symbol;
+            }
+          }
+        }
+      }
+
       // if there's no tokenAmount or symbol, try to get them with RPC info
       for (const data of apiTxData) {
         if (
@@ -458,7 +519,7 @@ const Tx = () => {
       // try to get wrapped token address and symbol
       let wrappedTokenChain = null;
       for (const data of apiTxData) {
-        if (data?.content?.standarizedProperties?.appIds?.includes("PORTAL_TOKEN_BRIDGE")) {
+        if (data?.content?.standarizedProperties?.appIds?.includes(PORTAL_APP_ID)) {
           if (
             data?.content?.standarizedProperties?.fromChain &&
             data?.content?.standarizedProperties?.tokenAddress &&
@@ -489,9 +550,9 @@ const Tx = () => {
 
             if (
               data?.sourceChain?.attribute?.value &&
-              !data?.content?.standarizedProperties?.appIds?.includes("WORMCHAIN_GATEWAY_TRANSFER")
+              !data?.content?.standarizedProperties?.appIds?.includes(GATEWAY_APP_ID)
             ) {
-              data?.content?.standarizedProperties?.appIds?.push("WORMCHAIN_GATEWAY_TRANSFER");
+              data?.content?.standarizedProperties?.appIds?.push(GATEWAY_APP_ID);
             }
 
             if (wrappedToken) {
@@ -599,8 +660,8 @@ const Tx = () => {
               ?.standarizedProperties?.toChain as ChainId;
 
             data.content.payload.parsedPayload = parsedPayload;
-            if (!data.content.standarizedProperties.appIds.includes("ETH_BRIDGE")) {
-              data.content.standarizedProperties.appIds.push("ETH_BRIDGE");
+            if (!data.content.standarizedProperties.appIds.includes(ETH_BRIDGE_APP_ID)) {
+              data.content.standarizedProperties.appIds.push(ETH_BRIDGE_APP_ID);
             }
 
             setShowSourceTokenUrl(shouldShowSourceTokenUrl);

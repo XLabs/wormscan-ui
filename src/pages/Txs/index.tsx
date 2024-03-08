@@ -22,6 +22,7 @@ import {
   CCTP_APP_ID,
   CONNECT_APP_ID,
   IStatus,
+  NTT_APP_ID,
   PORTAL_APP_ID,
   UNKNOWN_APP_ID,
   canWeGetDestinationTx,
@@ -137,9 +138,9 @@ const Txs = () => {
               const { emitterChain, id: VAAId } = tx;
               const payload = tx?.content?.payload;
               const standarizedProperties = tx?.content?.standarizedProperties;
-              const payloadType = tx?.content?.payload?.payloadType;
-              const symbol = tx?.data?.symbol;
-              const tokenAmount = tx?.data?.tokenAmount;
+              let symbol = tx?.data?.symbol;
+              let payloadType = tx?.content?.payload?.payloadType;
+              let tokenAmount = tx?.data?.tokenAmount;
               const timestamp = tx?.sourceChain?.timestamp;
               const txHash = tx?.sourceChain?.transaction?.txHash;
 
@@ -161,6 +162,27 @@ const Txs = () => {
 
               const attributeType = tx.sourceChain?.attribute?.type;
               const attributeValue = tx.sourceChain?.attribute?.value;
+
+              // --- NTT Transfer
+              if (appIds?.includes(NTT_APP_ID)) {
+                payloadType = 1;
+
+                const decimals =
+                  tx.content?.payload?.nttMessage?.trimmedAmount?.decimals ||
+                  tx.content?.payload?.parsedPayload?.nttMessage?.trimmedAmount?.decimals;
+
+                tokenAmount = String(
+                  +(
+                    tx.content?.payload?.nttMessage?.trimmedAmount?.amount ||
+                    tx.content?.payload?.parsedPayload?.nttMessage?.trimmedAmount?.amount
+                  ) /
+                    10 ** decimals,
+                );
+
+                // TODO: REAL SYMBOL FOR NTT
+                symbol = "TEST_NTT";
+              }
+              // ---
 
               // --- Gateway Transfers
               const fromChain =
