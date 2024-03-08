@@ -52,8 +52,8 @@
       &-item {
         @include centered-row;
         background-color: var(--color-black-20);
-        border-bottom: 1px solid var(--color-white-10);
         border: none;
+        border-bottom: 1px solid var(--color-white-10);
         color: var(--color-primary-90);
         cursor: pointer;
         gap: 0 8px;
