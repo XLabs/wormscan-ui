@@ -695,6 +695,7 @@ const Tx = () => {
         }
       }
 
+      // Add STATUS logic
       for (const data of apiTxData) {
         const { fromChain, appIds } = data?.content?.standarizedProperties || {};
         const payloadType = data?.content?.payload?.payloadType;
