@@ -499,6 +499,15 @@ const Information = ({
   }, [targetContract, parsedEmitterAddress, getRelayerInfo, appIds]);
   // --- x ---
 
+  const setCompleted = useCallback(() => {
+    setTimeout(() => {
+      setTxData({
+        ...data,
+        STATUS: "COMPLETED",
+      });
+    }, 0);
+  }, [data, setTxData]);
+
   const OverviewContent = () => {
     if (isGenericRelayerTx === null) {
       return <Loader />;
@@ -519,6 +528,16 @@ const Information = ({
       const parsedVaa = parseVaa(vaa);
       const sourceTxHash = genericRelayerInfo.sourceTxHash;
       const deliveryStatus = genericRelayerInfo?.DeliveryStatus;
+
+      const resultLogRegex =
+        deliveryStatus?.data?.delivery?.execution?.detail.match(/Status: ([^\r\n]+)/);
+      const resultLog = resultLogRegex ? resultLogRegex?.[1] : null;
+
+      // check to move status to completed if relayer shows delivery success
+      if (resultLog.includes("Delivery Success") && data && data.STATUS !== "COMPLETED") {
+        setCompleted();
+        return;
+      }
 
       const gasUsed = Number(deliveryStatus?.data?.delivery?.execution?.gasUsed);
       const targetTxTimestamp = genericRelayerInfo?.targetTransaction?.targetTxTimestamp;
@@ -667,10 +686,6 @@ const Information = ({
           .replaceAll("  ", "")
           .replaceAll("\n\n\n\n", "\n\n");
       };
-
-      const resultLogRegex =
-        deliveryStatus?.data?.delivery?.execution?.detail.match(/Status: ([^\r\n]+)/);
-      const resultLog = resultLogRegex ? resultLogRegex?.[1] : null;
 
       const refundStatusRegex =
         deliveryStatus?.data?.delivery?.execution?.detail.match(/Refund status: ([^\r\n]+)/);
