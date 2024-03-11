@@ -30,6 +30,7 @@ import {
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
+  GR_APP_ID,
   IStatus,
   NTT_APP_ID,
   PORTAL_APP_ID,
@@ -316,10 +317,7 @@ const Tx = () => {
       // Check if its generic relayer tx without vaa and go with RPCs
       // TODO: handle generic relayer no-vaa txns without RPCs
       for (const data of apiTxData) {
-        if (
-          data?.content?.standarizedProperties?.appIds?.includes("GENERIC_RELAYER") &&
-          !data?.vaa?.raw
-        ) {
+        if (data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID) && !data?.vaa?.raw) {
           await tryToGetRpcInfo();
         }
       }
@@ -681,7 +679,7 @@ const Tx = () => {
 
       // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
       for (const data of apiTxData) {
-        if (!data?.content?.standarizedProperties?.appIds?.includes("GENERIC_RELAYER")) {
+        if (!data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID)) {
           const appIds = data?.content?.standarizedProperties?.appIds?.filter(a => a !== "UNKNOWN");
 
           analytics.track("txDetail", {

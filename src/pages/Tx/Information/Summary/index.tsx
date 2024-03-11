@@ -109,12 +109,14 @@ const Summary = ({
         </div>
       </div>
 
-      <GetRedeem
-        canTryToGetRedeem={canTryToGetRedeem}
-        foundRedeem={foundRedeem}
-        getRedeem={getRedeem}
-        loadingRedeem={loadingRedeem}
-      />
+      {STATUS !== "COMPLETED" && (
+        <GetRedeem
+          canTryToGetRedeem={canTryToGetRedeem}
+          foundRedeem={foundRedeem}
+          getRedeem={getRedeem}
+          loadingRedeem={loadingRedeem}
+        />
+      )}
 
       {STATUS === "VAA_EMITTED" &&
         (isJustPortalUnknown || isConnect || isGateway) &&

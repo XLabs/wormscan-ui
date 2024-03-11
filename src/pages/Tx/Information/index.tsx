@@ -13,6 +13,7 @@ import {
   CONNECT_APP_ID,
   DISCORD_URL,
   GATEWAY_APP_ID,
+  GR_APP_ID,
   NTT_APP_ID,
   PORTAL_APP_ID,
   txType,
@@ -445,7 +446,7 @@ const Information = ({
     populateDeliveryLifecycleRecordByVaa(environment, vaa.raw)
       .then((result: DeliveryLifecycleRecord) => {
         analytics.track("txDetail", {
-          appIds: ["GENERIC_RELAYER"].join(", "),
+          appIds: [GR_APP_ID].join(", "),
           chain: getChainName({
             chainId: (result?.sourceChainId as any)
               ? (result.sourceChainId as any)
@@ -499,14 +500,30 @@ const Information = ({
   }, [targetContract, parsedEmitterAddress, getRelayerInfo, appIds]);
   // --- x ---
 
-  const setCompleted = useCallback(() => {
-    setTimeout(() => {
-      setTxData({
-        ...data,
-        STATUS: "COMPLETED",
-      });
-    }, 0);
-  }, [data, setTxData]);
+  useEffect(() => {
+    if (!loadingRelayers && genericRelayerInfo) {
+      if (
+        genericRelayerInfo?.targetTransaction?.targetTxHash &&
+        data &&
+        data.STATUS !== "COMPLETED"
+      ) {
+        setTxData({
+          ...data,
+          STATUS: "COMPLETED",
+          targetChain: {
+            ...data?.targetChain,
+            timestamp: genericRelayerInfo?.targetTransaction?.targetTxTimestamp * 1000,
+            transaction: {
+              ...data?.targetChain?.transaction,
+              txHash: genericRelayerInfo.targetTransaction.targetTxHash,
+            },
+          },
+        });
+
+        return;
+      }
+    }
+  }, [data, genericRelayerInfo, loadingRelayers, setTxData]);
 
   const OverviewContent = () => {
     if (isGenericRelayerTx === null) {
@@ -532,12 +549,6 @@ const Information = ({
       const resultLogRegex =
         deliveryStatus?.data?.delivery?.execution?.detail.match(/Status: ([^\r\n]+)/);
       const resultLog = resultLogRegex ? resultLogRegex?.[1] : null;
-
-      // check to move status to completed if relayer shows delivery success
-      if (resultLog.includes("Delivery Success") && data && data.STATUS !== "COMPLETED") {
-        setCompleted();
-        return;
-      }
 
       const gasUsed = Number(deliveryStatus?.data?.delivery?.execution?.gasUsed);
       const targetTxTimestamp = genericRelayerInfo?.targetTransaction?.targetTxTimestamp;
@@ -879,7 +890,7 @@ const Information = ({
         vaa={vaa?.raw}
       />
 
-      {showOverview && appIds?.includes(NTT_APP_ID) && appIds?.includes("GENERIC_RELAYER") && (
+      {showOverview && appIds?.includes(NTT_APP_ID) && appIds?.includes(GR_APP_ID) && (
         <div className="tx-information-button">
           <Tooltip
             tooltip={isGenericRelayerTx ? "Switch to Transfer view" : "Switch to Relayer view"}
