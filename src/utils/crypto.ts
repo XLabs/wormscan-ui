@@ -1,4 +1,5 @@
 import { ChainId, isEVMChain, tryHexToNativeString } from "@certusone/wormhole-sdk";
+import { GATEWAY_APP_ID, GR_APP_ID } from "src/consts";
 
 export const formatUnits = (value: number, tokenDecimals = 8) => {
   if (!value) return 0;
@@ -68,10 +69,10 @@ export const formatAppIds = (appIds: string[]) =>
   appIds
     .filter(appId => appId !== "UNKNOWN" && appId !== "STABLE")
     .map(appId => {
-      if (appId === "GENERIC_RELAYER") {
+      if (appId === GR_APP_ID) {
         return "Standard Relayer";
       }
-      if (appId === "WORMCHAIN_GATEWAY_TRANSFER") {
+      if (appId === GATEWAY_APP_ID) {
         return "Wormhole Gateway Transfer";
       }
       if (appId === "CCTP_MANUAL") {
