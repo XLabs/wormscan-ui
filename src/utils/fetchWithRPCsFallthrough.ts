@@ -18,7 +18,7 @@ import {
 import { Implementation__factory } from "@certusone/wormhole-sdk/lib/cjs/ethers-contracts";
 import { humanAddress } from "@certusone/wormhole-sdk/lib/cjs/cosmos";
 import { ethers } from "ethers";
-import { getGuardianSet } from "src/consts";
+import { GR_APP_ID, getGuardianSet } from "src/consts";
 import { ChainId, Order, WormholeTokenList } from "src/api";
 import { getClient } from "src/api/Client";
 import { Environment, SLOW_FINALITY_CHAINS, getChainInfo, getEthersProvider } from "./environment";
@@ -464,7 +464,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             };
 
             const deliveryResult = {
-              appIds: ["GENERIC_RELAYER"],
+              appIds: [GR_APP_ID],
               blockNumber: result.receipt.blockNumber,
               chain: result.chainId,
               consistencyLevel,
@@ -504,7 +504,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             };
 
             const redeliveryResult = {
-              appIds: ["GENERIC_RELAYER"],
+              appIds: [GR_APP_ID],
               blockNumber: result.receipt.blockNumber,
               chain: result.chainId,
               consistencyLevel,
