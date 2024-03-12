@@ -7,7 +7,6 @@ import {
   CHAIN_ID_ETH,
   CHAIN_ID_OPTIMISM,
   CHAIN_ID_POLYGON,
-  CONTRACTS,
   ChainId,
   ChainName,
   Network,
