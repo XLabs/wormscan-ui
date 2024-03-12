@@ -677,6 +677,21 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
+  [ChainId.Holesky]: {
+    name: "Holesky",
+    icon: EthereumIcon,
+    colorlessIcon: EthereumColorlessIcon,
+    explorer: {
+      TESTNET: "https://holesky.etherscan.io",
+      MAINNET: "https://holesky.etherscan.io",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
 };
 
 const OTHERS_FAKE_CHAIN_ID = 123123123 as ChainId;

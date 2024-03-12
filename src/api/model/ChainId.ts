@@ -36,5 +36,6 @@ export enum ChainId {
   ArbitrumSepolia = 10003,
   BaseSepolia = 10004,
   OptimismSepolia = 10005,
+  Holesky = 10006,
   Wormchain = 3104,
 }
