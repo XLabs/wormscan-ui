@@ -13,10 +13,14 @@ type TabsProps = {
   setShowOverviewDetail: (show: boolean) => void;
   showOverview: boolean;
   showOverviewDetail: boolean;
+  setIsGenericRelayerTx: (show: boolean) => void;
+  showRelayerView: boolean;
 };
 
 const Tabs = ({
   isGenericRelayerTx,
+  setIsGenericRelayerTx,
+  showRelayerView,
   setShowOverview,
   setShowOverviewDetail,
   showOverview,
@@ -46,20 +50,39 @@ const Tabs = ({
 
   const [openTooltip1, openTooltip2] = openTooltips;
 
+  const isNTTRelayer = showRelayerView && isGenericRelayerTx;
+
   return (
     <div className="tx-tabs">
       <button
-        className={`tx-tabs-trigger ${showOverview ? "tx-tabs-trigger-active" : ""}`}
+        className={`tx-tabs-trigger ${
+          showOverview && !isNTTRelayer ? "tx-tabs-trigger-active" : ""
+        }`}
         aria-label="Overview"
         onClick={() => {
           analytics.track("txView", {
             selected: "overview",
           });
           setShowOverview(true);
+          if (isNTTRelayer) setIsGenericRelayerTx(false);
         }}
       >
         OVERVIEW
       </button>
+      {showRelayerView && (
+        <button
+          className={`tx-tabs-trigger ${
+            showOverview && isNTTRelayer ? "tx-tabs-trigger-active" : ""
+          }`}
+          aria-label="Overview"
+          onClick={() => {
+            setShowOverview(true);
+            setIsGenericRelayerTx(true);
+          }}
+        >
+          RELAYER VIEW
+        </button>
+      )}
       <button
         className={`tx-tabs-trigger ${!showOverview ? "tx-tabs-trigger-active" : ""}`}
         aria-label="Raw data"
