@@ -76,6 +76,7 @@ const Tabs = ({
           }`}
           aria-label="Overview"
           onClick={() => {
+            setShowOverview(true);
             setIsGenericRelayerTx(true);
           }}
         >
