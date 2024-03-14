@@ -866,10 +866,12 @@ const Information = ({
     <section className="tx-information">
       <Tabs
         isGenericRelayerTx={isGenericRelayerTx}
+        setIsGenericRelayerTx={setIsGenericRelayerTx}
         setShowOverview={setShowOverview}
         setShowOverviewDetail={setShowOverviewDetail}
         showOverview={showOverview}
         showOverviewDetail={showOverviewDetail}
+        showRelayerView={appIds?.includes(NTT_APP_ID) && appIds?.includes(GR_APP_ID)}
       />
       <Summary
         appIds={appIds}
@@ -889,28 +891,6 @@ const Information = ({
         txHash={data?.sourceChain?.transaction?.txHash}
         vaa={vaa?.raw}
       />
-
-      {showOverview && appIds?.includes(NTT_APP_ID) && appIds?.includes(GR_APP_ID) && (
-        <div className="tx-information-button">
-          <Tooltip
-            tooltip={isGenericRelayerTx ? "Switch to Transfer view" : "Switch to Relayer view"}
-            type="info"
-          >
-            <div
-              className="tx-information-button-btn"
-              onClick={() => {
-                setIsGenericRelayerTx(!isGenericRelayerTx);
-              }}
-            >
-              {isGenericRelayerTx ? (
-                <CardStackMinusIcon height={24} width={24} />
-              ) : (
-                <CardStackPlusIcon height={24} width={24} />
-              )}
-            </div>
-          </Tooltip>
-        </div>
-      )}
 
       {showOverview ? <OverviewContent /> : <RawDataContent />}
       {showOverview && <AlertsContent />}
