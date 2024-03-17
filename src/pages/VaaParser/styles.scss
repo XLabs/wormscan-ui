@@ -29,30 +29,80 @@
     flex-wrap: wrap;
     gap: 16px;
 
+    &-txType {
+      display: flex;
+      flex-wrap: wrap;
+
+      width: 100%;
+      margin-bottom: 12px;
+      gap: 4px;
+
+      &-input {
+        width: 100%;
+        height: 50px;
+        color: var(--color-white-90);
+        font-size: 16px;
+
+        border: 1px solid var(--color-white-20);
+        padding-left: 8px;
+
+        background-image: linear-gradient(
+          to top,
+          var(--color-primary-800),
+          var(--color-primary-900)
+        );
+        &:focus {
+          outline: 1px solid var(--color-white-40);
+        }
+      }
+    }
+
     &-input {
       &-container {
+        position: relative;
         display: flex;
         flex-direction: column;
-        flex-grow: 1;
-        justify-content: space-between;
+        height: 500px;
 
-        width: 90%;
+        width: 100%;
         @include desktop {
-          width: 48%;
+          width: 38%;
+        }
+
+        &-format {
+          position: absolute;
+          right: 4px;
+          bottom: 4px;
+
+          display: flex;
+          gap: 2px;
+          padding: 2px;
+
+          font-size: 14px;
+          border-radius: 6px;
+
+          span {
+            padding-left: 4px;
+            padding-right: 4px;
+            cursor: pointer;
+            user-select: none;
+            background-color: var(--color-primary-700);
+
+            &.active {
+              background-color: var(--color-primary-500);
+            }
+
+            &:hover {
+              background-color: var(--color-primary-300);
+            }
+          }
         }
       }
 
       display: flex;
-      height: 300px;
+      flex-grow: 1;
 
       background-image: linear-gradient(to top, var(--color-primary-800), var(--color-primary-900));
-      &:first-child {
-        background-image: linear-gradient(
-          to top,
-          var(--color-primary-900),
-          var(--color-primary-800)
-        );
-      }
 
       border: 1px solid var(--color-white-20);
       border-radius: 4px;
@@ -78,7 +128,7 @@
       width: 100%;
       height: 650px;
       @include desktop {
-        width: 50%;
+        width: 60%;
         margin-top: 42px;
       }
 
@@ -128,6 +178,11 @@
         font-size: 14px;
         line-height: 1.5;
         overflow: scroll;
+        cursor: not-allowed;
+
+        &-text {
+          cursor: text;
+        }
       }
     }
   }
