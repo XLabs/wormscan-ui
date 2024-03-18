@@ -11,9 +11,19 @@ type Props = {
   setInput: (str: string) => void;
   setInputType: (str: "base64" | "hex") => void;
   setTxSearch: (str: string) => void;
+  setInputs: (a: any) => void;
+  setInputsIndex: (a: number) => void;
 };
 
-const VaaInput = ({ input, inputType, setInput, setInputType, setTxSearch }: Props) => {
+const VaaInput = ({
+  input,
+  inputType,
+  setInput,
+  setInputType,
+  setTxSearch,
+  setInputs,
+  setInputsIndex,
+}: Props) => {
   const textareaRef = useRef(null);
   const navigate = useNavigateCustom();
 
@@ -32,6 +42,10 @@ const VaaInput = ({ input, inputType, setInput, setInputType, setTxSearch }: Pro
           const newInput = processInputValue(targetValue);
           setInput(newInput);
           setInputType(processInputType(targetValue));
+
+          setInputs(null);
+          setInputsIndex(0);
+
           setTxSearch("");
 
           navigate(`/vaa-parser/${newInput}`, { replace: true });

@@ -7,7 +7,14 @@ import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
 import { GetParsedVaaOutput } from "src/api/guardian-network/types";
 import { JsonText, Loader, NavLink, Tooltip } from "src/components/atoms";
-import { CheckIcon, CopyIcon, ExternalLinkIcon, InfoCircledIcon } from "@radix-ui/react-icons";
+import {
+  ArrowRightIcon,
+  CheckIcon,
+  CopyIcon,
+  ExternalLinkIcon,
+  InfoCircledIcon,
+  TriangleRightIcon,
+} from "@radix-ui/react-icons";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainName } from "src/utils/wormhole";
 import { ChainId } from "src/api";
@@ -28,12 +35,16 @@ const VaaParser = () => {
   const vaaParam = params?.["*"];
   const navigate = useNavigateCustom();
 
-  const textareaRef = useRef(null);
   const inputTxRef = useRef(null);
 
-  const [input, setInput] = useState(processInputValue(vaaParam));
-  const [inputType, setInputType] = useState(processInputType(vaaParam));
-  const [txSearch, setTxSearch] = useState("");
+  const [inputs, setInputs] = useState<Array<string>>(null);
+  const [inputsIndex, setInputsIndex] = useState(0);
+
+  const paramTx = vaaParam?.includes("operation/");
+
+  const [input, setInput] = useState(paramTx ? "" : processInputValue(vaaParam));
+  const [inputType, setInputType] = useState(paramTx ? "base64" : processInputType(vaaParam));
+  const [txSearch, setTxSearch] = useState(paramTx ? vaaParam.replace("operation/", "") : "");
 
   const [parsedRaw, setParsedRaw] = useState(false);
   const [result, setResult] = useState<GetParsedVaaOutput>(null);
@@ -174,32 +185,37 @@ const VaaParser = () => {
   } = useQuery(["getParsedVaa", input], () => getClient().guardianNetwork.getParsedVaa(input), {
     enabled: !!input,
     retry: 0,
+    onSettled: _data => {
+      try {
+        const parsedVaa = parseVaa(Buffer.from(input, "base64"));
+        const { emitterAddress, guardianSignatures, hash, sequence, guardianSetIndex } =
+          parsedVaa || {};
+
+        const guardianSetList = getGuardianSet(guardianSetIndex);
+
+        const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
+        const parsedHash = Buffer.from(hash).toString("hex");
+        const parsedSequence = Number(sequence);
+        const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
+          index,
+          signature: Buffer.from(signature).toString("hex"),
+          name: guardianSetList?.[index]?.name,
+        }));
+
+        setResultRaw({
+          ...parsedVaa,
+          payload: parsedVaa.payload ? Buffer.from(parsedVaa.payload).toString("hex") : null,
+          emitterAddress: parsedEmitterAddress,
+          guardianSignatures: parsedGuardianSignatures,
+          hash: parsedHash,
+          sequence: parsedSequence,
+        });
+      } catch (e) {
+        setResultRaw(null);
+      }
+    },
     onSuccess: data => {
-      const guardianSetIndex = data.vaa.guardianSetIndex;
-      // Decode SignedVAA and get guardian signatures with name
-      const guardianSetList = getGuardianSet(guardianSetIndex);
-      const vaaBuffer = Buffer.from(input, "base64");
-      const parsedVaa = parseVaa(vaaBuffer);
-
-      const { emitterAddress, guardianSignatures, hash, sequence } = parsedVaa || {};
-      const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
-      const parsedHash = Buffer.from(hash).toString("hex");
-      const parsedSequence = Number(sequence);
-      const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
-        index,
-        signature: Buffer.from(signature).toString("hex"),
-        name: guardianSetList?.[index]?.name,
-      }));
-
       setResult(data);
-      setResultRaw({
-        ...parsedVaa,
-        payload: parsedVaa.payload ? Buffer.from(parsedVaa.payload).toString("hex") : null,
-        emitterAddress: parsedEmitterAddress,
-        guardianSignatures: parsedGuardianSignatures,
-        hash: parsedHash,
-        sequence: parsedSequence,
-      });
 
       const vaaID = `${data?.vaa?.emitterChain}/${data?.vaa?.emitterAddress}/${data?.vaa?.sequence}`;
       if (!txSearch) {
@@ -229,8 +245,14 @@ const VaaParser = () => {
           setInput(rawVAA);
           setInputType("base64");
 
-          navigate(`/vaa-parser/${rawVAA}`, { replace: true });
+          if (data.length > 1) {
+            const rawVAAs = data.map(a => a?.vaa?.raw);
+            setInputs(rawVAAs);
+            setInputsIndex(0);
+          }
+
           inputTxRef.current?.blur();
+          navigate(`/vaa-parser/operation/${txSearch}`, { replace: true });
         }
       },
     },
@@ -239,6 +261,8 @@ const VaaParser = () => {
   const VAA_ID =
     result?.vaa?.sequence && result?.vaa?.emitterChain && result?.vaa?.emitterAddress
       ? `${result?.vaa?.emitterChain}/${result?.vaa?.emitterAddress}/${result?.vaa?.sequence}`
+      : resultRaw?.sequence && resultRaw?.emitterChain && resultRaw?.emitterAddress
+      ? `${resultRaw?.emitterChain}/${resultRaw?.emitterAddress}/${resultRaw?.sequence}`
       : "";
 
   const isLoading = isLoadingParse || isFetchingParse || isLoadingTx || isFetchingTx;
@@ -260,22 +284,50 @@ const VaaParser = () => {
                   value={txSearch}
                   onChange={e => {
                     setInput("");
-                    console.log(e.target.value);
+                    setInputs(null);
+                    setInputsIndex(0);
 
                     setTxSearch(e.target.value);
                     inputTxRef?.current?.blur();
+                    navigate(`/vaa-parser/operation/${e.target.value}`, { replace: true });
                   }}
                   name="txType-input"
                   aria-label="Transaction hash or VAA ID input"
                   spellCheck={false}
                 />
               </div>
+              {!!inputs?.length && (
+                <div className="parse-multiple">
+                  <span className="parse-multiple-left">This txHash has multiple VAAs.</span>
+                  <div
+                    className="parse-multiple-right"
+                    onClick={() => {
+                      if (inputs[inputsIndex + 1]) {
+                        setInput(inputs[inputsIndex + 1]);
+                        setInputsIndex(inputsIndex + 1);
+                      } else {
+                        setInput(inputs[0]);
+                        setInputsIndex(0);
+                      }
+                    }}
+                  >
+                    <span className="vaa-pages">
+                      {inputsIndex + 1}/{inputs.length}
+                    </span>
+                    <span className="right-icon">
+                      <TriangleRightIcon width={18} height={18} />
+                    </span>
+                  </div>
+                </div>
+              )}
               <VaaInput
                 input={input}
                 inputType={inputType}
                 setInput={setInput}
                 setInputType={setInputType}
                 setTxSearch={setTxSearch}
+                setInputs={setInputs}
+                setInputsIndex={setInputsIndex}
               />
               <div className="parse-result" id="parse-result" aria-label="Parsed result">
                 <div className="parse-result-title">
@@ -294,26 +346,26 @@ const VaaParser = () => {
                 <div className="parse-result-copy">
                   <CopyToClipboard
                     toCopy={
-                      result
-                        ? parsedRaw
-                          ? JSON.stringify(resultRaw)
-                          : JSON.stringify(result)
-                        : "{}"
+                      result && !parsedRaw ? result : resultRaw && parsedRaw ? resultRaw : "{}"
                     }
                   >
                     <CopyIcon height={24} width={24} />
                   </CopyToClipboard>
                 </div>
 
-                {isError ? (
+                {isError && !resultRaw ? (
                   <span className="parse-result-not-found">Parsing failed</span>
                 ) : isLoading ? (
                   <Loader />
                 ) : (
                   <div className="parse-result-json">
-                    {!!result && input && VAA_ID && (
+                    {(!!result || !!resultRaw) && input && VAA_ID && (
                       <div className="parse-result-json-text">
-                        <JsonText data={parsedRaw ? resultRaw : result} />
+                        <JsonText
+                          data={
+                            result && !parsedRaw ? result : resultRaw && parsedRaw ? resultRaw : {}
+                          }
+                        />
                         <NavLink target="_blank" to={`/tx/${VAA_ID}`}>
                           <div className="parse-result-bottom">
                             <span>View on Transactions</span>
