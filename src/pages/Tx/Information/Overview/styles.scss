@@ -25,7 +25,7 @@
     display: flex;
     flex-direction: column;
     justify-content: start;
-    padding: 64px 16px 64px 16px;
+    padding: 96px 16px 64px 16px;
 
     @include tablet {
       padding: 80px 40px;
@@ -208,6 +208,10 @@
 
         @include desktop {
           min-width: unset;
+        }
+
+        @include bigDesktop {
+          flex: 0.8;
         }
       }
 

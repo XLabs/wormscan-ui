@@ -864,15 +864,6 @@ const Information = ({
 
   return (
     <section className="tx-information">
-      <Tabs
-        isGenericRelayerTx={isGenericRelayerTx}
-        setIsGenericRelayerTx={setIsGenericRelayerTx}
-        setShowOverview={setShowOverview}
-        setShowOverviewDetail={setShowOverviewDetail}
-        showOverview={showOverview}
-        showOverviewDetail={showOverviewDetail}
-        showRelayerView={appIds?.includes(NTT_APP_ID) && appIds?.includes(GR_APP_ID)}
-      />
       <Summary
         appIds={appIds}
         currentNetwork={currentNetwork}
@@ -892,8 +883,20 @@ const Information = ({
         vaa={vaa?.raw}
       />
 
-      {showOverview ? <OverviewContent /> : <RawDataContent />}
-      {showOverview && <AlertsContent />}
+      <Tabs
+        isGenericRelayerTx={isGenericRelayerTx}
+        setIsGenericRelayerTx={setIsGenericRelayerTx}
+        setShowOverview={setShowOverview}
+        setShowOverviewDetail={setShowOverviewDetail}
+        showOverview={showOverview}
+        showOverviewDetail={showOverviewDetail}
+        showRelayerView={appIds?.includes(NTT_APP_ID) && appIds?.includes(GR_APP_ID)}
+      />
+
+      <div className="tx-information-content">
+        {showOverview ? <OverviewContent /> : <RawDataContent />}
+        {showOverview && <AlertsContent />}
+      </div>
     </section>
   );
 };

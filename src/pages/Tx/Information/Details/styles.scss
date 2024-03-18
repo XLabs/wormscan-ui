@@ -1,7 +1,7 @@
 @import "src/styles/globals.scss";
 
 .tx-details {
-  padding: 64px 16px;
+  padding: 96px 16px 64px 16px;
 
   @include tablet {
     padding: 80px 40px;
@@ -40,7 +40,13 @@
       gap: 40px;
 
       @include desktop {
-        gap: 64px;
+        gap: 68px;
+      }
+
+      @include bigDesktop {
+        display: grid;
+        gap: 0;
+        grid-template-columns: 143px 0.8fr 3fr;
       }
 
       &-key {
@@ -51,6 +57,12 @@
 
         @include tablet {
           max-width: 150px;
+        }
+
+        @include bigDesktop {
+          &:first-of-type {
+            grid-column: span 2;
+          }
         }
       }
 

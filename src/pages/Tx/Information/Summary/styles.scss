@@ -2,9 +2,10 @@
 
 .tx-information-summary {
   @include centered-column;
-
   background-color: var(--color-white-05);
+  border-radius: 10px;
   column-gap: 32px;
+  margin-bottom: 24px;
   min-height: 132px;
   padding: 40px 16px;
   row-gap: 32px;
@@ -15,31 +16,60 @@
 
   @include desktop {
     @include centered-row;
-
+    column-gap: 24px;
     justify-content: start;
-    padding: 16px 0px 16px 24px;
-    row-gap: 16px;
-
-    @media only screen and (max-width: 1059px) {
-      column-gap: 24px;
-    }
+    padding: 16px 24px;
   }
 
   @include bigDesktop {
-    column-gap: 48px;
-    padding: 16px 0px 16px 112px;
+    display: grid;
+    gap: 0;
+    grid-template-columns: 120px 0.8fr 3fr;
+    padding: 16px 24px 16px 112px;
   }
 
-  & > div {
+  &-status {
     @include centered-row;
-    gap: 40px;
+    gap: 0 40px;
 
     @include desktop {
-      gap: 8px;
+      gap: 0 8px;
+      grid-column: span 2;
+      max-width: max-content;
+    }
+  }
 
-      & > .value-origin-app {
-        @media only screen and (max-width: 1640px) {
-          max-width: 210px;
+  &-info {
+    @include centered-column;
+    gap: 32px 16px;
+    width: 100%;
+
+    @include desktop {
+      gap: 32px 24px;
+      align-items: center;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+
+    @include bigDesktop {
+      gap: 32px 16px;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 0.85fr;
+      justify-content: flex-start;
+    }
+
+    & > div {
+      @include centered-row;
+      gap: 0 40px;
+
+      @include desktop {
+        gap: 0 8px;
+        max-width: max-content;
+
+        & > .value-origin-app {
+          @media only screen and (max-width: 1640px) {
+            max-width: 210px;
+          }
         }
       }
     }

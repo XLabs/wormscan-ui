@@ -3,17 +3,59 @@
 .tx-tabs {
   @include centered-row;
 
-  border-bottom: 1px solid var(--color-white-10);
+  background-color: var(--color-white-10);
+  border-bottom: 1px solid transparent;
+  border-radius: 10px 10px 0 0;
   min-height: 48px;
+  position: relative;
+
+  &-trigger {
+    all: unset;
+
+    @include centered-row;
+    @include text-p3;
+
+    border-bottom: 1px solid transparent;
+    color: var(--color-primary-100);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    justify-content: center;
+    min-height: inherit;
+    padding: 6px 8px;
+    white-space: nowrap;
+    width: 100%;
+
+    @include tablet {
+      font-size: 14px;
+      padding: 6px 16px;
+      width: 120px;
+    }
+
+    &:hover:not(&-active) {
+      border-bottom: 1px solid var(--color-primary-100);
+    }
+
+    &-active {
+      border-bottom: 1px solid var(--color-secondary-800);
+      color: var(--color-secondary-800);
+    }
+  }
 
   &-sub-list {
     @include centered-row;
+    bottom: -64px;
     gap: 16px;
     margin: 0 16px 0 auto;
     min-height: 48px;
+    position: absolute;
+    right: 0;
 
     @include tablet {
+      bottom: unset;
       margin: 0 41px 0 auto;
+      position: relative;
+      right: unset;
     }
 
     @include desktop {
@@ -22,14 +64,8 @@
 
     &-title {
       @include text-p3;
-
       color: var(--color-primary-90);
-      display: none;
       margin-right: 8px;
-
-      @include tablet {
-        display: block;
-      }
     }
 
     &-divider {
@@ -55,39 +91,17 @@
         position: relative;
         width: 32px;
 
+        &:hover:not(&-active) {
+          border: 1px solid var(--color-white-60);
+          color: var(--color-white-60);
+        }
+
         &-active {
           background-color: var(--secondary-900, #ff2a57);
           border: 1px solid var(--secondary-900, #ff2a57);
           color: var(--color-secondary-100);
         }
       }
-    }
-  }
-
-  &-trigger {
-    all: unset;
-
-    @include centered-row;
-    @include text-p3;
-
-    color: var(--color-primary-100);
-    cursor: pointer;
-    font-weight: 600;
-    justify-content: center;
-    min-height: inherit;
-    padding: 6px 16px;
-
-    @include tablet {
-      width: 120px;
-    }
-
-    &:hover {
-      background-color: transparent;
-    }
-
-    &-active {
-      border-bottom: 1px solid var(--color-secondary-800);
-      color: var(--color-secondary-800);
     }
   }
 }

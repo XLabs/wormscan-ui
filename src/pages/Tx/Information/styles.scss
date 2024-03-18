@@ -7,7 +7,6 @@
 }
 
 .tx-information {
-  background-color: var(--color-white-05);
   display: flex;
   flex-direction: column;
   margin-bottom: 32px;
@@ -55,6 +54,11 @@
         }
       }
     }
+  }
+
+  &-content {
+    background-color: var(--color-white-05);
+    border-radius: 0 0 10px 10px;
   }
 
   &-errored-info {
