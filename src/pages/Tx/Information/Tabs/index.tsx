@@ -58,7 +58,7 @@ const Tabs = ({
         className={`tx-tabs-trigger ${
           showOverview && !isNTTRelayer ? "tx-tabs-trigger-active" : ""
         }`}
-        aria-label="Overview"
+        aria-label="Transfer Details"
         onClick={() => {
           analytics.track("txView", {
             selected: "overview",
@@ -67,14 +67,14 @@ const Tabs = ({
           if (isNTTRelayer) setIsGenericRelayerTx(false);
         }}
       >
-        OVERVIEW
+        TRANSFER DETAILS
       </button>
       {showRelayerView && (
         <button
           className={`tx-tabs-trigger ${
             showOverview && isNTTRelayer ? "tx-tabs-trigger-active" : ""
           }`}
-          aria-label="Overview"
+          aria-label="Relayer View"
           onClick={() => {
             setShowOverview(true);
             setIsGenericRelayerTx(true);
