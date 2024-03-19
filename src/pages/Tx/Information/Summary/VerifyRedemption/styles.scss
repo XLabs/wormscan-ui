@@ -8,6 +8,10 @@
   text-decoration: none;
   white-space: nowrap;
 
+  @include desktop {
+    max-width: max-content;
+  }
+
   & > p > span {
     &:first-child {
       display: none;

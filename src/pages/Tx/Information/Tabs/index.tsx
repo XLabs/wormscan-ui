@@ -74,7 +74,7 @@ const Tabs = ({
           className={`tx-tabs-trigger ${
             showOverview && isNTTRelayer ? "tx-tabs-trigger-active" : ""
           }`}
-          aria-label="Overview"
+          aria-label="Relayer View"
           onClick={() => {
             setShowOverview(true);
             setIsGenericRelayerTx(true);
