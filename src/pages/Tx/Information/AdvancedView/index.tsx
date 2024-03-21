@@ -234,7 +234,10 @@ const Button = ({
   show: boolean;
 }) => (
   <button className={`tx-advanced-view-container-btn ${show ? "show" : "hide"}`} onClick={onClick}>
-    {children} <TriangleDownIcon height={24} width={24} />
+    {children}
+    <div className="tx-advanced-view-container-btn-icon">
+      <TriangleDownIcon height={24} width={24} />
+    </div>
   </button>
 );
 

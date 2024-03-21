@@ -56,12 +56,13 @@
         color: var(--color-primary-90);
       }
 
-      & > svg {
+      & > .tx-advanced-view-container-btn-icon {
+        display: flex;
         margin-top: 2px;
       }
 
       &.show {
-        & > svg {
+        & > .tx-advanced-view-container-btn-icon {
           rotate: 180deg;
         }
       }
