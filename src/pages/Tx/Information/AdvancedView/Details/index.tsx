@@ -2,10 +2,10 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { CHAIN_ID_WORMCHAIN, ChainId } from "@certusone/wormhole-sdk";
 import { AddToMetaMaskBtn, BlockchainIcon, Tooltip } from "src/components/atoms";
+import { OverviewProps } from "src/pages/Tx/Information/Overview";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { TruncateText } from "src/utils/string";
-import { OverviewProps } from "../../Overview";
 import "./styles.scss";
 
 const Details = ({

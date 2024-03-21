@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { CopyIcon } from "@radix-ui/react-icons";
+import { RelayerOverviewProps } from "src/pages/Tx/Information/Overview/RelayerOverview";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
@@ -10,7 +11,6 @@ import {
 } from "src/utils/environment";
 import { formatDate } from "src/utils/date";
 import "../styles.scss";
-import { RelayerOverviewProps } from "../../../Overview/RelayerOverview";
 
 const RelayerDetails = ({
   budgetText,

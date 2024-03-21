@@ -6,6 +6,7 @@ import {
   RedeliveryInstruction,
   parseEVMExecutionInfoV1,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
+import { OverviewProps } from "src/pages/Tx/Information/Overview";
 import { CopyToClipboard } from "src/components/molecules";
 import {
   DeliveryLifecycleRecord,
@@ -16,7 +17,6 @@ import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import Details from "./Details";
 import RelayerDetails from "./Details/RelayerDetails";
-import { OverviewProps } from "../Overview";
 import "./styles.scss";
 
 type Props = {
