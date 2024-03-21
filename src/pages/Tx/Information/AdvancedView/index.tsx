@@ -77,13 +77,13 @@ const AdvancedView = ({
   };
 
   return (
-    <div className="tx-raw-data">
-      <div className="tx-raw-data-container">
+    <div className="tx-advanced-view">
+      <div className="tx-advanced-view-container">
         <Button show={showDetails} onClick={handleShowDetails}>
           {genericRelayerProps ? "Delivery Details" : "Transfer Details"}
         </Button>
 
-        <div className={`tx-raw-data-container-details ${showDetails ? "show" : "hide"}`}>
+        <div className={`tx-advanced-view-container-details ${showDetails ? "show" : "hide"}`}>
           {genericRelayerProps ? (
             <RelayerDetails {...genericRelayerProps} />
           ) : (
@@ -95,7 +95,7 @@ const AdvancedView = ({
           Raw Data
         </Button>
 
-        <div className={`tx-raw-data-container-json ${showJson ? "show" : "hide"}`}>
+        <div className={`tx-advanced-view-container-json ${showJson ? "show" : "hide"}`}>
           <BlockSection title="TX DATA" code={JSON.stringify(dataNoPayload, null, 4)} />
 
           <BlockSection title="PAYLOAD" code={payload && JSON.stringify(payload, null, 4)} />
@@ -233,7 +233,7 @@ const Button = ({
   onClick: () => void;
   show: boolean;
 }) => (
-  <button className={`tx-raw-data-container-btn ${show ? "show" : "hide"}`} onClick={onClick}>
+  <button className={`tx-advanced-view-container-btn ${show ? "show" : "hide"}`} onClick={onClick}>
     {children} <TriangleDownIcon height={24} width={24} />
   </button>
 );
@@ -262,10 +262,10 @@ const BlockSection = ({ title, code }: { title: string; code: any }) => {
   };
 
   return (
-    <div className="tx-raw-data-container-block">
-      <div className="tx-raw-data-container-block-top">
-        <div className="tx-raw-data-container-block-title">{title}</div>
-        <div className="tx-raw-data-container-block-copy">
+    <div className="tx-advanced-view-container-block">
+      <div className="tx-advanced-view-container-block-top">
+        <div className="tx-advanced-view-container-block-title">{title}</div>
+        <div className="tx-advanced-view-container-block-copy">
           <CopyToClipboard toCopy={code}>
             <>
               Copy <CopyIcon />
@@ -274,23 +274,23 @@ const BlockSection = ({ title, code }: { title: string; code: any }) => {
         </div>
       </div>
 
-      <div className="tx-raw-data-container-block-body">
+      <div className="tx-advanced-view-container-block-body">
         <JsonView
           data={addQuotesInKeys(jsonParsed)}
           style={{
-            basicChildStyle: "tx-raw-data-container-block-body-row",
-            booleanValue: "tx-raw-data-container-block-body-info",
-            collapsedContent: "tx-raw-data-container-block-body-collapsedContent",
-            collapseIcon: "tx-raw-data-container-block-body-collapseIcon",
+            basicChildStyle: "tx-advanced-view-container-block-body-row",
+            booleanValue: "tx-advanced-view-container-block-body-info",
+            collapsedContent: "tx-advanced-view-container-block-body-collapsedContent",
+            collapseIcon: "tx-advanced-view-container-block-body-collapseIcon",
             container: "",
-            expandIcon: "tx-raw-data-container-block-body-expandIcon",
-            label: "tx-raw-data-container-block-body-key",
-            nullValue: "tx-raw-data-container-block-body-info",
-            numberValue: "tx-raw-data-container-block-body-number",
-            otherValue: "tx-raw-data-container-block-body-string",
+            expandIcon: "tx-advanced-view-container-block-body-expandIcon",
+            label: "tx-advanced-view-container-block-body-key",
+            nullValue: "tx-advanced-view-container-block-body-info",
+            numberValue: "tx-advanced-view-container-block-body-number",
+            otherValue: "tx-advanced-view-container-block-body-string",
             punctuation: "",
-            stringValue: "tx-raw-data-container-block-body-string",
-            undefinedValue: "tx-raw-data-container-block-body-info",
+            stringValue: "tx-advanced-view-container-block-body-string",
+            undefinedValue: "tx-advanced-view-container-block-body-info",
           }}
         />
       </div>
