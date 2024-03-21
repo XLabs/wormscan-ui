@@ -26,9 +26,8 @@ const Tabs = ({ setShowOverview, showOverview }: TabsProps) => {
         className={`tx-tabs-trigger ${!showOverview ? "tx-tabs-trigger-active" : ""}`}
         aria-label="Advanced View"
         onClick={() => {
-          // TODO analytics, change raw to advanced?
           analytics.track("txView", {
-            selected: "raw",
+            selected: "advanced",
           });
           setShowOverview(false);
         }}
