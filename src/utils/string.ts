@@ -34,6 +34,7 @@ export const TruncateText = ({
   const textWidth = getWidthOfText(text);
   const textWidthExtras = textWidth + extraWidth;
 
+  /* console.log(textWidthExtras, containerWidth, textWidthExtras <= containerWidth); */
   if (textWidthExtras <= containerWidth) return text;
 
   const availableWidth = containerWidth - extraWidth;

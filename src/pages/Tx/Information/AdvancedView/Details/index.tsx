@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { CHAIN_ID_WORMCHAIN, ChainId } from "@certusone/wormhole-sdk";
 import { AddToMetaMaskBtn, BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { TruncateText } from "src/utils/string";
-import { OverviewProps } from "../Overview";
+import { OverviewProps } from "../../Overview";
 import "./styles.scss";
 
 const Details = ({
@@ -43,11 +43,13 @@ const Details = ({
   const lineValueRef = useRef<HTMLDivElement>(null);
   const [lineValueWidth, setLineValueWidth] = useState<number>(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const updateWidth = () => {
       if (lineValueRef.current) {
         const newWidth = lineValueRef.current.offsetWidth;
-        newWidth !== lineValueWidth && setLineValueWidth(newWidth);
+        if (newWidth !== lineValueWidth) {
+          setLineValueWidth(newWidth);
+        }
       }
     };
 
@@ -342,18 +344,18 @@ const Details = ({
             )}
           </div>
         </div>
-        <div className="tx-details-group-line">
-          <div className="tx-details-group-line-key"></div>
-          <div className="tx-details-group-line-value">
-            {showMetaMaskBtn && (
+        {showMetaMaskBtn && (
+          <div className="tx-details-group-line">
+            <div className="tx-details-group-line-key"></div>
+            <div className="tx-details-group-line-value">
               <AddToMetaMaskBtn
                 currentNetwork={currentNetwork}
                 toChain={toChain as ChainId}
                 tokenInfo={tokenInfo}
               />
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

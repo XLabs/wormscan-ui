@@ -5,10 +5,86 @@
     display: flex;
     flex-direction: column;
     justify-content: start;
-    padding: 24px 24px 48px 24px;
+    padding: 56px 16px;
+
+    @include tablet {
+      padding: 56px 24px;
+    }
 
     @include bigDesktop {
-      padding: 24px 112px 24px;
+      padding: 56px 112px;
+    }
+
+    &-details {
+      background-color: var(--color-white-05);
+      border-radius: 5px;
+      height: 32px;
+      margin-bottom: 24px;
+      overflow: hidden;
+
+      & > div {
+        display: none;
+      }
+
+      &.show {
+        @include card-container;
+        height: auto;
+
+        & > div {
+          display: block;
+        }
+      }
+    }
+
+    &-btn {
+      align-items: center;
+      background-color: transparent;
+      border: none;
+      color: var(--color-primary-100);
+      cursor: pointer;
+      display: flex;
+      font-size: 18px;
+      gap: 8px;
+      margin-bottom: 8px;
+      max-width: max-content;
+
+      @include desktop {
+        font-size: 20px;
+      }
+
+      &:hover {
+        color: var(--color-primary-90);
+      }
+
+      & > svg {
+        margin-top: 2px;
+      }
+
+      &.show {
+        & > svg {
+          rotate: 180deg;
+        }
+      }
+    }
+
+    &-json {
+      background-color: var(--color-white-05);
+      border-radius: 5px;
+      height: 32px;
+      overflow: hidden;
+
+      & > div {
+        display: none;
+      }
+
+      &.show {
+        background-color: transparent;
+        height: auto;
+
+        & > div {
+          display: block;
+        }
+      }
     }
 
     &-block + &-block {

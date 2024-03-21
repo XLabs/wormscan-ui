@@ -10,7 +10,7 @@ import {
 } from "src/utils/environment";
 import { formatDate } from "src/utils/date";
 import "../styles.scss";
-import { RelayerOverviewProps } from "../../Overview/RelayerOverview";
+import { RelayerOverviewProps } from "../../../Overview/RelayerOverview";
 
 const RelayerDetails = ({
   budgetText,
@@ -61,6 +61,8 @@ const RelayerDetails = ({
       window.removeEventListener("resize", updateWidth);
     };
   }, [lineValueWidth]);
+
+  if (!parsedVaa) return null;
 
   return (
     <div className="tx-details">

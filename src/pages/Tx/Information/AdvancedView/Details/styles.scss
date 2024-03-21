@@ -1,52 +1,38 @@
 @import "src/styles/globals.scss";
 
 .tx-details {
-  padding: 96px 16px 64px 16px;
-
-  @include tablet {
-    padding: 80px 40px;
-  }
-
-  @include desktop {
-    padding: 64px 24px;
-  }
-
-  @include bigDesktop {
-    padding: 64px 112px;
-  }
-
   &-group {
     display: flex;
     flex-direction: column;
     gap: 32px;
-    padding-bottom: 40px;
 
     &:not(:last-child) {
+      padding-bottom: 40px;
       border-bottom: 1px solid var(--color-white-05);
       margin-bottom: 40px;
     }
 
     @include desktop {
       gap: 16px;
-      padding-bottom: 24px;
 
       &:not(:last-child) {
+        padding-bottom: 24px;
         margin-bottom: 24px;
       }
     }
 
     &-line {
       display: flex;
-      gap: 40px;
+      gap: 0 24px;
 
       @include desktop {
-        gap: 68px;
+        gap: 20px;
       }
 
       @include bigDesktop {
         display: grid;
         gap: 0;
-        grid-template-columns: 143px 0.8fr 3fr;
+        grid-template-columns: 126px 0.8fr 3fr;
       }
 
       &-key {
