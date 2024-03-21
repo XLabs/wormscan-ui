@@ -47,9 +47,7 @@ const Details = ({
     const updateWidth = () => {
       if (lineValueRef.current) {
         const newWidth = lineValueRef.current.offsetWidth;
-        if (newWidth !== lineValueWidth) {
-          setLineValueWidth(newWidth);
-        }
+        newWidth !== lineValueWidth && setLineValueWidth(newWidth);
       }
     };
 
