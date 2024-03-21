@@ -62,8 +62,6 @@ const RelayerDetails = ({
     };
   }, [lineValueWidth]);
 
-  if (!parsedVaa) return null;
-
   return (
     <div className="tx-details">
       <div className="tx-details-group">
