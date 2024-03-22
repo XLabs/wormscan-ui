@@ -27,6 +27,10 @@ export type OverviewProps = {
   parsedPayload?: any;
   parsedRedeemTx?: string;
   redeemedAmount?: string;
+  relayerNTTStatus?: {
+    status?: string;
+    refundStatus?: string;
+  };
   showMetaMaskBtn?: boolean;
   showSignatures?: boolean;
   sourceSymbol?: string;
@@ -65,6 +69,7 @@ const Overview = ({
   parsedOriginAddress,
   parsedRedeemTx,
   redeemedAmount,
+  relayerNTTStatus,
   showMetaMaskBtn,
   showSignatures,
   sourceSymbol,
@@ -334,6 +339,36 @@ const Overview = ({
             </Tooltip>
           </div>
           <div className="tx-overview-graph-step-data-container">
+            {relayerNTTStatus && (
+              <div>
+                <div className="tx-overview-graph-step-title">Status</div>
+                <div
+                  className={`tx-overview-graph-step-description ${
+                    relayerNTTStatus.status === "Delivery Success"
+                      ? "green"
+                      : relayerNTTStatus.status === "Receiver Failure"
+                      ? "red"
+                      : "white"
+                  }`}
+                >
+                  {relayerNTTStatus.status || "We were not able to get the status of your relay."}
+                </div>
+                {relayerNTTStatus.refundStatus && (
+                  <div
+                    className={`tx-overview-graph-step-description ${
+                      relayerNTTStatus.refundStatus === "Refund Sent"
+                        ? "green"
+                        : relayerNTTStatus.refundStatus === "Refund Fail"
+                        ? "red"
+                        : "white"
+                    }`}
+                  >
+                    {relayerNTTStatus.refundStatus}
+                  </div>
+                )}
+              </div>
+            )}
+
             <div>
               <div className="tx-overview-graph-step-title">Redeem Amount</div>
               <div className="tx-overview-graph-step-description">

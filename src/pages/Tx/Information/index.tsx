@@ -139,7 +139,7 @@ const Information = ({
     (appIds?.includes(PORTAL_APP_ID) && appIds.length === 1) ||
     (appIds?.includes(PORTAL_APP_ID) && appIds?.includes(UNKNOWN_APP_ID) && appIds.length === 2);
 
-  const showRelayerView = appIds?.includes(NTT_APP_ID) && appIds?.includes(GR_APP_ID);
+  const isRelayerNTT = appIds?.includes(NTT_APP_ID) && appIds?.includes(GR_APP_ID);
 
   const isAttestation = txType[payloadType] === "Attestation";
   const isUnknownPayloadType = !txType[payloadType];
@@ -519,12 +519,22 @@ const Information = ({
       return <Loader />;
     }
 
-    if (isGenericRelayerTx || showRelayerView) {
-      if (showRelayerView && showOverview) {
-        return <Overview {...overviewAndDetailProps} />;
-      }
-
+    if (isGenericRelayerTx || isRelayerNTT) {
       if (loadingRelayers) return <Loader />;
+
+      const deliveryStatus = genericRelayerInfo?.DeliveryStatus;
+
+      if (isRelayerNTT && showOverview) {
+        return (
+          <Overview
+            {...overviewAndDetailProps}
+            relayerNTTStatus={{
+              status: deliveryStatus?.data?.delivery?.execution?.status,
+              refundStatus: deliveryStatus?.data?.delivery?.execution?.refundStatus,
+            }}
+          />
+        );
+      }
 
       if (!genericRelayerInfo?.vaa) {
         setIsGenericRelayerTx(false);
@@ -538,7 +548,6 @@ const Information = ({
       const vaa = genericRelayerInfo.vaa;
       const parsedVaa = parseVaa(vaa);
       const sourceTxHash = genericRelayerInfo.sourceTxHash;
-      const deliveryStatus = genericRelayerInfo?.DeliveryStatus;
 
       const resultLogRegex =
         deliveryStatus?.data?.delivery?.execution?.detail.match(/Status: ([^\r\n]+)/);
