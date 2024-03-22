@@ -20,8 +20,7 @@ import {
   txType,
   UNKNOWN_APP_ID,
 } from "src/consts";
-import { Alert, Loader, Tooltip } from "src/components/atoms";
-import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
+import { Alert, Loader } from "src/components/atoms";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
 import { formatNumber } from "src/utils/number";
@@ -42,16 +41,13 @@ import { getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
 import { TokenInfo, getTokenLogo } from "src/utils/metaMaskUtils";
 import { ChainLimit } from "src/api";
 
-import Tabs from "./Tabs";
 import Summary from "./Summary";
+import Tabs from "./Tabs";
 import Overview from "./Overview/index";
-import Details from "./Details";
-import RawData from "./RawData";
 import RelayerOverview from "./Overview/RelayerOverview";
-import RelayerDetails from "./Details/RelayerDetails";
+import AdvancedView from "./AdvancedView";
 
 import "./styles.scss";
-import { CardStackMinusIcon, CardStackPlusIcon } from "@radix-ui/react-icons";
 
 interface Props {
   blockData: GetBlockData;
@@ -80,19 +76,15 @@ const Information = ({
   const [showSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
   const [showTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
 
-  const [showOverview, setShowOverviewState] = useState(searchParams.get("view") !== "rawdata");
+  const [showOverview, setShowOverviewState] = useState(searchParams.get("view") !== "advanced");
   const setShowOverview = (show: boolean) => {
     setShowOverviewState(show);
     setSearchParams(prev => {
-      prev.set("view", show ? "overview" : "rawdata");
+      prev.set("view", show ? "overview" : "advanced");
       return prev;
     });
   };
 
-  const [showOverviewDetail, setShowOverviewDetail] = useLocalStorage<boolean>(
-    "showOverviewDetail",
-    false,
-  );
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
 
@@ -146,6 +138,8 @@ const Information = ({
   const isJustPortalUnknown =
     (appIds?.includes(PORTAL_APP_ID) && appIds.length === 1) ||
     (appIds?.includes(PORTAL_APP_ID) && appIds?.includes(UNKNOWN_APP_ID) && appIds.length === 2);
+
+  const showRelayerView = appIds?.includes(NTT_APP_ID) && appIds?.includes(GR_APP_ID);
 
   const isAttestation = txType[payloadType] === "Attestation";
   const isUnknownPayloadType = !txType[payloadType];
@@ -520,13 +514,18 @@ const Information = ({
     }
   }, [data, genericRelayerInfo, loadingRelayers, setTxData]);
 
-  const OverviewContent = () => {
+  const Content = () => {
     if (isGenericRelayerTx === null) {
       return <Loader />;
     }
 
-    if (isGenericRelayerTx) {
+    if (isGenericRelayerTx || showRelayerView) {
+      if (showRelayerView && showOverview) {
+        return <Overview {...overviewAndDetailProps} />;
+      }
+
       if (loadingRelayers) return <Loader />;
+
       if (!genericRelayerInfo?.vaa) {
         setIsGenericRelayerTx(false);
         setTxData({
@@ -733,32 +732,44 @@ const Information = ({
         VAAId,
       };
 
-      if (showOverviewDetail) {
-        return <RelayerDetails {...genericRelayerProps} />;
-      }
+      if (showOverview) {
+        return <RelayerOverview {...genericRelayerProps} />;
+      } else {
+        if (isGenericRelayerTx === null || (isGenericRelayerTx && loadingRelayers)) {
+          return <Loader />;
+        }
 
-      return <RelayerOverview {...genericRelayerProps} />;
+        return (
+          <AdvancedView
+            genericRelayerProps={genericRelayerProps}
+            extraRawInfo={extraRawInfo}
+            lifecycleRecord={genericRelayerInfo}
+            data={data}
+          />
+        );
+      }
     }
 
     if (!isGenericRelayerTx) {
-      if (showOverviewDetail) {
-        return <Details {...overviewAndDetailProps} />;
+      if (showOverview) {
+        return (
+          <Overview
+            {...overviewAndDetailProps}
+            globalToRedeemTx={data?.targetChain?.transaction?.txHash}
+            isAttestation={isAttestation}
+          />
+        );
+      } else {
+        return (
+          <AdvancedView
+            overviewAndDetailProps={overviewAndDetailProps}
+            extraRawInfo={extraRawInfo}
+            lifecycleRecord={genericRelayerInfo}
+            data={data}
+          />
+        );
       }
-
-      return (
-        <Overview
-          {...overviewAndDetailProps}
-          globalToRedeemTx={data?.targetChain?.transaction?.txHash}
-          isAttestation={isAttestation}
-        />
-      );
     }
-  };
-
-  const RawDataContent = () => {
-    if (isGenericRelayerTx === null || (isGenericRelayerTx && loadingRelayers)) return <Loader />;
-
-    return <RawData extraRawInfo={extraRawInfo} lifecycleRecord={genericRelayerInfo} data={data} />;
   };
 
   const AlertsContent = () => {
@@ -775,7 +786,6 @@ const Information = ({
             ) : (
               <>
                 <p>The VAA for this transaction has not been issued yet.</p>
-                {isRPC && <p>This information can be incomplete or have wrong values.</p>}
                 {!isLatestBlockHigherThanVaaEmitBlock &&
                   !isBigTransaction &&
                   !isDailyLimitExceeded && (
@@ -878,18 +888,10 @@ const Information = ({
         vaa={vaa?.raw}
       />
 
-      <Tabs
-        isGenericRelayerTx={isGenericRelayerTx}
-        setIsGenericRelayerTx={setIsGenericRelayerTx}
-        setShowOverview={setShowOverview}
-        setShowOverviewDetail={setShowOverviewDetail}
-        showOverview={showOverview}
-        showOverviewDetail={showOverviewDetail}
-        showRelayerView={appIds?.includes(NTT_APP_ID) && appIds?.includes(GR_APP_ID)}
-      />
+      <Tabs setShowOverview={setShowOverview} showOverview={showOverview} />
 
       <div className="tx-information-content">
-        {showOverview ? <OverviewContent /> : <RawDataContent />}
+        <Content />
         {showOverview && <AlertsContent />}
       </div>
     </section>

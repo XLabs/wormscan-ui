@@ -3,9 +3,8 @@
 .tx-information-summary {
   @include centered-column;
   background-color: var(--color-white-05);
-  border-radius: 10px;
+  border-radius: 10px 10px 0 0;
   column-gap: 32px;
-  margin-bottom: 24px;
   min-height: 132px;
   padding: 40px 16px;
   row-gap: 32px;
@@ -30,7 +29,7 @@
 
   &-status {
     @include centered-row;
-    gap: 0 40px;
+    gap: 0 24px;
 
     @include desktop {
       gap: 0 8px;
@@ -60,7 +59,7 @@
 
     & > div {
       @include centered-row;
-      gap: 0 40px;
+      gap: 0 24px;
 
       @include desktop {
         gap: 0 8px;
