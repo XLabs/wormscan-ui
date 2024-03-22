@@ -16,7 +16,6 @@ export type OverviewProps = {
   fee?: string;
   fromChain?: ChainId | number;
   fromChainOrig?: ChainId | number;
-  globalToRedeemTx?: string;
   guardianSignaturesCount?: number;
   isAttestation?: boolean;
   isGatewaySource?: boolean;
@@ -56,7 +55,6 @@ const Overview = ({
   fee,
   fromChain,
   fromChainOrig,
-  globalToRedeemTx,
   guardianSignaturesCount,
   isAttestation,
   isGatewaySource,
@@ -266,7 +264,7 @@ const Overview = ({
         </div>
       </div>
 
-      {globalToRedeemTx && (
+      {(parsedRedeemTx || destinationDateParsed) && (
         <div className={`tx-overview-graph-step green`}>
           <div className="tx-overview-graph-step-name">
             <div>RELAYING</div>

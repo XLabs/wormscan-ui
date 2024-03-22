@@ -752,13 +752,7 @@ const Information = ({
 
     if (!isGenericRelayerTx) {
       if (showOverview) {
-        return (
-          <Overview
-            {...overviewAndDetailProps}
-            globalToRedeemTx={data?.targetChain?.transaction?.txHash}
-            isAttestation={isAttestation}
-          />
-        );
+        return <Overview {...overviewAndDetailProps} isAttestation={isAttestation} />;
       } else {
         return (
           <AdvancedView
