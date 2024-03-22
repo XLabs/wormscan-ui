@@ -12,6 +12,7 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import {
   CONNECT_APP_ID,
   DISCORD_URL,
+  ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
   NTT_APP_ID,
@@ -32,7 +33,7 @@ import {
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
 import { tryGetRedeemTxn } from "src/utils/cryptoToolkit";
-import { getPorticoInfo, isPortico } from "src/utils/wh-portico-rpc";
+import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
 import { GetBlockData } from "src/api/search/types";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
@@ -372,13 +373,7 @@ const Information = ({
       newData.STATUS = "COMPLETED";
       newData.targetChain = newDestinationTx;
 
-      if (
-        isPortico(
-          currentNetwork,
-          newData?.content?.standarizedProperties?.toChain as ChainId,
-          newData?.content?.standarizedProperties?.toAddress,
-        )
-      ) {
+      if (newData?.content?.standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID)) {
         const { formattedFinalUserAmount, formattedRelayerFee } = await getPorticoInfo(
           environment,
           newData,
