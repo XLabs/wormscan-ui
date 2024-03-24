@@ -22,7 +22,7 @@ import { Top } from "./Top";
 import "./styles.scss";
 import { getChainName } from "src/utils/wormhole";
 import { getAlgorandTokenInfo, tryGetWrappedToken } from "src/utils/cryptoToolkit";
-import { getPorticoInfo, isPortico } from "src/utils/wh-portico-rpc";
+import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import { useRecoilState } from "recoil";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
 import {
@@ -626,15 +626,9 @@ const Tx = () => {
         }
       }
 
-      // check Portico
+      // check Eth Bridge
       for (const data of apiTxData) {
-        if (
-          isPortico(
-            network,
-            data?.content?.standarizedProperties?.toChain as ChainId,
-            data?.content?.standarizedProperties?.toAddress,
-          )
-        ) {
+        if (data?.content?.standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID)) {
           const porticoInfo = await getPorticoInfo(environment, data);
           if (porticoInfo) {
             const {

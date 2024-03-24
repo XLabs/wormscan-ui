@@ -18,33 +18,6 @@ import { GetOperationsOutput } from "src/api/guardian-network/types";
 const porticoSwapFinishedEvent =
   "0xc2addcb063016f6dc1647fc8cd7206c3436cc4293c4acffe4feac288459ca7fc";
 
-const porticoAddresses: any = {
-  MAINNET: {
-    [CHAIN_ID_ARBITRUM]: ["0x48fa7528bfd6164ddf09df0ed22451cf59c84130"],
-    [CHAIN_ID_AVAX]: ["0xe565e118e75304dd3cf83dff409c90034b7ea18a"],
-    [CHAIN_ID_BASE]: ["0x610d4dfac3ec32e0be98d18ddb280dacd76a1889"],
-    [CHAIN_ID_BSC]: ["0x05498574bd0fa99eecb01e1241661e7ee58f8a85"],
-    [CHAIN_ID_ETH]: ["0x48b6101128c0ed1e208b7c910e60542a2ee6f476"],
-    [CHAIN_ID_OPTIMISM]: ["0x9ae506cddd27dee1275fd1fe6627e5dc65257061"],
-    [CHAIN_ID_POLYGON]: ["0x227babe533fa9a1085f5261210e0b7137e44437b"],
-  },
-  // TODO: PORTICO TESTNET ADDRESSES
-  TESTNET: {
-    [CHAIN_ID_ARBITRUM]: ["0x0000000000000000000000000000000000000000"],
-    [CHAIN_ID_AVAX]: ["0x0000000000000000000000000000000000000000"],
-    [CHAIN_ID_BASE]: ["0x0000000000000000000000000000000000000000"],
-    [CHAIN_ID_BSC]: ["0x0000000000000000000000000000000000000000"],
-    [CHAIN_ID_ETH]: ["0x0000000000000000000000000000000000000000"],
-    [CHAIN_ID_OPTIMISM]: ["0x0000000000000000000000000000000000000000"],
-    [CHAIN_ID_POLYGON]: ["0x0000000000000000000000000000000000000000"],
-  },
-};
-
-export function isPortico(network: any, toChain: ChainId, toAddress: string) {
-  const address = toAddress?.toLowerCase();
-  return porticoAddresses[network][toChain]?.includes(address.toLowerCase()) ?? false;
-}
-
 export async function getPorticoInfo(
   env: Environment,
   data: GetOperationsOutput,
@@ -54,7 +27,6 @@ export async function getPorticoInfo(
   const targetChain = data?.content?.standarizedProperties?.toChain as ChainId;
   const sourceTxHash = parseTx({ chainId: 2, value: data.sourceChain?.transaction?.txHash });
   const targetTxHash = parseTx({ chainId: 2, value: data.targetChain?.transaction?.txHash });
-  const payload = data?.content?.payload?.payload;
 
   const sourceProvider = getEthersProvider(getChainInfo(env, sourceChain as ChainId));
   const targetProvider = getEthersProvider(getChainInfo(env, targetChain as ChainId));
@@ -68,8 +40,8 @@ export async function getPorticoInfo(
     let formattedFinalUserAmount = "";
     let formattedRelayerFee = "";
 
-    const payloadBuffer = Buffer.from(payload, "base64");
-    const parsedPayload = parsePorticoPayload(payloadBuffer);
+    const parsedPayload = data?.content?.payload?.parsedPayload;
+    if (!parsedPayload?.flagSet) return null;
 
     const shouldWrapNative = parsedPayload?.flagSet?.shouldWrapNative;
     const shouldUnwrapNative = parsedPayload?.flagSet?.shouldUnwrapNative;
@@ -216,24 +188,5 @@ export function parsePorticoTransfer(payload: Buffer): IParsedSourceTransfer {
     minAmountStart: ethers.BigNumber.from(payload.slice(224, 256))?.toString(),
     minAmountFinish: ethers.BigNumber.from(payload.slice(256, 288))?.toString(),
     relayerFee: ethers.BigNumber.from(payload.slice(288, 320))?.toString(),
-  };
-}
-
-interface IParsedPorticoPayload {
-  flagSet: IParsedFlags;
-  finalTokenAddress: string;
-  recipientAddress: string;
-  canonAssetAmount: string;
-  minAmountFinish: string;
-  relayerFee: string;
-}
-export function parsePorticoPayload(payload: Buffer): IParsedPorticoPayload {
-  return {
-    flagSet: parseFlagSet(payload),
-    finalTokenAddress: parseAddress(payload.slice(32, 64)),
-    recipientAddress: parseAddress(payload.slice(64, 96)),
-    canonAssetAmount: ethers.BigNumber.from(payload.slice(96, 128))?.toString(),
-    minAmountFinish: ethers.BigNumber.from(payload.slice(128, 160))?.toString(),
-    relayerFee: ethers.BigNumber.from(payload.slice(160, 192))?.toString(),
   };
 }
