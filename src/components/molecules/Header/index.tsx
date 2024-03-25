@@ -104,7 +104,7 @@ const Header = () => {
           <ExternalLinkItem href="https://docs.wormhole.com/wormhole" label="Wormhole Docs" />
         </>
       ) : (
-        <NavigationMenu.Root>
+        <NavigationMenu.Root delayDuration={0}>
           <NavigationMenu.List className="dropdown-menu">
             <NavigationMenu.Item>
               <NavigationMenu.Trigger className="dropdown-menu-trigger">
