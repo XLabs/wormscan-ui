@@ -192,6 +192,25 @@
           &:hover {
             color: var(--color-primary-150);
           }
+
+          &-text {
+            display: none;
+            @include tablet {
+              display: inline-block;
+            }
+          }
+
+          &-icon {
+            display: inline-block;
+            transform: translateY(4px);
+            border-radius: 35%;
+            background-color: var(--color-white-10);
+            padding: 2px;
+
+            @include tablet {
+              display: none;
+            }
+          }
         }
       }
 

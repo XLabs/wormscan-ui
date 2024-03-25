@@ -12,6 +12,7 @@ import {
   ExternalLinkIcon,
   InfoCircledIcon,
   TriangleRightIcon,
+  WidthIcon,
 } from "@radix-ui/react-icons";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
@@ -411,7 +412,10 @@ const VaaParser = () => {
                     }}
                     className="parse-result-title-switch"
                   >
-                    Switch to {parsedRaw ? "parsed" : "raw"} decode
+                    <span className="parse-result-title-switch-text">
+                      Switch to {parsedRaw ? "parsed" : "raw"} decode
+                    </span>
+                    <WidthIcon height={24} width={24} className="parse-result-title-switch-icon" />
                   </span>
                 </div>
 
