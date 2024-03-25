@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-import { HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
+import { HamburgerMenuIcon, Cross1Icon, TriangleDownIcon } from "@radix-ui/react-icons";
 import { Network } from "@certusone/wormhole-sdk";
 import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
@@ -9,6 +9,7 @@ import { TWITTER_URL, DISCORD_URL, WORMHOLE_DOCS_URL, XLABS_CAREERS_URL } from "
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { NavLink, Select, Tag } from "src/components/atoms";
 import { WormholeBrand } from "src/components/molecules";
+import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Search from "./Search";
 import "./styles.scss";
 
@@ -96,6 +97,30 @@ const Header = () => {
     <nav data-testid="header-nav">
       {isMobile && <NavLinkItem to="/" label={t("home.footer.home")} />}
       <NavLinkItem to="/txs" label={t("home.header.txs")} />
+
+      {isMobile ? (
+        <>
+          <NavLinkItem to="/vaa-parser" label="VAA Parser" />
+          <ExternalLinkItem href="https://docs.wormhole.com/wormhole" label="Wormhole Docs" />
+        </>
+      ) : (
+        <NavigationMenu.Root>
+          <NavigationMenu.List className="dropdown-menu">
+            <NavigationMenu.Item>
+              <NavigationMenu.Trigger className="dropdown-menu-trigger">
+                Dev Tools <TriangleDownIcon className="icon" />
+              </NavigationMenu.Trigger>
+
+              <NavigationMenu.Content className="dropdown-menu-content">
+                <NavLinkItem to="/vaa-parser" label="VAA Parser" />
+                <ExternalLinkItem href="https://docs.wormholescan.io/" label="API Docs" />
+                <ExternalLinkItem href="https://docs.wormhole.com/wormhole" label="Wormhole Docs" />
+              </NavigationMenu.Content>
+            </NavigationMenu.Item>
+          </NavigationMenu.List>
+        </NavigationMenu.Root>
+      )}
+
       {isMobile && (
         <>
           <ExternalLinkItem href={XLABS_CAREERS_URL} label={t("home.footer.careers")}>

@@ -12,6 +12,7 @@ import {
   DateRange,
   GetOperationsInput,
   GetOperationsOutput,
+  GetParsedVaaOutput,
   LastTxs,
   Observation,
   ScoresOutput,
@@ -44,6 +45,16 @@ export class GuardianNetwork {
     });
 
     return (result?.operations ? result.operations : [result]) as GetOperationsOutput[];
+  }
+
+  async getParsedVaa(vaa: string): Promise<GetParsedVaaOutput> {
+    const path = "/vaas/parse";
+
+    const result: any = await this._client.doPost(path, {
+      vaa,
+    });
+
+    return result;
   }
 
   async getVAACount(): Promise<VAACount[]> {

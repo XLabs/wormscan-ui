@@ -46,6 +46,7 @@
     "@certusone/wormhole-sdk": "0.10.11",
     "@metamask/detect-provider": "^2.0.0",
     "@radix-ui/react-icons": "1.1.1",
+    "@radix-ui/react-navigation-menu": "^1.1.4",
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-toggle-group": "1.0.2",
     "@radix-ui/react-tooltip": "1.0.5",

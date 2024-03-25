@@ -18,6 +18,7 @@ import { GetOperationsOutput } from "src/api/guardian-network/types";
 import Details from "./Details";
 import RelayerDetails from "./Details/RelayerDetails";
 import "./styles.scss";
+import { JsonText } from "src/components/atoms";
 
 type Props = {
   data: GetOperationsOutput;
@@ -278,24 +279,7 @@ const BlockSection = ({ title, code }: { title: string; code: any }) => {
       </div>
 
       <div className="tx-advanced-view-container-block-body">
-        <JsonView
-          data={addQuotesInKeys(jsonParsed)}
-          style={{
-            basicChildStyle: "tx-advanced-view-container-block-body-row",
-            booleanValue: "tx-advanced-view-container-block-body-info",
-            collapsedContent: "tx-advanced-view-container-block-body-collapsedContent",
-            collapseIcon: "tx-advanced-view-container-block-body-collapseIcon",
-            container: "",
-            expandIcon: "tx-advanced-view-container-block-body-expandIcon",
-            label: "tx-advanced-view-container-block-body-key",
-            nullValue: "tx-advanced-view-container-block-body-info",
-            numberValue: "tx-advanced-view-container-block-body-number",
-            otherValue: "tx-advanced-view-container-block-body-string",
-            punctuation: "",
-            stringValue: "tx-advanced-view-container-block-body-string",
-            undefinedValue: "tx-advanced-view-container-block-body-info",
-          }}
-        />
+        <JsonText data={jsonParsed} />
       </div>
     </div>
   );
