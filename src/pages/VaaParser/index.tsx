@@ -6,10 +6,8 @@ import analytics from "src/analytics";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
 import { GetParsedVaaOutput } from "src/api/guardian-network/types";
-import { BlockchainIcon, JsonText, Loader, NavLink, Tooltip } from "src/components/atoms";
+import { JsonText, Loader, NavLink, Tooltip } from "src/components/atoms";
 import {
-  ArrowRightIcon,
-  CheckIcon,
   CopyIcon,
   ExternalLinkIcon,
   InfoCircledIcon,
@@ -21,15 +19,19 @@ import { ChainId } from "src/api";
 import { getGuardianSet, txType } from "src/consts";
 import { formatDate } from "src/utils/date";
 import { useParams } from "react-router-dom";
-import { base64ToHex, hexToBase64 } from "src/utils/string";
+import { hexToBase64 } from "src/utils/string";
 import "./styles.scss";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import VaaInput from "./Input";
+import CopyContent from "./CopyContent";
+import { useEnvironment } from "src/context/EnvironmentContext";
 
 const VaaParser = () => {
   useEffect(() => {
     analytics.page({ title: "VAA_PARSER" });
   }, []);
+
+  const { environment } = useEnvironment();
 
   const params = useParams();
   const vaaParam = params?.["*"];
@@ -55,7 +57,7 @@ const VaaParser = () => {
 
     // Add texts to enhace information
     renderTo.querySelectorAll(".json-view-key").forEach(a => {
-      // Add chain names to decoded VAA
+      // Add chain names and icon to decoded VAA
       if (
         a.innerHTML?.includes("fromChain") ||
         a.innerHTML?.includes("toChain") ||
@@ -71,7 +73,7 @@ const VaaParser = () => {
 
         const chain = getChainName({
           chainId: chainId,
-          network: "MAINNET",
+          network: environment.network,
         });
 
         if (chain) {
@@ -280,11 +282,30 @@ const VaaParser = () => {
 
   const { isLoading: isLoadingTx, isFetching: isFetchingTx } = useQuery(
     ["getOperations", txSearch],
-    () => {
+    async () => {
       const isVaaID = txSearch.split("/")?.length === 3;
       const send = isVaaID ? { vaaID: txSearch } : { txHash: txSearch };
 
-      return getClient().guardianNetwork.getOperations(send);
+      // check current network and return if it is
+      let currentNetworkResponse;
+      try {
+        currentNetworkResponse = await getClient().guardianNetwork.getOperations(send);
+      } catch {
+        //
+      }
+      if (!!currentNetworkResponse?.length) return currentNetworkResponse;
+
+      // if no result, check other network and make the switch
+      const otherNetwork = environment.network === "MAINNET" ? "TESTNET" : "MAINNET";
+      const otherNetworkResponse = await getClient(otherNetwork).guardianNetwork.getOperations(
+        send,
+      );
+
+      if (!!otherNetworkResponse?.length) {
+        navigate(`/vaa-parser/operation/${txSearch}?network=${otherNetwork}`);
+      }
+
+      return [];
     },
     {
       retry: 0,
@@ -461,33 +482,4 @@ export const processInputType = (str: string): "base64" | "hex" => {
 
   if (isHex) return "hex";
   return "base64";
-};
-
-const CopyContent = ({ text }: { text: string }) => {
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (copied) {
-      setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-    }
-  }, [copied]);
-
-  return (
-    <>
-      {copied ? (
-        <CheckIcon height={16} width={16} />
-      ) : (
-        <CopyIcon
-          height={14}
-          width={14}
-          onClick={async () => {
-            setCopied(true);
-            await navigator.clipboard.writeText(text);
-          }}
-        />
-      )}
-    </>
-  );
 };

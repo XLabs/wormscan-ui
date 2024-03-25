@@ -230,6 +230,12 @@
         overflow: scroll;
         cursor: not-allowed;
 
+        &::-webkit-scrollbar {
+          background-color: transparent;
+          height: 8px;
+          width: 8px;
+        }
+
         &-text {
           cursor: text;
         }

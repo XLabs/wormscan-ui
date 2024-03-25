@@ -156,8 +156,6 @@
           color: var(--color-secondary-800);
         }
 
-        // background-color: pink !important;
-
         &[data-state="closed"] {
           border-bottom: 1px solid transparent;
         }
@@ -175,6 +173,7 @@
         position: absolute;
         padding-top: 21px;
         padding-bottom: 5px;
+        z-index: 3;
 
         background-color: var(--color-primary-950);
 
