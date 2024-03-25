@@ -200,19 +200,16 @@
       }
 
       &-bottom {
+        @include button-secondary;
         position: absolute;
-        bottom: -32px;
+        bottom: -56px;
         right: 0px;
-        color: var(--color-primary-90);
+        color: var(--color-white-90);
         cursor: pointer;
 
         display: flex;
         align-items: center;
         gap: 4px;
-
-        &:hover {
-          color: var(--color-secondary-700);
-        }
       }
 
       &-copy {

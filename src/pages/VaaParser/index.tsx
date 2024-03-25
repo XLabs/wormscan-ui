@@ -6,7 +6,7 @@ import analytics from "src/analytics";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
 import { GetParsedVaaOutput } from "src/api/guardian-network/types";
-import { JsonText, Loader, NavLink, Tooltip } from "src/components/atoms";
+import { BlockchainIcon, JsonText, Loader, NavLink, Tooltip } from "src/components/atoms";
 import {
   ArrowRightIcon,
   CheckIcon,
@@ -16,7 +16,7 @@ import {
   TriangleRightIcon,
 } from "@radix-ui/react-icons";
 import { CopyToClipboard } from "src/components/molecules";
-import { getChainName } from "src/utils/wormhole";
+import { getChainIcon, getChainName } from "src/utils/wormhole";
 import { ChainId } from "src/api";
 import { getGuardianSet, txType } from "src/consts";
 import { formatDate } from "src/utils/date";
@@ -67,18 +67,45 @@ const VaaParser = () => {
         a.innerHTML?.includes("feeChain")
       ) {
         const parentElement = a.parentElement;
+        const chainId = +parentElement.children?.[1]?.innerHTML as ChainId;
 
         const chain = getChainName({
-          chainId: +parentElement.children?.[1]?.innerHTML as ChainId,
+          chainId: chainId,
           network: "MAINNET",
         });
 
         if (chain) {
-          const newText = document.createElement("span");
-          newText.textContent = ` // ${chain}`;
-          newText.classList.add("added-stuff");
+          const reactContainer = document.createElement("span");
+          const root = createRoot(reactContainer);
 
-          a.parentElement?.appendChild(newText);
+          parentElement?.appendChild(reactContainer);
+
+          const chainIcon = getChainIcon({ chainId });
+          root.render(
+            <div
+              style={{
+                display: "inline-block",
+                marginLeft: 8,
+                cursor: "default",
+                userSelect: "none",
+              }}
+            >
+              <img
+                src={chainIcon}
+                alt={`${chain} icon`}
+                style={{
+                  display: "inline-block",
+                  transform: "scale(1.2) translateY(2px)",
+                  marginLeft: 4,
+                  marginRight: 6,
+                }}
+                loading="lazy"
+                width={16}
+                height={16}
+              />
+              <span>{` (${chain})`}</span>
+            </div>,
+          );
         }
       }
 
@@ -89,11 +116,11 @@ const VaaParser = () => {
         const type = txType[+parentElement.children?.[1]?.innerHTML] ?? false;
 
         if (type) {
-          const newText = document.createElement("span");
-          newText.textContent = ` // ${type}`;
-          newText.classList.add("added-stuff");
+          const reactContainer = document.createElement("span");
+          const root = createRoot(reactContainer);
 
-          a.parentElement?.appendChild(newText);
+          parentElement?.appendChild(reactContainer);
+          root.render(<span style={{ marginLeft: 4 }}>{` (${type})`}</span>);
         }
       }
 
@@ -107,10 +134,6 @@ const VaaParser = () => {
         const formatted = formatDate(time);
 
         if (formatted) {
-          const newText = document.createElement("span");
-          newText.textContent = ` // ${formatted}`;
-          newText.classList.add("added-stuff");
-
           const TimestampTooltip = () => (
             <Tooltip
               tooltip={
@@ -129,9 +152,19 @@ const VaaParser = () => {
           reactContainer.classList.add("copy-item");
           const root = createRoot(reactContainer);
 
-          a.parentElement?.appendChild(newText);
           a.parentElement?.appendChild(reactContainer);
-          root.render(<TimestampTooltip />);
+          root.render(
+            <>
+              <span
+                style={{
+                  display: "inline-block",
+                  transform: "translateY(-2px)",
+                  marginRight: 5,
+                }}
+              >{` // ${formatted}`}</span>
+              <TimestampTooltip />
+            </>,
+          );
         }
       }
     });
@@ -178,6 +211,11 @@ const VaaParser = () => {
     });
   };
 
+  const getGuardianName = (guardianSet: number, index: number) => {
+    const guardianSetList = getGuardianSet(guardianSet);
+    return guardianSetList?.[index]?.name;
+  };
+
   const {
     isError,
     isLoading: isLoadingParse,
@@ -186,12 +224,11 @@ const VaaParser = () => {
     enabled: !!input,
     retry: 0,
     onSettled: _data => {
+      // success or fail, process RAW vaa (no API) and set it
       try {
         const parsedVaa = parseVaa(Buffer.from(input, "base64"));
         const { emitterAddress, guardianSignatures, hash, sequence, guardianSetIndex } =
           parsedVaa || {};
-
-        const guardianSetList = getGuardianSet(guardianSetIndex);
 
         const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
         const parsedHash = Buffer.from(hash).toString("hex");
@@ -199,7 +236,7 @@ const VaaParser = () => {
         const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
           index,
           signature: Buffer.from(signature).toString("hex"),
-          name: guardianSetList?.[index]?.name,
+          name: getGuardianName(guardianSetIndex, index),
         }));
 
         setResultRaw({
@@ -215,6 +252,20 @@ const VaaParser = () => {
       }
     },
     onSuccess: data => {
+      // add guardian names to guardianSignatures
+      if (data?.vaa?.guardianSetIndex && data?.vaa?.guardianSignatures) {
+        data = {
+          ...data,
+          vaa: {
+            ...data.vaa,
+            guardianSignatures: data.vaa.guardianSignatures.map(({ index, signature }: any) => ({
+              index,
+              signature,
+              name: getGuardianName(data?.vaa?.guardianSetIndex, index),
+            })),
+          },
+        };
+      }
       setResult(data);
 
       const vaaID = `${data?.vaa?.emitterChain}/${data?.vaa?.emitterAddress}/${data?.vaa?.sequence}`;
@@ -346,7 +397,11 @@ const VaaParser = () => {
                 <div className="parse-result-copy">
                   <CopyToClipboard
                     toCopy={
-                      result && !parsedRaw ? result : resultRaw && parsedRaw ? resultRaw : "{}"
+                      result && !parsedRaw
+                        ? JSON.stringify(result, null, 4)
+                        : resultRaw && parsedRaw
+                        ? JSON.stringify(resultRaw, null, 4)
+                        : "{}"
                     }
                   >
                     <CopyIcon height={24} width={24} />
@@ -366,7 +421,7 @@ const VaaParser = () => {
                             result && !parsedRaw ? result : resultRaw && parsedRaw ? resultRaw : {}
                           }
                         />
-                        <NavLink target="_blank" to={`/tx/${VAA_ID}`}>
+                        <NavLink target="_blank" to={`/tx/${txSearch ? txSearch : VAA_ID}`}>
                           <div className="parse-result-bottom">
                             <span>View on Transactions</span>
                             <ExternalLinkIcon height={15} width={15} />
