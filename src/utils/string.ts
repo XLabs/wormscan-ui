@@ -48,3 +48,53 @@ export const TruncateText = ({
 
   return `${start}${ellipsis}${end}`;
 };
+
+export const addQuotesInKeys = (obj: any): any => {
+  if (Array.isArray(obj)) {
+    return obj.map(addQuotesInKeys);
+  } else if (typeof obj === "object" && obj !== null) {
+    // newObj = keys with quotes
+    const newObj: any = {};
+
+    for (const key in obj) {
+      // add quotes to key
+      const newKey = `"${key}"`;
+      newObj[newKey] = addQuotesInKeys(obj[key]);
+    }
+
+    return newObj;
+  } else {
+    return obj;
+  }
+};
+
+export const hexToBase64 = (hexString: string) => {
+  // Convert the hex string to a byte array.
+  const byteArray = new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+
+  // Convert the byte array to a string.
+  const binaryString = Array.from(byteArray)
+    .map(byte => String.fromCharCode(byte))
+    .join("");
+
+  // Encode the binary string to Base64.
+  const base64String = btoa(binaryString);
+
+  return base64String;
+};
+
+export const base64ToHex = (base64String: string) => {
+  try {
+    // Decode the Base64 string to a binary string.
+    const binaryString = atob(base64String);
+
+    // Convert each character to its char code, then to its Hex representation, and pad with zeros if necessary.
+    const hexString = Array.from(binaryString)
+      .map(char => char.charCodeAt(0).toString(16).padStart(2, "0"))
+      .join("");
+
+    return hexString;
+  } catch (e) {
+    return "";
+  }
+};

@@ -5,16 +5,14 @@
 
   background-color: var(--color-white-10);
   border-bottom: 1px solid transparent;
-  border-radius: 10px 10px 0 0;
-  min-height: 48px;
+  min-height: 62px;
   position: relative;
 
   &-trigger {
-    all: unset;
-
     @include centered-row;
     @include text-p3;
-
+    background-color: transparent;
+    border: none;
     border-bottom: 1px solid transparent;
     color: var(--color-primary-100);
     cursor: pointer;
@@ -29,7 +27,7 @@
     @include tablet {
       font-size: 14px;
       padding: 6px 16px;
-      width: 120px;
+      width: 146px;
     }
 
     &:hover:not(&-active) {

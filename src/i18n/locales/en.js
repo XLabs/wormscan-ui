@@ -20,7 +20,7 @@ export default {
           about: "About",
           txs: "Transactions",
           joinUs: "Join Us",
-          apiDoc: "API Doc",
+          apiDoc: "API Docs",
           bugBounty: "Bug Bounty",
           careers: "Careers",
           contactUs: "Contact Us",
