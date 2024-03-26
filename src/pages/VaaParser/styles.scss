@@ -253,7 +253,7 @@
         font-size: 14px;
         line-height: 1.5;
         overflow: scroll;
-        cursor: default;
+        cursor: not-allowed;
 
         @include tablet {
           overflow-x: auto;
