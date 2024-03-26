@@ -148,9 +148,15 @@
 
       color: var(--color-white-90);
       font-size: 14px;
-      padding: 10px;
+      padding: 10px 10px 32px 10px;
 
       resize: none;
+
+      &::-webkit-scrollbar {
+        background-color: transparent;
+        height: 8px;
+        width: 8px;
+      }
 
       &:focus {
         outline: 1px solid var(--color-white-40);
@@ -249,6 +255,11 @@
         overflow: scroll;
         cursor: not-allowed;
 
+        @include tablet {
+          overflow-x: auto;
+          overflow-y: scroll;
+        }
+
         &::-webkit-scrollbar {
           background-color: transparent;
           height: 8px;
@@ -256,6 +267,7 @@
         }
 
         &-text {
+          padding: 10px;
           cursor: text;
         }
       }
