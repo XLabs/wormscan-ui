@@ -523,6 +523,7 @@
   }
 
   &-sticky {
+    cursor: pointer;
     display: block;
     position: sticky;
     overflow: hidden;
@@ -563,10 +564,10 @@
 
       &-draw {
         color: var(--color-white-20);
-        transform: translateY(-6px);
+        transform: translateY(-6px) rotate(180deg);
 
         &-open {
-          transform: translateY(-6px) rotate(180deg);
+          transform: translateY(-6px);
         }
       }
     }
