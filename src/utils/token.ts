@@ -17,6 +17,7 @@ import IDIA from "src/icons/tokens/IDIA.svg";
 import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KUJI from "src/icons/tokens/KUJI.svg";
 import MATIC from "src/icons/tokens/MATIC.svg";
+import MOONWELL from "src/icons/tokens/MOONWELL.svg";
 import OPTIMISM from "src/icons/tokens/OPTIMISM.svg";
 import OSMO from "src/icons/tokens/OSMO.svg";
 import PENDLE from "src/icons/tokens/PENDLE.svg";
@@ -78,6 +79,7 @@ const iconTokens = {
   WAVAX,
   WBNB: BNB,
   WBTC,
+  WELL: MOONWELL,
   WETH,
   WFTM,
   WGLMR: GLMR,
