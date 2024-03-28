@@ -17,7 +17,6 @@ import IDIA from "src/icons/tokens/IDIA.svg";
 import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KUJI from "src/icons/tokens/KUJI.svg";
 import MATIC from "src/icons/tokens/MATIC.svg";
-import MOONWELL from "src/icons/tokens/MOONWELL.svg";
 import OPTIMISM from "src/icons/tokens/OPTIMISM.svg";
 import OSMO from "src/icons/tokens/OSMO.svg";
 import PENDLE from "src/icons/tokens/PENDLE.svg";
@@ -33,6 +32,7 @@ import USDC from "src/icons/tokens/USDC.svg";
 import USDT from "src/icons/tokens/USDT.svg";
 import WAVAX from "src/icons/tokens/WAVAX.svg";
 import WBTC from "src/icons/tokens/WBTC.svg";
+import WELL from "src/icons/tokens/WELL.svg";
 import WETH from "src/icons/tokens/WETH.svg";
 import WFTM from "src/icons/tokens/WFTM.svg";
 import WMATIC from "src/icons/tokens/WMATIC.svg";
@@ -79,7 +79,7 @@ const iconTokens = {
   WAVAX,
   WBNB: BNB,
   WBTC,
-  WELL: MOONWELL,
+  WELL,
   WETH,
   WFTM,
   WGLMR: GLMR,
