@@ -32,6 +32,7 @@ import USDC from "src/icons/tokens/USDC.svg";
 import USDT from "src/icons/tokens/USDT.svg";
 import WAVAX from "src/icons/tokens/WAVAX.svg";
 import WBTC from "src/icons/tokens/WBTC.svg";
+import WELL from "src/icons/tokens/WELL.svg";
 import WETH from "src/icons/tokens/WETH.svg";
 import WFTM from "src/icons/tokens/WFTM.svg";
 import WMATIC from "src/icons/tokens/WMATIC.svg";
@@ -78,6 +79,7 @@ const iconTokens = {
   WAVAX,
   WBNB: BNB,
   WBTC,
+  WELL,
   WETH,
   WFTM,
   WGLMR: GLMR,
