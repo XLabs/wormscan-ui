@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Root, createRoot } from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import analytics from "src/analytics";
@@ -21,12 +21,13 @@ import { getGuardianSet, txType } from "src/consts";
 import { formatDate } from "src/utils/date";
 import { useParams } from "react-router-dom";
 import { hexToBase64 } from "src/utils/string";
-import "./styles.scss";
 import { parseVaa } from "@certusone/wormhole-sdk";
-import VaaInput from "./Input";
-import CopyContent from "./CopyContent";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { waitForElement } from "./waitForElement";
+
+import VaaInput from "./Input";
+import CopyContent from "./CopyContent";
+import "./styles.scss";
 
 const VaaParser = () => {
   useEffect(() => {
@@ -69,7 +70,7 @@ const VaaParser = () => {
 
   const renderExtras = (renderTo: Element | Document) => {
     waitForElement(".json-view-key")
-      .then(_el => {
+      .then(() => {
         renderTo.querySelectorAll(".added-stuff").forEach(a => a.remove());
 
         // Add texts to enhace information
@@ -215,7 +216,7 @@ const VaaParser = () => {
           const parentElement = item.parentElement;
 
           const clickedCollapse = (ev: MouseEvent) => {
-            // console.log("call");
+            // console.log("call"); // todo: fix multiple attached events
             renderExtras(parentElement);
           };
 
