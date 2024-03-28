@@ -27,6 +27,7 @@ import { useRecoilState } from "recoil";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
 import {
   CCTP_APP_ID,
+  CCTP_MANUAL_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
@@ -122,6 +123,7 @@ const Tx = () => {
                 toChain: txData.toChain,
                 tokenAddress: txData.tokenAddress,
                 tokenChain: txData.tokenChain,
+                wrappedTokenAddress: txData.wrappedTokenAddress,
               },
             },
             data: {
@@ -129,6 +131,7 @@ const Tx = () => {
               tokenAmount: txData.tokenAmount,
               usdAmount: txData.usdAmount,
             },
+            STATUS: txData.STATUS,
             sequence: "",
             sourceChain: {
               chainId: txData.chain,
@@ -711,7 +714,7 @@ const Tx = () => {
 
         const STATUS: IStatus = data?.targetChain?.transaction?.txHash
           ? "COMPLETED"
-          : appIds && appIds.includes("CCTP_MANUAL")
+          : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
           ? "EXTERNAL_TX"
           : vaa
           ? isConnect || isPortal || isCCTP

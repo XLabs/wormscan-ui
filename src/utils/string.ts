@@ -98,3 +98,30 @@ export const base64ToHex = (base64String: string) => {
     return "";
   }
 };
+
+export const hexToBase58 = (hexString: string) => {
+  // base58 alphabet
+  const ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+  const BASE = BigInt(ALPHABET.length);
+
+  // remove the "0x" prefix if present and initialize the result
+  hexString = hexString.startsWith("0x") ? hexString.substring(2) : hexString;
+  let result = "";
+
+  // hex to BigInt
+  let decimal = BigInt("0x" + hexString);
+
+  // BigInt to base58
+  while (decimal > 0) {
+    const remainder = decimal % BASE;
+    decimal /= BASE;
+    result = ALPHABET.charAt(Number(remainder)) + result;
+  }
+
+  // Handle leading zeros in the hex string
+  for (let i = 0; i < hexString.length && hexString[i] === "0"; i += 2) {
+    result = "1" + result;
+  }
+
+  return result;
+};

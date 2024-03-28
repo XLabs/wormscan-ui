@@ -157,6 +157,7 @@ export type IStatus =
 
 export const UNKNOWN_APP_ID = "UNKNOWN";
 export const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
+export const CCTP_MANUAL_APP_ID = "CCTP_MANUAL";
 export const CONNECT_APP_ID = "CONNECT";
 export const GATEWAY_APP_ID = "WORMCHAIN_GATEWAY_TRANSFER";
 export const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";

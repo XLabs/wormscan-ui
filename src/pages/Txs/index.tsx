@@ -20,6 +20,7 @@ import analytics from "src/analytics";
 import "./styles.scss";
 import {
   CCTP_APP_ID,
+  CCTP_MANUAL_APP_ID,
   CONNECT_APP_ID,
   IStatus,
   NTT_APP_ID,
@@ -236,7 +237,7 @@ const Txs = () => {
 
               const STATUS: IStatus = tx?.targetChain?.transaction?.txHash
                 ? "COMPLETED"
-                : appIds && appIds.includes("CCTP_MANUAL")
+                : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
                 ? "EXTERNAL_TX"
                 : tx.vaa?.raw
                 ? isConnect || isPortal || isCCTP

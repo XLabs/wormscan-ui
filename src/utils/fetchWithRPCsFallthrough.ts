@@ -18,13 +18,14 @@ import {
 import { Implementation__factory } from "@certusone/wormhole-sdk/lib/cjs/ethers-contracts";
 import { humanAddress } from "@certusone/wormhole-sdk/lib/cjs/cosmos";
 import { ethers } from "ethers";
-import { GR_APP_ID, getGuardianSet } from "src/consts";
+import { CCTP_MANUAL_APP_ID, GR_APP_ID, IStatus, getGuardianSet } from "src/consts";
 import { ChainId, Order, WormholeTokenList } from "src/api";
 import { getClient } from "src/api/Client";
 import { Environment, SLOW_FINALITY_CHAINS, getChainInfo, getEthersProvider } from "./environment";
 import { formatUnits, parseAddress } from "./crypto";
 import { isConnect, parseConnectPayload } from "./wh-connect-rpc";
 import { TokenMessenger__factory } from "./TokenMessenger__factory";
+import { hexToBase58 } from "./string";
 
 type TxReceiptHolder = {
   receipt: ethers.providers.TransactionReceipt;
@@ -60,6 +61,7 @@ interface RPCResponse {
   txHash?: string;
   usdAmount?: string;
   wrappedTokenAddress?: string;
+  STATUS?: IStatus;
 }
 
 async function hitAllSlowChains(
@@ -561,9 +563,13 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
 
         const { amount, burnToken, destinationDomain, mintRecipient } = args;
 
+        const toChain = getCctpDomain(destinationDomain);
+        const toAddress =
+          toChain === 1 ? hexToBase58(mintRecipient) : "0x" + mintRecipient.substring(26);
+
         return {
           amount: "" + formatUnits(amount.toString(), 6),
-          appIds: ["CCTP_MANUAL"],
+          appIds: [CCTP_MANUAL_APP_ID],
           chain: result.chainId,
           emitterAddress,
           emitterNattiveAddress,
@@ -573,14 +579,15 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           payloadAmount: amount.toString(),
           symbol: "USDC",
           timestamp,
-          toAddress: "0x" + mintRecipient.substring(26),
-          toChain: getCctpDomain(destinationDomain),
+          toAddress,
+          toChain,
           tokenAddress: burnToken,
           tokenAmount: "" + formatUnits(amount.toString(), 6),
           tokenChain: result.chainId,
           txHash: searchValue,
           usdAmount: "" + formatUnits(amount.toString(), 6),
           wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(destinationDomain)),
+          STATUS: "EXTERNAL_TX" as IStatus,
 
           // no data properties
           id: null,
@@ -638,6 +645,7 @@ const getCctpDomain = (dom: number) => {
   if (dom === 1) return ChainId.Avalanche;
   if (dom === 2) return ChainId.Optimism;
   if (dom === 3) return ChainId.Arbitrum;
+  if (dom === 5) return ChainId.Solana;
   if (dom === 6) return ChainId.Base;
   return null;
 };
@@ -665,12 +673,14 @@ export const getUsdcAddress = (network: Network, chain: ChainId) => {
     if (chain === ChainId.Avalanche) return "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E";
     if (chain === ChainId.Arbitrum) return "0xaf88d065e77c8cc2239327c5edb3a432268e5831";
     if (chain === ChainId.Optimism) return "0x0b2c639c533813f4aa9d7837caf62653d097ff85";
+    if (chain === ChainId.Solana) return "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
     if (chain === ChainId.Base) return "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
   } else {
     if (chain === ChainId.Ethereum) return "0x07865c6e87b9f70255377e024ace6630c1eaa37f";
     if (chain === ChainId.Avalanche) return "0x5425890298aed601595a70ab815c96711a31bc65";
     if (chain === ChainId.Arbitrum) return "0xfd064a18f3bf249cf1f87fc203e90d8f650f2d63";
     if (chain === ChainId.Optimism) return "0xe05606174bac4a6364b31bd0eca4bf4dd368f8c6";
+    if (chain === ChainId.Solana) return "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU";
     if (chain === ChainId.Base) return "0xf175520c52418dfe19c8098071a252da48cd1c19";
   }
   return null;

@@ -10,6 +10,7 @@ import {
 
 import { useEnvironment } from "src/context/EnvironmentContext";
 import {
+  CCTP_MANUAL_APP_ID,
   CONNECT_APP_ID,
   DISCORD_URL,
   ETH_BRIDGE_APP_ID,
@@ -314,7 +315,7 @@ const Information = ({
     parsedRedeemTx,
     redeemedAmount,
     showMetaMaskBtn,
-    showSignatures: !(appIds && appIds.includes("CCTP_MANUAL")),
+    showSignatures: !(appIds && appIds.includes(CCTP_MANUAL_APP_ID)),
     sourceSymbol,
     sourceTokenLink,
     targetSymbol,
@@ -783,7 +784,7 @@ const Information = ({
       <div className="tx-information-alerts">
         <Alert type="info" className="tx-information-alerts-unknown-payload-type">
           {!hasVAA ? (
-            appIds && appIds.includes("CCTP_MANUAL") ? (
+            appIds && appIds.includes(CCTP_MANUAL_APP_ID) ? (
               <p>
                 This transaction is processed by Circle&apos;s CCTP and therefore information might
                 be incomplete.
