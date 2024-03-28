@@ -98,40 +98,24 @@ const Header = () => {
       {isMobile && <NavLinkItem to="/" label={t("home.footer.home")} />}
       <NavLinkItem to="/txs" label={t("home.header.txs")} />
 
-      {isMobile ? (
-        <>
-          <NavLinkItem to="/vaa-parser" label="VAA Parser" />
-          <ExternalLinkItem href="https://docs.wormhole.com/wormhole" label="Wormhole Docs" />
-        </>
-      ) : (
-        <NavigationMenu.Root delayDuration={0}>
-          <NavigationMenu.List className="dropdown-menu">
-            <NavigationMenu.Item>
-              <NavigationMenu.Trigger className="dropdown-menu-trigger">
-                Dev Tools <TriangleDownIcon className="icon" />
-              </NavigationMenu.Trigger>
+      <NavigationMenu.Root delayDuration={0}>
+        <NavigationMenu.List className="dropdown-menu">
+          <NavigationMenu.Item>
+            <NavigationMenu.Trigger className="dropdown-menu-trigger">
+              Dev Tools <TriangleDownIcon className="icon" />
+            </NavigationMenu.Trigger>
 
-              <NavigationMenu.Content className="dropdown-menu-content">
-                <NavLinkItem to="/vaa-parser" label="VAA Parser" />
-                <ExternalLinkItem href="https://docs.wormholescan.io/" label="API Docs" />
-                <ExternalLinkItem href="https://docs.wormhole.com/wormhole" label="Wormhole Docs" />
-              </NavigationMenu.Content>
-            </NavigationMenu.Item>
-          </NavigationMenu.List>
-        </NavigationMenu.Root>
-      )}
+            <NavigationMenu.Content className="dropdown-menu-content">
+              <NavLinkItem to="/vaa-parser" label="VAA Parser" />
+              <ExternalLinkItem href="https://docs.wormholescan.io/" label="API Docs" />
+              <ExternalLinkItem href="https://docs.wormhole.com/wormhole" label="Wormhole Docs" />
+            </NavigationMenu.Content>
+          </NavigationMenu.Item>
+        </NavigationMenu.List>
+      </NavigationMenu.Root>
 
-      {isMobile && (
-        <>
-          <ExternalLinkItem href={XLABS_CAREERS_URL} label={t("home.footer.careers")}>
-            <Tag type="chip" size="small">
-              {t("home.footer.hiring")}
-            </Tag>
-          </ExternalLinkItem>
-          <ExternalLinkItem href={WORMHOLE_DOCS_URL} label={t("home.footer.apiDoc")} />
-          <NavLinkItem to="/terms-of-use" label={t("home.footer.termsOfUse")} />
-        </>
-      )}
+      {isMobile && <NavLinkItem to="/terms-of-use" label={t("home.footer.termsOfUse")} />}
+
       <Select
         name={"networkSelect"}
         value={NETWORK_LIST.find(a => a.value === currentNetwork)}
