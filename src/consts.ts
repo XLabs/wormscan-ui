@@ -163,3 +163,4 @@ export const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
 export const ETH_BRIDGE_APP_ID = "ETH_BRIDGE";
 export const NTT_APP_ID = "NATIVE_TOKEN_TRANSFER";
 export const GR_APP_ID = "GENERIC_RELAYER";
+export const MAYAN_APP_ID = "MAYAN";

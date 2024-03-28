@@ -19,6 +19,7 @@ export type OverviewProps = {
   guardianSignaturesCount?: number;
   isAttestation?: boolean;
   isGatewaySource?: boolean;
+  isMayanOnly?: boolean;
   isUnknownApp?: boolean;
   originDateParsed?: string;
   parsedDestinationAddress?: string;
@@ -62,6 +63,7 @@ const Overview = ({
   guardianSignaturesCount,
   isAttestation,
   isGatewaySource,
+  isMayanOnly,
   isUnknownApp,
   originDateParsed,
   parsedDestinationAddress,
@@ -101,32 +103,34 @@ const Overview = ({
           )}
         </div>
         <div className={`tx-overview-graph-step-data-container`}>
-          <div>
-            <div className="tx-overview-graph-step-title">Amount</div>
-            <div className="tx-overview-graph-step-description">
-              {tokenAmount ? (
-                <>
-                  {amountSent}{" "}
-                  {sourceSymbol ? (
-                    <>
-                      {sourceTokenLink ? (
-                        <a href={sourceTokenLink} target="_blank" rel="noopener noreferrer">
-                          {sourceSymbol}
-                        </a>
-                      ) : (
-                        <span>{sourceSymbol}</span>
-                      )}
-                      {amountSentUSD && `(${amountSentUSD} USD)`}
-                    </>
-                  ) : (
-                    "N/A"
-                  )}
-                </>
-              ) : (
-                "N/A"
-              )}
+          {!isMayanOnly && (
+            <div>
+              <div className="tx-overview-graph-step-title">Amount</div>
+              <div className="tx-overview-graph-step-description">
+                {tokenAmount ? (
+                  <>
+                    {amountSent}{" "}
+                    {sourceSymbol ? (
+                      <>
+                        {sourceTokenLink ? (
+                          <a href={sourceTokenLink} target="_blank" rel="noopener noreferrer">
+                            {sourceSymbol}
+                          </a>
+                        ) : (
+                          <span>{sourceSymbol}</span>
+                        )}
+                        {amountSentUSD && `(${amountSentUSD} USD)`}
+                      </>
+                    ) : (
+                      "N/A"
+                    )}
+                  </>
+                ) : (
+                  "N/A"
+                )}
+              </div>
             </div>
-          </div>
+          )}
           <div>
             <div className="tx-overview-graph-step-title">Source Address</div>
             <div className="tx-overview-graph-step-description">
@@ -386,40 +390,43 @@ const Overview = ({
             </Tooltip>
           </div>
           <div className="tx-overview-graph-step-data-container">
-            <div>
-              <div className="tx-overview-graph-step-title">Redeem Amount</div>
-              <div className="tx-overview-graph-step-description">
-                {Number(fee) || tokenAmount ? (
-                  <>
-                    {Number(fee) ? redeemedAmount : amountSent}{" "}
-                    {targetSymbol && (
-                      <>
-                        {targetTokenLink ? (
-                          <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
-                            {targetSymbol}
-                          </a>
-                        ) : (
-                          <span>{targetSymbol}</span>
-                        )}
-                        {Number(fee) ? null : amountSentUSD && ` (${amountSentUSD} USD)`}
-                      </>
-                    )}
-                    {showMetaMaskBtn && (
-                      <div className="tx-overview-graph-step-description-btn-container">
-                        <AddToMetaMaskBtn
-                          className="metamask-btn-mt-16"
-                          currentNetwork={currentNetwork}
-                          toChain={toChain as ChainId}
-                          tokenInfo={tokenInfo}
-                        />
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  "N/A"
-                )}
+            {!isMayanOnly && (
+              <div>
+                <div className="tx-overview-graph-step-title">Redeem Amount</div>
+                <div className="tx-overview-graph-step-description">
+                  {Number(fee) || tokenAmount ? (
+                    <>
+                      {Number(fee) ? redeemedAmount : amountSent}{" "}
+                      {targetSymbol && (
+                        <>
+                          {targetTokenLink ? (
+                            <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
+                              {targetSymbol}
+                            </a>
+                          ) : (
+                            <span>{targetSymbol}</span>
+                          )}
+                          {Number(fee) ? null : amountSentUSD && ` (${amountSentUSD} USD)`}
+                        </>
+                      )}
+                      {showMetaMaskBtn && (
+                        <div className="tx-overview-graph-step-description-btn-container">
+                          <AddToMetaMaskBtn
+                            className="metamask-btn-mt-16"
+                            currentNetwork={currentNetwork}
+                            toChain={toChain as ChainId}
+                            tokenInfo={tokenInfo}
+                          />
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    "N/A"
+                  )}
+                </div>
               </div>
-            </div>
+            )}
+
             <div>
               <div className="tx-overview-graph-step-title">
                 Destination Address
