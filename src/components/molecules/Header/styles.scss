@@ -136,99 +136,12 @@
       gap: 24px;
     }
 
-    .dropdown-menu {
-      > li {
-        display: block;
-      }
-
-      &-trigger {
-        position: relative;
-        cursor: pointer;
-        padding-left: 12px;
-        padding-right: 30px;
-        padding-top: 8px;
-        padding-bottom: 8px;
-
-        .icon {
-          position: absolute;
-          width: 24px;
-          height: 24px;
-          color: var(--color-secondary-800);
-        }
-
-        &[data-state="closed"] {
-          border-bottom: 1px solid transparent;
-        }
-
-        &[data-state="open"] {
-          border-bottom: 1px solid var(--color-white-40);
-
-          .icon {
-            rotate: 180deg;
-          }
-        }
-      }
-
-      &-content {
-        position: absolute;
-        padding-top: 21px;
-        padding-bottom: 5px;
-        z-index: 3;
-
-        background-color: var(--color-primary-950);
-
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-        align-items: center;
-
-        .header-navigation-item {
-          justify-content: center;
-          align-items: center;
-          width: 125px;
-          background-color: var(--color-primary-950);
-
-          .active {
-            background-color: var(--color-secondary-800);
-            font-weight: 600;
-          }
-
-          a {
-            font-family: IBM Plex Sans, sans-serif;
-            color: var(--color-white);
-            font-weight: 500;
-            font-size: 15px;
-            width: 100%;
-            text-align: center;
-            padding-top: 10px;
-            padding-bottom: 10px;
-
-            &:hover {
-              background-color: var(--color-white-10);
-            }
-          }
-        }
-      }
-
-      button {
-        border: 0px;
-        background: none;
-        color: var(--color-white-100);
-        font-size: 16px;
-      }
-    }
-
     &-item {
       @include centered-row;
       align-items: flex-start;
       gap: 8px;
-      padding-left: 10px;
       user-select: none;
       white-space: nowrap;
-
-      @include desktop {
-        padding-left: 0;
-      }
 
       a {
         @include text-p2;
@@ -280,6 +193,102 @@
     }
   }
 
+  & .dropdown-menu {
+    white-space: nowrap;
+
+    > li {
+      display: block;
+    }
+
+    &-trigger {
+      cursor: pointer;
+      padding-bottom: 8px;
+      padding-right: 30px;
+      padding-top: 8px;
+      position: relative;
+
+      @include desktop {
+        padding-left: 12px;
+      }
+
+      .icon {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        color: var(--color-secondary-800);
+      }
+
+      &[data-state="closed"] {
+        border-bottom: 1px solid transparent;
+      }
+
+      &[data-state="open"] {
+        border-bottom: 1px solid var(--color-white-40);
+
+        .icon {
+          rotate: 180deg;
+        }
+      }
+    }
+
+    &-content {
+      padding-bottom: 5px;
+      padding-top: 21px;
+      position: absolute;
+      z-index: 3;
+
+      background-color: var(--color-primary-950);
+
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      align-items: center;
+
+      .header-navigation-item {
+        align-items: center;
+        background-color: var(--color-primary-950);
+        justify-content: center;
+        width: 130px;
+
+        .active {
+          background-color: var(--color-secondary-800);
+          font-weight: 600;
+        }
+
+        a {
+          color: var(--color-white);
+          font-family: IBM Plex Sans, sans-serif;
+          font-size: 15px;
+          font-weight: 500;
+          padding: 10px;
+          width: 100%;
+
+          @include desktop {
+            text-align: center;
+          }
+
+          &:hover {
+            background-color: var(--color-white-10);
+          }
+        }
+      }
+    }
+
+    button {
+      background: none;
+      border: 0px;
+      color: var(--color-white);
+      font-size: 18px;
+      font-weight: 600;
+      text-decoration: none;
+
+      @include desktop {
+        font-size: 16px;
+        font-weight: 400;
+      }
+    }
+  }
+
   &-navigation-mobile {
     background-color: var(--color-primary-950);
     border-left: 2px solid var(--color-white-10);
@@ -321,7 +330,7 @@
       max-height: calc(100svh - 90px);
       justify-content: start;
       overflow-y: auto;
-      padding-left: 32px;
+      padding-left: 42px;
 
       > nav {
         @include centered-column;
