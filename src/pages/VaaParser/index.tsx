@@ -193,15 +193,21 @@ const VaaParser = () => {
 
         // Add a copy to clipboard to strings and numbers (single values)
         renderTo.querySelectorAll(".json-view-string, .json-view-number").forEach(text => {
-          const reactContainer = document.createElement("span");
-          reactContainer.classList.add("copy-item");
-          reactContainer.classList.add("added-stuff");
+          if (text.innerHTML?.length > 15) {
+            const reactContainer = document.createElement("span");
+            reactContainer.classList.add("copy-item");
+            reactContainer.classList.add("added-stuff");
 
-          const parentElement = text.parentElement;
-          parentElement.appendChild(reactContainer);
+            const parentElement = text.parentElement;
+            parentElement.appendChild(reactContainer);
 
-          const root = createRoot(reactContainer);
-          root.render(<CopyContent text={text.innerHTML} />);
+            const root = createRoot(reactContainer);
+            const toCopy =
+              text.innerHTML.startsWith('"') && text.innerHTML.endsWith('"')
+                ? text.innerHTML.slice(1, -1)
+                : text.innerHTML;
+            root.render(<CopyContent text={toCopy} />);
+          }
         });
 
         // Add a copy to clipboard to objects and arrays (multiple values)
@@ -393,7 +399,11 @@ const VaaParser = () => {
               </div>
               {!!inputs?.length && (
                 <div className="parse-multiple">
-                  <span className="parse-multiple-left">This txHash has multiple VAAs.</span>
+                  <span className="parse-multiple-left">
+                    <InfoCircledIcon color="#0078e8" />
+                    This txHash has multiple VAAs.
+                  </span>
+
                   <div
                     className="parse-multiple-right"
                     onClick={() => {

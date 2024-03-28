@@ -61,25 +61,31 @@
       width: 100%;
       display: flex;
       justify-content: space-between;
-      border: 1px solid var(--color-white-10);
+      border: 1px solid var(--color-information-60);
       padding: 4px;
 
       font-size: 16px;
 
       &-left {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        gap: 4px;
         margin-left: 8px;
       }
 
       &-right {
         cursor: pointer;
         user-select: none;
+        color: var(--color-information-100);
 
         .vaa-pages {
           padding-right: 4px;
         }
 
         &:hover {
-          color: var(--color-primary-100);
+          color: var(--color-information-60);
         }
       }
 
