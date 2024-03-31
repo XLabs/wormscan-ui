@@ -547,7 +547,7 @@ const Information = ({
         setTxData({
           ...data,
           vaa: null,
-        });
+        } as GetOperationsOutput);
         return <div className="tx-information-no-vaa">No VAA was found</div>;
       }
 
