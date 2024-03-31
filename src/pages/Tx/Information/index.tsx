@@ -141,7 +141,9 @@ const Information = ({
     (appIds?.includes(PORTAL_APP_ID) && appIds.length === 1) ||
     (appIds?.includes(PORTAL_APP_ID) && appIds?.includes(UNKNOWN_APP_ID) && appIds.length === 2);
 
-  const isRelayerNTT = appIds?.includes(NTT_APP_ID) && appIds?.includes(GR_APP_ID);
+  const [isRelayerNTT, setIsRelayerNTT] = useState(
+    appIds?.includes(NTT_APP_ID) && appIds?.includes(GR_APP_ID),
+  );
 
   const isAttestation = txType[payloadType] === "Attestation";
   const isUnknownPayloadType = !txType[payloadType];
@@ -540,6 +542,12 @@ const Information = ({
       }
 
       if (!genericRelayerInfo?.vaa) {
+        setIsGenericRelayerTx(false);
+        setIsRelayerNTT(false);
+        setTxData({
+          ...data,
+          vaa: null,
+        });
         return <div className="tx-information-no-vaa">No VAA was found</div>;
       }
 
