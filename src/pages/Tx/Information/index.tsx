@@ -540,12 +540,7 @@ const Information = ({
       }
 
       if (!genericRelayerInfo?.vaa) {
-        setIsGenericRelayerTx(false);
-        setTxData({
-          ...data,
-          vaa: null,
-        } as GetOperationsOutput);
-        return <div>No VAA was found</div>;
+        return <div className="tx-information-no-vaa">No VAA was found</div>;
       }
 
       const vaa = genericRelayerInfo.vaa;
