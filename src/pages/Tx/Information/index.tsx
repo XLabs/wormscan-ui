@@ -541,7 +541,7 @@ const Information = ({
 
       if (!genericRelayerInfo?.vaa) {
         if (showOverview) {
-          return <Overview {...overviewAndDetailProps} />;
+          return <Overview {...overviewAndDetailProps} isAttestation={isAttestation} />;
         } else {
           return (
             <AdvancedView
