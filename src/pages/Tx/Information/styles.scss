@@ -61,13 +61,6 @@
     border-radius: 0 0 10px 10px;
   }
 
-  &-no-vaa {
-    @include text-p3;
-    color: var(--color-primary-90);
-    padding: 40px 0;
-    text-align: center;
-  }
-
   &-errored-info {
     align-items: center;
     background-color: var(--color-error-30);
