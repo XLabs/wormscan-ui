@@ -109,7 +109,7 @@ const Txs = () => {
     },
   };
 
-  const { data: chainLimitsData } = useQuery(["getLimit"], () =>
+  const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(["getLimit"], () =>
     getClient()
       .governor.getLimit()
       .catch(() => null),
@@ -414,7 +414,7 @@ const Txs = () => {
         setAddressChainId(addressChainId as ChainId);
         setIsPaginationLoading(false);
       },
-      enabled: !errorCode,
+      enabled: !errorCode && !isLoadingLimits,
     },
   );
 
