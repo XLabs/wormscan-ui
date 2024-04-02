@@ -70,17 +70,13 @@ const Tx = () => {
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [extraRawInfo, setExtraRawInfo] = useState(null);
   const [blockData, setBlockData] = useState<GetBlockData>(null);
-  const [isInProgress, setIsInProgress] = useState(false);
   const [failCount, setFailCount] = useState(0);
   const [shouldTryToGetRpcInfo, setShouldTryToGetRpcInfo] = useState(false);
 
-  const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(
-    ["getLimit"],
-    () =>
-      getClient()
-        .governor.getLimit()
-        .catch(() => null),
-    { enabled: isInProgress },
+  const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(["getLimit"], () =>
+    getClient()
+      .governor.getLimit()
+      .catch(() => null),
   );
 
   const cancelRequests = useRef(false);
@@ -90,7 +86,6 @@ const Tx = () => {
     if (txsData) {
       const txData = await txsData[0];
       if (txData) {
-        setIsInProgress(true);
         cancelRequests.current = true;
 
         analytics.track("txDetail", {
@@ -769,8 +764,6 @@ const Tx = () => {
         data.isBigTransaction = isBigTransaction;
         data.isDailyLimitExceeded = isDailyLimitExceeded;
         data.transactionLimit = transactionLimit;
-
-        setIsInProgress(STATUS === "IN_PROGRESS");
 
         if (STATUS === "IN_PROGRESS" && isEvmTxHash) {
           const timestamp = new Date(data?.sourceChain?.timestamp);
