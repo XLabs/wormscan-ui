@@ -11,7 +11,7 @@ import { formatAppIds, parseAddress, parseTx, shortAddress } from "src/utils/cry
 import { timeAgo } from "src/utils/date";
 import { formatNumber } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import { ChainId, Order } from "src/api";
+import { ChainId, ChainLimit, Order } from "src/api";
 import { getClient } from "src/api/Client";
 import { GetOperationsInput, GetOperationsOutput } from "src/api/guardian-network/types";
 import { Information } from "./Information";
@@ -44,6 +44,11 @@ export interface TransactionOutput {
 }
 
 export const PAGE_SIZE = 50;
+
+export const ETH_LIMIT = {
+  maxTransactionSize: 5000000,
+  availableNotional: 50000000,
+};
 
 const Txs = () => {
   useEffect(() => {
@@ -103,6 +108,12 @@ const Txs = () => {
       sortOrder: Order.DESC,
     },
   };
+
+  const { data: chainLimitsData } = useQuery(["getLimit"], () =>
+    getClient()
+      .governor.getLimit()
+      .catch(() => null),
+  );
 
   const { refetch } = useQuery(
     ["getTxs", getOperationsInput],
@@ -235,6 +246,14 @@ const Txs = () => {
                 )?.length
               );
 
+              const limitDataForChain = chainLimitsData
+                ? chainLimitsData.find((data: ChainLimit) => data.chainId === fromChain)
+                : ETH_LIMIT;
+              const transactionLimit = limitDataForChain?.maxTransactionSize;
+              const isBigTransaction = transactionLimit <= Number(tx?.data?.usdAmount);
+              const isDailyLimitExceeded =
+                limitDataForChain?.availableNotional < Number(tx?.data?.usdAmount);
+
               const STATUS: IStatus = tx?.targetChain?.transaction?.txHash
                 ? "COMPLETED"
                 : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
@@ -250,7 +269,10 @@ const Txs = () => {
                     ? "PENDING_REDEEM"
                     : "VAA_EMITTED"
                   : "VAA_EMITTED"
+                : isBigTransaction || isDailyLimitExceeded
+                ? "IN_GOVERNORS"
                 : "IN_PROGRESS";
+
               // -----
 
               let statusChanged = false;
