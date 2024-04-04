@@ -640,7 +640,7 @@ const STABLE_ADDRESSES: Record<Network, Array<string>> = {
   DEVNET: null,
 };
 
-const getCctpDomain = (dom: number) => {
+export const getCctpDomain = (dom: number) => {
   if (dom === 0) return ChainId.Ethereum;
   if (dom === 1) return ChainId.Avalanche;
   if (dom === 2) return ChainId.Optimism;

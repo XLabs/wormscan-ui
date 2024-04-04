@@ -8,6 +8,7 @@ import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import {
   fetchWithRpcFallThrough,
+  getCctpDomain,
   getEvmBlockInfo,
   getTokenInformation,
   getUsdcAddress,
@@ -21,7 +22,7 @@ import { GetBlockData } from "src/api/search/types";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import { getChainName } from "src/utils/wormhole";
-import { getAlgorandTokenInfo, tryGetWrappedToken } from "src/utils/cryptoToolkit";
+import { getAlgorandTokenInfo, getSolanaCctp, tryGetWrappedToken } from "src/utils/cryptoToolkit";
 import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import { useRecoilState } from "recoil";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
@@ -59,6 +60,7 @@ const Tx = () => {
   // pattern match the search value to see if it's a candidate for being an EVM transaction hash.
   const search = txHash ? (txHash.startsWith("0x") ? txHash : "0x" + txHash) : "";
   const isEvmTxHash = !!search.match(/0x[0-9a-fA-F]{64}/);
+  const canBeSolanaTxHash = !!txHash.match(/^[A-HJ-NP-Za-km-z1-9]+$/);
 
   const VAAId: string = `${chainId}/${emitter}/${seq}`;
   const isTxHashSearch = Boolean(txHash);
@@ -275,6 +277,66 @@ const Tx = () => {
         // second error, if hash is evm-like, hit rpcs
         if (errCount === 1 && isEvmTxHash) {
           setShouldTryToGetRpcInfo(true);
+        }
+        // second error, if hash is solana-like, check if its manual cctp
+        if (errCount === 1 && canBeSolanaTxHash) {
+          getSolanaCctp(network, txHash)
+            .then(resp => {
+              cancelRequests.current = true;
+              const toChain = getCctpDomain(resp.destinationDomain);
+
+              setEmitterChainId(1 as ChainId);
+              setTxData([
+                {
+                  emitterAddress: {
+                    hex: resp.contractAddress,
+                    native: resp.contractAddress,
+                  },
+                  emitterChain: 1,
+                  id: null,
+                  content: {
+                    payload: null,
+                    standarizedProperties: {
+                      amount: resp.amount,
+                      appIds: [CCTP_MANUAL_APP_ID],
+                      fee: "0",
+                      feeAddress: "",
+                      feeChain: 1,
+                      fromAddress: resp.sourceAddress,
+                      fromChain: 1,
+                      toAddress: resp.targetAddress,
+                      toChain: toChain,
+                      tokenAddress: resp.sourceTokenAddress,
+                      tokenChain: 1,
+                      overwriteTargetTokenAddress: getUsdcAddress(network, toChain),
+                      overwriteTargetTokenChain: toChain,
+                    },
+                  },
+                  data: {
+                    symbol: "USDC",
+                    tokenAmount: "" + +resp.amount / 10 ** 6,
+                    usdAmount: "" + +resp.amount / 10 ** 6,
+                  },
+                  STATUS: "EXTERNAL_TX",
+                  sequence: "",
+                  sourceChain: {
+                    chainId: 1,
+                    timestamp: new Date(resp.timestamp),
+                    from: resp.sourceAddress,
+                    status: undefined,
+                    transaction: {
+                      txHash: txHash,
+                    },
+                  },
+                  targetChain: undefined,
+                  vaa: undefined,
+                },
+              ]);
+
+              setErrorCode(undefined);
+              setIsLoading(false);
+            })
+            .catch(() => null);
         }
 
         setFailCount(errCount);
