@@ -441,10 +441,7 @@ const Tx = () => {
             ? data?.content?.payload
             : data?.content?.payload?.parsedPayload;
 
-          if (
-            (!data.data?.tokenAmount || !data.content?.standarizedProperties?.amount) &&
-            !!parsedPayload?.nttMessage?.trimmedAmount?.amount
-          ) {
+          if (!!parsedPayload?.nttMessage?.trimmedAmount?.amount) {
             const decimals = parsedPayload?.nttMessage?.trimmedAmount?.decimals;
 
             const amount = String(
