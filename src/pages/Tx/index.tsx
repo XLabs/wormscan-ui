@@ -538,22 +538,11 @@ const Tx = () => {
               amount: parsedPayload?.nttMessage?.trimmedAmount?.amount,
             };
 
-            const nttInfo = await getNttInfo(environment, data, parsedPayload);
-
-            let tokenInfo = { symbol: "" };
-            if (data.sourceChain?.chainId !== CHAIN_ID_SOLANA) {
-              tokenInfo = await getTokenInformation(
-                data.sourceChain?.chainId,
-                environment,
-                data.content?.standarizedProperties?.tokenAddress,
-              );
-            } else {
-              tokenInfo = await getTokenInformation(
-                data.content?.standarizedProperties?.toChain,
-                environment,
-                nttInfo?.targetTokenAddress,
-              );
-            }
+            const tokenInfo = await getTokenInformation(
+              data.sourceChain?.chainId,
+              environment,
+              data.content?.standarizedProperties?.tokenAddress,
+            );
 
             data.data = {
               tokenAmount: amount,
@@ -561,9 +550,16 @@ const Tx = () => {
               usdAmount: null,
             };
 
+            const nttInfo = await getNttInfo(environment, data, parsedPayload);
+            const targetTokenInfo = await getTokenInformation(
+              data.content?.standarizedProperties?.toChain,
+              environment,
+              nttInfo?.targetTokenAddress,
+            );
+
             if (nttInfo?.targetTokenAddress) {
               data.content.standarizedProperties.wrappedTokenAddress = nttInfo.targetTokenAddress;
-              data.content.standarizedProperties.wrappedTokenSymbol = tokenInfo.symbol;
+              data.content.standarizedProperties.wrappedTokenSymbol = targetTokenInfo.symbol;
             }
           }
         }
