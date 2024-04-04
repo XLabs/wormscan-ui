@@ -520,12 +520,18 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
       }
 
       if (!genericRelayerInfo?.vaa) {
-        setIsGenericRelayerTx(false);
-        setTxData({
-          ...data,
-          vaa: null,
-        } as GetOperationsOutput);
-        return <div>No VAA was found</div>;
+        if (showOverview) {
+          return <Overview {...overviewAndDetailProps} isAttestation={isAttestation} />;
+        } else {
+          return (
+            <AdvancedView
+              overviewAndDetailProps={overviewAndDetailProps}
+              extraRawInfo={extraRawInfo}
+              lifecycleRecord={genericRelayerInfo}
+              data={data}
+            />
+          );
+        }
       }
 
       const vaa = genericRelayerInfo.vaa;
