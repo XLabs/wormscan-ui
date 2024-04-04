@@ -153,7 +153,8 @@ export type IStatus =
   | "COMPLETED"
   | "PENDING_REDEEM"
   | "VAA_EMITTED"
-  | "IN_PROGRESS";
+  | "IN_PROGRESS"
+  | "IN_GOVERNORS";
 
 export const UNKNOWN_APP_ID = "UNKNOWN";
 export const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
