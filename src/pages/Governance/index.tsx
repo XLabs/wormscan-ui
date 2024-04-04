@@ -66,67 +66,65 @@ type GovernanceRow = {
 const Governance = () => {
   const [settingsData, setSettingsData] = useState([]);
   const [showTransactions, setShowTransactions] = useState(false);
+  const [isLoadingLimits, setIsLoadingLimits] = useState(true);
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
 
-  const { isLoading: isLoadingLimits } = useQuery(
-    ["getLimit"],
-    () =>
-      getClient()
-        .governor.getLimit()
-        .catch(() => null),
-    {
-      onSuccess: data => {
-        const tempRows: GovernanceRow[] = [];
+  useQuery(["getLimit"], () => getClient().governor.getLimit(), {
+    onSuccess: data => {
+      const tempRows: GovernanceRow[] = [];
 
-        data.forEach((item: Governance) => {
-          item.chainName = getChainName({ chainId: item.chainId, network: currentNetwork });
-        });
+      data.forEach((item: Governance) => {
+        item.chainName = getChainName({ chainId: item.chainId, network: currentNetwork });
+      });
 
-        data.sort((a: Governance, b: Governance) => a.chainName.localeCompare(b.chainName));
+      data.sort((a: Governance, b: Governance) => a.chainName.localeCompare(b.chainName));
 
-        data.length > 0
-          ? data.map((item: Governance) => {
-              const row = {
-                chainId: (
-                  <div className="chain">
-                    <BlockchainIcon
-                      background="var(--color-black-25)"
-                      chainId={item.chainId}
-                      className="chain-icon"
-                      colorless={false}
-                      network={currentNetwork}
-                      size={24}
-                    />
+      data.length > 0
+        ? data.map((item: Governance) => {
+            const row = {
+              chainId: (
+                <div className="chain">
+                  <BlockchainIcon
+                    background="var(--color-black-25)"
+                    chainId={item.chainId}
+                    className="chain-icon"
+                    colorless={false}
+                    network={currentNetwork}
+                    size={24}
+                  />
 
-                    <p>{item.chainName}</p>
-                  </div>
-                ),
-                maxTransactionSize: (
-                  <div className="big-transaction">
-                    <p>{formatNumber(item.maxTransactionSize, 0)} USD</p>
-                  </div>
-                ),
-                notionalLimit: (
-                  <div className="daily-limit">
-                    <p>{formatNumber(item.notionalLimit, 0)} USD</p>
-                  </div>
-                ),
-                availableNotional: (
-                  <div className="min-remaining">
-                    <p>{formatNumber(item.availableNotional, 0)} USD</p>
-                  </div>
-                ),
-              };
+                  <p>{item.chainName}</p>
+                </div>
+              ),
+              maxTransactionSize: (
+                <div className="big-transaction">
+                  <p>{formatNumber(item.maxTransactionSize, 0)} USD</p>
+                </div>
+              ),
+              notionalLimit: (
+                <div className="daily-limit">
+                  <p>{formatNumber(item.notionalLimit, 0)} USD</p>
+                </div>
+              ),
+              availableNotional: (
+                <div className="min-remaining">
+                  <p>{formatNumber(item.availableNotional, 0)} USD</p>
+                </div>
+              ),
+            };
 
-              tempRows.push(row);
-            })
-          : [];
+            tempRows.push(row);
+          })
+        : [];
 
-        setSettingsData(tempRows);
-      },
+      setSettingsData(tempRows);
+      setIsLoadingLimits(false);
     },
-  );
+    onError: () => {
+      setIsLoadingLimits(false);
+    },
+  });
 
   return (
     <BaseLayout>
