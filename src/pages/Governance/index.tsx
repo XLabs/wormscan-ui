@@ -123,8 +123,6 @@ const Governance = () => {
             })
           : [];
 
-        console.log(tempRows);
-
         setSettingsData(tempRows);
       },
     },
