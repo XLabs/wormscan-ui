@@ -248,5 +248,8 @@ export interface GetOperationsOutput {
   };
   decodedVaa?: any;
   STATUS?: IStatus;
+  isBigTransaction?: boolean;
+  isDailyLimitExceeded?: boolean;
+  transactionLimit?: number;
 }
 [];

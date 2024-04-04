@@ -9,10 +9,12 @@ import BSC from "src/icons/tokens/BSC.svg";
 import BUSD from "src/icons/tokens/BUSD.svg";
 import CELO from "src/icons/tokens/CELO.svg";
 import DAI from "src/icons/tokens/DAI.svg";
+import DEXE from "src/icons/tokens/DEXE.svg";
 import ETH from "src/icons/tokens/ETH.svg";
 import EVMOS from "src/icons/tokens/EVMOS.svg";
 import FTM from "src/icons/tokens/FTM.svg";
 import GLMR from "src/icons/tokens/GLMR.svg";
+import HXRO from "src/icons/tokens/HXRO.svg";
 import IDIA from "src/icons/tokens/IDIA.svg";
 import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KUJI from "src/icons/tokens/KUJI.svg";
@@ -51,10 +53,12 @@ const iconTokens = {
   BUSD,
   CELO,
   DAI,
+  DEXE,
   ETH,
   EVMOS,
   FTM,
   GLMR,
+  HXRO,
   IDIA,
   KLAY: KlaytnIcon,
   KUJI,

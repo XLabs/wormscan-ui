@@ -41,7 +41,6 @@ import { GetBlockData } from "src/api/search/types";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
 import { TokenInfo, getTokenLogo } from "src/utils/metaMaskUtils";
-import { ChainLimit } from "src/api";
 
 import Summary from "./Summary";
 import Tabs from "./Tabs";
@@ -53,26 +52,13 @@ import "./styles.scss";
 
 interface Props {
   blockData: GetBlockData;
-  chainLimitsData?: ChainLimit[];
   extraRawInfo: any;
   setTxData: (x: any) => void;
   data: GetOperationsOutput;
   isRPC: boolean;
 }
 
-const ETH_LIMIT = {
-  maxTransactionSize: 5000000,
-  availableNotional: 50000000,
-};
-
-const Information = ({
-  blockData,
-  chainLimitsData,
-  extraRawInfo,
-  setTxData,
-  data,
-  isRPC,
-}: Props) => {
+const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [showSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
@@ -124,7 +110,7 @@ const Information = ({
     wrappedTokenSymbol,
   } = standarizedProperties || {};
 
-  const { STATUS } = data;
+  const { STATUS, isBigTransaction, isDailyLimitExceeded, transactionLimit } = data;
 
   const fromChainOrig = emitterChain || stdFromChain;
   const fromAddress = data?.sourceChain?.from || stdFromAddress;
@@ -414,12 +400,6 @@ const Information = ({
   };
 
   const isLatestBlockHigherThanVaaEmitBlock = lastFinalizedBlock > currentBlock;
-  const limitDataForChain = chainLimitsData
-    ? chainLimitsData.find((data: ChainLimit) => data.chainId === fromChain)
-    : ETH_LIMIT;
-  const transactionLimit = limitDataForChain?.maxTransactionSize;
-  const isBigTransaction = transactionLimit <= Number(usdAmount);
-  const isDailyLimitExceeded = limitDataForChain?.availableNotional < Number(usdAmount);
 
   // --- Automatic Relayer Detection and handling ---
   const [genericRelayerInfo, setGenericRelayerInfo] = useState<DeliveryLifecycleRecord>(null);
@@ -540,12 +520,18 @@ const Information = ({
       }
 
       if (!genericRelayerInfo?.vaa) {
-        setIsGenericRelayerTx(false);
-        setTxData({
-          ...data,
-          vaa: null,
-        } as GetOperationsOutput);
-        return <div>No VAA was found</div>;
+        if (showOverview) {
+          return <Overview {...overviewAndDetailProps} isAttestation={isAttestation} />;
+        } else {
+          return (
+            <AdvancedView
+              overviewAndDetailProps={overviewAndDetailProps}
+              extraRawInfo={extraRawInfo}
+              lifecycleRecord={genericRelayerInfo}
+              data={data}
+            />
+          );
+        }
       }
 
       const vaa = genericRelayerInfo.vaa;
