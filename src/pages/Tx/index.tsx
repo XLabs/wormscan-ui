@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import { CHAIN_ID_SOLANA, parseVaa } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
 import { SearchNotFound } from "src/components/organisms";
@@ -12,19 +13,19 @@ import {
   getUsdcAddress,
 } from "src/utils/fetchWithRPCsFallthrough";
 import { formatUnits, parseTx } from "src/utils/crypto";
-import { ChainId } from "src/api";
+import { ChainId, ChainLimit } from "src/api";
 import { getClient } from "src/api/Client";
 import analytics from "src/analytics";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { GetBlockData } from "src/api/search/types";
 import { Information } from "./Information";
 import { Top } from "./Top";
-import "./styles.scss";
 import { getChainName } from "src/utils/wormhole";
 import { getAlgorandTokenInfo, tryGetWrappedToken } from "src/utils/cryptoToolkit";
 import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import { useRecoilState } from "recoil";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
+import { getNttInfo } from "src/utils/wh-ntt-rpc";
 import {
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
@@ -39,8 +40,8 @@ import {
   canWeGetDestinationTx,
   getGuardianSet,
 } from "src/consts";
-import { CHAIN_ID_SOLANA, parseVaa } from "@certusone/wormhole-sdk";
-import { getNttInfo } from "src/utils/wh-ntt-rpc";
+import { ETH_LIMIT } from "../Txs";
+import "./styles.scss";
 
 const Tx = () => {
   useEffect(() => {
@@ -69,6 +70,14 @@ const Tx = () => {
   const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [extraRawInfo, setExtraRawInfo] = useState(null);
   const [blockData, setBlockData] = useState<GetBlockData>(null);
+  const [failCount, setFailCount] = useState(0);
+  const [shouldTryToGetRpcInfo, setShouldTryToGetRpcInfo] = useState(false);
+
+  const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(["getLimit"], () =>
+    getClient()
+      .governor.getLimit()
+      .catch(() => null),
+  );
 
   const cancelRequests = useRef(false);
   const tryToGetRpcInfo = useCallback(async () => {
@@ -84,6 +93,14 @@ const Tx = () => {
           chain: getChainName({ chainId: txData?.chain ?? 0, network }),
           toChain: getChainName({ chainId: txData?.toChain ?? 0, network }),
         });
+
+        const limitDataForChain = chainLimitsData
+          ? chainLimitsData.find((d: ChainLimit) => d.chainId === txData.chain)
+          : ETH_LIMIT;
+        const transactionLimit = limitDataForChain?.maxTransactionSize;
+        const isBigTransaction = transactionLimit <= Number(txData?.usdAmount);
+        const isDailyLimitExceeded =
+          limitDataForChain?.availableNotional < Number(txData?.usdAmount);
 
         setIsRPC(true);
         setEmitterChainId(txData.chain as ChainId);
@@ -131,7 +148,10 @@ const Tx = () => {
               tokenAmount: txData.tokenAmount,
               usdAmount: txData.usdAmount,
             },
-            STATUS: txData.STATUS,
+            STATUS: isBigTransaction || isDailyLimitExceeded ? "IN_GOVERNORS" : "IN_PROGRESS",
+            isBigTransaction,
+            isDailyLimitExceeded,
+            transactionLimit,
             sequence: "",
             sourceChain: {
               chainId: txData.chain,
@@ -167,7 +187,7 @@ const Tx = () => {
     } else {
       cancelRequests.current = false;
     }
-  }, [environment, network, txHash]);
+  }, [chainLimitsData, environment, network, txHash]);
 
   useEffect(() => {
     setErrorCode(undefined);
@@ -184,8 +204,14 @@ const Tx = () => {
     setIsLoading(false);
   };
 
-  const [isInProgress, setIsInProgress] = useState(false);
-  const [failCount, setFailCount] = useState(0);
+  useEffect(() => {
+    // check that the limits are already loaded before executing tryToGetRpcInfo
+    if (!isLoadingLimits && shouldTryToGetRpcInfo) {
+      tryToGetRpcInfo();
+      setShouldTryToGetRpcInfo(false);
+    }
+  }, [isLoadingLimits, shouldTryToGetRpcInfo, tryToGetRpcInfo]);
+
   const { data: VAADataByTx } = useQuery(
     ["getVAAbyTxHash", txHash],
     async () => {
@@ -247,7 +273,9 @@ const Tx = () => {
         if (errCount === 0) return true;
 
         // second error, if hash is evm-like, hit rpcs
-        if (errCount === 1 && isEvmTxHash) tryToGetRpcInfo();
+        if (errCount === 1 && isEvmTxHash) {
+          setShouldTryToGetRpcInfo(true);
+        }
 
         setFailCount(errCount);
         // more than three fails, stop retrying
@@ -289,15 +317,6 @@ const Tx = () => {
     },
   );
 
-  const { data: chainLimitsData } = useQuery(
-    ["getLimit"],
-    () =>
-      getClient()
-        .governor.getLimit()
-        .catch(() => null),
-    { enabled: failCount > 0 || isInProgress },
-  );
-
   const VAAData: GetOperationsOutput[] = useMemo(() => {
     if (isTxHashSearch) {
       return VAADataByTx;
@@ -321,7 +340,7 @@ const Tx = () => {
       // TODO: handle generic relayer no-vaa txns without RPCs
       for (const data of apiTxData) {
         if (data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID) && !data?.vaa?.raw) {
-          await tryToGetRpcInfo();
+          setShouldTryToGetRpcInfo(true);
         }
       }
 
@@ -712,6 +731,16 @@ const Tx = () => {
           )?.length
         );
 
+        const limitDataForChain = chainLimitsData
+          ? chainLimitsData.find(
+              (d: ChainLimit) => d.chainId === data.content.standarizedProperties.fromChain,
+            )
+          : ETH_LIMIT;
+        const transactionLimit = limitDataForChain?.maxTransactionSize;
+        const isBigTransaction = transactionLimit <= Number(data?.data?.usdAmount);
+        const isDailyLimitExceeded =
+          limitDataForChain?.availableNotional < Number(data?.data?.usdAmount);
+
         const STATUS: IStatus = data?.targetChain?.transaction?.txHash
           ? "COMPLETED"
           : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
@@ -727,10 +756,14 @@ const Tx = () => {
               ? "PENDING_REDEEM"
               : "VAA_EMITTED"
             : "VAA_EMITTED"
+          : isBigTransaction || isDailyLimitExceeded
+          ? "IN_GOVERNORS"
           : "IN_PROGRESS";
 
         data.STATUS = STATUS;
-        setIsInProgress(STATUS === "IN_PROGRESS");
+        data.isBigTransaction = isBigTransaction;
+        data.isDailyLimitExceeded = isDailyLimitExceeded;
+        data.transactionLimit = transactionLimit;
 
         if (STATUS === "IN_PROGRESS" && isEvmTxHash) {
           const timestamp = new Date(data?.sourceChain?.timestamp);
@@ -754,13 +787,14 @@ const Tx = () => {
       setIsLoading(false);
     },
     [
+      chainLimitsData,
       emitterChainId,
       environment,
       isEvmTxHash,
       network,
       setShowSourceTokenUrl,
       setShowTargetTokenUrl,
-      tryToGetRpcInfo,
+      setShouldTryToGetRpcInfo,
     ],
   );
 
@@ -808,7 +842,6 @@ const Tx = () => {
                     isRPC={isRPC}
                     blockData={blockData}
                     setTxData={newData => updateTxData(newData, i)}
-                    chainLimitsData={chainLimitsData}
                   />
                 ),
             )}
