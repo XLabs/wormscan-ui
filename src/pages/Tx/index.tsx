@@ -280,8 +280,6 @@ const Tx = () => {
         }
         // second error, if hash is solana-like, check if its manual cctp
         if (errCount === 1 && canBeSolanaTxHash) {
-          console.log("process solana cctp manual");
-
           getSolanaCctp(network, txHash)
             .then(resp => {
               cancelRequests.current = true;
