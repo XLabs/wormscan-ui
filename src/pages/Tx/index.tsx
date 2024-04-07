@@ -60,7 +60,7 @@ const Tx = () => {
   // pattern match the search value to see if it's a candidate for being an EVM transaction hash.
   const search = txHash ? (txHash.startsWith("0x") ? txHash : "0x" + txHash) : "";
   const isEvmTxHash = !!search.match(/0x[0-9a-fA-F]{64}/);
-  const canBeSolanaTxHash = !!txHash.match(/^[A-HJ-NP-Za-km-z1-9]+$/);
+  const canBeSolanaTxHash = !!txHash?.match(/^[A-HJ-NP-Za-km-z1-9]+$/);
 
   const VAAId: string = `${chainId}/${emitter}/${seq}`;
   const isTxHashSearch = Boolean(txHash);
