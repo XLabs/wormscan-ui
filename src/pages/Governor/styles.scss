@@ -1,6 +1,6 @@
 @import "src/styles/globals.scss";
 
-.governance {
+.governor {
   &-title {
     @include text-h5;
     margin: 32px 0;
@@ -77,13 +77,17 @@
     &-table {
       overflow-x: auto;
 
-      & th:first-child,
-      & td:first-child {
-        width: 30%;
+      & th,
+      & td {
+        text-align: center;
+        width: 25%;
       }
 
-      & th:nth-last-child(2),
-      & td:nth-last-child(2),
+      & th:first-child,
+      & td:first-child {
+        text-align: start;
+      }
+
       & th:last-child,
       & td:last-child {
         text-align: end;
