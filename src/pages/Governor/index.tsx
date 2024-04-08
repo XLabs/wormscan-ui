@@ -48,7 +48,7 @@ const columnsSettings: Column[] | any = [
   },
 ];
 
-type Governance = {
+type Governor = {
   availableNotional: number;
   chainId: number;
   chainName?: string;
@@ -56,14 +56,14 @@ type Governance = {
   notionalLimit: number;
 };
 
-type GovernanceRow = {
+type GovernorRow = {
   availableNotional: JSX.Element;
   chainId: JSX.Element;
   maxTransactionSize: JSX.Element;
   notionalLimit: JSX.Element;
 };
 
-const Governance = () => {
+const Governor = () => {
   const [settingsData, setSettingsData] = useState([]);
   const [showTransactions, setShowTransactions] = useState(false);
   const [isLoadingLimits, setIsLoadingLimits] = useState(true);
@@ -72,16 +72,16 @@ const Governance = () => {
 
   useQuery(["getLimit"], () => getClient().governor.getLimit(), {
     onSuccess: data => {
-      const tempRows: GovernanceRow[] = [];
+      const tempRows: GovernorRow[] = [];
 
-      data.forEach((item: Governance) => {
+      data.forEach((item: Governor) => {
         item.chainName = getChainName({ chainId: item.chainId, network: currentNetwork });
       });
 
-      data.sort((a: Governance, b: Governance) => a.chainName.localeCompare(b.chainName));
+      data.sort((a: Governor, b: Governor) => a.chainName.localeCompare(b.chainName));
 
       data.length > 0
-        ? data.map((item: Governance) => {
+        ? data.map((item: Governor) => {
             const row = {
               chainId: (
                 <div className="chain">
@@ -128,12 +128,12 @@ const Governance = () => {
 
   return (
     <BaseLayout>
-      <section className="governance">
-        <h1 className="governance-title">Governance</h1>
+      <section className="governor">
+        <h1 className="governor-title">Governor</h1>
 
-        <div className="governance-container">
-          <div className="governance-container-top">
-            <div className="governance-container-top-btns">
+        <div className="governor-container">
+          <div className="governor-container-top">
+            <div className="governor-container-top-btns">
               {/* <button
                 className={showTransactions ? "active" : ""}
                 aria-label="Transactions"
@@ -156,7 +156,7 @@ const Governance = () => {
             </div>
 
             {/* <Pagination
-              className="governance-container-top-pagination"
+              className="governor-container-top-pagination"
               currentPage={1}
               goNextPage={() => {
                 console.log("goNextPage");
@@ -167,7 +167,7 @@ const Governance = () => {
             /> */}
           </div>
 
-          <div className="governance-container-table">
+          <div className="governor-container-table">
             {showTransactions ? (
               <Table
                 columns={columnsTransactions}
@@ -185,9 +185,9 @@ const Governance = () => {
             )}
           </div>
 
-          <div className="governance-container-bottom">
+          <div className="governor-container-bottom">
             {/*  <Pagination
-              className="governance-container-top-pagination"
+              className="governor-container-top-pagination"
               currentPage={1}
               goNextPage={() => {
                 console.log("goNextPage");
@@ -203,4 +203,4 @@ const Governance = () => {
   );
 };
 
-export default Governance;
+export default Governor;

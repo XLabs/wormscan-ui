@@ -15,7 +15,7 @@ const TermsOfUse = lazy(() => import("../pages/TermsOfUse"));
 const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 const VaaParser = lazy(() => import("../pages/VaaParser"));
-const Governance = lazy(() => import("../pages/Governance"));
+const Governor = lazy(() => import("../pages/Governor"));
 
 const Navigation = () => {
   return (
@@ -41,7 +41,7 @@ const Navigation = () => {
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/vaa-parser" element={<VaaParser />} />
                 <Route path="/vaa-parser/*" element={<VaaParser />} />
-                <Route path="/governance" element={<Governance />} />
+                <Route path="/governor" element={<Governor />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
