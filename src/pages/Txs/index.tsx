@@ -51,15 +51,19 @@ export const ETH_LIMIT = {
 };
 
 const Txs = () => {
-  useEffect(() => {
-    analytics.page({ title: "TXS_LIST" });
-  }, []);
-
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
 
   const [searchParams, setSearchParams] = useSearchParams();
   const address = searchParams.get("address");
+
+  useEffect(() => {
+    if (address) {
+      analytics.page({ title: "TXS_LIST_ADDRESS" });
+    } else {
+      analytics.page({ title: "TXS_LIST_TXN" });
+    }
+  }, [address]);
 
   const page = Number(searchParams.get("page"));
   const currentPage = page >= 1 ? page : 1;
