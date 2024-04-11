@@ -201,18 +201,18 @@ const Filters = () => {
     setShowFilters(!showFilters);
   };
 
-  const handleShowMore = (type: FilterKey) => {
+  const handleShowMore = (key: FilterKey) => {
     setShowMore(prevState => ({
       ...prevState,
-      [type]: !prevState[type],
+      [key]: !prevState[key],
     }));
   };
 
-  const handleFilters = (type: CheckedStateKey, value: string | ChainId) => {
+  const handleFilters = (key: CheckedStateKey, value: string | ChainId) => {
     setCheckedState(prevState => {
-      const newState = { ...prevState };
+      const newState: any = { ...prevState };
 
-      if (type === EXCLUSIVE_APP_ID_STRING && !newState.appId) {
+      if (key === EXCLUSIVE_APP_ID_STRING && !newState.appId) {
         toast("Please select a protocol first", {
           type: "error",
           theme: "dark",
@@ -224,11 +224,11 @@ const Filters = () => {
         return newState;
       }
 
-      if (type === APP_ID_STRING && value === newState.appId && newState.exclusiveAppId) {
+      if (key === APP_ID_STRING && value === newState.appId && newState.exclusiveAppId) {
         newState.exclusiveAppId = null;
       }
 
-      newState[type] = newState[type] === value ? null : value;
+      newState[key] = newState[key] === value ? null : value;
 
       return newState;
     });
