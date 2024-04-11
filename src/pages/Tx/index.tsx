@@ -568,7 +568,7 @@ const Tx = () => {
         if (data?.content?.payload?.payloadType === 2) {
           if (data?.content?.payload?.symbol) {
             data.data = {
-              symbol: data?.content?.payload?.symbol,
+              symbol: `${data?.content?.payload?.symbol} (${data?.content?.payload?.name})`,
               tokenAmount: "0",
               usdAmount: "0",
             };
@@ -607,15 +607,21 @@ const Tx = () => {
       // try to get wrapped token address and symbol
       let wrappedTokenChain = null;
       for (const data of apiTxData) {
-        if (data?.content?.standarizedProperties?.appIds?.includes(PORTAL_APP_ID)) {
+        if (
+          data?.content?.standarizedProperties?.appIds?.includes(PORTAL_APP_ID) ||
+          data?.content?.payload?.payloadType === 2
+        ) {
           if (
             data?.content?.standarizedProperties?.fromChain &&
             data?.content?.standarizedProperties?.tokenAddress &&
             data?.content?.standarizedProperties?.tokenChain &&
-            data?.content?.standarizedProperties?.toChain
+            (data?.content?.standarizedProperties?.toChain || data?.targetChain?.chainId)
           ) {
-            const { fromChain, tokenAddress, tokenChain, toChain } =
-              data.content.standarizedProperties;
+            const { fromChain, tokenAddress, tokenChain } = data.content.standarizedProperties;
+            const toChain =
+              data?.content?.standarizedProperties?.toChain || data?.targetChain?.chainId;
+
+            console.log("hola yeezy");
 
             const wrapped = tokenChain !== toChain ? "target" : "source";
 
