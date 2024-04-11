@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { Column } from "react-table";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -7,6 +7,7 @@ import { BlockchainIcon, Pagination, Tooltip } from "src/components/atoms";
 import { Table } from "src/components/organisms";
 import { getChainName } from "src/utils/wormhole";
 import { formatNumber } from "src/utils/number";
+import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import { getClient } from "src/api/Client";
 import "./styles.scss";
 
@@ -69,6 +70,13 @@ const Governor = () => {
   const [isLoadingLimits, setIsLoadingLimits] = useState(true);
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
+  const navigate = useNavigateCustom();
+
+  useEffect(() => {
+    if (currentNetwork !== "MAINNET") {
+      navigate("/");
+    }
+  }, [currentNetwork, navigate]);
 
   useQuery(["getLimit"], () => getClient().governor.getLimit(), {
     onSuccess: data => {
