@@ -107,7 +107,7 @@ const Header = () => {
 
             <NavigationMenu.Content className="dropdown-menu-content">
               <NavLinkItem to="/vaa-parser" label="VAA Parser" />
-              <NavLinkItem to="/governor" label="Governor" />
+              {isMainnet && <NavLinkItem to="/governor" label="Governor" />}
               <ExternalLinkItem href="https://docs.wormholescan.io/" label="API Docs" />
               <ExternalLinkItem href="https://docs.wormhole.com/wormhole" label="Wormhole Docs" />
             </NavigationMenu.Content>
