@@ -206,7 +206,7 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
   let targetTokenChain = tokenChain;
   const wrappedSide = tokenChain !== toChain ? "target" : "source";
 
-  if (wrappedTokenAddress && !standarizedProperties?.appIds.includes("ETH_BRIDGE")) {
+  if (wrappedTokenAddress && !standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID)) {
     if (wrappedSide === "target") {
       targetTokenChain = toChain;
       targetTokenAddress = wrappedTokenAddress;

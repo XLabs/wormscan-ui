@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
@@ -68,13 +68,44 @@ const VaaParser = () => {
     }, 50);
   };
 
-  const renderExtras = (renderTo: Element | Document) => {
+  const renderExtras = useCallback(() => {
     waitForElement(".json-view-key")
       .then(() => {
-        renderTo.querySelectorAll(".added-stuff").forEach(a => a.remove());
+        document.querySelectorAll(".added-stuff").forEach(a => a.remove());
+
+        // Add collapse/expand behaviour
+        document.querySelectorAll(".json-view-collapseIcon").forEach(a => {
+          const renderAtCollapse = (ev: MouseEvent) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+
+            if (a.getAttribute("isCollapsed") !== "true") {
+              a.setAttribute("isCollapsed", "true");
+
+              a.parentElement.childNodes.forEach(block => {
+                if ((block as HTMLElement).tagName === "DIV") {
+                  (block as HTMLElement).style.display = "none";
+                  (a as HTMLElement).style.transform = "rotate(-90deg)";
+                }
+              });
+            } else {
+              a.setAttribute("isCollapsed", "false");
+
+              a.parentElement.childNodes.forEach(block => {
+                if ((block as HTMLElement).tagName === "DIV") {
+                  (block as HTMLElement).style.display = "block";
+                  (a as HTMLElement).style.transform = "rotate(0deg)";
+                }
+              });
+            }
+          };
+
+          (a as HTMLElement).removeEventListener("click", renderAtCollapse);
+          (a as HTMLElement).addEventListener("click", renderAtCollapse);
+        });
 
         // Add texts to enhace information
-        renderTo.querySelectorAll(".json-view-key").forEach(a => {
+        document.querySelectorAll(".json-view-key").forEach(a => {
           // Add chain names and icon to decoded VAA
           if (
             a.innerHTML?.includes("fromChain") ||
@@ -193,7 +224,7 @@ const VaaParser = () => {
         });
 
         // Add a copy to clipboard to strings and numbers (single values)
-        renderTo.querySelectorAll(".json-view-string, .json-view-number").forEach(text => {
+        document.querySelectorAll(".json-view-string, .json-view-number").forEach(text => {
           if (text.innerHTML?.length > 15) {
             const reactContainer = document.createElement("span");
             reactContainer.classList.add("copy-item");
@@ -211,16 +242,9 @@ const VaaParser = () => {
           }
         });
 
-        // Add a copy to clipboard to objects and arrays (multiple values)
-        renderTo.querySelectorAll(".json-view-collapseIcon").forEach(item => {
+        // Add a copy to clipboard to objects and arrays (multiple value``s)
+        document.querySelectorAll(".json-view-collapseIcon").forEach(item => {
           const parentElement = item.parentElement;
-
-          const clickedCollapse = (ev: MouseEvent) => {
-            // console.log("call"); // todo: fix multiple attached events
-            renderExtras(parentElement);
-          };
-
-          (item as HTMLElement).addEventListener("click", clickedCollapse);
 
           if (parentElement?.parentElement?.parentElement?.className === "json-view") return;
 
@@ -242,7 +266,7 @@ const VaaParser = () => {
         });
       })
       .catch(_err => {});
-  };
+  }, [environment.network]);
 
   const getGuardianName = (guardianSet: number, index: number) => {
     const guardianSetList = getGuardianSet(guardianSet);
@@ -305,7 +329,7 @@ const VaaParser = () => {
       if (!txSearch) {
         setTxSearch(vaaID);
       }
-      renderExtras(document);
+      renderExtras();
       collapseGuardianSignatures();
     },
   });
@@ -440,7 +464,7 @@ const VaaParser = () => {
                   <span>Decoded VAA: {parsedRaw ? "Raw" : "Parsed"}</span>
                   <span
                     onClick={() => {
-                      renderExtras(document);
+                      renderExtras();
                       collapseGuardianSignatures();
                       setParsedRaw(!parsedRaw);
                     }}

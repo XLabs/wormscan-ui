@@ -562,30 +562,43 @@ const Tx = () => {
         }
       }
 
-      // if there's no tokenAmount or symbol, try to get them with RPC info
+      // if there's no tokenAmount or symbol...
       for (const data of apiTxData) {
-        if (
-          (!data.data?.tokenAmount || !data.data?.symbol) &&
-          data.content.standarizedProperties?.tokenAddress &&
-          data.content.standarizedProperties?.tokenChain &&
-          (data.content?.payload?.amount || data.content.standarizedProperties?.amount)
-        ) {
-          const tokenInfo = await getTokenInformation(
-            data.content.standarizedProperties?.tokenChain,
-            environment,
-            data.content.standarizedProperties.tokenAddress,
-          );
+        // ...check if its attestation...
+        if (data?.content?.payload?.payloadType === 2) {
+          if (data?.content?.payload?.symbol) {
+            data.data = {
+              symbol: `${data?.content?.payload?.symbol} (${data?.content?.payload?.name})`,
+              tokenAmount: "0",
+              usdAmount: "0",
+            };
+          }
+        }
+        // ...and if not try to get them with RPC info.
+        else {
+          if (
+            (!data.data?.tokenAmount || !data.data?.symbol) &&
+            data.content.standarizedProperties?.tokenAddress &&
+            data.content.standarizedProperties?.tokenChain &&
+            (data.content?.payload?.amount || data.content.standarizedProperties?.amount)
+          ) {
+            const tokenInfo = await getTokenInformation(
+              data.content.standarizedProperties?.tokenChain,
+              environment,
+              data.content.standarizedProperties.tokenAddress,
+            );
 
-          if (tokenInfo.symbol && tokenInfo.tokenDecimals) {
-            const amount =
-              data.content?.payload?.amount || data.content.standarizedProperties?.amount;
+            if (tokenInfo.symbol && tokenInfo.tokenDecimals) {
+              const amount =
+                data.content?.payload?.amount || data.content.standarizedProperties?.amount;
 
-            if (amount && tokenInfo.tokenDecimals) {
-              data.data = {
-                tokenAmount: "" + formatUnits(+amount, tokenInfo.tokenDecimals),
-                symbol: tokenInfo.symbol,
-                usdAmount: data?.data?.usdAmount || null,
-              };
+              if (amount && tokenInfo.tokenDecimals) {
+                data.data = {
+                  tokenAmount: "" + formatUnits(+amount, tokenInfo.tokenDecimals),
+                  symbol: tokenInfo.symbol,
+                  usdAmount: data?.data?.usdAmount || null,
+                };
+              }
             }
           }
         }
@@ -594,15 +607,21 @@ const Tx = () => {
       // try to get wrapped token address and symbol
       let wrappedTokenChain = null;
       for (const data of apiTxData) {
-        if (data?.content?.standarizedProperties?.appIds?.includes(PORTAL_APP_ID)) {
+        if (
+          data?.content?.standarizedProperties?.appIds?.includes(PORTAL_APP_ID) ||
+          data?.content?.payload?.payloadType === 2
+        ) {
           if (
             data?.content?.standarizedProperties?.fromChain &&
             data?.content?.standarizedProperties?.tokenAddress &&
             data?.content?.standarizedProperties?.tokenChain &&
-            data?.content?.standarizedProperties?.toChain
+            (data?.content?.standarizedProperties?.toChain || data?.targetChain?.chainId)
           ) {
-            const { fromChain, tokenAddress, tokenChain, toChain } =
-              data.content.standarizedProperties;
+            const { fromChain, tokenAddress, tokenChain } = data.content.standarizedProperties;
+            const toChain =
+              data?.content?.standarizedProperties?.toChain || data?.targetChain?.chainId;
+
+            console.log("hola yeezy");
 
             const wrapped = tokenChain !== toChain ? "target" : "source";
 
@@ -657,10 +676,13 @@ const Tx = () => {
               tokenInfo.assetId ?? data.content.standarizedProperties.tokenAddress;
 
             if (tokenInfo.decimals && !data?.data?.tokenAmount && data?.content?.payload?.amount) {
-              data.data.tokenAmount = `${+data.content.payload.amount / 10 ** tokenInfo.decimals}`;
+              if (data.data)
+                data.data.tokenAmount = `${
+                  +data.content.payload.amount / 10 ** tokenInfo.decimals
+                }`;
             }
             if (tokenInfo.symbol && !data?.data?.symbol) {
-              data.data.symbol = tokenInfo.symbol;
+              if (data.data) data.data.symbol = tokenInfo.symbol;
             }
           }
         }

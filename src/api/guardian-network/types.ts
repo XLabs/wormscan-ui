@@ -191,6 +191,11 @@ export interface GetOperationsOutput {
       };
       transceiverMessage?: any;
       // ---     ---
+
+      // --- Attestation ---
+      symbol?: string;
+      name?: string;
+      decimals?: number;
     };
     standarizedProperties: {
       appIds: string[];

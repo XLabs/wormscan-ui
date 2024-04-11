@@ -14,7 +14,7 @@ const externalLinks = [
   { name: "Contact us", href: DISCORD_URL },
   { name: "API Doc", href: "https://docs.wormholescan.io/" },
   { name: "Discord link", href: DISCORD_URL },
-  { name: "Twitter link", href: "https://twitter.com/wormholecrypto" },
+  { name: "Twitter link", href: "https://x.com/wormhole" },
 ];
 
 describe("Footer Links", () => {

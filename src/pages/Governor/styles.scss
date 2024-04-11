@@ -102,6 +102,29 @@
         @include centered-row;
         gap: 16px;
       }
+
+      & .min-remaining {
+        position: relative;
+
+        &-bar {
+          bottom: -20px;
+          margin-left: auto;
+          padding: 8px 0;
+          position: absolute;
+          right: 0;
+          width: 120px;
+
+          &-fill {
+            border-radius: 2px;
+            height: 4px;
+
+            &-used {
+              border-radius: 2px;
+              height: 100%;
+            }
+          }
+        }
+      }
     }
 
     &-bottom {

@@ -105,11 +105,13 @@ const Overview = ({
         <div className={`tx-overview-graph-step-data-container`}>
           {!isMayanOnly && (
             <div>
-              <div className="tx-overview-graph-step-title">Amount</div>
+              <div className="tx-overview-graph-step-title">
+                {isAttestation ? "Token" : "Amount"}
+              </div>
               <div className="tx-overview-graph-step-description">
                 {tokenAmount ? (
                   <>
-                    {amountSent}{" "}
+                    {!isAttestation ? amountSent : ""}{" "}
                     {sourceSymbol ? (
                       <>
                         {sourceTokenLink ? (
@@ -167,73 +169,71 @@ const Overview = ({
         </div>
       </div>
 
-      {!isAttestation && (
-        <div className="tx-overview-graph-step green">
-          <div className="tx-overview-graph-step-name">
-            <div>EMITTER CONTRACT</div>
+      <div className="tx-overview-graph-step green">
+        <div className="tx-overview-graph-step-name">
+          <div>EMITTER CONTRACT</div>
+        </div>
+        <div className="tx-overview-graph-step-iconWrapper">
+          <div className="tx-overview-graph-step-iconContainer">
+            <img src={WormIcon} alt="" height={32} loading="lazy" />
           </div>
-          <div className="tx-overview-graph-step-iconWrapper">
-            <div className="tx-overview-graph-step-iconContainer">
-              <img src={WormIcon} alt="" height={32} loading="lazy" />
+        </div>
+        <div className="tx-overview-graph-step-data-container">
+          <div>
+            <div className="tx-overview-graph-step-title">Time</div>
+            <div className="tx-overview-graph-step-description">
+              {originDateParsed ? <>{originDateParsed}</> : "N/A"}
             </div>
           </div>
-          <div className="tx-overview-graph-step-data-container">
-            <div>
-              <div className="tx-overview-graph-step-title">Time</div>
-              <div className="tx-overview-graph-step-description">
-                {originDateParsed ? <>{originDateParsed}</> : "N/A"}
-              </div>
-            </div>
-            <div>
-              <div className="tx-overview-graph-step-title">Contract Address</div>
-              {parsedEmitterAddress ? (
-                <>
-                  <div className="tx-overview-graph-step-description">
-                    {/* delete conditional when WORMCHAIN gets an explorer */}
-                    {fromChainOrig === CHAIN_ID_WORMCHAIN ? (
-                      <div>
-                        <Tooltip
-                          maxWidth={false}
-                          tooltip={<div>{parsedEmitterAddress.toUpperCase()}</div>}
-                          type="info"
-                        >
-                          <span>{shortAddress(parsedEmitterAddress).toUpperCase()}</span>
-                        </Tooltip>
-                      </div>
-                    ) : (
+          <div>
+            <div className="tx-overview-graph-step-title">Contract Address</div>
+            {parsedEmitterAddress ? (
+              <>
+                <div className="tx-overview-graph-step-description">
+                  {/* delete conditional when WORMCHAIN gets an explorer */}
+                  {fromChainOrig === CHAIN_ID_WORMCHAIN ? (
+                    <div>
                       <Tooltip
                         maxWidth={false}
                         tooltip={<div>{parsedEmitterAddress.toUpperCase()}</div>}
                         type="info"
                       >
-                        <a
-                          href={getExplorerLink({
-                            network: currentNetwork,
-                            chainId: fromChainOrig,
-                            value: parsedEmitterAddress,
-                            base: "address",
-                            isNativeAddress: true,
-                          })}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {shortAddress(parsedEmitterAddress).toUpperCase()}
-                        </a>
+                        <span>{shortAddress(parsedEmitterAddress).toUpperCase()}</span>
                       </Tooltip>
-                    )}
-                    <CopyToClipboard toCopy={parsedEmitterAddress}>
-                      <CopyIcon height={20} width={20} />
-                    </CopyToClipboard>
-                    {isGatewaySource && <span className="comment"> (Gateway)</span>}
-                  </div>
-                </>
-              ) : (
-                "N/A"
-              )}
-            </div>
+                    </div>
+                  ) : (
+                    <Tooltip
+                      maxWidth={false}
+                      tooltip={<div>{parsedEmitterAddress.toUpperCase()}</div>}
+                      type="info"
+                    >
+                      <a
+                        href={getExplorerLink({
+                          network: currentNetwork,
+                          chainId: fromChainOrig,
+                          value: parsedEmitterAddress,
+                          base: "address",
+                          isNativeAddress: true,
+                        })}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {shortAddress(parsedEmitterAddress).toUpperCase()}
+                      </a>
+                    </Tooltip>
+                  )}
+                  <CopyToClipboard toCopy={parsedEmitterAddress}>
+                    <CopyIcon height={20} width={20} />
+                  </CopyToClipboard>
+                  {isGatewaySource && <span className="comment"> (Gateway)</span>}
+                </div>
+              </>
+            ) : (
+              "N/A"
+            )}
           </div>
         </div>
-      )}
+      </div>
 
       <div className={`tx-overview-graph-step signatures green`}>
         <div className="tx-overview-graph-step-name">
@@ -392,11 +392,13 @@ const Overview = ({
           <div className="tx-overview-graph-step-data-container">
             {!isMayanOnly && (
               <div>
-                <div className="tx-overview-graph-step-title">Redeem Amount</div>
+                <div className="tx-overview-graph-step-title">
+                  {isAttestation ? "Target Token" : "Redeem Amount"}
+                </div>
                 <div className="tx-overview-graph-step-description">
                   {Number(fee) || tokenAmount ? (
                     <>
-                      {Number(fee) ? redeemedAmount : amountSent}{" "}
+                      {isAttestation ? "" : Number(fee) ? redeemedAmount : amountSent}{" "}
                       {targetSymbol && (
                         <>
                           {targetTokenLink ? (

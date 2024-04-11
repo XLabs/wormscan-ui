@@ -51,10 +51,6 @@ export const ETH_LIMIT = {
 };
 
 const Txs = () => {
-  useEffect(() => {
-    analytics.page({ title: "TXS_LIST" });
-  }, []);
-
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
 
@@ -64,6 +60,14 @@ const Txs = () => {
   const sourceChain = +searchParams.get("sourceChain") || null;
   const targetChain = +searchParams.get("targetChain") || null;
   const exclusiveAppId = searchParams.get("exclusiveAppId") || null;
+
+  useEffect(() => {
+    if (address) {
+      analytics.page({ title: "TXS_LIST_ADDRESS" });
+    } else {
+      analytics.page({ title: "TXS_LIST_TXN" });
+    }
+  }, [address]);
 
   const page = Number(searchParams.get("page"));
   const currentPage = page >= 1 ? page : 1;
