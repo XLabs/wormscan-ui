@@ -59,7 +59,11 @@ const Txs = () => {
   const currentNetwork = environment.network;
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const address = searchParams.get("address");
+  const address = searchParams.get("address") || null;
+  const appId = searchParams.get("appId") || null;
+  const sourceChain = +searchParams.get("sourceChain") || null;
+  const targetChain = +searchParams.get("targetChain") || null;
+  const exclusiveAppId = searchParams.get("exclusiveAppId") || null;
 
   const page = Number(searchParams.get("page"));
   const currentPage = page >= 1 ? page : 1;
@@ -100,22 +104,26 @@ const Txs = () => {
     setIsPaginationLoading(true);
   }, [currentNetwork, currentPage]);
 
-  const getOperationsInput: GetOperationsInput = {
-    address: address || null,
-    pagination: {
-      page: currentPage - 1,
-      pageSize: PAGE_SIZE,
-      sortOrder: Order.DESC,
-    },
-  };
-
   const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(["getLimit"], () =>
     getClient()
       .governor.getLimit()
       .catch(() => null),
   );
 
-  const { refetch } = useQuery(
+  const getOperationsInput: GetOperationsInput = {
+    address,
+    pagination: {
+      page: currentPage - 1,
+      pageSize: PAGE_SIZE,
+      sortOrder: Order.DESC,
+    },
+    appId,
+    exclusiveAppId,
+    sourceChain,
+    targetChain,
+  };
+
+  const { refetch, isLoading: isLoadingOperations } = useQuery(
     ["getTxs", getOperationsInput],
     () => getClient().guardianNetwork.getOperations(getOperationsInput),
     {
@@ -153,14 +161,15 @@ const Txs = () => {
               let symbol = tx?.data?.symbol;
               let payloadType = tx?.content?.payload?.payloadType;
               let tokenAmount = tx?.data?.tokenAmount;
-              const timestamp = tx?.sourceChain?.timestamp;
+              const timestamp = tx?.sourceChain?.timestamp || null;
               const txHash = tx?.sourceChain?.transaction?.txHash;
 
               const {
                 appIds,
+                fromAddress: stdFromAddress,
                 fromChain: stdFromChain,
-                toChain: stdToChain,
                 toAddress: stdToAddress,
+                toChain: stdToChain,
               } = standarizedProperties || {};
 
               const globalFrom = tx.sourceChain?.from;
@@ -169,7 +178,7 @@ const Txs = () => {
 
               const parsedPayload = payload?.parsedPayload;
               const fromChainOrig = emitterChain || stdFromChain;
-              const fromAddress = globalFrom;
+              const fromAddress = globalFrom || stdFromAddress;
               const toAddress = stdToAddress || globalTo;
 
               const attributeType = tx.sourceChain?.attribute?.type;
@@ -438,7 +447,7 @@ const Txs = () => {
               parsedTxsData={isPaginationLoading ? [] : parsedTxsData}
               currentPage={currentPage}
               onChangePagination={setCurrentPage}
-              isPaginationLoading={isPaginationLoading}
+              isPaginationLoading={isPaginationLoading || isLoadingOperations}
               setIsPaginationLoading={setIsPaginationLoading}
               isTxsFiltered={isTxsFiltered}
             />

@@ -32,7 +32,6 @@
 
   &-top {
     @include centered-column;
-
     column-gap: 24px;
 
     @include desktop {
@@ -40,19 +39,26 @@
       justify-content: space-between;
     }
 
-    &-title {
+    &-buttons {
       @include centered-row;
       @include text-p3;
-
-      font-weight: 600;
-      color: var(--color-primary-100);
-      min-height: 50px;
       border-bottom: 1px solid var(--color-white-10);
+      gap: 32px;
+      justify-content: space-between;
+      min-height: 50px;
       padding: 12px 16px;
 
       @include desktop {
         border-bottom: none;
         padding: 12px 32px;
+      }
+
+      &-live-mode {
+        @include text-p3;
+        color: var(--color-primary-100);
+        font-weight: 600;
+        gap: 32px;
+        width: 145px;
       }
     }
 

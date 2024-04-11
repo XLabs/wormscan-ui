@@ -15,7 +15,7 @@ const Table = <T extends object>({
   className,
   columns,
   data,
-  emptyMessage = "No items found.",
+  emptyMessage = "No transactions found.",
   isLoading = false,
   onRowClick,
 }: Props<T>) => {

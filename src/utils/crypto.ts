@@ -65,26 +65,28 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
   return parsedValue;
 };
 
+export const formatAppId = (appId: string) => {
+  if (appId === GR_APP_ID) {
+    return "Standard Relayer";
+  }
+  if (appId === GATEWAY_APP_ID) {
+    return "Wormhole Gateway Transfer";
+  }
+  if (appId === CCTP_MANUAL_APP_ID) {
+    return "CCTP Manual";
+  }
+  if (appId === "CCTP_WORMHOLE_INTEGRATION") {
+    return "CCTP Wormhole Integration";
+  }
+
+  return appId
+    .split("_")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+};
+
 export const formatAppIds = (appIds: string[]) =>
   appIds
     .filter(appId => appId !== "UNKNOWN" && appId !== "STABLE")
-    .map(appId => {
-      if (appId === GR_APP_ID) {
-        return "Standard Relayer";
-      }
-      if (appId === GATEWAY_APP_ID) {
-        return "Wormhole Gateway Transfer";
-      }
-      if (appId === CCTP_MANUAL_APP_ID) {
-        return "CCTP Manual";
-      }
-      if (appId === "CCTP_WORMHOLE_INTEGRATION") {
-        return "CCTP Wormhole Integration";
-      }
-
-      return appId
-        .split("_")
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(" ");
-    })
+    .map(formatAppId)
     .join(", ");

@@ -9,6 +9,7 @@ import AuroraIcon from "src/icons/blockchains/aurora.svg";
 import AvalancheIcon from "src/icons/blockchains/avax.svg";
 import BaseIcon from "src/icons/blockchains/base.svg";
 import BSCIcon from "src/icons/blockchains/bsc.svg";
+import BtcIcon from "src/icons/blockchains/btc.svg";
 import CeloIcon from "src/icons/blockchains/celo.svg";
 import DymensionIcon from "src/icons/blockchains/dymension.svg";
 import EthereumIcon from "src/icons/blockchains/eth.svg";
@@ -25,6 +26,7 @@ import OasisIcon from "src/icons/blockchains/oasis.svg";
 import OptimismIcon from "src/icons/blockchains/optimism.svg";
 import OsmosisIcon from "src/icons/blockchains/osmosis.svg";
 import PolygonIcon from "src/icons/blockchains/polygon.svg";
+import PythIcon from "src/icons/blockchains/pyth.svg";
 import SeiIcon from "src/icons/blockchains/sei.svg";
 import SolanaIcon from "src/icons/blockchains/solana.svg";
 import SuiIcon from "src/icons/blockchains/sui.svg";
@@ -41,7 +43,9 @@ import AuroraColorlessIcon from "src/icons/blockchains/colorless/aurora.svg";
 import AvalancheColorlessIcon from "src/icons/blockchains/colorless/avax.svg";
 import BaseColorlessIcon from "src/icons/blockchains/colorless/base.svg";
 import BSCColorlessIcon from "src/icons/blockchains/colorless/bsc.svg";
+import BtcColorlessIcon from "src/icons/blockchains/colorless/btc.svg";
 import CeloColorlessIcon from "src/icons/blockchains/colorless/celo.svg";
+import DymensionColorlessIcon from "src/icons/blockchains/colorless/dymension.svg";
 import EthereumColorlessIcon from "src/icons/blockchains/colorless/eth.svg";
 import EvmosColorlessIcon from "src/icons/blockchains/colorless/evmos.svg";
 import FantomColorlessIcon from "src/icons/blockchains/colorless/fantom.svg";
@@ -55,8 +59,9 @@ import NeonColorlessIcon from "src/icons/blockchains/colorless/neon.svg";
 import NoColorlessIcon from "src/icons/blockchains/colorless/noIcon.svg";
 import OasisColorlessIcon from "src/icons/blockchains/colorless/oasis.svg";
 import OptimismColorlessIcon from "src/icons/blockchains/colorless/optimism.svg";
-import OsmosisColorlessIcon from "src/icons/blockchains/osmosis.svg";
+import OsmosisColorlessIcon from "src/icons/blockchains/colorless/osmosis.svg";
 import PolygonColorlessIcon from "src/icons/blockchains/colorless/polygon.svg";
+import PythColorlessIcon from "src/icons/blockchains/colorless/pyth.svg";
 import SeiColorlessIcon from "src/icons/blockchains/colorless/sei.svg";
 import SolanaColorlessIcon from "src/icons/blockchains/colorless/solana.svg";
 import SuiColorlessIcon from "src/icons/blockchains/colorless/sui.svg";
@@ -104,8 +109,8 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.PythNet]: {
     name: "PythNet",
-    icon: NoColorlessIcon,
-    colorlessIcon: NoColorlessIcon,
+    icon: PythIcon,
+    colorlessIcon: PythColorlessIcon,
     explorer: {
       TESTNET: "",
       MAINNET: "",
@@ -118,8 +123,8 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Btc]: {
     name: "Btc",
-    icon: NoColorlessIcon,
-    colorlessIcon: NoColorlessIcon,
+    icon: BtcIcon,
+    colorlessIcon: BtcColorlessIcon,
     explorer: {
       TESTNET: "",
       MAINNET: "",
@@ -204,7 +209,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Dymension]: {
     name: "Dymension",
     icon: DymensionIcon,
-    colorlessIcon: DymensionIcon,
+    colorlessIcon: DymensionColorlessIcon,
     explorer: {
       TESTNET: "https://www.mintscan.io/dymension", // TODO: EXPLORER CHANGES WHEN EXISTS
       MAINNET: "https://www.mintscan.io/dymension", // TODO: EXPLORER CHANGES WHEN EXISTS
