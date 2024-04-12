@@ -290,6 +290,7 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
     fromChain: extraRawInfoFromChainId || fromChain,
     fromChainOrig,
     guardianSignaturesCount,
+    isAttestation,
     isGatewaySource,
     isMayanOnly: appIds?.length === 1 && appIds.includes(MAYAN_APP_ID),
     isUnknownApp,
@@ -521,7 +522,7 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
 
       if (!genericRelayerInfo?.vaa) {
         if (showOverview) {
-          return <Overview {...overviewAndDetailProps} isAttestation={isAttestation} />;
+          return <Overview {...overviewAndDetailProps} />;
         } else {
           return (
             <AdvancedView
@@ -750,7 +751,7 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
 
     if (!isGenericRelayerTx) {
       if (showOverview) {
-        return <Overview {...overviewAndDetailProps} isAttestation={isAttestation} />;
+        return <Overview {...overviewAndDetailProps} />;
       } else {
         return (
           <AdvancedView
@@ -863,6 +864,7 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
     <section className="tx-information">
       <Summary
         appIds={appIds}
+        isAttestation={isAttestation}
         currentNetwork={currentNetwork}
         isUnknownApp={isUnknownApp}
         parsedDestinationAddress={parsedDestinationAddress}
