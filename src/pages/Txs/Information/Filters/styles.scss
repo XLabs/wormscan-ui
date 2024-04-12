@@ -13,10 +13,14 @@
     display: flex;
     font-size: 16px;
     font-weight: 500;
+    gap: 8px;
     height: 44px;
     justify-content: space-between;
     padding: 0 16px;
-    width: 150px;
+
+    @include desktop {
+      width: 150px;
+    }
 
     &.active {
       background-color: var(--color-white-05);
