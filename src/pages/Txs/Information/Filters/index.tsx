@@ -37,7 +37,7 @@ type ShowMore = {
   sourceChain: boolean;
   targetChain: boolean;
 };
-type FilterKey = keyof ShowMore; // "appId"  | "sourceChain" | "targetChain";
+type ShowMoreKey = keyof ShowMore;
 
 const APP_ID_STRING = "appId";
 const EXCLUSIVE_APP_ID_STRING = "exclusiveAppId";
@@ -52,7 +52,7 @@ const appIds = [
   NTT_APP_ID,
   PORTAL_APP_ID,
   GR_APP_ID,
-  UNKNOWN_APP_ID, // show?
+  UNKNOWN_APP_ID,
   GATEWAY_APP_ID,
 ];
 
@@ -146,7 +146,7 @@ const Filters = () => {
     sourceChain: sourceChainParams,
     targetChain: targetChainParams,
   });
-  const activeFiltersCount = Object.values(checkedState).filter(Boolean).length;
+  const totalFilterCounter = Object.values(checkedState).filter(Boolean).length;
   const disableApplyButton =
     checkedState.appId === appIdParams &&
     checkedState.exclusiveAppId === exclusiveAppIdParams &&
@@ -179,7 +179,12 @@ const Filters = () => {
     });
 
     const handleClickOutside = (e: any) => {
-      if (filtersContainerRef.current && !filtersContainerRef.current.contains(e.target)) {
+      if (
+        filtersContainerRef.current &&
+        !filtersContainerRef.current.contains(e.target) &&
+        filtersBtnRef.current &&
+        !filtersBtnRef.current.contains(e.target)
+      ) {
         setShowFilters(false);
       }
     };
@@ -201,7 +206,7 @@ const Filters = () => {
     setShowFilters(!showFilters);
   };
 
-  const handleShowMore = (key: FilterKey) => {
+  const handleShowMore = (key: ShowMoreKey) => {
     setShowMore(prevState => ({
       ...prevState,
       [key]: !prevState[key],
@@ -255,7 +260,7 @@ const Filters = () => {
         onClick={handleShowFilters}
       >
         <span>Filters</span>
-        {activeFiltersCount > 0 && <span className="counter">{activeFiltersCount}</span>}
+        {totalFilterCounter > 0 && <span className="counter">{totalFilterCounter}</span>}
         <img src={FiltersIcon} alt="filters icon" height={12} loading="lazy" />
       </button>
 
@@ -447,8 +452,8 @@ const Filters = () => {
             onClick={applyFilters}
           >
             Apply
-            {activeFiltersCount > 0 && (
-              <span className="counter inverted mobile">{activeFiltersCount}</span>
+            {totalFilterCounter > 0 && (
+              <span className="counter inverted mobile">{totalFilterCounter}</span>
             )}
           </button>
 
