@@ -32,16 +32,24 @@ export class GuardianNetwork {
   }
 
   async getOperations({
-    txHash,
     address,
-    vaaID,
+    appId,
+    exclusiveAppId,
     pagination = DefaultPageRequest,
+    sourceChain,
+    targetChain,
+    txHash,
+    vaaID,
   }: GetOperationsInput): Promise<GetOperationsOutput[]> {
     const path = vaaID ? `/operations/${vaaID}` : "/operations";
     const result: any = await this._client.doGet(path, {
-      txHash,
-      address,
       ...pagination,
+      address,
+      appId,
+      exclusiveAppId,
+      sourceChain,
+      targetChain,
+      txHash,
     });
 
     return (result?.operations ? result.operations : [result]) as GetOperationsOutput[];

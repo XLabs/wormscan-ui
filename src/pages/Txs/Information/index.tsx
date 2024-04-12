@@ -1,10 +1,11 @@
-import { Table } from "src/components/organisms";
+import { Dispatch, SetStateAction } from "react";
+import { useLocation } from "react-router-dom";
 import { Column } from "react-table";
 import { PAGE_SIZE, TransactionOutput } from "..";
-import { Dispatch, SetStateAction } from "react";
+import { Table } from "src/components/organisms";
 import { Pagination, Switch } from "src/components/atoms";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
-import { useLocation } from "react-router-dom";
+import Filters from "./Filters";
 import "./styles.scss";
 
 const columns: Column<TransactionOutput>[] | any = [
@@ -108,42 +109,41 @@ const Information = ({
   };
 
   return (
-    <>
-      <section className="txs-information">
-        <>
-          <div>
-            <div className="txs-information-top">
-              <div
-                className="txs-information-top-title"
-                onClick={() => {
-                  setLiveMode(!liveMode);
-                }}
-              >
-                <Switch label={`LIVE MODE ${liveMode ? "ON" : "OFF"}`} value={liveMode} />
-              </div>
-              <div>
-                <PaginationComponent className="txs-information-top-pagination" />
-              </div>
-            </div>
+    <section className="txs-information">
+      <div className="txs-information-top">
+        <div className="txs-information-top-buttons">
+          <div
+            className="txs-information-top-buttons-live-mode"
+            onClick={() => {
+              setLiveMode(!liveMode);
+            }}
+          >
+            <Switch label={`LIVE MODE ${liveMode ? "ON" : "OFF"}`} value={liveMode} />
           </div>
 
-          <div className="table-container">
-            <Table
-              className="txs"
-              columns={columns}
-              data={parsedTxsData}
-              emptyMessage="No txs found."
-              isLoading={isPaginationLoading}
-              onRowClick={onRowClick}
-            />
-          </div>
+          {!isTxsFiltered && <Filters />}
+        </div>
 
-          <div className="txs-pagination">
-            <PaginationComponent />
-          </div>
-        </>
-      </section>
-    </>
+        <div>
+          <PaginationComponent className="txs-information-top-pagination" />
+        </div>
+      </div>
+
+      <div className="table-container">
+        <Table
+          className="txs"
+          columns={columns}
+          data={parsedTxsData}
+          emptyMessage="No transactions found."
+          isLoading={isPaginationLoading}
+          onRowClick={onRowClick}
+        />
+      </div>
+
+      <div className="txs-pagination">
+        <PaginationComponent />
+      </div>
+    </section>
   );
 };
 

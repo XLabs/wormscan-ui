@@ -139,10 +139,14 @@ export interface GetParsedVaaOutput {
 }
 
 export interface GetOperationsInput {
-  txHash?: string;
   address?: string;
-  vaaID?: string;
+  appId?: string;
+  exclusiveAppId?: string;
   pagination?: PageRequest;
+  sourceChain?: ChainId;
+  targetChain?: ChainId;
+  txHash?: string;
+  vaaID?: string;
 }
 
 export interface GetOperationsOutput {
