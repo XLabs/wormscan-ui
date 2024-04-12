@@ -24,20 +24,20 @@ import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import FiltersIcon from "src/icons/filtersIcon.svg";
 import "./styles.scss";
 
-type CheckedState = {
+interface ICheckedState {
   appId: string | null;
   exclusiveAppId: string | null;
   sourceChain: ChainId | null;
   targetChain: ChainId | null;
-};
-type CheckedStateKey = keyof CheckedState;
+}
+type TCheckedStateKey = keyof ICheckedState;
 
-type ShowMore = {
+interface IShowMore {
   appId: boolean;
   sourceChain: boolean;
   targetChain: boolean;
-};
-type ShowMoreKey = keyof ShowMore;
+}
+type TShowMoreKey = keyof IShowMore;
 
 const APP_ID_STRING = "appId";
 const EXCLUSIVE_APP_ID_STRING = "exclusiveAppId";
@@ -125,7 +125,7 @@ const Filters = () => {
   const filtersBtnRef = useRef<HTMLButtonElement>(null);
   const filtersContainerRef = useRef<HTMLDivElement>(null);
   const [showFilters, setShowFilters] = useState<boolean>(false);
-  const [showMore, setShowMore] = useState<ShowMore>({
+  const [showMore, setShowMore] = useState<IShowMore>({
     appId: false,
     sourceChain: false,
     targetChain: false,
@@ -140,7 +140,7 @@ const Filters = () => {
   const sourceChainParams = +searchParams.get(SOURCE_CHAIN_STRING) || null;
   const targetChainParams = +searchParams.get(TARGET_CHAIN_STRING) || null;
 
-  const [checkedState, setCheckedState] = useState<CheckedState>({
+  const [checkedState, setCheckedState] = useState<ICheckedState>({
     appId: appIdParams,
     exclusiveAppId: exclusiveAppIdParams,
     sourceChain: sourceChainParams,
@@ -206,14 +206,14 @@ const Filters = () => {
     setShowFilters(!showFilters);
   };
 
-  const handleShowMore = (key: ShowMoreKey) => {
+  const handleShowMore = (key: TShowMoreKey) => {
     setShowMore(prevState => ({
       ...prevState,
       [key]: !prevState[key],
     }));
   };
 
-  const handleFilters = (key: CheckedStateKey, value: string | ChainId) => {
+  const handleFilters = (key: TCheckedStateKey, value: string | ChainId) => {
     setCheckedState(prevState => {
       const newState: any = { ...prevState };
 
@@ -241,7 +241,7 @@ const Filters = () => {
 
   const applyFilters = () => {
     const url = Object.keys(checkedState).reduce((acc, key: string) => {
-      const checkedStateKey = key as CheckedStateKey;
+      const checkedStateKey = key as TCheckedStateKey;
       if (checkedState[checkedStateKey]) {
         return `${acc}&${key}=${checkedState[checkedStateKey]}`;
       }

@@ -40,9 +40,7 @@ export class GuardianNetwork {
     targetChain,
     txHash,
     vaaID,
-  }: GetOperationsInput & { sourceChain?: number; targetChain?: number }): Promise<
-    GetOperationsOutput[]
-  > {
+  }: GetOperationsInput): Promise<GetOperationsOutput[]> {
     const path = vaaID ? `/operations/${vaaID}` : "/operations";
     const result: any = await this._client.doGet(path, {
       ...pagination,
