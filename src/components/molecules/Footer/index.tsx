@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { GitHubLogoIcon, PinTopIcon } from "@radix-ui/react-icons";
+import { DiscordLogoIcon, GitHubLogoIcon, PinTopIcon } from "@radix-ui/react-icons";
 import { NavLink, Tag } from "src/components/atoms";
 import { JoinUs, WormholeBrand } from "src/components/molecules";
 import {
