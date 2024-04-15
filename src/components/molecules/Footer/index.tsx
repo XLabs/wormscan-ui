@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { GitHubLogoIcon, PinTopIcon } from "@radix-ui/react-icons";
 import { NavLink, Tag } from "src/components/atoms";
@@ -109,7 +108,7 @@ const Footer = () => {
             <a href={PROVIDE_FEEDBACK_URL} target="_blank" rel="noopener noreferrer">
               {t("home.footer.provideFeedback")}
             </a>
-            <Link to="/terms-of-use">{t("home.footer.termsOfUse")}</Link>
+            <NavLink to="/terms-of-use">{t("home.footer.termsOfUse")}</NavLink>
           </div>
         </div>
 
