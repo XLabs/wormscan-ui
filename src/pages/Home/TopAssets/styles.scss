@@ -5,8 +5,13 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  margin-bottom: 32px;
   padding: 24px 0;
   position: relative;
+
+  @include desktop {
+    margin-bottom: 24px;
+  }
 
   &-loader {
     @include centered-row;
