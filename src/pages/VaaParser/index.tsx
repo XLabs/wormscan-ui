@@ -21,13 +21,14 @@ import { getGuardianSet, txType } from "src/consts";
 import { formatDate } from "src/utils/date";
 import { useParams } from "react-router-dom";
 import { hexToBase64 } from "src/utils/string";
-import { parseVaa } from "@certusone/wormhole-sdk";
+import { parseVaa, parse } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { waitForElement } from "./waitForElement";
 
 import VaaInput from "./Input";
 import CopyContent from "./CopyContent";
 import "./styles.scss";
+import { bigintToReadable } from "./bigintToReadable";
 
 const VaaParser = () => {
   useEffect(() => {
@@ -273,6 +274,17 @@ const VaaParser = () => {
     return guardianSetList?.[index]?.name;
   };
 
+  const getSdkParsedPayload = () => {
+    try {
+      const parsed = parse(Buffer.from(input, "base64"));
+
+      if (parsed.payload) return parsed.payload;
+      else return null;
+    } catch {
+      return null;
+    }
+  };
+
   const {
     isError,
     isLoading: isLoadingParse,
@@ -280,10 +292,12 @@ const VaaParser = () => {
   } = useQuery(["getParsedVaa", input], () => getClient().guardianNetwork.getParsedVaa(input), {
     enabled: !!input,
     retry: 0,
-    onSettled: _data => {
+    onSettled: async _data => {
       // success or fail, process RAW vaa (no API) and set it
       try {
-        const parsedVaa = parseVaa(Buffer.from(input, "base64"));
+        const vaaBuffer = Buffer.from(input, "base64");
+        const parsedVaa = parseVaa(vaaBuffer);
+
         const { emitterAddress, guardianSignatures, hash, sequence, guardianSetIndex } =
           parsedVaa || {};
 
@@ -295,6 +309,11 @@ const VaaParser = () => {
           signature: Buffer.from(signature).toString("hex"),
           name: getGuardianName(guardianSetIndex, index),
         }));
+
+        const parsedPayload = getSdkParsedPayload();
+        if (parsedPayload) {
+          (parsedVaa as any).parsedPayload = bigintToReadable(parsedPayload);
+        }
 
         setResultRaw({
           ...parsedVaa,
@@ -323,6 +342,12 @@ const VaaParser = () => {
           },
         };
       }
+
+      if (!data.parsedPayload) {
+        const sdkPayload = getSdkParsedPayload();
+        if (sdkPayload) data.parsedPayload = bigintToReadable(sdkPayload);
+      }
+
       setResult(data);
 
       const vaaID = `${data?.vaa?.emitterChain}/${data?.vaa?.emitterAddress}/${data?.vaa?.sequence}`;
