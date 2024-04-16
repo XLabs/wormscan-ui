@@ -13,7 +13,7 @@ const JoinUs = () => {
           <p>{t("home.join.initText")}</p>
           <p>
             {t("home.join.secondText")}
-            <span> {t("home.join.endText")}</span>
+            <span className="home-join-text-secondary"> {t("home.join.endText")}</span>
           </p>
         </div>
         <a
