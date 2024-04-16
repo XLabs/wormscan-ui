@@ -97,6 +97,7 @@ const Header = () => {
     <nav data-testid="header-nav">
       {isMobile && <NavLinkItem to="/" label={t("home.footer.home")} />}
       <NavLinkItem to="/txs" label={t("home.header.txs")} />
+      {isMainnet && <NavLinkItem to="/governor" label="Governor" />}
 
       <NavigationMenu.Root delayDuration={0}>
         <NavigationMenu.List className="dropdown-menu">
@@ -107,7 +108,6 @@ const Header = () => {
 
             <NavigationMenu.Content className="dropdown-menu-content">
               <NavLinkItem to="/vaa-parser" label="VAA Parser" />
-              {isMainnet && <NavLinkItem to="/governor" label="Governor" />}
               <ExternalLinkItem href="https://docs.wormholescan.io/" label="API Docs" />
               <ExternalLinkItem href="https://docs.wormhole.com/wormhole" label="Wormhole Docs" />
             </NavigationMenu.Content>

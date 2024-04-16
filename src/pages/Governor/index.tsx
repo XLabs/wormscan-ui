@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { Column } from "react-table";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -10,6 +10,7 @@ import { formatNumber } from "src/utils/number";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import { getClient } from "src/api/Client";
 import "./styles.scss";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 const columnsTransactions: Column[] | any = [
   {
@@ -30,25 +31,6 @@ const columnsTransactions: Column[] | any = [
   },
 ];
 
-const columnsSettings: Column[] | any = [
-  {
-    Header: "CHAIN",
-    accessor: "chainId",
-  },
-  {
-    Header: "BIG TRANSACTION",
-    accessor: "maxTransactionSize",
-  },
-  {
-    Header: "DAILY LIMIT",
-    accessor: "notionalLimit",
-  },
-  {
-    Header: "DAILY LIMIT REMAINING",
-    accessor: "availableNotional",
-  },
-];
-
 type Governor = {
   availableNotional: number;
   chainId: number;
@@ -65,12 +47,153 @@ type GovernorRow = {
 };
 
 const Governor = () => {
-  const [settingsData, setSettingsData] = useState([]);
+  const [dashboardData, setDashboardData] = useState([]);
   const [showTransactions, setShowTransactions] = useState(false);
   const [isLoadingLimits, setIsLoadingLimits] = useState(true);
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const navigate = useNavigateCustom();
+
+  const columnsDashboard = useMemo(
+    () => [
+      {
+        Header: <div className="title">CHAIN</div>,
+        id: "chainId.name",
+        accessor: "chainId.name",
+        sortType: "basic",
+        Cell: ({ row }) => {
+          const { id, name } = row.original.chainId;
+          return (
+            <div className="chain">
+              <BlockchainIcon
+                background="var(--color-black-25)"
+                chainId={id}
+                className="chain-icon"
+                colorless={false}
+                network={currentNetwork}
+                size={24}
+              />
+
+              <p>{name}</p>
+            </div>
+          );
+        },
+      },
+      {
+        Header: (
+          <div className="title">
+            SINGLE TRANSACTION LIMIT
+            <Tooltip
+              tooltip={
+                <div>
+                  Transactions exceeding this single-transaction threshold activate a 24-hour
+                  finality delay before being signed by Wormhole Guardians. These transactions are
+                  not included in the total value counted towards the 24-hour rolling period limit.
+                </div>
+              }
+              type="info"
+            >
+              <InfoCircledIcon height={18} width={18} />
+            </Tooltip>
+          </div>
+        ),
+        id: "maxTransactionSize",
+        accessor: "maxTransactionSize",
+        Cell: ({ value }) => (
+          <div className="big-transaction">
+            <p>{formatNumber(value, 0)} USD</p>
+          </div>
+        ),
+      },
+      {
+        Header: (
+          <div className="title">
+            DAILY LIMIT
+            <Tooltip
+              tooltip={
+                <div>
+                  Maximum total value of transactions that can be signed without delay in any
+                  24-hour rolling period. If this limit is exceeded, additional transactions are
+                  delayed until earlier transactions age beyond this 24-hour window, thereby freeing
+                  up bandwidth to process the delayed transactions.
+                </div>
+              }
+              type="info"
+            >
+              <InfoCircledIcon height={18} width={18} />
+            </Tooltip>
+          </div>
+        ),
+        id: "notionalLimit",
+        accessor: "notionalLimit",
+        Cell: ({ value }) => (
+          <div className="daily-limit">
+            <p>{formatNumber(value, 0)} USD</p>
+          </div>
+        ),
+      },
+      {
+        Header: (
+          <div className="title">
+            REMAINING TRANSACTION LIMIT
+            <Tooltip
+              tooltip={
+                <div>
+                  This shows the remaining value of transaction volume that can be processed without
+                  delay today. Once this limit is reached, further transactions will be delayed
+                  until sufficient limit is available within the 24-hour rolling window.
+                </div>
+              }
+              type="info"
+            >
+              <InfoCircledIcon height={18} width={18} />
+            </Tooltip>
+          </div>
+        ),
+        id: "remainingTransactionLimit",
+        accessor: row => {
+          return (row.availableNotional / row.notionalLimit) * 100;
+        },
+        Cell: ({ value, row }) => {
+          // Destructuring directly in the parameter list
+          console.log(row.original); // This should now log the full original row data
+          const formattedValue = formatNumber(value, 2); // `value` is now directly available
+          return (
+            <div className="min-remaining">
+              <p>{formatNumber(row.original.availableNotional, 0)} USD</p>
+
+              <Tooltip side="left" tooltip={<div>{formattedValue}%</div>}>
+                <div className="min-remaining-bar">
+                  <div
+                    className="min-remaining-bar-fill"
+                    style={{
+                      backgroundColor: 100 - value >= 80 ? "#7a211b" : "#335d35",
+                    }}
+                  >
+                    <div
+                      className="min-remaining-bar-fill-used"
+                      style={{
+                        backgroundColor: 100 - value >= 80 ? "#f44336" : "#66bb6a",
+                        width: `${100 - value}%`,
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              </Tooltip>
+            </div>
+          );
+        },
+
+        sortType: (a, b) => {
+          return (
+            (a.original.availableNotional / a.original.notionalLimit) * 100 -
+            (b.original.availableNotional / b.original.notionalLimit) * 100
+          );
+        },
+      },
+    ],
+    [currentNetwork],
+  );
 
   useEffect(() => {
     if (currentNetwork !== "MAINNET") {
@@ -78,87 +201,19 @@ const Governor = () => {
     }
   }, [currentNetwork, navigate]);
 
-  useQuery(["getLimit"], () => getClient().governor.getLimit(), {
+  useQuery("getLimit", () => getClient().governor.getLimit(), {
     onSuccess: data => {
-      const tempRows: GovernorRow[] = [];
+      const transformedData = data.map(item => ({
+        chainId: {
+          id: item.chainId,
+          name: getChainName({ chainId: item.chainId, network: currentNetwork }),
+        },
+        maxTransactionSize: item.maxTransactionSize,
+        notionalLimit: item.notionalLimit,
+        availableNotional: item.availableNotional,
+      }));
 
-      data.forEach((item: Governor) => {
-        item.chainName = getChainName({ chainId: item.chainId, network: currentNetwork });
-      });
-
-      data.sort((a: Governor, b: Governor) => a.chainName.localeCompare(b.chainName));
-
-      data.length > 0
-        ? data.map((item: Governor) => {
-            const row = {
-              chainId: (
-                <div className="chain">
-                  <BlockchainIcon
-                    background="var(--color-black-25)"
-                    chainId={item.chainId}
-                    className="chain-icon"
-                    colorless={false}
-                    network={currentNetwork}
-                    size={24}
-                  />
-
-                  <p>{item.chainName}</p>
-                </div>
-              ),
-              maxTransactionSize: (
-                <div className="big-transaction">
-                  <p>{formatNumber(item.maxTransactionSize, 0)} USD</p>
-                </div>
-              ),
-              notionalLimit: (
-                <div className="daily-limit">
-                  <p>{formatNumber(item.notionalLimit, 0)} USD</p>
-                </div>
-              ),
-              availableNotional: (
-                <div className="min-remaining">
-                  <p>{formatNumber(item.availableNotional, 0)} USD</p>
-
-                  <Tooltip
-                    side="left"
-                    tooltip={
-                      <div>
-                        {formatNumber((item.availableNotional / item.notionalLimit) * 100)}%
-                      </div>
-                    }
-                  >
-                    <div className="min-remaining-bar">
-                      <div
-                        className="min-remaining-bar-fill"
-                        style={{
-                          backgroundColor:
-                            100 - (item.availableNotional / item.notionalLimit) * 100 >= 80
-                              ? "#7a211b"
-                              : "#335d35",
-                        }}
-                      >
-                        <div
-                          className="min-remaining-bar-fill-used"
-                          style={{
-                            backgroundColor:
-                              100 - (item.availableNotional / item.notionalLimit) * 100 >= 80
-                                ? "#f44336"
-                                : "#66bb6a",
-                            width: `${100 - (item.availableNotional / item.notionalLimit) * 100}%`,
-                          }}
-                        ></div>
-                      </div>
-                    </div>
-                  </Tooltip>
-                </div>
-              ),
-            };
-
-            tempRows.push(row);
-          })
-        : [];
-
-      setSettingsData(tempRows);
+      setDashboardData(transformedData);
       setIsLoadingLimits(false);
     },
     onError: () => {
@@ -170,6 +225,11 @@ const Governor = () => {
     <BaseLayout>
       <section className="governor">
         <h1 className="governor-title">Governor</h1>
+        <p className="governor-description">
+          The Wormhole Governor is an added security measure that enhances stability and safety by
+          setting thresholds for transaction sizes and volume.[ Learn
+          more](https://github.com/wormhole-foundation/wormhole/blob/main/whitepapers/0007_governor.md)
+        </p>
 
         <div className="governor-container">
           <div className="governor-container-top">
@@ -186,12 +246,12 @@ const Governor = () => {
 
               <button
                 className={!showTransactions ? "active" : ""}
-                aria-label="Settings"
+                aria-label="Dashboard"
                 onClick={() => {
                   setShowTransactions(false);
                 }}
               >
-                SETTINGS
+                DASHBOARD
               </button>
             </div>
 
@@ -217,9 +277,10 @@ const Governor = () => {
               />
             ) : (
               <Table
-                columns={columnsSettings}
-                data={isLoadingLimits ? [] : settingsData}
+                columns={columnsDashboard}
+                data={isLoadingLimits ? [] : dashboardData}
                 emptyMessage="No limits found."
+                hasSort={true}
                 isLoading={isLoadingLimits}
               />
             )}

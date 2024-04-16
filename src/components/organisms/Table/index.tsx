@@ -1,5 +1,6 @@
 import { CSSProperties } from "react";
-import { useTable, Column } from "react-table";
+import { useTable, Column, useSortBy } from "react-table";
+import { ArrowDownIcon, ArrowUpIcon } from "@radix-ui/react-icons";
 import "./styles.scss";
 
 type Props<T extends object> = {
@@ -7,6 +8,7 @@ type Props<T extends object> = {
   columns: Column<T>[];
   data: T[];
   emptyMessage?: string;
+  hasSort?: boolean;
   isLoading?: boolean;
   onRowClick?: (row: any) => void;
 };
@@ -16,13 +18,19 @@ const Table = <T extends object>({
   columns,
   data,
   emptyMessage = "No items found.",
+  hasSort = false,
   isLoading = false,
   onRowClick,
 }: Props<T>) => {
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
-    columns,
-    data,
-  });
+  const tableHooks = [useSortBy];
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
+    {
+      columns,
+      data,
+      initialState: { sortBy: [{ id: "chainId.name", desc: false }] } as any,
+    },
+    ...(hasSort ? tableHooks : []),
+  );
 
   return (
     <>
@@ -32,10 +40,33 @@ const Table = <T extends object>({
             <tr key={index} {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column, index) => {
                 const style: CSSProperties = (column as any).style;
-
                 return (
-                  <th key={index} {...column.getHeaderProps()} style={{ ...style }}>
+                  <th
+                    key={index}
+                    {...column.getHeaderProps(hasSort ? column.getSortByToggleProps() : {})}
+                    style={{ ...style }}
+                  >
+                    {hasSort && index !== 0 && column.isSorted && (
+                      <span className="table-head-arrow">
+                        {column.isSortedDesc ? (
+                          <ArrowDownIcon height={16} width={16} />
+                        ) : (
+                          <ArrowUpIcon height={16} width={16} />
+                        )}
+                      </span>
+                    )}
+
                     {column.render("Header")}
+
+                    {hasSort && index === 0 && column.isSorted && (
+                      <span className="table-head-arrow">
+                        {column.isSortedDesc ? (
+                          <ArrowDownIcon height={16} width={16} />
+                        ) : (
+                          <ArrowUpIcon height={16} width={16} />
+                        )}
+                      </span>
+                    )}
                   </th>
                 );
               })}
