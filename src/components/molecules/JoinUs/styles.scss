@@ -2,27 +2,23 @@
 
 .home-join {
   @include centered-column;
-
-  width: 100%;
   align-items: center;
-  margin-top: 76px;
-  margin-bottom: 76px;
-  padding: 0 16px;
+  background-color: var(--color-white-10);
+  border-radius: 24px;
+  margin: 0 auto;
+  max-width: 456px;
+  overflow: hidden;
+  padding: 20px 0;
+  position: relative;
+  width: 100%;
 
-  @include tablet {
-    padding: 0px 60px;
+  @include desktop {
+    padding: 36px 24px;
   }
 
   &-text-container {
     @include centered-column;
-
-    padding: 48px 12px 24px;
-    background-position: top right;
     align-items: center;
-
-    @include tablet {
-      padding: 48px 0px 24px;
-    }
 
     & a {
       text-decoration: none;
@@ -30,29 +26,48 @@
   }
 
   &-text {
-    @include text-h4;
-
-    font-family: "IBM Plex Sans", sans-serif;
-    max-width: 292px;
-    text-align: center;
+    font-size: 24px;
+    font-weight: 500;
     margin-bottom: 24px;
+    text-align: center;
+    width: 256px;
 
-    @include tablet {
-      font-weight: 600;
-      max-width: 408px;
+    @media (min-width: 1280px) {
+      width: 100%;
     }
 
-    > span {
-      font-family: inherit;
+    &-secondary {
       color: var(--color-secondary-800);
     }
   }
 
   &-button {
     @include button-secondary;
+    color: var(--color-white);
 
     path {
-      fill: var(--color-primary-900);
+      fill: var(--color-white);
     }
+  }
+
+  &-bg-white {
+    background-color: var(--color-white);
+    display: block;
+    filter: blur(125.581px);
+    height: 180px;
+    left: -280px;
+    position: absolute;
+    top: 80px;
+    width: 180px;
+  }
+
+  &-bg-secondary {
+    background-color: var(--color-secondary-800);
+    filter: blur(125.581px);
+    height: 180px;
+    position: absolute;
+    right: -130px;
+    top: -70px;
+    width: 180px;
   }
 }

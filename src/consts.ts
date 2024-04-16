@@ -119,14 +119,20 @@ export const txType: { [key: number]: "Transfer" | "Attestation" | "Transfer wit
 
 export const ALLBRIDGE_URL = "https://allbridge.io";
 export const CCTP_URL = "https://portalbridge.com/usdc-bridge";
+export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";
+export const GITHUB_URL = "https://github.com/wormhole-foundation";
 export const MAYAN_URL = "https://mayan.finance";
 export const PORTAL_BRIDGE_URL = "https://www.portalbridge.com";
+export const PROVIDE_FEEDBACK_URL =
+  "https://docs.google.com/forms/d/1LBeJJHF7dG94q9kdFTFpXtYrDvjb2KXLyte5nl5f26Y/viewform?edit_requested=true";
 export const TWITTER_URL = "https://x.com/wormhole";
-export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";
-export const XLABS_URL = "https://www.xlabs.xyz";
+export const WORMHOLE_BLOG = "https://wormhole.com/blog";
 export const WORMHOLE_DOCS_URL = "https://docs.wormholescan.io";
-export const XLABS_CAREERS_URL = "https://jobs.ashbyhq.com/Xlabs";
 export const WORMHOLE_PAGE_URL = "https://wormhole.com";
+export const XLABS_ABOUT_US_URL = "https://www.xlabs.xyz/about-us";
+export const XLABS_CAREERS_URL = "https://jobs.ashbyhq.com/Xlabs";
+export const XLABS_OUR_WORK_URL = "https://www.xlabs.xyz/our-work";
+export const XLABS_URL = "https://www.xlabs.xyz";
 
 // if toChain is on this list we should be able to get destinationTx.
 // (contract-watcher for token bridge & connect txs)

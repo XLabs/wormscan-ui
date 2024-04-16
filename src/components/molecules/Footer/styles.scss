@@ -1,82 +1,46 @@
 @import "src/styles/globals.scss";
 
 .footer {
-  @include centered-row;
-
-  min-height: 570px;
-  padding: 32px;
+  @include centered-column;
+  align-items: center;
+  gap: 32px;
+  margin: 96px auto 0 auto;
+  max-width: 488px;
+  padding: 32px 16px;
+  width: 100%;
 
   @include desktop {
-    min-height: 168px;
-    padding: 24px 60px 32px 60px;
+    max-width: unset;
+    padding: 60px 60px 40px 60px;
   }
 
   @include bigDesktop {
-    padding: 24px 76px 32px 76px;
+    padding: 60px 76px 40px 76px;
   }
 
   &-container {
-    display: grid;
-    grid-template-areas:
-      "top"
-      "links"
-      "social"
-      "built"
-      "copy";
-    grid-template-columns: 1fr;
-    column-gap: 16px;
-    row-gap: 56px;
-    width: 100%;
-    max-width: 425px;
-    margin: 0 auto;
-
-    @include desktop {
-      row-gap: 72px;
-      grid-template-areas:
-        "top top top top"
-        "social links links built"
-        "copy copy copy copy";
-      grid-template-columns: 1.1fr 1fr 1fr 1.1fr;
-      max-width: unset;
-      margin: auto;
-    }
-
-    @include bigDesktop {
-      grid-template-columns: 2fr 1fr 1fr 2fr;
-    }
-  }
-
-  &-top {
-    @include centered-row;
-    border-bottom: 1px solid var(--color-white-10);
-    grid-area: top;
-    height: 100%;
+    display: flex;
+    gap: 32px;
     justify-content: space-between;
-    padding-bottom: 32px;
+    width: 100%;
 
-    &-brand {
-      @include centered-row;
-      align-items: end;
-      height: 100%;
+    &:first-child {
+      border-bottom: 1px solid var(--color-white-10);
+      padding-bottom: 32px;
+    }
+
+    &:nth-child(2) {
+      @include centered-column;
 
       @include desktop {
-        align-items: start;
-        justify-content: start;
-        margin-top: unset;
-        padding: 0;
-        width: auto;
+        flex-direction: row;
       }
     }
 
-    &-button-container {
-      @include centered-row;
-      justify-content: end;
-      margin-bottom: 80px;
-
-      @include desktop {
-        align-items: start;
-        margin-bottom: 0;
-      }
+    &:last-child {
+      border-top: 1px solid var(--color-white-10);
+      padding-top: 32px;
+      width: 100%;
     }
 
     &-button {
@@ -93,202 +57,107 @@
         color: var(--color-secondary-700);
       }
     }
-  }
 
-  &-social {
-    @include centered-row;
-
-    &-container {
-      @include centered-column;
-
-      grid-area: social;
-      gap: 24px;
-
-      @include desktop {
-        gap: 40px;
-        line-height: 1.714;
-        margin-bottom: 0;
-        padding: 0;
-      }
-    }
-
-    &-text {
-      @include text-p3;
-
-      color: #544867;
-
-      @include desktop {
-        flex: unset;
-      }
-    }
-
-    &-icons {
-      @include centered-row;
-
-      gap: 56px;
-
-      > a {
-        path {
-          fill: var(--color-secondary-800);
-        }
-
-        &:hover path {
-          fill: var(--color-secondary-700);
-        }
-      }
-
-      @include desktop {
-        flex: unset;
-        gap: 32px;
-      }
-    }
-  }
-
-  &-links {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-area: links;
-
-    row-gap: 40px;
-
-    @include desktop {
-      column-gap: 16px;
-
-      [data-link="home"] {
-        grid-area: home;
-      }
-
-      [data-link="careers"] {
-        grid-area: careers;
-      }
-
-      [data-link="api"] {
-        grid-area: api;
-      }
-
-      [data-link="txs"] {
-        grid-area: txs;
-      }
-
-      [data-link="contact"] {
-        grid-area: contact;
-      }
-
-      [data-link="bounty"] {
-        grid-area: bounty;
-      }
-
-      grid-template-columns: 1fr 1fr 0.5fr;
-      grid-template-areas:
-        "home careers api"
-        "txs contact bounty";
-      padding: 0;
-    }
-
-    &-item {
-      @include centered-row;
-      align-items: start;
+    &-links {
       display: flex;
-      gap: 8px;
-      text-align: center;
-      user-select: none;
-      white-space: nowrap;
-      width: 100%;
+      gap: 64px;
+      min-width: 264px;
 
-      a {
-        @include text-p3;
-
-        color: var(--color-primary-90);
-        text-decoration: none;
-        text-align: center;
-        align-items: start;
-
-        &:hover {
-          color: var(--color-secondary-700);
-        }
-      }
-
-      & .chip {
-        transform: translateY(-12px);
-      }
-    }
-  }
-
-  &-built {
-    @include centered-row;
-    align-items: flex-start;
-    grid-area: built;
-
-    @include desktop {
-      justify-content: end;
-    }
-
-    &-container {
-      @include centered-column;
-
-      gap: 19px;
-
-      @include desktop {
-        align-items: center;
-        margin-bottom: 0;
-        padding: 0;
-      }
-    }
-
-    &-text {
-      @include text-p3;
-
-      color: #544867;
-
-      @include desktop {
-        flex: unset;
-      }
-    }
-
-    &-icons {
-      @include centered-row;
-
-      gap: 56px;
-
-      > a:hover {
-        opacity: 0.6;
+      @include tablet {
+        gap: 128px;
       }
 
       @include desktop {
-        flex: unset;
         gap: 32px;
       }
-    }
-  }
 
-  &-copy {
-    @include centered-column;
-    @include text-caption1;
+      &-container {
+        display: flex;
+        flex-direction: column;
+        min-width: 100px;
 
-    font-weight: 400;
-    font-size: 14px;
-    grid-area: copy;
-    color: var(--color-white-40);
-    border-top: 1px solid var(--color-white-10);
-    padding-top: 32px;
+        @include desktop {
+          min-width: unset;
 
-    @include desktop {
-      @include centered-row;
-      justify-content: space-between;
+          &:last-child {
+            min-width: 160px;
+          }
+        }
 
-      & > * {
-        flex: 1;
+        & > div {
+          @include centered-row;
+          gap: 8px;
+        }
 
-        &:first-child {
-          align-self: start;
+        &-title {
+          @include centered-row;
+          color: var(--color-primary-100);
+          font-size: 14px;
+          height: 32px;
+          margin-bottom: 8px;
+        }
+
+        & a {
+          @include centered-row;
+          color: var(--color-primary-50);
+          font-size: 14px;
+          max-width: max-content;
+          min-height: 32px;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+            color: var(--color-primary-50);
+          }
+
+          &:hover path {
+            fill: var(--color-secondary-700);
+          }
+
+          & > svg {
+            color: var(--color-secondary-800);
+            height: 16px;
+            width: 16px;
+          }
         }
       }
+    }
 
-      &-brand {
-        @include text-p2;
+    &-build {
+      display: flex;
+      justify-content: center;
+      min-width: 264px;
+      white-space: nowrap;
 
-        text-align: center;
+      @include desktop {
+        justify-content: flex-end;
       }
+
+      @media (max-width: 1279px) {
+        min-width: 100px;
+      }
+
+      &-container {
+        @include centered-column;
+        align-items: center;
+        gap: 8px;
+
+        &-text {
+          color: var(--color-white-40);
+        }
+
+        & > a:hover {
+          opacity: 0.6;
+        }
+      }
+    }
+
+    &-copy {
+      color: var(--color-white-40);
+      font-size: 14px;
+      font-weight: 400;
+      text-align: center;
+      width: 100%;
     }
   }
 }
