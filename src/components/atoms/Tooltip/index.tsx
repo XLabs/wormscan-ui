@@ -5,6 +5,7 @@ import "./styles.scss";
 
 type Props = {
   children: React.ReactNode;
+  className?: string;
   controlled?: boolean;
   maxWidth?: boolean;
   open?: boolean;
@@ -15,6 +16,7 @@ type Props = {
 
 const Tooltip = ({
   children,
+  className = "",
   controlled = false,
   maxWidth = true,
   open = false,
@@ -70,7 +72,7 @@ const Tooltip = ({
         <TooltipPrimitive.Portal className="tooltip">
           <TooltipPrimitive.Content
             ref={tooltipRef}
-            className={`tooltip-container ${type} ${maxWidth ? "max-width" : ""}`}
+            className={`tooltip-container ${type} ${maxWidth ? "max-width" : ""} ${className}`}
             sideOffset={5}
             side={selectSide}
           >

@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { useTable, Column, useSortBy } from "react-table";
+import { useTable, Column, useSortBy, TableState } from "react-table";
 import { ArrowDownIcon, ArrowUpIcon } from "@radix-ui/react-icons";
 import "./styles.scss";
 
@@ -9,6 +9,7 @@ type Props<T extends object> = {
   data: T[];
   emptyMessage?: string;
   hasSort?: boolean;
+  initialSortById?: string;
   isLoading?: boolean;
   onRowClick?: (row: any) => void;
 };
@@ -19,17 +20,19 @@ const Table = <T extends object>({
   data,
   emptyMessage = "No items found.",
   hasSort = false,
+  initialSortById,
   isLoading = false,
   onRowClick,
 }: Props<T>) => {
-  const tableHooks = [useSortBy];
+  const tableHooks = hasSort ? [useSortBy] : [];
+  const initialState = initialSortById ? { sortBy: [{ id: initialSortById, desc: false }] } : {};
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
     {
       columns,
       data,
-      initialState: { sortBy: [{ id: "chainId.name", desc: false }] } as any,
+      initialState: initialState as Partial<TableState<T>>,
     },
-    ...(hasSort ? tableHooks : []),
+    ...tableHooks,
   );
 
   return (
@@ -38,7 +41,7 @@ const Table = <T extends object>({
         <thead className="table-head">
           {headerGroups.map((headerGroup, index) => (
             <tr key={index} {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column, index) => {
+              {headerGroup.headers.map((column: any, index) => {
                 const style: CSSProperties = (column as any).style;
                 return (
                   <th

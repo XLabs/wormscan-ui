@@ -122,6 +122,8 @@ export const CCTP_URL = "https://portalbridge.com/usdc-bridge";
 export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";
 export const GITHUB_URL = "https://github.com/wormhole-foundation";
 export const MAYAN_URL = "https://mayan.finance";
+export const MORE_INFO_GOVERNOR_URL =
+  "https://github.com/wormhole-foundation/wormhole/blob/main/whitepapers/0007_governor.md";
 export const PORTAL_BRIDGE_URL = "https://www.portalbridge.com";
 export const PROVIDE_FEEDBACK_URL =
   "https://docs.google.com/forms/d/1LBeJJHF7dG94q9kdFTFpXtYrDvjb2KXLyte5nl5f26Y/viewform?edit_requested=true";

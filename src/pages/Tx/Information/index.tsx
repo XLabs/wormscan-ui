@@ -17,6 +17,7 @@ import {
   GATEWAY_APP_ID,
   GR_APP_ID,
   MAYAN_APP_ID,
+  MORE_INFO_GOVERNOR_URL,
   NTT_APP_ID,
   PORTAL_APP_ID,
   txType,
@@ -908,7 +909,7 @@ const DiscordSupportLink = () => (
 const LearnMoreLink = () => (
   <a
     className="tx-information-alerts-unknown-payload-type-link"
-    href="https://github.com/wormhole-foundation/wormhole/blob/main/whitepapers/0007_governor.md"
+    href={MORE_INFO_GOVERNOR_URL}
     target="_blank"
     rel="noopener noreferrer"
   >
