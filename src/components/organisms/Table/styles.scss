@@ -45,16 +45,15 @@
           padding: 8px 16px;
         }
 
-        & .table-head-arrow {
-          display: inline-block;
-          height: 16px;
-          position: absolute;
-          top: 15px;
-          transform: translateX(-20px);
-          width: 16px;
+        & .table-head-th {
+          @include centered-row;
+          justify-content: center;
+          gap: 4px;
+          line-height: 1;
 
-          &:last-child {
-            transform: translateX(0);
+          &-arrow {
+            height: 18px;
+            width: 18px;
           }
         }
       }

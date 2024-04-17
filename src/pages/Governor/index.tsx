@@ -52,7 +52,7 @@ const Governor = () => {
 
   const columnsDashboard: Column[] | any = [
     {
-      Header: <div className="title">CHAIN</div>,
+      Header: <>CHAIN</>,
       id: "chainId.name",
       accessor: "chainId.name",
       sortType: (rowA: Row<any>, rowB: Row<any>, columnId: "chainId.name") => {
@@ -81,7 +81,7 @@ const Governor = () => {
     },
     {
       Header: (
-        <div className="title">
+        <>
           SINGLE TRANSACTION LIMIT
           <Tooltip
             className="governor-container-table-title-tooltip"
@@ -96,7 +96,7 @@ const Governor = () => {
           >
             <InfoCircledIcon height={18} width={18} />
           </Tooltip>
-        </div>
+        </>
       ),
       id: "maxTransactionSize",
       accessor: "maxTransactionSize",
@@ -108,7 +108,7 @@ const Governor = () => {
     },
     {
       Header: (
-        <div className="title">
+        <>
           DAILY LIMIT
           <Tooltip
             className="governor-container-table-title-tooltip"
@@ -124,7 +124,7 @@ const Governor = () => {
           >
             <InfoCircledIcon height={18} width={18} />
           </Tooltip>
-        </div>
+        </>
       ),
       id: "notionalLimit",
       accessor: "notionalLimit",
@@ -136,7 +136,7 @@ const Governor = () => {
     },
     {
       Header: (
-        <div className="title">
+        <>
           REMAINING TRANSACTION LIMIT
           <Tooltip
             className="governor-container-table-title-tooltip"
@@ -151,14 +151,14 @@ const Governor = () => {
           >
             <InfoCircledIcon height={18} width={18} />
           </Tooltip>
-        </div>
+        </>
       ),
       id: "remainingTransactionLimit",
       accessor: (row: IRow) => {
         return (row.availableNotional / row.notionalLimit) * 100;
       },
       Cell: ({ value, row }: { value: number; row: Row<IRow> }) => {
-        const formattedValue = formatNumber(value, 2);
+        const formattedValue = parseFloat(formatNumber(value, 2));
         return (
           <div className="min-remaining">
             <p>{formatNumber(row.original.availableNotional, 0)} USD</p>

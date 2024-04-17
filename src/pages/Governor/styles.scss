@@ -96,29 +96,10 @@
     &-table {
       overflow-x: auto;
 
-      &-title {
-        height: 48px;
-        padding-top: 16px;
-      }
-
       & th {
         cursor: pointer;
         text-align: center;
         width: 25%;
-
-        &:not(:first-child) {
-          padding-left: 24px;
-        }
-
-        & > .title {
-          display: inline-block;
-          vertical-align: middle;
-
-          & > svg {
-            margin-left: 4px;
-            vertical-align: middle;
-          }
-        }
 
         &:hover {
           background-color: var(--color-white-10);
@@ -130,12 +111,18 @@
         width: 25%;
       }
 
-      & th:first-child,
+      & th:first-child > .table-head-th {
+        justify-content: start;
+      }
+
+      & th:last-child > .table-head-th {
+        justify-content: end;
+      }
+
       & td:first-child {
         text-align: start;
       }
 
-      & th:last-child,
       & td:last-child {
         text-align: end;
       }

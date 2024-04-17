@@ -42,34 +42,32 @@ const Table = <T extends object>({
           {headerGroups.map((headerGroup, index) => (
             <tr key={index} {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column: any, index) => {
-                const style: CSSProperties = (column as any).style;
+                const style: CSSProperties = column.style as CSSProperties;
+                const sortIcon = hasSort && (
+                  <span className="table-head-th-arrow">
+                    {column.isSorted ? (
+                      column.isSortedDesc ? (
+                        <ArrowDownIcon height={18} width={18} />
+                      ) : (
+                        <ArrowUpIcon height={18} width={18} />
+                      )
+                    ) : (
+                      ""
+                    )}
+                  </span>
+                );
+
                 return (
                   <th
                     key={index}
                     {...column.getHeaderProps(hasSort ? column.getSortByToggleProps() : {})}
-                    style={{ ...style }}
+                    style={style}
                   >
-                    {hasSort && index !== 0 && column.isSorted && (
-                      <span className="table-head-arrow">
-                        {column.isSortedDesc ? (
-                          <ArrowDownIcon height={16} width={16} />
-                        ) : (
-                          <ArrowUpIcon height={16} width={16} />
-                        )}
-                      </span>
-                    )}
-
-                    {column.render("Header")}
-
-                    {hasSort && index === 0 && column.isSorted && (
-                      <span className="table-head-arrow">
-                        {column.isSortedDesc ? (
-                          <ArrowDownIcon height={16} width={16} />
-                        ) : (
-                          <ArrowUpIcon height={16} width={16} />
-                        )}
-                      </span>
-                    )}
+                    <div className="table-head-th">
+                      {index !== 0 && sortIcon}
+                      {column.render("Header")}
+                      {index === 0 && sortIcon}
+                    </div>
                   </th>
                 );
               })}
