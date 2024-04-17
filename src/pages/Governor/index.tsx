@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { CellProps, Column, Row } from "react-table";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import analytics from "src/analytics";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { MORE_INFO_GOVERNOR_URL } from "src/consts";
 import { BaseLayout } from "src/layouts/BaseLayout";
@@ -43,6 +44,10 @@ interface IRow {
 }
 
 const Governor = () => {
+  useEffect(() => {
+    analytics.page({ title: "GOVERNOR" });
+  }, []);
+
   const [dashboardData, setDashboardData] = useState([]);
   const [showTransactions, setShowTransactions] = useState(false);
   const [isLoadingLimits, setIsLoadingLimits] = useState(true);
