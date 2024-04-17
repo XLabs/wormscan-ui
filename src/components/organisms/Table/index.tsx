@@ -44,7 +44,7 @@ const Table = <T extends object>({
               {headerGroup.headers.map((column: any, index) => {
                 const style: CSSProperties = column.style as CSSProperties;
                 const sortIcon = hasSort && (
-                  <span className="table-head-th-arrow">
+                  <span className="table-head-th-container-arrow">
                     {column.isSorted ? (
                       column.isSortedDesc ? (
                         <ArrowDownIcon height={18} width={18} />
@@ -63,7 +63,7 @@ const Table = <T extends object>({
                     {...column.getHeaderProps(hasSort ? column.getSortByToggleProps() : {})}
                     style={style}
                   >
-                    <div className="table-head-th">
+                    <div className="table-head-th-container">
                       {index !== 0 && sortIcon}
                       {column.render("Header")}
                       {index === 0 && sortIcon}

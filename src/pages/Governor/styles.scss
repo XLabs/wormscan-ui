@@ -106,17 +106,22 @@
         }
       }
 
-      & td {
-        text-align: center;
-        width: 25%;
-      }
-
-      & th:first-child > .table-head-th {
+      & th:first-child > .table-head-th-container {
         justify-content: start;
       }
 
-      & th:last-child > .table-head-th {
+      & th:last-child > .table-head-th-container {
         justify-content: end;
+      }
+
+      & tr:hover {
+        background-color: unset !important;
+        cursor: default !important;
+      }
+
+      & td {
+        text-align: center;
+        width: 25%;
       }
 
       & td:first-child {
@@ -125,11 +130,6 @@
 
       & td:last-child {
         text-align: end;
-      }
-
-      & tr:hover {
-        background-color: unset !important;
-        cursor: default !important;
       }
 
       & .chain {
