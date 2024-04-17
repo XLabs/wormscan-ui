@@ -200,7 +200,7 @@ const Governor = () => {
     }
   }, [currentNetwork, navigate]);
 
-  useQuery("getLimit", () => getClient().governor.getLimit(), {
+  useQuery(["getLimit"], () => getClient().governor.getLimit(), {
     onSuccess: data => {
       const transformedData = data.map(item => ({
         chainId: {
