@@ -288,6 +288,7 @@ const Filters = () => {
               </p>
 
               <Tooltip
+                className="filters-container-box-top-tooltip"
                 tooltip={
                   <div>Show only the selected protocol, without any additional protocols.</div>
                 }

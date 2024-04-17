@@ -142,6 +142,15 @@
           gap: 8px;
         }
 
+        &-tooltip {
+          display: none;
+          max-width: 240px !important;
+
+          @include desktop {
+            display: block;
+          }
+        }
+
         & > .filters-container-box-content-item {
           height: auto;
 
@@ -323,14 +332,5 @@
     @include desktop {
       display: none;
     }
-  }
-}
-
-.tooltip-container.max-width {
-  display: none;
-  max-width: 240px;
-
-  @include desktop {
-    display: block;
   }
 }

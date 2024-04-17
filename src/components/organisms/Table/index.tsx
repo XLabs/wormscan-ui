@@ -1,5 +1,6 @@
 import { CSSProperties } from "react";
-import { useTable, Column } from "react-table";
+import { useTable, Column, useSortBy, TableState } from "react-table";
+import { ArrowDownIcon, ArrowUpIcon } from "@radix-ui/react-icons";
 import "./styles.scss";
 
 type Props<T extends object> = {
@@ -7,6 +8,8 @@ type Props<T extends object> = {
   columns: Column<T>[];
   data: T[];
   emptyMessage?: string;
+  hasSort?: boolean;
+  initialSortById?: string;
   isLoading?: boolean;
   onRowClick?: (row: any) => void;
 };
@@ -16,13 +19,21 @@ const Table = <T extends object>({
   columns,
   data,
   emptyMessage = "No items found.",
+  hasSort = false,
+  initialSortById,
   isLoading = false,
   onRowClick,
 }: Props<T>) => {
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
-    columns,
-    data,
-  });
+  const tableHooks = hasSort ? [useSortBy] : [];
+  const initialState = initialSortById ? { sortBy: [{ id: initialSortById, desc: false }] } : {};
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
+    {
+      columns,
+      data,
+      initialState: initialState as Partial<TableState<T>>,
+    },
+    ...tableHooks,
+  );
 
   return (
     <>
@@ -30,12 +41,33 @@ const Table = <T extends object>({
         <thead className="table-head">
           {headerGroups.map((headerGroup, index) => (
             <tr key={index} {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column, index) => {
-                const style: CSSProperties = (column as any).style;
+              {headerGroup.headers.map((column: any, index) => {
+                const style: CSSProperties = column.style as CSSProperties;
+                const sortIcon = hasSort && (
+                  <span className="table-head-th-container-arrow">
+                    {column.isSorted ? (
+                      column.isSortedDesc ? (
+                        <ArrowDownIcon height={18} width={18} />
+                      ) : (
+                        <ArrowUpIcon height={18} width={18} />
+                      )
+                    ) : (
+                      ""
+                    )}
+                  </span>
+                );
 
                 return (
-                  <th key={index} {...column.getHeaderProps()} style={{ ...style }}>
-                    {column.render("Header")}
+                  <th
+                    key={index}
+                    {...column.getHeaderProps(hasSort ? column.getSortByToggleProps() : {})}
+                    style={style}
+                  >
+                    <div className="table-head-th-container">
+                      {index !== 0 && sortIcon}
+                      {column.render("Header")}
+                      {index === 0 && sortIcon}
+                    </div>
                   </th>
                 );
               })}
