@@ -33,6 +33,13 @@ const columnsTransactions: Column[] | any = [
   },
 ];
 
+interface IDataItem {
+  chainId: number;
+  maxTransactionSize: number;
+  notionalLimit: number;
+  availableNotional: number;
+}
+
 interface IRow {
   availableNotional?: number;
   chainId?: {
@@ -207,7 +214,7 @@ const Governor = () => {
 
   useQuery(["getLimit"], () => getClient().governor.getLimit(), {
     onSuccess: data => {
-      const transformedData = data.map(item => ({
+      const transformedData = data.map((item: IDataItem) => ({
         chainId: {
           id: item.chainId,
           name: getChainName({ chainId: item.chainId, network: currentNetwork }),

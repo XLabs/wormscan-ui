@@ -1,5 +1,12 @@
 import { CSSProperties } from "react";
-import { useTable, Column, useSortBy, TableState } from "react-table";
+import {
+  useTable,
+  Column,
+  useSortBy,
+  TableState,
+  UseTableOptions,
+  UseSortByOptions,
+} from "react-table";
 import { ArrowDownIcon, ArrowUpIcon } from "@radix-ui/react-icons";
 import "./styles.scss";
 
@@ -31,7 +38,8 @@ const Table = <T extends object>({
       columns,
       data,
       initialState: initialState as Partial<TableState<T>>,
-    },
+      disableSortRemove: true,
+    } as UseTableOptions<T> & UseSortByOptions<T>,
     ...tableHooks,
   );
 
