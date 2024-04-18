@@ -32,8 +32,26 @@
     &:nth-child(2) {
       @include centered-column;
 
+      & > :first-child {
+        order: 2;
+      }
+
+      & > :nth-child(2) {
+        order: 1;
+      }
+
+      & > :nth-child(3) {
+        order: 3;
+      }
+
       @include desktop {
         flex-direction: row;
+
+        & > :first-child,
+        & > :nth-child(2),
+        & > :nth-child(3) {
+          order: unset;
+        }
       }
     }
 
@@ -64,11 +82,14 @@
       min-width: 264px;
 
       @include tablet {
-        gap: 128px;
+        gap: 100px;
       }
 
       @include desktop {
         gap: 32px;
+        justify-content: space-between;
+        max-width: 352px;
+        width: 25%;
       }
 
       &-container {
@@ -116,8 +137,8 @@
 
           & > svg {
             color: var(--color-secondary-800);
-            height: 16px;
-            width: 16px;
+            height: 20px;
+            width: 20px;
           }
         }
       }
@@ -131,6 +152,8 @@
 
       @include desktop {
         justify-content: flex-end;
+        max-width: 352px;
+        width: 25%;
       }
 
       @media (max-width: 1279px) {
