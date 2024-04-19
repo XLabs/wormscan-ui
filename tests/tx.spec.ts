@@ -17,10 +17,7 @@ describe("Tx Page", () => {
       const tx = txsURL[i];
       await page.goto(`${baseURL}/#/tx/${tx}`);
 
-      await Promise.race([
-        page.waitForSelector(".relayer-tx-overview"),
-        page.waitForSelector(".tx-overview"),
-      ]);
+      await Promise.race([page.waitForSelector(".tx-overview")]);
 
       // select all <a> elements in the tx-information.
       const links = await page.locator(".tx-information a").all();
@@ -40,13 +37,16 @@ describe("Tx Page", () => {
   test("check tx views overview/details", async ({ page, baseURL }) => {
     await page.goto(`${baseURL}/#/tx/${txsURL[1]}`);
 
-    await page.waitForSelector(".tx-tabs-sub-list");
-    await Promise.race([page.waitForSelector(".tx-details"), page.waitForSelector(".tx-overview")]);
+    await page.waitForSelector(".tx-tabs");
+    await Promise.race([
+      page.waitForSelector(".tx-advanced-view"),
+      page.waitForSelector(".tx-overview"),
+    ]);
 
-    await page.getByLabel("Details list").click();
-    await page.waitForSelector(".tx-details");
+    await page.getByLabel("Advanced View").click();
+    await page.waitForSelector(".tx-advanced-view");
 
-    await page.getByLabel("Overview").nth(1).click();
+    await page.getByLabel("Overview").click();
     await page.waitForSelector(".tx-overview");
   });
 });

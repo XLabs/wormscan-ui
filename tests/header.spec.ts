@@ -1,12 +1,18 @@
 import { test, expect, Response } from "@playwright/test";
 import { describe } from "node:test";
+import { WORMHOLE_DOCS_URL } from "../src/consts";
 
 const internalLinks = [
+  { name: "VAA Parser", href: "#/vaa-parser" },
   { name: "Wormhole Scan logo", href: "#/" },
-  { name: "Txs", href: "#/txs" },
+  { name: "Transactions", href: "#/txs" },
+  { name: "Governor", href: "#/governor" },
 ];
 
-const externalLinks = [{ name: "Go to Bridge", href: "https://www.portalbridge.com/" }];
+const externalLinks = [
+  { name: "API Docs", href: WORMHOLE_DOCS_URL },
+  { name: "Wormhole Docs", href: "https://docs.wormhole.com/wormhole" },
+];
 
 describe("Header", () => {
   test.beforeEach(async ({ page, baseURL }) => {
@@ -38,7 +44,7 @@ describe("Header", () => {
       while (retries < maxRetries) {
         try {
           const searchForm = page.getByTestId("search-form");
-          const searchInput = searchForm.getByPlaceholder("Search by TxHash / Address / VAA ID");
+          const searchInput = searchForm.getByPlaceholder("Search by Tx Hash / Address / VAA ID");
           const searchButton = searchForm.getByRole("button", { name: "search" });
 
           await searchInput.click();
@@ -108,37 +114,25 @@ describe("Header", () => {
     }
 
     test("search by txHash", async ({ page, baseURL }) => {
-      // search by txHash valid
       const txHash =
         "5rZmexGcA2eTttK1nihBGPMheho66dQjoNNg8TXYBCybiMS2cw5ZkRHPoL5E1dztWJmYkmmDN1tnRwkkeuSsTah8";
-      const txHashEndpoint = `https://api.staging.wormscan.io/api/v1/vaas/?txHash=${txHash}&parsedPayload=true`;
+      const txHashEndpoint = `https://api.staging.wormscan.io/api/v1/operations?page=0&pageSize=10&sortOrder=ASC&txHash=${txHash}`;
       const expectedURL = `${baseURL}/#/tx/${txHash}`;
-      await searchTxAndVerify(page, true, txHash, txHashEndpoint, "", expectedURL, true);
+      await searchTxAndVerify(page, false, txHash, txHashEndpoint, "", expectedURL, true);
     });
 
     test("search by address", async ({ page, baseURL }) => {
-      // search by address valid
       const address = "0x685104d2aaf736e4bfaa8480ea4006a6db0b4bb1";
-      const addressEndpoint = `https://api.staging.wormscan.io/api/v1/address/${address}`;
-      const addressEndpoint2 = `https://api.staging.wormscan.io/api/v1/transactions?address=${address}&page=0&pageSize=50&sortOrder=DESC`;
-      const expectedURL = `${baseURL}/#/txs?address=${address}`;
-      await searchTxAndVerify(
-        page,
-        false,
-        address,
-        addressEndpoint,
-        addressEndpoint2,
-        expectedURL,
-        true,
-      );
+      const addressEndpoint = `https://api.staging.wormscan.io/api/v1/operations?page=0&pageSize=50&sortOrder=DESC&address=${address}`;
+      const expectedURL = `${baseURL}/#/txs?address=${address}&network=MAINNET`;
+      await searchTxAndVerify(page, false, address, addressEndpoint, "", expectedURL, true);
     });
 
     test("search by VAA ID", async ({ page, baseURL }) => {
       const vaaId = "1/ec7372995d5cc8732397fb0ad35c0121e0eaa90d26f828a534cab54391b3a4f5/316347";
-      const vaaIdEndpoint = `https://api.staging.wormscan.io/api/v1/vaas/${vaaId}?parsedPayload=true&page=0&pageSize=10&sortOrder=ASC`;
-      const vaaIdEndpoint2 = `https://api.staging.wormscan.io/api/v1/transactions/${vaaId}?page=0&pageSize=10&sortOrder=ASC`;
+      const vaaIdEndpoint = `https://api.staging.wormscan.io/api/v1/operations/${vaaId}?page=0&pageSize=10&sortOrder=ASC`;
       const expectedURL = `${baseURL}/#/tx/${vaaId}`;
-      await searchTxAndVerify(page, false, vaaId, vaaIdEndpoint, vaaIdEndpoint2, expectedURL, true);
+      await searchTxAndVerify(page, false, vaaId, vaaIdEndpoint, "", expectedURL, true);
     });
   });
 
@@ -146,18 +140,24 @@ describe("Header", () => {
     test("check links in header", async ({ page, baseURL }) => {
       const header = page.getByTestId("header");
 
-      // check the internal links
       for (const internalLink of internalLinks) {
+        const dataState = await page.getAttribute(".dropdown-menu-trigger", "data-state");
+        if (dataState === "closed") {
+          await page.click(".dropdown-menu-trigger");
+        }
         await header.getByRole("link", { name: internalLink.name }).click();
         expect(page.url()).toBe(`${baseURL}/${internalLink.href}`);
       }
 
-      // check the external links
       for (const externalLink of externalLinks) {
+        const dataState = await page.getAttribute(".dropdown-menu-trigger", "data-state");
+        if (dataState === "closed") {
+          await page.click(".dropdown-menu-trigger");
+        }
         const pagePromise = page.waitForEvent("popup");
         await header.getByRole("link", { name: externalLink.name }).click();
         const pageOpen = await pagePromise;
-        expect(pageOpen.url()).toBe(externalLink.href);
+        expect(pageOpen.url().replace(/\/$/, "")).toBe(externalLink.href.replace(/\/$/, ""));
         await pageOpen.close();
       }
     });

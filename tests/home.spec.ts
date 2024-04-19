@@ -102,7 +102,7 @@ describe("Home Page", () => {
     test("pagination buttons", async ({ page }) => {
       const crossChainCard = page.getByTestId("cross-chain-card");
       const prevBtn = crossChainCard.getByRole("button", { name: "<" });
-      const paginationNumber = crossChainCard.locator(".pagination.number.current");
+      const paginationNumber = crossChainCard.locator(".pagination.current");
       const nextBtn = crossChainCard.getByRole("button", { name: ">" });
 
       // check if the buttons are disabled correctly
@@ -123,26 +123,6 @@ describe("Home Page", () => {
     });
   });
 
-  describe("Top 7 Chain pairs", () => {
-    test("check endpoint top 7 chain pairs for 7d-15d-30d", async ({ page }) => {
-      const topChainTimeRange = page.getByTestId("topChainTimeRange");
-      const selectElement = topChainTimeRange.locator(".select__control");
-      const selectMenuList = page.locator(".select__menu-list");
-
-      // check if the buttons/endpoints work correctly
-      async function checkTopChainPairs(selectItem: number, timeSpan: string) {
-        await selectElement.click();
-        await selectMenuList.locator("div").nth(selectItem).click();
-        const endpoint = `https://api.staging.wormscan.io/api/v1/top-chain-pairs-by-num-transfers?timeSpan=${timeSpan}`;
-        await page.waitForResponse(endpoint);
-      }
-
-      await checkTopChainPairs(2, "30d");
-      await checkTopChainPairs(1, "15d");
-      await checkTopChainPairs(0, "7d");
-    });
-  });
-
   describe("Top 7 assets", () => {
     test("check endpoint top 7 assets for 7d-15d-30d", async ({ page }) => {
       const topChainTimeRange = page.getByTestId("topAssetTimeRange");
@@ -153,23 +133,13 @@ describe("Home Page", () => {
       async function checkTop7Assets(selectItem: number, timeSpan: string) {
         await selectElement.click();
         await selectMenuList.locator("div").nth(selectItem).click();
-        const endpoint = `https://api.staging.wormscan.io/api/v1/top-assets-by-volume?timeSpan=${timeSpan}`;
+        const endpoint = `https://api.staging.wormscan.io/api/v1/top-symbols-by-volume?timeSpan=${timeSpan}`;
         await page.waitForResponse(endpoint);
       }
 
       await checkTop7Assets(2, "30d");
       await checkTop7Assets(1, "15d");
       await checkTop7Assets(0, "7d");
-    });
-  });
-
-  describe("Join Discord", () => {
-    test("check discord link", async ({ page }) => {
-      const pagePromise = page.waitForEvent("popup");
-      await page.getByTestId("join-discord-button").click();
-      const pageOpen = await pagePromise;
-      expect(pageOpen.url()).toBe(DISCORD_URL);
-      await pageOpen.close();
     });
   });
 });

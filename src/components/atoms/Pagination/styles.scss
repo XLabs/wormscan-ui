@@ -1,83 +1,61 @@
 @import "src/styles/globals.scss";
 
 .pagination {
-  display: flex;
   color: var(--color-secondary-800);
-  min-height: 38px;
+  display: flex;
   font-size: 15px;
+  min-height: 38px;
 
   & > * {
     @include text-p2;
-
-    font-weight: 600;
-    display: inline-block;
-    text-align: center;
-    padding: 10px;
-    border: 1px solid var(--color-white-10);
     background: var(--color-black-20);
+    border: 1px solid var(--color-white-10);
+    display: inline-block;
+    font-weight: 600;
     min-width: 40px;
+    padding: 10px;
+    text-align: center;
   }
 
   & > button {
     @include text-p2;
-
-    font-weight: 600;
     color: var(--color-secondary-800);
     cursor: pointer;
-  }
+    font-weight: 600;
 
-  & > *:first-child {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-  }
+    &:first-child {
+      border-bottom-left-radius: 4px;
+      border-top-left-radius: 4px;
+    }
 
-  & > *:last-child {
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-  }
-
-  & > button:hover {
-    background: var(--color-white-10);
+    &:last-child {
+      border-bottom-right-radius: 4px;
+      border-top-right-radius: 4px;
+    }
 
     &:disabled {
-      background: none;
+      cursor: not-allowed;
     }
-  }
 
-  & > button:active {
-    background-color: var(--color-secondary-800);
-    color: var(--color-primary-30);
-  }
-
-  & > *:disabled {
-    color: var(--color-white-20);
-    cursor: not-allowed;
-
-    &:active {
+    &:not(.current):disabled {
       color: var(--color-white-20);
     }
-  }
 
-  &.number {
-    &.page {
-      color: var(--color-white-20);
-
-      &:active {
-        background-color: var(--color-secondary-800);
-        color: var(--color-primary-30);
-      }
+    &:not(:disabled):hover {
+      background-color: var(--color-white-10);
     }
 
-    &.current {
+    &:not(:disabled):active {
+      background-color: var(--color-secondary-800);
       color: var(--color-primary-30);
-
-      &:active {
-        background-color: none;
-      }
     }
   }
 
-  &-last-page {
-    pointer-events: none;
+  & .page {
+    color: var(--color-white-20);
+  }
+
+  & .current {
+    color: var(--color-primary-30);
   }
 }

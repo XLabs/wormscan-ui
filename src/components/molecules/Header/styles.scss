@@ -237,7 +237,7 @@
       position: absolute;
       z-index: 3;
 
-      background-color: var(--color-primary-950);
+      background-color: var(--color-primary-900);
 
       display: flex;
       flex-direction: column;
@@ -246,12 +246,13 @@
 
       .header-navigation-item {
         align-items: center;
-        background-color: var(--color-primary-950);
+        background-color: var(--color-primary-900);
         justify-content: center;
         width: 130px;
 
         .active {
           background-color: var(--color-secondary-800);
+          color: var(--color-white);
           font-weight: 600;
         }
 
