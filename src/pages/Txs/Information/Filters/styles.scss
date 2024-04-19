@@ -67,8 +67,10 @@
       inset: 48px 0 0 0;
 
       @include desktop {
+        // TODO: fix blue on Safari
         backdrop-filter: blur(48px);
         background-color: var(--color-white-03);
+        -webkit-backdrop-filter: blur(48px) !important;
         border-radius: 5px;
         border: 2px solid var(--color-white-10);
         display: block;
