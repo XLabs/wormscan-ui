@@ -27,7 +27,63 @@ interface ISolanaCctpResponse {
   timestamp: Date;
 }
 
+export interface IArkhamInfoByChain {
+  address?: string;
+  chain?: string;
+  arkhamEntity?: {
+    name?: string;
+    note?: string;
+    id?: string;
+    type?: string;
+    service?: any;
+    addresses?: any;
+    website?: string;
+    twitter?: string;
+    crunchbase?: string;
+  };
+  isUserAddress?: boolean;
+  contract?: boolean;
+  populatedTags: Array<{
+    id: string;
+    label?: string;
+    rank?: number;
+    excludeEntities: boolean;
+    chain?: string;
+    disablePage?: boolean;
+  }>;
+}
+export interface IArkhamResponse {
+  ethereum?: IArkhamInfoByChain;
+  bsc?: IArkhamInfoByChain;
+  polygon?: IArkhamInfoByChain;
+  arbitrum_one?: IArkhamInfoByChain;
+  avalanche?: IArkhamInfoByChain;
+  optimism?: IArkhamInfoByChain;
+  bitcoin?: IArkhamInfoByChain;
+  tron?: IArkhamInfoByChain;
+  base?: IArkhamInfoByChain;
+  flare?: IArkhamInfoByChain;
+}
+
 const BFF_URL = process.env.WORMSCAN_BFF_URL;
+
+export const tryGetAddressInfo = async (
+  network: Network,
+  address: string,
+): Promise<IArkhamResponse> => {
+  try {
+    const addressInfoResp = await fetch(
+      `${BFF_URL}/getAddressInfo?network=${network}&address=${address}`,
+    );
+
+    if (!addressInfoResp.ok) return null;
+
+    const addressInfo = (await addressInfoResp.json()) as IArkhamResponse;
+    return addressInfo ? addressInfo : null;
+  } catch (e) {
+    return null;
+  }
+};
 
 export const tryGetRedeemTxn = async (
   network: Network,

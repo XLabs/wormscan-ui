@@ -37,7 +37,11 @@ import {
 } from "src/utils/genericRelayerVaaUtils";
 import { tryGetRedeemTxn } from "src/utils/cryptoToolkit";
 import { getPorticoInfo } from "src/utils/wh-portico-rpc";
-import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
+import {
+  addressesInfoState,
+  showSourceTokenUrlState,
+  showTargetTokenUrlState,
+} from "src/utils/recoilStates";
 import { GetBlockData } from "src/api/search/types";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
@@ -64,6 +68,7 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
 
   const [showSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
   const [showTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
+  const [addressesInfo] = useRecoilState(addressesInfoState);
 
   const [showOverview, setShowOverviewState] = useState(searchParams.get("view") !== "advanced");
   const setShowOverview = (show: boolean) => {
@@ -312,6 +317,7 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
     tokenAmount,
     tokenInfo,
     totalGuardiansNeeded,
+    addressesInfo,
     VAAId,
   };
 

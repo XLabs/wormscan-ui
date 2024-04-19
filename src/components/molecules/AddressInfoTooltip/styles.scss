@@ -1,0 +1,83 @@
+@import "src/styles/globals.scss";
+
+.address-tooltip {
+  color: var(--color-primary-30);
+
+  &-content {
+    width: 450px;
+    background-color: var(--color-primary-700);
+    padding: 6px;
+  }
+
+  &-closeIcon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+
+    cursor: pointer;
+  }
+}
+
+.address-chain-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid var(--color-primary-300);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &-entity {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+
+    a {
+      color: var(--color-secondary-600);
+      height: 20px;
+      width: 20px;
+
+      &:hover {
+        text-decoration: underline;
+        color: var(--color-primary-50);
+      }
+    }
+
+    &-data {
+      display: flex;
+      flex-direction: column;
+
+      &-name {
+        font-size: 16px;
+      }
+    }
+  }
+
+  &-tags {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 3px;
+
+    &-tag {
+      border-radius: 8px;
+      background-color: var(--color-primary-600);
+      font-size: 16px;
+
+      padding-left: 4px;
+      padding-right: 4px;
+      width: fit-content;
+    }
+  }
+}
+
+.info-tooltip-icon {
+  color: var(--color-primary-50);
+  cursor: pointer;
+}

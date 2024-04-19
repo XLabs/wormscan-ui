@@ -22,10 +22,19 @@ import { GetBlockData } from "src/api/search/types";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import { getChainName } from "src/utils/wormhole";
-import { getAlgorandTokenInfo, getSolanaCctp, tryGetWrappedToken } from "src/utils/cryptoToolkit";
+import {
+  getAlgorandTokenInfo,
+  getSolanaCctp,
+  tryGetAddressInfo,
+  tryGetWrappedToken,
+} from "src/utils/cryptoToolkit";
 import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import { useRecoilState } from "recoil";
-import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
+import {
+  showSourceTokenUrlState,
+  showTargetTokenUrlState,
+  addressesInfoState,
+} from "src/utils/recoilStates";
 import { getNttInfo } from "src/utils/wh-ntt-rpc";
 import {
   CCTP_APP_ID,
@@ -56,6 +65,7 @@ const Tx = () => {
 
   const [, setShowSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
   const [, setShowTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
+  const [, setShowAddressesInfo] = useRecoilState(addressesInfoState);
 
   // pattern match the search value to see if it's a candidate for being an EVM transaction hash.
   const search = txHash ? (txHash.startsWith("0x") ? txHash : "0x" + txHash) : "";
@@ -621,8 +631,6 @@ const Tx = () => {
             const toChain =
               data?.content?.standarizedProperties?.toChain || data?.targetChain?.chainId;
 
-            console.log("hola yeezy");
-
             const wrapped = tokenChain !== toChain ? "target" : "source";
 
             // wormhole gateway detect (for ibc token)
@@ -862,16 +870,35 @@ const Tx = () => {
 
       setTxData(apiTxData);
       setIsLoading(false);
+
+      for (const data of apiTxData) {
+        const emitterAddress = data?.emitterAddress?.native;
+        const targetAddress = data?.content?.standarizedProperties?.toAddress;
+        const sourceAddress =
+          data?.sourceChain?.from || data?.content?.standarizedProperties?.fromAddress;
+
+        const emitterInfo = emitterAddress
+          ? await tryGetAddressInfo(network, emitterAddress)
+          : null;
+        const targetInfo = targetAddress ? await tryGetAddressInfo(network, targetAddress) : null;
+        const sourceInfo = sourceAddress ? await tryGetAddressInfo(network, sourceAddress) : null;
+
+        setShowAddressesInfo({
+          contract: emitterInfo,
+          destination: targetInfo,
+          source: sourceInfo,
+        });
+      }
     },
     [
-      chainLimitsData,
       emitterChainId,
-      environment,
-      isEvmTxHash,
       network,
+      environment,
       setShowSourceTokenUrl,
       setShowTargetTokenUrl,
-      setShouldTryToGetRpcInfo,
+      chainLimitsData,
+      isEvmTxHash,
+      setShowAddressesInfo,
     ],
   );
 
