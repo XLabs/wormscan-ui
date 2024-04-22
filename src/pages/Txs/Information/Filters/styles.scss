@@ -56,7 +56,16 @@
     z-index: 1;
 
     @include desktop {
+      backdrop-filter: blur(48px);
+      background-color: var(--color-white-03);
+      -webkit-backdrop-filter: blur(48px) !important;
+      border-radius: 5px;
+      border: 2px solid var(--color-white-10);
       display: none;
+      inset: unset;
+      left: 0;
+      position: absolute;
+      transition: none;
 
       & header {
         display: none;
@@ -67,18 +76,9 @@
       inset: 48px 0 0 0;
 
       @include desktop {
-        // TODO: fix blue on Safari
-        backdrop-filter: blur(48px);
-        background-color: var(--color-white-03);
-        -webkit-backdrop-filter: blur(48px) !important;
-        border-radius: 5px;
-        border: 2px solid var(--color-white-10);
         display: block;
         inset: unset;
-        left: 0;
-        position: absolute;
         top: 52px;
-        transition: none;
 
         @media (max-width: 1190px) {
           transform: translateX(-170px);
