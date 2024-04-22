@@ -621,8 +621,6 @@ const Tx = () => {
             const toChain =
               data?.content?.standarizedProperties?.toChain || data?.targetChain?.chainId;
 
-            console.log("hola yeezy");
-
             const wrapped = tokenChain !== toChain ? "target" : "source";
 
             // wormhole gateway detect (for ibc token)
