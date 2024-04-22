@@ -7,6 +7,7 @@ type Props = {
   children: React.ReactNode;
   className?: string;
   controlled?: boolean;
+  enableTooltip?: boolean;
   maxWidth?: boolean;
   open?: boolean;
   side?: "top" | "right" | "bottom" | "left";
@@ -18,6 +19,7 @@ const Tooltip = ({
   children,
   className = "",
   controlled = false,
+  enableTooltip = true,
   maxWidth = true,
   open = false,
   side = "right",
@@ -55,6 +57,10 @@ const Tooltip = ({
   const handleSetIsOpen = (isOpen: boolean) => {
     controlled === false && setIsOpen(isOpen);
   };
+
+  if (!enableTooltip) {
+    return <>{children}</>;
+  }
 
   return (
     <TooltipPrimitive.Provider>

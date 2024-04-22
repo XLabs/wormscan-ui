@@ -11,7 +11,7 @@ describe("Txs Page", () => {
     const retryDelay = 5000;
     const maxRetries = 3;
     const txsEndpoint =
-      "https://api.staging.wormscan.io/api/v1/transactions?page=0&pageSize=50&sortOrder=DESC";
+      "https://api.staging.wormscan.io/api/v1/operations?page=0&pageSize=50&sortOrder=DESC";
     let response: Response | undefined;
     let retries = 0;
 
@@ -93,7 +93,7 @@ describe("Txs Page", () => {
         if (txHashText !== "-") {
           const txHashHref = await txHashElement.locator("a.navlink").getAttribute("href");
 
-          await page.click(`tbody tr:nth-child(${i})`);
+          await page.click(`tbody tr:nth-child(${i}) td:not(:has(a))`);
 
           expect(page.url()).toBe(`${baseURL}/${txHashHref}`);
 

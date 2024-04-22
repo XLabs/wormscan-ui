@@ -1,7 +1,6 @@
 import { CheckIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import { ChainId } from "src/api";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import {
@@ -13,7 +12,7 @@ import {
   NTT_APP_ID,
   PORTAL_APP_ID,
   GR_APP_ID,
-  UNKNOWN_APP_ID,
+  // UNKNOWN_APP_ID, disabled until the backend is ready
   GATEWAY_APP_ID,
 } from "src/consts";
 import { formatAppId } from "src/utils/crypto";
@@ -52,7 +51,7 @@ const appIds = [
   NTT_APP_ID,
   PORTAL_APP_ID,
   GR_APP_ID,
-  UNKNOWN_APP_ID,
+  // UNKNOWN_APP_ID, disabled until the backend is ready
   GATEWAY_APP_ID,
 ];
 
@@ -161,14 +160,11 @@ const Filters = () => {
     if (isMobile) {
       if (showFilters) {
         document.body.style.overflow = "hidden";
-        document.documentElement.style.scrollbarGutter = "inherit";
       } else {
         document.body.style.overflow = "unset";
-        document.documentElement.style.scrollbarGutter = "stable";
       }
     } else {
       document.body.style.overflow = "unset";
-      document.documentElement.style.scrollbarGutter = "stable";
     }
 
     setCheckedState({
@@ -217,25 +213,22 @@ const Filters = () => {
     setCheckedState(prevState => {
       const newState: any = { ...prevState };
 
-      if (key === EXCLUSIVE_APP_ID_STRING && !newState.appId) {
-        toast("Please select a protocol first", {
-          type: "error",
-          theme: "dark",
-          style: {
-            background: "var(--color-primary-500)",
-            color: "var(--color-primary-10)",
-          },
-        });
-        return newState;
-      }
-
-      if (key === APP_ID_STRING && value === newState.appId && newState.exclusiveAppId) {
+      if (key === APP_ID_STRING && newState.exclusiveAppId) {
         newState.exclusiveAppId = null;
       }
 
       newState[key] = newState[key] === value ? null : value;
 
       return newState;
+    });
+  };
+
+  const clearFilters = () => {
+    setCheckedState({
+      appId: null,
+      exclusiveAppId: null,
+      sourceChain: null,
+      targetChain: null,
     });
   };
 
@@ -286,26 +279,6 @@ const Filters = () => {
                   </span>
                 )}
               </p>
-
-              <Tooltip
-                className="filters-container-box-top-tooltip"
-                tooltip={
-                  <div>Show only the selected protocol, without any additional protocols.</div>
-                }
-                type="info"
-              >
-                <label
-                  className="filters-container-box-content-item"
-                  onClick={() => handleFilters(EXCLUSIVE_APP_ID_STRING, "true")}
-                >
-                  <p>
-                    <span>Exclusive</span>
-                  </p>
-                  <div className={`custom-input ${checkedState.exclusiveAppId ? "checked" : ""}`}>
-                    {checkedState.exclusiveAppId && <CheckIcon height={14} width={14} />}
-                  </div>
-                </label>
-              </Tooltip>
             </div>
 
             <div
@@ -313,7 +286,7 @@ const Filters = () => {
               style={{ height: isMobile ? (showMore.appId ? appIds.length * 32 : 160) : 190 }}
             >
               {appIds.map(appId => (
-                <label
+                <div
                   className="filters-container-box-content-item"
                   key={appId}
                   onClick={() => handleFilters(APP_ID_STRING, appId)}
@@ -321,10 +294,43 @@ const Filters = () => {
                   <p>
                     <span>{formatAppId(appId)}</span>
                   </p>
+
+                  {appId === checkedState.appId &&
+                    (appId === MAYAN_APP_ID ||
+                      appId === PORTAL_APP_ID ||
+                      appId === NTT_APP_ID ||
+                      appId === GR_APP_ID) && (
+                      <Tooltip
+                        className="filters-container-box-top-tooltip"
+                        tooltip={
+                          <div>
+                            Show only {formatAppId(appId)}, without any additional protocols.
+                          </div>
+                        }
+                        type="info"
+                      >
+                        <div
+                          className="filters-container-box-content-item-exclusive"
+                          onClick={e => {
+                            e.stopPropagation();
+                            return handleFilters(EXCLUSIVE_APP_ID_STRING, "true");
+                          }}
+                        >
+                          <div
+                            className={`custom-input ${
+                              checkedState.exclusiveAppId ? "checked" : ""
+                            }`}
+                          >
+                            {checkedState.exclusiveAppId && <CheckIcon height={14} width={14} />}
+                          </div>
+                        </div>
+                      </Tooltip>
+                    )}
+
                   <div className={`custom-input ${checkedState.appId === appId ? "checked" : ""}`}>
                     {checkedState.appId === appId && <CheckIcon height={14} width={14} />}
                   </div>
-                </label>
+                </div>
               ))}
             </div>
 
@@ -351,35 +357,42 @@ const Filters = () => {
               }}
             >
               {orderedChains.map(value => (
-                <label
-                  className="filters-container-box-content-item"
+                <Tooltip
                   key={value}
-                  onClick={() => handleFilters(SOURCE_CHAIN_STRING, value)}
+                  enableTooltip={value === ChainId.Wormchain}
+                  tooltip={<div>This chain includes Injective, Osmosis, Kujira, and Evmos.</div>}
+                  type="info"
                 >
-                  <p>
-                    <BlockchainIcon
-                      background="var(--color-white-10)"
-                      chainId={value as ChainId}
-                      className="chain-icon"
-                      colorless={true}
-                      network={currentNetwork}
-                      size={24}
-                    />
-                    <span>
-                      {getChainName({
-                        network: currentNetwork,
-                        chainId: value as ChainId,
-                      })}
-                    </span>
-                  </p>
                   <div
-                    className={`custom-input ${
-                      checkedState.sourceChain === value ? "checked" : ""
-                    }`}
+                    key={value}
+                    className="filters-container-box-content-item"
+                    onClick={() => handleFilters(SOURCE_CHAIN_STRING, value)}
                   >
-                    {checkedState.sourceChain === value && <CheckIcon height={14} width={14} />}
+                    <p>
+                      <BlockchainIcon
+                        background="var(--color-white-10)"
+                        chainId={value}
+                        className="chain-icon"
+                        colorless={true}
+                        network={currentNetwork}
+                        size={24}
+                      />
+                      <span>
+                        {getChainName({
+                          network: currentNetwork,
+                          chainId: value,
+                        })}
+                      </span>
+                    </p>
+                    <div
+                      className={`custom-input ${
+                        checkedState.sourceChain === value ? "checked" : ""
+                      }`}
+                    >
+                      {checkedState.sourceChain === value && <CheckIcon height={14} width={14} />}
+                    </div>
                   </div>
-                </label>
+                </Tooltip>
               ))}
             </div>
 
@@ -405,35 +418,42 @@ const Filters = () => {
               }}
             >
               {orderedChains.map(value => (
-                <label
-                  className="filters-container-box-content-item"
+                <Tooltip
                   key={value}
-                  onClick={() => handleFilters(TARGET_CHAIN_STRING, value)}
+                  enableTooltip={value === ChainId.Wormchain}
+                  tooltip={<div>This chain includes Injective, Osmosis, Kujira, and Evmos.</div>}
+                  type="info"
                 >
-                  <p>
-                    <BlockchainIcon
-                      background="var(--color-white-10)"
-                      chainId={value as ChainId}
-                      className="chain-icon"
-                      colorless={true}
-                      network={currentNetwork}
-                      size={24}
-                    />
-                    <span>
-                      {getChainName({
-                        network: currentNetwork,
-                        chainId: value as ChainId,
-                      })}
-                    </span>
-                  </p>
                   <div
-                    className={`custom-input ${
-                      checkedState.targetChain === value ? "checked" : ""
-                    }`}
+                    key={value}
+                    className="filters-container-box-content-item"
+                    onClick={() => handleFilters(TARGET_CHAIN_STRING, value)}
                   >
-                    {checkedState.targetChain === value && <CheckIcon height={14} width={14} />}
+                    <p>
+                      <BlockchainIcon
+                        background="var(--color-white-10)"
+                        chainId={value}
+                        className="chain-icon"
+                        colorless={true}
+                        network={currentNetwork}
+                        size={24}
+                      />
+                      <span>
+                        {getChainName({
+                          network: currentNetwork,
+                          chainId: value,
+                        })}
+                      </span>
+                    </p>
+                    <div
+                      className={`custom-input ${
+                        checkedState.targetChain === value ? "checked" : ""
+                      }`}
+                    >
+                      {checkedState.targetChain === value && <CheckIcon height={14} width={14} />}
+                    </div>
                   </div>
-                </label>
+                </Tooltip>
               ))}
             </div>
 
@@ -456,6 +476,10 @@ const Filters = () => {
             {totalFilterCounter > 0 && (
               <span className="counter inverted mobile">{totalFilterCounter}</span>
             )}
+          </button>
+
+          <button className="filters-container-bottom-close-btn" onClick={clearFilters}>
+            Clear
           </button>
 
           <button
