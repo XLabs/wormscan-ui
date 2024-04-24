@@ -31,16 +31,18 @@ import {
 } from "src/consts";
 
 export interface TransactionOutput {
-  VAAId: string;
-  justAppeared: boolean;
-  txHashId: string;
-  txHash: React.ReactNode;
+  amount: React.ReactNode;
   from: React.ReactNode;
-  to: React.ReactNode;
+  inOut?: React.ReactNode;
+  justAppeared: boolean;
+  originApp: React.ReactNode;
   status: React.ReactNode;
   statusString: string;
-  amount: React.ReactNode;
   time: Date | string;
+  to: React.ReactNode;
+  txHash: React.ReactNode;
+  txHashId: string;
+  VAAId: string;
 }
 
 export const PAGE_SIZE = 50;
@@ -242,6 +244,9 @@ const Txs = () => {
                 : parsedDestinationAddress;
               // -----
 
+              const isOutflow = sourceAddress === address;
+              const isInOut = sourceAddress === targetAddress;
+
               // --- Status Logic
               const isCCTP = appIds?.includes(CCTP_APP_ID);
               const isConnect = appIds?.includes(CONNECT_APP_ID);
@@ -355,6 +360,7 @@ const Txs = () => {
                     </div>
                   </div>
                 ),
+                inOut: <></>,
                 to: (
                   <div className="tx-to">
                     {toChain ? (
@@ -411,6 +417,14 @@ const Txs = () => {
                 ),
                 time: (timestampDate && timeAgo(timestampDate)) || "-",
               };
+
+              if (address) {
+                row.inOut = (
+                  <div className={`tx-flow tx-flow-${isInOut ? "self" : isOutflow ? "out" : "in"}`}>
+                    {isInOut ? "SELF" : isOutflow ? "OUT" : "IN"}
+                  </div>
+                );
+              }
 
               tempRows.push(row);
             })

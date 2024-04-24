@@ -122,6 +122,34 @@
           gap: 12px;
         }
       }
+
+      .tx-flow {
+        border-radius: 5px;
+        border: 1px solid transparent;
+        font-size: 10px;
+        font-weight: 600;
+        margin: auto;
+        padding: 2px 0;
+        width: 40px;
+
+        &-in {
+          background-color: var(--color-success-10);
+          border-color: var(--color-success-20);
+          color: var(--color-success-100);
+        }
+
+        &-out {
+          background-color: var(--color-alert-10);
+          border-color: var(--color-alert-20);
+          color: var(--color-alert-100);
+        }
+
+        &-self {
+          background-color: var(--color-white-10);
+          border-color: var(--color-white-20);
+          color: var(--color-white);
+        }
+      }
     }
   }
 

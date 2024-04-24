@@ -8,36 +8,47 @@ import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
 import Filters from "./Filters";
 import "./styles.scss";
 
-const columns: Column<TransactionOutput>[] | any = [
-  {
-    Header: "STATUS",
-    accessor: "status",
-  },
-  {
-    Header: "SOURCE TX HASH",
-    accessor: "txHash",
-  },
-  {
-    Header: "FROM",
-    accessor: "from",
-  },
-  {
-    Header: "TO",
-    accessor: "to",
-  },
-  {
-    Header: "PROTOCOL",
-    accessor: "originApp",
-  },
-  {
-    Header: "TYPE",
-    accessor: "amount",
-  },
-  {
-    Header: "TIME",
-    accessor: "time",
-  },
-];
+const getColumns = (condition: boolean): Column<TransactionOutput>[] => {
+  const baseColumns: Column<TransactionOutput>[] = [
+    {
+      Header: "STATUS",
+      accessor: "status",
+    },
+    {
+      Header: "SOURCE TX HASH",
+      accessor: "txHash",
+    },
+    {
+      Header: "FROM",
+      accessor: "from",
+    },
+    {
+      Header: "TO",
+      accessor: "to",
+    },
+    {
+      Header: "PROTOCOL",
+      accessor: "originApp",
+    },
+    {
+      Header: "TYPE",
+      accessor: "amount",
+    },
+    {
+      Header: "TIME",
+      accessor: "time",
+    },
+  ];
+
+  if (condition) {
+    baseColumns.splice(3, 0, {
+      Header: "",
+      accessor: "inOut",
+    });
+  }
+
+  return baseColumns;
+};
 
 interface Props {
   currentPage: number;
@@ -60,6 +71,7 @@ const Information = ({
   setIsPaginationLoading,
   setLiveMode,
 }: Props) => {
+  const columns = getColumns(isTxsFiltered);
   const navigate = useNavigateCustom();
   const location = useLocation();
   const currentUrlPage = +new URLSearchParams(location.search).get("page") || 1;
@@ -136,6 +148,7 @@ const Information = ({
           data={parsedTxsData}
           emptyMessage="No transactions found."
           isLoading={isPaginationLoading}
+          numberOfColumns={isTxsFiltered ? 8 : 7}
           onRowClick={onRowClick}
         />
       </div>

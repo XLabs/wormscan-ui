@@ -38,4 +38,5 @@ export enum ChainId {
   BaseSepolia = 10004,
   OptimismSepolia = 10005,
   Holesky = 10006,
+  PolygonSepolia = 10007,
 }
