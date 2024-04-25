@@ -29,6 +29,7 @@ const Tooltip = ({
   type = "default",
 }: Props) => {
   const [isOpen, setIsOpen] = useState(controlled ? open : undefined);
+  const triggerRef = useRef(null);
   const tooltipRef = useRef(null);
   const selectSide = type === "info" ? "top" : side;
 
@@ -39,20 +40,18 @@ const Tooltip = ({
   useEffect(() => {
     if (controlled || window.innerWidth >= BREAKPOINTS.desktop) return;
 
-    const handleScroll = () => {
-      if (
-        tooltipRef.current &&
-        (tooltipRef.current.getBoundingClientRect().top < -50 ||
-          tooltipRef.current.getBoundingClientRect().bottom > window.innerHeight + 50)
-      ) {
+    const handleInteraction = (e: MouseEvent | TouchEvent) => {
+      if (triggerRef?.current && !triggerRef.current.contains(e.target)) {
         setIsOpen(false);
       }
     };
 
-    window.addEventListener("scroll", handleScroll, true);
+    document.addEventListener("mousedown", handleInteraction);
+    document.addEventListener("touchstart", handleInteraction);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll, true);
+      document.removeEventListener("mousedown", handleInteraction);
+      document.removeEventListener("touchstart", handleInteraction);
     };
   }, [controlled]);
 
@@ -82,6 +81,7 @@ const Tooltip = ({
       <TooltipPrimitive.Root open={isOpen}>
         <TooltipPrimitive.Trigger
           asChild
+          ref={triggerRef}
           onMouseEnter={() => handleSetIsOpen(true)}
           onMouseLeave={() => handleSetIsOpen(false)}
           onFocus={() => handleSetIsOpen(true)}
