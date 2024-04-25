@@ -295,47 +295,49 @@ const Filters = () => {
                     <span>{formatAppId(appId)}</span>
                   </p>
 
-                  {appId === checkedState.appId &&
-                    (appId === MAYAN_APP_ID ||
-                      appId === PORTAL_APP_ID ||
-                      appId === NTT_APP_ID ||
-                      appId === GR_APP_ID) && (
-                      <Tooltip
-                        className="filters-container-box-top-tooltip"
-                        tooltip={
-                          <div>
-                            Displays only {formatAppId(appId)} transactions.
-                            <br />
-                            E.g.{" "}
+                  {appId === checkedState.appId && (
+                    <Tooltip
+                      className="filters-container-box-top-tooltip"
+                      enableTooltip={
+                        appId === MAYAN_APP_ID ||
+                        appId === PORTAL_APP_ID ||
+                        appId === NTT_APP_ID ||
+                        appId === GR_APP_ID
+                      }
+                      tooltip={
+                        <div>
+                          Displays only {formatAppId(appId)} transactions.
+                          <br />
+                          E.g.{" "}
+                          {
                             {
-                              {
-                                [MAYAN_APP_ID]: "Mayan",
-                                [PORTAL_APP_ID]: "Portal Token Bridge",
-                                [NTT_APP_ID]: "Native Token Transfer",
-                                [GR_APP_ID]: "Standard Relayer",
-                              }[appId]
-                            }
-                          </div>
-                        }
-                        type="info"
+                              [MAYAN_APP_ID]: "Mayan",
+                              [PORTAL_APP_ID]: "Portal Token Bridge",
+                              [NTT_APP_ID]: "Native Token Transfer",
+                              [GR_APP_ID]: "Standard Relayer",
+                            }[appId]
+                          }
+                        </div>
+                      }
+                      type="info"
+                    >
+                      <div
+                        className="filters-container-box-content-item-exclusive"
+                        onClick={e => {
+                          e.stopPropagation();
+                          return handleFilters(EXCLUSIVE_APP_ID_STRING, "true");
+                        }}
                       >
                         <div
-                          className="filters-container-box-content-item-exclusive"
-                          onClick={e => {
-                            e.stopPropagation();
-                            return handleFilters(EXCLUSIVE_APP_ID_STRING, "true");
-                          }}
+                          className={`custom-input-checkbox ${
+                            checkedState.exclusiveAppId ? "checked" : ""
+                          }`}
                         >
-                          <div
-                            className={`custom-input-checkbox ${
-                              checkedState.exclusiveAppId ? "checked" : ""
-                            }`}
-                          >
-                            {checkedState.exclusiveAppId && <CheckIcon height={14} width={14} />}
-                          </div>
+                          {checkedState.exclusiveAppId && <CheckIcon height={14} width={14} />}
                         </div>
-                      </Tooltip>
-                    )}
+                      </div>
+                    </Tooltip>
+                  )}
 
                   <Tooltip
                     className="filters-container-box-top-tooltip"
