@@ -38,25 +38,16 @@ const Tooltip = ({
   useEffect(() => {
     if (controlled || window.innerWidth >= BREAKPOINTS.desktop) return;
 
-    const handleScroll = () => {
-      const rect = tooltipRef.current?.getBoundingClientRect();
-      if (rect && (rect.bottom < 0 || rect.top > window.innerHeight)) {
-        setIsOpen(false);
-      }
-    };
-
     const handleInteraction = (e: MouseEvent | TouchEvent) => {
-      if (triggerRef.current && !triggerRef.current.contains(e.target as Node)) {
+      if (triggerRef?.current && !triggerRef.current.contains(e.target)) {
         setIsOpen(false);
       }
     };
 
-    window.addEventListener("scroll", handleScroll, true);
     document.addEventListener("mousedown", handleInteraction);
     document.addEventListener("touchstart", handleInteraction);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll, true);
       document.removeEventListener("mousedown", handleInteraction);
       document.removeEventListener("touchstart", handleInteraction);
     };
