@@ -40,8 +40,8 @@ const Tooltip = ({
     const handleScroll = () => {
       if (
         tooltipRef.current &&
-        (tooltipRef.current.getBoundingClientRect().top < -50 ||
-          tooltipRef.current.getBoundingClientRect().bottom > window.innerHeight + 50)
+        (tooltipRef.current.getBoundingClientRect().top ||
+          tooltipRef.current.getBoundingClientRect().bottom)
       ) {
         setIsOpen(false);
       }

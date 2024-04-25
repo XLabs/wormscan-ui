@@ -287,7 +287,7 @@ const Filters = () => {
             >
               {appIds.map(appId => (
                 <div
-                  className="filters-container-box-content-item"
+                  className="filters-container-box-content-item protocol-filter"
                   key={appId}
                   onClick={() => handleFilters(APP_ID_STRING, appId)}
                 >
@@ -327,7 +327,7 @@ const Filters = () => {
                           }}
                         >
                           <div
-                            className={`custom-input ${
+                            className={`custom-input-checkbox ${
                               checkedState.exclusiveAppId ? "checked" : ""
                             }`}
                           >
@@ -362,10 +362,14 @@ const Filters = () => {
                     }
                     type="info"
                   >
-                    <div
-                      className={`custom-input ${checkedState.appId === appId ? "checked" : ""}`}
-                    >
-                      {checkedState.appId === appId && <CheckIcon height={14} width={14} />}
+                    <div className="custom-input">
+                      <div
+                        className={`custom-input-checkbox ${
+                          checkedState.appId === appId ? "checked" : ""
+                        }`}
+                      >
+                        {checkedState.appId === appId && <CheckIcon height={14} width={14} />}
+                      </div>
                     </div>
                   </Tooltip>
                 </div>
@@ -423,7 +427,7 @@ const Filters = () => {
                       </span>
                     </p>
                     <div
-                      className={`custom-input ${
+                      className={`custom-input-checkbox ${
                         checkedState.sourceChain === value ? "checked" : ""
                       }`}
                     >
@@ -484,7 +488,7 @@ const Filters = () => {
                       </span>
                     </p>
                     <div
-                      className={`custom-input ${
+                      className={`custom-input-checkbox ${
                         checkedState.targetChain === value ? "checked" : ""
                       }`}
                     >
