@@ -124,12 +124,14 @@
       }
 
       .tx-flow {
+        @include centered-column;
+        align-items: center;
         border-radius: 5px;
         border: 1px solid transparent;
         font-size: 10px;
         font-weight: 600;
+        height: 24px;
         margin: auto;
-        padding: 2px 0;
         width: 40px;
 
         &-in {

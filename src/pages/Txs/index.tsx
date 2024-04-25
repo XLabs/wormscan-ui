@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
-import { CopyIcon } from "@radix-ui/react-icons";
+import { CopyIcon, WidthIcon } from "@radix-ui/react-icons";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BlockchainIcon, Loader, NavLink } from "src/components/atoms";
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
@@ -249,8 +249,9 @@ const Txs = () => {
                 : parsedDestinationAddress;
               // -----
 
-              const isOutflow = sourceAddress === address;
-              const isInOut = sourceAddress === targetAddress;
+              const isOutflow = sourceAddress?.toLowerCase() === address?.toLowerCase();
+              const isInflow = targetAddress?.toLowerCase() === address?.toLowerCase();
+              const isInOut = sourceAddress?.toLowerCase() === targetAddress?.toLowerCase();
 
               // --- Status Logic
               const isCCTP = appIds?.includes(CCTP_APP_ID);
@@ -258,6 +259,7 @@ const Txs = () => {
               const isPortal = appIds?.includes(PORTAL_APP_ID);
               const isTBTC = !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
               const isTransferWithPayload = false; /* payloadType === 3; */ // Operations has it
+              const isAttestation = payloadType === 2;
               const hasAnotherApp = !!(
                 appIds &&
                 appIds.filter(
@@ -423,10 +425,10 @@ const Txs = () => {
                 time: (timestampDate && timeAgo(timestampDate)) || "-",
               };
 
-              if (address) {
+              if (address && !isAttestation && (isInOut || isOutflow || isInflow)) {
                 row.inOut = (
                   <div className={`tx-flow tx-flow-${isInOut ? "self" : isOutflow ? "out" : "in"}`}>
-                    {isInOut ? "SELF" : isOutflow ? "OUT" : "IN"}
+                    {isInOut ? <WidthIcon height={20} width={20} /> : isOutflow ? "OUT" : "IN"}
                   </div>
                 );
               }
