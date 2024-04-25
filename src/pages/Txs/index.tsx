@@ -162,7 +162,7 @@ const Txs = () => {
               const { emitterChain, id: VAAId } = tx;
               const payload = tx?.content?.payload;
               const standarizedProperties = tx?.content?.standarizedProperties;
-              const symbol = tx?.data?.symbol;
+              let symbol = tx?.data?.symbol;
               let payloadType = tx?.content?.payload?.payloadType;
               let tokenAmount = tx?.data?.tokenAmount;
               const timestamp = tx?.sourceChain?.timestamp || null;
@@ -204,8 +204,13 @@ const Txs = () => {
                     10 ** decimals,
                 );
 
-                // TODO?: Get symbol for ntt ?
-                // symbol = "TEST_NTT";
+                // hotfix until backend tracks evm W tokens
+                if (
+                  tx.content?.standarizedProperties?.tokenAddress?.toLowerCase() ===
+                  "0xB0fFa8000886e57F86dd5264b9582b2Ad87b2b91".toLowerCase()
+                ) {
+                  symbol = "W";
+                }
               }
               // ---
 
