@@ -144,7 +144,8 @@
         }
 
         &-tooltip {
-          max-width: 240px !important;
+          max-width: calc(100vw - 32px) !important;
+          margin: 0 16px;
         }
 
         & > .filters-container-box-content-item {
@@ -185,13 +186,16 @@
           @include centered-row;
           cursor: pointer;
           display: flex;
-          gap: 8px;
           height: 32px;
           justify-content: space-between;
           padding: 0 16px;
 
           &:hover {
             background-color: var(--color-white-03);
+          }
+
+          &.protocol-filter {
+            padding: 0 8px 0 16px;
           }
 
           &-exclusive {
@@ -208,18 +212,24 @@
 
           & .custom-input {
             @include centered-row;
-            border-radius: 2px;
-            border: 1px solid #6e71a3;
-            color: var(--color-white);
-            cursor: pointer;
-            height: 16px;
-            justify-content: center;
-            width: 16px;
-          }
+            height: inherit;
+            padding: 0 8px;
 
-          & .custom-input.checked {
-            background-color: var(--color-secondary-800);
-            border: 1px solid var(--color-secondary-800);
+            &-checkbox {
+              @include centered-row;
+              border-radius: 2px;
+              border: 1px solid #6e71a3;
+              color: var(--color-white);
+              cursor: pointer;
+              height: 16px;
+              justify-content: center;
+              width: 16px;
+
+              &.checked {
+                background-color: var(--color-secondary-800);
+                border: 1px solid var(--color-secondary-800);
+              }
+            }
           }
 
           & > p {

@@ -206,8 +206,13 @@ const Txs = () => {
                     10 ** decimals,
                 );
 
-                // TODO: REAL SYMBOL FOR NTT
-                symbol = "TEST_NTT";
+                // hotfix until backend tracks evm W tokens
+                if (
+                  tx.content?.standarizedProperties?.tokenAddress?.toLowerCase() ===
+                  "0xB0fFa8000886e57F86dd5264b9582b2Ad87b2b91".toLowerCase()
+                ) {
+                  symbol = "W";
+                }
               }
               // ---
 
