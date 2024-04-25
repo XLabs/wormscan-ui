@@ -162,7 +162,7 @@ const Txs = () => {
               const { emitterChain, id: VAAId } = tx;
               const payload = tx?.content?.payload;
               const standarizedProperties = tx?.content?.standarizedProperties;
-              let symbol = tx?.data?.symbol;
+              const symbol = tx?.data?.symbol;
               let payloadType = tx?.content?.payload?.payloadType;
               let tokenAmount = tx?.data?.tokenAmount;
               const timestamp = tx?.sourceChain?.timestamp || null;
@@ -204,8 +204,8 @@ const Txs = () => {
                     10 ** decimals,
                 );
 
-                // TODO: REAL SYMBOL FOR NTT
-                symbol = "TEST_NTT";
+                // TODO?: Get symbol for ntt ?
+                // symbol = "TEST_NTT";
               }
               // ---
 
