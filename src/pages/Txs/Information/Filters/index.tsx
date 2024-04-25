@@ -287,7 +287,7 @@ const Filters = () => {
             >
               {appIds.map(appId => (
                 <div
-                  className="filters-container-box-content-item"
+                  className="filters-container-box-content-item protocol-filter"
                   key={appId}
                   onClick={() => handleFilters(APP_ID_STRING, appId)}
                 >
@@ -295,41 +295,85 @@ const Filters = () => {
                     <span>{formatAppId(appId)}</span>
                   </p>
 
-                  {appId === checkedState.appId &&
-                    (appId === MAYAN_APP_ID ||
-                      appId === PORTAL_APP_ID ||
-                      appId === NTT_APP_ID ||
-                      appId === GR_APP_ID) && (
-                      <Tooltip
-                        className="filters-container-box-top-tooltip"
-                        tooltip={
-                          <div>
-                            Show only {formatAppId(appId)}, without any additional protocols.
-                          </div>
-                        }
-                        type="info"
+                  {appId === checkedState.appId && (
+                    <Tooltip
+                      className="filters-container-box-top-tooltip"
+                      enableTooltip={
+                        appId === MAYAN_APP_ID ||
+                        appId === PORTAL_APP_ID ||
+                        appId === NTT_APP_ID ||
+                        appId === GR_APP_ID
+                      }
+                      tooltip={
+                        <div>
+                          Displays only {formatAppId(appId)} transactions.
+                          <br />
+                          E.g.{" "}
+                          {
+                            {
+                              [MAYAN_APP_ID]: "Mayan",
+                              [PORTAL_APP_ID]: "Portal Token Bridge",
+                              [NTT_APP_ID]: "Native Token Transfer",
+                              [GR_APP_ID]: "Standard Relayer",
+                            }[appId]
+                          }
+                        </div>
+                      }
+                      type="info"
+                    >
+                      <div
+                        className="filters-container-box-content-item-exclusive"
+                        onClick={e => {
+                          e.stopPropagation();
+                          return handleFilters(EXCLUSIVE_APP_ID_STRING, "true");
+                        }}
                       >
                         <div
-                          className="filters-container-box-content-item-exclusive"
-                          onClick={e => {
-                            e.stopPropagation();
-                            return handleFilters(EXCLUSIVE_APP_ID_STRING, "true");
-                          }}
+                          className={`custom-input-checkbox ${
+                            checkedState.exclusiveAppId ? "checked" : ""
+                          }`}
                         >
-                          <div
-                            className={`custom-input ${
-                              checkedState.exclusiveAppId ? "checked" : ""
-                            }`}
-                          >
-                            {checkedState.exclusiveAppId && <CheckIcon height={14} width={14} />}
-                          </div>
+                          {checkedState.exclusiveAppId && <CheckIcon height={14} width={14} />}
                         </div>
-                      </Tooltip>
-                    )}
+                      </div>
+                    </Tooltip>
+                  )}
 
-                  <div className={`custom-input ${checkedState.appId === appId ? "checked" : ""}`}>
-                    {checkedState.appId === appId && <CheckIcon height={14} width={14} />}
-                  </div>
+                  <Tooltip
+                    className="filters-container-box-top-tooltip"
+                    enableTooltip={
+                      appId === MAYAN_APP_ID ||
+                      appId === PORTAL_APP_ID ||
+                      appId === NTT_APP_ID ||
+                      appId === GR_APP_ID
+                    }
+                    tooltip={
+                      <div>
+                        Displays all transactions, including additional protocols.
+                        <br />
+                        E.g.{" "}
+                        {
+                          {
+                            [MAYAN_APP_ID]: "Portal Token Bridge, Mayan",
+                            [PORTAL_APP_ID]: "Portal Token Bridge, Connect",
+                            [NTT_APP_ID]: "Standard Relayer, Native Token Transfer",
+                            [GR_APP_ID]: "Standard Relayer, Native Token Transfer",
+                          }[appId]
+                        }
+                      </div>
+                    }
+                    type="info"
+                  >
+                    <div className="custom-input">
+                      <div
+                        className={`custom-input-checkbox ${
+                          checkedState.appId === appId ? "checked" : ""
+                        }`}
+                      >
+                        {checkedState.appId === appId && <CheckIcon height={14} width={14} />}
+                      </div>
+                    </div>
+                  </Tooltip>
                 </div>
               ))}
             </div>
@@ -385,7 +429,7 @@ const Filters = () => {
                       </span>
                     </p>
                     <div
-                      className={`custom-input ${
+                      className={`custom-input-checkbox ${
                         checkedState.sourceChain === value ? "checked" : ""
                       }`}
                     >
@@ -446,7 +490,7 @@ const Filters = () => {
                       </span>
                     </p>
                     <div
-                      className={`custom-input ${
+                      className={`custom-input-checkbox ${
                         checkedState.targetChain === value ? "checked" : ""
                       }`}
                     >
