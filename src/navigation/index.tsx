@@ -4,7 +4,6 @@ import { Loader } from "src/components/atoms";
 import { TermsOfUseBanner } from "src/components/molecules";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { EnvironmentProvider } from "src/context/EnvironmentContext";
-import { ScrollControl } from "src/utils/scrollControl";
 import { AnalyticsLinkTracker } from "src/utils/analyticsLinkTracker";
 import ErrorBoundary from "src/utils/errorBoundary";
 
@@ -20,7 +19,6 @@ const Governor = lazy(() => import("../pages/Governor"));
 const Navigation = () => {
   return (
     <Router>
-      <ScrollControl />
       <AnalyticsLinkTracker>
         <EnvironmentProvider>
           <ErrorBoundary>

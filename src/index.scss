@@ -71,16 +71,16 @@
 }
 
 html {
-  background-color: var(--color-primary-900);
+  background-color: var(--color-primary-950);
   scroll-behavior: smooth;
-  /* scrollbar-gutter: controlled by ScrollControl; */
   -webkit-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
 }
 
 ::-webkit-scrollbar {
-  background-color: var(--color-primary-950);
+  background-color: transparent;
+  height: 12px;
   width: 12px;
 }
 

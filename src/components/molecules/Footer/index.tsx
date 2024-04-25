@@ -105,7 +105,12 @@ const Footer = () => {
                 {t("home.footer.hiring")}
               </Tag>
             </div>
-            <a href={PROVIDE_FEEDBACK_URL} target="_blank" rel="noopener noreferrer">
+            <a
+              href={PROVIDE_FEEDBACK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Provide Feedback"
+            >
               {t("home.footer.provideFeedback")}
             </a>
             <NavLink to="/terms-of-use">{t("home.footer.termsOfUse")}</NavLink>
