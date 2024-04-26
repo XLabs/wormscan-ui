@@ -8,6 +8,7 @@ import ArbitrumIcon from "src/icons/blockchains/arbitrum.svg";
 import AuroraIcon from "src/icons/blockchains/aurora.svg";
 import AvalancheIcon from "src/icons/blockchains/avax.svg";
 import BaseIcon from "src/icons/blockchains/base.svg";
+import BlastIcon from "src/icons/blockchains/blast.svg";
 import BSCIcon from "src/icons/blockchains/bsc.svg";
 import BtcIcon from "src/icons/blockchains/btc.svg";
 import CeloIcon from "src/icons/blockchains/celo.svg";
@@ -19,6 +20,7 @@ import InjectiveIcon from "src/icons/blockchains/injective.svg";
 import KaruraIcon from "src/icons/blockchains/karura.svg";
 import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KujiraIcon from "src/icons/blockchains/kujira.svg";
+import MantleIcon from "src/icons/blockchains/mantle.svg";
 import MoonbeamIcon from "src/icons/blockchains/moonbeam.svg";
 import NearIcon from "src/icons/blockchains/near.svg";
 import NeonIcon from "src/icons/blockchains/neon.svg";
@@ -27,6 +29,7 @@ import OptimismIcon from "src/icons/blockchains/optimism.svg";
 import OsmosisIcon from "src/icons/blockchains/osmosis.svg";
 import PolygonIcon from "src/icons/blockchains/polygon.svg";
 import PythIcon from "src/icons/blockchains/pyth.svg";
+import ScrollIcon from "src/icons/blockchains/scroll.svg";
 import SeiIcon from "src/icons/blockchains/sei.svg";
 import SolanaIcon from "src/icons/blockchains/solana.svg";
 import SuiIcon from "src/icons/blockchains/sui.svg";
@@ -42,6 +45,7 @@ import ArbitrumColorlessIcon from "src/icons/blockchains/colorless/arbitrum.svg"
 import AuroraColorlessIcon from "src/icons/blockchains/colorless/aurora.svg";
 import AvalancheColorlessIcon from "src/icons/blockchains/colorless/avax.svg";
 import BaseColorlessIcon from "src/icons/blockchains/colorless/base.svg";
+import BlastColorlessIcon from "src/icons/blockchains/colorless/blast.svg";
 import BSCColorlessIcon from "src/icons/blockchains/colorless/bsc.svg";
 import BtcColorlessIcon from "src/icons/blockchains/colorless/btc.svg";
 import CeloColorlessIcon from "src/icons/blockchains/colorless/celo.svg";
@@ -53,6 +57,7 @@ import InjectiveColorlessIcon from "src/icons/blockchains/colorless/injective.sv
 import KaruraColorlessIcon from "src/icons/blockchains/colorless/karura.svg";
 import KlaytnColorlessIcon from "src/icons/blockchains/colorless/klaytn.svg";
 import KujiraColorlessIcon from "src/icons/blockchains/colorless/kujira.svg";
+import MantleColorlessIcon from "src/icons/blockchains/colorless/mantle.svg";
 import MoonbeamColorlessIcon from "src/icons/blockchains/colorless/moonbeam.svg";
 import NearColorlessIcon from "src/icons/blockchains/colorless/near.svg";
 import NeonColorlessIcon from "src/icons/blockchains/colorless/neon.svg";
@@ -62,6 +67,7 @@ import OptimismColorlessIcon from "src/icons/blockchains/colorless/optimism.svg"
 import OsmosisColorlessIcon from "src/icons/blockchains/colorless/osmosis.svg";
 import PolygonColorlessIcon from "src/icons/blockchains/colorless/polygon.svg";
 import PythColorlessIcon from "src/icons/blockchains/colorless/pyth.svg";
+import ScrollColorlessIcon from "src/icons/blockchains/colorless/scroll.svg";
 import SeiColorlessIcon from "src/icons/blockchains/colorless/sei.svg";
 import SolanaColorlessIcon from "src/icons/blockchains/colorless/solana.svg";
 import SuiColorlessIcon from "src/icons/blockchains/colorless/sui.svg";
@@ -633,6 +639,51 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       if (base === "token") return this.explorer?.[network] + "/contracts/" + value;
       if (base === "block") return this.explorer?.[network] + "/blocks/" + value;
       return this.explorer?.[network] + "/txs/" + value;
+    },
+  },
+  [ChainId.Scroll]: {
+    name: "Scroll",
+    icon: ScrollIcon,
+    colorlessIcon: ScrollColorlessIcon,
+    explorer: {
+      TESTNET: "https://sepolia.scrollscan.com",
+      MAINNET: "https://scrollscan.com",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.Mantle]: {
+    name: "Mantle",
+    icon: MantleIcon,
+    colorlessIcon: MantleColorlessIcon,
+    explorer: {
+      TESTNET: "https://sepolia.mantlescan.xyz",
+      MAINNET: "https://explorer.mantle.xyz",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.Blast]: {
+    name: "Blast",
+    icon: BlastIcon,
+    colorlessIcon: BlastColorlessIcon,
+    explorer: {
+      TESTNET: "https://testnet.blastscan.io",
+      MAINNET: "https://blastscan.io",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
     },
   },
   [ChainId.Base]: {
