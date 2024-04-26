@@ -18,6 +18,7 @@ type Props<T extends object> = {
   hasSort?: boolean;
   initialSortById?: string;
   isLoading?: boolean;
+  numberOfColumns?: number;
   onRowClick?: (row: any) => void;
 };
 
@@ -29,6 +30,7 @@ const Table = <T extends object>({
   hasSort = false,
   initialSortById,
   isLoading = false,
+  numberOfColumns = 7,
   onRowClick,
 }: Props<T>) => {
   const tableHooks = hasSort ? [useSortBy] : [];
@@ -86,7 +88,7 @@ const Table = <T extends object>({
           <tbody>
             {[...Array(50)].map((_, index) => (
               <tr key={index}>
-                <td className="table-row-loading" colSpan={7}>
+                <td className="table-row-loading" colSpan={numberOfColumns}>
                   <span className="loading-animation"></span>
                 </td>
               </tr>

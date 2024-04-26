@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
-import { CopyIcon } from "@radix-ui/react-icons";
+import { CopyIcon, WidthIcon } from "@radix-ui/react-icons";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BlockchainIcon, Loader, NavLink } from "src/components/atoms";
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
@@ -31,16 +31,18 @@ import {
 } from "src/consts";
 
 export interface TransactionOutput {
-  VAAId: string;
-  justAppeared: boolean;
-  txHashId: string;
-  txHash: React.ReactNode;
+  amount: React.ReactNode;
   from: React.ReactNode;
-  to: React.ReactNode;
+  inOut?: React.ReactNode;
+  justAppeared: boolean;
+  originApp: React.ReactNode;
   status: React.ReactNode;
   statusString: string;
-  amount: React.ReactNode;
   time: Date | string;
+  to: React.ReactNode;
+  txHash: React.ReactNode;
+  txHashId: string;
+  VAAId: string;
 }
 
 export const PAGE_SIZE = 50;
@@ -204,8 +206,13 @@ const Txs = () => {
                     10 ** decimals,
                 );
 
-                // TODO: REAL SYMBOL FOR NTT
-                symbol = "TEST_NTT";
+                // hotfix until backend tracks evm W tokens
+                if (
+                  tx.content?.standarizedProperties?.tokenAddress?.toLowerCase() ===
+                  "0xB0fFa8000886e57F86dd5264b9582b2Ad87b2b91".toLowerCase()
+                ) {
+                  symbol = "W";
+                }
               }
               // ---
 
@@ -242,12 +249,17 @@ const Txs = () => {
                 : parsedDestinationAddress;
               // -----
 
+              const isOutflow = sourceAddress?.toLowerCase() === address?.toLowerCase();
+              const isInflow = targetAddress?.toLowerCase() === address?.toLowerCase();
+              const isInOut = sourceAddress?.toLowerCase() === targetAddress?.toLowerCase();
+
               // --- Status Logic
               const isCCTP = appIds?.includes(CCTP_APP_ID);
               const isConnect = appIds?.includes(CONNECT_APP_ID);
               const isPortal = appIds?.includes(PORTAL_APP_ID);
               const isTBTC = !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
               const isTransferWithPayload = false; /* payloadType === 3; */ // Operations has it
+              const isAttestation = payloadType === 2;
               const hasAnotherApp = !!(
                 appIds &&
                 appIds.filter(
@@ -355,6 +367,7 @@ const Txs = () => {
                     </div>
                   </div>
                 ),
+                inOut: <></>,
                 to: (
                   <div className="tx-to">
                     {toChain ? (
@@ -411,6 +424,14 @@ const Txs = () => {
                 ),
                 time: (timestampDate && timeAgo(timestampDate)) || "-",
               };
+
+              if (address && !isAttestation && (isInOut || isOutflow || isInflow)) {
+                row.inOut = (
+                  <div className={`tx-flow tx-flow-${isInOut ? "self" : isOutflow ? "out" : "in"}`}>
+                    {isInOut ? <WidthIcon height={20} width={20} /> : isOutflow ? "OUT" : "IN"}
+                  </div>
+                );
+              }
 
               tempRows.push(row);
             })
