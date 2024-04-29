@@ -23,14 +23,18 @@ const ChainInfo = ({ data, chainId }: ChainInfoProps) => {
 
             {(data.arkhamEntity?.website || data.arkhamEntity?.twitter) && (
               <div className="arkham-icons">
-                <a target="_blank" rel="noopener noreferrer" href={data.arkhamEntity.website}>
-                  <ExternalLinkIcon width={16} height={16} />
-                </a>
-                <a target="_blank" rel="noopener noreferrer" href={data.arkhamEntity.twitter}>
-                  <div className="arkham-icons-twitter">
-                    <TwitterIcon />
-                  </div>
-                </a>
+                {data.arkhamEntity.website && (
+                  <a target="_blank" rel="noopener noreferrer" href={data.arkhamEntity.website}>
+                    <ExternalLinkIcon width={16} height={16} />
+                  </a>
+                )}
+                {data.arkhamEntity.twitter && (
+                  <a target="_blank" rel="noopener noreferrer" href={data.arkhamEntity.twitter}>
+                    <div className="arkham-icons-twitter">
+                      <TwitterIcon />
+                    </div>
+                  </a>
+                )}
               </div>
             )}
           </div>
