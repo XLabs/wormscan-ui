@@ -62,6 +62,7 @@ const ChainFilterMainnet = [
   ChainId.Aurora,
   ChainId.Avalanche,
   ChainId.Base,
+  // ChainId.Blast, TODO: add when exists a Blast transaction
   ChainId.BSC,
   ChainId.Celo,
   ChainId.Ethereum,
@@ -69,12 +70,14 @@ const ChainFilterMainnet = [
   ChainId.Injective,
   ChainId.Karura,
   ChainId.Klaytn,
+  // ChainId.Mantle, TODO: add when exists a Mantle transaction
   ChainId.Moonbeam,
   ChainId.Near,
   ChainId.Neon,
   ChainId.Oasis,
   ChainId.Optimism,
   ChainId.Polygon,
+  // ChainId.Scroll, TODO: add when exists a Scroll transaction
   ChainId.Sei,
   ChainId.Solana,
   ChainId.Sui,
@@ -88,12 +91,14 @@ const ChainFilterTestnet = [
   ChainId.Acala,
   ChainId.Celo,
   ChainId.Algorand,
+  // ChainId.PolygonSepolia, TODO: add when exists a Amoy transaction
   ChainId.Aptos,
   ChainId.Arbitrum,
   ChainId.ArbitrumSepolia,
   ChainId.Aurora,
   ChainId.Base,
   ChainId.BaseSepolia,
+  // ChainId.Blast, TODO: add when exists a Blast transaction
   ChainId.BSC,
   ChainId.Fantom,
   ChainId.Avalanche,
@@ -102,6 +107,7 @@ const ChainFilterTestnet = [
   ChainId.Injective,
   ChainId.Karura,
   ChainId.Klaytn,
+  // ChainId.Mantle, TODO: add when exists a Mantle transaction
   ChainId.Moonbeam,
   ChainId.Polygon,
   ChainId.Near,
@@ -109,6 +115,7 @@ const ChainFilterTestnet = [
   ChainId.Oasis,
   ChainId.Optimism,
   ChainId.OptimismSepolia,
+  // ChainId.Scroll, TODO: add when exists a Scroll transaction
   ChainId.Sei,
   ChainId.Sepolia,
   ChainId.Solana,
