@@ -167,6 +167,7 @@ const Governor = () => {
       ),
       id: "remainingTransactionLimit",
       accessor: (row: IRow) => {
+        if (!row.notionalLimit) return 0;
         return (row.availableNotional / row.notionalLimit) * 100;
       },
       Cell: ({ value, row }: { value: number; row: Row<IRow> }) => {
