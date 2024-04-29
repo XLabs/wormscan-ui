@@ -1,5 +1,6 @@
 import { ChainId, Network } from "@certusone/wormhole-sdk";
 import { fetchWithTimeout } from "./asyncUtils";
+import { IArkhamResponse } from "./arkham";
 
 interface IWrappedResponse {
   wrappedToken: string;
@@ -28,6 +29,26 @@ interface ISolanaCctpResponse {
 }
 
 const BFF_URL = process.env.WORMSCAN_BFF_URL;
+
+export const tryGetAddressInfo = async (
+  network: Network,
+  address: string,
+): Promise<IArkhamResponse> => {
+  try {
+    const addressInfoResp = await fetch(
+      `${BFF_URL}/getAddressInfo?network=${network}&address=${address}`,
+    );
+
+    if (!addressInfoResp.ok) {
+      return null;
+    }
+
+    const addressInfo = (await addressInfoResp.json()) as IArkhamResponse;
+    return addressInfo ? addressInfo : null;
+  } catch (e) {
+    return null;
+  }
+};
 
 export const tryGetRedeemTxn = async (
   network: Network,

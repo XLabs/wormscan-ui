@@ -13,8 +13,13 @@ import {
 import { formatDate } from "src/utils/date";
 import "../styles.scss";
 import { AutomaticRelayOutput } from "src/api/search/types";
+import { IAddressInfo } from "src/utils/recoilStates";
+import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
+import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
+import { ChainId } from "src/api";
 
 export type RelayerOverviewProps = {
+  addressesInfo?: IAddressInfo;
   budgetText: () => string;
   copyBudgetText: () => string;
   currentNetwork: Network;
@@ -46,6 +51,7 @@ export type RelayerOverviewProps = {
 };
 
 const RelayerOverview = ({
+  addressesInfo,
   budgetText,
   copyBudgetText,
   currentNetwork,
@@ -191,16 +197,13 @@ const RelayerOverview = ({
                   <CopyToClipboard toCopy={deliveryParsedSenderAddress}>
                     <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
-                </div>
-                <div>
-                  (
-                  {fromChain &&
-                    getChainName({
-                      chainId: fromChain,
-                      acronym: true,
-                      network: currentNetwork,
-                    }).toUpperCase()}
-                  )
+                  {ARKHAM_CHAIN_NAME[fromChain as ChainId] &&
+                    addressesInfo?.[deliveryParsedSenderAddress.toLowerCase()] && (
+                      <AddressInfoTooltip
+                        info={addressesInfo[deliveryParsedSenderAddress.toLowerCase()]}
+                        chain={fromChain}
+                      />
+                    )}
                 </div>
               </div>
             </div>
@@ -283,16 +286,12 @@ const RelayerOverview = ({
                   <CopyToClipboard toCopy={parsedEmitterAddress}>
                     <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
-                </div>
-                <div>
-                  (
-                  {fromChain &&
-                    getChainName({
-                      chainId: fromChain,
-                      acronym: true,
-                      network: currentNetwork,
-                    }).toUpperCase()}
-                  )
+                  {addressesInfo?.[parsedEmitterAddress.toLowerCase()] && (
+                    <AddressInfoTooltip
+                      info={addressesInfo[parsedEmitterAddress.toLowerCase()]}
+                      chain={fromChain}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -378,15 +377,13 @@ const RelayerOverview = ({
                       <CopyToClipboard toCopy={deliveryParsedTargetAddress}>
                         <CopyIcon height={20} width={20} />
                       </CopyToClipboard>
-                    </div>
-                    <div className="tx-overview-graph-step-description">
-                      (
-                      {getChainName({
-                        chainId: deliveryInstruction.targetChainId,
-                        acronym: true,
-                        network: currentNetwork,
-                      }).toUpperCase()}
-                      )
+                      {ARKHAM_CHAIN_NAME[deliveryInstruction.targetChainId as ChainId] &&
+                        addressesInfo?.[deliveryParsedTargetAddress.toLowerCase()] && (
+                          <AddressInfoTooltip
+                            info={addressesInfo[deliveryParsedTargetAddress.toLowerCase()]}
+                            chain={deliveryInstruction.targetChainId}
+                          />
+                        )}
                     </div>
                   </div>
                 </div>
@@ -420,6 +417,12 @@ const RelayerOverview = ({
                     <CopyToClipboard toCopy={deliveryParsedSourceProviderAddress}>
                       <CopyIcon height={20} width={20} />
                     </CopyToClipboard>
+                    {addressesInfo?.[deliveryParsedSourceProviderAddress.toLowerCase()] && (
+                      <AddressInfoTooltip
+                        info={addressesInfo[deliveryParsedSourceProviderAddress.toLowerCase()]}
+                        chain={deliveryInstruction.targetChainId}
+                      />
+                    )}
                   </div>
                 </div>
                 {deliveryStatus ? (
@@ -526,15 +529,12 @@ const RelayerOverview = ({
                       <CopyToClipboard toCopy={deliveryParsedRefundAddress}>
                         <CopyIcon height={20} width={20} />
                       </CopyToClipboard>
-                      <div className="tx-overview-graph-step-description">
-                        (
-                        {getChainName({
-                          chainId: deliveryInstruction.refundChainId,
-                          acronym: true,
-                          network: currentNetwork,
-                        }).toUpperCase()}
-                        )
-                      </div>
+                      {addressesInfo?.[deliveryParsedRefundAddress.toLowerCase()] && (
+                        <AddressInfoTooltip
+                          info={addressesInfo[deliveryParsedRefundAddress.toLowerCase()]}
+                          chain={deliveryInstruction.refundChainId}
+                        />
+                      )}
                     </div>
                   </div>
                   {deliveryParsedRefundProviderAddress.toLowerCase() !==

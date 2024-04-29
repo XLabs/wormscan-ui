@@ -9,6 +9,7 @@ type Props = {
   controlled?: boolean;
   enableTooltip?: boolean;
   maxWidth?: boolean;
+  onClickOutside?: () => void;
   open?: boolean;
   side?: "top" | "right" | "bottom" | "left";
   tooltip: React.ReactNode;
@@ -21,6 +22,7 @@ const Tooltip = ({
   controlled = false,
   enableTooltip = true,
   maxWidth = true,
+  onClickOutside,
   open = false,
   side = "right",
   tooltip,
@@ -52,6 +54,19 @@ const Tooltip = ({
       document.removeEventListener("touchstart", handleInteraction);
     };
   }, [controlled]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: any) => {
+      if (!tooltipRef?.current?.contains(e?.target)) {
+        if (onClickOutside) onClickOutside();
+      }
+    };
+
+    window.addEventListener("mouseup", handleClickOutside, true);
+    return () => {
+      window.removeEventListener("mouseup", handleClickOutside, true);
+    };
+  }, [onClickOutside]);
 
   const handleSetIsOpen = (isOpen: boolean) => {
     controlled === false && setIsOpen(isOpen);

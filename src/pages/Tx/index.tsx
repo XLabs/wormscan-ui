@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { CHAIN_ID_SOLANA, parseVaa } from "@certusone/wormhole-sdk";
+import { parseVaa } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
 import { SearchNotFound } from "src/components/organisms";
@@ -22,10 +22,19 @@ import { GetBlockData } from "src/api/search/types";
 import { Information } from "./Information";
 import { Top } from "./Top";
 import { getChainName } from "src/utils/wormhole";
-import { getAlgorandTokenInfo, getSolanaCctp, tryGetWrappedToken } from "src/utils/cryptoToolkit";
+import {
+  getAlgorandTokenInfo,
+  getSolanaCctp,
+  tryGetAddressInfo,
+  tryGetWrappedToken,
+} from "src/utils/cryptoToolkit";
 import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import { useRecoilState } from "recoil";
-import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
+import {
+  showSourceTokenUrlState,
+  showTargetTokenUrlState,
+  addressesInfoState,
+} from "src/utils/recoilStates";
 import { getNttInfo } from "src/utils/wh-ntt-rpc";
 import {
   CCTP_APP_ID,
@@ -43,6 +52,7 @@ import {
 } from "src/consts";
 import { ETH_LIMIT } from "../Txs";
 import "./styles.scss";
+import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 
 const Tx = () => {
   useEffect(() => {
@@ -56,6 +66,7 @@ const Tx = () => {
 
   const [, setShowSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
   const [, setShowTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
+  const [, setAddressesInfo] = useRecoilState(addressesInfoState);
 
   // pattern match the search value to see if it's a candidate for being an EVM transaction hash.
   const search = txHash ? (txHash.startsWith("0x") ? txHash : "0x" + txHash) : "";
@@ -860,16 +871,51 @@ const Tx = () => {
 
       setTxData(apiTxData);
       setIsLoading(false);
+
+      // Arkham address info logic
+      const newAddressesInfo: any = {};
+
+      for (const data of apiTxData) {
+        const emitterChain = data?.emitterChain as ChainId;
+        const emitterAddress = data?.emitterAddress?.native;
+        const emitterInfo =
+          emitterAddress && ARKHAM_CHAIN_NAME[emitterChain]
+            ? await tryGetAddressInfo(network, emitterAddress)
+            : null;
+
+        const targetChain = (data?.targetChain?.chainId ||
+          data?.content?.standarizedProperties?.toChain) as ChainId;
+        const targetAddress = data?.content?.standarizedProperties?.toAddress;
+        const targetInfo =
+          targetAddress && ARKHAM_CHAIN_NAME[targetChain]
+            ? await tryGetAddressInfo(network, targetAddress)
+            : null;
+
+        const sourceChain = (data?.sourceChain?.chainId ||
+          data?.content?.standarizedProperties?.fromChain) as ChainId;
+        const sourceAddress =
+          data?.sourceChain?.from || data?.content?.standarizedProperties?.fromAddress;
+        const sourceInfo =
+          sourceAddress && ARKHAM_CHAIN_NAME[sourceChain]
+            ? await tryGetAddressInfo(network, sourceAddress)
+            : null;
+
+        newAddressesInfo[emitterAddress.toLowerCase()] = emitterInfo;
+        newAddressesInfo[targetAddress.toLowerCase()] = targetInfo;
+        newAddressesInfo[sourceAddress.toLowerCase()] = sourceInfo;
+      }
+
+      setAddressesInfo(newAddressesInfo);
     },
     [
-      chainLimitsData,
       emitterChainId,
-      environment,
-      isEvmTxHash,
       network,
+      environment,
       setShowSourceTokenUrl,
       setShowTargetTokenUrl,
-      setShouldTryToGetRpcInfo,
+      chainLimitsData,
+      isEvmTxHash,
+      setAddressesInfo,
     ],
   );
 

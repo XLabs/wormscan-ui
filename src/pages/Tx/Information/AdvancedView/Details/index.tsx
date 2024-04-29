@@ -7,8 +7,10 @@ import { CopyToClipboard } from "src/components/molecules";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { TruncateText } from "src/utils/string";
 import "./styles.scss";
+import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 
 const Details = ({
+  addressesInfo,
   amountSent,
   amountSentUSD,
   currentNetwork,
@@ -116,6 +118,12 @@ const Details = ({
                 <CopyToClipboard toCopy={parsedEmitterAddress}>
                   <CopyIcon height={20} width={20} />
                 </CopyToClipboard>
+                {addressesInfo?.[parsedEmitterAddress.toLowerCase()] && (
+                  <AddressInfoTooltip
+                    info={addressesInfo[parsedEmitterAddress.toLowerCase()]}
+                    chain={fromChainOrig}
+                  />
+                )}
                 {isGatewaySource && <span className="comment"> (Gateway)</span>}
               </>
             ) : (
@@ -147,6 +155,12 @@ const Details = ({
                 <CopyToClipboard toCopy={parsedOriginAddress}>
                   <CopyIcon height={20} width={20} />
                 </CopyToClipboard>
+                {addressesInfo?.[parsedOriginAddress.toLowerCase()] && (
+                  <AddressInfoTooltip
+                    info={addressesInfo[parsedOriginAddress.toLowerCase()]}
+                    chain={fromChain}
+                  />
+                )}
               </>
             ) : (
               "N/A"
@@ -288,6 +302,12 @@ const Details = ({
                   <CopyToClipboard toCopy={parsedDestinationAddress}>
                     <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
+                  {addressesInfo?.[parsedDestinationAddress.toLowerCase()] && (
+                    <AddressInfoTooltip
+                      info={addressesInfo[parsedDestinationAddress.toLowerCase()]}
+                      chain={toChain}
+                    />
+                  )}
                 </>
               ) : (
                 "N/A"
