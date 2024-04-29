@@ -1,5 +1,6 @@
 import { ChainId, Network } from "@certusone/wormhole-sdk";
 import { fetchWithTimeout } from "./asyncUtils";
+import { IArkhamResponse } from "./arkham";
 
 interface IWrappedResponse {
   wrappedToken: string;
@@ -25,44 +26,6 @@ interface ISolanaCctpResponse {
   sourceTokenAddress: string;
   targetAddress: string;
   timestamp: Date;
-}
-
-export interface IArkhamInfoByChain {
-  address?: string;
-  chain?: string;
-  arkhamEntity?: {
-    name?: string;
-    note?: string;
-    id?: string;
-    type?: string;
-    service?: any;
-    addresses?: any;
-    website?: string;
-    twitter?: string;
-    crunchbase?: string;
-  };
-  isUserAddress?: boolean;
-  contract?: boolean;
-  populatedTags: Array<{
-    id: string;
-    label?: string;
-    rank?: number;
-    excludeEntities: boolean;
-    chain?: string;
-    disablePage?: boolean;
-  }>;
-}
-export interface IArkhamResponse {
-  ethereum?: IArkhamInfoByChain;
-  bsc?: IArkhamInfoByChain;
-  polygon?: IArkhamInfoByChain;
-  arbitrum_one?: IArkhamInfoByChain;
-  avalanche?: IArkhamInfoByChain;
-  optimism?: IArkhamInfoByChain;
-  bitcoin?: IArkhamInfoByChain;
-  tron?: IArkhamInfoByChain;
-  base?: IArkhamInfoByChain;
-  flare?: IArkhamInfoByChain;
 }
 
 const BFF_URL = process.env.WORMSCAN_BFF_URL;

@@ -1,25 +1,11 @@
-import {
-  Cross2Icon,
-  ExternalLinkIcon,
-  InfoCircledIcon,
-  TwitterLogoIcon,
-} from "@radix-ui/react-icons";
+import { Cross2Icon, ExternalLinkIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
-import { useEffect, useRef, useState } from "react";
-import "./styles.scss";
-import { IArkhamInfoByChain, IArkhamResponse } from "src/utils/cryptoToolkit";
-import {
-  CHAIN_ID_ARBITRUM,
-  CHAIN_ID_AVAX,
-  CHAIN_ID_BASE,
-  CHAIN_ID_BSC,
-  CHAIN_ID_BTC,
-  CHAIN_ID_ETH,
-  CHAIN_ID_OPTIMISM,
-  CHAIN_ID_POLYGON,
-} from "@certusone/wormhole-sdk";
+import ArkhamIcon from "src/icons/arkham.svg";
+import { useState } from "react";
 import { ChainId } from "src/api";
 import TwitterIcon from "src/icons/TwitterIcon";
+import { ARKHAM_CHAIN_NAME, IArkhamInfoByChain, IArkhamResponse } from "src/utils/arkham";
+import "./styles.scss";
 
 type ChainInfoProps = {
   data: IArkhamInfoByChain;
@@ -28,61 +14,64 @@ type ChainInfoProps = {
 
 const ChainInfo = ({ data, chainId }: ChainInfoProps) => {
   return (
-    <div className="address-chain-info">
-      <BlockchainIcon chainId={chainId} network="MAINNET" size={22} />
+    <>
+      {(data.arkhamEntity || data.arkhamLabel) && (
+        <>
+          <div className="address-chain-info">
+            <BlockchainIcon chainId={chainId} network="MAINNET" size={22} />
+            <span>{data.arkhamEntity?.name}</span>
 
-      {data.arkhamEntity && (
-        <div className="address-chain-info-entity">
-          {data.arkhamEntity.name && (
-            <div className="address-chain-info-entity-data">
-              <span>Entity</span>
-              <span className="address-chain-info-entity-data-name">{data.arkhamEntity.name}</span>
-            </div>
+            {(data.arkhamEntity?.website || data.arkhamEntity?.twitter) && (
+              <div className="arkham-icons">
+                <a target="_blank" rel="noopener noreferrer" href={data.arkhamEntity.website}>
+                  <ExternalLinkIcon width={16} height={16} />
+                </a>
+                <a target="_blank" rel="noopener noreferrer" href={data.arkhamEntity.twitter}>
+                  <div className="arkham-icons-twitter">
+                    <TwitterIcon />
+                  </div>
+                </a>
+              </div>
+            )}
+          </div>
+
+          {data.arkhamLabel && (
+            <div className="address-chain-info-label">{data.arkhamLabel.name}</div>
           )}
 
-          {/* {data.arkhamEntity.type && (
-            <div className="address-chain-info-entity-data">
-              <span>Type</span>
-              <span className="address-chain-info-entity-data-name">{data.arkhamEntity.type}</span>
-            </div>
-          )} */}
-
-          {data.arkhamEntity.website && (
-            <div>
-              <a target="_blank" rel="noopener noreferrer" href={data.arkhamEntity.website}>
-                <ExternalLinkIcon width={16} height={16} />
-              </a>
+          {data.populatedTags && (
+            <div className="address-chain-info-tags">
+              {data.populatedTags.map((tag, i) => (
+                <div key={tag.id + i} className="address-chain-info-tags-tag">
+                  {tag.label ? tag.label : tag.id}
+                </div>
+              ))}
             </div>
           )}
-          {data.arkhamEntity.twitter && (
-            <div>
-              <a target="_blank" rel="noopener noreferrer" href={data.arkhamEntity.twitter}>
-                <TwitterLogoIcon width={16} height={16} />
-              </a>
-            </div>
-          )}
-        </div>
+        </>
       )}
 
-      {data.populatedTags && (
-        <div className="address-chain-info-tags">
-          {data.populatedTags.map((tag, i) => (
-            <div key={tag.id + i} className="address-chain-info-tags-tag">
-              {tag.label ? tag.label : tag.id}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        className="address-chain-arkham"
+        href={`https://platform.arkhamintelligence.com/explorer/address/${data.address}`}
+      >
+        <span>Open in Arkham</span>
+        <img src={ArkhamIcon} width={24} height={24} />
+      </a>
+    </>
   );
 };
 
 type AddressInfoTooltipProps = {
   info: IArkhamResponse;
+  chain: ChainId;
 };
 
-const AddressInfoTooltip = ({ info }: AddressInfoTooltipProps) => {
+const AddressInfoTooltip = ({ info, chain }: AddressInfoTooltipProps) => {
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
       <Tooltip
@@ -98,27 +87,20 @@ const AddressInfoTooltip = ({ info }: AddressInfoTooltipProps) => {
                 <Cross2Icon onClick={() => setIsOpen(false)} width={22} height={22} />
               </div>
 
-              {info.arbitrum_one && (
-                <ChainInfo data={info.arbitrum_one} chainId={CHAIN_ID_ARBITRUM} />
+              {info?.[ARKHAM_CHAIN_NAME[chain]] && (
+                <ChainInfo data={info[ARKHAM_CHAIN_NAME[chain]]} chainId={chain} />
               )}
-              {info.avalanche && <ChainInfo data={info.avalanche} chainId={CHAIN_ID_AVAX} />}
-              {info.base && <ChainInfo data={info.base} chainId={CHAIN_ID_BASE} />}
-              {info.bitcoin && <ChainInfo data={info.bitcoin} chainId={CHAIN_ID_BTC} />}
-              {info.bsc && <ChainInfo data={info.bsc} chainId={CHAIN_ID_BSC} />}
-              {info.ethereum && <ChainInfo data={info.ethereum} chainId={CHAIN_ID_ETH} />}
-              {/* {info.flare && <ChainInfo data={info.flare} chainId={CHAIN_ID_FLARE}/>} */}
-              {info.optimism && <ChainInfo data={info.optimism} chainId={CHAIN_ID_OPTIMISM} />}
-              {info.polygon && <ChainInfo data={info.polygon} chainId={CHAIN_ID_POLYGON} />}
-              {/* {info.tron && <ChainInfo data={info.tron} chainId={CHAIN_ID_TRON}/>} */}
             </div>
           </div>
         }
       >
-        <InfoCircledIcon
+        <img
+          src={ArkhamIcon}
+          alt="Arkham Address Info"
+          height={24}
+          width={24}
           className="info-tooltip-icon"
           onClick={() => setIsOpen(true)}
-          height={20}
-          width={20}
         />
       </Tooltip>
     </>

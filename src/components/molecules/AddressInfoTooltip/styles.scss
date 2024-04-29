@@ -4,7 +4,7 @@
   color: var(--color-primary-30);
 
   &-content {
-    width: 450px;
+    width: 360px;
     background-color: var(--color-primary-700);
     padding: 6px;
   }
@@ -20,42 +20,43 @@
 
 .address-chain-info {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
 
-  padding-top: 5px;
-  padding-bottom: 5px;
-  border-bottom: 2px solid var(--color-primary-300);
+  gap: 6px;
+  font-size: 16px;
 
-  &:last-child {
-    border-bottom: 0;
-  }
-
-  &-entity {
+  .arkham-icons {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 8px;
 
-    a {
-      color: var(--color-secondary-600);
-      height: 20px;
-      width: 20px;
+    &-twitter {
+      transform: scale(0.7);
+    }
+  }
 
-      &:hover {
-        text-decoration: underline;
-        color: var(--color-primary-50);
-      }
+  a {
+    color: var(--color-secondary-800);
+    transform: translateY(2px);
+
+    &:hover path {
+      fill: var(--color-secondary-700);
     }
 
-    &-data {
-      display: flex;
-      flex-direction: column;
-
-      &-name {
-        font-size: 16px;
-      }
+    &:hover {
+      text-decoration: underline;
+      color: var(--color-primary-50);
     }
+  }
+
+  &-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-top: 6px;
   }
 
   &-tags {
@@ -63,12 +64,18 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    gap: 3px;
+    margin-top: 12px;
+    gap: 4px;
+
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-top: 2px solid var(--color-primary-300);
+    border-bottom: 2px solid var(--color-primary-300);
 
     &-tag {
       border-radius: 8px;
       background-color: var(--color-primary-600);
-      font-size: 16px;
+      font-size: 14px;
 
       padding-left: 4px;
       padding-right: 4px;
@@ -77,7 +84,25 @@
   }
 }
 
-.info-tooltip-icon {
+.address-chain-arkham {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 16px;
+  margin-top: 4px;
+  margin-bottom: 2px;
+  gap: 2px;
   color: var(--color-primary-50);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-primary-100);
+    text-decoration: underline;
+  }
+}
+
+.info-tooltip-icon {
   cursor: pointer;
+  transform: scale(1.1);
 }

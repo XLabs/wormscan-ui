@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { IArkhamResponse } from "./cryptoToolkit";
+import { IArkhamResponse } from "./arkham";
 
 export const loadPageState = atom({
   key: "loadPageState",
@@ -18,15 +18,9 @@ export const showTargetTokenUrlState = atom({
 
 // state to store the Arkham info and show it along addresses
 export interface IAddressInfo {
-  source: IArkhamResponse;
-  contract: IArkhamResponse;
-  destination: IArkhamResponse;
+  [addressHash: string]: IArkhamResponse;
 }
 export const addressesInfoState = atom({
   key: "showAddressesInfo",
-  default: {
-    source: null,
-    contract: null,
-    destination: null,
-  },
+  default: {},
 });

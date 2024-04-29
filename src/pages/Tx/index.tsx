@@ -14,7 +14,7 @@ import {
   getUsdcAddress,
 } from "src/utils/fetchWithRPCsFallthrough";
 import { formatUnits, parseTx } from "src/utils/crypto";
-import { ChainId, ChainLimit } from "src/api";
+import { Chain, ChainId, ChainLimit } from "src/api";
 import { getClient } from "src/api/Client";
 import analytics from "src/analytics";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
@@ -52,6 +52,7 @@ import {
 } from "src/consts";
 import { ETH_LIMIT } from "../Txs";
 import "./styles.scss";
+import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 
 const Tx = () => {
   useEffect(() => {
@@ -871,24 +872,40 @@ const Tx = () => {
       setTxData(apiTxData);
       setIsLoading(false);
 
+      // Arkham address info logic
+      const addressesInfo: any = {};
+
       for (const data of apiTxData) {
+        const emitterChain = data?.emitterChain as ChainId;
         const emitterAddress = data?.emitterAddress?.native;
+        const emitterInfo =
+          emitterAddress && ARKHAM_CHAIN_NAME[emitterChain]
+            ? await tryGetAddressInfo(network, emitterAddress)
+            : null;
+
+        const targetChain = (data?.targetChain?.chainId ||
+          data?.content?.standarizedProperties?.toChain) as ChainId;
         const targetAddress = data?.content?.standarizedProperties?.toAddress;
+        const targetInfo =
+          targetAddress && ARKHAM_CHAIN_NAME[targetChain]
+            ? await tryGetAddressInfo(network, targetAddress)
+            : null;
+
+        const sourceChain = (data?.sourceChain?.chainId ||
+          data?.content?.standarizedProperties?.fromChain) as ChainId;
         const sourceAddress =
           data?.sourceChain?.from || data?.content?.standarizedProperties?.fromAddress;
+        const sourceInfo =
+          sourceAddress && ARKHAM_CHAIN_NAME[sourceChain]
+            ? await tryGetAddressInfo(network, sourceAddress)
+            : null;
 
-        const emitterInfo = emitterAddress
-          ? await tryGetAddressInfo(network, emitterAddress)
-          : null;
-        const targetInfo = targetAddress ? await tryGetAddressInfo(network, targetAddress) : null;
-        const sourceInfo = sourceAddress ? await tryGetAddressInfo(network, sourceAddress) : null;
-
-        setShowAddressesInfo({
-          contract: emitterInfo,
-          destination: targetInfo,
-          source: sourceInfo,
-        });
+        addressesInfo[emitterAddress.toLowerCase()] = emitterInfo;
+        addressesInfo[targetAddress.toLowerCase()] = targetInfo;
+        addressesInfo[sourceAddress.toLowerCase()] = sourceInfo;
       }
+
+      setShowAddressesInfo(addressesInfo);
     },
     [
       emitterChainId,

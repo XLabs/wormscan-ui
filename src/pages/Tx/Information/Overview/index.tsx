@@ -88,8 +88,6 @@ const Overview = ({
   totalGuardiansNeeded,
   VAAId,
 }: OverviewProps) => {
-  console.log(addressesInfo?.source);
-
   return (
     <div className="tx-overview">
       <div className="tx-overview-graph">
@@ -167,7 +165,12 @@ const Overview = ({
                     <CopyToClipboard toCopy={parsedOriginAddress}>
                       <CopyIcon height={20} width={20} />
                     </CopyToClipboard>
-                    {addressesInfo?.source && <AddressInfoTooltip info={addressesInfo.source} />}
+                    {addressesInfo?.[parsedOriginAddress.toLowerCase()] && (
+                      <AddressInfoTooltip
+                        info={addressesInfo[parsedOriginAddress.toLowerCase()]}
+                        chain={fromChain}
+                      />
+                    )}
                   </>
                 ) : (
                   "N/A"
@@ -233,8 +236,11 @@ const Overview = ({
                     <CopyToClipboard toCopy={parsedEmitterAddress}>
                       <CopyIcon height={20} width={20} />
                     </CopyToClipboard>
-                    {addressesInfo?.contract && (
-                      <AddressInfoTooltip info={addressesInfo.contract} />
+                    {addressesInfo?.[parsedEmitterAddress.toLowerCase()] && (
+                      <AddressInfoTooltip
+                        info={addressesInfo[parsedEmitterAddress.toLowerCase()]}
+                        chain={fromChainOrig}
+                      />
                     )}
                     {isGatewaySource && <span className="comment"> (Gateway)</span>}
                   </div>
@@ -476,8 +482,11 @@ const Overview = ({
                       <CopyToClipboard toCopy={parsedDestinationAddress}>
                         <CopyIcon height={20} width={20} />
                       </CopyToClipboard>
-                      {addressesInfo?.destination && (
-                        <AddressInfoTooltip info={addressesInfo?.destination} />
+                      {addressesInfo?.[parsedDestinationAddress.toLowerCase()] && (
+                        <AddressInfoTooltip
+                          info={addressesInfo[parsedDestinationAddress.toLowerCase()]}
+                          chain={toChain}
+                        />
                       )}
                     </>
                   ) : (
