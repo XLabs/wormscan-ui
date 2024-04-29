@@ -53,3 +53,13 @@ export const ARKHAM_CHAIN_NAME: Partial<Record<ChainId, keyof IArkhamResponse>> 
   [ChainId.Optimism]: "optimism",
   [ChainId.Polygon]: "polygon",
 };
+
+export interface IArkhamRelayerCheck {
+  deliveryParsedSenderAddress: string;
+  deliveryParsedTargetAddress: string;
+  targetChainId: number;
+  deliveryParsedRefundAddress: string;
+  refundChainId: number;
+  deliveryParsedSourceProviderAddress: string;
+  parsedEmitterAddress: string;
+}

@@ -39,7 +39,9 @@ export const tryGetAddressInfo = async (
       `${BFF_URL}/getAddressInfo?network=${network}&address=${address}`,
     );
 
-    if (!addressInfoResp.ok) return null;
+    if (!addressInfoResp.ok) {
+      return null;
+    }
 
     const addressInfo = (await addressInfoResp.json()) as IArkhamResponse;
     return addressInfo ? addressInfo : null;

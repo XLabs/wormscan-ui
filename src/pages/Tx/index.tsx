@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { CHAIN_ID_SOLANA, parseVaa } from "@certusone/wormhole-sdk";
+import { parseVaa } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
 import { SearchNotFound } from "src/components/organisms";
@@ -14,7 +14,7 @@ import {
   getUsdcAddress,
 } from "src/utils/fetchWithRPCsFallthrough";
 import { formatUnits, parseTx } from "src/utils/crypto";
-import { Chain, ChainId, ChainLimit } from "src/api";
+import { ChainId, ChainLimit } from "src/api";
 import { getClient } from "src/api/Client";
 import analytics from "src/analytics";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
@@ -66,7 +66,7 @@ const Tx = () => {
 
   const [, setShowSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
   const [, setShowTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
-  const [, setShowAddressesInfo] = useRecoilState(addressesInfoState);
+  const [, setAddressesInfo] = useRecoilState(addressesInfoState);
 
   // pattern match the search value to see if it's a candidate for being an EVM transaction hash.
   const search = txHash ? (txHash.startsWith("0x") ? txHash : "0x" + txHash) : "";
@@ -873,7 +873,7 @@ const Tx = () => {
       setIsLoading(false);
 
       // Arkham address info logic
-      const addressesInfo: any = {};
+      const newAddressesInfo: any = {};
 
       for (const data of apiTxData) {
         const emitterChain = data?.emitterChain as ChainId;
@@ -900,12 +900,12 @@ const Tx = () => {
             ? await tryGetAddressInfo(network, sourceAddress)
             : null;
 
-        addressesInfo[emitterAddress.toLowerCase()] = emitterInfo;
-        addressesInfo[targetAddress.toLowerCase()] = targetInfo;
-        addressesInfo[sourceAddress.toLowerCase()] = sourceInfo;
+        newAddressesInfo[emitterAddress.toLowerCase()] = emitterInfo;
+        newAddressesInfo[targetAddress.toLowerCase()] = targetInfo;
+        newAddressesInfo[sourceAddress.toLowerCase()] = sourceInfo;
       }
 
-      setShowAddressesInfo(addressesInfo);
+      setAddressesInfo(newAddressesInfo);
     },
     [
       emitterChainId,
@@ -915,7 +915,7 @@ const Tx = () => {
       setShowTargetTokenUrl,
       chainLimitsData,
       isEvmTxHash,
-      setShowAddressesInfo,
+      setAddressesInfo,
     ],
   );
 

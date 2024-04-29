@@ -22,5 +22,5 @@ export interface IAddressInfo {
 }
 export const addressesInfoState = atom({
   key: "showAddressesInfo",
-  default: {},
+  default: {} as any,
 });

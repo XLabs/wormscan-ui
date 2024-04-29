@@ -7,7 +7,7 @@ import {
   DeliveryInstruction,
   parseEVMExecutionInfoV1,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
-
+import { ChainId as ApiChainId } from "src/api";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import {
   CCTP_MANUAL_APP_ID,
@@ -35,7 +35,7 @@ import {
   parseGenericRelayerVaa,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
-import { tryGetRedeemTxn } from "src/utils/cryptoToolkit";
+import { tryGetAddressInfo, tryGetRedeemTxn } from "src/utils/cryptoToolkit";
 import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import {
   addressesInfoState,
@@ -54,6 +54,7 @@ import RelayerOverview from "./Overview/RelayerOverview";
 import AdvancedView from "./AdvancedView";
 
 import "./styles.scss";
+import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 
 interface Props {
   blockData: GetBlockData;
@@ -68,7 +69,7 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
 
   const [showSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
   const [showTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
-  const [addressesInfo] = useRecoilState(addressesInfoState);
+  const [addressesInfo, setAddressesInfo] = useRecoilState(addressesInfoState);
 
   const [showOverview, setShowOverviewState] = useState(searchParams.get("view") !== "advanced");
   const setShowOverview = (show: boolean) => {
@@ -409,6 +410,59 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
 
   const isLatestBlockHigherThanVaaEmitBlock = lastFinalizedBlock > currentBlock;
 
+  // Arkham for Standard Relayer txns
+  const [checkedArkham, setCheckedArkham] = useState(false);
+  const checkAddressesWithArkham = async (
+    deliveryParsedSenderAddress: string,
+    deliveryParsedTargetAddress: string,
+    targetChainId: number,
+    deliveryParsedRefundAddress: string,
+    refundChainId: number,
+    deliveryParsedSourceProviderAddress: string,
+    parsedEmitterAddress: string,
+  ) => {
+    if (checkedArkham) return;
+    const deliveryParsedSenderAddressInfo =
+      deliveryParsedSenderAddress && fromChain && ARKHAM_CHAIN_NAME[fromChain as ApiChainId]
+        ? await tryGetAddressInfo(currentNetwork, deliveryParsedSenderAddress)
+        : null;
+
+    const deliveryParsedTargetAddressInfo =
+      deliveryParsedTargetAddress && targetChainId && ARKHAM_CHAIN_NAME[targetChainId as ApiChainId]
+        ? await tryGetAddressInfo(currentNetwork, deliveryParsedTargetAddress)
+        : null;
+
+    const deliveryParsedRefundAddressInfo =
+      deliveryParsedRefundAddress && refundChainId && ARKHAM_CHAIN_NAME[refundChainId as ApiChainId]
+        ? await tryGetAddressInfo(currentNetwork, deliveryParsedRefundAddress)
+        : null;
+
+    const deliveryParsedSourceProviderAddressInfo =
+      deliveryParsedSourceProviderAddress &&
+      targetChainId &&
+      ARKHAM_CHAIN_NAME[targetChainId as ApiChainId]
+        ? await tryGetAddressInfo(currentNetwork, deliveryParsedSourceProviderAddress)
+        : null;
+
+    const parsedEmitterAddressInfo =
+      parsedEmitterAddress && fromChain && ARKHAM_CHAIN_NAME[fromChain as ApiChainId]
+        ? await tryGetAddressInfo(currentNetwork, parsedEmitterAddress)
+        : null;
+
+    if (!checkedArkham) {
+      setAddressesInfo({
+        ...addressesInfo,
+        [deliveryParsedTargetAddress.toLowerCase()]: deliveryParsedTargetAddressInfo,
+        [deliveryParsedRefundAddress.toLowerCase()]: deliveryParsedRefundAddressInfo,
+        [deliveryParsedSourceProviderAddress.toLowerCase()]:
+          deliveryParsedSourceProviderAddressInfo,
+        [parsedEmitterAddress.toLowerCase()]: parsedEmitterAddressInfo,
+        [deliveryParsedSenderAddress.toLowerCase()]: deliveryParsedSenderAddressInfo,
+      });
+      setCheckedArkham(true);
+    }
+  };
+
   // --- Automatic Relayer Detection and handling ---
   const [genericRelayerInfo, setGenericRelayerInfo] = useState<DeliveryLifecycleRecord>(null);
   const [loadingRelayers, setLoadingRelayers] = useState(false);
@@ -708,6 +762,7 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
       const deliveryAttempt = deliveryAttemptRegex ? deliveryAttemptRegex?.[1] : null;
 
       const genericRelayerProps = {
+        addressesInfo,
         budgetText,
         copyBudgetText,
         currentNetwork,
@@ -737,6 +792,16 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
         totalGuardiansNeeded,
         VAAId,
       };
+
+      checkAddressesWithArkham(
+        deliveryParsedSenderAddress,
+        deliveryParsedTargetAddress,
+        deliveryInstruction.targetChainId,
+        deliveryParsedRefundAddress,
+        deliveryInstruction.refundChainId,
+        deliveryParsedSourceProviderAddress,
+        parsedEmitterAddress,
+      );
 
       if (showOverview) {
         return <RelayerOverview {...genericRelayerProps} />;
