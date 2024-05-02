@@ -63,8 +63,10 @@ const Tooltip = ({
     };
 
     window.addEventListener("mouseup", handleClickOutside, true);
+    window.addEventListener("scroll", handleClickOutside, true);
     return () => {
       window.removeEventListener("mouseup", handleClickOutside, true);
+      window.removeEventListener("scroll", handleClickOutside, true);
     };
   }, [onClickOutside]);
 
