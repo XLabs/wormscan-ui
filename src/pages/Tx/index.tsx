@@ -80,7 +80,6 @@ const Tx = () => {
   const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isRPC, setIsRPC] = useState(false);
-  const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [extraRawInfo, setExtraRawInfo] = useState(null);
   const [blockData, setBlockData] = useState<GetBlockData>(null);
   const [failCount, setFailCount] = useState(0);
@@ -116,7 +115,6 @@ const Tx = () => {
           limitDataForChain?.availableNotional < Number(txData?.usdAmount);
 
         setIsRPC(true);
-        setEmitterChainId(txData.chain as ChainId);
         setTxData([
           {
             emitterAddress: {
@@ -299,7 +297,6 @@ const Tx = () => {
               cancelRequests.current = true;
               const toChain = getCctpDomain(resp.destinationDomain);
 
-              setEmitterChainId(1 as ChainId);
               setTxData([
                 {
                   emitterAddress: {
@@ -407,11 +404,6 @@ const Tx = () => {
 
   const processVaaData = useCallback(
     async (apiTxData: GetOperationsOutput[]) => {
-      if (!emitterChainId && !!apiTxData.length) {
-        setEmitterChainId(apiTxData[0].emitterChain);
-        return;
-      }
-
       // Check if its generic relayer tx without vaa and go with RPCs
       // TODO: handle generic relayer no-vaa txns without RPCs
       for (const data of apiTxData) {
@@ -911,7 +903,6 @@ const Tx = () => {
       setAddressesInfo(newAddressesInfo);
     },
     [
-      emitterChainId,
       network,
       environment,
       setShowSourceTokenUrl,
@@ -952,7 +943,7 @@ const Tx = () => {
           <>
             <Top
               txHash={VAADataTxHash ?? txData?.[0]?.sourceChain?.transaction?.txHash}
-              emitterChainId={emitterChainId}
+              emitterChainId={txData?.[0]?.emitterChain || txData?.[0]?.sourceChain?.chainId}
               gatewayInfo={txData?.[0]?.sourceChain?.attribute?.value}
               payloadType={txData?.[0]?.content?.payload?.payloadType}
             />
