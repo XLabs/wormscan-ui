@@ -85,6 +85,7 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
 
   const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
   const vaa = data?.vaa;
+  const { isDuplicated } = data?.vaa || {};
   const guardianSignaturesCount = data?.decodedVaa?.guardianSignatures?.length || 0;
   const hasVAA = !!vaa;
 
@@ -298,6 +299,7 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
     fromChainOrig,
     guardianSignaturesCount,
     isAttestation,
+    isDuplicated,
     isGatewaySource,
     isMayanOnly: appIds?.length === 1 && appIds.includes(MAYAN_APP_ID),
     isUnknownApp,
@@ -780,6 +782,7 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
         gasUsedText,
         guardianSignaturesCount,
         isDelivery,
+        isDuplicated,
         maxRefundText,
         parsedEmitterAddress,
         parsedVaa,

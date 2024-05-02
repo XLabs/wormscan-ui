@@ -1,4 +1,4 @@
-import { ArrowDownIcon, CheckboxIcon, CopyIcon } from "@radix-ui/react-icons";
+import { ArrowDownIcon, CheckboxIcon, CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { Network } from "@certusone/wormhole-sdk";
 import { DeliveryInstruction } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
@@ -37,6 +37,7 @@ export type RelayerOverviewProps = {
   gasUsedText: () => string;
   guardianSignaturesCount: number;
   isDelivery: boolean;
+  isDuplicated: boolean;
   maxRefundText: () => string;
   parsedEmitterAddress: string;
   parsedVaa: any;
@@ -69,6 +70,7 @@ const RelayerOverview = ({
   gasUsedText,
   guardianSignaturesCount,
   isDelivery,
+  isDuplicated,
   maxRefundText,
   parsedEmitterAddress,
   parsedVaa,
@@ -316,7 +318,14 @@ const RelayerOverview = ({
               </div>
             </div>
             <div>
-              <div className="tx-overview-graph-step-title">VAA ID</div>
+              <div className="tx-overview-graph-step-title">
+                VAA ID
+                {isDuplicated && (
+                  <Tooltip tooltip={<div>VAA ID duplicated</div>} type="info">
+                    <InfoCircledIcon />
+                  </Tooltip>
+                )}
+              </div>
               <div className="tx-overview-graph-step-description">
                 <Tooltip maxWidth={false} tooltip={<div>{VAAId}</div>} type="info">
                   <p>{shortVaaId(VAAId)}</p>
