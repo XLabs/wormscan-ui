@@ -6,9 +6,9 @@ import WormIcon from "src/icons/wormIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress, shortVaaId } from "src/utils/crypto";
 import { TokenInfo } from "src/utils/metaMaskUtils";
-import "./styles.scss";
 import { IAddressInfo } from "src/utils/recoilStates";
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
+import "./styles.scss";
 
 export type OverviewProps = {
   addressesInfo?: IAddressInfo;
@@ -21,6 +21,7 @@ export type OverviewProps = {
   fromChainOrig?: ChainId | number;
   guardianSignaturesCount?: number;
   isAttestation?: boolean;
+  isDuplicated?: boolean;
   isGatewaySource?: boolean;
   isMayanOnly?: boolean;
   isUnknownApp?: boolean;
@@ -66,6 +67,7 @@ const Overview = ({
   fromChainOrig,
   guardianSignaturesCount,
   isAttestation,
+  isDuplicated,
   isGatewaySource,
   isMayanOnly,
   isUnknownApp,
@@ -271,7 +273,14 @@ const Overview = ({
             </div>
 
             <div>
-              <div className="tx-overview-graph-step-title">VAA ID</div>
+              <div className="tx-overview-graph-step-title">
+                VAA ID
+                {isDuplicated && (
+                  <Tooltip tooltip={<div>VAA ID duplicated</div>} type="info">
+                    <InfoCircledIcon />
+                  </Tooltip>
+                )}
+              </div>
               <div className="tx-overview-graph-step-description">
                 {VAAId ? (
                   <>

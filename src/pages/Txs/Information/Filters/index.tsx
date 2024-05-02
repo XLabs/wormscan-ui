@@ -77,7 +77,7 @@ const ChainFilterMainnet = [
   ChainId.Oasis,
   ChainId.Optimism,
   ChainId.Polygon,
-  // ChainId.Scroll, TODO: add when exists a Scroll transaction
+  ChainId.Scroll,
   ChainId.Sei,
   ChainId.Solana,
   ChainId.Sui,
@@ -115,7 +115,7 @@ const ChainFilterTestnet = [
   ChainId.Oasis,
   ChainId.Optimism,
   ChainId.OptimismSepolia,
-  // ChainId.Scroll, TODO: add when exists a Scroll transaction
+  ChainId.Scroll,
   ChainId.Sei,
   ChainId.Sepolia,
   ChainId.Solana,

@@ -6,8 +6,8 @@ import { OverviewProps } from "src/pages/Tx/Information/Overview";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { TruncateText } from "src/utils/string";
-import "./styles.scss";
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
+import "./styles.scss";
 
 const Details = ({
   addressesInfo,
@@ -20,6 +20,7 @@ const Details = ({
   fromChainOrig,
   guardianSignaturesCount,
   isAttestation,
+  isDuplicated,
   isGatewaySource,
   isUnknownApp,
   originDateParsed,
@@ -43,6 +44,7 @@ const Details = ({
 }: OverviewProps) => {
   const extraWidthGatewaySource = isGatewaySource ? 125 : 30;
   const extraWidthUnknownApp = isUnknownApp ? 55 : 30;
+  const extraWidthDuplicated = isDuplicated ? 53 : 30;
   const lineValueRef = useRef<HTMLDivElement>(null);
   const [lineValueWidth, setLineValueWidth] = useState<number>(0);
 
@@ -218,10 +220,19 @@ const Details = ({
           <div className="tx-details-group-line-value">
             {VAAId ? (
               <>
-                <TruncateText containerWidth={lineValueWidth} text={VAAId} />
+                <TruncateText
+                  containerWidth={lineValueWidth}
+                  extraWidth={extraWidthDuplicated}
+                  text={VAAId}
+                />
                 <CopyToClipboard toCopy={VAAId}>
                   <CopyIcon height={20} width={20} />
                 </CopyToClipboard>
+                {isDuplicated && (
+                  <Tooltip tooltip={<div>VAA ID duplicated</div>} type="info">
+                    <InfoCircledIcon />
+                  </Tooltip>
+                )}
               </>
             ) : (
               "N/A"

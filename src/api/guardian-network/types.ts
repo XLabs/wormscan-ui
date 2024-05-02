@@ -159,6 +159,7 @@ export interface GetOperationsOutput {
   sequence: string;
   vaa: {
     guardianSetIndex: number;
+    isDuplicated: boolean;
     raw: string;
   };
   content: {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CopyIcon } from "@radix-ui/react-icons";
+import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { RelayerOverviewProps } from "src/pages/Tx/Information/Overview/RelayerOverview";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
@@ -34,6 +34,7 @@ const RelayerDetails = ({
   gasUsedText,
   guardianSignaturesCount,
   isDelivery,
+  isDuplicated,
   maxRefundText,
   parsedEmitterAddress,
   parsedVaa,
@@ -46,6 +47,7 @@ const RelayerDetails = ({
   totalGuardiansNeeded,
   VAAId,
 }: RelayerOverviewProps) => {
+  const extraWidthDuplicated = isDuplicated ? 53 : 30;
   const lineValueRef = useRef<HTMLDivElement>(null);
   const [lineValueWidth, setLineValueWidth] = useState<number>(0);
 
@@ -192,10 +194,19 @@ const RelayerDetails = ({
         <div className="tx-details-group-line">
           <div className="tx-details-group-line-key">VAA ID</div>
           <div className="tx-details-group-line-value">
-            <TruncateText containerWidth={lineValueWidth} text={VAAId} />
+            <TruncateText
+              containerWidth={lineValueWidth}
+              extraWidth={extraWidthDuplicated}
+              text={VAAId}
+            />
             <CopyToClipboard toCopy={VAAId}>
               <CopyIcon height={20} width={20} />
             </CopyToClipboard>
+            {isDuplicated && (
+              <Tooltip tooltip={<div>VAA ID duplicated</div>} type="info">
+                <InfoCircledIcon />
+              </Tooltip>
+            )}
           </div>
         </div>
 
