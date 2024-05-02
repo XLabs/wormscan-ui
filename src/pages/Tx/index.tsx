@@ -350,7 +350,7 @@ const Tx = () => {
               setErrorCode(undefined);
               setIsLoading(false);
             })
-            .catch(() => null);
+            .catch(() => (cancelRequests.current = false));
         }
 
         setFailCount(errCount);
