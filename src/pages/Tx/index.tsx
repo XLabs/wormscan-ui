@@ -161,7 +161,10 @@ const Tx = () => {
               tokenAmount: txData.tokenAmount,
               usdAmount: txData.usdAmount,
             },
-            STATUS: isBigTransaction || isDailyLimitExceeded ? "IN_GOVERNORS" : "IN_PROGRESS",
+            STATUS:
+              txData.STATUS === "IN_PROGRESS" && (isBigTransaction || isDailyLimitExceeded)
+                ? "IN_GOVERNORS"
+                : txData.STATUS,
             isBigTransaction,
             isDailyLimitExceeded,
             transactionLimit,
