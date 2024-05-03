@@ -76,6 +76,8 @@ type AddressInfoTooltipProps = {
 const AddressInfoTooltip = ({ info, chain }: AddressInfoTooltipProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  if (!info?.[ARKHAM_CHAIN_NAME[chain]]) return null;
+
   return (
     <>
       <Tooltip
@@ -91,9 +93,7 @@ const AddressInfoTooltip = ({ info, chain }: AddressInfoTooltipProps) => {
                 <Cross2Icon onClick={() => setIsOpen(false)} width={22} height={22} />
               </div>
 
-              {info?.[ARKHAM_CHAIN_NAME[chain]] && (
-                <ChainInfo data={info[ARKHAM_CHAIN_NAME[chain]]} chainId={chain} />
-              )}
+              <ChainInfo data={info[ARKHAM_CHAIN_NAME[chain]]} chainId={chain} />
             </div>
           </div>
         }
