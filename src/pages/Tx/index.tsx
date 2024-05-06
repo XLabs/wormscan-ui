@@ -531,9 +531,9 @@ const Tx = () => {
           if (!!parsedPayload?.nttMessage?.trimmedAmount?.amount) {
             const decimals = parsedPayload?.nttMessage?.trimmedAmount?.decimals;
 
-            const amount = String(
-              +parsedPayload?.nttMessage?.trimmedAmount?.amount / 10 ** decimals,
-            );
+            const amount = decimals
+              ? String(+parsedPayload?.nttMessage?.trimmedAmount?.amount / 10 ** decimals)
+              : null;
 
             data.content.payload = {
               ...data.content.payload,

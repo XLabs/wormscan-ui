@@ -4,6 +4,8 @@ import { Environment, getChainInfo, getEthersProvider } from "./environment";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 
 const NTT_MANAGER_TOKENS = {
+  // SOLANA MAINNET
+  NTtAaoDJhkeHeaVUHnyhwbPNAN6WgBpHkHBTc6d7vLK: "85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ",
   // SOLANA DEVNET
   "7nMTXqo19kzwyisGCdcRP5AErEBToYpVYg2C5PNrjsa2": "SCAmk7zfNKXemDjap14aGJJyQXZXXhq9X2Fs8oVSsdr",
   // ARBITRUM SEPOLIA
