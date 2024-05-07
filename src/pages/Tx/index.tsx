@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { parseVaa } from "@certusone/wormhole-sdk";
+import { parseVaa, tryHexToNativeString } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
 import { SearchNotFound } from "src/components/organisms";
@@ -872,7 +872,9 @@ const Tx = () => {
 
       for (const data of apiTxData) {
         const emitterChain = data?.emitterChain as ChainId;
-        const emitterAddress = data?.emitterAddress?.native;
+        const emitterAddress =
+          data?.emitterAddress?.native ||
+          tryHexToNativeString(data?.emitterAddress?.hex, "ethereum"); // ethereum means evm here.
         const emitterInfo =
           emitterAddress && ARKHAM_CHAIN_NAME[emitterChain]
             ? await tryGetAddressInfo(network, emitterAddress)

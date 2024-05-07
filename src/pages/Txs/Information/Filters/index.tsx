@@ -62,7 +62,7 @@ const ChainFilterMainnet = [
   ChainId.Aurora,
   ChainId.Avalanche,
   ChainId.Base,
-  // ChainId.Blast, TODO: add when exists a Blast transaction
+  ChainId.Blast,
   ChainId.BSC,
   ChainId.Celo,
   ChainId.Ethereum,

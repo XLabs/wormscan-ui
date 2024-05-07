@@ -3,16 +3,18 @@ import { ethers } from "ethers";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 
+// SOLANA MANAGET <--> TOKEN
 const NTT_MANAGER_TOKENS = {
-  // SOLANA MAINNET
-  NTtAaoDJhkeHeaVUHnyhwbPNAN6WgBpHkHBTc6d7vLK: "85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ",
-  // SOLANA DEVNET
-  "7nMTXqo19kzwyisGCdcRP5AErEBToYpVYg2C5PNrjsa2": "SCAmk7zfNKXemDjap14aGJJyQXZXXhq9X2Fs8oVSsdr",
-  // ARBITRUM SEPOLIA
-  "0xcc1ebd7a6661c0f6e19d2bbdb881b11f3b3f40ff": "0xb12C77938c09d81F1e9797d48501b5c4E338B45B",
-  // ETH SEPOLIA
-  "0x459b4d6df31c1c1f8b6fda0f8ad77e1eff832bcf": "0xce0bd78b496bc8ddd25c8a192771e4537f0794c8",
-  //
+  MAINNET: {
+    // W
+    NTtAaoDJhkeHeaVUHnyhwbPNAN6WgBpHkHBTc6d7vLK: "85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ",
+    // BORG
+    NttBm3HouTCFnUBz32fEs5joQFRjFoJPA8AyhtgjFrw: "3dQTr7ror2QPKQ3GbBCokJUmjErGg8kTJzdnYjNfvi3Z",
+  },
+  TESTNET: {
+    // W
+    NTtAaoDJhkeHeaVUHnyhwbPNAN6WgBpHkHBTc6d7vLK: "EetppHswYvV1jjRWoQKC1hejdeBDHR9NNzNtCyRQfrrQ",
+  },
 } as any;
 
 export async function getNttInfo(env: Environment, data: GetOperationsOutput, parsedPayload: any) {
@@ -22,9 +24,9 @@ export async function getNttInfo(env: Environment, data: GetOperationsOutput, pa
   try {
     contractAddress = tryHexToNativeString(contractAddress, targetChain);
 
-    if (NTT_MANAGER_TOKENS[contractAddress]) {
+    if (NTT_MANAGER_TOKENS[env.network][contractAddress]) {
       return {
-        targetTokenAddress: NTT_MANAGER_TOKENS[contractAddress],
+        targetTokenAddress: NTT_MANAGER_TOKENS[env.network][contractAddress],
       };
     }
 

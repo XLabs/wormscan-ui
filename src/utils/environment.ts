@@ -31,6 +31,7 @@ const MAINNET_RPCS: { [key in ChainName]?: string } = {
   arbitrum: "https://arb1.arbitrum.io/rpc",
   avalanche: "https://rpc.ankr.com/avalanche",
   base: "https://mainnet.base.org",
+  blast: "https://rpc.ankr.com/blast",
   bsc: process.env.BSC_RPC || "https://bsc-dataseed2.defibit.io",
   celo: "https://forno.celo.org",
   ethereum: process.env.ETH_RPC || "https://rpc.ankr.com/eth",
@@ -43,6 +44,7 @@ const MAINNET_RPCS: { [key in ChainName]?: string } = {
   oasis: "https://emerald.oasis.dev",
   optimism: "https://rpc.ankr.com/optimism",
   polygon: "https://rpc.ankr.com/polygon",
+  scroll: "https://rpc.ankr.com/scroll",
   solana: process.env.SOLANA_RPC ?? "https://api.mainnet-beta.solana.com",
   sui: "https://rpc.mainnet.sui.io",
   terra: "https://terra-classic-fcd.publicnode.com",
@@ -347,6 +349,26 @@ export const mainnetEnv: Environment = {
       nativeCurrencyName: "ETH",
       relayerContractAddress: "0x706f82e9bb5b0813501714ab5974216704980e31",
       rpcUrl: MAINNET_RPCS.base || "",
+    },
+    {
+      chainId: 34 as ChainId,
+      chainName: "SCROLL",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 534352,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: MAINNET_RPCS.scroll || "",
+    },
+    {
+      chainId: 36 as ChainId,
+      chainName: "BLAST",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 81457,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: MAINNET_RPCS.blast || "",
     },
   ],
   guardianRpcs: [
