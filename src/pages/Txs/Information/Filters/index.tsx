@@ -154,15 +154,10 @@ const Filters = () => {
     sourceChain: sourceChainParams,
     targetChain: targetChainParams,
   });
-  const totalFilterCounter = Object.values(checkedState).reduce((total, value) => {
-    if (typeof value === "string") {
-      return total + value.split(",").filter(Boolean).length;
-    } else if (value) {
-      return total + 1;
-    } else {
-      return total;
-    }
-  }, 0);
+  const totalFilterCounter = Object.values(checkedState).reduce(
+    (total, value) => total + value.split(",").filter(Boolean).length,
+    0,
+  );
   const disableApplyButton =
     checkedState.appId === appIdParams &&
     checkedState.exclusiveAppId === exclusiveAppIdParams &&
