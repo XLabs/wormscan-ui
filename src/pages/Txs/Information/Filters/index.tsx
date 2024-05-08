@@ -452,16 +452,12 @@ const Filters = () => {
                     </p>
                     <div
                       className={`custom-input-checkbox ${
-                        checkedState.sourceChain &&
-                        checkedState.sourceChain.split(",").includes(String(value))
-                          ? "checked"
-                          : ""
+                        checkedState.sourceChain.split(",").includes(String(value)) ? "checked" : ""
                       }`}
                     >
-                      {checkedState.sourceChain &&
-                        checkedState.sourceChain.split(",").includes(String(value)) && (
-                          <CheckIcon height={14} width={14} />
-                        )}
+                      {checkedState.sourceChain.split(",").includes(String(value)) && (
+                        <CheckIcon height={14} width={14} />
+                      )}
                     </div>
                   </div>
                 </Tooltip>
@@ -522,16 +518,12 @@ const Filters = () => {
                     </p>
                     <div
                       className={`custom-input-checkbox ${
-                        checkedState.targetChain &&
-                        checkedState.targetChain.split(",").includes(String(value))
-                          ? "checked"
-                          : ""
+                        checkedState.targetChain.split(",").includes(String(value)) ? "checked" : ""
                       }`}
                     >
-                      {checkedState.targetChain &&
-                        checkedState.targetChain.split(",").includes(String(value)) && (
-                          <CheckIcon height={14} width={14} />
-                        )}
+                      {checkedState.targetChain.split(",").includes(String(value)) && (
+                        <CheckIcon height={14} width={14} />
+                      )}
                     </div>
                   </div>
                 </Tooltip>
