@@ -26,8 +26,8 @@ import "./styles.scss";
 interface ICheckedState {
   appId: string | null;
   exclusiveAppId: string | null;
-  sourceChain: ChainId | null;
-  targetChain: ChainId | null;
+  sourceChain: string | null;
+  targetChain: string | null;
 }
 type TCheckedStateKey = keyof ICheckedState;
 
@@ -98,7 +98,7 @@ const ChainFilterTestnet = [
   ChainId.Aurora,
   ChainId.Base,
   ChainId.BaseSepolia,
-  // ChainId.Blast, TODO: add when exists a Blast transaction
+  ChainId.Blast,
   ChainId.BSC,
   ChainId.Fantom,
   ChainId.Avalanche,
@@ -143,8 +143,8 @@ const Filters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const appIdParams = searchParams.get(APP_ID_STRING) || null;
   const exclusiveAppIdParams = searchParams.get(EXCLUSIVE_APP_ID_STRING) || null;
-  const sourceChainParams = +searchParams.get(SOURCE_CHAIN_STRING) || null;
-  const targetChainParams = +searchParams.get(TARGET_CHAIN_STRING) || null;
+  const sourceChainParams = searchParams.get(SOURCE_CHAIN_STRING) || null;
+  const targetChainParams = searchParams.get(TARGET_CHAIN_STRING) || null;
 
   const [checkedState, setCheckedState] = useState<ICheckedState>({
     appId: appIdParams,
@@ -224,7 +224,17 @@ const Filters = () => {
         newState.exclusiveAppId = null;
       }
 
-      newState[key] = newState[key] === value ? null : value;
+      if (key === SOURCE_CHAIN_STRING || key === TARGET_CHAIN_STRING) {
+        const values = new Set((newState[key] || "").split(","));
+        if (values.has(String(value))) {
+          values.delete(String(value));
+        } else {
+          values.add(String(value));
+        }
+        newState[key] = Array.from(values).filter(Boolean).join(",");
+      } else {
+        newState[key] = newState[key] === value ? null : value;
+      }
 
       return newState;
     });
@@ -395,7 +405,9 @@ const Filters = () => {
             <div className="filters-container-box-top">
               <p className="filters-container-box-top-title">
                 Source Chain
-                {checkedState.sourceChain && <span className="counter">1</span>}
+                {checkedState.sourceChain && (
+                  <span className="counter">{checkedState.sourceChain.split(",").length}</span>
+                )}
               </p>
             </div>
 
@@ -435,10 +447,16 @@ const Filters = () => {
                     </p>
                     <div
                       className={`custom-input-checkbox ${
-                        checkedState.sourceChain === value ? "checked" : ""
+                        checkedState.sourceChain &&
+                        checkedState.sourceChain.split(",").includes(String(value))
+                          ? "checked"
+                          : ""
                       }`}
                     >
-                      {checkedState.sourceChain === value && <CheckIcon height={14} width={14} />}
+                      {checkedState.sourceChain &&
+                        checkedState.sourceChain.split(",").includes(String(value)) && (
+                          <CheckIcon height={14} width={14} />
+                        )}
                     </div>
                   </div>
                 </Tooltip>
@@ -456,7 +474,10 @@ const Filters = () => {
           <div className="filters-container-box">
             <div className="filters-container-box-top">
               <p className="filters-container-box-top-title">
-                Target Chain {checkedState.targetChain && <span className="counter">1</span>}
+                Target Chain
+                {checkedState.targetChain && (
+                  <span className="counter">{checkedState.targetChain.split(",").length}</span>
+                )}
               </p>
             </div>
 
@@ -496,10 +517,16 @@ const Filters = () => {
                     </p>
                     <div
                       className={`custom-input-checkbox ${
-                        checkedState.targetChain === value ? "checked" : ""
+                        checkedState.targetChain &&
+                        checkedState.targetChain.split(",").includes(String(value))
+                          ? "checked"
+                          : ""
                       }`}
                     >
-                      {checkedState.targetChain === value && <CheckIcon height={14} width={14} />}
+                      {checkedState.targetChain &&
+                        checkedState.targetChain.split(",").includes(String(value)) && (
+                          <CheckIcon height={14} width={14} />
+                        )}
                     </div>
                   </div>
                 </Tooltip>

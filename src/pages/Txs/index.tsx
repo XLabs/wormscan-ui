@@ -60,8 +60,8 @@ const Txs = () => {
   const address = searchParams.get("address") || null;
   const appId = searchParams.get("appId") || null;
   const exclusiveAppId = searchParams.get("exclusiveAppId") || null;
-  const sourceChain = +searchParams.get("sourceChain") || null;
-  const targetChain = +searchParams.get("targetChain") || null;
+  const sourceChain = searchParams.get("sourceChain") || null;
+  const targetChain = searchParams.get("targetChain") || null;
 
   useEffect(() => {
     if (address) {
