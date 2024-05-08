@@ -24,10 +24,10 @@ import FiltersIcon from "src/icons/filtersIcon.svg";
 import "./styles.scss";
 
 interface ICheckedState {
-  appId: string | null;
-  exclusiveAppId: string | null;
-  sourceChain: ChainId | null;
-  targetChain: ChainId | null;
+  appId: string;
+  exclusiveAppId: string;
+  sourceChain: string;
+  targetChain: string;
 }
 type TCheckedStateKey = keyof ICheckedState;
 
@@ -38,10 +38,12 @@ interface IShowMore {
 }
 type TShowMoreKey = keyof IShowMore;
 
-const APP_ID_STRING = "appId";
-const EXCLUSIVE_APP_ID_STRING = "exclusiveAppId";
-const SOURCE_CHAIN_STRING = "sourceChain";
-const TARGET_CHAIN_STRING = "targetChain";
+enum FilterKeys {
+  AppId = "appId",
+  ExclusiveAppId = "exclusiveAppId",
+  SourceChain = "sourceChain",
+  TargetChain = "targetChain",
+}
 
 const appIds = [
   CCTP_APP_ID,
@@ -98,7 +100,7 @@ const ChainFilterTestnet = [
   ChainId.Aurora,
   ChainId.Base,
   ChainId.BaseSepolia,
-  // ChainId.Blast, TODO: add when exists a Blast transaction
+  ChainId.Blast,
   ChainId.BSC,
   ChainId.Fantom,
   ChainId.Avalanche,
@@ -141,10 +143,10 @@ const Filters = () => {
   const isMobile = width < 1024;
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const appIdParams = searchParams.get(APP_ID_STRING) || null;
-  const exclusiveAppIdParams = searchParams.get(EXCLUSIVE_APP_ID_STRING) || null;
-  const sourceChainParams = +searchParams.get(SOURCE_CHAIN_STRING) || null;
-  const targetChainParams = +searchParams.get(TARGET_CHAIN_STRING) || null;
+  const appIdParams = searchParams.get(FilterKeys.AppId) || "";
+  const exclusiveAppIdParams = searchParams.get(FilterKeys.ExclusiveAppId) || "";
+  const sourceChainParams = searchParams.get(FilterKeys.SourceChain) || "";
+  const targetChainParams = searchParams.get(FilterKeys.TargetChain) || "";
 
   const [checkedState, setCheckedState] = useState<ICheckedState>({
     appId: appIdParams,
@@ -152,7 +154,10 @@ const Filters = () => {
     sourceChain: sourceChainParams,
     targetChain: targetChainParams,
   });
-  const totalFilterCounter = Object.values(checkedState).filter(Boolean).length;
+  const totalFilterCounter = Object.values(checkedState).reduce(
+    (total, value) => total + value.split(",").filter(Boolean).length,
+    0,
+  );
   const disableApplyButton =
     checkedState.appId === appIdParams &&
     checkedState.exclusiveAppId === exclusiveAppIdParams &&
@@ -220,11 +225,21 @@ const Filters = () => {
     setCheckedState(prevState => {
       const newState: any = { ...prevState };
 
-      if (key === APP_ID_STRING && newState.exclusiveAppId) {
-        newState.exclusiveAppId = null;
+      if (key === FilterKeys.AppId && newState.exclusiveAppId) {
+        newState.exclusiveAppId = "";
       }
 
-      newState[key] = newState[key] === value ? null : value;
+      if (key === FilterKeys.SourceChain || key === FilterKeys.TargetChain) {
+        const values = new Set((newState[key] || "").split(","));
+        if (values.has(String(value))) {
+          values.delete(String(value));
+        } else {
+          values.add(String(value));
+        }
+        newState[key] = Array.from(values).filter(Boolean).join(",");
+      } else {
+        newState[key] = newState[key] === value ? "" : value;
+      }
 
       return newState;
     });
@@ -232,10 +247,10 @@ const Filters = () => {
 
   const clearFilters = () => {
     setCheckedState({
-      appId: null,
-      exclusiveAppId: null,
-      sourceChain: null,
-      targetChain: null,
+      appId: "",
+      exclusiveAppId: "",
+      sourceChain: "",
+      targetChain: "",
     });
   };
 
@@ -296,7 +311,7 @@ const Filters = () => {
                 <div
                   className="filters-container-box-content-item protocol-filter"
                   key={appId}
-                  onClick={() => handleFilters(APP_ID_STRING, appId)}
+                  onClick={() => handleFilters(FilterKeys.AppId, appId)}
                 >
                   <p>
                     <span>{formatAppId(appId)}</span>
@@ -330,7 +345,7 @@ const Filters = () => {
                           className="filters-container-box-content-item-exclusive"
                           onClick={e => {
                             e.stopPropagation();
-                            return handleFilters(EXCLUSIVE_APP_ID_STRING, "true");
+                            return handleFilters(FilterKeys.ExclusiveAppId, "true");
                           }}
                         >
                           <div
@@ -385,7 +400,7 @@ const Filters = () => {
 
             <button
               className="filters-container-box-show-more-btn"
-              onClick={() => handleShowMore(APP_ID_STRING)}
+              onClick={() => handleShowMore(FilterKeys.AppId)}
             >
               {showMore.appId ? "Show Less" : "Show More"}
             </button>
@@ -395,7 +410,9 @@ const Filters = () => {
             <div className="filters-container-box-top">
               <p className="filters-container-box-top-title">
                 Source Chain
-                {checkedState.sourceChain && <span className="counter">1</span>}
+                {checkedState.sourceChain && (
+                  <span className="counter">{checkedState.sourceChain.split(",").length}</span>
+                )}
               </p>
             </div>
 
@@ -415,7 +432,7 @@ const Filters = () => {
                   <div
                     key={value}
                     className="filters-container-box-content-item"
-                    onClick={() => handleFilters(SOURCE_CHAIN_STRING, value)}
+                    onClick={() => handleFilters(FilterKeys.SourceChain, value)}
                   >
                     <p>
                       <BlockchainIcon
@@ -435,10 +452,12 @@ const Filters = () => {
                     </p>
                     <div
                       className={`custom-input-checkbox ${
-                        checkedState.sourceChain === value ? "checked" : ""
+                        checkedState.sourceChain.split(",").includes(String(value)) ? "checked" : ""
                       }`}
                     >
-                      {checkedState.sourceChain === value && <CheckIcon height={14} width={14} />}
+                      {checkedState.sourceChain.split(",").includes(String(value)) && (
+                        <CheckIcon height={14} width={14} />
+                      )}
                     </div>
                   </div>
                 </Tooltip>
@@ -447,7 +466,7 @@ const Filters = () => {
 
             <button
               className="filters-container-box-show-more-btn"
-              onClick={() => handleShowMore(SOURCE_CHAIN_STRING)}
+              onClick={() => handleShowMore(FilterKeys.SourceChain)}
             >
               {showMore.sourceChain ? "Show Less" : "Show More"}
             </button>
@@ -456,7 +475,10 @@ const Filters = () => {
           <div className="filters-container-box">
             <div className="filters-container-box-top">
               <p className="filters-container-box-top-title">
-                Target Chain {checkedState.targetChain && <span className="counter">1</span>}
+                Target Chain
+                {checkedState.targetChain && (
+                  <span className="counter">{checkedState.targetChain.split(",").length}</span>
+                )}
               </p>
             </div>
 
@@ -476,7 +498,7 @@ const Filters = () => {
                   <div
                     key={value}
                     className="filters-container-box-content-item"
-                    onClick={() => handleFilters(TARGET_CHAIN_STRING, value)}
+                    onClick={() => handleFilters(FilterKeys.TargetChain, value)}
                   >
                     <p>
                       <BlockchainIcon
@@ -496,10 +518,12 @@ const Filters = () => {
                     </p>
                     <div
                       className={`custom-input-checkbox ${
-                        checkedState.targetChain === value ? "checked" : ""
+                        checkedState.targetChain.split(",").includes(String(value)) ? "checked" : ""
                       }`}
                     >
-                      {checkedState.targetChain === value && <CheckIcon height={14} width={14} />}
+                      {checkedState.targetChain.split(",").includes(String(value)) && (
+                        <CheckIcon height={14} width={14} />
+                      )}
                     </div>
                   </div>
                 </Tooltip>
@@ -508,7 +532,7 @@ const Filters = () => {
 
             <button
               className="filters-container-box-show-more-btn"
-              onClick={() => handleShowMore(TARGET_CHAIN_STRING)}
+              onClick={() => handleShowMore(FilterKeys.TargetChain)}
             >
               {showMore.targetChain ? "Show Less" : "Show More"}
             </button>
