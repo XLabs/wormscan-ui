@@ -34,7 +34,7 @@ const Table = <T extends object>({
   onRowClick,
 }: Props<T>) => {
   const tableHooks = hasSort ? [useSortBy] : [];
-  const initialState = initialSortById ? { sortBy: [{ id: initialSortById, desc: false }] } : {};
+  const initialState = initialSortById ? { sortBy: [{ id: initialSortById, desc: true }] } : {};
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
     {
       columns,

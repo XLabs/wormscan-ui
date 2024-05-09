@@ -300,7 +300,7 @@ const Governor = () => {
                 data={isLoadingLimits ? [] : dashboardData}
                 emptyMessage="No limits found."
                 hasSort={true}
-                initialSortById="chainId.name"
+                initialSortById="notionalLimit"
                 isLoading={isLoadingLimits}
               />
             )}
