@@ -48,7 +48,7 @@ const MAINNET_RPCS: { [key in ChainName]?: string } = {
   solana: process.env.SOLANA_RPC ?? "https://api.mainnet-beta.solana.com",
   sui: "https://rpc.mainnet.sui.io",
   terra: "https://terra-classic-fcd.publicnode.com",
-  terra2: "https://phoenix-lcd.terra.dev",
+  terra2: "https://lcd-terra.tfl.foundation",
   xpla: "https://dimension-lcd.xpla.dev",
 };
 
