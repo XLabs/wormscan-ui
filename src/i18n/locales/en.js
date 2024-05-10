@@ -453,7 +453,7 @@ export default {
               },
               point2: {
                 text1:
-                  "Notice Requirement and Informal Dispute Resolution. Before either party may seek arbitration, the party must first send to the other party a written Notice of Dispute (“Notice”) describing the nature and basis of the claim or dispute, and the requested relief. A Notice to  the Company should be sent to:",
+                  "Notice Requirement and Informal Dispute Resolution. Before either party may seek arbitration, the party must first send to the other party a written Notice of Dispute (“Notice”) describing the nature and basis of the claim or dispute, and the requested relief. A Notice to the Company should be sent to:",
                 text2:
                   "After the Notice is received, you and the Company may attempt to resolve the claim or dispute informally. If you and the Company do not resolve the claim or dispute within thirty (30) days after the Notice is received, either party may begin an arbitration proceeding. The amount of any settlement offer made by any party may not be disclosed to the arbitrator until after the arbitrator has determined the amount of the award, if any, to which either party is entitled.",
               },
