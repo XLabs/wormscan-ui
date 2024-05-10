@@ -261,6 +261,11 @@ const TermsOfUse = () => {
                       {t("termsOfUse.page.section4.point4.point1.ul.li10")}
                     </li>
                   </ul>
+
+                  <p className="terms-of-use-content-bottom-text">
+                    <span className="terms-of-use-content-bottom-text-number">4.4.2.</span>
+                    {t("termsOfUse.page.section4.point4.point2.text")}
+                  </p>
                 </div>
 
                 <p className="terms-of-use-content-bottom-text">

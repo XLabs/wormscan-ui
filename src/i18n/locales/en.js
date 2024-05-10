@@ -233,6 +233,9 @@ export default {
                   li10: "Access the Service in order to build a similar or competitive website, product, or service.",
                 },
               },
+              point2: {
+                text: "Restrictions. Except as expressly stated herein, no part of the Service may be copied, reproduced, distributed, republished, downloaded, displayed, posted, or transmitted in any form or by any means. Unless otherwise indicated, any future release, update, or other addition to functionality of the Service shall be subject to this Agreement. All copyright and other proprietary notices on the Service (or on any content displayed on the Service) must be retained on all copies thereof. You will not use the Website or Service for any illegal purpose.",
+              },
             },
             point5: {
               text: {
