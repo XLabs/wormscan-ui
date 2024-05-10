@@ -270,7 +270,7 @@ export default {
             title: "5. PRIVACY",
             text1_1: "You agree to Company’s Privacy Policy (available at ",
             text1_2:
-              ", which is incorporated by reference into this Agreement as if it were set forth herein in its entirety. The Privacy Policy describes how we collect, use, and disclose information provided by you. By using the Website or Service, you agree to, and are bound by, the terms of the Privacy Policy.",
+              "), which is incorporated by reference into this Agreement as if it were set forth herein in its entirety. The Privacy Policy describes how we collect, use, and disclose information provided by you. By using the Website or Service, you agree to, and are bound by, the terms of the Privacy Policy.",
           },
           section6: {
             title: "6. COMMUNICATION WITH USERS",
