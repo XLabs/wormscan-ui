@@ -261,6 +261,11 @@ const TermsOfUse = () => {
                       {t("termsOfUse.page.section4.point4.point1.ul.li10")}
                     </li>
                   </ul>
+
+                  <p className="terms-of-use-content-bottom-text">
+                    <span className="terms-of-use-content-bottom-text-number">4.4.2.</span>
+                    {t("termsOfUse.page.section4.point4.point2.text")}
+                  </p>
                 </div>
 
                 <p className="terms-of-use-content-bottom-text">
@@ -508,19 +513,9 @@ const TermsOfUse = () => {
 
                   <p className="terms-of-use-content-bottom-text">
                     <span className="terms-of-use-content-bottom-text-number">13.4.2.</span>
-                    {t("termsOfUse.page.section13.point4.point2.text1")}
+                    {t("termsOfUse.page.section13.point4.point2.text1")}{" "}
+                    <a href="mailto:legal@xlabs.xyz">legal@xlabs.xyz.</a>
                   </p>
-
-                  <div className="terms-of-use-content-bottom-list">
-                    <p className="terms-of-use-content-bottom-text">
-                      xLabs, Inc. <br />
-                      Attn: Legal Department <br />
-                      Avenida Ricardo Arango y Calle No.61, <br />
-                      P.O. Box 0816 01832 <br />
-                      Obarrio Panamá, República de Panamá <br />
-                      Email: legal@xlabs.xyz
-                    </p>
-                  </div>
 
                   <p className="terms-of-use-content-bottom-text">
                     {t("termsOfUse.page.section13.point4.point2.text2")}
@@ -548,18 +543,9 @@ const TermsOfUse = () => {
 
                   <p className="terms-of-use-content-bottom-text">
                     <span className="terms-of-use-content-bottom-text-number">13.4.7.</span>
-                    {t("termsOfUse.page.section13.point4.point7.text")}
+                    {t("termsOfUse.page.section13.point4.point7.text")}{" "}
+                    <a href="mailto:legal@xlabs.xyz">legal@xlabs.xyz.</a>
                   </p>
-
-                  <div className="terms-of-use-content-bottom-list">
-                    <p className="terms-of-use-content-bottom-text">
-                      xLabs, Inc. <br />
-                      Attn: Legal Department <br />
-                      Avenida Ricardo Arango y Calle No.61, <br />
-                      P.O. Box 0816 01832 <br />
-                      Obarrio Panamá, República de Panamá
-                    </p>
-                  </div>
 
                   <p className="terms-of-use-content-bottom-text">
                     <span className="terms-of-use-content-bottom-text-number">13.4.8.</span>

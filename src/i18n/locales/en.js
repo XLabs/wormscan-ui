@@ -109,12 +109,12 @@ export default {
         },
         page: {
           title: "Terms of Use",
-          lastRevised: "Last Revised:",
+          lastRevised: "Last Revised: May 9, 2024",
           header: {
             text1:
               "The website located at https://wormholescan.io/ is published, owned, and operated by xLabs Inc., its affiliates and related entities (“xLabs Inc.” “Company,” “we,” “us,” and “our”).",
             text2:
-              "These Terms of Use (the “Terms”) govern the user’s (“User” “you” “your”) access to and use of the website whether accessed via computer, mobile device or otherwise (individually and collectively, the “Website,”) as well as any products and services provided by xLabs Inc. (the “xLabs Inc. Service”) (the Website, together with the xLabs Inc. Service, collectively referred to as the “Service”).  ",
+              "These Terms of Use (the “Terms”) govern the user’s (“User” “you” “your”) access to and use of the website whether accessed via computer, mobile device or otherwise (individually and collectively, the “Website,”) as well as any products and services provided by xLabs Inc. (the “xLabs Inc. Service”) (the Website, together with the xLabs Inc. Service, collectively referred to as the “Service”).",
             list: {
               title: "Table of contents:",
               item1: "Acceptance of Agreement",
@@ -233,6 +233,9 @@ export default {
                   li10: "Access the Service in order to build a similar or competitive website, product, or service.",
                 },
               },
+              point2: {
+                text: "Restrictions. Except as expressly stated herein, no part of the Service may be copied, reproduced, distributed, republished, downloaded, displayed, posted, or transmitted in any form or by any means. Unless otherwise indicated, any future release, update, or other addition to functionality of the Service shall be subject to this Agreement. All copyright and other proprietary notices on the Service (or on any content displayed on the Service) must be retained on all copies thereof. You will not use the Website or Service for any illegal purpose.",
+              },
             },
             point5: {
               text: {
@@ -267,7 +270,7 @@ export default {
             title: "5. PRIVACY",
             text1_1: "You agree to Company’s Privacy Policy (available at ",
             text1_2:
-              ", which is incorporated by reference into this Agreement as if it were set forth herein in its entirety. The Privacy Policy describes how we collect, use, and disclose information provided by you. By using the Website or Service, you agree to, and are bound by, the terms of the Privacy Policy.",
+              "), which is incorporated by reference into this Agreement as if it were set forth herein in its entirety. The Privacy Policy describes how we collect, use, and disclose information provided by you. By using the Website or Service, you agree to, and are bound by, the terms of the Privacy Policy.",
           },
           section6: {
             title: "6. COMMUNICATION WITH USERS",
@@ -560,7 +563,7 @@ export default {
             li2: "Our practices for collecting, using, maintaining, protecting, and disclosing that information.",
           },
           text4:
-            "Please read this Policy carefully to understand our practices regarding your information and how we will treat it.  If you do not agree with our policies and practices, then please do not use our Platform.  By using our Platform, you agree to the terms of this Policy.",
+            "Please read this Policy carefully to understand our practices regarding your information and how we will treat it. If you do not agree with our policies and practices, then please do not use our Platform. By using our Platform, you agree to the terms of this Policy.",
           list: {
             title: "Table of contents:",
             item1: "Personal information we collect",
