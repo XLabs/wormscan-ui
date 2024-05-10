@@ -109,12 +109,12 @@ export default {
         },
         page: {
           title: "Terms of Use",
-          lastRevised: "Last Revised:",
+          lastRevised: "Last Revised: May 9, 2024",
           header: {
             text1:
               "The website located at https://wormholescan.io/ is published, owned, and operated by xLabs Inc., its affiliates and related entities (“xLabs Inc.” “Company,” “we,” “us,” and “our”).",
             text2:
-              "These Terms of Use (the “Terms”) govern the user’s (“User” “you” “your”) access to and use of the website whether accessed via computer, mobile device or otherwise (individually and collectively, the “Website,”) as well as any products and services provided by xLabs Inc. (the “xLabs Inc. Service”) (the Website, together with the xLabs Inc. Service, collectively referred to as the “Service”).  ",
+              "These Terms of Use (the “Terms”) govern the user’s (“User” “you” “your”) access to and use of the website whether accessed via computer, mobile device or otherwise (individually and collectively, the “Website,”) as well as any products and services provided by xLabs Inc. (the “xLabs Inc. Service”) (the Website, together with the xLabs Inc. Service, collectively referred to as the “Service”).",
             list: {
               title: "Table of contents:",
               item1: "Acceptance of Agreement",
@@ -453,7 +453,7 @@ export default {
               },
               point2: {
                 text1:
-                  "Notice Requirement and Informal Dispute Resolution. Before either party may seek arbitration, the party must first send to the other party a written Notice of Dispute (“Notice”) describing the nature and basis of the claim or dispute, and the requested relief. A Notice to the Company should be sent to:",
+                  "Notice Requirement and Informal Dispute Resolution. Before either party may seek arbitration, the party must first send to the other party a written Notice of Dispute (“Notice”) describing the nature and basis of the claim or dispute, and the requested relief. A Notice to  the Company should be sent to:",
                 text2:
                   "After the Notice is received, you and the Company may attempt to resolve the claim or dispute informally. If you and the Company do not resolve the claim or dispute within thirty (30) days after the Notice is received, either party may begin an arbitration proceeding. The amount of any settlement offer made by any party may not be disclosed to the arbitrator until after the arbitrator has determined the amount of the award, if any, to which either party is entitled.",
               },
@@ -563,7 +563,7 @@ export default {
             li2: "Our practices for collecting, using, maintaining, protecting, and disclosing that information.",
           },
           text4:
-            "Please read this Policy carefully to understand our practices regarding your information and how we will treat it.  If you do not agree with our policies and practices, then please do not use our Platform.  By using our Platform, you agree to the terms of this Policy.",
+            "Please read this Policy carefully to understand our practices regarding your information and how we will treat it. If you do not agree with our policies and practices, then please do not use our Platform. By using our Platform, you agree to the terms of this Policy.",
           list: {
             title: "Table of contents:",
             item1: "Personal information we collect",
