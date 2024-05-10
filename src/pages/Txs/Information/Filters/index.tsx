@@ -93,7 +93,7 @@ const ChainFilterTestnet = [
   ChainId.Acala,
   ChainId.Celo,
   ChainId.Algorand,
-  // ChainId.PolygonSepolia, TODO: add when exists a Amoy transaction
+  // ChainId.PolygonSepolia, // TODO: add when exists a Amoy transaction
   ChainId.Aptos,
   ChainId.Arbitrum,
   ChainId.ArbitrumSepolia,
@@ -109,7 +109,7 @@ const ChainFilterTestnet = [
   ChainId.Injective,
   ChainId.Karura,
   ChainId.Klaytn,
-  // ChainId.Mantle, TODO: add when exists a Mantle transaction
+  // ChainId.Mantle, // TODO: add when exists a Mantle transaction
   ChainId.Moonbeam,
   ChainId.Polygon,
   ChainId.Near,
