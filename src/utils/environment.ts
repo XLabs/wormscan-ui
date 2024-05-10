@@ -66,6 +66,8 @@ const TESTNET_RPCS: { [key in ChainName]?: string } = {
   optimism: "https://goerli.optimism.io",
   optimism_sepolia: "https://sepolia.optimism.io",
   polygon: "https://rpc.ankr.com/polygon_mumbai",
+  scroll: "https://rpc.ankr.com/scroll_sepolia_testnet",
+  blast: "http://testnet-rpc.blastblockchain.com",
 };
 
 export type Environment = {
@@ -219,6 +221,26 @@ export const testnetEnv: Environment = {
       nativeCurrencyName: "ETH",
       relayerContractAddress: "0x01A957A525a5b7A72808bA9D10c389674E459891",
       rpcUrl: TESTNET_RPCS.optimism || "",
+    },
+    {
+      chainId: 34 as ChainId,
+      chainName: "SCROLL",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 534351,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: TESTNET_RPCS.scroll || "",
+    },
+    {
+      chainId: 36 as ChainId,
+      chainName: "BLAST",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 23888,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: TESTNET_RPCS.blast || "",
     },
   ],
   guardianRpcs: ["https://wormhole-v2-testnet-api.certus.one"],
