@@ -598,9 +598,20 @@ const Tx = () => {
               const amount =
                 data.content?.payload?.amount || data.content.standarizedProperties?.amount;
 
+              // scale the amount from 8 decimals to the target token
+              // according to the token bridge logic (cap it at 8 but leave it
+              // if below the threshold). Other protocols don't do this with their amounts
+              // (e.g. NTT). The standardizedProperties amount is always normalized to
+              // 8 decimals, even if below the threshold, but for it to exist there must be
+              // a parsed payload amount, so it's highly probable we won't run into that case
+              const scaled =
+                tokenInfo.tokenDecimals > 8
+                  ? +amount * 10 ** (tokenInfo.tokenDecimals - 8)
+                  : +amount;
+
               if (amount && tokenInfo.tokenDecimals) {
                 data.data = {
-                  tokenAmount: "" + formatUnits(+amount, tokenInfo.tokenDecimals),
+                  tokenAmount: "" + formatUnits(scaled, tokenInfo.tokenDecimals),
                   symbol: tokenInfo.symbol,
                   usdAmount: data?.data?.usdAmount || null,
                 };
