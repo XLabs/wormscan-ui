@@ -326,8 +326,12 @@ const Information = ({ blockData, extraRawInfo, setTxData, data, isRPC }: Props)
 
   const [loadingRedeem, setLoadingRedeem] = useState(false);
   const [foundRedeem, setFoundRedeem] = useState<null | boolean>(null);
+
+  const date_30_min_before = new Date(new Date().getTime() - 30 * 60000);
   const canTryToGetRedeem =
-    (STATUS === "EXTERNAL_TX" || STATUS === "VAA_EMITTED") &&
+    (STATUS === "EXTERNAL_TX" ||
+      STATUS === "VAA_EMITTED" ||
+      (STATUS === "PENDING_REDEEM" && new Date(timestamp) < date_30_min_before)) &&
     (isEVMChain(toChain) || toChain === 1 || toChain === 21) &&
     toChain === targetTokenChain &&
     !!toAddress &&
