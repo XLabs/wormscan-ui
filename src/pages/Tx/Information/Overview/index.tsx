@@ -6,12 +6,12 @@ import WormIcon from "src/icons/wormIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { shortAddress, shortVaaId } from "src/utils/crypto";
 import { TokenInfo } from "src/utils/metaMaskUtils";
-import { IAddressInfo } from "src/utils/recoilStates";
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
+import { useRecoilState } from "recoil";
+import { addressesInfoState } from "src/utils/recoilStates";
 import "./styles.scss";
 
 export type OverviewProps = {
-  addressesInfo?: IAddressInfo;
   amountSent?: string;
   amountSentUSD?: string;
   currentNetwork?: Network;
@@ -57,7 +57,6 @@ const NotFinalDestinationTooltip = () => (
 );
 
 const Overview = ({
-  addressesInfo,
   amountSent,
   amountSentUSD,
   currentNetwork,
@@ -90,6 +89,7 @@ const Overview = ({
   totalGuardiansNeeded,
   VAAId,
 }: OverviewProps) => {
+  const [addressesInfo] = useRecoilState(addressesInfoState);
   return (
     <div className="tx-overview">
       <div className="tx-overview-graph">

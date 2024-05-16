@@ -1,6 +1,4 @@
 import { ArrowDownIcon, CheckboxIcon, CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { Network } from "@certusone/wormhole-sdk";
-import { DeliveryInstruction } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import RelayIcon from "src/icons/relayIcon.svg";
@@ -13,46 +11,14 @@ import {
 import { formatDate } from "src/utils/date";
 import "../styles.scss";
 import { AutomaticRelayOutput } from "src/api/search/types";
-import { IAddressInfo } from "src/utils/recoilStates";
+import { addressesInfoState } from "src/utils/recoilStates";
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 import { ChainId } from "src/api";
-
-export type RelayerOverviewProps = {
-  addressesInfo?: IAddressInfo;
-  budgetText: () => string;
-  copyBudgetText: () => string;
-  currentNetwork: Network;
-  decodeExecution: any;
-  deliveryAttempt: string;
-  deliveryInstruction: DeliveryInstruction;
-  deliveryParsedRefundAddress: string;
-  deliveryParsedRefundProviderAddress: string;
-  deliveryParsedSenderAddress: string;
-  deliveryParsedSourceProviderAddress: string;
-  deliveryParsedTargetAddress: string;
-  deliveryStatus: AutomaticRelayOutput;
-  fromChain: number;
-  gasUsed: number;
-  gasUsedText: () => string;
-  guardianSignaturesCount: number;
-  isDelivery: boolean;
-  isDuplicated: boolean;
-  maxRefundText: () => string;
-  parsedEmitterAddress: string;
-  parsedVaa: any;
-  receiverValueText: () => string;
-  refundStatus: string;
-  refundText: () => string;
-  resultLog: string;
-  sourceTxHash: string;
-  targetTxTimestamp: number;
-  totalGuardiansNeeded: number;
-  VAAId: string;
-};
+import { RelayerOverviewProps } from "src/utils/genericRelayerVaaUtils";
+import { useRecoilState } from "recoil";
 
 const RelayerOverview = ({
-  addressesInfo,
   budgetText,
   copyBudgetText,
   currentNetwork,
@@ -83,6 +49,8 @@ const RelayerOverview = ({
   totalGuardiansNeeded,
   VAAId,
 }: RelayerOverviewProps) => {
+  const [addressesInfo] = useRecoilState(addressesInfoState);
+
   const renderDeliveryStatus = (deliveryStatus: AutomaticRelayOutput) => {
     return (
       <div className={`tx-overview-graph-step-data-container`}>
