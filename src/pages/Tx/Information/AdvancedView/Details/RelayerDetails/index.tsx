@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { RelayerOverviewProps } from "src/pages/Tx/Information/Overview/RelayerOverview";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
@@ -14,9 +13,11 @@ import "../styles.scss";
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 import { ChainId } from "src/api";
+import { RelayerOverviewProps } from "src/utils/genericRelayerVaaUtils";
+import { useRecoilState } from "recoil";
+import { addressesInfoState } from "src/utils/recoilStates";
 
 const RelayerDetails = ({
-  addressesInfo,
   budgetText,
   copyBudgetText,
   currentNetwork,
@@ -47,6 +48,8 @@ const RelayerDetails = ({
   totalGuardiansNeeded,
   VAAId,
 }: RelayerOverviewProps) => {
+  const [addressesInfo] = useRecoilState(addressesInfoState);
+
   const extraWidthDuplicated = isDuplicated ? 53 : 30;
   const lineValueRef = useRef<HTMLDivElement>(null);
   const [lineValueWidth, setLineValueWidth] = useState<number>(0);

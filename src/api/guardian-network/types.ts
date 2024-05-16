@@ -1,5 +1,6 @@
 import { ChainId, PageRequest } from "src/api/model";
 import { IStatus } from "src/consts";
+import { DeliveryLifecycleRecord } from "src/utils/genericRelayerVaaUtils";
 
 export type Observation = {
   hash: string;
@@ -261,5 +262,6 @@ export interface GetOperationsOutput {
   isBigTransaction?: boolean;
   isDailyLimitExceeded?: boolean;
   transactionLimit?: number;
+  relayerInfo?: DeliveryLifecycleRecord;
 }
 [];

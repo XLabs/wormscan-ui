@@ -8,9 +8,10 @@ import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { TruncateText } from "src/utils/string";
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import "./styles.scss";
+import { useRecoilState } from "recoil";
+import { addressesInfoState } from "src/utils/recoilStates";
 
 const Details = ({
-  addressesInfo,
   amountSent,
   amountSentUSD,
   currentNetwork,
@@ -42,6 +43,7 @@ const Details = ({
   totalGuardiansNeeded,
   VAAId,
 }: OverviewProps) => {
+  const [addressesInfo] = useRecoilState(addressesInfoState);
   const extraWidthGatewaySource = isGatewaySource ? 125 : 30;
   const extraWidthUnknownApp = isUnknownApp ? 55 : 30;
   const extraWidthDuplicated = isDuplicated ? 53 : 30;
