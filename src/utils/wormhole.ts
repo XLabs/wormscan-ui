@@ -832,5 +832,9 @@ export const getExplorerLink = ({
     parsedValue = parseTx({ value: value, chainId: chainId });
   }
 
+  if (chainId === ChainId.Kujira || chainId === ChainId.Evmos || chainId === ChainId.Osmosis) {
+    parsedValue = parsedValue.startsWith("0x") ? parsedValue.replace("0x", "") : parsedValue;
+  }
+
   return WORMHOLE_CHAINS[chainId]?.getExplorerBaseURL({ network, value: parsedValue, base }) || "";
 };
