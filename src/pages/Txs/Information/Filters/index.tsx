@@ -60,6 +60,7 @@ const appIds = [
 const ChainFilterMainnet = [
   ChainId.Acala,
   ChainId.Algorand,
+  ChainId.Aptos,
   ChainId.Arbitrum,
   ChainId.Aurora,
   ChainId.Avalanche,
