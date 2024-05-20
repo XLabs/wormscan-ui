@@ -43,6 +43,7 @@ const RelayerDetails = ({
   refundStatus,
   refundText,
   resultLog,
+  sourceAddress,
   sourceTxHash,
   targetTxTimestamp,
   totalGuardiansNeeded,
@@ -94,30 +95,27 @@ const RelayerDetails = ({
         </div>
 
         <div className="tx-details-group-line">
-          <div className="tx-details-group-line-key">Contract Address</div>
+          <div className="tx-details-group-line-key">Source Address</div>
           <div className="tx-details-group-line-value">
             <a
               href={getExplorerLink({
                 network: currentNetwork,
                 chainId: fromChain,
-                value: parsedEmitterAddress,
+                value: sourceAddress,
                 base: "address",
                 isNativeAddress: true,
               })}
               target="_blank"
               rel="noopener noreferrer"
             >
-              <TruncateText
-                containerWidth={lineValueWidth}
-                text={parsedEmitterAddress.toUpperCase()}
-              />
+              <TruncateText containerWidth={lineValueWidth} text={sourceAddress.toUpperCase()} />
             </a>
-            <CopyToClipboard toCopy={parsedEmitterAddress}>
+            <CopyToClipboard toCopy={sourceAddress}>
               <CopyIcon height={20} width={20} />
             </CopyToClipboard>
-            {addressesInfo?.[parsedEmitterAddress.toLowerCase()] && (
+            {addressesInfo?.[sourceAddress.toLowerCase()] && (
               <AddressInfoTooltip
-                info={addressesInfo[parsedEmitterAddress.toLowerCase()]}
+                info={addressesInfo[sourceAddress.toLowerCase()]}
                 chain={fromChain}
               />
             )}
@@ -125,7 +123,7 @@ const RelayerDetails = ({
         </div>
 
         <div className="tx-details-group-line">
-          <div className="tx-details-group-line-key">From</div>
+          <div className="tx-details-group-line-key">Source App Contract</div>
           <div className="tx-details-group-line-value">
             <a
               href={getExplorerLink({
@@ -157,24 +155,33 @@ const RelayerDetails = ({
         </div>
 
         <div className="tx-details-group-line">
-          <div className="tx-details-group-line-key">Source Tx Hash</div>
+          <div className="tx-details-group-line-key">Contract Address</div>
           <div className="tx-details-group-line-value">
             <a
               href={getExplorerLink({
                 network: currentNetwork,
                 chainId: fromChain,
-                value: sourceTxHash,
-                base: "tx",
+                value: parsedEmitterAddress,
+                base: "address",
                 isNativeAddress: true,
               })}
               target="_blank"
               rel="noopener noreferrer"
             >
-              <TruncateText containerWidth={lineValueWidth} text={sourceTxHash.toUpperCase()} />
+              <TruncateText
+                containerWidth={lineValueWidth}
+                text={parsedEmitterAddress.toUpperCase()}
+              />
             </a>
-            <CopyToClipboard toCopy={sourceTxHash}>
+            <CopyToClipboard toCopy={parsedEmitterAddress}>
               <CopyIcon height={20} width={20} />
             </CopyToClipboard>
+            {addressesInfo?.[parsedEmitterAddress.toLowerCase()] && (
+              <AddressInfoTooltip
+                info={addressesInfo[parsedEmitterAddress.toLowerCase()]}
+                chain={fromChain}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -292,7 +299,6 @@ const RelayerDetails = ({
                   cursor: "pointer",
                   backgroundColor: "#ddddff05",
                   borderRadius: 6,
-                  padding: "2px 8px",
                 }}
               >
                 {budgetText()}
