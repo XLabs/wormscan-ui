@@ -10,6 +10,7 @@ import {
   ETH_BRIDGE_APP_ID,
   MAYAN_APP_ID,
   NTT_APP_ID,
+  PORTAL_NFT_APP_ID,
   PORTAL_APP_ID,
   GR_APP_ID,
   // UNKNOWN_APP_ID, disabled until the backend is ready
@@ -51,6 +52,7 @@ const appIds = [
   ETH_BRIDGE_APP_ID,
   MAYAN_APP_ID,
   NTT_APP_ID,
+  PORTAL_NFT_APP_ID,
   PORTAL_APP_ID,
   GR_APP_ID,
   // UNKNOWN_APP_ID, disabled until the backend is ready
