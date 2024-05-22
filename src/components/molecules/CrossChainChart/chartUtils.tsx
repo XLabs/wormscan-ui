@@ -1,9 +1,12 @@
 import { ChainId } from "src/api";
 import { CrossChainActivity } from "src/api/guardian-network/types";
+import { getChainName } from "src/utils/wormhole";
 
 interface ChainEndpoints {
   [key: number]: { volume: string; destinations: any[]; chain: ChainId; percentage: number };
 }
+
+const PERCENTAGE_THRESHOLD = 0.001;
 
 export const processData = (
   initialData: CrossChainActivity,
@@ -15,7 +18,8 @@ export const processData = (
       ...item,
       destinations: item.destinations.filter(dest => dest.percentage !== 0),
     }))
-    .filter(item => item.percentage !== 0);
+    .filter(item => item.percentage > PERCENTAGE_THRESHOLD)
+    .filter(item => getChainName({ chainId: item.chain, network: "MAINNET" }) !== "Unset");
 
   // if showing sources -> destinations, just cut the 'data' depending on page:
   if (selectedDestination === "sources") {
@@ -66,7 +70,10 @@ export const processData = (
 
     // and finally return the similar-look array but inverted to dest -> sources:
     const finalInvertedData = Object.values(invertedData);
-    const newData = [...finalInvertedData].sort((a, b) => +b.volume - +a.volume);
+    const newData = [...finalInvertedData]
+      .sort((a, b) => +b.volume - +a.volume)
+      .filter(a => a.percentage > PERCENTAGE_THRESHOLD)
+      .filter(item => getChainName({ chainId: item.chain, network: "MAINNET" }) !== "Unset");
 
     return (showOthers ? newData.slice(10) : newData.slice(0, 10)) as CrossChainActivity;
   }
