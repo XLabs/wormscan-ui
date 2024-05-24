@@ -48,6 +48,7 @@ import {
   NTT_APP_ID,
   PORTAL_APP_ID,
   UNKNOWN_APP_ID,
+  USDT_BRIDGE_APP_ID,
   canWeGetDestinationTx,
   getGuardianSet,
 } from "src/consts";
@@ -965,8 +966,11 @@ const Tx = () => {
         }
         // ----
 
-        // check Eth Bridge
-        if (data?.content?.standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID)) {
+        // check Portico
+        if (
+          data?.content?.standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID) ||
+          data?.content?.standarizedProperties?.appIds?.includes(USDT_BRIDGE_APP_ID)
+        ) {
           const porticoInfo = await getPorticoInfo(environment, data);
           if (porticoInfo) {
             const {
@@ -990,9 +994,6 @@ const Tx = () => {
               ?.standarizedProperties?.toChain as ChainId;
 
             data.content.payload.parsedPayload = parsedPayload;
-            if (!data.content.standarizedProperties.appIds.includes(ETH_BRIDGE_APP_ID)) {
-              data.content.standarizedProperties.appIds.push(ETH_BRIDGE_APP_ID);
-            }
 
             setShowSourceTokenUrl(shouldShowSourceTokenUrl);
             setShowTargetTokenUrl(shouldShowTargetTokenUrl);

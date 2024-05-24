@@ -1,19 +1,11 @@
-import {
-  CHAIN_ID_ARBITRUM,
-  CHAIN_ID_AVAX,
-  CHAIN_ID_BASE,
-  CHAIN_ID_BSC,
-  CHAIN_ID_ETH,
-  CHAIN_ID_OPTIMISM,
-  CHAIN_ID_POLYGON,
-  ChainId,
-} from "@certusone/wormhole-sdk";
+import { ChainId } from "@certusone/wormhole-sdk";
 import { hexStripZeros } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
 import { parseTx } from "./crypto";
 import { getTokenInformation } from "./fetchWithRPCsFallthrough";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
+import { USDT_BRIDGE_APP_ID } from "src/consts";
 
 const porticoSwapFinishedEvent =
   "0xc2addcb063016f6dc1647fc8cd7206c3436cc4293c4acffe4feac288459ca7fc";
@@ -68,7 +60,10 @@ export async function getPorticoInfo(
       }
     }
 
-    formattedRelayerFee = ethers.utils.formatUnits(parsedPayload.relayerFee, decimals - 8); // -8 because it later gets formatted with 8
+    formattedRelayerFee = data.content.standarizedProperties.appIds.includes(USDT_BRIDGE_APP_ID)
+      ? "" + parsedPayload.relayerFee * 10 ** 2 // +2 decimals because fee gets formated later with 8
+      : ethers.utils.formatUnits(parsedPayload.relayerFee, decimals - 8); // -8 because fee gets formated later with 8
+    // formattedRelayerFee = parsedPayload.relayerFee;
 
     const processTarget = async () => {
       const targetReceipt = await targetProvider.getTransactionReceipt(targetTxHash);
@@ -78,7 +73,8 @@ export async function getPorticoInfo(
       );
 
       if (!swapFinishedLog) {
-        throw new Error("Swap finished log not found");
+        console.log("Swap finished log not found");
+        return;
       }
 
       // handle the case for when the swap failed
@@ -93,7 +89,9 @@ export async function getPorticoInfo(
         const relayerFeeAmount = ethers.BigNumber.from(`0x${swapFinishedLog.data.slice(130, 194)}`);
 
         formattedFinalUserAmount = ethers.utils.formatUnits(finalUserAmount, decimals);
-        formattedRelayerFee = ethers.utils.formatUnits(relayerFeeAmount, decimals - 8);
+        formattedRelayerFee = data.content.standarizedProperties.appIds.includes(USDT_BRIDGE_APP_ID)
+          ? "" + parsedPayload.relayerFeeAmount * 10 ** 2 // +2 decimals because fee gets formated later with 8
+          : ethers.utils.formatUnits(relayerFeeAmount, decimals - 8); // -8 because fee gets formated later with 8
       }
     };
 
