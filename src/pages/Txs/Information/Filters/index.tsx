@@ -98,7 +98,7 @@ const ChainFilterTestnet = [
   ChainId.Acala,
   ChainId.Celo,
   ChainId.Algorand,
-  // ChainId.PolygonSepolia, // TODO: add when exists a Amoy transaction
+  ChainId.PolygonSepolia,
   ChainId.Aptos,
   ChainId.Arbitrum,
   ChainId.ArbitrumSepolia,
