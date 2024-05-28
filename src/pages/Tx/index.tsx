@@ -48,7 +48,7 @@ import {
   NTT_APP_ID,
   PORTAL_APP_ID,
   UNKNOWN_APP_ID,
-  USDT_BRIDGE_APP_ID,
+  USDT_TRANSFER_APP_ID,
   canWeGetDestinationTx,
   getGuardianSet,
 } from "src/consts";
@@ -969,7 +969,7 @@ const Tx = () => {
         // check Portico
         if (
           data?.content?.standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID) ||
-          data?.content?.standarizedProperties?.appIds?.includes(USDT_BRIDGE_APP_ID)
+          data?.content?.standarizedProperties?.appIds?.includes(USDT_TRANSFER_APP_ID)
         ) {
           const porticoInfo = await getPorticoInfo(environment, data);
           if (porticoInfo) {
