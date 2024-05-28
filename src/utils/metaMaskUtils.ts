@@ -6,6 +6,7 @@ import {
   CHAIN_ID_AURORA,
   CHAIN_ID_AVAX,
   CHAIN_ID_BASE,
+  CHAIN_ID_BLAST,
   CHAIN_ID_BSC,
   CHAIN_ID_CELO,
   CHAIN_ID_ETH,
@@ -17,6 +18,7 @@ import {
   CHAIN_ID_OASIS,
   CHAIN_ID_OPTIMISM,
   CHAIN_ID_POLYGON,
+  CHAIN_ID_SCROLL,
   Network,
 } from "@certusone/wormhole-sdk";
 import detectEthereumProvider from "@metamask/detect-provider";
@@ -300,6 +302,34 @@ export const METAMASK_CHAIN_PARAMETERS: {
     rpcUrls: ["https://sepolia.base.org"],
     blockExplorerUrls: ["https://sepolia-explorer.base.org"],
   },
+  534352: {
+    chainId: "0x82750",
+    chainName: "Scroll",
+    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://rpc.scroll.io"],
+    blockExplorerUrls: ["https://scrollscan.com"],
+  },
+  534351: {
+    chainId: "0x8274f",
+    chainName: "Scroll Sepolia Testnet",
+    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://scroll-sepolia.blockpi.network/v1/rpc/public"],
+    blockExplorerUrls: ["https://sepolia.scrollscan.com"],
+  },
+  81457: {
+    chainId: "0x13e31",
+    chainName: "Blast",
+    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://rpc.blast.io"],
+    blockExplorerUrls: ["https://blastscan.io"],
+  },
+  168587773: {
+    chainId: "0xa0c71fd",
+    chainName: "Blast Sepolia Testnet",
+    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://blast-sepolia.blockpi.network/v1/rpc/public"],
+    blockExplorerUrls: ["https://sepolia.blastscan.io"],
+  },
 };
 
 export const CHAIN_IDS: ChainIds = {
@@ -320,6 +350,8 @@ export const CHAIN_IDS: ChainIds = {
   ARBITRUM_NETWORK_CHAIN_ID: { MAINNET: 42161, TESTNET: 421613, DEVNET: 421613 },
   OPTIMISM_NETWORK_CHAIN_ID: { MAINNET: 10, TESTNET: 420, DEVNET: 420 },
   BASE_NETWORK_CHAIN_ID: { MAINNET: 8453, TESTNET: 84531, DEVNET: 84531 },
+  SCROLL_NETWORK_CHAIN_ID: { MAINNET: 534352, TESTNET: 534351, DEVNET: 534351 },
+  BLAST_NETWORK_CHAIN_ID: { MAINNET: 81457, TESTNET: 168587773, DEVNET: 168587773 },
 };
 
 export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number | undefined => {
@@ -340,6 +372,8 @@ export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number
     [CHAIN_ID_ARBITRUM]: CHAIN_IDS.ARBITRUM_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_OPTIMISM]: CHAIN_IDS.OPTIMISM_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_BASE]: CHAIN_IDS.BASE_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_SCROLL]: CHAIN_IDS.SCROLL_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_BLAST]: CHAIN_IDS.BLAST_NETWORK_CHAIN_ID[currentNetwork],
   };
 
   const evmChainId = chainNetworks[chainId as keyof typeof chainNetworks];
