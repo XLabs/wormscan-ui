@@ -7,6 +7,7 @@ import {
   CHAIN_ID_ETH,
   CHAIN_ID_OPTIMISM,
   CHAIN_ID_POLYGON,
+  CHAIN_ID_XLAYER,
   ChainId,
   ChainName,
   Network,
@@ -22,6 +23,7 @@ export const SLOW_FINALITY_CHAINS = [
   CHAIN_ID_AVAX,
   CHAIN_ID_BASE,
   CHAIN_ID_CELO,
+  CHAIN_ID_XLAYER,
 ];
 
 const MAINNET_RPCS: { [key in ChainName]?: string } = {
@@ -50,6 +52,7 @@ const MAINNET_RPCS: { [key in ChainName]?: string } = {
   terra: "https://terra-classic-fcd.publicnode.com",
   terra2: "https://lcd-terra.tfl.foundation",
   xpla: "https://dimension-lcd.xpla.dev",
+  xlayer: "https://xlayerrpc.okx.com",
 };
 
 const TESTNET_RPCS: { [key in ChainName]?: string } = {
@@ -68,6 +71,7 @@ const TESTNET_RPCS: { [key in ChainName]?: string } = {
   polygon: "https://rpc.ankr.com/polygon_mumbai",
   scroll: "https://rpc.ankr.com/scroll_sepolia_testnet",
   blast: "http://testnet-rpc.blastblockchain.com",
+  xlayer: "https://xlayertestrpc.okx.com",
 };
 
 export type Environment = {
@@ -242,6 +246,16 @@ export const testnetEnv: Environment = {
       relayerContractAddress: "", // TODO: ADD WHEN EXISTS
       rpcUrl: TESTNET_RPCS.blast || "",
     },
+    {
+      chainId: 37 as ChainId,
+      chainName: "XLayer",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 195,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "OKB",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: TESTNET_RPCS.xlayer || "",
+    },
   ],
   guardianRpcs: ["https://wormhole-v2-testnet-api.certus.one"],
 };
@@ -391,6 +405,16 @@ export const mainnetEnv: Environment = {
       nativeCurrencyName: "ETH",
       relayerContractAddress: "", // TODO: ADD WHEN EXISTS
       rpcUrl: MAINNET_RPCS.blast || "",
+    },
+    {
+      chainId: 37 as ChainId,
+      chainName: "XLayer",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 196,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "OKB",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: MAINNET_RPCS.xlayer || "",
     },
   ],
   guardianRpcs: [

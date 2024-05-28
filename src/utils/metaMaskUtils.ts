@@ -18,6 +18,7 @@ import {
   CHAIN_ID_OPTIMISM,
   CHAIN_ID_POLYGON,
   Network,
+  CHAIN_ID_XLAYER,
 } from "@certusone/wormhole-sdk";
 import detectEthereumProvider from "@metamask/detect-provider";
 
@@ -300,6 +301,20 @@ export const METAMASK_CHAIN_PARAMETERS: {
     rpcUrls: ["https://sepolia.base.org"],
     blockExplorerUrls: ["https://sepolia-explorer.base.org"],
   },
+  195: {
+    chainId: "0xc3",
+    chainName: "XLayer Testnet",
+    nativeCurrency: { name: "OKB", symbol: "OKB", decimals: 18 },
+    rpcUrls: ["https://xlayertestrpc.okx.com"],
+    blockExplorerUrls: ["https://www.okx.com/web3/explorer/xlayer-test"],
+  },
+  196: {
+    chainId: "0xc4",
+    chainName: "XLayer",
+    nativeCurrency: { name: "OKB", symbol: "OKB", decimals: 18 },
+    rpcUrls: ["https://xlayerrpc.okx.com"],
+    blockExplorerUrls: ["https://www.okx.com/web3/explorer/xlayer"],
+  },
 };
 
 export const CHAIN_IDS: ChainIds = {
@@ -320,6 +335,7 @@ export const CHAIN_IDS: ChainIds = {
   ARBITRUM_NETWORK_CHAIN_ID: { MAINNET: 42161, TESTNET: 421613, DEVNET: 421613 },
   OPTIMISM_NETWORK_CHAIN_ID: { MAINNET: 10, TESTNET: 420, DEVNET: 420 },
   BASE_NETWORK_CHAIN_ID: { MAINNET: 8453, TESTNET: 84531, DEVNET: 84531 },
+  XLAYER_NETWORK_CHAIN_ID: { MAINNET: 196, TESTNET: 195, DEVNET: 195 },
 };
 
 export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number | undefined => {
@@ -340,6 +356,7 @@ export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number
     [CHAIN_ID_ARBITRUM]: CHAIN_IDS.ARBITRUM_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_OPTIMISM]: CHAIN_IDS.OPTIMISM_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_BASE]: CHAIN_IDS.BASE_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_XLAYER]: CHAIN_IDS.XLAYER_NETWORK_CHAIN_ID[currentNetwork],
   };
 
   const evmChainId = chainNetworks[chainId as keyof typeof chainNetworks];

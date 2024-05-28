@@ -91,6 +91,7 @@ const ChainFilterMainnet = [
   ChainId.Terra,
   ChainId.Terra2,
   ChainId.Wormchain,
+  ChainId.XLayer,
   ChainId.Xpla,
 ];
 
@@ -130,6 +131,7 @@ const ChainFilterTestnet = [
   ChainId.Terra,
   ChainId.Terra2,
   ChainId.Wormchain,
+  ChainId.XLayer,
   ChainId.Xpla,
 ];
 
