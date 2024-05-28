@@ -32,6 +32,7 @@ import tBTC from "src/icons/tokens/tBTC.svg";
 import TRUMP from "src/icons/tokens/TRUMP.webp";
 import USDC from "src/icons/tokens/USDC.svg";
 import USDT from "src/icons/tokens/USDT.svg";
+import W from "src/icons/tokens/W.svg";
 import WAVAX from "src/icons/tokens/WAVAX.svg";
 import WBTC from "src/icons/tokens/WBTC.svg";
 import WELL from "src/icons/tokens/WELL.svg";
@@ -90,6 +91,7 @@ const iconTokens = {
   WKLAY: KlaytnIcon,
   WMATIC,
   WSTETH,
+  W,
   wstETH: WSTETH,
 } as { [K in string]: SVGAElement };
 
