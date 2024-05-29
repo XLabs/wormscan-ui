@@ -29,6 +29,7 @@ import {
   canWeGetDestinationTx,
   txType,
 } from "src/consts";
+import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 
 export interface TransactionOutput {
   amount: React.ReactNode;
@@ -84,7 +85,7 @@ const Txs = () => {
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
   const [parsedTxsData, setParsedTxsData] = useState<TransactionOutput[] | undefined>(undefined);
 
-  const [liveMode, setLiveMode] = useState(!isTxsFiltered);
+  const [liveMode, setLiveMode] = useLocalStorage<boolean>("liveMode", true);
   const [lastUpdatedList, setLastUpdatedList] =
     useState<{ txHash: string; status: string }[]>(null);
 

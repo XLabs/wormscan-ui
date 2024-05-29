@@ -36,6 +36,7 @@ import SuiIcon from "src/icons/blockchains/sui.svg";
 import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
 import TerraIcon from "src/icons/blockchains/terra.svg";
 import WormChainIcon from "src/icons/blockchains/wormchain.svg";
+import XLayerIcon from "src/icons/blockchains/xlayer.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
 
 import AcalaColorlessIcon from "src/icons/blockchains/colorless/acala.svg";
@@ -74,6 +75,7 @@ import SuiColorlessIcon from "src/icons/blockchains/colorless/sui.svg";
 import TerraClassicColorlessIcon from "src/icons/blockchains/colorless/terra-classic.svg";
 import TerraColorlessIcon from "src/icons/blockchains/colorless/terra.svg";
 import WormChainColorlessIcon from "src/icons/blockchains/colorless/wormchain.svg";
+import XLayerColorlessIcon from "src/icons/blockchains/colorless/xlayer.svg";
 import XplaColorlessIcon from "src/icons/blockchains/colorless/xpla.svg";
 
 import { parseAddress, parseTx } from "./crypto";
@@ -618,6 +620,21 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     explorer: {
       TESTNET: "https://explorer.xpla.io/TESTNET",
       MAINNET: "https://explorer.xpla.io/MAINNET",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.XLayer]: {
+    name: "XLayer",
+    icon: XLayerIcon,
+    colorlessIcon: XLayerColorlessIcon,
+    explorer: {
+      TESTNET: "https://www.okx.com/web3/explorer/xlayer-test",
+      MAINNET: "https://www.okx.com/web3/explorer/xlayer",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;

@@ -10,10 +10,12 @@ import {
   ETH_BRIDGE_APP_ID,
   MAYAN_APP_ID,
   NTT_APP_ID,
+  PORTAL_NFT_APP_ID,
   PORTAL_APP_ID,
   GR_APP_ID,
   // UNKNOWN_APP_ID, disabled until the backend is ready
   GATEWAY_APP_ID,
+  USDT_TRANSFER_APP_ID,
 } from "src/consts";
 import { formatAppId } from "src/utils/crypto";
 import { getChainName } from "src/utils/wormhole";
@@ -49,11 +51,13 @@ const appIds = [
   CCTP_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
+  // USDT_TRANSFER_APP_ID, // disabled until it goes prod
   MAYAN_APP_ID,
   NTT_APP_ID,
+  PORTAL_NFT_APP_ID,
   PORTAL_APP_ID,
   GR_APP_ID,
-  // UNKNOWN_APP_ID, disabled until the backend is ready
+  // UNKNOWN_APP_ID, // disabled until the backend is ready
   GATEWAY_APP_ID,
 ];
 
@@ -87,6 +91,7 @@ export const ChainFilterMainnet = [
   ChainId.Terra,
   ChainId.Terra2,
   ChainId.Wormchain,
+  ChainId.XLayer,
   ChainId.Xpla,
 ];
 
@@ -94,7 +99,7 @@ export const ChainFilterTestnet = [
   ChainId.Acala,
   ChainId.Celo,
   ChainId.Algorand,
-  // ChainId.PolygonSepolia, // TODO: add when exists a Amoy transaction
+  ChainId.PolygonSepolia,
   ChainId.Aptos,
   ChainId.Arbitrum,
   ChainId.ArbitrumSepolia,
@@ -126,6 +131,7 @@ export const ChainFilterTestnet = [
   ChainId.Terra,
   ChainId.Terra2,
   ChainId.Wormchain,
+  ChainId.XLayer,
   ChainId.Xpla,
 ];
 

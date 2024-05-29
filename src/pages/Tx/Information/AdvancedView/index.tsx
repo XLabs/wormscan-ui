@@ -111,7 +111,7 @@ const AdvancedView = ({
             <>
               {relayerInfo.isDelivery ? (
                 <BlockSection
-                  title="VAA DELIVERY INSTRUCTIONS"
+                  title="DELIVERY INSTRUCTIONS"
                   code={JSON.stringify(
                     {
                       "Target Chain": deliveryInstruction.targetChainId,

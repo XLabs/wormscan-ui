@@ -48,6 +48,7 @@ import {
   NTT_APP_ID,
   PORTAL_APP_ID,
   UNKNOWN_APP_ID,
+  USDT_TRANSFER_APP_ID,
   canWeGetDestinationTx,
   getGuardianSet,
 } from "src/consts";
@@ -539,7 +540,7 @@ const Tx = () => {
         if (data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID)) {
           // TODO: handle generic relayer non-vaa txns without rpcs
           if (!data.vaa || !data.vaa?.raw) {
-            console.log("automatic relayer tx without vaa yet");
+            console.log("standard relayer tx without vaa yet");
             return;
           }
 
@@ -587,7 +588,7 @@ const Tx = () => {
             if (!deliveryInstruction?.targetAddress) {
               return (
                 <div className="tx-information-errored-info">
-                  This is either not an Automatic Relayer VAA or something&apos;s wrong with it
+                  This is either not an Standard Relayer VAA or something&apos;s wrong with it
                 </div>
               );
             }
@@ -716,6 +717,9 @@ const Tx = () => {
             );
             const deliveryAttempt = deliveryAttemptRegex ? deliveryAttemptRegex?.[1] : null;
 
+            const sourceAddress =
+              data?.sourceChain?.from || data?.content?.standarizedProperties?.fromAddress;
+
             relayerInfo.props = {
               budgetText,
               copyBudgetText,
@@ -742,13 +746,14 @@ const Tx = () => {
               refundStatus,
               refundText,
               resultLog,
+              sourceAddress,
               sourceTxHash,
               targetTxTimestamp,
               totalGuardiansNeeded,
               VAAId: `${data.emitterChain}/${data.emitterAddress?.hex}/${data.sequence}`,
             };
           } catch (e) {
-            console.error("automatic relayer tx errored:", e);
+            console.error("standard relayer tx errored:", e);
           }
         }
         // ----
@@ -961,8 +966,11 @@ const Tx = () => {
         }
         // ----
 
-        // check Eth Bridge
-        if (data?.content?.standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID)) {
+        // check Portico
+        if (
+          data?.content?.standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID) ||
+          data?.content?.standarizedProperties?.appIds?.includes(USDT_TRANSFER_APP_ID)
+        ) {
           const porticoInfo = await getPorticoInfo(environment, data);
           if (porticoInfo) {
             const {
@@ -986,9 +994,6 @@ const Tx = () => {
               ?.standarizedProperties?.toChain as ChainId;
 
             data.content.payload.parsedPayload = parsedPayload;
-            if (!data.content.standarizedProperties.appIds.includes(ETH_BRIDGE_APP_ID)) {
-              data.content.standarizedProperties.appIds.push(ETH_BRIDGE_APP_ID);
-            }
 
             setShowSourceTokenUrl(shouldShowSourceTokenUrl);
             setShowTargetTokenUrl(shouldShowTargetTokenUrl);

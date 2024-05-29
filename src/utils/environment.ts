@@ -7,6 +7,7 @@ import {
   CHAIN_ID_ETH,
   CHAIN_ID_OPTIMISM,
   CHAIN_ID_POLYGON,
+  CHAIN_ID_XLAYER,
   ChainId,
   ChainName,
   Network,
@@ -22,6 +23,7 @@ export const SLOW_FINALITY_CHAINS = [
   CHAIN_ID_AVAX,
   CHAIN_ID_BASE,
   CHAIN_ID_CELO,
+  CHAIN_ID_XLAYER,
 ];
 
 const MAINNET_RPCS: { [key in ChainName]?: string } = {
@@ -29,12 +31,12 @@ const MAINNET_RPCS: { [key in ChainName]?: string } = {
   algorand: "https://mainnet-api.algonode.cloud",
   aptos: "https://fullnode.mainnet.aptoslabs.com/",
   arbitrum: "https://arb1.arbitrum.io/rpc",
-  avalanche: "https://rpc.ankr.com/avalanche",
+  avalanche: "https://api.avax.network/ext/bc/C/rpc",
   base: "https://mainnet.base.org",
   blast: "https://rpc.ankr.com/blast",
   bsc: process.env.BSC_RPC || "https://bsc-dataseed2.defibit.io",
   celo: "https://forno.celo.org",
-  ethereum: process.env.ETH_RPC || "https://rpc.ankr.com/eth",
+  ethereum: process.env.ETH_RPC || "https://ethereum-rpc.publicnode.com",
   fantom: "https://rpc.ankr.com/fantom",
   injective: "https://api.injective.network",
   karura: "https://eth-rpc-karura.aca-api.network",
@@ -42,14 +44,15 @@ const MAINNET_RPCS: { [key in ChainName]?: string } = {
   moonbeam: "https://rpc.ankr.com/moonbeam",
   near: "https://rpc.mainnet.near.org",
   oasis: "https://emerald.oasis.dev",
-  optimism: "https://rpc.ankr.com/optimism",
-  polygon: "https://rpc.ankr.com/polygon",
+  optimism: "https://endpoints.omniatech.io/v1/op/mainnet/public",
+  polygon: "https://1rpc.io/matic",
   scroll: "https://rpc.ankr.com/scroll",
   solana: process.env.SOLANA_RPC ?? "https://api.mainnet-beta.solana.com",
   sui: "https://rpc.mainnet.sui.io",
   terra: "https://terra-classic-fcd.publicnode.com",
   terra2: "https://lcd-terra.tfl.foundation",
   xpla: "https://dimension-lcd.xpla.dev",
+  xlayer: "https://xlayerrpc.okx.com",
 };
 
 const TESTNET_RPCS: { [key in ChainName]?: string } = {
@@ -67,7 +70,8 @@ const TESTNET_RPCS: { [key in ChainName]?: string } = {
   optimism_sepolia: "https://sepolia.optimism.io",
   polygon: "https://rpc.ankr.com/polygon_mumbai",
   scroll: "https://rpc.ankr.com/scroll_sepolia_testnet",
-  blast: "http://testnet-rpc.blastblockchain.com",
+  blast: "https://sepolia.blast.io",
+  xlayer: "https://xlayertestrpc.okx.com",
 };
 
 export type Environment = {
@@ -242,6 +246,16 @@ export const testnetEnv: Environment = {
       relayerContractAddress: "", // TODO: ADD WHEN EXISTS
       rpcUrl: TESTNET_RPCS.blast || "",
     },
+    {
+      chainId: 37 as ChainId,
+      chainName: "XLayer",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 195,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "OKB",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: TESTNET_RPCS.xlayer || "",
+    },
   ],
   guardianRpcs: ["https://wormhole-v2-testnet-api.certus.one"],
 };
@@ -391,6 +405,16 @@ export const mainnetEnv: Environment = {
       nativeCurrencyName: "ETH",
       relayerContractAddress: "", // TODO: ADD WHEN EXISTS
       rpcUrl: MAINNET_RPCS.blast || "",
+    },
+    {
+      chainId: 37 as ChainId,
+      chainName: "XLayer",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 196,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "OKB",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: MAINNET_RPCS.xlayer || "",
     },
   ],
   guardianRpcs: [
