@@ -2,77 +2,92 @@
 
 .footer {
   @include centered-column;
-  align-items: center;
   gap: 32px;
-  margin: 96px auto 0 auto;
+  margin: 0 auto 32px auto;
   max-width: 488px;
-  padding: 32px 16px;
   width: 100%;
 
   @include desktop {
+    gap: 64px;
     max-width: unset;
-    padding: 60px 60px 40px 60px;
-  }
-
-  @include bigDesktop {
-    padding: 60px 76px 40px 76px;
   }
 
   &-container {
+    align-items: start;
     display: flex;
     gap: 32px;
     justify-content: space-between;
     width: 100%;
 
-    &:first-child {
-      border-bottom: 1px solid var(--color-white-10);
-      padding-bottom: 32px;
+    &:last-child {
+      align-items: center;
+      max-width: 370px;
+
+      @include tablet {
+        max-width: unset;
+      }
     }
 
-    &:nth-child(2) {
+    &-discord {
       @include centered-column;
-
-      & > :first-child {
-        order: 2;
-      }
-
-      & > :nth-child(2) {
-        order: 1;
-      }
-
-      & > :nth-child(3) {
-        order: 3;
-      }
+      gap: 10px;
+      border-bottom: 1px solid #141414;
+      padding-bottom: 32px;
+      width: 100%;
 
       @include desktop {
-        flex-direction: row;
+        @include centered-row;
+        border: none;
+        background-color: #121212;
+        border-radius: 20px;
+        padding: 16px;
+      }
 
-        & > :first-child,
-        & > :nth-child(2),
-        & > :nth-child(3) {
-          order: unset;
+      &-text {
+        @include text-roboto-body-large-400;
+        max-width: 240px;
+
+        @include desktop {
+          max-width: unset;
+        }
+      }
+
+      &-links {
+        @include centered-row;
+        margin-top: 14px;
+        gap: 20px;
+
+        @include desktop {
+          margin: 0 0 0 auto;
+        }
+
+        &-ds-btn {
+          @include button-primary;
+        }
+
+        &-x-btn {
+          @include button-secondary;
         }
       }
     }
 
-    &:last-child {
-      border-top: 1px solid var(--color-white-10);
-      padding-top: 32px;
-      width: 100%;
+    &-logo {
+      display: none;
+
+      @include desktop {
+        display: block;
+      }
     }
 
     &-button {
-      @include text-p3;
-      @include centered-row;
+      display: none;
 
-      color: var(--color-primary-50);
-      background-color: transparent;
-      border: none;
-      gap: 8px;
-      cursor: pointer;
+      @include desktop {
+        @include button-secondary;
 
-      &:hover {
-        color: var(--color-secondary-700);
+        & > svg {
+          color: var(--color-white-60);
+        }
       }
     }
 
@@ -82,7 +97,7 @@
       min-width: 264px;
 
       @include tablet {
-        gap: 100px;
+        gap: 204px;
       }
 
       @include desktop {
@@ -90,6 +105,11 @@
         justify-content: space-between;
         max-width: 352px;
         width: 25%;
+        margin: 0 0 0 12%;
+      }
+
+      @include bigDesktop {
+        margin: 0 0 0 30%;
       }
 
       &-container {
@@ -112,15 +132,16 @@
 
         &-title {
           @include centered-row;
-          color: var(--color-primary-100);
-          font-size: 14px;
+          @include text-heading6;
+          color: var(--color-gray-400);
           height: 32px;
           margin-bottom: 8px;
+          text-transform: uppercase;
         }
 
         & a {
           @include centered-row;
-          color: var(--color-primary-50);
+          color: var(--color-gray-200);
           font-size: 14px;
           max-width: max-content;
           min-height: 32px;
@@ -128,50 +149,27 @@
 
           &:hover {
             text-decoration: underline;
-            color: var(--color-primary-50);
-          }
-
-          &:hover path {
-            fill: var(--color-secondary-700);
-          }
-
-          & > svg {
-            color: var(--color-secondary-800);
-            height: 20px;
-            width: 20px;
           }
         }
       }
     }
 
     &-build {
-      display: flex;
-      justify-content: center;
-      min-width: 264px;
-      white-space: nowrap;
+      @include centered-row;
+      @include text-heading6;
+      gap: 16px;
+      text-transform: uppercase;
 
       @include desktop {
         justify-content: flex-end;
-        max-width: 352px;
-        width: 25%;
       }
 
-      @media (max-width: 1279px) {
-        min-width: 100px;
+      &-text {
+        color: var(--color-white-40);
       }
 
-      &-container {
-        @include centered-column;
-        align-items: center;
-        gap: 8px;
-
-        &-text {
-          color: var(--color-white-40);
-        }
-
-        & > a:hover {
-          opacity: 0.6;
-        }
+      & > a:hover {
+        opacity: 0.6;
       }
     }
 
@@ -180,7 +178,7 @@
       font-size: 14px;
       font-weight: 400;
       text-align: center;
-      width: 100%;
+      text-transform: uppercase;
     }
   }
 }

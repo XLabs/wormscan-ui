@@ -65,6 +65,23 @@ export type LastTxs = {
   count: number;
 }[];
 
+export interface IChainActivityInput {
+  from: string;
+  to: string;
+  timespan: string;
+  sourceChain: Array<number>;
+  targetChain?: Array<number>;
+  appId?: Array<string>;
+}
+
+export interface IChainActivity {
+  from: string;
+  to: string;
+  emitter_chain: string;
+  volume: number;
+  count: number;
+}
+
 export type DateRange = "day" | "week" | "month" | "3-month";
 
 export interface ScoresOutput {

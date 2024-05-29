@@ -1,219 +1,178 @@
 @import "src/styles/globals.scss";
 
 .protocols-stats {
-  @include card-container;
   @include centered-column;
-  flex: 2;
-  gap: 24px 0;
-  justify-content: flex-start;
-  min-height: 332px;
-
-  @include tablet {
-    min-height: 364px;
-  }
+  gap: 24px;
+  margin-bottom: 60px;
 
   @include desktop {
-    min-width: 485px;
+    margin-bottom: 80px;
   }
 
   &-title {
-    @include text-p1;
-    color: var(--color-primary-90);
-    font-weight: 500;
-  }
-
-  &-loader {
-    margin: auto 0;
-
-    @include desktop {
-      min-width: 414px;
-    }
+    @include centered-row;
+    @include text-roboto-subheading-500;
+    color: var(--color-white);
+    gap: 8px;
   }
 
   &-container {
-    @include centered-row;
-    align-items: flex-start;
-    gap: 8px;
-    height: 100%;
+    @include centered-column;
+    gap: 24px;
 
-    @include tablet {
-      gap: 16px;
+    @include desktop {
+      gap: 0;
     }
 
-    &-list {
-      @include centered-column;
-      justify-content: start;
+    &-header {
+      display: none;
 
-      @include tablet {
-        min-width: max-content;
-        width: 40%;
-      }
+      @include desktop {
+        background-color: var(--color-gray-950);
+        border-radius: 16px;
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(5, 1fr);
+        padding: 12px 16px;
+        white-space: nowrap;
 
-      &-item {
-        @include centered-row;
-        background-color: var(--color-black-20);
-        border: none;
-        border-bottom: 1px solid var(--color-white-10);
-        color: var(--color-primary-90);
-        cursor: pointer;
-        gap: 0 8px;
-        padding: 16px 12px;
-
-        &:last-of-type {
-          border-bottom: 1px solid transparent;
-        }
-
-        @include tablet {
-          gap: 0 16px;
-          padding: 16px 24px;
-        }
-
-        &:hover {
-          background-color: var(--color-white-03);
-        }
-
-        &.active {
-          background-color: var(--color-white-05);
-          border-bottom: 1px solid var(--color-secondary-800);
-          color: var(--color-primary-30);
-        }
-
-        &-logo {
-          @include centered-column;
-          align-items: center;
-          background-color: var(--color-primary-800);
-          border-radius: 50%;
-          height: 24px;
-          padding: 4px;
-          width: 24px;
-
-          @include desktop {
-            height: 32px;
-            padding: 6px;
-            width: 32px;
-          }
-
-          & img {
-            height: 100%;
-            width: 100%;
-          }
-        }
-
-        &-name {
-          @include text-p2;
-
-          @include tablet {
-            @include text-p1;
-            font-weight: 500;
-          }
-        }
-      }
-    }
-
-    &-info {
-      @include centered-column;
-      background-color: var(--color-white-05);
-      border-radius: 5px;
-      height: 100%;
-      justify-content: space-between;
-      margin: 0 auto;
-      min-width: max-content;
-      padding: 24px 0 24px 12px;
-      position: relative;
-      width: 100%;
-
-      @include tablet {
-        min-width: 240px;
-        padding: 24px;
-        width: 60%;
-      }
-
-      &-link {
-        @include text-p3;
-        color: var(--color-information-100);
-        text-decoration: none;
-        position: absolute;
-        top: -24px;
-        right: 0;
-
-        &:hover {
-          text-decoration: underline;
-        }
-
-        & svg {
-          margin-left: 8px;
-          vertical-align: -3px;
-        }
-      }
-
-      & .wormhole-brand {
-        bottom: 0;
-        height: 34px;
-        left: 0;
-        margin: auto;
-        min-height: unset;
-        opacity: 0.05;
-        pointer-events: none;
-        position: absolute;
-        right: 0;
-        top: 0;
-        user-select: none;
-        width: 128px;
-        z-index: 1;
-
-        @include desktop {
-          width: 180px;
-        }
-      }
-
-      &-item {
         &-title {
-          @include text-p1;
-          color: var(--color-primary-150);
-          font-size: 14px;
-          font-weight: 500;
+          @include text-heading6;
+          color: var(--color-gray-400);
           text-transform: uppercase;
 
-          & > span:first-child {
-            @include tablet {
-              display: none;
-            }
+          &:last-child {
+            text-align: end;
           }
 
-          & > span:last-child {
+          & > span {
             display: none;
 
-            @include tablet {
+            @include bigDesktop {
+              @include text-heading6;
               display: inline;
             }
           }
         }
+      }
+    }
+
+    &-element {
+      background-color: #121212;
+      border-radius: 16px;
+      border: 1px solid #1f1f1f;
+      display: grid;
+      gap: 32px;
+      grid-template-columns: 1fr 1fr;
+      padding: 16px;
+
+      @include desktop {
+        background-color: transparent;
+        border: none;
+        border-bottom: 1px solid #1f1f1f;
+        border-radius: 0;
+        gap: 16px;
+        grid-template-columns: repeat(5, 1fr);
+        padding: 24px 16px;
+      }
+
+      & > a {
+        max-width: max-content;
+      }
+
+      &-item {
+        @include centered-column;
+        color: var(--color-white);
+        gap: 8px 12px;
+        text-decoration: none;
+
+        &:first-child {
+          @include centered-row;
+          grid-column: span 2;
+          justify-content: flex-start;
+
+          @include desktop {
+            grid-column: span 1;
+          }
+        }
+
+        &:nth-child(2) {
+          grid-column: span 2;
+
+          @include desktop {
+            grid-column: span 1;
+          }
+        }
+
+        &-protocol {
+          @include text-roboto-body-500;
+          color: var(--color-white);
+        }
+
+        &-title {
+          @include text-heading6;
+          color: var(--color-gray-400);
+
+          @include desktop {
+            display: none;
+          }
+        }
 
         &-value {
-          @include text-h5;
-          color: var(--color-primary-30);
-          font-weight: 500;
+          @include centered-row;
+          @include text-heading5;
+          color: var(--color-white);
+          gap: 8px;
 
           &-diff {
-            @include text-p3;
-            color: var(--color-primary-150);
-            font-size: 12px;
-            margin-left: 8px;
+            @include text-heading6;
+            align-items: center;
+            border-radius: 12px;
+            color: var(--color-gray-400);
+            display: flex;
+            padding: 6px 8px;
 
             &.negative {
+              background-color: var(--color-error-15);
               color: var(--color-error-100);
             }
 
             &.positive {
+              background-color: var(--color-success-10);
               color: var(--color-success-100);
 
               & svg {
-                rotate: 180deg;
+                transform: rotate(180deg);
               }
             }
 
             & svg {
-              vertical-align: sub;
+              margin-right: 8px;
+            }
+          }
+
+          &-chains {
+            @include centered-row;
+
+            @include desktop {
+              margin-left: auto;
+            }
+
+            &-chain {
+              background-color: var(--color-gray-900);
+              filter: grayscale(1);
+              margin-right: -4px;
+
+              &-more {
+                @include centered-row;
+                @include text-heading6;
+                background-color: var(--color-gray-800);
+                border-radius: 50%;
+                color: var(--color-white);
+                height: 24px;
+                justify-content: center;
+                width: 24px;
+              }
             }
           }
         }

@@ -1,384 +1,260 @@
 @import "src/styles/globals.scss";
 
 .header {
-  align-items: center;
-  column-gap: 4px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-areas:
-    "brand actions"
-    "search search";
-  min-height: 64px;
-  padding: 16px 16px 32px;
-  row-gap: 41px;
-  width: 100%;
-
-  @include tablet {
-    padding: 16px 60px 32px 60px;
-  }
+  z-index: 9999;
 
   @include desktop {
-    grid-template-columns: auto 0.9fr auto;
-    grid-template-areas: "brand search actions";
-
-    background-color: rgba(1, 0, 20, 0.2);
-    border-bottom: 1px solid var(--color-white-10);
-    gap: 8px;
-    min-height: 96px;
-    padding: 16px 60px;
+    height: 204px;
   }
 
-  @include bigDesktop {
-    grid-template-areas: "brand search actions";
-    grid-template-columns: auto 0.675fr auto;
-    padding: 0 76px;
-  }
-
-  .wormhole-brand {
-    grid-area: brand;
-    padding: 16px 0;
-
-    @include desktop {
-      padding: 0;
-    }
-  }
-
-  &-mobile-line {
-    background-color: var(--color-white-10);
-    height: 1px;
-    left: 0;
-    position: absolute;
-    top: 80px;
-    width: 100vw;
-
-    @include desktop {
-      display: none;
-    }
-  }
-
-  &-logo-container {
-    display: flex;
-  }
-
-  &-hamburger {
-    grid-area: hamburger;
-    display: flex;
-    justify-content: end;
-
-    @include desktop {
-      display: none;
-    }
-
-    &-container {
-      @include centered-row;
-
-      cursor: pointer;
-      padding: 8px;
-    }
-  }
-
-  &-open-mobile-menu-btn {
-    width: 20px;
-    height: 20px;
-  }
-
-  a {
-    text-decoration: none;
-  }
-
-  &-search-bar {
-    grid-area: search;
+  &-container {
+    align-items: center;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 40px;
+    margin-top: 32px;
     width: 100%;
-  }
-
-  & .select {
-    height: 60px;
-    width: 168px;
+    z-index: 9999;
 
     @include desktop {
-      height: 48px;
-      width: unset;
+      gap: 12px;
     }
 
-    & .select__control {
-      color: var(--color-white);
-      font-weight: 600;
-      padding: 10px 24px;
+    &-mobile {
+      @include centered-row;
+      background-color: var(--color-gray-900);
+      bottom: 0;
+      justify-content: space-between;
+      left: 0;
+      padding: 16px 32px 12px 32px;
+      position: fixed;
+      right: 0;
+      transition: transform 0.3s ease-in-out;
+      z-index: 9999;
 
       @include desktop {
-        padding: 4px 8px 4px 16px;
+        display: none;
+      }
+
+      &.hidden {
+        transform: translateY(120%);
+      }
+
+      & > .navlink {
+        @include centered-column;
+        @include text-heading6;
+        align-items: center;
+        color: var(--color-white-80);
+        gap: 8px;
+        opacity: 0.5;
+        text-decoration: none;
       }
     }
-  }
 
-  &-actions {
-    @include centered-row;
+    &-logo {
+      grid-column: 1;
+      max-width: max-content;
 
-    grid-area: actions;
-
-    display: flex;
-    justify-content: end;
-  }
-
-  &-navigation {
-    @include centered-row;
-
-    justify-content: end;
-    display: none;
-    font-family: "IBM Plex Sans", sans-serif;
-
-    @include desktop {
-      @include centered-row;
+      & .wormhole-brand-secondary {
+        display: none;
+      }
     }
 
-    & > nav {
-      @include centered-row;
-      gap: 24px;
+    & > .search-bar {
+      grid-column: 1 / span 2;
+      grid-row: 2;
     }
 
-    &-item {
-      @include centered-row;
-      align-items: flex-start;
-      gap: 8px;
-      user-select: none;
-      white-space: nowrap;
+    &-links {
+      grid-column: 2;
+      justify-self: flex-end;
+      margin-top: auto;
 
-      a {
-        @include text-p2;
+      @include desktop {
+        @include centered-row;
+        gap: 20px;
+        justify-content: flex-end;
+        margin-top: 0;
+      }
 
-        color: var(--color-primary-90);
-        text-decoration: none;
-        font-size: 18px;
-        font-weight: 600;
+      & > nav {
+        display: none;
 
         @include desktop {
-          font-size: 16px;
-          font-weight: 400;
-        }
-
-        &:hover {
-          color: var(--color-secondary-700);
+          display: flex;
         }
       }
 
-      &-social {
-        @include centered-row;
-        gap: 42px;
-        margin: 5vh 0 16px 0;
-        margin: 5svh 0 16px 0;
+      & a {
+        display: none;
 
-        &-text {
-          @include text-p3;
-
-          color: #544867;
-        }
-
-        &-icons {
+        @include desktop {
           @include centered-row;
-          gap: 56px;
-
-          & a {
-            @include centered-column;
-
-            & svg path {
-              fill: var(--color-secondary-800);
-            }
-
-            &:hover svg path {
-              fill: var(--color-secondary-700);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  & .dropdown-menu {
-    white-space: nowrap;
-
-    > li {
-      display: block;
-    }
-
-    &-trigger {
-      cursor: pointer;
-      padding-bottom: 8px;
-      padding-right: 30px;
-      padding-top: 8px;
-      position: relative;
-
-      @include desktop {
-        padding-left: 12px;
-      }
-
-      .icon {
-        position: absolute;
-        width: 24px;
-        height: 24px;
-        color: var(--color-secondary-800);
-      }
-
-      &[data-state="closed"] {
-        border-bottom: 1px solid transparent;
-      }
-
-      &[data-state="open"] {
-        border-bottom: 1px solid var(--color-white-40);
-
-        .icon {
-          rotate: 180deg;
-        }
-      }
-    }
-
-    &-content {
-      padding-bottom: 5px;
-      padding-top: 21px;
-      position: absolute;
-      z-index: 3;
-
-      background-color: var(--color-primary-900);
-
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-      align-items: center;
-
-      .header-navigation-item {
-        align-items: center;
-        background-color: var(--color-primary-900);
-        justify-content: center;
-        width: 130px;
-
-        .active {
-          background-color: var(--color-secondary-800);
-          color: var(--color-white);
-          font-weight: 600;
-        }
-
-        a {
-          color: var(--color-primary-90);
-          font-family: IBM Plex Sans, sans-serif;
-          font-size: 15px;
-          font-weight: 500;
-          padding: 10px;
-          width: 100%;
-
-          @include desktop {
-            text-align: center;
-          }
+          @include text-heading6;
+          color: var(--color-gray-200);
+          text-decoration: none;
+          text-transform: uppercase;
+          padding: 4px 0;
 
           &:hover {
-            background-color: var(--color-white-10);
+            color: var(--color-white);
           }
         }
       }
     }
 
-    button {
-      background: none;
-      border: 0px;
-      color: var(--color-primary-90);
-      font-size: 18px;
-      font-weight: 600;
-      text-decoration: none;
+    & .dropdown-menu {
+      white-space: nowrap;
 
-      @include desktop {
-        font-size: 16px;
-        font-weight: 400;
+      > li {
+        display: block;
       }
-    }
-  }
 
-  &-navigation-mobile {
-    background-color: var(--color-primary-950);
-    border-left: 2px solid var(--color-white-10);
-    box-shadow: -8px 2px 16px 15px rgba(22, 9, 36, 0.5);
-    min-height: 100vh;
-    position: fixed;
-    right: 0;
-    top: 0;
-    transform: translateX(120%);
-    transition: all 0.25s ease-out;
-    width: 344px;
-    z-index: 110;
+      &-trigger {
+        @include centered-row;
+        cursor: pointer;
+        position: relative;
 
-    &--open {
-      transform: translateX(0%);
-    }
+        &[data-state="closed"] {
+          border-bottom: 1px solid transparent;
+        }
 
-    &--close {
-      transform: translateX(120%);
-    }
+        &[data-state="open"] {
+          border-bottom: 1px solid var(--color-white-40);
 
-    @include desktop {
-      display: none;
-    }
+          .icon {
+            rotate: 180deg;
+          }
+        }
+      }
 
-    &-top {
-      @include centered-row;
-
-      border-bottom: 2px solid var(--color-white-10);
-      justify-content: space-between;
-      min-height: 64px;
-      padding: 16px;
-    }
-
-    &-nav {
-      @include centered-column;
-      gap: 32px;
-      max-height: calc(100vh - 90px);
-      max-height: calc(100svh - 90px);
-      justify-content: start;
-      overflow-y: auto;
-      padding-left: 42px;
-
-      > nav {
+      &-content {
         @include centered-column;
-        gap: 24px;
-        padding-top: 42px;
+        background-color: var(--color-gray-900);
+        border-radius: 24px;
+        flex-grow: 1;
+        margin-top: 16px;
+        padding: 12px 8px;
+        position: absolute;
+        z-index: 3;
+      }
+
+      button {
+        @include text-heading6;
+        background: none;
+        border: 0px;
+        color: var(--color-gray-200);
+        text-decoration: none;
+        text-transform: uppercase;
+        width: 100%;
+      }
+    }
+  }
+}
+
+.header-container-fixed {
+  @include desktop {
+    background-color: var(--color-gray-900);
+    border-radius: 16px;
+    grid-template-columns: auto 1fr auto;
+    left: 72px;
+    position: fixed;
+    right: 72px;
+    top: 0;
+    width: auto;
+    z-index: 9999;
+    padding: 0 16px;
+
+    & > .header-container-logo {
+      grid-column: 1;
+
+      & .wormhole-brand-primary {
+        display: none;
+      }
+
+      & .wormhole-brand-secondary {
+        display: block;
       }
     }
 
-    &-container {
-      @include centered-row;
-
-      cursor: pointer;
-      padding: 8px;
+    & > .search-bar {
+      background-color: transparent;
+      border-radius: 0;
+      box-shadow: none;
+      grid-column: 2;
+      grid-row: 1;
     }
 
-    &-btn {
-      cursor: pointer;
-      width: 20px;
-      height: 20px;
+    & > .header-container-links {
+      grid-column: 3;
+    }
+  }
+}
+
+.search-bar {
+  @include centered-row;
+  background-color: #121212;
+  border-radius: 20px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05), 0px 20px 60px rgba(0, 0, 0, 0.25);
+  height: 68px;
+  width: 100%;
+
+  &-input {
+    @include centered-row;
+    gap: 8px;
+    height: inherit;
+    position: relative;
+    width: 100%;
+
+    & > svg {
+      color: var(--color-white);
+      left: 16px;
+      opacity: 0.5;
+      position: absolute;
+    }
+
+    & > input {
+      @include text-roboto-body-large-400;
+      background-color: transparent;
+      border: none;
+      color: var(--color-white);
+      height: inherit;
+      padding-left: 48px;
+      width: 100%;
+      z-index: 1;
+
+      &::placeholder {
+        color: var(--color-white);
+        opacity: 0.5;
+      }
+
+      &:focus {
+        outline: none;
+      }
     }
   }
 
-  &-menu-mobile-mask {
-    background-color: var(--color-primary-950);
+  .search-loader {
+    animation: rotation 1s linear infinite;
+    border: 2px solid;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    box-sizing: border-box;
+    display: inline-block;
+    height: 16px;
+    left: 20px;
+    opacity: 0.5;
+    position: absolute;
+    width: 16px;
+  }
 
-    bottom: 0;
-    left: 0;
-    opacity: 0;
-    position: fixed;
-    right: 0;
-    top: 0;
-    transition: opacity 0.1s ease-in-out;
-    visibility: hidden;
-    z-index: 100;
-
-    @include desktop {
-      display: none;
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
     }
-
-    &--open {
-      opacity: 0.9;
-      visibility: visible;
-    }
-
-    &--close {
-      opacity: 0;
-      visibility: hidden;
+    100% {
+      transform: rotate(360deg);
     }
   }
 }

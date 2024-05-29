@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HamburgerMenuIcon, Cross1Icon, TriangleDownIcon } from "@radix-ui/react-icons";
@@ -11,17 +11,8 @@ import { NavLink, Select, Tag } from "src/components/atoms";
 import { WormholeBrand } from "src/components/molecules";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Search from "./Search";
+import { AnalyticsIcon, HomeIcon, SearchIcon, MenuIcon, SwapVerticalIcon } from "src/icons/generic";
 import "./styles.scss";
-
-type NavLinkItemProps = {
-  to: string;
-  label: string;
-};
-type ExternalLinkItemProps = {
-  href: string;
-  label: string;
-  children?: React.ReactNode;
-};
 
 type NetworkSelectProps = { label: string; value: Network };
 
@@ -32,6 +23,11 @@ const NETWORK_LIST: NetworkSelectProps[] = [
 
 const Header = () => {
   const [expandMobileMenu, setExpandMobileMenu] = useState<boolean>(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [lastScrollTop, setLastScrollTop] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+  const headerRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const { environment, setEnvironment } = useEnvironment();
   const { pathname, search } = useLocation();
   const { t } = useTranslation();
@@ -39,6 +35,46 @@ const Header = () => {
 
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "MAINNET";
+
+  useEffect(() => {
+    const currentHeaderRef = headerRef.current;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          setIsScrolled(true);
+        } else {
+          setIsScrolled(false);
+        }
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.1,
+      },
+    );
+
+    if (currentHeaderRef) {
+      observer.observe(currentHeaderRef);
+    }
+
+    return () => {
+      if (currentHeaderRef) {
+        observer.unobserve(currentHeaderRef);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      setIsVisible(lastScrollTop > currentScrollTop || currentScrollTop < 50);
+      setLastScrollTop(currentScrollTop <= 0 ? 0 : currentScrollTop);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollTop]);
 
   const showMobileMenu = () => {
     setExpandMobileMenu(true);
@@ -68,131 +104,118 @@ const Header = () => {
     }
   };
 
-  const LogoLink = () => (
-    <div className="header-logo-container">
-      <NavLink to="/" data-testid="header-logo-link" onClick={hideMobileMenu}>
-        <WormholeBrand />
-      </NavLink>
-    </div>
-  );
+  const [isActive, setIsActive] = useState(false);
 
-  const NavLinkItem = ({ to, label }: NavLinkItemProps) => (
-    <div className="header-navigation-item">
-      <NavLink to={to} onClick={hideMobileMenu} aria-label={label}>
-        {label}
-      </NavLink>
-    </div>
-  );
+  const handleFocus = () => {
+    setIsActive(true);
+  };
 
-  const ExternalLinkItem = ({ href, label, children }: ExternalLinkItemProps) => (
-    <div className="header-navigation-item">
-      <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
-        {label}
-      </a>
-      {children}
-    </div>
-  );
-
-  const HeaderLinks = ({ isMobile = false }: { isMobile?: boolean }) => (
-    <nav data-testid="header-nav">
-      {isMobile && <NavLinkItem to="/" label={t("home.footer.home")} />}
-      <NavLinkItem to="/txs" label={t("home.header.txs")} />
-      {isMainnet && <NavLinkItem to="/governor" label="Governor" />}
-
-      <NavigationMenu.Root delayDuration={0}>
-        <NavigationMenu.List className="dropdown-menu">
-          <NavigationMenu.Item>
-            <NavigationMenu.Trigger className="dropdown-menu-trigger">
-              Dev Tools <TriangleDownIcon className="icon" />
-            </NavigationMenu.Trigger>
-
-            <NavigationMenu.Content className="dropdown-menu-content">
-              <NavLinkItem to="/vaa-parser" label="VAA Parser" />
-              <ExternalLinkItem href="https://docs.wormholescan.io/" label="API Docs" />
-              <ExternalLinkItem href="https://docs.wormhole.com/wormhole" label="Wormhole Docs" />
-            </NavigationMenu.Content>
-          </NavigationMenu.Item>
-        </NavigationMenu.List>
-      </NavigationMenu.Root>
-
-      {isMobile && <NavLinkItem to="/terms-of-use" label={t("home.footer.termsOfUse")} />}
-
-      <Select
-        name={"networkSelect"}
-        value={NETWORK_LIST.find(a => a.value === currentNetwork)}
-        onValueChange={(env: NetworkSelectProps) => onClickChangeNetwork(env.value)}
-        items={NETWORK_LIST}
-        ariaLabel={"Select Network"}
-        className="header-network-select"
-      />
-
-      {isMobile && (
-        <div className="header-navigation-item-social">
-          <div className="header-navigation-item-social-text">{t("home.footer.joinUs")}</div>
-          <div className="header-navigation-item-social-icons">
-            <a
-              href={DISCORD_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Discord link"
-            >
-              <DiscordIcon />
-            </a>
-            <a
-              href={TWITTER_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Twitter link"
-            >
-              <TwitterIcon />
-            </a>
-          </div>
-        </div>
-      )}
-    </nav>
-  );
+  const handleBlur = () => {
+    setIsActive(false);
+  };
 
   return (
-    <header className="header" data-testid="header">
-      <LogoLink />
-      <div className="header-mobile-line" />
-      <Search />
-      <div className="header-actions">
-        <div className="header-navigation">
-          <HeaderLinks />
+    <header className="header" data-testid="header" ref={headerRef}>
+      <div className={`header-container ${isScrolled ? "header-container-fixed" : ""}`}>
+        <div className="header-container-logo">
+          <NavLink to="/" data-testid="header-logo-link" onClick={hideMobileMenu}>
+            <WormholeBrand />
+            <WormholeBrand type="secondary" />
+          </NavLink>
         </div>
 
-        {/* MOBILE HAMBURGER MENU */}
-        <div className="header-hamburger">
-          <div className="header-hamburger-container" onClick={showMobileMenu}>
-            <HamburgerMenuIcon className="header-open-mobile-menu-btn" />
-          </div>
-        </div>
+        <Search ref={inputRef} onFocus={handleFocus} onBlur={handleBlur} />
+
+        <nav className="header-container-links">
+          <NavLink to="/" onClick={hideMobileMenu} aria-label="Home">
+            <HomeIcon width={24} />
+          </NavLink>
+
+          <NavLink to="/txs" onClick={hideMobileMenu} aria-label={t("home.header.txs")}>
+            {t("home.header.txs")}
+          </NavLink>
+
+          {isMainnet && (
+            <NavLink to="/governor" onClick={hideMobileMenu} aria-label="Governor">
+              Governor
+            </NavLink>
+          )}
+
+          <NavigationMenu.Root delayDuration={0}>
+            <NavigationMenu.List className="dropdown-menu">
+              <NavigationMenu.Item>
+                <NavigationMenu.Trigger className="dropdown-menu-trigger">
+                  Dev Tools <TriangleDownIcon className="icon" height={16} width={16} />
+                </NavigationMenu.Trigger>
+
+                <NavigationMenu.Content className="dropdown-menu-content">
+                  <NavLink to="/vaa-parser" onClick={hideMobileMenu} aria-label="VAA Parser">
+                    VAA Parser
+                  </NavLink>
+
+                  <a
+                    href="https://docs.wormholescan.io/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="API Docs"
+                  >
+                    API Docs
+                  </a>
+
+                  <a
+                    href="https://docs.wormhole.com/wormhole"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Wormhole Docs"
+                  >
+                    Wormhole Docs
+                  </a>
+                </NavigationMenu.Content>
+              </NavigationMenu.Item>
+            </NavigationMenu.List>
+          </NavigationMenu.Root>
+
+          <Select
+            ariaLabel={"Select Network"}
+            className="header-network-select"
+            items={NETWORK_LIST}
+            name={"networkSelect"}
+            onValueChange={(env: NetworkSelectProps) => onClickChangeNetwork(env.value)}
+            type="secondary"
+            value={NETWORK_LIST.find(a => a.value === currentNetwork)}
+          />
+        </nav>
       </div>
 
-      <div
-        className={`header-navigation-mobile header-navigation-mobile--${
-          expandMobileMenu ? "open" : "close"
-        }`}
-      >
-        <div className="header-navigation-mobile-top">
-          <LogoLink />
-          <div className="header-navigation-mobile-container" onClick={hideMobileMenu}>
-            <Cross1Icon className="header-navigation-mobile-btn" />
-          </div>
+      <div className={`header-container-mobile ${isVisible ? "" : "hidden"}`}>
+        <NavLink to="/" onClick={hideMobileMenu} aria-label="Home">
+          <HomeIcon width={24} />
+          HOME
+        </NavLink>
+
+        <div
+          className={`navlink ${isActive ? "active" : ""}`}
+          onClick={() => inputRef.current.focus()}
+        >
+          <SearchIcon width={24} />
+          SEARCH
         </div>
 
-        <div className="header-navigation-mobile-nav">
-          <HeaderLinks isMobile={true} />
-        </div>
+        <NavLink to="/txs" onClick={hideMobileMenu} aria-label="Swap">
+          <SwapVerticalIcon width={24} />
+          TXS
+        </NavLink>
+
+        <NavLink to="/analytics" onClick={hideMobileMenu} aria-label="Analytics">
+          <AnalyticsIcon width={24} />
+          STATS
+        </NavLink>
+
+        <NavLink to="/" onClick={hideMobileMenu} aria-label="">
+          <MenuIcon width={24} />
+          OTHER
+        </NavLink>
       </div>
-
-      <div
-        className={`header-menu-mobile-mask header-menu-mobile-mask--${
-          expandMobileMenu ? "open" : "close"
-        }`}
-        onClick={hideMobileMenu}
-      />
     </header>
   );
 };

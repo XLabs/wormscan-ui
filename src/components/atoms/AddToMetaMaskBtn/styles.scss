@@ -8,7 +8,7 @@
   }
 
   & > button {
-    @include button;
+    @include button-secondary;
     @include centered-row;
     @include text-p3;
     background-color: var(--color-white-05);

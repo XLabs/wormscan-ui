@@ -1,0 +1,45 @@
+@import "src/styles/globals.scss";
+
+.maintenance-message {
+  display: flex;
+  gap: 12px;
+  padding: 16px 0;
+  text-wrap: pretty;
+
+  @include desktop {
+    margin-top: 24px;
+    padding: 0;
+  }
+
+  &-icon {
+    align-items: center;
+    background-color: #fd80581a;
+    border-radius: 50%;
+    display: flex;
+    height: 34px;
+    justify-content: center;
+    width: 34px;
+
+    &-dot {
+      background-color: #fd8058;
+      border-radius: 50%;
+      height: 8px;
+      width: 8px;
+    }
+  }
+
+  &-text {
+    color: #bbbbbb;
+    font-family: "Roboto Mono";
+    font-size: 12px;
+    font-weight: 400;
+    height: 48px;
+    letter-spacing: 0.36px;
+    max-width: 303px;
+    text-transform: uppercase;
+
+    @include desktop {
+      max-width: 391px;
+    }
+  }
+}

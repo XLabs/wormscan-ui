@@ -8,8 +8,18 @@ import { ErrorPlaceholder } from "src/components/molecules";
 import { getClient } from "src/api/Client";
 import { CrossChainBy } from "src/api/guardian-network/types";
 import { Chart } from "./Chart";
-import "./styles.scss";
 import { ChainId } from "src/api";
+import { SwapSmallVerticalIcon, GlobeIcon, ChevronDownIcon } from "src/icons/generic";
+import "./styles.scss";
+
+interface ICsvRow {
+  "Destination Chain": number;
+  "Destination Percentage": number;
+  "Destination Volume": string;
+  "Main Chain": number;
+  "Main Percentage": number;
+  "Main Volume": string;
+}
 
 const MAINNET_TYPE_LIST = [
   { label: i18n.t("home.crossChain.volume"), value: "notional", ariaLabel: "Volume" },
@@ -61,39 +71,86 @@ const CrossChainChart = () => {
     { cacheTime: 0 },
   );
 
+  const handleDownload = () => {
+    const csvData: any = [];
+    data.forEach(item => {
+      item.destinations.sort((a, b) => b.percentage - a.percentage);
+      item.destinations.forEach(dest => {
+        csvData.push({
+          "Main Chain": item.chain,
+          "Main Volume": item.volume,
+          "Main Percentage": item.percentage,
+          "Destination Chain": dest.chain,
+          "Destination Volume": dest.volume,
+          "Destination Percentage": dest.percentage,
+        });
+      });
+    });
+
+    csvData.sort((a: ICsvRow, b: ICsvRow) => b["Main Percentage"] - a["Main Percentage"]);
+
+    const headers = [
+      "Main Chain",
+      "Main Volume",
+      "Main Percentage",
+      "Destination Chain",
+      "Destination Volume",
+      "Destination Percentage",
+    ];
+
+    const rows = csvData.map(
+      (row: ICsvRow) =>
+        `${row["Main Chain"]},${row["Main Volume"]},${row["Main Percentage"]},${row["Destination Chain"]},${row["Destination Volume"]},${row["Destination Percentage"]}`,
+    );
+
+    const csvContent = [headers.join(","), ...rows].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "Cross-chain activity.csv";
+    link.click();
+
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="cross-chain" data-testid="cross-chain-card">
-      <div className="cross-chain-title">{t("home.crossChain.title")}</div>
+      <div className="cross-chain-top">
+        <div className="cross-chain-top-title">
+          <GlobeIcon width={24} />
+          {t("home.crossChain.title")}
+        </div>
+
+        <button className="cross-chain-top-download" onClick={handleDownload}>
+          {t("home.crossChain.download")}
+          <ChevronDownIcon width={24} />
+        </button>
+      </div>
 
       <div className="cross-chain-options">
         {currentNetwork === "MAINNET" ? (
           <ToggleGroup
-            value={selectedType}
-            onValueChange={value => setSelectedType(value)}
-            items={TYPE_LIST}
             ariaLabel="Select type"
             className="cross-chain-options-items"
+            items={TYPE_LIST}
+            onValueChange={value => setSelectedType(value)}
+            value={selectedType}
           />
         ) : (
           <div className="cross-chain-options-txsText">Transactions</div>
         )}
 
-        <div className="cross-chain-destination" aria-label="Select graphic type">
+        <div className="cross-chain-destination">
           <button
-            onClick={() => setSelectedDestination("sources")}
-            className={`cross-chain-destination-btn ${
-              isSources ? "cross-chain-destination-btn-selected" : ""
-            }`}
+            aria-label="Select graphic type"
+            className="cross-chain-destination-button"
+            onClick={() => setSelectedDestination(isSources ? "destinations" : "sources")}
           >
-            Source
-          </button>
-          <button
-            onClick={() => setSelectedDestination("destinations")}
-            className={`cross-chain-destination-btn ${
-              isSources ? "" : "cross-chain-destination-btn-selected"
-            }`}
-          >
-            Target
+            <SwapSmallVerticalIcon width={24} />
+
+            {isSources ? "Source to Target" : "Target to Source"}
           </button>
         </div>
 
@@ -111,32 +168,24 @@ const CrossChainChart = () => {
         </div>
       </div>
 
-      {isLoading || isFetching ? (
-        <Loader />
-      ) : (
-        <>
-          {isError ? (
-            <ErrorPlaceholder errorType="sankey" />
-          ) : (
-            <Chart
-              currentNetwork={currentNetwork}
-              data={data}
-              prevChain={prevChain}
-              selectedDestination={selectedDestination}
-              selectedType={selectedType}
-              selectedTimeRange={selectedTimeRange.value}
-            />
-          )}
-        </>
-      )}
-
-      <div className="cross-chain-message">
-        {selectedDestination === "destinations" && (
-          <div>{t("home.crossChain.bottomMessageDestinations")}</div>
-        )}
-        <div>Wormhole Activity</div>
-        {selectedDestination === "sources" && (
-          <div>{t("home.crossChain.bottomMessageSources")}</div>
+      <div className="cross-chain-relative">
+        {isLoading || isFetching ? (
+          <Loader />
+        ) : (
+          <>
+            {isError ? (
+              <ErrorPlaceholder errorType="sankey" />
+            ) : (
+              <Chart
+                currentNetwork={currentNetwork}
+                data={data}
+                prevChain={prevChain}
+                selectedDestination={selectedDestination}
+                selectedType={selectedType}
+                selectedTimeRange={selectedTimeRange.value}
+              />
+            )}
+          </>
         )}
       </div>
     </div>

@@ -12,7 +12,10 @@
 }
 
 .chart-container {
-  background-color: var(--color-white-05);
+  background-color: var(--color-gray-950);
+  border-radius: 0 0 16px 16px;
+  border: 1px solid #1f1f1f;
+  border-top: none;
   height: 390px;
   padding: 0 0 20px 0;
   position: relative;
@@ -20,21 +23,11 @@
 
   @include desktop {
     background-color: transparent;
+    border: none;
     flex: 1.4;
     height: unset;
     overflow: hidden;
     padding: unset;
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: 72px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: var(--color-white-05);
-      border-radius: 5px;
-    }
   }
 
   @include bigDesktop {
@@ -50,11 +43,11 @@
     }
 
     @include desktop {
-      min-height: 695px !important;
+      min-height: 600px !important;
     }
   }
 
-  .wormhole-brand {
+  .wormhole-brand-primary {
     bottom: 0;
     height: 34px;
     left: 0;
@@ -68,10 +61,6 @@
     user-select: none;
     width: 180px;
     z-index: 10;
-
-    @include desktop {
-      top: 72px;
-    }
   }
 
   &-chain-icon img {
@@ -90,40 +79,37 @@
   }
 
   &-tooltip {
-    background-color: var(--color-primary-900);
-    border-radius: 4px;
-    border: 1px solid var(--color-white-20);
+    background-color: var(--color-gray-900);
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
+    gap: 12px;
     list-style-type: none;
-    padding: 16px 24px;
+    min-width: 192px;
+    padding: 12px;
+
+    @include desktop {
+      min-width: 264px;
+      padding: 16px;
+    }
 
     & > div {
+      @include centered-row;
+      gap: 8px;
+      justify-content: space-between;
+
       &:first-child {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        margin-bottom: 16px;
-      }
-
-      &:nth-child(2) {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 8px;
-      }
-
-      &:last-child {
-        display: flex;
-        flex-direction: column;
+        justify-content: flex-start;
+        margin-bottom: 4px;
       }
     }
 
     &-img {
       background-color: var(--color-white-20);
       border-radius: 50%;
-      height: 16px;
+      height: 20px;
       padding: 1px;
-      width: 16px;
+      width: 20px;
 
       @include desktop {
         height: 24px;
@@ -132,25 +118,30 @@
     }
 
     &-label {
-      @include text-p2;
-      color: var(--color-primary-150);
-      font-weight: 500;
-      font-size: 14px;
+      @include text-roboto-body-400;
+      color: var(--color-white);
     }
 
     &-chain {
-      @include text-p2-bold;
-      color: var(--color-primary-30);
+      @include text-roboto-body-400;
+      color: var(--color-gray-400);
     }
 
     &-volume {
-      @include text-p2-bold;
-      color: var(--color-primary-30);
+      @include text-heading5;
+      color: var(--color-white);
+      font-family: "Roboto Mono", "Roboto", sans-serif !important;
     }
 
     &-txs {
-      @include text-p2-bold;
-      color: var(--color-primary-30);
+      @include text-heading5;
+      color: var(--color-white);
+      font-family: "Roboto Mono", "Roboto", sans-serif !important;
     }
+  }
+
+  &-xaxis-label {
+    direction: rtl;
+    display: none;
   }
 }

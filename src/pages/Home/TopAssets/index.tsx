@@ -13,6 +13,7 @@ import { getClient } from "src/api/Client";
 import { AssetsByVolumeOutput, Tokens } from "src/api/guardian-network/types";
 import analytics from "src/analytics";
 import "./styles.scss";
+import { LayersIcon } from "src/icons/generic";
 
 const RANGE_LIST: { label: string; value: "7d" | "15d" | "30d" }[] = [
   { label: "Last 7 days", value: "7d" },
@@ -106,7 +107,10 @@ const TopAssets = () => {
       <section>
         <div className="top-assets" data-testid="topAssetTimeRange">
           <div className="top-assets-header">
-            <h3 className="top-assets-header-title">{t("home.topAssets.title")}</h3>
+            <h3 className="top-assets-header-title">
+              <LayersIcon width={24} />
+              {t("home.topAssets.title")}
+            </h3>
 
             <div className="top-assets-header-select-container">
               <Select
@@ -118,8 +122,6 @@ const TopAssets = () => {
                 value={selectedTopAssetTimeRange}
               />
             </div>
-
-            <h4 className="top-assets-header-subtitle">{t("home.topAssets.subtitle")}</h4>
           </div>
 
           <div className="top-assets-body">
@@ -168,7 +170,7 @@ const TopAssets = () => {
                             />
                             {width < BREAKPOINTS.desktop && rowSelected === rowIndex && (
                               <tr>
-                                <td colSpan={4}>
+                                <td colSpan={5}>
                                   <TopAssetsChart
                                     rowSelected={rowSelected}
                                     top7AssetsData={top7AssetsData}

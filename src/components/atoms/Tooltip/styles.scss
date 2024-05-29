@@ -1,9 +1,11 @@
+@import "src/styles/globals.scss";
+
 .tooltip {
   &-container {
-    background-color: var(--color-primary-500);
-    box-shadow: 0px 4px 8px rgba(5, 5, 40, 0.45);
+    @include text-roboto-body-400;
+    background-color: var(--color-gray-900);
     border-radius: 4px;
-    font-size: 12px;
+    box-shadow: 0px 4px 8px rgba(5, 5, 40, 0.45);
     min-height: 30px;
     padding: 8px;
     word-wrap: break-word;
@@ -16,8 +18,6 @@
     }
 
     &.info {
-      font-size: 14px;
-      line-height: 24px;
       max-width: 100vw;
       max-width: 100svw;
       padding: 16px;
@@ -29,6 +29,6 @@
   }
 
   &-arrow {
-    fill: var(--color-primary-500);
+    fill: var(--color-gray-900);
   }
 }

@@ -61,7 +61,7 @@
   }
 
   &-button {
-    @include button;
+    @include button-secondary;
     background-color: var(--color-primary-90);
     border-radius: 8px;
     border: none;

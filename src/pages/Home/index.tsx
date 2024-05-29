@@ -1,8 +1,12 @@
 import { useEffect } from "react";
 import analytics from "src/analytics";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { CrossChainChart } from "src/components/molecules";
-import { Statistics } from "./Statistics";
+import {
+  CrossChainChart,
+  ChainActivity,
+  ProtocolsStats,
+  WormholeStats,
+} from "src/components/molecules";
 import { TopAssets } from "./TopAssets";
 
 const Home = () => {
@@ -12,8 +16,10 @@ const Home = () => {
 
   return (
     <BaseLayout>
-      <Statistics />
+      <WormholeStats />
       <CrossChainChart />
+      <ProtocolsStats />
+      <ChainActivity />
       <TopAssets />
     </BaseLayout>
   );

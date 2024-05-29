@@ -123,7 +123,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                     align: "left",
                     style: {
                       color: "var(--color-primary-150)",
-                      fontFamily: "IBM Plex Sans",
+                      fontFamily: "Roboto",
                       fontSize: "14px",
                       fontWeight: 500,
                     },
@@ -224,7 +224,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                       offsetX: -14,
                       style: {
                         colors: "#9295BB",
-                        fontFamily: "IBM Plex Sans",
+                        fontFamily: "Roboto",
                         fontSize: "14px",
                       },
                     },
@@ -239,7 +239,7 @@ const TransactionHistoryChart = ({ range }: Props) => {
                       offsetX: 0,
                       style: {
                         colors: "var(--color-primary-150)",
-                        fontFamily: "IBM Plex Sans",
+                        fontFamily: "Roboto",
                         fontSize: "14px",
                       },
                       rotate: isWidthOver1200px ? 0 : -45,

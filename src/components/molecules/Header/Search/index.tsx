@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 import { useMutation } from "react-query";
 import { useTranslation } from "react-i18next";
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
-import { getClient } from "src/api/Client";
-import SearchBar from "../../SearchBar";
-import analytics from "src/analytics";
-import { useEnvironment } from "src/context/EnvironmentContext";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useRecoilState } from "recoil";
+import { useEnvironment } from "src/context/EnvironmentContext";
 import { loadPageState } from "src/utils/recoilStates";
+import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import analytics from "src/analytics";
+import { getClient } from "src/api/Client";
 
-interface FormData {
-  search: { value: string };
+interface Props {
+  onBlur: React.FocusEventHandler<HTMLInputElement>;
+  onFocus: React.FocusEventHandler<HTMLInputElement>;
+  ref: React.RefObject<HTMLInputElement>;
 }
 
-const Search = () => {
+const Search = forwardRef<HTMLInputElement, Props>((props, ref) => {
   const { environment } = useEnvironment();
   const navigate = useNavigateCustom();
   const { t } = useTranslation();
@@ -68,8 +70,7 @@ const Search = () => {
       network: environment.network,
     });
 
-    const { search } = e.target as typeof e.target & FormData;
-    let { value } = search;
+    let value = searchValue;
     if (value && value.trim()) {
       value = value.trim();
 
@@ -89,17 +90,30 @@ const Search = () => {
   };
 
   return (
-    <SearchBar
-      value={searchValue}
-      onValueChange={setSearchValue}
-      onSubmit={handleSearch}
-      className="header-search-bar"
-      name="search"
-      placeholder={t("home.header.search.placeholder")}
-      ariaLabel={t("home.header.search.ariaLabel")}
-      isLoading={isLoading || loadingPage}
-    />
+    <form className="search-bar" data-testid="search-form" onSubmit={handleSearch}>
+      <div className="search-bar-input">
+        {isLoading || loadingPage ? (
+          <span className="search-loader"></span>
+        ) : (
+          <MagnifyingGlassIcon height={24} width={24} />
+        )}
+
+        <input
+          {...props}
+          aria-label={t("home.header.search.ariaLabel")}
+          disabled={isLoading}
+          name="Search"
+          onChange={e => setSearchValue(e.target.value)}
+          placeholder={t("home.header.search.placeholder")}
+          ref={ref}
+          type="text"
+          value={searchValue}
+        />
+      </div>
+    </form>
   );
-};
+});
+
+Search.displayName = "Search";
 
 export default Search;

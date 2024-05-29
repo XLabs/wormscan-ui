@@ -1,12 +1,11 @@
 export { default as Banner } from "./Banner";
+export { default as ChainActivity } from "./ChainActivity";
 export { default as CopyToClipboard } from "./CopyToClipboard";
 export { default as CrossChainChart } from "./CrossChainChart";
 export { default as ErrorPlaceholder } from "./ErrorPlaceholder";
 export { default as Footer } from "./Footer";
 export { default as Header } from "./Header";
-export { default as JoinUs } from "./JoinUs";
 export { default as ProtocolsStats } from "./ProtocolsStats";
-export { default as SearchBar } from "./SearchBar";
 export { default as StatusBadge } from "./StatusBadge";
 export { default as TermsOfUseBanner } from "./TermsOfUseBanner";
 export { default as TopAssetListItem } from "./TopAssetListItem";

@@ -1,66 +1,120 @@
 @import "src/styles/globals.scss";
 
 .cross-chain {
-  @include card-container;
-  margin-bottom: 32px;
+  margin-bottom: 60px;
 
   @include desktop {
-    margin-bottom: 24px;
+    border-radius: 16px;
+    margin-bottom: 80px;
+  }
+
+  &-top {
+    @include centered-row;
+    color: var(--color-white);
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    @include desktop {
+      margin-bottom: 28px;
+    }
+
+    &-title {
+      @include centered-row;
+      @include text-roboto-subheading-500;
+      gap: 8px;
+
+      & > svg {
+        color: var(--color-gray-600);
+      }
+    }
+
+    &-download {
+      @include button-secondary;
+    }
+  }
+
+  &-options {
+    align-items: center;
+    display: grid;
+    gap: 19px 0;
+    grid-template-columns: 1fr 1fr;
+    min-height: 56px;
+    padding-bottom: 36px;
+    width: 100%;
+
+    @include desktop {
+      background-color: var(--color-gray-950);
+      border-radius: 16px 16px 0 0;
+      gap: 24px;
+      grid-template-columns: 1fr 1fr 1fr;
+      padding: 24px 24px 28px 24px;
+    }
+
+    &-txsText {
+      @include text-roboto-body-500;
+      color: var(--color-white);
+    }
   }
 
   &-relative {
     position: relative;
 
+    @include desktop {
+      background-color: var(--color-gray-950);
+      border-radius: 0 0 16px 16px;
+    }
+
     &-pagination {
+      @include centered-row;
+      color: var(--color-gray-500);
+      justify-content: space-between;
       margin-top: 16px;
-    }
-  }
-
-  &-title {
-    @include text-p1;
-    color: var(--color-primary-90);
-    font-weight: 500;
-    margin-bottom: 32px;
-
-    @include desktop {
-      margin-bottom: 24px;
-    }
-  }
-
-  &-options {
-    align-items: flex-start;
-    display: grid;
-    gap: 32px;
-    grid-template-areas:
-      "vol-transactions"
-      "filters"
-      "destination";
-    margin-bottom: 32px;
-    min-height: 56px;
-    width: 100%;
-
-    @include desktop {
-      gap: 24px;
-      grid-template-areas: "vol-transactions destination filters";
-      margin-bottom: 24px;
-    }
-
-    &-items {
-      min-height: 48px;
-      width: 100%;
 
       @include desktop {
-        width: 220px;
+        padding: 24px;
       }
 
-      .toggle-group-item {
-        flex: 1;
+      & > .pagination {
+        @include desktop {
+          justify-content: space-between !important;
+          width: calc(25% - 32px);
+        }
       }
-    }
 
-    &-txsText {
-      color: var(--color-primary-100);
-      font-size: 18px;
+      &-message {
+        display: none;
+
+        @include desktop {
+          @include centered-row;
+          @include text-roboto-body-400;
+          gap: 6px;
+        }
+      }
+
+      &-mobile {
+        @include centered-row;
+        gap: 6px;
+        justify-content: flex-end;
+
+        @include desktop {
+          display: none;
+        }
+
+        &-btn {
+          @include centered-row;
+          background-color: transparent;
+          border-radius: 12px;
+          border: none;
+          color: var(--color-white-60);
+          cursor: pointer;
+          padding: 6px;
+
+          &.active {
+            background-color: var(--color-gray-900);
+            color: var(--color-white);
+          }
+        }
+      }
     }
   }
 
@@ -71,55 +125,32 @@
   }
 
   &-destination {
-    align-items: center;
-    background-color: rgba(1, 0, 20, 0.65);
-    border-radius: 8px;
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    min-height: 56px;
-    padding: 8px;
+    @include centered-row;
+    justify-content: flex-end;
     width: 100%;
-    grid-area: destination;
 
     @include desktop {
-      width: auto;
-      margin: 0 auto;
+      justify-content: center;
     }
 
-    &-btn {
-      @include button;
-      align-items: center;
-      background-color: transparent;
-      border-radius: 4px;
-      border: none;
-      color: var(--color-primary-150);
-      display: flex;
-      font-size: 16px;
-      font-weight: 400;
-      justify-content: center;
-      min-height: 40px;
-      padding: 8px 16px;
-      width: 100%;
-
-      &-selected {
-        background-color: var(--color-white-05);
-        color: var(--color-primary-30);
-        font-weight: 600;
-      }
+    &-button {
+      @include button-secondary;
+      padding-left: 8px;
     }
   }
 
   &-filters {
     @include centered-column;
-
-    width: 100%;
-    display: inline-flex;
+    grid-column: span 2;
     gap: 32px;
+    width: 100%;
+
+    @include desktop {
+      grid-column: span 1;
+    }
 
     &-group {
       @include centered-row;
-
       flex-wrap: wrap;
       gap: 16px;
       justify-content: flex-end;
@@ -128,12 +159,6 @@
       @include desktop {
         flex-wrap: nowrap;
         width: inherit;
-      }
-    }
-
-    &-select.select {
-      @include desktop {
-        width: 220px;
       }
     }
 
@@ -149,7 +174,7 @@
     width: 100%;
     position: relative;
 
-    & .wormhole-brand {
+    & .wormhole-brand-primary {
       bottom: 0;
       height: 34px;
       left: 0;
@@ -166,15 +191,18 @@
     }
 
     &-side {
+      @include centered-column;
+      align-items: center;
+      height: 650px;
+      justify-content: flex-start;
+      position: relative;
       width: 45%;
       z-index: 2;
-      height: 650px;
-      @include centered-column;
-      justify-content: flex-start;
-      align-items: center;
+
       @include desktop {
         width: 25%;
       }
+
       &[data-network="TESTNET"] {
         @include desktop {
           min-width: 270px;
@@ -185,137 +213,112 @@
       }
 
       &-item {
+        @include text-heading5;
+        align-items: center;
         color: var(--color-white);
-        user-select: none;
-        width: 100%;
-        min-height: 24px;
         display: grid;
         grid-auto-flow: column;
-        align-items: center;
+        grid-template-columns: auto auto auto;
+        justify-content: flex-start;
+        min-height: 32px;
+        padding: 0 4px;
         position: relative;
-        grid-template-columns: 70px 60px;
+        user-select: none;
+        width: 100%;
 
-        @media only screen and (min-width: 425px) {
-          grid-template-columns: 85px 30px 40px;
+        & > * {
+          margin: 0 4px;
+          line-height: normal !important;
         }
-        @media only screen and (min-width: 510px) {
-          grid-template-columns: 90px 30px 60px;
-        }
-        @include tablet {
-          grid-template-columns: 100px 10px 80px;
-        }
+
         @include desktop {
           grid-template-columns: 1.5fr 5fr 1fr;
-          background: var(--color-black-20);
         }
         @include bigDesktop {
-          grid-template-columns: 1.2fr 3.6fr 2fr 0.2fr 4fr;
+          grid-template-columns: 0.5fr 1.5fr 1fr 1fr;
           &[data-network="TESTNET"] {
-            grid-template-columns: 1fr 4fr 2fr 0.2fr 1.5fr;
+            grid-template-columns: 1fr 2fr 1fr 1fr;
           }
         }
 
         .percentage {
-          @include text-p3;
-          color: var(--color-primary-90);
-          display: none;
-          font-weight: 300;
+          @include text-heading6;
+          color: var(--color-gray-400);
           justify-self: end;
-          line-height: normal;
 
           @include desktop {
-            display: block;
-            padding-right: 8px;
-          }
-
-          @include bigDesktop {
-            padding-right: 16px;
-          }
-        }
-        .onlyBig {
-          display: none;
-          @include bigDesktop {
-            display: block;
+            @include centered-row;
+            background-color: var(--color-gray-900);
+            border-radius: 12px;
+            color: var(--color-white);
+            height: 24px;
+            padding: 0 8px;
           }
         }
 
         .chain-infoTxt {
-          @include text-p3;
-          font-weight: 300;
-
-          line-height: normal;
+          @include text-heading6;
           justify-self: end;
-          margin-right: 6px;
-        }
 
-        .chain-icon {
-          justify-self: center;
-          display: none;
           @include desktop {
+            display: none;
+          }
+
+          @include bigDesktop {
+            @include text-heading5;
+            color: var(--color-white);
             display: block;
           }
         }
 
+        .chain-icon {
+          height: 16px;
+          justify-self: center;
+          width: 16px;
+
+          @include desktop {
+            height: 24px;
+            width: 24px;
+          }
+        }
+
         .chain-name {
-          @include text-p2-bold;
-          line-height: normal;
+          @include text-roboto-body-500;
           white-space: nowrap;
 
-          font-size: 14px;
-          @include tablet {
-            font-size: 16px;
-          }
           opacity: 0.35;
-          font-weight: 500;
 
           @include desktop {
             opacity: 1;
-            font-weight: 600;
           }
         }
 
-        .chain-separator {
-          color: var(--color-primary-200);
-        }
-
-        .mobile-separator {
-          color: var(--color-primary-200);
-          justify-self: center;
-          display: none;
-          transform: translateX(-8px);
-          @media only screen and (min-width: 510px) {
-            transform: none;
-          }
-        }
-
-        &.left {
-          border-left: 16px solid var(--color-white-05);
-
-          @include desktop {
-            border-left: 0;
-
-            &:first-child {
-              border-radius: 4px 0 0 0;
-            }
-
-            &:last-child {
-              border-radius: 0 0 0 4px;
-            }
-          }
-        }
         &.right {
-          border-right: 16px solid var(--color-white-05);
           justify-content: end;
+        }
 
-          @include desktop {
-            border-right: 0;
+        &.showPercentageMobile {
+          .chain-infoTxt {
+            display: none;
 
-            &:first-child {
-              border-radius: 0 4px 0 0;
+            @include desktop {
+              display: block;
+            }
+          }
+        }
+
+        &.showMoneyMobile {
+          .percentage {
+            display: none;
+          }
+
+          &.right {
+            .chain-icon {
+              grid-column: 2;
             }
 
-            &:last-child {
-              border-radius: 0 0 4px 0;
+            .chain-name {
+              display: none;
             }
           }
         }
@@ -323,6 +326,16 @@
         &.selectable {
           cursor: pointer;
 
+          @include desktop {
+            &:not(:last-child) {
+              border-bottom: 1px solid var(--color-gray-900);
+            }
+          }
+
+          .chain-infoTxt {
+            color: var(--color-gray-400);
+          }
+
           &.left {
             .volume-info {
               left: 100%;
@@ -334,80 +347,67 @@
             }
           }
 
-          .chain-name {
-            margin-left: 5px;
+          .chain-icon {
+            filter: grayscale(1);
+
             @include desktop {
-              margin-left: 0px;
+              filter: unset;
             }
           }
 
           @include desktop {
-            border-right: 4px solid transparent;
-
             &:hover {
               background: var(--color-white-03);
             }
           }
         }
         &.nonSelectable {
-          .percentage {
-            display: block;
-          }
           .volume-info {
             right: 100%;
           }
-          .mobile-separator {
-            @media only screen and (min-width: 425px) {
-              display: block;
-            }
-          }
+
           .chain-name {
             opacity: 1;
-            font-weight: 300;
             text-align: right;
+
             @include tablet {
               text-align: left;
             }
+          }
+
+          .percentage {
             @include desktop {
-              font-weight: inherit;
+              background-color: var(--color-primary-10);
+              color: var(--color-primary-100);
             }
           }
 
           &.right {
+            @include desktop {
+              background: transparent;
+            }
+
+            .percentage {
+              grid-column: 1;
+
+              @include desktop {
+                grid-column: unset;
+              }
+            }
+
             .volume-info {
               right: 100%;
             }
-
-            border-right: 8px solid var(--color-primary-200);
-            border-left: 0px;
-            background: linear-gradient(
-              90deg,
-              rgba(15, 12, 72, 0) 9.64%,
-              rgba(15, 12, 72, 0.45) 95.18%
-            );
-            @include desktop {
-              background: #39326f;
-              border-right: 0px;
-              border-left: 4px solid var(--color-primary-200);
-            }
           }
           &.left {
-            .volume-info {
-              left: 100%;
+            padding-left: 6px;
+
+            @include desktop {
+              background: transparent;
             }
 
-            border-right: 0px;
-            border-left: 8px solid var(--color-primary-200);
-            padding-left: 6px;
-            background: linear-gradient(
-              90deg,
-              rgba(15, 12, 72, 0.45) 9.64%,
-              rgba(15, 12, 72, 0) 95.18%
-            );
-            @include desktop {
-              background: #39326f;
-              border-right: 4px solid var(--color-primary-200);
-              border-left: 0px;
+            .volume-info {
+              left: 100%;
             }
           }
 
@@ -417,70 +417,47 @@
         }
 
         &[data-selected="true"] {
-          .percentage {
-            display: block;
-          }
-          .mobile-separator {
-            @media only screen and (min-width: 425px) {
-              display: block;
-            }
-          }
-          .chain-icon {
-            background-color: var(--color-secondary-800) !important;
-          }
           .chain-name {
             opacity: 1;
           }
+
+          .percentage {
+            @include desktop {
+              background-color: var(--color-primary-100);
+              color: var(--color-black);
+            }
+          }
+
+          .chain-infoTxt {
+            color: var(--color-white);
+          }
+
           &.selectable {
+            .chain-icon {
+              filter: unset;
+            }
+
             &.left {
-              border-left: 16px solid var(--color-secondary-800);
-              background: linear-gradient(
-                90deg,
-                rgba(15, 12, 72, 0.45) 9.64%,
-                rgba(15, 12, 72, 0) 95.18%
-              );
               @include desktop {
-                background: var(--color-white-05);
-                border-left: 0px;
-                border-radius: 4px 0 0 4px;
+                background: linear-gradient(270deg, var(--color-primary-12) 25%, transparent 100%);
               }
             }
+
             &.right {
-              border-right: 16px solid var(--color-secondary-800);
-
-              background: linear-gradient(
-                90deg,
-                rgba(15, 12, 72, 0) 9.64%,
-                rgba(15, 12, 72, 0.45) 95.18%
-              );
               @include desktop {
-                background: var(--color-white-05);
-                border-radius: 0 4px 4px 0;
-                border-right: 0px;
+                background: linear-gradient(270deg, transparent 25%, var(--color-primary-12) 100%);
               }
-            }
-          }
-
-          &.left {
-            @include desktop {
-              border-right: 4px solid var(--color-secondary-800);
-            }
-          }
-          &.right {
-            @include desktop {
-              border-left: 4px solid var(--color-secondary-800);
             }
           }
         }
 
         .volume-info {
           display: none;
-          position: absolute;
-          z-index: 2;
+          height: 20px;
           padding-left: 8px;
           padding-right: 8px;
-          font-size: 14px;
-          height: 20px;
+          position: absolute;
+          z-index: 2;
 
           @include desktop {
             &[data-selected="true"] {
@@ -495,14 +472,13 @@
     }
 
     &-graph {
-      height: 650px;
       display: flex;
+      height: 650px;
       justify-content: center;
-
-      position: absolute;
-      width: 100%;
-      right: 0px;
       left: 0px;
+      position: absolute;
+      right: 0px;
+      width: 100%;
 
       @include desktop {
         left: 0px;
@@ -523,17 +499,15 @@
   }
 
   &-sticky {
+    bottom: -12px;
     cursor: pointer;
     display: block;
-    position: sticky;
-    overflow: hidden;
-
-    bottom: -12px;
-    margin-top: 10px;
     margin-bottom: -10px;
-
-    width: calc(100% + 64px);
     margin-left: -32px;
+    margin-top: 10px;
+    overflow: hidden;
+    position: sticky;
+    width: calc(100% + 64px);
     z-index: 2;
 
     @include tablet {
@@ -547,7 +521,6 @@
 
     &-container {
       border-radius: 16px;
-      border: 1px solid var(--color-primary-200);
       cursor: pointer;
 
       background-color: #1a1a2c;
@@ -575,8 +548,6 @@
     &-subtitle {
       color: var(--color-primary-100);
       display: flex;
-      font-size: 14px;
-      font-weight: 400;
       justify-content: space-between;
       margin-bottom: 6px;
     }
@@ -594,39 +565,30 @@
       }
 
       &-source {
-        font-size: 24px;
-        font-weight: 600;
-
         &-small {
           align-items: center;
           display: flex;
-          font-size: 16px;
           height: 32px;
 
           @include tablet {
-            font-size: 24px;
             height: auto;
           }
         }
       }
 
       &-destination {
-        font-size: 18px;
-        font-weight: 600;
         margin-left: 12px;
       }
 
       &-value {
         margin-left: auto;
-        font-size: 14px;
-        font-weight: 400;
       }
     }
 
     &-destinations {
       transition: all 0.4s ease-out;
 
-      & .wormhole-brand {
+      & .wormhole-brand-primary {
         height: 34px;
         margin: auto;
         opacity: 0.2;
@@ -637,39 +599,21 @@
         z-index: 1;
       }
     }
-
-    &-separator {
-      height: 1px;
-      width: 100%;
-      background-color: var(--color-white-10);
-      margin-top: 12px;
-      margin-bottom: 12px;
-    }
-  }
-
-  &-message {
-    display: flex;
-    margin-top: 12px;
-    flex-direction: column;
-
-    @include text-p3;
-    color: var(--color-primary-150);
-    @include desktop {
-      justify-content: space-between;
-      flex-direction: row;
-    }
   }
 
   &-header-container {
+    @include text-p3;
     display: flex;
     justify-content: space-between;
     margin-bottom: 16px;
 
-    color: var(--color-primary-150);
-    @include text-p3;
+    @include desktop {
+      padding: 0 24px;
+    }
 
     &.title {
-      font-weight: 500;
+      @include text-heading6;
+      color: var(--color-gray-400);
     }
   }
 }

@@ -57,9 +57,10 @@ const appIds = [
   GATEWAY_APP_ID,
 ];
 
-const ChainFilterMainnet = [
+export const ChainFilterMainnet = [
   ChainId.Acala,
   ChainId.Algorand,
+  ChainId.Aptos,
   ChainId.Arbitrum,
   ChainId.Aurora,
   ChainId.Avalanche,
@@ -89,7 +90,7 @@ const ChainFilterMainnet = [
   ChainId.Xpla,
 ];
 
-const ChainFilterTestnet = [
+export const ChainFilterTestnet = [
   ChainId.Acala,
   ChainId.Celo,
   ChainId.Algorand,

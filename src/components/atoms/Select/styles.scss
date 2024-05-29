@@ -2,76 +2,83 @@
 
 .select {
   @include centered-row;
-  border-radius: 5px;
-  height: 48px;
+  height: 36px;
   width: 100%;
+  white-space: nowrap;
 
-  &:hover {
-    background-color: var(--color-white-10);
+  @include desktop {
+    width: max-content;
   }
 
   &__control {
     @include centered-row;
-    @include text-p2;
+    @include dropdown;
+    justify-content: center !important;
+    width: 100%;
 
-    flex: 1;
-    cursor: pointer !important;
-    justify-content: space-between;
-    height: inherit;
-    width: inherit;
-    gap: 8px;
-    padding: 4px 4px 4px 8px;
-    background-color: var(--color-white-03);
-    border: 2px solid var(--color-white-10);
-    border-radius: 5px;
-    color: var(--color-primary-50);
+    @include desktop {
+      width: max-content;
+    }
+
+    > .select__indicators {
+      transition: transform 0.2s;
+    }
 
     &--menu-is-open {
-      border: 2px solid var(--color-primary-200);
+      background-color: var(--color-gray-800);
 
       > .select__indicators {
-        transform: scale(-1);
+        transform: rotate(-180deg);
       }
     }
 
-    @include desktop {
-      gap: 16px;
-      padding: 4px 8px 4px 16px;
+    & > .select__value-container {
+      max-width: max-content;
     }
   }
 
   &__placeholder {
-    color: var(--color-primary-100);
+    color: var(--color-white-50);
   }
 
   &__indicators {
     @include centered-row;
-
-    color: var(--color-secondary-800);
-
-    svg {
-      height: 26px;
-      width: 26px;
-    }
+    color: var(--color-white);
   }
 
   &__menu {
-    margin-top: 8px;
+    margin-top: 12px;
   }
 
   &__menu-list {
-    padding: 8px 0;
-    border-radius: 8px;
-    background-color: var(--color-primary-900);
-    overflow: auto;
+    border-radius: 24px;
+    background-color: var(--color-gray-900);
     overflow: overlay;
+    white-space: nowrap;
 
     &-scroll-button {
       @include centered-row;
-
       height: 20px;
       justify-content: center;
       text-align: center;
+    }
+
+    & > .search-container {
+      margin-top: 16px;
+
+      & > input {
+        background-color: var(--color-gray-800);
+        border: 1px solid var(--color-gray-800);
+        border-radius: 24px;
+        color: var(--color-white-50);
+        padding: 8px 16px;
+        width: 100%;
+        z-index: 999;
+
+        &:focus {
+          outline: transparent;
+        }
+      }
     }
 
     &::-webkit-scrollbar {
@@ -80,38 +87,80 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      border: 4px solid transparent;
       background-clip: padding-box;
+      background-color: var(--color-white-20);
       border-radius: 8px;
-      background-color: var(--color-secondary-600);
+      border: 4px solid transparent;
     }
   }
 
   &__option {
-    @include text-p2;
+    @include text-roboto-body-400;
     @include centered-row;
-
     height: inherit;
     width: inherit;
-    color: var(--color-primary-10);
+    color: var(--color-white-20);
     padding: 8px 16px;
     cursor: pointer !important;
     user-select: none;
     border: 1px solid transparent;
 
-    &:hover {
-      background-color: var(--color-white-10);
+    &:hover:not(.select__option--is-selected) {
+      background-color: var(--color-white-05);
     }
 
     &:focus-visible {
       outline: transparent;
-      background-color: var(--color-white-10);
+      background-color: var(--color-white-05);
     }
 
     &--is-selected {
-      background-color: var(--color-secondary-800);
+      background-color: var(--color-gray-800);
       color: var(--color-white);
-      font-weight: 600;
+    }
+  }
+
+  &.secondary {
+    & .select__control {
+      @include text-heading6;
+      background-color: transparent;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.custom-option {
+  @include centered-row;
+  gap: 8px;
+  justify-content: space-between;
+
+  &-container {
+    @include centered-row;
+    gap: 8px;
+  }
+}
+
+.select-searchable {
+  &-dropdown {
+    @include button-secondary;
+
+    &.open {
+      & > svg {
+        transform: rotate(-180deg);
+      }
+    }
+  }
+
+  &-menu {
+    background-color: var(--color-gray-900);
+    border-radius: 24px 24px 0 0;
+    margin-top: 16px;
+    padding: 16px 16px 24px 16px;
+    position: absolute;
+    z-index: 999;
+
+    & .select__value-container {
+      max-width: none;
     }
   }
 }
