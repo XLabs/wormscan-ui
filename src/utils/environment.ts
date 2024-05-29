@@ -70,7 +70,7 @@ const TESTNET_RPCS: { [key in ChainName]?: string } = {
   optimism_sepolia: "https://sepolia.optimism.io",
   polygon: "https://rpc.ankr.com/polygon_mumbai",
   scroll: "https://rpc.ankr.com/scroll_sepolia_testnet",
-  blast: "http://testnet-rpc.blastblockchain.com",
+  blast: "https://sepolia.blast.io",
   xlayer: "https://xlayertestrpc.okx.com",
 };
 
