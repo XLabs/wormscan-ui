@@ -24,6 +24,7 @@ const Details = ({
   isDuplicated,
   isGatewaySource,
   isUnknownApp,
+  nftInfo,
   originDateParsed,
   parsedDestinationAddress,
   parsedEmitterAddress,
@@ -171,32 +172,74 @@ const Details = ({
             )}
           </div>
         </div>
-        <div className="tx-details-group-line">
-          <div className="tx-details-group-line-key">{isAttestation ? "Token" : "Amount"}</div>
-          <div className="tx-details-group-line-value">
-            {tokenAmount ? (
-              <>
-                {!isAttestation ? amountSent : ""}{" "}
-                {sourceSymbol ? (
+        {nftInfo ? (
+          <>
+            {nftInfo.name && (
+              <div className="tx-details-group-line">
+                <div className="tx-details-group-line-key">Name</div>
+                <div className="tx-details-group-line-value">
+                  <a href={nftInfo.image} target="_blank" rel="noopener noreferrer">
+                    {nftInfo.name}
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {nftInfo.external_url && (
+              <div className="tx-details-group-line">
+                <div className="tx-details-group-line-key">External URL</div>
+                <div className="tx-details-group-line-value">
+                  <a href={nftInfo.external_url} target="_blank" rel="noopener noreferrer">
+                    {nftInfo.external_url}
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {nftInfo.tokenId && (
+              <div className="tx-details-group-line">
+                <div className="tx-details-group-line-key">Token ID</div>
+                <div className="tx-details-group-line-value">{nftInfo.tokenId}</div>
+              </div>
+            )}
+
+            {nftInfo.description && (
+              <div className="tx-details-group-line">
+                <div className="tx-details-group-line-key">Description</div>
+                <div className="tx-details-group-line-value">{nftInfo.description}</div>
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <div className="tx-details-group-line">
+              <div className="tx-details-group-line-key">{isAttestation ? "Token" : "Amount"}</div>
+              <div className="tx-details-group-line-value">
+                {tokenAmount ? (
                   <>
-                    {sourceTokenLink ? (
-                      <a href={sourceTokenLink} target="_blank" rel="noopener noreferrer">
-                        {sourceSymbol}
-                      </a>
+                    {!isAttestation ? amountSent : ""}{" "}
+                    {sourceSymbol ? (
+                      <>
+                        {sourceTokenLink ? (
+                          <a href={sourceTokenLink} target="_blank" rel="noopener noreferrer">
+                            {sourceSymbol}
+                          </a>
+                        ) : (
+                          <span>{sourceSymbol}</span>
+                        )}
+                        {amountSentUSD && `(${amountSentUSD} USD)`}
+                      </>
                     ) : (
-                      <span>{sourceSymbol}</span>
+                      "N/A"
                     )}
-                    {amountSentUSD && `(${amountSentUSD} USD)`}
                   </>
                 ) : (
                   "N/A"
                 )}
-              </>
-            ) : (
-              "N/A"
-            )}
-          </div>
-        </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <div className="tx-details-group">
         <div className="tx-details-group-line">
@@ -340,46 +383,48 @@ const Details = ({
               )}
             </div>
           </div>
-          <div className="tx-details-group-line">
-            <div className="tx-details-group-line-key">
-              {isAttestation ? "Target Token" : "Redeem Amount"}
-            </div>
-            <div className="tx-details-group-line-value">
-              {Number(fee) ? (
-                <>
-                  {!isAttestation ? redeemedAmount : ""}{" "}
-                  {targetSymbol &&
-                    (targetTokenLink ? (
-                      <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
-                        {targetSymbol}
-                      </a>
-                    ) : (
-                      <span>{targetSymbol}</span>
-                    ))}
-                </>
-              ) : tokenAmount ? (
-                <>
-                  {!isAttestation ? amountSent : ""}{" "}
-                  {targetSymbol ? (
-                    <>
-                      {targetTokenLink ? (
+          {!nftInfo && (
+            <div className="tx-details-group-line">
+              <div className="tx-details-group-line-key">
+                {isAttestation ? "Target Token" : "Redeem Amount"}
+              </div>
+              <div className="tx-details-group-line-value">
+                {Number(fee) ? (
+                  <>
+                    {!isAttestation ? redeemedAmount : ""}{" "}
+                    {targetSymbol &&
+                      (targetTokenLink ? (
                         <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
                           {targetSymbol}
                         </a>
                       ) : (
                         <span>{targetSymbol}</span>
-                      )}
-                      {amountSentUSD && `(${amountSentUSD} USD)`}
-                    </>
-                  ) : (
-                    "N/A"
-                  )}
-                </>
-              ) : (
-                "N/A"
-              )}
+                      ))}
+                  </>
+                ) : tokenAmount ? (
+                  <>
+                    {!isAttestation ? amountSent : ""}{" "}
+                    {targetSymbol ? (
+                      <>
+                        {targetTokenLink ? (
+                          <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
+                            {targetSymbol}
+                          </a>
+                        ) : (
+                          <span>{targetSymbol}</span>
+                        )}
+                        {amountSentUSD && `(${amountSentUSD} USD)`}
+                      </>
+                    ) : (
+                      "N/A"
+                    )}
+                  </>
+                ) : (
+                  "N/A"
+                )}
+              </div>
             </div>
-          </div>
+          )}
           {showMetaMaskBtn && (
             <div className="tx-details-group-line">
               <div className="tx-details-group-line-key"></div>
