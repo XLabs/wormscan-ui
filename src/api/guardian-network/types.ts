@@ -150,6 +150,15 @@ export interface GetOperationsInput {
   vaaID?: string;
 }
 
+export interface INFTInfo {
+  description?: string;
+  external_url?: string;
+  image?: string;
+  name?: string;
+  uri?: string;
+  tokenId?: number;
+}
+
 export interface GetOperationsOutput {
   id: string;
   emitterChain: number;
@@ -192,12 +201,16 @@ export interface GetOperationsOutput {
         };
       };
       transceiverMessage?: any;
-      // ---     ---
 
       // --- Attestation ---
       symbol?: string;
       name?: string;
       decimals?: number;
+
+      // --- NFTs ---
+      uri?: string;
+      tokenId?: number;
+      nftInfo?: INFTInfo;
     };
     standarizedProperties: {
       appIds: string[];

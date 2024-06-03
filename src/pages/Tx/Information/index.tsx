@@ -285,6 +285,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
     isGatewaySource,
     isMayanOnly: appIds?.length === 1 && appIds.includes(MAYAN_APP_ID),
     isUnknownApp,
+    nftInfo: payload.nftInfo || null,
     originDateParsed,
     parsedDestinationAddress,
     parsedEmitterAddress,
