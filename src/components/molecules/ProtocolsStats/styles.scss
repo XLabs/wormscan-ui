@@ -3,10 +3,13 @@
 .protocols-stats {
   @include centered-column;
   gap: 24px;
+  justify-content: flex-start;
   margin-bottom: 60px;
+  min-height: 1312px;
 
   @include desktop {
     margin-bottom: 80px;
+    min-height: 396px;
   }
 
   &-title {
@@ -58,9 +61,9 @@
     }
 
     &-element {
-      background-color: #121212;
+      background-color: var(--color-gray-950);
       border-radius: 16px;
-      border: 1px solid #1f1f1f;
+      border: 1px solid var(--color-gray-900);
       display: grid;
       gap: 32px;
       grid-template-columns: 1fr 1fr;
@@ -69,7 +72,7 @@
       @include desktop {
         background-color: transparent;
         border: none;
-        border-bottom: 1px solid #1f1f1f;
+        border-bottom: 1px solid var(--color-gray-900);
         border-radius: 0;
         gap: 16px;
         grid-template-columns: repeat(5, 1fr);
@@ -78,6 +81,10 @@
 
       & > a {
         max-width: max-content;
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
 
       &-item {

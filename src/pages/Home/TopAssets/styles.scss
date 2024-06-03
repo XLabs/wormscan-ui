@@ -42,10 +42,15 @@
 
   &-body {
     display: flex;
-    justify-content: space-between;
-    width: 100%;
     gap: 16px;
+    justify-content: space-between;
+    min-height: 512px;
     position: relative;
+    width: 100%;
+
+    @include desktop {
+      min-height: 600px;
+    }
 
     &-table {
       border-collapse: collapse;

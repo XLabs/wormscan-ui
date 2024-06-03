@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Network } from "@certusone/wormhole-sdk";
 import { BlockchainIcon } from "src/components/atoms";
-import { WormholeBrand } from "src/components/molecules";
+import { WormholeScanBrand } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { ChainId } from "src/api";
 import { CrossChainBy } from "src/api/guardian-network/types";
@@ -85,7 +85,7 @@ export const StickyInfo = ({
         <div className="cross-chain-sticky-destinations" style={{ opacity: isOpen ? 1 : 0 }}>
           <div className="cross-chain-sticky-separator" />
 
-          <WormholeBrand size="regular" />
+          <WormholeScanBrand />
 
           <div className="cross-chain-sticky-subtitle">
             {selectedDestination === "sources" ? "Destinations" : "Sources"}

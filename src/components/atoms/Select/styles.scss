@@ -48,11 +48,15 @@
 
   &__menu {
     margin-top: 12px;
+    min-width: max-content;
+    right: 0;
   }
 
   &__menu-list {
-    border-radius: 24px;
+    @include text-roboto-body-500;
     background-color: var(--color-gray-900);
+    border-radius: 24px;
+    min-width: max-content;
     overflow: overlay;
     white-space: nowrap;
 
@@ -73,7 +77,7 @@
         color: var(--color-white-50);
         padding: 8px 16px;
         width: 100%;
-        z-index: 999;
+        z-index: 50;
 
         &:focus {
           outline: transparent;
@@ -129,7 +133,7 @@
   }
 }
 
-.custom-option {
+.select-custom-option {
   @include centered-row;
   gap: 8px;
   justify-content: space-between;
@@ -141,6 +145,8 @@
 }
 
 .select-searchable {
+  position: relative;
+
   &-dropdown {
     @include button-secondary;
 
@@ -157,7 +163,12 @@
     margin-top: 16px;
     padding: 16px 16px 24px 16px;
     position: absolute;
-    z-index: 999;
+    z-index: 50;
+    width: 100%;
+
+    @include desktop {
+      width: max-content;
+    }
 
     & .select__value-container {
       max-width: none;

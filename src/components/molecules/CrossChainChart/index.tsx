@@ -11,14 +11,15 @@ import { Chart } from "./Chart";
 import { ChainId } from "src/api";
 import { SwapSmallVerticalIcon, GlobeIcon, ChevronDownIcon } from "src/icons/generic";
 import "./styles.scss";
+import { useWindowSize } from "src/utils/hooks/useWindowSize";
 
 interface ICsvRow {
-  "Destination Chain": number;
-  "Destination Percentage": number;
-  "Destination Volume": string;
-  "Main Chain": number;
-  "Main Percentage": number;
-  "Main Volume": string;
+  "Target Chain": number;
+  "Target Percentage": number;
+  "Target Volume": string;
+  "Source Chain": number;
+  "Source Percentage": number;
+  "Source Volume": string;
 }
 
 const MAINNET_TYPE_LIST = [
@@ -38,6 +39,20 @@ const RANGE_LIST = [
   { label: "All Time", value: "all-time" },
 ];
 
+const DOWNLOADABLE_LIST = [
+  { label: "Download CSV", value: "csv" },
+  { label: "Download PNG", value: "png" },
+];
+
+const TABLE_HEADERS = [
+  "Source Chain",
+  "Source Volume",
+  "Source Percentage",
+  "Target Chain",
+  "Target Volume",
+  "Target Percentage",
+];
+
 const CrossChainChart = () => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
@@ -51,6 +66,9 @@ const CrossChainChart = () => {
   );
   const isSources = selectedDestination === "sources";
   const prevChain = useRef<ChainId>(null);
+
+  const { width } = useWindowSize();
+  const isDesktop = width >= 1024;
 
   useEffect(() => {
     if (currentNetwork === "MAINNET") {
@@ -71,48 +89,105 @@ const CrossChainChart = () => {
     { cacheTime: 0 },
   );
 
-  const handleDownload = () => {
+  const handleDownloadAs = (downloadAs: "csv" | "png") => {
+    if (!data) return;
+
     const csvData: any = [];
     data.forEach(item => {
       item.destinations.sort((a, b) => b.percentage - a.percentage);
       item.destinations.forEach(dest => {
         csvData.push({
-          "Main Chain": item.chain,
-          "Main Volume": item.volume,
-          "Main Percentage": item.percentage,
-          "Destination Chain": dest.chain,
-          "Destination Volume": dest.volume,
-          "Destination Percentage": dest.percentage,
+          "Source Chain": item.chain,
+          "Source Volume": item.volume,
+          "Source Percentage": item.percentage,
+          "Target Chain": dest.chain,
+          "Target Volume": dest.volume,
+          "Target Percentage": dest.percentage,
         });
       });
     });
 
-    csvData.sort((a: ICsvRow, b: ICsvRow) => b["Main Percentage"] - a["Main Percentage"]);
+    csvData.sort((a: ICsvRow, b: ICsvRow) => b["Source Percentage"] - a["Source Percentage"]);
 
-    const headers = [
-      "Main Chain",
-      "Main Volume",
-      "Main Percentage",
-      "Destination Chain",
-      "Destination Volume",
-      "Destination Percentage",
-    ];
+    if (downloadAs === "csv") {
+      const rows = csvData.map(
+        (row: ICsvRow) =>
+          `${row["Source Chain"]},${row["Source Volume"]},${row["Source Percentage"]},${row["Target Chain"]},${row["Target Volume"]},${row["Target Percentage"]}`,
+      );
 
-    const rows = csvData.map(
-      (row: ICsvRow) =>
-        `${row["Main Chain"]},${row["Main Volume"]},${row["Main Percentage"]},${row["Destination Chain"]},${row["Destination Volume"]},${row["Destination Percentage"]}`,
-    );
+      const csvContent = [TABLE_HEADERS.join(","), ...rows].join("\n");
+      createDownloadLink(
+        csvContent,
+        "text/csv",
+        `Cross-chain activity - ${selectedTimeRange.label}.csv`,
+      );
+    } else if (downloadAs === "png") {
+      const rows = csvData.map((row: ICsvRow) => [
+        row["Source Chain"],
+        row["Source Volume"],
+        row["Source Percentage"],
+        row["Target Chain"],
+        row["Target Volume"],
+        row["Target Percentage"],
+      ]);
 
-    const csvContent = [headers.join(","), ...rows].join("\n");
+      const tableData = [TABLE_HEADERS, ...rows];
 
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "Cross-chain activity.csv";
-    link.click();
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
 
-    URL.revokeObjectURL(url);
+      const cellPadding = isDesktop ? 8 : 6;
+      const cellHeight = isDesktop ? 32 : 20;
+      const fontSize = isDesktop ? 16 : 12;
+      const font = `${fontSize}px Roboto, sans-serif`;
+      context.font = font;
+
+      const columnWidths = TABLE_HEADERS.map((header, i) => {
+        return (
+          Math.max(
+            context.measureText(header).width,
+            ...rows.map((row: Array<string | number>) => context.measureText(`${row[i]}`).width),
+          ) +
+          cellPadding * 2
+        );
+      });
+
+      const tableWidth = columnWidths.reduce((a, b) => a + b, 0);
+      const tableHeight = tableData.length * cellHeight;
+
+      canvas.width = tableWidth;
+      canvas.height = tableHeight;
+
+      context.fillStyle = "white";
+      context.fillRect(0, 0, tableWidth, tableHeight);
+      context.strokeStyle = "black";
+      context.lineWidth = 1;
+      context.font = font;
+
+      tableData.forEach((row, rowIndex) => {
+        row.forEach((cell: number | string, colIndex: number) => {
+          const x = columnWidths.slice(0, colIndex).reduce((a, b) => a + b, 0);
+          const y = rowIndex * cellHeight;
+
+          context.strokeRect(x, y, columnWidths[colIndex], cellHeight);
+
+          context.fillStyle = "black";
+          context.fillText(`${cell}`, x + cellPadding, y + cellHeight / 2 + fontSize / 2 - 2);
+        });
+      });
+
+      canvas.toBlob(blob => {
+        try {
+          createDownloadLink(
+            blob,
+            "image/png",
+            `Cross-chain activity - ${selectedTimeRange.label}.png`,
+          );
+        } catch (error) {
+          console.log("Error creating blob", error);
+        }
+      }, "image/png");
+    }
   };
 
   return (
@@ -123,10 +198,15 @@ const CrossChainChart = () => {
           {t("home.crossChain.title")}
         </div>
 
-        <button className="cross-chain-top-download" onClick={handleDownload}>
-          {t("home.crossChain.download")}
-          <ChevronDownIcon width={24} />
-        </button>
+        <Select
+          ariaLabel="Select Download Format"
+          className="cross-chain-top-download"
+          items={DOWNLOADABLE_LIST}
+          name="downloadAs"
+          onValueChange={({ value }) => handleDownloadAs(value)}
+          placeholder="Download"
+          value={{ label: "Download", value: "" }}
+        />
       </div>
 
       <div className="cross-chain-options">
@@ -190,6 +270,16 @@ const CrossChainChart = () => {
       </div>
     </div>
   );
+};
+
+const createDownloadLink = (content: BlobPart, type: string, filename: string) => {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
 };
 
 export default CrossChainChart;

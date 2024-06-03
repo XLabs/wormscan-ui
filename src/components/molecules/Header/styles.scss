@@ -1,8 +1,6 @@
 @import "src/styles/globals.scss";
 
 .header {
-  z-index: 9999;
-
   @include desktop {
     height: 204px;
   }
@@ -15,7 +13,6 @@
     margin-bottom: 40px;
     margin-top: 32px;
     width: 100%;
-    z-index: 9999;
 
     @include desktop {
       gap: 12px;
@@ -31,7 +28,7 @@
       position: fixed;
       right: 0;
       transition: transform 0.3s ease-in-out;
-      z-index: 9999;
+      z-index: 88;
 
       @include desktop {
         display: none;
@@ -50,14 +47,42 @@
         opacity: 0.5;
         text-decoration: none;
       }
+
+      &-other-menu {
+        @include centered-column;
+        background-color: var(--color-gray-900);
+        border-radius: 12px;
+        bottom: 88px;
+        gap: 8px;
+        margin-left: auto;
+        padding: 16px;
+        position: absolute;
+        right: 12px;
+        transform: translateX(120%);
+        transition: transform 0.3s ease-in-out;
+
+        &.open {
+          transform: translateX(0);
+        }
+
+        & > a {
+          @include text-heading6;
+          align-items: center;
+          color: var(--color-white-80);
+          opacity: 0.5;
+          padding: 4px 0;
+          text-decoration: none;
+          text-transform: uppercase;
+        }
+      }
     }
 
     &-logo {
       grid-column: 1;
       max-width: max-content;
 
-      & .wormhole-brand-secondary {
-        display: none;
+      & img {
+        width: 250px;
       }
     }
 
@@ -137,7 +162,6 @@
         margin-top: 16px;
         padding: 12px 8px;
         position: absolute;
-        z-index: 3;
       }
 
       button {
@@ -163,19 +187,11 @@
     right: 72px;
     top: 0;
     width: auto;
-    z-index: 9999;
+    z-index: 99;
     padding: 0 16px;
 
     & > .header-container-logo {
       grid-column: 1;
-
-      & .wormhole-brand-primary {
-        display: none;
-      }
-
-      & .wormhole-brand-secondary {
-        display: block;
-      }
     }
 
     & > .search-bar {
@@ -194,7 +210,7 @@
 
 .search-bar {
   @include centered-row;
-  background-color: #121212;
+  background-color: var(--color-gray-950);
   border-radius: 20px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05), 0px 20px 60px rgba(0, 0, 0, 0.25);
   height: 68px;
@@ -222,7 +238,6 @@
       height: inherit;
       padding-left: 48px;
       width: 100%;
-      z-index: 1;
 
       &::placeholder {
         color: var(--color-white);

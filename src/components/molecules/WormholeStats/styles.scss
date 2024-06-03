@@ -1,10 +1,13 @@
 @import "src/styles/globals.scss";
 
 .wormhole-stats {
+  @include centered-column;
   margin-bottom: 40px;
+  min-height: 247px;
 
   @include desktop {
     margin-bottom: 60px;
+    min-height: 89px;
   }
 
   &-loader {
@@ -22,7 +25,7 @@
     display: grid;
     gap: 36px;
     grid-template-columns: repeat(2, 1fr);
-    padding-bottom: 40px;
+    padding-bottom: 24px;
     position: relative;
 
     @include desktop {
@@ -41,8 +44,19 @@
       }
 
       &:nth-last-child(2) {
-        grid-column: span 2;
-        grid-row: 1 / 1;
+        margin-top: 12px;
+
+        @include desktop {
+          margin-top: 0;
+        }
+
+        & .wormhole-stats-container-item-title {
+          display: none;
+
+          @include desktop {
+            display: block;
+          }
+        }
       }
 
       &-title {
@@ -86,7 +100,7 @@
     }
 
     &-line {
-      background-color: #1f1f1f;
+      background-color: var(--color-gray-900);
       bottom: 0;
       height: 1px;
       left: -120px;

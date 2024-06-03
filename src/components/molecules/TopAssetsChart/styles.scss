@@ -7,9 +7,7 @@
   box-shadow: none !important;
 }
 
-.apexcharts-xcrosshairs {
-  fill: var(--color-white-05) !important;
-}
+
 
 .chart-container {
   background-color: var(--color-gray-950);
@@ -34,6 +32,10 @@
     flex: 1.2;
   }
 
+  & .apexcharts-xcrosshairs {
+    fill: var(--color-white-05) !important;
+  }
+
   & > div:last-child {
     max-width: calc(100vw - 44px);
     min-height: 390px !important;
@@ -47,7 +49,7 @@
     }
   }
 
-  .wormhole-brand-primary {
+  .wormholescan-brand {
     bottom: 0;
     height: 34px;
     left: 0;

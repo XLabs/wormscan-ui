@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
 import SelectPrimitive, { components } from "react-select";
 import { Checkbox } from "src/components/atoms";
-import useOutsideClick from "src/utils/hooks/useOutsideClick";
 import { OverviewIcon, ChevronDownIcon, TriangleDownIcon } from "src/icons/generic";
+import useOutsideClick from "src/utils/hooks/useOutsideClick";
 import "./styles.scss";
 
 interface Props {
@@ -14,6 +14,7 @@ interface Props {
     value: string;
     icon?: JSX.Element;
   }[];
+  menuPlacement?: "auto" | "bottom" | "top";
   name: string;
   noOptionsMessage?: string;
   onValueChange: (value: any) => void;
@@ -28,6 +29,7 @@ const Select = ({
   className = "",
   isClearable = false,
   items,
+  menuPlacement = "auto",
   name,
   noOptionsMessage = "No Options",
   onValueChange,
@@ -53,89 +55,93 @@ const Select = ({
           onClick={() => setIsOpen(prev => !prev)}
         >
           {text}
-          <ChevronDownIcon width={24} />{" "}
+          <ChevronDownIcon width={24} />
         </button>
 
-        {isOpen && (
+        {isOpen ? (
           <div className="select-searchable-menu">
-            <SelectPrimitive
-              aria-label={ariaLabel}
-              autoFocus
-              backspaceRemovesValue={false}
-              className={`select ${className}`}
-              classNamePrefix="select"
-              components={{
-                IndicatorSeparator: () => null,
-                DropdownIndicator: props => <></>,
-                Option: ({ children, ...props }: any) => (
-                  <components.Option {...props}>
-                    <div className="custom-option">
-                      <div className="custom-option-container">
-                        {props.data.icon}
-                        {children}
+            {
+              <SelectPrimitive
+                aria-label={ariaLabel}
+                backspaceRemovesValue={false}
+                className={`select ${className}`}
+                classNamePrefix="select"
+                components={{
+                  IndicatorSeparator: null,
+                  DropdownIndicator: null,
+                  Option: ({ children, ...props }: any) => (
+                    <components.Option {...props}>
+                      <div className="select-custom-option">
+                        <div className="select-custom-option-container">
+                          {props.data.icon}
+                          {children}
+                        </div>
+                        <Checkbox checked={props.isSelected} />
                       </div>
-                      <Checkbox checked={props.isSelected} />
-                    </div>
-                  </components.Option>
-                ),
-              }}
-              controlShouldRenderValue={false}
-              hideSelectedOptions={false}
-              isClearable={isClearable}
-              isMulti
-              isSearchable={true}
-              menuIsOpen
-              menuPortalTarget={document.body}
-              name={name}
-              noOptionsMessage={() => noOptionsMessage}
-              onChange={onValueChange}
-              options={items}
-              placeholder="Search..."
-              styles={{
-                menuPortal: base => ({
-                  ...base,
-                  zIndex: 1000,
-                }),
-                menu: base => ({
-                  ...base,
-                  marginTop: 16,
-                  width: "calc(100% + 32px)",
-                  left: -16,
-                  borderRadius: 0,
-                }),
-                control: base => ({
-                  cursor: "text !important",
-                  minWidth: 216,
-                }),
-                menuList: base => ({
-                  ...base,
-                  borderRadius: "0 0 24px 24px",
-                }),
-                option: base => ({
-                  ...base,
-                  padding: "16px",
-                  position: "relative",
-                  backgroundColor: "transparent",
-                  "&:hover": {
-                    backgroundColor: "var(--color-white-05)",
-                  },
-                  "&:not(:last-child)::before": {
-                    backgroundColor: "var(--color-gray-800)",
-                    bottom: 0,
-                    content: '""',
-                    height: 1,
-                    position: "absolute",
-                    left: 16,
-                    right: 16,
-                  },
-                }),
-              }}
-              tabSelectsValue={false}
-              unstyled
-              value={value}
-            />
+                    </components.Option>
+                  ),
+                }}
+                controlShouldRenderValue={false}
+                hideSelectedOptions={false}
+                isClearable={isClearable}
+                isMulti
+                defaultMenuIsOpen={false}
+                isSearchable
+                menuIsOpen
+                menuPortalTarget={document.body}
+                name={name}
+                noOptionsMessage={() => noOptionsMessage}
+                onChange={onValueChange}
+                options={items}
+                placeholder="Search..."
+                styles={{
+                  menuPortal: base => ({
+                    ...base,
+                    zIndex: 99,
+                  }),
+                  menu: base => ({
+                    ...base,
+                    marginTop: 16,
+                    width: "calc(100% + 32px)",
+                    left: -16,
+                    borderRadius: 0,
+                    zIndex: 99,
+                  }),
+                  control: base => ({
+                    cursor: "text !important",
+                    minWidth: 216,
+                  }),
+                  menuList: base => ({
+                    ...base,
+                    borderRadius: "0 0 24px 24px",
+                  }),
+                  option: base => ({
+                    ...base,
+                    padding: "16px",
+                    position: "relative",
+                    backgroundColor: "transparent",
+                    "&:hover": {
+                      backgroundColor: "var(--color-white-05)",
+                    },
+                    "&:not(:last-child)::before": {
+                      backgroundColor: "var(--color-gray-800)",
+                      bottom: 0,
+                      content: '""',
+                      height: 1,
+                      position: "absolute",
+                      left: 16,
+                      right: 16,
+                    },
+                  }),
+                }}
+                tabSelectsValue={false}
+                unstyled
+                value={value}
+                autoFocus
+              />
+            }
           </div>
-        )}
+        ) : null}
       </div>
     );
   }
@@ -170,6 +176,7 @@ const Select = ({
       }}
       isClearable={isClearable}
       isSearchable={false}
+      menuPlacement={menuPlacement}
       menuPortalTarget={document.body}
       name={name}
       noOptionsMessage={() => noOptionsMessage}

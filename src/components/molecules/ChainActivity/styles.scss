@@ -2,7 +2,6 @@
 
 .chain-activity {
   margin-bottom: 60px;
-  z-index: 9;
 
   @include desktop {
     margin-bottom: 80px;
@@ -32,13 +31,23 @@
   }
 
   &-chart {
-    background-color: #121212;
+    background-color: var(--color-gray-950);
     border-radius: 16px;
     min-height: 360px;
     padding: 16px;
+    position: relative;
 
     @include desktop {
       padding: 24px;
+      min-height: 500px;
+    }
+
+    & .loader {
+      margin-top: 64px;
+
+      @include desktop {
+        margin-top: 128px;
+      }
     }
 
     &-tooltip {
@@ -97,13 +106,13 @@
       gap: 16px;
       position: relative;
       width: 100%;
-      z-index: 1;
 
       &-mobile {
         @include centered-column;
         background-color: var(--color-gray-950);
         border-radius: 40px 40px 0 0;
         border: 1px solid var(--color-gray-900);
+        border-bottom: none;
         display: flex;
         gap: 16px;
         inset: 120vh 0 0 0;
@@ -112,7 +121,7 @@
         position: fixed;
         transition: inset 0.3s ease;
         width: 100%;
-        z-index: 9999;
+        z-index: 99;
 
         @include desktop {
           @include centered-row;
@@ -121,10 +130,11 @@
           inset: unset;
           padding: 0;
           position: relative;
+          z-index: unset;
         }
 
         &.open {
-          inset: 128px 0 0 0;
+          inset: max(16px, calc(100% - 708px)) 0 0 0;
 
           @include desktop {
             inset: unset;
@@ -169,11 +179,35 @@
             width: 24px;
           }
         }
+
+        &-buttons {
+          @include centered-column;
+          gap: 8px;
+          margin-top: auto;
+
+          @include desktop {
+            display: none;
+          }
+
+          & > .apply-btn {
+            @include button-primary;
+            justify-content: center;
+            width: 100%;
+          }
+
+          & > .reset-btn {
+            @include button-ghost;
+            justify-content: center;
+            padding: 8px;
+            width: 100%;
+          }
+        }
       }
 
       &-filters {
         & > button {
           @include button-secondary;
+          z-index: 0;
 
           & > svg {
             color: var(--color-white-60);
@@ -194,6 +228,10 @@
           justify-content: flex-end;
           position: absolute;
           width: 100%;
+
+          &.hidden {
+            display: none;
+          }
 
           &-container {
             @include centered-row;
@@ -229,7 +267,7 @@
           min-width: max-content;
           position: fixed;
           transition: inset 0.3s ease;
-          z-index: 99;
+          z-index: 55;
           display: none;
           margin-top: 12px;
           width: 90%;
@@ -378,15 +416,16 @@
           &-date {
             &-selector {
               @include centered-column;
+              border-bottom: 1px solid var(--color-gray-800);
               gap: 73px;
               justify-content: flex-end;
-              padding: 16px;
+              padding: 8px;
               width: 100%;
 
               @include desktop {
+                border-bottom: none;
                 border-right: 1px solid var(--color-gray-800);
                 justify-content: flex-start;
-                padding: 8px;
                 width: 156px;
               }
 
@@ -427,54 +466,20 @@
                     color: var(--color-white);
                   }
                 }
-
-                & > .done-btn {
-                  @include button-secondary;
-                  color: var(--color-primary-100);
-                  width: 100%;
-
-                  @include desktop {
-                    padding: 8px 24px;
-                    width: auto;
-                  }
-
-                  &:disabled {
-                    cursor: not-allowed;
-                    opacity: 0.3;
-                  }
-                }
-
-                & > .close-btn {
-                  @include button-secondary;
-                  background-color: var(--color-black-25);
-                  border: 2px solid var(--color-white-10);
-                  color: var(--color-primary-100);
-                  width: 100%;
-
-                  &:hover {
-                    background-color: var(--color-white-10);
-                  }
-
-                  &:active {
-                    border-color: var(--color-primary-200);
-                  }
-
-                  @include desktop {
-                    display: none;
-                  }
-                }
               }
             }
 
             &-calendar {
               margin: 0 auto auto auto;
+              min-height: 369px;
               overflow-y: auto;
-              padding: 16px;
+              padding: 16px 16px 72px 16px;
               width: 100%;
 
               @include desktop {
-                width: max-content;
                 margin: 0;
+                min-height: unset;
+                width: max-content;
               }
 
               & .react-datepicker {
@@ -499,7 +504,11 @@
 
                   & > span::before {
                     border-color: var(--color-white);
-                    top: 4px;
+                    top: 0;
+
+                    @include desktop {
+                      top: 4px;
+                    }
                   }
                 }
 
@@ -507,7 +516,11 @@
                   background-color: transparent;
                   border-radius: 0;
                   border: none;
-                  padding: 8px 0 0 0;
+                  padding: 0;
+
+                  @include desktop {
+                    padding: 8px 0 0 0;
+                  }
 
                   & .react-datepicker__current-month {
                     @include text-roboto-body-500;
@@ -515,7 +528,11 @@
                   }
 
                   & .react-datepicker__day-names {
-                    padding: 16px 0 8px 0;
+                    padding: 0;
+
+                    @include desktop {
+                      padding: 16px 0 8px 0;
+                    }
 
                     & .react-datepicker__day-name {
                       @include text-heading6;
@@ -612,15 +629,47 @@
                     }
 
                     &--disabled {
-                      color: #262f4b52;
+                      color: var(--color-white);
+                      opacity: 0.3;
                       text-decoration: line-through;
 
                       &:hover {
                         background-color: transparent;
-                        color: #262f4b52;
+                        color: var(--color-white);
                         cursor: not-allowed;
                         font-weight: 400;
                       }
+                    }
+                  }
+                }
+
+                & .react-datepicker__month-read-view {
+                  & .react-datepicker__month-read-view--selected-month {
+                    padding: 0 16px;
+                    visibility: hidden;
+                  }
+
+                  & .react-datepicker__month-read-view--down-arrow {
+                    border-color: var(--color-gray-600);
+                    left: 0;
+                    margin: 0 auto;
+                    right: 0;
+                  }
+                }
+
+                & .react-datepicker__month-dropdown {
+                  background-color: var(--color-gray-800);
+                  border-radius: 16px;
+                  border: none;
+                  padding: 8px;
+                  z-index: 88;
+
+                  & .react-datepicker__month-option {
+                    @include text-roboto-body-400;
+                    color: var(--color-white);
+
+                    &:hover {
+                      background-color: var(--color-white-05);
                     }
                   }
                 }
@@ -641,6 +690,30 @@
                   }
                 }
               }
+
+              &-btns {
+                @include centered-row;
+                bottom: 16px;
+                gap: 20px;
+                position: absolute;
+                right: 16px;
+
+                & > .done-btn {
+                  @include button-primary;
+                  color: var(--color-black);
+                  width: 100%;
+
+                  @include desktop {
+                    padding: 8px 24px;
+                    width: auto;
+                  }
+
+                  &:disabled {
+                    cursor: not-allowed;
+                    opacity: 0.3;
+                  }
+                }
+              }
             }
           }
         }
@@ -648,13 +721,30 @@
     }
   }
 
-  & .apexcharts-legend {
-    display: inline;
-    white-space: nowrap;
-    width: calc(100% - 200px);
+  & .apexcharts {
+    &-legend {
+      display: inline;
+      white-space: nowrap;
+      width: calc(100% - 200px);
 
-    & .apexcharts-legend-text {
-      vertical-align: 1px;
+      &-text {
+        vertical-align: 1px;
+      }
+    }
+
+    &-xcrosshairs {
+      &.apexcharts-active {
+        stroke: var(--color-gray-600);
+        stroke-linecap: unset;
+        fill-opacity: 1;
+        stroke-dasharray: none;
+        z-index: 9999999;
+      }
+    }
+
+    &-xaxis-label,
+    &-yaxis-label {
+      text-transform: uppercase;
     }
   }
 }

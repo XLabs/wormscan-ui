@@ -52,8 +52,7 @@
   border: none;
   color: var(--color-white);
   cursor: pointer;
-  text-decoration-color: var(--color-gray-600);
-  text-decoration: underline;
+  text-decoration: underline 1px var(--color-gray-600);
 
   &:hover {
     text-decoration-color: var(--color-gray-400);

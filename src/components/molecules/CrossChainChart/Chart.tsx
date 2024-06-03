@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Network } from "@certusone/wormhole-sdk";
 import { BREAKPOINTS } from "src/consts";
 import { BlockchainIcon, Pagination } from "src/components/atoms";
-import { WormholeBrand } from "src/components/molecules";
+import { WormholeScanBrand } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getChainName } from "src/utils/wormhole";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
@@ -169,8 +169,8 @@ export const Chart = ({
           // painting graph
           const grad = ctx.createLinearGradient(0, 0, CHART_SIZE, 0);
 
-          grad.addColorStop(0, isDesktop ? "#7abfff" : "#1A0D09");
-          grad.addColorStop(1, isDesktop ? "#121212" : "#1A0D09");
+          grad.addColorStop(0, isDesktop ? "#7abfff" : "#0D141A");
+          grad.addColorStop(1, isDesktop ? "#121212" : "#0D141A");
 
           ctx.strokeStyle = grad;
           ctx.fillStyle = grad;
@@ -225,8 +225,8 @@ export const Chart = ({
           // painting graph
           const grad = ctx.createLinearGradient(0, 0, CHART_SIZE, 0);
 
-          grad.addColorStop(0, isDesktop ? "#121212" : "#1A0D09");
-          grad.addColorStop(1, isDesktop ? "#7abfff" : "#1A0D09");
+          grad.addColorStop(0, isDesktop ? "#121212" : "#0D141A");
+          grad.addColorStop(1, isDesktop ? "#7abfff" : "#0D141A");
 
           ctx.strokeStyle = grad;
           ctx.fillStyle = grad;
@@ -419,7 +419,7 @@ export const Chart = ({
         <div>{t("home.crossChain.destination").toUpperCase()}</div>
       </div>
       <div className="cross-chain-chart">
-        <WormholeBrand />
+        {/* <WormholeScanBrand /> */}
 
         <div className="cross-chain-chart-side" data-network={currentNetwork} ref={originChainsRef}>
           {isSourcesSelected
@@ -444,10 +444,11 @@ export const Chart = ({
         </div>
       </div>
 
-      <div className="cross-chain-relative-pagination">
+      <div
+        className={`cross-chain-relative-pagination ${isSourcesSelected ? "" : "targetSelected"}`}
+      >
         <Pagination
           currentPage={isShowingOthers ? 2 : 1}
-          style={{ justifyContent: isSourcesSelected ? "flex-start" : "flex-end" }}
           visiblePages={2}
           goNextPage={() => {
             setIsShowingOthers(true);

@@ -12,15 +12,7 @@
   &-item {
     @include button-secondary;
     background-color: transparent;
-
-    &:hover {
-    }
-
-    &:active {
-    }
-
-    &.grouped {
-    }
+    color: var(--color-gray-400);
 
     &[data-state="on"] {
       @include button-secondary;

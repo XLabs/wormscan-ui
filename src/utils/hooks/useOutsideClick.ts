@@ -13,11 +13,9 @@ const useOutsideClick = (ref: RefObject<HTMLElement>, callback: CallbackType): v
   );
 
   useEffect(() => {
-    document.addEventListener("touchstart", handleClick, { passive: false });
     document.addEventListener("mousedown", handleClick, { passive: false });
 
     return () => {
-      document.removeEventListener("touchstart", handleClick);
       document.removeEventListener("mousedown", handleClick);
     };
   }, [handleClick]);

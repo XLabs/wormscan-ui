@@ -29,7 +29,7 @@
     }
 
     &-download {
-      @include button-secondary;
+      max-width: max-content;
     }
   }
 
@@ -58,10 +58,12 @@
 
   &-relative {
     position: relative;
+    min-height: 734px;
 
     @include desktop {
       background-color: var(--color-gray-950);
       border-radius: 0 0 16px 16px;
+      min-height: 782px;
     }
 
     &-pagination {
@@ -72,6 +74,10 @@
 
       @include desktop {
         padding: 24px;
+      }
+
+      &.targetSelected {
+        flex-direction: row-reverse;
       }
 
       & > .pagination {
@@ -174,7 +180,7 @@
     width: 100%;
     position: relative;
 
-    & .wormhole-brand-primary {
+    & .wormholescan-brand {
       bottom: 0;
       height: 34px;
       left: 0;
@@ -588,7 +594,7 @@
     &-destinations {
       transition: all 0.4s ease-out;
 
-      & .wormhole-brand-primary {
+      & .wormholescan-brand {
         height: 34px;
         margin: auto;
         opacity: 0.2;

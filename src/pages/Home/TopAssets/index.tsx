@@ -125,7 +125,7 @@ const TopAssets = () => {
           </div>
 
           <div className="top-assets-body">
-            {isLoading || isFetching ? (
+            {isLoading || isFetching /* || true */ ? (
               <Loader />
             ) : isError ? (
               <ErrorPlaceholder />

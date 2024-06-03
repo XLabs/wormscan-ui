@@ -8,10 +8,11 @@ import TwitterIcon from "src/icons/TwitterIcon";
 import { TWITTER_URL, DISCORD_URL, WORMHOLE_DOCS_URL, XLABS_CAREERS_URL } from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { NavLink, Select, Tag } from "src/components/atoms";
-import { WormholeBrand } from "src/components/molecules";
+import { WormholeScanBrand } from "src/components/molecules";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Search from "./Search";
 import { AnalyticsIcon, HomeIcon, SearchIcon, MenuIcon, SwapVerticalIcon } from "src/icons/generic";
+import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import "./styles.scss";
 
 type NetworkSelectProps = { label: string; value: Network };
@@ -22,12 +23,14 @@ const NETWORK_LIST: NetworkSelectProps[] = [
 ];
 
 const Header = () => {
-  const [expandMobileMenu, setExpandMobileMenu] = useState<boolean>(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [showDesktopFixedNav, setShowDesktopFixedNav] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
-  const [isVisible, setIsVisible] = useState(true);
+  const [showMobileNav, setShowMobileNav] = useState(true);
+  const [showMobileOtherMenu, setShowMobileOtherMenu] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const headerRef = useRef(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { width } = useWindowSize();
   const { environment, setEnvironment } = useEnvironment();
   const { pathname, search } = useLocation();
   const { t } = useTranslation();
@@ -42,9 +45,9 @@ const Header = () => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) {
-          setIsScrolled(true);
+          setShowDesktopFixedNav(true);
         } else {
-          setIsScrolled(false);
+          setShowDesktopFixedNav(false);
         }
       },
       {
@@ -66,30 +69,27 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      setIsVisible(lastScrollTop > currentScrollTop || currentScrollTop < 50);
-      setLastScrollTop(currentScrollTop <= 0 ? 0 : currentScrollTop);
-    };
+    if (width) {
+      const handleScroll = () => {
+        const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        setShowMobileNav(lastScrollTop > currentScrollTop || currentScrollTop < 50);
+        setLastScrollTop(currentScrollTop <= 0 ? 0 : currentScrollTop);
+      };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollTop]);
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
+  }, [lastScrollTop, width]);
 
-  const showMobileMenu = () => {
-    setExpandMobileMenu(true);
-    document.body.style.overflow = "hidden";
-  };
-
-  const hideMobileMenu = () => {
-    setExpandMobileMenu(false);
-    document.body.style.overflow = "unset";
-  };
+  useEffect(() => {
+    if (!showMobileNav) {
+      setShowMobileOtherMenu(false);
+    }
+  }, [showMobileNav]);
 
   const onClickChangeNetwork = (network: Network) => {
     if (network === currentNetwork) return;
     setEnvironment(network);
-    hideMobileMenu();
 
     // if watching a transaction, go to transactions list
     if (pathname.includes("/tx/")) {
@@ -104,8 +104,6 @@ const Header = () => {
     }
   };
 
-  const [isActive, setIsActive] = useState(false);
-
   const handleFocus = () => {
     setIsActive(true);
   };
@@ -116,27 +114,26 @@ const Header = () => {
 
   return (
     <header className="header" data-testid="header" ref={headerRef}>
-      <div className={`header-container ${isScrolled ? "header-container-fixed" : ""}`}>
+      <div className={`header-container ${showDesktopFixedNav ? "header-container-fixed" : ""}`}>
         <div className="header-container-logo">
-          <NavLink to="/" data-testid="header-logo-link" onClick={hideMobileMenu}>
-            <WormholeBrand />
-            <WormholeBrand type="secondary" />
+          <NavLink to="/" data-testid="header-logo-link">
+            <WormholeScanBrand />
           </NavLink>
         </div>
 
         <Search ref={inputRef} onFocus={handleFocus} onBlur={handleBlur} />
 
         <nav className="header-container-links">
-          <NavLink to="/" onClick={hideMobileMenu} aria-label="Home">
+          <NavLink to="/" aria-label="Home">
             <HomeIcon width={24} />
           </NavLink>
 
-          <NavLink to="/txs" onClick={hideMobileMenu} aria-label={t("home.header.txs")}>
+          <NavLink to="/txs" aria-label={t("home.header.txs")}>
             {t("home.header.txs")}
           </NavLink>
 
           {isMainnet && (
-            <NavLink to="/governor" onClick={hideMobileMenu} aria-label="Governor">
+            <NavLink to="/governor" aria-label="Governor">
               Governor
             </NavLink>
           )}
@@ -149,7 +146,7 @@ const Header = () => {
                 </NavigationMenu.Trigger>
 
                 <NavigationMenu.Content className="dropdown-menu-content">
-                  <NavLink to="/vaa-parser" onClick={hideMobileMenu} aria-label="VAA Parser">
+                  <NavLink to="/vaa-parser" aria-label="VAA Parser">
                     VAA Parser
                   </NavLink>
 
@@ -176,10 +173,10 @@ const Header = () => {
           </NavigationMenu.Root>
 
           <Select
-            ariaLabel={"Select Network"}
-            className="header-network-select"
+            ariaLabel="Select Network"
+            className="header-select-network"
             items={NETWORK_LIST}
-            name={"networkSelect"}
+            name="networkSelect"
             onValueChange={(env: NetworkSelectProps) => onClickChangeNetwork(env.value)}
             type="secondary"
             value={NETWORK_LIST.find(a => a.value === currentNetwork)}
@@ -187,8 +184,8 @@ const Header = () => {
         </nav>
       </div>
 
-      <div className={`header-container-mobile ${isVisible ? "" : "hidden"}`}>
-        <NavLink to="/" onClick={hideMobileMenu} aria-label="Home">
+      <div className={`header-container-mobile ${showMobileNav ? "" : "hidden"}`}>
+        <NavLink to="/" aria-label="Home">
           <HomeIcon width={24} />
           HOME
         </NavLink>
@@ -201,20 +198,57 @@ const Header = () => {
           SEARCH
         </div>
 
-        <NavLink to="/txs" onClick={hideMobileMenu} aria-label="Swap">
+        <NavLink to="/txs" aria-label="Swap">
           <SwapVerticalIcon width={24} />
           TXS
         </NavLink>
 
-        <NavLink to="/analytics" onClick={hideMobileMenu} aria-label="Analytics">
+        <NavLink to="/analytics" aria-label="Analytics">
           <AnalyticsIcon width={24} />
           STATS
         </NavLink>
 
-        <NavLink to="/" onClick={hideMobileMenu} aria-label="">
+        <div
+          className={`navlink ${showMobileOtherMenu ? "active" : ""}`}
+          onClick={() => setShowMobileOtherMenu(!showMobileOtherMenu)}
+        >
           <MenuIcon width={24} />
           OTHER
-        </NavLink>
+        </div>
+
+        <div
+          className={`header-container-mobile-other-menu ${
+            showMobileNav && showMobileOtherMenu ? "open" : ""
+          }`}
+        >
+          {isMainnet && (
+            <NavLink to="/governor" aria-label="Governor">
+              Governor
+            </NavLink>
+          )}
+
+          <NavLink to="/vaa-parser" aria-label="VAA Parser">
+            VAA Parser
+          </NavLink>
+
+          <a
+            href="https://docs.wormholescan.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="API Docs"
+          >
+            API Docs
+          </a>
+
+          <a
+            href="https://docs.wormhole.com/wormhole"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Wormhole Docs"
+          >
+            Wormhole Docs
+          </a>
+        </div>
       </div>
     </header>
   );

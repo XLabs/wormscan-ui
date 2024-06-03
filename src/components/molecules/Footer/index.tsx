@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { ArrowUpIcon, PinTopIcon } from "@radix-ui/react-icons";
 import { NavLink, Tag } from "src/components/atoms";
-import { WormholeBrand } from "src/components/molecules";
+import { WormholeScanBrand } from "src/components/molecules";
 import {
   DISCORD_URL,
   GITHUB_URL,
@@ -66,7 +66,7 @@ const Footer = () => {
 
       <div className="footer-container">
         <NavLink className="footer-container-logo" to="/" data-testid="footer-logo-link">
-          <WormholeBrand />
+          <WormholeScanBrand />
         </NavLink>
 
         <div className="footer-container-links">

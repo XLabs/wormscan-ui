@@ -3,13 +3,12 @@ import ReactApexChart from "react-apexcharts";
 import { useQuery } from "react-query";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { addYears, startOfHour } from "date-fns";
+import { startOfHour } from "date-fns";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { BlockchainIcon, Loader, Select, Tooltip } from "src/components/atoms";
+import { BlockchainIcon, Loader, Select } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatterYAxis } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
-import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
 import { ChainFilterMainnet, ChainFilterTestnet } from "src/pages/Txs/Information/Filters";
 import useOutsideClick from "src/utils/hooks/useOutsideClick";
@@ -23,9 +22,6 @@ import {
   GlobeIcon,
 } from "src/icons/generic";
 import "./styles.scss";
-
-// https://api.staging.wormscan.io/api/v1/x-chain-activity/tops?from=2024-01-02T00:00:00Z&to=2024-01-25T00:00:00Z&timespan=1d&sourceChain=1,28,21&targetChain=&appId=PORTAL_TOKEN_BRIDGE
-// timespan = 1h, 1d, 1mo, 1y
 
 interface IColors {
   [key: number]: string;
@@ -55,6 +51,8 @@ interface Data {
 }
 
 type TCompleteData = Record<string, Data>;
+
+type TSelectedPeriod = "24h" | "week" | "month" | "6months" | "year" | "custom";
 
 const colors: IColors = {
   0: "#FD8058",
@@ -126,15 +124,15 @@ const ChainActivity = () => {
   yesterday.setDate(yesterday.getDate() - 1);
   const [startDate, setStartDate] = useState(yesterday);
   const [endDate, setEndDate] = useState(new Date());
-  const [startDate999, setStartDate999] = useState(yesterday);
-  const [endDate999, setEndDate999] = useState(new Date());
+  const [startDateDisplayed, setStartDateDisplayed] = useState(yesterday);
+  const [endDateDisplayed, setEndDateDisplayed] = useState(new Date());
 
   const [showAllChains, setShowAllChains] = useState(true);
-  const [allChainsChecked, setAllChainsChecked] = useState(true);
   const [allChainsSerie, setAllChainsSerie] = useState([]);
   const [series, setSeries] = useState([]);
 
-  const [lastBtnSelected, setLastBtnSelected] = useState("");
+  const [lastBtnSelected, setLastBtnSelected] = useState<TSelectedPeriod>("24h");
+  const [openFilters, setOpenFilters] = useState(false);
 
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
@@ -165,6 +163,8 @@ const ChainActivity = () => {
     icon: <GlobeIcon width={24} style={{ color: "#fff" }} />,
   });
 
+  const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
+
   const [filters, setFilters] = useState({
     from: startDate?.toISOString(),
     to: endDate?.toISOString(),
@@ -176,10 +176,10 @@ const ChainActivity = () => {
   const isUTCPositive = new Date().getTimezoneOffset() < 0;
 
   const {
-    data: allChainsData,
-    isError: isError2,
-    isLoading: isLoading2,
-    isFetching: isFetching2,
+    data: dataAllChains,
+    isError: isErrorAllChains,
+    isLoading: isLoadingAllChains,
+    isFetching: isFetchingAllChains,
   } = useQuery(["getChainActivity", filters.from, filters.to], () =>
     getClient().guardianNetwork.getChainActivity({
       from: filters.from,
@@ -202,11 +202,9 @@ const ChainActivity = () => {
     });
   });
 
-  const calculateDateDifferenceInDays = (startDate: Date, endDate: Date) => {
+  const calculateDateDifferenceInDays = (start: Date, end: Date) => {
     const millisecondsPerDay = 1000 * 60 * 60 * 24;
-    return endDate && startDate
-      ? Math.floor((endDate.getTime() - startDate.getTime()) / millisecondsPerDay)
-      : 0;
+    return end && start ? Math.floor((end.getTime() - start.getTime()) / millisecondsPerDay) : 0;
   };
 
   const getDateList = useCallback(() => {
@@ -260,13 +258,146 @@ const ChainActivity = () => {
     return dateList;
   }, [filters.from, filters.to, isUTC00, isUTCPositive]);
 
-  useEffect(() => {
-    if (!showAllChains) {
-      setSeries([]);
+  const setTimePeriod = (
+    value: number,
+    unit: "days" | "months" | "years",
+    resetHours: boolean = true,
+    btnSelected: TSelectedPeriod = "custom",
+  ) => {
+    const start = new Date();
+    const end = new Date();
+    setLastBtnSelected(btnSelected);
+
+    if (resetHours) {
+      start.setHours(0, 0, 0, 0);
+      end.setHours(0, 0, 0, 0);
     }
 
-    if (allChainsData) {
-      const groupedByDate = allChainsData.reduce((acc: IAccumulator, curr) => {
+    const timeSetters = {
+      days: (date: Date, value: number) => date.setDate(date.getDate() - value),
+      months: (date: Date, value: number) => date.setMonth(date.getMonth() - value),
+      years: (date: Date, value: number) => date.setFullYear(date.getFullYear() - value),
+    };
+
+    timeSetters[unit](start, value);
+
+    setStartDate(start);
+    setEndDate(end);
+  };
+
+  const handleLast24Hours = () => setTimePeriod(1, "days", false, "24h");
+  const handleLastWeekBtn = () => setTimePeriod(7, "days", true, "week");
+  const handleLastMonthBtn = () => setTimePeriod(1, "months", true, "month");
+  const handleLast6MonthsBtn = () => setTimePeriod(6, "months", true, "6months");
+  const handleLastYearBtn = () => setTimePeriod(1, "years", true, "year");
+
+  const applyFilters = () => {
+    document.body.style.overflow = "unset";
+    setOpenFilters(false);
+  };
+
+  const resetFilters = () => {
+    setStartDate(yesterday);
+    setEndDate(new Date());
+    setStartDateDisplayed(yesterday);
+    setEndDateDisplayed(new Date());
+    setLastBtnSelected("24h");
+    setFilters({
+      from: yesterday?.toISOString(),
+      to: new Date()?.toISOString(),
+      timespan: "1h",
+      sourceChain: [],
+    });
+    document.body.style.overflow = "unset";
+    setOpenFilters(false);
+  };
+
+  const handleOutsideClickDate = () => {
+    setStartDate(startDateDisplayed);
+    setEndDate(endDateDisplayed);
+    setShowCalendar(false);
+  };
+
+  const handleChainSelection = (value: any) => {
+    setSelectedTimeRange(value);
+    const chainsSelected = value.map((item: any) => item.value);
+    const chainsSelectedWithoutAll = chainsSelected.filter(
+      (chain: string) => chain !== "All Chains",
+    );
+    const isAllChainsSelected = chainsSelected.includes("All Chains");
+
+    if (isAllChainsSelected) {
+      setShowAllChains(true);
+    } else {
+      setShowAllChains(false);
+    }
+
+    setFilters({
+      ...filters,
+      sourceChain: chainsSelectedWithoutAll,
+    });
+  };
+
+  const handleFiltersOpened = () => {
+    setOpenFilters(prev => {
+      const newOpenFilters = !prev;
+
+      if (!isDesktop) {
+        document.body.style.overflow = newOpenFilters ? "hidden" : "unset";
+        document.body.style.height = newOpenFilters ? "100%" : "auto";
+      }
+
+      return newOpenFilters;
+    });
+  };
+
+  useOutsideClick(dateContainerRef, handleOutsideClickDate);
+
+  const [messagesNumber, setMessagesNumber] = useState(0);
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      const dateDifferenceInDays = calculateDateDifferenceInDays(startDate, endDate);
+
+      const timespan =
+        dateDifferenceInDays < 4
+          ? "1h"
+          : dateDifferenceInDays < 365
+          ? "1d"
+          : dateDifferenceInDays < 1095
+          ? "1mo"
+          : "1y";
+
+      const newFrom = new Date(startDate);
+
+      timespan === "1d"
+        ? newFrom.setDate(isUTC00 ? newFrom.getDate() : newFrom.getDate() + 1)
+        : timespan === "1mo"
+        ? newFrom.setMonth(isUTC00 || isUTCPositive ? newFrom.getMonth() : newFrom.getMonth() + 1)
+        : null;
+
+      const newTo = new Date(endDate);
+      timespan === "1d" && !isUTC00
+        ? newTo.setDate(newTo.getDate() + 1)
+        : timespan === "1mo" && !isUTCPositive && !isUTC00
+        ? newTo.setMonth(newTo.getMonth() + 1)
+        : null;
+
+      setStartDateDisplayed(startDate);
+      setEndDateDisplayed(endDate);
+
+      setFilters(prevFilters => ({
+        ...prevFilters,
+        from: newFrom.toISOString(),
+        to: newTo.toISOString(),
+        timespan: timespan,
+      }));
+    }
+  }, [endDate, isUTC00, isUTCPositive, startDate]);
+
+  useEffect(() => {
+    if (dataAllChains) {
+      const groupedByDate = dataAllChains.reduce((acc: IAccumulator, curr) => {
         const key = `${curr.from}-${curr.to}`;
         if (!acc[key]) {
           acc[key] = {
@@ -298,6 +429,9 @@ const ChainActivity = () => {
 
         return acc;
       }, {});
+
+      const totalMessages = dataAllChains.reduce((acc, item) => acc + item.count, 0);
+      setMessagesNumber(totalMessages);
 
       const totalVolumeAndCountPerDay = Object.values(groupedByDate);
 
@@ -345,127 +479,10 @@ const ChainActivity = () => {
 
       setAllChainsSerie(seriesForAllChains);
     }
-  }, [allChainsData, filters.sourceChain, getDateList, showAllChains]);
-
-  const setTimePeriod = (
-    value: number,
-    unit: "days" | "months" | "years",
-    resetHours: boolean = true,
-    btnSelected: string = "",
-  ) => {
-    const start = new Date();
-    const end = new Date();
-    setLastBtnSelected(btnSelected);
-
-    if (resetHours) {
-      start.setHours(0, 0, 0, 0);
-      end.setHours(0, 0, 0, 0);
-    }
-
-    const timeSetters = {
-      days: (date: Date, value: number) => date.setDate(date.getDate() - value),
-      months: (date: Date, value: number) => date.setMonth(date.getMonth() - value),
-      years: (date: Date, value: number) => date.setFullYear(date.getFullYear() - value),
-    };
-
-    timeSetters[unit](start, value);
-
-    setStartDate(start);
-    setEndDate(end);
-  };
-
-  const handleLast24Hours = () => setTimePeriod(1, "days", false, "24h");
-  const handleLastWeekBtn = () => setTimePeriod(7, "days", true, "week");
-  const handleLastMonthBtn = () => setTimePeriod(1, "months", true, "month");
-  const handleLast3MonthsBtn = () => setTimePeriod(3, "months", true, "3months");
-  const handleLast6MonthsBtn = () => setTimePeriod(6, "months", true, "6months");
-  const handleLastYearBtn = () => setTimePeriod(1, "years", true, "year");
-
-  const handleDoneBtn = () => {
-    if (!startDate || !endDate) return;
-
-    const dateDifferenceInDays = calculateDateDifferenceInDays(startDate, endDate);
-
-    const timespan =
-      dateDifferenceInDays < 4
-        ? "1h"
-        : dateDifferenceInDays < 365
-        ? "1d"
-        : dateDifferenceInDays < 1095
-        ? "1mo"
-        : "1y";
-
-    const newFrom = new Date(startDate);
-
-    timespan === "1d"
-      ? newFrom.setDate(isUTC00 ? newFrom.getDate() : newFrom.getDate() + 1)
-      : timespan === "1mo"
-      ? newFrom.setMonth(isUTC00 || isUTCPositive ? newFrom.getMonth() : newFrom.getMonth() + 1)
-      : null;
-
-    const newTo = new Date(endDate);
-    timespan === "1d" && !isUTC00
-      ? newTo.setDate(newTo.getDate() + 1)
-      : timespan === "1mo" && !isUTCPositive && !isUTC00
-      ? newTo.setMonth(newTo.getMonth() + 1)
-      : null;
-
-    setStartDate999(startDate);
-    setEndDate999(endDate);
-
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      from: newFrom.toISOString(),
-      to: newTo.toISOString(),
-      timespan: timespan,
-    }));
-
-    setShowCalendar(false);
-  };
-
-  const handleOutsideClickDate = () => {
-    setStartDate(new Date(filters.from));
-    setEndDate(new Date(filters.to));
-    setShowCalendar(false);
-
-    const dateDifferenceInDays = calculateDateDifferenceInDays(
-      new Date(filters.from),
-      new Date(filters.to),
-    );
-
-    setLastBtnSelected(
-      dateDifferenceInDays === 1
-        ? "24h"
-        : dateDifferenceInDays === 7
-        ? "week"
-        : dateDifferenceInDays > 28 && dateDifferenceInDays < 32
-        ? "month"
-        : dateDifferenceInDays > 90 && dateDifferenceInDays < 93
-        ? "3months"
-        : dateDifferenceInDays > 180 && dateDifferenceInDays < 185
-        ? "6months"
-        : dateDifferenceInDays > 360 && dateDifferenceInDays < 366
-        ? "year"
-        : "",
-    );
-  };
-
-  useOutsideClick(dateContainerRef, handleOutsideClickDate);
+  }, [dataAllChains, getDateList]);
 
   useEffect(() => {
-    if (!isDesktop) {
-      if (showCalendar) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "unset";
-      }
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [isDesktop, showCalendar]);
-
-  useEffect(() => {
-    if (!data || !allChainsData) return;
+    if (!data || !dataAllChains) return;
 
     const dataByChain: { [key: string]: any[] } = {};
     const allDates: { [key: string]: boolean } = {};
@@ -536,7 +553,7 @@ const ChainActivity = () => {
       setSeries(newSeries);
     }
   }, [
-    allChainsData,
+    dataAllChains,
     allChainsSerie,
     currentNetwork,
     data,
@@ -545,44 +562,21 @@ const ChainActivity = () => {
     showAllChains,
   ]);
 
-  const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
-
-  const handleChainSelection = (value: any) => {
-    setSelectedTimeRange(value);
-    const chainsSelected = value.map((item: any) => item.value);
-    const chainsSelectedWithoutAll = chainsSelected.filter(
-      (chain: string) => chain !== "All Chains",
-    );
-    const isAllChainsSelected = chainsSelected.includes("All Chains");
-
-    if (isAllChainsSelected) {
-      setShowAllChains(true);
+  useEffect(() => {
+    if (!isDesktop) {
+      if (showCalendar) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "unset";
+      }
     } else {
-      setShowAllChains(false);
+      document.body.style.overflow = "unset";
     }
-
-    setFilters({
-      ...filters,
-      sourceChain: chainsSelectedWithoutAll,
-    });
-  };
-
-  const [openFilters, setOpenFilters] = useState(false);
-
-  const handleFiltersOpened = () => {
-    setOpenFilters(prev => !prev);
-  };
+  }, [isDesktop, showCalendar]);
 
   return (
     <div className="chain-activity">
-      {openFilters && (
-        <div
-          className="chain-activity-bg"
-          onClick={() => {
-            setOpenFilters(false);
-          }}
-        />
-      )}
+      {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
 
       <h2 className="chain-activity-title">
         <AnalyticsIcon width={24} /> Transaction Activity
@@ -624,7 +618,6 @@ const ChainActivity = () => {
                     : "Select chains"
                 }
                 ariaLabel="Select Time Range"
-                className="cross-chain-filters-select"
                 items={RANGE_LIST}
                 name="timeRange"
                 onValueChange={(value: any) => handleChainSelection(value)}
@@ -636,18 +629,18 @@ const ChainActivity = () => {
             <div className="chain-activity-chart-top-section" ref={dateContainerRef}>
               <button
                 className="chain-activity-chart-top-section-btn"
-                onClick={() => setShowCalendar(true)}
+                onClick={() => setShowCalendar(!showCalendar)}
               >
                 <span>
-                  {startDate999 &&
-                    new Date(startDate999).toLocaleDateString("en-GB", {
+                  {startDateDisplayed &&
+                    new Date(startDateDisplayed).toLocaleDateString("en-GB", {
                       day: "2-digit",
                       month: "short",
                       year: "numeric",
-                    })}
-                  -
-                  {endDate999 &&
-                    new Date(endDate999).toLocaleDateString("en-GB", {
+                    })}{" "}
+                  -{" "}
+                  {endDateDisplayed &&
+                    new Date(endDateDisplayed).toLocaleDateString("en-GB", {
                       day: "2-digit",
                       month: "short",
                       year: "numeric",
@@ -679,8 +672,12 @@ const ChainActivity = () => {
                       const [start, end] = dates;
                       start?.setHours(0, 0, 0, 0);
                       end?.setHours(0, 0, 0, 0);
-                      setStartDate(start);
-                      setEndDate(end);
+
+                      if (start?.getTime() !== end?.getTime()) {
+                        setStartDate(start);
+                        setEndDate(end);
+                        setLastBtnSelected("custom");
+                      }
                     }}
                     startDate={startDate}
                     endDate={endDate}
@@ -691,17 +688,13 @@ const ChainActivity = () => {
                     showMonthDropdown
                   />
 
-                  <div>
+                  <div className="chain-activity-chart-top-section-box-date-calendar-btns">
                     <button
                       className="done-btn"
-                      onClick={handleDoneBtn}
+                      onClick={() => setShowCalendar(false)}
                       disabled={!startDate || !endDate}
                     >
-                      Apply
-                    </button>
-
-                    <button className="close-btn" onClick={() => setShowCalendar(false)}>
-                      Close
+                      Done
                     </button>
                   </div>
                 </div>
@@ -727,12 +720,6 @@ const ChainActivity = () => {
                       Last month
                     </button>
                     <button
-                      className={`btn ${lastBtnSelected === "3months" ? "active" : ""}`}
-                      onClick={handleLast3MonthsBtn}
-                    >
-                      Last 3 months
-                    </button>
-                    <button
                       className={`btn ${lastBtnSelected === "6months" ? "active" : ""}`}
                       onClick={handleLast6MonthsBtn}
                     >
@@ -744,28 +731,53 @@ const ChainActivity = () => {
                     >
                       Last year
                     </button>
+                    <button className={`btn ${lastBtnSelected === "custom" ? "active" : ""}`}>
+                      Custom
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="chain-activity-chart-top-legends">
+            <div className="chain-activity-chart-top-mobile-buttons">
+              <button className="apply-btn" onClick={applyFilters}>
+                Apply Filters
+              </button>
+
+              <button className="reset-btn" onClick={resetFilters}>
+                Reset Filters
+              </button>
+            </div>
+
+            <div
+              className={`chain-activity-chart-top-legends ${
+                isLoading ||
+                isFetching ||
+                isLoadingAllChains ||
+                isFetchingAllChains ||
+                isError ||
+                isErrorAllChains
+                  ? "hidden"
+                  : ""
+              }`}
+            >
               <div className="chain-activity-chart-top-legends-container">
                 <span>Messages: </span>
-                <p>2,435,958</p>
+                <p>{formatNumber(messagesNumber, 0)}</p>
               </div>
             </div>
           </div>
         </div>
-        {isLoading || isFetching || isLoading2 || isFetching2 ? (
+
+        {isLoading || isFetching || isLoadingAllChains || isFetchingAllChains ? (
           <Loader />
-        ) : isError || isError2 ? (
+        ) : isError || isErrorAllChains ? (
           <ErrorPlaceholder errorType="chart" />
         ) : (
           <ReactApexChart
             series={series}
             type="area"
-            height={400}
+            height={isDesktop ? 400 : 300}
             options={{
               chart: {
                 toolbar: { show: false },
@@ -782,7 +794,7 @@ const ChainActivity = () => {
                   lines: { show: false },
                 },
                 padding: {
-                  top: 50,
+                  top: isDesktop ? 50 : 0,
                 },
               },
               stroke: {
@@ -822,16 +834,27 @@ const ChainActivity = () => {
               },
               xaxis: {
                 axisBorder: { show: true, strokeWidth: 4, color: "var(--color-gray-10)" },
-                axisTicks: { show: true },
-                tickAmount: 13,
+                axisTicks: { show: false },
+                crosshairs: {
+                  position: "front",
+                },
+                stepSize: 1,
                 labels: {
                   // datetimeUTC: isUTC00,
+                  datetimeFormatter: {
+                    hour: "HH:mm",
+                    day: "dd MMM",
+                    month: "MMM 'yy",
+                    year: "yyyy",
+                  },
                   datetimeUTC: true,
+                  hideOverlappingLabels: true,
                   offsetX: 0,
                   style: {
                     colors: "var(--color-gray-400)",
-                    fontFamily: "IBM Plex Sans",
+                    fontFamily: "Roboto Mono, Roboto, sans-serif",
                     fontSize: "12px",
+                    fontWeight: 400,
                   },
                 },
                 // tickPlacement: "on",
@@ -846,6 +869,7 @@ const ChainActivity = () => {
                   formatter: formatterYAxis,
                   style: {
                     colors: "var(--color-gray-400)",
+                    fontFamily: "Roboto Mono, Roboto, sans-serif",
                     fontSize: "12px",
                     fontWeight: 400,
                   },
@@ -917,7 +941,6 @@ const ChainActivity = () => {
                                    
                                       ${item.details
                                         .map((detail: any, i: number) => {
-                                          console.log(index > 1, index);
                                           if (i > 9) return;
 
                                           if (i > 8) {

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BREAKPOINTS } from "src/consts";
 import { BlockchainIcon } from "src/components/atoms";
-import { WormholeBrand } from "src/components/molecules";
+import { WormholeScanBrand } from "src/components/molecules";
 import { formatterYAxis } from "src/utils/apexChartUtils";
 import { AssetsByVolumeTransformed } from "src/api/guardian-network/types";
 import NoColorlessIcon from "src/icons/blockchains/colorless/noIcon.svg";
@@ -60,7 +60,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
 
   return (
     <div className="chart-container" ref={chartDomRef}>
-      <WormholeBrand />
+      <WormholeScanBrand />
 
       <div>
         {XPositionLabels?.map(({ y, x }, i) => (
