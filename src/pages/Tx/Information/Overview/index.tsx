@@ -9,6 +9,7 @@ import { TokenInfo } from "src/utils/metaMaskUtils";
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import { useRecoilState } from "recoil";
 import { addressesInfoState } from "src/utils/recoilStates";
+import { INFTInfo } from "src/api/guardian-network/types";
 import "./styles.scss";
 
 export type OverviewProps = {
@@ -25,6 +26,7 @@ export type OverviewProps = {
   isGatewaySource?: boolean;
   isMayanOnly?: boolean;
   isUnknownApp?: boolean;
+  nftInfo?: INFTInfo;
   originDateParsed?: string;
   parsedDestinationAddress?: string;
   parsedEmitterAddress?: string;
@@ -70,6 +72,7 @@ const Overview = ({
   isGatewaySource,
   isMayanOnly,
   isUnknownApp,
+  nftInfo,
   originDateParsed,
   parsedDestinationAddress,
   parsedEmitterAddress,
@@ -110,7 +113,7 @@ const Overview = ({
             )}
           </div>
           <div className={`tx-overview-graph-step-data-container`}>
-            {!isMayanOnly && (
+            {!isMayanOnly && !nftInfo && (
               <div>
                 <div className="tx-overview-graph-step-title">
                   {isAttestation ? "Token" : "Amount"}
@@ -138,6 +141,17 @@ const Overview = ({
                     "N/A"
                   )}
                 </div>
+              </div>
+            )}
+            {nftInfo && (
+              <div>
+                <div className="tx-overview-graph-step-title">Sent</div>
+                <div className="tx-overview-graph-step-description">{nftInfo.name}</div>
+                {nftInfo.image && (
+                  <a href={nftInfo.image} target="_blank" rel="noopener noreferrer">
+                    <img src={nftInfo.image} width={200} height={200} />
+                  </a>
+                )}
               </div>
             )}
             <div>
@@ -416,7 +430,7 @@ const Overview = ({
               </Tooltip>
             </div>
             <div className="tx-overview-graph-step-data-container">
-              {!isMayanOnly && (
+              {!isMayanOnly && !nftInfo && (
                 <div>
                   <div className="tx-overview-graph-step-title">
                     {isAttestation ? "Target Token" : "Redeem Amount"}

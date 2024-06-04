@@ -47,6 +47,7 @@ import {
   IStatus,
   NTT_APP_ID,
   PORTAL_APP_ID,
+  PORTAL_NFT_APP_ID,
   UNKNOWN_APP_ID,
   USDT_TRANSFER_APP_ID,
   canWeGetDestinationTx,
@@ -966,6 +967,58 @@ const Tx = () => {
         }
         // ----
 
+        // check NFTs
+        if (data?.content?.standarizedProperties?.appIds?.includes(PORTAL_NFT_APP_ID)) {
+          const setNoInfoNFT = () => {
+            if (data.content.payload.name || data.content.payload.tokenId) {
+              data.content.payload.nftInfo = {
+                name: data.content.payload.name,
+                tokenId: data.content.payload.tokenId,
+              };
+            }
+          };
+
+          if (!!data.content.payload?.uri) {
+            try {
+              let nftInfo;
+
+              try {
+                const nftCall = await fetch(
+                  data.content.payload.uri.startsWith("ipfs://")
+                    ? `https://ipfs.io/ipfs/${data.content.payload.uri.replace("ipfs://", "")}`
+                    : data.content.payload?.uri,
+                );
+                nftInfo = await nftCall.json();
+              } catch (e) {
+                const CORS_PROXY = "https://corsproxy.io/?";
+                const nftCallCors = await fetch(
+                  `${CORS_PROXY}${encodeURIComponent(data.content.payload?.uri).replaceAll(
+                    "%00",
+                    "",
+                  )}`,
+                );
+                nftInfo = await nftCallCors.json();
+              }
+
+              data.content.payload.nftInfo = {
+                ...nftInfo,
+                tokenId: data.content.payload.tokenId,
+                uri: data.content.payload.uri,
+              };
+              data.content.payload.nftInfo.image = data.content.payload.nftInfo.image?.replace(
+                "ipfs://",
+                "https://ipfs.io/ipfs/",
+              );
+            } catch (e) {
+              console.log("failed to get NFT info", e);
+              setNoInfoNFT();
+            }
+          } else {
+            setNoInfoNFT();
+          }
+        }
+        // ----
+
         // check Portico
         if (
           data?.content?.standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID) ||
@@ -1115,6 +1168,7 @@ const Tx = () => {
               });
           }
         }
+        // ----
 
         // extra relayer logic
         if (relayerInfo) {
