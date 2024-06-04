@@ -890,15 +890,9 @@ const ChainActivity = () => {
                       (serie: any) => serie.data[dataPointIndex],
                     );
 
-                    const totalMessages = allDataForDate.reduce(
-                      (acc: any, item: any) => acc + item.y,
-                      0,
-                    );
-
-                    const totalVolume = allDataForDate.reduce(
-                      (acc: any, item: any) => acc + item.volume,
-                      0,
-                    );
+                    const totalMessages = showAllChains
+                      ? allDataForDate[0].count
+                      : allDataForDate.reduce((acc: any, item: any) => acc + item.y, 0);
 
                     return `<div class="chain-activity-chart-tooltip">
                       <p class="chain-activity-chart-tooltip-date">
