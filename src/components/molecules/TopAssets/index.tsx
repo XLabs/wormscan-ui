@@ -202,4 +202,4 @@ const TopAssets = () => {
   );
 };
 
-export { TopAssets };
+export default TopAssets;

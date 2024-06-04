@@ -6,8 +6,8 @@ import {
   ChainActivity,
   ProtocolsStats,
   WormholeStats,
+  TopAssets,
 } from "src/components/molecules";
-import { TopAssets } from "./TopAssets";
 
 const Home = () => {
   useEffect(() => {
