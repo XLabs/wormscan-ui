@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import { useEnvironment } from "src/context/EnvironmentContext";
 import allBridgeIcon from "src/icons/Protocols/allBridgeIcon.svg";
 import cctpIcon from "src/icons/Protocols/cctpIcon.svg";
 import mayanIcon from "src/icons/Protocols/mayanIcon.svg";
@@ -102,6 +103,8 @@ const chainsSupported = {
 
 const ProtocolsStats = () => {
   const [sortedData, setSortedData] = useState<ProtocolsStatsOutput[]>([]);
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
 
   const { isLoading, isError, data } = useQuery("protocolsStats", () =>
     getClient().guardianNetwork.getProtocolsStats(),
@@ -120,7 +123,7 @@ const ProtocolsStats = () => {
   }, [data]);
 
   return (
-    <div className="protocols-stats">
+    <div className={`protocols-stats ${currentNetwork}`}>
       <h3 className="protocols-stats-title">
         <Cube3DIcon width={24} />
         Featured Applications

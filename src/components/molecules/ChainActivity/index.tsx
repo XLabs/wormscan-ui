@@ -104,6 +104,8 @@ const colors: IColors = {
   10007: "#8247E5",
 };
 
+const DAY_IN_MILLISECONDS = 86400000;
+
 function startOfDayUTC(date: Date) {
   return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
 }
@@ -215,50 +217,48 @@ const ChainActivity = () => {
   };
 
   const getDateList = useCallback(() => {
-    let currentDate = new Date(filters.from);
-    let endDate22 = new Date(filters.to);
+    let start = new Date(filters.from);
+    let end = new Date(filters.to);
     const dateList: any = [];
-    const dateDifferenceInDays = calculateDateDifferenceInDays(currentDate, endDate22);
+    const dateDifferenceInDays = calculateDateDifferenceInDays(start, end);
 
     if (dateDifferenceInDays < 4) {
-      currentDate = startOfHour(currentDate);
-      currentDate.setUTCHours(currentDate.getUTCHours(), 0, 0, 0);
-      endDate22 = startOfHour(endDate22);
-      endDate22.setUTCHours(endDate22.getUTCHours(), 0, 0, 0);
-      while (currentDate < endDate22) {
-        dateList.push(currentDate.toISOString());
-        currentDate.setUTCHours(currentDate.getUTCHours() + 1, 0, 0, 0);
+      start.setUTCHours(start.getUTCHours(), 0, 0, 0);
+      end.setUTCHours(end.getUTCHours(), 0, 0, 0);
+      while (start < end) {
+        dateList.push(start.toISOString());
+        start.setUTCHours(start.getUTCHours() + 1, 0, 0, 0);
       }
     } else if (dateDifferenceInDays < 365) {
-      currentDate = startOfDayUTC(currentDate);
-      currentDate.setUTCHours(0, 0, 0, 0);
+      start = startOfDayUTC(start);
+      start.setUTCHours(0, 0, 0, 0);
       while (
-        currentDate < endDate22 &&
-        (isUTC00 ? true : currentDate.getTime() < endDate22.getTime() - 86400000) &&
-        currentDate.getTime() < new Date().getTime() - 86400000
+        start < end &&
+        (isUTC00 ? true : start.getTime() < end.getTime() - DAY_IN_MILLISECONDS) &&
+        start.getTime() < new Date().getTime() - DAY_IN_MILLISECONDS
       ) {
-        dateList.push(currentDate.toISOString());
-        currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+        dateList.push(start.toISOString());
+        start.setUTCDate(start.getUTCDate() + 1);
       }
     } else {
-      currentDate = startOfMonthUTC(currentDate);
-      currentDate.setUTCHours(0, 0, 0, 0);
-      endDate22 = startOfMonthUTC(endDate22);
-      endDate22.setUTCHours(0, 0, 0, 0);
+      start = startOfMonthUTC(start);
+      start.setUTCHours(0, 0, 0, 0);
+      end = startOfMonthUTC(end);
+      end.setUTCHours(0, 0, 0, 0);
 
       const lastMonthRemoved = new Date();
       lastMonthRemoved.setMonth(lastMonthRemoved.getMonth() - 1);
       while (
-        currentDate.getTime() < endDate22.getTime() &&
+        start.getTime() < end.getTime() &&
         (!isUTC00 && !isUTCPositive
           ? !(
-              currentDate.getFullYear() === new Date().getFullYear() &&
-              currentDate.getMonth() === lastMonthRemoved.getMonth()
+              start.getFullYear() === new Date().getFullYear() &&
+              start.getMonth() === lastMonthRemoved.getMonth()
             )
           : true)
       ) {
-        dateList.push(currentDate.toISOString());
-        currentDate.setUTCMonth(currentDate.getUTCMonth() + 1);
+        dateList.push(start.toISOString());
+        start.setUTCMonth(start.getUTCMonth() + 1);
       }
     }
 
@@ -391,37 +391,13 @@ const ChainActivity = () => {
     }, {});
   };
 
-  const buildSeriesForAllChains = (totalVolumeAndCountPerDay: IDataDetails[]) => {
-    return [
-      {
-        name: "All Chains",
-        data: totalVolumeAndCountPerDay.map(item => ({
-          x: item.from,
-          y: item.count,
-          volume: item.volume,
-          count: item.count,
-          emitter_chain: item.emitter_chain,
-          details: item.details,
-        })),
-        color: "#7abfff",
-      },
-    ];
-  };
-
   useOutsideClick(dateContainerRef, handleOutsideClickDate);
 
   useEffect(() => {
     if (startDate && endDate) {
       const dateDifferenceInDays = calculateDateDifferenceInDays(startDate, endDate);
 
-      const timespan =
-        dateDifferenceInDays < 4
-          ? "1h"
-          : dateDifferenceInDays < 365
-          ? "1d"
-          : dateDifferenceInDays < 1095
-          ? "1mo"
-          : "1y";
+      const timespan = dateDifferenceInDays < 4 ? "1h" : dateDifferenceInDays < 365 ? "1d" : "1mo";
 
       const newFrom = new Date(startDate);
 
@@ -454,7 +430,20 @@ const ChainActivity = () => {
     if (dataAllChains) {
       const groupedByDate = groupDataByDate(dataAllChains);
       const totalVolumeAndCountPerDay = Object.values(groupedByDate);
-      const seriesForAllChains = buildSeriesForAllChains(totalVolumeAndCountPerDay);
+      const seriesForAllChains = [
+        {
+          name: "All Chains",
+          data: totalVolumeAndCountPerDay.map(item => ({
+            x: item.from,
+            y: item.count,
+            volume: item.volume,
+            count: item.count,
+            emitter_chain: item.emitter_chain,
+            details: item.details,
+          })),
+          color: "#7abfff",
+        },
+      ];
 
       const dateList = getDateList();
       const completeData = dateList.reduce((obj: TCompleteData, date: string) => {
@@ -483,7 +472,7 @@ const ChainActivity = () => {
   }, [dataAllChains, getDateList]);
 
   useEffect(() => {
-    if (!data || !dataAllChains) return;
+    if (!data) return;
 
     const dataByChain: { [key: string]: any[] } = {};
     const allDates: { [key: string]: boolean } = {};
@@ -555,15 +544,7 @@ const ChainActivity = () => {
     } else {
       setSeries(newSeries);
     }
-  }, [
-    dataAllChains,
-    allChainsSerie,
-    currentNetwork,
-    data,
-    filters.sourceChain,
-    getDateList,
-    showAllChains,
-  ]);
+  }, [allChainsSerie, currentNetwork, data, filters.sourceChain, getDateList, showAllChains]);
 
   useEffect(() => {
     if (!isDesktop) {

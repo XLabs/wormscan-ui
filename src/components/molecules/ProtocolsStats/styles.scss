@@ -12,6 +12,14 @@
     min-height: 396px;
   }
 
+  &.TESTNET {
+    min-height: 660px;
+
+    @include desktop {
+      min-height: 238px;
+    }
+  }
+
   &-title {
     @include centered-row;
     @include text-roboto-subheading-500;
