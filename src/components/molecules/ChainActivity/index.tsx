@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { startOfHour } from "date-fns";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BlockchainIcon, Loader, Select } from "src/components/atoms";
-import { ErrorPlaceholder } from "src/components/molecules";
+import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { formatterYAxis } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
 import { getClient } from "src/api/Client";
@@ -140,8 +140,13 @@ const ChainActivity = () => {
   const currentNetwork = environment.network;
   const orderedChains = currentNetwork === "MAINNET" ? ChainFilterMainnet : ChainFilterTestnet;
 
-  const CHAIN_LIST =
-    orderedChains.map(value => ({
+  const CHAIN_LIST = [
+    {
+      label: "All Chains",
+      value: "All Chains",
+      icon: <GlobeIcon width={24} style={{ color: "#fff" }} />,
+    },
+    ...orderedChains.map(value => ({
       label: getChainName({
         network: currentNetwork,
         chainId: value,
@@ -157,13 +162,8 @@ const ChainActivity = () => {
           size={24}
         />
       ),
-    })) || [];
-
-  CHAIN_LIST.unshift({
-    label: "All Chains",
-    value: "All Chains",
-    icon: <GlobeIcon width={24} style={{ color: "#fff" }} />,
-  });
+    })),
+  ];
 
   const [selectedTimeRange, setSelectedTimeRange] = useState(CHAIN_LIST[0]);
 
@@ -517,7 +517,7 @@ const ChainActivity = () => {
       dataByChain[chain] = dateList.map((date: string) => {
         const existingData = dataByChain[chain]?.find(item => item.x === date);
         return (
-          existingData ?? {
+          existingData || {
             x: date,
             y: 0,
             volume: 0,
@@ -567,7 +567,7 @@ const ChainActivity = () => {
 
   useEffect(() => {
     if (!isDesktop) {
-      if (showCalendar) {
+      if (openFilters) {
         document.body.style.overflow = "hidden";
       } else {
         document.body.style.overflow = "unset";
@@ -575,7 +575,7 @@ const ChainActivity = () => {
     } else {
       document.body.style.overflow = "unset";
     }
-  }, [isDesktop, showCalendar]);
+  }, [isDesktop, openFilters]);
 
   return (
     <div className="chain-activity">
@@ -797,129 +797,129 @@ const ChainActivity = () => {
         ) : isError || isErrorAllChains ? (
           <ErrorPlaceholder errorType="chart" />
         ) : (
-          <ReactApexChart
-            series={series}
-            type="area"
-            height={isDesktop ? 400 : 300}
-            options={{
-              chart: {
-                toolbar: { show: false },
-                zoom: { enabled: false },
-              },
-              dataLabels: { enabled: false },
-              grid: {
-                borderColor: "var(--color-gray-900)",
-                strokeDashArray: 6,
+          <>
+            <WormholeScanBrand />
+
+            <ReactApexChart
+              series={series}
+              type="area"
+              height={isDesktop ? 400 : 300}
+              options={{
+                chart: {
+                  toolbar: { show: false },
+                  zoom: { enabled: false },
+                },
+                dataLabels: { enabled: false },
+                grid: {
+                  borderColor: "var(--color-gray-900)",
+                  strokeDashArray: 6,
+                  xaxis: {
+                    lines: { show: true },
+                  },
+                  yaxis: {
+                    lines: { show: false },
+                  },
+                  padding: {
+                    top: isDesktop ? 50 : 0,
+                  },
+                },
+                stroke: {
+                  curve: "straight",
+                  width: 2,
+                  dashArray: 0,
+                },
+                fill: {
+                  type: "solid",
+                  opacity: 0.05,
+                },
+                legend: {
+                  show: isDesktop,
+                  fontFamily: "Roboto",
+                  fontSize: "14px",
+                  fontWeight: 400,
+                  formatter: function (seriesName, opts) {
+                    return seriesName.toUpperCase();
+                  },
+                  floating: true,
+                  labels: {
+                    colors: "var(--color-white)",
+                  },
+                  markers: {
+                    width: 4,
+                    height: 12,
+                    radius: 3,
+                  },
+                  onItemClick: { toggleDataSeries: false },
+                  position: "top",
+                  offsetY: 40,
+                  horizontalAlign: "left",
+                  showForSingleSeries: true,
+                  itemMargin: {
+                    horizontal: 10,
+                  },
+                },
                 xaxis: {
-                  lines: { show: true },
+                  axisBorder: { show: true, strokeWidth: 4, color: "var(--color-gray-10)" },
+                  axisTicks: { show: false },
+                  crosshairs: {
+                    position: "front",
+                  },
+                  stepSize: 1,
+                  labels: {
+                    datetimeFormatter: {
+                      hour: "HH:mm",
+                      day: "dd MMM",
+                      month: "MMM 'yy",
+                      year: "yyyy",
+                    },
+                    datetimeUTC: true,
+                    hideOverlappingLabels: true,
+                    offsetX: 0,
+                    style: {
+                      colors: "var(--color-gray-400)",
+                      fontFamily: "Roboto Mono, Roboto, sans-serif",
+                      fontSize: "12px",
+                      fontWeight: 400,
+                    },
+                  },
+                  type: "datetime",
+
+                  tooltip: { enabled: false },
                 },
                 yaxis: {
-                  lines: { show: false },
-                },
-                padding: {
-                  top: isDesktop ? 50 : 0,
-                },
-              },
-              stroke: {
-                curve: "straight",
-                width: 2,
-                dashArray: 0,
-              },
-              fill: {
-                type: "solid",
-                opacity: 0.05,
-              },
-              legend: {
-                show: isDesktop,
-                fontFamily: "Roboto",
-                fontSize: "14px",
-                fontWeight: 400,
-                formatter: function (seriesName, opts) {
-                  return seriesName.toUpperCase();
-                },
-                floating: true,
-                labels: {
-                  colors: "var(--color-white)",
-                },
-                markers: {
-                  width: 4,
-                  height: 12,
-                  radius: 3,
-                },
-                onItemClick: { toggleDataSeries: false },
-                position: "top",
-                offsetY: 40,
-                horizontalAlign: "left",
-                showForSingleSeries: true,
-                itemMargin: {
-                  horizontal: 10,
-                },
-              },
-              xaxis: {
-                axisBorder: { show: true, strokeWidth: 4, color: "var(--color-gray-10)" },
-                axisTicks: { show: false },
-                crosshairs: {
-                  position: "front",
-                },
-                stepSize: 1,
-                labels: {
-                  // datetimeUTC: isUTC00,
-                  datetimeFormatter: {
-                    hour: "HH:mm",
-                    day: "dd MMM",
-                    month: "MMM 'yy",
-                    year: "yyyy",
+                  labels: {
+                    offsetX: -8,
+                    formatter: formatterYAxis,
+                    style: {
+                      colors: "var(--color-gray-400)",
+                      fontFamily: "Roboto Mono, Roboto, sans-serif",
+                      fontSize: "12px",
+                      fontWeight: 400,
+                    },
                   },
-                  datetimeUTC: true,
-                  hideOverlappingLabels: true,
-                  offsetX: 0,
-                  style: {
-                    colors: "var(--color-gray-400)",
-                    fontFamily: "Roboto Mono, Roboto, sans-serif",
-                    fontSize: "12px",
-                    fontWeight: 400,
-                  },
+                  opposite: true,
                 },
-                // tickPlacement: "on",
-                type: "datetime",
+                tooltip: {
+                  shared: true,
+                  intersect: false,
+                  custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+                    const data = w.config.series[seriesIndex].data[dataPointIndex];
 
-                tooltip: { enabled: false },
-              },
-              yaxis: {
-                labels: {
-                  // minWidth: 30,
-                  offsetX: -8,
-                  formatter: formatterYAxis,
-                  style: {
-                    colors: "var(--color-gray-400)",
-                    fontFamily: "Roboto Mono, Roboto, sans-serif",
-                    fontSize: "12px",
-                    fontWeight: 400,
-                  },
-                },
-                opposite: true,
-              },
-              tooltip: {
-                shared: true,
-                intersect: false,
-                custom: ({ series, seriesIndex, dataPointIndex, w }) => {
-                  const data = w.config.series[seriesIndex].data[dataPointIndex];
+                    const allDataForDate = w.config.series.map(
+                      (serie: any) => serie.data[dataPointIndex],
+                    );
 
-                  const allDataForDate = w.config.series.map(
-                    (serie: any) => serie.data[dataPointIndex],
-                  );
+                    const totalMessages = allDataForDate.reduce(
+                      (acc: any, item: any) => acc + item.y,
+                      0,
+                    );
 
-                  const totalMessages = allDataForDate.reduce(
-                    (acc: any, item: any) => acc + item.y,
-                    0,
-                  );
+                    const totalVolume = allDataForDate.reduce(
+                      (acc: any, item: any) => acc + item.volume,
+                      0,
+                    );
 
-                  const totalVolume = allDataForDate.reduce(
-                    (acc: any, item: any) => acc + item.volume,
-                    0,
-                  );
-
-                  return `<div class="chain-activity-chart-tooltip">
+                    return `<div class="chain-activity-chart-tooltip">
                       <p class="chain-activity-chart-tooltip-date">
                         ${new Date(data.x).toLocaleString("en-GB", {
                           hour: "2-digit",
@@ -931,7 +931,10 @@ const ChainActivity = () => {
                           year: "numeric",
                         })}
                       </p>
-                      <p class="chain-activity-chart-tooltip-total-msg">Total Messages: ${totalMessages}</p>
+                      <p class="chain-activity-chart-tooltip-total-msg">Total Messages: <span>${formatNumber(
+                        totalMessages,
+                        0,
+                      )}</span></p>
                       <p class="chain-activity-chart-tooltip-chains">Chains:</p>
                       <div class="chain-activity-chart-tooltip-container">
                         ${allDataForDate
@@ -942,7 +945,7 @@ const ChainActivity = () => {
                                   w.config.series[index].color
                                 }">
                                 </div>
-                                <div>
+                                <div class="chain-activity-chart-tooltip-container-each-msg-name">
                                   ${
                                     item.emitter_chain === "allChains"
                                       ? "All Chains"
@@ -971,7 +974,7 @@ const ChainActivity = () => {
                                           <div class="chain-activity-chart-tooltip-container-each-msg">
                                           <div class="chain-activity-chart-tooltip-container-each-msg-icon" style="background-color: #999999">
                                           </div>
-                                          <div>
+                                          <div class="chain-activity-chart-tooltip-container-each-msg-name">
                                             Others:
                                           </div>
                                           <div class="chain-activity-chart-tooltip-container-each-msg-number">
@@ -996,7 +999,7 @@ const ChainActivity = () => {
                                           : "#fff"
                                       }">
                                       </div>
-                                      <div>
+                                      <div class="chain-activity-chart-tooltip-container-each-msg-name">
                                         ${getChainName({
                                           network: currentNetwork,
                                           chainId: parseInt(detail.emitter_chain),
@@ -1017,19 +1020,20 @@ const ChainActivity = () => {
                           .join("")}
                       </div>
                     </div>`;
-                },
-                x: {
-                  format: "dd MMM yyyy",
-                },
-                y: {
-                  formatter: (value, { seriesIndex, dataPointIndex, w }) => {
-                    const data = w.config.series[seriesIndex].data[dataPointIndex];
-                    return `Count: ${value}<br>Volume: ${data.volume}`;
+                  },
+                  x: {
+                    format: "dd MMM yyyy",
+                  },
+                  y: {
+                    formatter: (value, { seriesIndex, dataPointIndex, w }) => {
+                      const data = w.config.series[seriesIndex].data[dataPointIndex];
+                      return `Count: ${value}<br>Volume: ${data.volume}`;
+                    },
                   },
                 },
-              },
-            }}
-          />
+              }}
+            />
+          </>
         )}
       </div>
     </div>

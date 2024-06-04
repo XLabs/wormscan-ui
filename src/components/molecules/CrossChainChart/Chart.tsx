@@ -419,7 +419,7 @@ export const Chart = ({
         <div>{t("home.crossChain.destination").toUpperCase()}</div>
       </div>
       <div className="cross-chain-chart">
-        {/* <WormholeScanBrand /> */}
+        <WormholeScanBrand />
 
         <div className="cross-chain-chart-side" data-network={currentNetwork} ref={originChainsRef}>
           {isSourcesSelected

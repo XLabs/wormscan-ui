@@ -31,6 +31,22 @@
     }
   }
 
+  & .wormholescan-brand {
+    bottom: 0;
+    height: 34px;
+    left: 0;
+    margin: auto;
+    min-height: unset;
+    opacity: 0.2;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    user-select: none;
+    width: 180px;
+    z-index: 1;
+  }
+
   &-chart {
     background-color: var(--color-gray-950);
     border-radius: 16px;
@@ -57,34 +73,57 @@
       padding: 12px 16px 16px 16px;
 
       &-date {
+        @include text-heading6;
         color: var(--color-gray-400);
-        font-size: 12px;
-        margin-bottom: 16px;
+        font-family: "Roboto Mono", "Roboto", sans-serif !important;
+        margin-bottom: 8px;
         text-transform: uppercase;
+
+        @include desktop {
+          margin-bottom: 12px;
+        }
       }
 
       &-total-msg {
+        @include centered-row;
+        @include text-roboto-body-400;
         color: var(--color-white);
         font-size: 14px;
-        margin-bottom: 32px;
+        margin-bottom: 16px;
+
+        @include desktop {
+          margin-bottom: 24px;
+        }
+
+        & > span {
+          @include text-heading5;
+          margin-left: auto;
+        }
       }
 
       &-chains {
+        @include text-heading6;
         color: var(--color-gray-400);
-        font-size: 12px;
-        margin-bottom: 16px;
+        font-family: "Roboto Mono", "Roboto", sans-serif !important;
+        margin-bottom: 8px;
         text-transform: uppercase;
+
+        @include desktop {
+          margin-bottom: 12px;
+        }
       }
 
       &-container {
         @include centered-column;
-        gap: 20px;
+        gap: 4px;
         width: 264px;
+
+        @include desktop {
+          gap: 8px;
+        }
 
         &-each-msg {
           @include centered-row;
-          font-size: 16px;
-          font-weight: 400;
           gap: 12px;
 
           &-icon {
@@ -93,7 +132,14 @@
             width: 4px;
           }
 
+          &-name {
+            @include text-roboto-body-400;
+            font-family: "Roboto", sans-serif !important;
+          }
+
           &-number {
+            @include text-heading5;
+            font-family: "Roboto Mono", "Roboto", sans-serif !important;
             margin-left: auto;
           }
         }
@@ -263,7 +309,6 @@
         &-box {
           background-color: var(--color-gray-900);
           border-radius: 16px;
-          display: flex;
           flex-direction: column;
           min-width: max-content;
           position: fixed;
@@ -271,7 +316,7 @@
           z-index: 55;
           display: none;
           margin-top: 12px;
-          width: 90%;
+          width: calc(100vw - 40px);
 
           @include desktop {
             border-radius: 8px;
@@ -282,6 +327,7 @@
             margin-top: 0;
             position: absolute;
             transition: none;
+            width: auto;
           }
 
           &.show-date {
