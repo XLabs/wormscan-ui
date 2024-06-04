@@ -3,7 +3,6 @@ import ReactApexChart from "react-apexcharts";
 import { useQuery } from "react-query";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { startOfHour } from "date-fns";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BlockchainIcon, Loader, Select } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
@@ -23,96 +22,6 @@ import {
 } from "src/icons/generic";
 import { IChainActivity } from "src/api/guardian-network/types";
 import "./styles.scss";
-
-interface IColors {
-  [key: number]: string;
-}
-
-interface IDataDetails {
-  from: string;
-  to: string;
-  emitter_chain: string;
-  volume: number;
-  count: number;
-  details: {
-    emitter_chain: string;
-    volume: number;
-    count: number;
-  }[];
-}
-
-interface IAccumulator {
-  [key: string]: IDataDetails;
-}
-
-interface IData {
-  x: string;
-  y: number;
-  volume: number;
-  count: number;
-  emitter_chain: string;
-}
-
-type TCompleteData = Record<string, IData>;
-
-type TSelectedPeriod = "24h" | "week" | "month" | "6months" | "year" | "custom";
-
-const colors: IColors = {
-  0: "#FD8058",
-  1: "#815AF0",
-  2: "#627EEA",
-  3: "#5795ED",
-  4: "#F0B90B",
-  5: "#8247E5",
-  6: "#E84142",
-  7: "#0089DB",
-  8: "#FFFFFF",
-  9: "#4AB64B",
-  10: "#1969FF",
-  11: "#F53447",
-  12: "#B72896",
-  13: "#FA4212",
-  14: "#5EA33B",
-  15: "#FFFFFF",
-  16: "#53CBC8",
-  17: "#df42ab",
-  18: "#56B39A",
-  19: "#00AEFC",
-  20: "#A600C0",
-  21: "#2A4362",
-  22: "#FFFFFF",
-  23: "#405870",
-  24: "#FF0420",
-  26: "#E6DAFE",
-  28: "#00AAFF",
-  29: "#F7931A",
-  30: "#0052FF",
-  32: "#A60B13",
-  34: "#FFEEDA",
-  35: "#FFFFFF",
-  36: "#FCFC03",
-  37: "#FFFFFF",
-  3104: "#00E6FD",
-  4001: "#ed4e33",
-  4002: "#e53935",
-  4007: "#F1E1D4",
-  10002: "#627EEA",
-  10003: "#405870",
-  10004: "#0052FF",
-  10005: "#FF0420",
-  10006: "#627EEA",
-  10007: "#8247E5",
-};
-
-const DAY_IN_MILLISECONDS = 86400000;
-
-function startOfDayUTC(date: Date) {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
-}
-
-function startOfMonthUTC(date: Date) {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
-}
 
 const ChainActivity = () => {
   const { width } = useWindowSize();
@@ -167,7 +76,7 @@ const ChainActivity = () => {
     })),
   ];
 
-  const [selectedTimeRange, setSelectedTimeRange] = useState(CHAIN_LIST[0]);
+  const [chainListSelected, setChainListSelected] = useState([CHAIN_LIST[0]]);
 
   const [filters, setFilters] = useState({
     from: startDate?.toISOString(),
@@ -304,8 +213,8 @@ const ChainActivity = () => {
     setShowCalendar(false);
   };
 
-  const handleChainSelection = (value: any) => {
-    setSelectedTimeRange(value);
+  const handleChainSelection = (value: IChainList[]) => {
+    setChainListSelected(value);
     const chainsSelected = value.map((item: any) => item.value);
     const chainsSelectedWithoutAll = chainsSelected.filter(
       (chain: string) => chain !== "All Chains",
@@ -606,7 +515,7 @@ const ChainActivity = () => {
                 name="timeRange"
                 onValueChange={(value: any) => handleChainSelection(value)}
                 type="searchable"
-                value={selectedTimeRange}
+                value={chainListSelected}
               />
             </div>
 
@@ -1014,5 +923,101 @@ const ChainActivity = () => {
     </div>
   );
 };
+
+interface IColors {
+  [key: number]: string;
+}
+
+interface IDataDetails {
+  from: string;
+  to: string;
+  emitter_chain: string;
+  volume: number;
+  count: number;
+  details: {
+    emitter_chain: string;
+    volume: number;
+    count: number;
+  }[];
+}
+
+interface IAccumulator {
+  [key: string]: IDataDetails;
+}
+
+interface IData {
+  x: string;
+  y: number;
+  volume: number;
+  count: number;
+  emitter_chain: string;
+}
+
+interface IChainList {
+  label: string;
+  value: string;
+  icon: JSX.Element;
+}
+
+type TCompleteData = Record<string, IData>;
+
+type TSelectedPeriod = "24h" | "week" | "month" | "6months" | "year" | "custom";
+
+const colors: IColors = {
+  0: "#FD8058",
+  1: "#815AF0",
+  2: "#627EEA",
+  3: "#5795ED",
+  4: "#F0B90B",
+  5: "#8247E5",
+  6: "#E84142",
+  7: "#0089DB",
+  8: "#FFFFFF",
+  9: "#4AB64B",
+  10: "#1969FF",
+  11: "#F53447",
+  12: "#B72896",
+  13: "#FA4212",
+  14: "#5EA33B",
+  15: "#FFFFFF",
+  16: "#53CBC8",
+  17: "#df42ab",
+  18: "#56B39A",
+  19: "#00AEFC",
+  20: "#A600C0",
+  21: "#2A4362",
+  22: "#FFFFFF",
+  23: "#405870",
+  24: "#FF0420",
+  26: "#E6DAFE",
+  28: "#00AAFF",
+  29: "#F7931A",
+  30: "#0052FF",
+  32: "#A60B13",
+  34: "#FFEEDA",
+  35: "#FFFFFF",
+  36: "#FCFC03",
+  37: "#FFFFFF",
+  3104: "#00E6FD",
+  4001: "#ed4e33",
+  4002: "#e53935",
+  4007: "#F1E1D4",
+  10002: "#627EEA",
+  10003: "#405870",
+  10004: "#0052FF",
+  10005: "#FF0420",
+  10006: "#627EEA",
+  10007: "#8247E5",
+};
+
+const DAY_IN_MILLISECONDS = 86400000;
+
+function startOfDayUTC(date: Date) {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+}
+
+function startOfMonthUTC(date: Date) {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
+}
 
 export default ChainActivity;
