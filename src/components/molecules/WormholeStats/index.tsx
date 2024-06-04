@@ -1,15 +1,14 @@
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import WormholeStatsImage from "src/assets/wormhole-stats.svg";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { ExternalLinkIcon, InfoCircledIcon } from "@radix-ui/react-icons";
+import {  InfoCircledIcon } from "@radix-ui/react-icons";
 import { WORMHOLE_PAGE_URL } from "src/consts";
 import { Loader, Tooltip } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getClient } from "src/api/Client";
-import "./styles.scss";
 import { LinkIcon } from "src/icons/generic";
+import "./styles.scss";
 
 const WormholeStats = () => {
   const { t } = useTranslation();

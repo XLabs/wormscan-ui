@@ -31,6 +31,7 @@ const Header = () => {
   const headerRef = useRef(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { width } = useWindowSize();
+  const isDesktop = width >= 1024;
   const { environment, setEnvironment } = useEnvironment();
   const { pathname, search } = useLocation();
   const { t } = useTranslation();
@@ -40,36 +41,38 @@ const Header = () => {
   const isMainnet = currentNetwork === "MAINNET";
 
   useEffect(() => {
-    const currentHeaderRef = headerRef.current;
+    if (isDesktop) {
+      const currentHeaderRef = headerRef.current;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) {
-          setShowDesktopFixedNav(true);
-        } else {
-          setShowDesktopFixedNav(false);
-        }
-      },
-      {
-        root: null,
-        rootMargin: "0px",
-        threshold: 0.1,
-      },
-    );
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) {
+            setShowDesktopFixedNav(true);
+          } else {
+            setShowDesktopFixedNav(false);
+          }
+        },
+        {
+          root: null,
+          rootMargin: "0px",
+          threshold: 0.1,
+        },
+      );
 
-    if (currentHeaderRef) {
-      observer.observe(currentHeaderRef);
-    }
-
-    return () => {
       if (currentHeaderRef) {
-        observer.unobserve(currentHeaderRef);
+        observer.observe(currentHeaderRef);
       }
-    };
-  }, []);
+
+      return () => {
+        if (currentHeaderRef) {
+          observer.unobserve(currentHeaderRef);
+        }
+      };
+    }
+  }, [isDesktop]);
 
   useEffect(() => {
-    if (width) {
+    if (!isDesktop) {
       const handleScroll = () => {
         const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
         setShowMobileNav(lastScrollTop > currentScrollTop || currentScrollTop < 50);
@@ -79,7 +82,7 @@ const Header = () => {
       window.addEventListener("scroll", handleScroll);
       return () => window.removeEventListener("scroll", handleScroll);
     }
-  }, [lastScrollTop, width]);
+  }, [lastScrollTop, isDesktop]);
 
   useEffect(() => {
     if (!showMobileNav) {
