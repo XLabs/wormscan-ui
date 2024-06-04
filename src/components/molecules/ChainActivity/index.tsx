@@ -21,28 +21,31 @@ import {
   FilterListIcon,
   GlobeIcon,
 } from "src/icons/generic";
+import { IChainActivity } from "src/api/guardian-network/types";
 import "./styles.scss";
 
 interface IColors {
   [key: number]: string;
 }
 
-interface IAccumulator {
-  [key: string]: {
-    from: string;
-    to: string;
+interface IDataDetails {
+  from: string;
+  to: string;
+  emitter_chain: string;
+  volume: number;
+  count: number;
+  details: {
     emitter_chain: string;
     volume: number;
     count: number;
-    details: {
-      emitter_chain: string;
-      volume: number;
-      count: number;
-    }[];
-  };
+  }[];
 }
 
-interface Data {
+interface IAccumulator {
+  [key: string]: IDataDetails;
+}
+
+interface IData {
   x: string;
   y: number;
   volume: number;
@@ -50,54 +53,55 @@ interface Data {
   emitter_chain: string;
 }
 
-type TCompleteData = Record<string, Data>;
+type TCompleteData = Record<string, IData>;
 
 type TSelectedPeriod = "24h" | "week" | "month" | "6months" | "year" | "custom";
 
 const colors: IColors = {
   0: "#FD8058",
-  1: "#11BBF6",
-  2: "#C1BBF6",
-  3: "#DDE95A",
-  4: "#E35F77",
-  5: "#AEC6CF",
-  6: "#FDFD96",
-  7: "#FFB7C5",
-  8: "#77DD77",
-  9: "#B39EB5",
-  10: "#FF6961",
-  11: "#CB99C9",
-  12: "#FFD1DC",
-  13: "#FFB347",
-  14: "#77AADD",
-  15: "#CFCFC4",
-  16: "#836953",
-  17: "#779ECB",
-  18: "#03C03C",
-  19: "#F49AC2",
-  20: "#DEA5A4",
-  21: "#B0BBF6",
-  22: "#ED8058",
-  23: "#CDE95A",
-  24: "#D35F77",
-  26: "#AFC6CF",
-  28: "#F0FD96",
-  29: "#70DD77",
-  30: "#B09EB5",
-  32: "#F06961",
-  34: "#CA99C9",
-  35: "#F0D1DC",
-  36: "#F0B347",
-  3104: "#70AADD",
-  4001: "#C0CFC4",
-  4002: "#836953",
-  4007: "#769ECB",
-  10002: "#00C03C",
-  10003: "#F09AC2",
-  10004: "#D0A5A4",
-  10005: "#B1BBF6",
-  10006: "#DD8058",
-  10007: "#CDE85A",
+  1: "#815AF0",
+  2: "#627EEA",
+  3: "#5795ED",
+  4: "#F0B90B",
+  5: "#8247E5",
+  6: "#E84142",
+  7: "#0089DB",
+  8: "#FFFFFF",
+  9: "#4AB64B",
+  10: "#1969FF",
+  11: "#F53447",
+  12: "#B72896",
+  13: "#FA4212",
+  14: "#5EA33B",
+  15: "#FFFFFF",
+  16: "#53CBC8",
+  17: "#df42ab",
+  18: "#56B39A",
+  19: "#00AEFC",
+  20: "#A600C0",
+  21: "#2A4362",
+  22: "#FFFFFF",
+  23: "#405870",
+  24: "#FF0420",
+  26: "#E6DAFE",
+  28: "#00AAFF",
+  29: "#F7931A",
+  30: "#0052FF",
+  32: "#A60B13",
+  34: "#FFEEDA",
+  35: "#FFFFFF",
+  36: "#FCFC03",
+  37: "#FFFFFF",
+  3104: "#00E6FD",
+  4001: "#ed4e33",
+  4002: "#e53935",
+  4007: "#F1E1D4",
+  10002: "#627EEA",
+  10003: "#405870",
+  10004: "#0052FF",
+  10005: "#FF0420",
+  10006: "#627EEA",
+  10007: "#8247E5",
 };
 
 function startOfDayUTC(date: Date) {
@@ -106,10 +110,6 @@ function startOfDayUTC(date: Date) {
 
 function startOfMonthUTC(date: Date) {
   return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
-}
-
-function startOfYearUTC(date: Date) {
-  return new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
 }
 
 const ChainActivity = () => {
@@ -130,6 +130,8 @@ const ChainActivity = () => {
   const [showAllChains, setShowAllChains] = useState(true);
   const [allChainsSerie, setAllChainsSerie] = useState([]);
   const [series, setSeries] = useState([]);
+  const [messagesNumber, setMessagesNumber] = useState(0);
+  const [allMessagesNumber, setAllMessagesNumber] = useState(0);
 
   const [lastBtnSelected, setLastBtnSelected] = useState<TSelectedPeriod>("24h");
   const [openFilters, setOpenFilters] = useState(false);
@@ -138,8 +140,8 @@ const ChainActivity = () => {
   const currentNetwork = environment.network;
   const orderedChains = currentNetwork === "MAINNET" ? ChainFilterMainnet : ChainFilterTestnet;
 
-  const RANGE_LIST =
-    orderedChains.map((value, i) => ({
+  const CHAIN_LIST =
+    orderedChains.map(value => ({
       label: getChainName({
         network: currentNetwork,
         chainId: value,
@@ -157,13 +159,13 @@ const ChainActivity = () => {
       ),
     })) || [];
 
-  RANGE_LIST.unshift({
+  CHAIN_LIST.unshift({
     label: "All Chains",
     value: "All Chains",
     icon: <GlobeIcon width={24} style={{ color: "#fff" }} />,
   });
 
-  const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
+  const [selectedTimeRange, setSelectedTimeRange] = useState(CHAIN_LIST[0]);
 
   const [filters, setFilters] = useState({
     from: startDate?.toISOString(),
@@ -180,13 +182,18 @@ const ChainActivity = () => {
     isError: isErrorAllChains,
     isLoading: isLoadingAllChains,
     isFetching: isFetchingAllChains,
-  } = useQuery(["getChainActivity", filters.from, filters.to], () =>
-    getClient().guardianNetwork.getChainActivity({
-      from: filters.from,
-      to: filters.to,
-      timespan: filters.timespan,
-      sourceChain: [],
-    }),
+  } = useQuery(
+    ["getChainActivity", filters.from, filters.to],
+    () =>
+      getClient().guardianNetwork.getChainActivity({
+        from: filters.from,
+        to: filters.to,
+        timespan: filters.timespan,
+        sourceChain: [],
+      }),
+    {
+      enabled: showAllChains,
+    },
   );
 
   const { data, isError, isLoading, isFetching } = useQuery(["getChainActivity", filters], () => {
@@ -291,27 +298,6 @@ const ChainActivity = () => {
   const handleLast6MonthsBtn = () => setTimePeriod(6, "months", true, "6months");
   const handleLastYearBtn = () => setTimePeriod(1, "years", true, "year");
 
-  const applyFilters = () => {
-    document.body.style.overflow = "unset";
-    setOpenFilters(false);
-  };
-
-  const resetFilters = () => {
-    setStartDate(yesterday);
-    setEndDate(new Date());
-    setStartDateDisplayed(yesterday);
-    setEndDateDisplayed(new Date());
-    setLastBtnSelected("24h");
-    setFilters({
-      from: yesterday?.toISOString(),
-      to: new Date()?.toISOString(),
-      timespan: "1h",
-      sourceChain: [],
-    });
-    document.body.style.overflow = "unset";
-    setOpenFilters(false);
-  };
-
   const handleOutsideClickDate = () => {
     setStartDate(startDateDisplayed);
     setEndDate(endDateDisplayed);
@@ -351,9 +337,78 @@ const ChainActivity = () => {
     });
   };
 
-  useOutsideClick(dateContainerRef, handleOutsideClickDate);
+  const applyFilters = () => {
+    document.body.style.overflow = "unset";
+    setOpenFilters(false);
+  };
 
-  const [messagesNumber, setMessagesNumber] = useState(0);
+  const resetFilters = () => {
+    setStartDate(yesterday);
+    setEndDate(new Date());
+    setStartDateDisplayed(yesterday);
+    setEndDateDisplayed(new Date());
+    setLastBtnSelected("24h");
+    setFilters({
+      from: yesterday?.toISOString(),
+      to: new Date()?.toISOString(),
+      timespan: "1h",
+      sourceChain: [],
+    });
+    document.body.style.overflow = "unset";
+    setOpenFilters(false);
+  };
+
+  const groupDataByDate = (data: IChainActivity[]) => {
+    return data.reduce((acc: IAccumulator, curr) => {
+      const key = `${curr.from}-${curr.to}`;
+      if (!acc[key]) {
+        acc[key] = {
+          from: curr.from.slice(0, -1) + ".000Z",
+          to: curr.to,
+          emitter_chain: "allChains",
+          volume: 0,
+          count: 0,
+          details: [],
+        };
+      }
+      acc[key].volume += curr.volume;
+      acc[key].count += curr.count;
+
+      const index = acc[key].details.findIndex(detail => detail.count < curr.count);
+      const detail = {
+        emitter_chain: curr.emitter_chain,
+        volume: curr.volume,
+        count: curr.count,
+      };
+
+      if (index === -1) {
+        acc[key].details.push(detail);
+      } else {
+        acc[key].details.splice(index, 0, detail);
+      }
+
+      return acc;
+    }, {});
+  };
+
+  const buildSeriesForAllChains = (totalVolumeAndCountPerDay: IDataDetails[]) => {
+    return [
+      {
+        name: "All Chains",
+        data: totalVolumeAndCountPerDay.map(item => ({
+          x: item.from,
+          y: item.count,
+          volume: item.volume,
+          count: item.count,
+          emitter_chain: item.emitter_chain,
+          details: item.details,
+        })),
+        color: "#7abfff",
+      },
+    ];
+  };
+
+  useOutsideClick(dateContainerRef, handleOutsideClickDate);
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -397,66 +452,11 @@ const ChainActivity = () => {
 
   useEffect(() => {
     if (dataAllChains) {
-      const groupedByDate = dataAllChains.reduce((acc: IAccumulator, curr) => {
-        const key = `${curr.from}-${curr.to}`;
-        if (!acc[key]) {
-          acc[key] = {
-            from: curr.from.slice(0, -1) + ".000Z",
-            to: curr.to,
-            emitter_chain: "allChains",
-            volume: 0,
-            count: 0,
-            details: [],
-          };
-        }
-        acc[key].volume += curr.volume;
-        acc[key].count += curr.count;
-
-        const index = acc[key].details.findIndex(detail => detail.count < curr.count);
-        if (index === -1) {
-          acc[key].details.push({
-            emitter_chain: curr.emitter_chain,
-            volume: curr.volume,
-            count: curr.count,
-          });
-        } else {
-          acc[key].details.splice(index, 0, {
-            emitter_chain: curr.emitter_chain,
-            volume: curr.volume,
-            count: curr.count,
-          });
-        }
-
-        return acc;
-      }, {});
-
-      const totalMessages = dataAllChains.reduce((acc, item) => acc + item.count, 0);
-      setMessagesNumber(totalMessages);
-
+      const groupedByDate = groupDataByDate(dataAllChains);
       const totalVolumeAndCountPerDay = Object.values(groupedByDate);
-
-      const seriesForAllChains = [
-        {
-          name: "All Chains",
-          data: totalVolumeAndCountPerDay.map(item => ({
-            x: item.from,
-            y: item.count,
-            volume: item.volume,
-            count: item.count,
-            emitter_chain: item.emitter_chain,
-            details: item.details.map(detail => ({
-              emitter_chain: detail.emitter_chain,
-              volume: detail.volume,
-              count: detail.count,
-            })),
-          })),
-          color: "#7abfff",
-        },
-      ];
+      const seriesForAllChains = buildSeriesForAllChains(totalVolumeAndCountPerDay);
 
       const dateList = getDateList();
-      // When there were no movements in that time range, the endpoint does not bring
-      // information for that chain, so we need to add it manually
       const completeData = dateList.reduce((obj: TCompleteData, date: string) => {
         obj[date] = {
           x: date,
@@ -473,10 +473,11 @@ const ChainActivity = () => {
       });
 
       seriesForAllChains[0].data = Object.values(completeData);
-
-      // order by date
       seriesForAllChains[0].data.sort((a, b) => new Date(a.x).getTime() - new Date(b.x).getTime());
 
+      const totalMessages = dataAllChains.reduce((acc, item) => acc + item.count, 0);
+
+      setAllMessagesNumber(totalMessages);
       setAllChainsSerie(seriesForAllChains);
     }
   }, [dataAllChains, getDateList]);
@@ -491,7 +492,6 @@ const ChainActivity = () => {
     data.forEach(item => {
       // formatDate to add milliseconds and match dates when using .toISOString()
       const formatDate = item.from.slice(0, -1) + ".000Z";
-      // const formatDate = new Date(item.from).toISOString();
 
       if (!dataByChain[item.emitter_chain]) {
         dataByChain[item.emitter_chain] = [];
@@ -546,6 +546,9 @@ const ChainActivity = () => {
       data: dataByChain[chain],
       color: colors[parseInt(chain)] ? colors[parseInt(chain)] : "#fff",
     }));
+
+    const sumOfMessages = data.reduce((acc, item) => acc + item.count, 0);
+    setMessagesNumber(sumOfMessages);
 
     if (showAllChains) {
       setSeries([...allChainsSerie, ...newSeries]);
@@ -618,7 +621,7 @@ const ChainActivity = () => {
                     : "Select chains"
                 }
                 ariaLabel="Select Time Range"
-                items={RANGE_LIST}
+                items={CHAIN_LIST}
                 name="timeRange"
                 onValueChange={(value: any) => handleChainSelection(value)}
                 type="searchable"
@@ -632,19 +635,35 @@ const ChainActivity = () => {
                 onClick={() => setShowCalendar(!showCalendar)}
               >
                 <span>
-                  {startDateDisplayed &&
-                    new Date(startDateDisplayed).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}{" "}
-                  -{" "}
-                  {endDateDisplayed &&
-                    new Date(endDateDisplayed).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}
+                  {lastBtnSelected === "custom" ? (
+                    <>
+                      {startDateDisplayed &&
+                        new Date(startDateDisplayed).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}{" "}
+                      -{" "}
+                      {endDateDisplayed &&
+                        new Date(endDateDisplayed).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                    </>
+                  ) : lastBtnSelected === "24h" ? (
+                    "Last 24 hours"
+                  ) : lastBtnSelected === "week" ? (
+                    "Last week"
+                  ) : lastBtnSelected === "month" ? (
+                    "Last month"
+                  ) : lastBtnSelected === "6months" ? (
+                    "Last 6 months"
+                  ) : lastBtnSelected === "year" ? (
+                    "Last year"
+                  ) : (
+                    ""
+                  )}
                 </span>
 
                 <ChevronDownIcon
@@ -763,7 +782,11 @@ const ChainActivity = () => {
             >
               <div className="chain-activity-chart-top-legends-container">
                 <span>Messages: </span>
-                <p>{formatNumber(messagesNumber, 0)}</p>
+                <p>
+                  {showAllChains
+                    ? formatNumber(allMessagesNumber, 0)
+                    : formatNumber(messagesNumber, 0)}
+                </p>
               </div>
             </div>
           </div>
@@ -908,7 +931,7 @@ const ChainActivity = () => {
                           year: "numeric",
                         })}
                       </p>
-                      <p class="chain-activity-chart-tooltip-total-msg">TOTAL MESSAGES: ${totalMessages}</p>
+                      <p class="chain-activity-chart-tooltip-total-msg">Total Messages: ${totalMessages}</p>
                       <p class="chain-activity-chart-tooltip-chains">Chains:</p>
                       <div class="chain-activity-chart-tooltip-container">
                         ${allDataForDate

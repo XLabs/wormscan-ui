@@ -11,6 +11,7 @@
     background-color: var(--color-black-50);
     inset: 0;
     position: fixed;
+    z-index: 77;
 
     @include desktop {
       display: none;
@@ -224,7 +225,7 @@
 
         @include desktop {
           @include centered-row;
-          bottom: -62px;
+          bottom: -61px;
           justify-content: flex-end;
           position: absolute;
           width: 100%;

@@ -12,8 +12,8 @@ import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
 import { AssetsByVolumeOutput, Tokens } from "src/api/guardian-network/types";
 import analytics from "src/analytics";
-import "./styles.scss";
 import { LayersIcon } from "src/icons/generic";
+import "./styles.scss";
 
 const RANGE_LIST: { label: string; value: "7d" | "15d" | "30d" }[] = [
   { label: "Last 7 days", value: "7d" },
@@ -125,7 +125,7 @@ const TopAssets = () => {
           </div>
 
           <div className="top-assets-body">
-            {isLoading || isFetching /* || true */ ? (
+            {isLoading || isFetching ? (
               <Loader />
             ) : isError ? (
               <ErrorPlaceholder />
@@ -138,6 +138,7 @@ const TopAssets = () => {
                       <th>{t("home.topAssets.token")}</th>
                       <th>{t("home.topAssets.volume")}</th>
                       <th>{t("home.topAssets.txs")}</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>

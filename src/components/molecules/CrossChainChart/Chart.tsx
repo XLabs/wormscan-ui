@@ -169,8 +169,8 @@ export const Chart = ({
           // painting graph
           const grad = ctx.createLinearGradient(0, 0, CHART_SIZE, 0);
 
-          grad.addColorStop(0, isDesktop ? "#7abfff" : "#0D141A");
-          grad.addColorStop(1, isDesktop ? "#121212" : "#0D141A");
+          grad.addColorStop(0, isDesktop ? "#7abfff" : "#0c1319");
+          grad.addColorStop(1, isDesktop ? "#121212" : "#0c1319");
 
           ctx.strokeStyle = grad;
           ctx.fillStyle = grad;
@@ -225,8 +225,8 @@ export const Chart = ({
           // painting graph
           const grad = ctx.createLinearGradient(0, 0, CHART_SIZE, 0);
 
-          grad.addColorStop(0, isDesktop ? "#121212" : "#0D141A");
-          grad.addColorStop(1, isDesktop ? "#7abfff" : "#0D141A");
+          grad.addColorStop(0, isDesktop ? "#121212" : "#0c1319");
+          grad.addColorStop(1, isDesktop ? "#7abfff" : "#0c1319");
 
           ctx.strokeStyle = grad;
           ctx.fillStyle = grad;
