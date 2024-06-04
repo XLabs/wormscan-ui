@@ -795,9 +795,9 @@ const ChainActivity = () => {
                   custom: ({ series, seriesIndex, dataPointIndex, w }) => {
                     const data = w.config.series[seriesIndex].data[dataPointIndex];
 
-                    const allDataForDate = w.config.series.map(
-                      (serie: any) => serie.data[dataPointIndex],
-                    );
+                    const allDataForDate = w.config.series
+                      .map((serie: any) => serie.data[dataPointIndex])
+                      .sort((a: any, b: any) => b.y - a.y);
 
                     const totalMessages = showAllChains
                       ? allDataForDate[0].count
