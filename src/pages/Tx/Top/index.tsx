@@ -74,7 +74,11 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
           <div>Gateway Tx Hash:</div>
           <div className="tx-top-txId-container">
             <a
-              href={`${BIGDIPPER_TRANSACTIONS}/${parseTxHashUpperCase}`}
+              href={`${BIGDIPPER_TRANSACTIONS}/${
+                parseTxHashUpperCase.startsWith("0X")
+                  ? parseTxHashUpperCase.substring(2)
+                  : parseTxHashUpperCase
+              }`}
               target="_blank"
               rel="noopener noreferrer"
             >
