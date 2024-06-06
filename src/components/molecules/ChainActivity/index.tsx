@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useQuery } from "react-query";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BlockchainIcon, Loader, Select } from "src/components/atoms";
@@ -13,14 +12,9 @@ import { ChainFilterMainnet, ChainFilterTestnet } from "src/pages/Txs/Informatio
 import useOutsideClick from "src/utils/hooks/useOutsideClick";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { formatNumber } from "src/utils/number";
-import {
-  AnalyticsIcon,
-  ChevronDownIcon,
-  CrossIcon,
-  FilterListIcon,
-  GlobeIcon,
-} from "src/icons/generic";
+import { AnalyticsIcon, CrossIcon, FilterListIcon, GlobeIcon } from "src/icons/generic";
 import { IChainActivity } from "src/api/guardian-network/types";
+import { Calendar } from "./Calendar";
 import "./styles.scss";
 
 const ChainActivity = () => {
@@ -120,15 +114,10 @@ const ChainActivity = () => {
     });
   });
 
-  const calculateDateDifferenceInDays = (start: Date, end: Date) => {
-    const millisecondsPerDay = 1000 * 60 * 60 * 24;
-    return end && start ? Math.floor((end.getTime() - start.getTime()) / millisecondsPerDay) : 0;
-  };
-
   const getDateList = useCallback(() => {
     let start = new Date(filters.from);
     let end = new Date(filters.to);
-    const dateList: any = [];
+    const dateList: string[] = [];
     const dateDifferenceInDays = calculateDateDifferenceInDays(start, end);
 
     if (dateDifferenceInDays < 4) {
@@ -173,39 +162,6 @@ const ChainActivity = () => {
 
     return dateList;
   }, [filters.from, filters.to, isUTC00, isUTCPositive]);
-
-  const setTimePeriod = (
-    value: number,
-    unit: "days" | "months" | "years",
-    resetHours: boolean = true,
-    btnSelected: TSelectedPeriod = "custom",
-  ) => {
-    const start = new Date();
-    const end = new Date();
-    setLastBtnSelected(btnSelected);
-
-    if (resetHours) {
-      start.setHours(0, 0, 0, 0);
-      end.setHours(0, 0, 0, 0);
-    }
-
-    const timeSetters = {
-      days: (date: Date, value: number) => date.setDate(date.getDate() - value),
-      months: (date: Date, value: number) => date.setMonth(date.getMonth() - value),
-      years: (date: Date, value: number) => date.setFullYear(date.getFullYear() - value),
-    };
-
-    timeSetters[unit](start, value);
-
-    setStartDate(start);
-    setEndDate(end);
-  };
-
-  const handleLast24Hours = () => setTimePeriod(1, "days", false, "24h");
-  const handleLastWeekBtn = () => setTimePeriod(7, "days", true, "week");
-  const handleLastMonthBtn = () => setTimePeriod(1, "months", true, "month");
-  const handleLast6MonthsBtn = () => setTimePeriod(6, "months", true, "6months");
-  const handleLastYearBtn = () => setTimePeriod(1, "years", true, "year");
 
   const handleOutsideClickDate = () => {
     setStartDate(startDateDisplayed);
@@ -349,19 +305,22 @@ const ChainActivity = () => {
             count: item.count,
             emitter_chain: item.emitter_chain,
             details: item.details,
+            color: "#7abfff",
           })),
           color: "#7abfff",
         },
       ];
 
       const dateList = getDateList();
-      const completeData = dateList.reduce((obj: TCompleteData, date: string) => {
+      const completeData = dateList.reduce((obj: ICompleteData, date: string) => {
         obj[date] = {
+          color: "#fff",
+          count: 0,
+          details: [],
+          emitter_chain: "allChains",
+          volume: 0,
           x: date,
           y: 0,
-          volume: 0,
-          count: 0,
-          emitter_chain: "allChains",
         };
         return obj;
       }, {});
@@ -401,6 +360,7 @@ const ChainActivity = () => {
         volume: item.volume,
         count: item.count,
         emitter_chain: item.emitter_chain,
+        color: colors[+item.emitter_chain] ? colors[+item.emitter_chain] : "#fff",
       });
 
       allDates[formatDate] = true;
@@ -421,6 +381,7 @@ const ChainActivity = () => {
             volume: 0,
             count: 0,
             emitter_chain: chain,
+            color: colors[+chain] ? colors[+chain] : "#fff",
           }
         );
       });
@@ -439,10 +400,10 @@ const ChainActivity = () => {
     const newSeries = Object.keys(dataByChain).map(chain => ({
       name: getChainName({
         network: currentNetwork,
-        chainId: parseInt(chain),
+        chainId: +chain,
       }),
       data: dataByChain[chain],
-      color: colors[parseInt(chain)] ? colors[parseInt(chain)] : "#fff",
+      color: colors[+chain] ? colors[+chain] : "#fff",
     }));
 
     const sumOfMessages = data.reduce((acc, item) => acc + item.count, 0);
@@ -519,134 +480,20 @@ const ChainActivity = () => {
               />
             </div>
 
-            <div className="chain-activity-chart-top-section" ref={dateContainerRef}>
-              <button
-                className="chain-activity-chart-top-section-btn"
-                onClick={() => setShowCalendar(!showCalendar)}
-              >
-                <span>
-                  {lastBtnSelected === "custom" ? (
-                    <>
-                      {startDateDisplayed &&
-                        new Date(startDateDisplayed).toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}{" "}
-                      -{" "}
-                      {endDateDisplayed &&
-                        new Date(endDateDisplayed).toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                    </>
-                  ) : lastBtnSelected === "24h" ? (
-                    "Last 24 hours"
-                  ) : lastBtnSelected === "week" ? (
-                    "Last week"
-                  ) : lastBtnSelected === "month" ? (
-                    "Last month"
-                  ) : lastBtnSelected === "6months" ? (
-                    "Last 6 months"
-                  ) : lastBtnSelected === "year" ? (
-                    "Last year"
-                  ) : (
-                    ""
-                  )}
-                </span>
-
-                <ChevronDownIcon
-                  style={{ transform: showCalendar ? "rotate(-180deg)" : "" }}
-                  width={24}
-                />
-              </button>
-
-              <div
-                className={`chain-activity-chart-top-section-box ${
-                  showCalendar ? "show-date" : ""
-                }`}
-              >
-                <div
-                  className={`chain-activity-chart-top-section-box-date-calendar ${
-                    startDate === endDate
-                      ? "chain-activity-chart-top-section-box-date-calendar-one-day-selected"
-                      : ""
-                  }`}
-                >
-                  <DatePicker
-                    {...({ swapRange: true } as any)}
-                    selected={startDate}
-                    onChange={(dates: [Date | null, Date | null]) => {
-                      const [start, end] = dates;
-                      start?.setHours(0, 0, 0, 0);
-                      end?.setHours(0, 0, 0, 0);
-
-                      if (start?.getTime() !== end?.getTime()) {
-                        setStartDate(start);
-                        setEndDate(end);
-                        setLastBtnSelected("custom");
-                      }
-                    }}
-                    startDate={startDate}
-                    endDate={endDate}
-                    selectsRange
-                    inline
-                    maxDate={new Date()}
-                    monthsShown={isDesktop ? 2 : 1}
-                    showMonthDropdown
-                  />
-
-                  <div className="chain-activity-chart-top-section-box-date-calendar-btns">
-                    <button
-                      className="done-btn"
-                      onClick={() => setShowCalendar(false)}
-                      disabled={!startDate || !endDate}
-                    >
-                      Done
-                    </button>
-                  </div>
-                </div>
-
-                <div className="chain-activity-chart-top-section-box-date-selector">
-                  <div>
-                    <button
-                      className={`btn ${lastBtnSelected === "24h" ? "active" : ""}`}
-                      onClick={handleLast24Hours}
-                    >
-                      Last 24 hours
-                    </button>
-                    <button
-                      className={`btn ${lastBtnSelected === "week" ? "active" : ""}`}
-                      onClick={handleLastWeekBtn}
-                    >
-                      Last week
-                    </button>
-                    <button
-                      className={`btn ${lastBtnSelected === "month" ? "active" : ""}`}
-                      onClick={handleLastMonthBtn}
-                    >
-                      Last month
-                    </button>
-                    <button
-                      className={`btn ${lastBtnSelected === "6months" ? "active" : ""}`}
-                      onClick={handleLast6MonthsBtn}
-                    >
-                      Last 6 months
-                    </button>
-                    <button
-                      className={`btn ${lastBtnSelected === "year" ? "active" : ""}`}
-                      onClick={handleLastYearBtn}
-                    >
-                      Last year
-                    </button>
-                    <button className={`btn ${lastBtnSelected === "custom" ? "active" : ""}`}>
-                      Custom
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Calendar
+              startDate={startDate}
+              setStartDate={setStartDate}
+              endDate={endDate}
+              setEndDate={setEndDate}
+              showCalendar={showCalendar}
+              setShowCalendar={setShowCalendar}
+              dateContainerRef={dateContainerRef}
+              lastBtnSelected={lastBtnSelected}
+              setLastBtnSelected={setLastBtnSelected}
+              startDateDisplayed={startDateDisplayed}
+              endDateDisplayed={endDateDisplayed}
+              isDesktop={isDesktop}
+            />
 
             <div className="chain-activity-chart-top-mobile-buttons">
               <button className="apply-btn" onClick={applyFilters}>
@@ -759,7 +606,7 @@ const ChainActivity = () => {
                     datetimeFormatter: {
                       hour: "HH:mm",
                       day: "dd MMM",
-                      month: "MMM 'yy",
+                      month: "MMM",
                       year: "yyyy",
                     },
                     datetimeUTC: true,
@@ -771,9 +618,9 @@ const ChainActivity = () => {
                       fontSize: "12px",
                       fontWeight: 400,
                     },
+                    trim: false,
                   },
                   type: "datetime",
-
                   tooltip: { enabled: false },
                 },
                 yaxis: {
@@ -826,7 +673,7 @@ const ChainActivity = () => {
                             return `
                             <div class="chain-activity-chart-tooltip-container-each-msg">
                                 <div class="chain-activity-chart-tooltip-container-each-msg-icon" style="background-color: ${
-                                  w.config.series[index].color
+                                  item.color
                                 }">
                                 </div>
                                 <div class="chain-activity-chart-tooltip-container-each-msg-name">
@@ -835,7 +682,7 @@ const ChainActivity = () => {
                                       ? "All Chains"
                                       : getChainName({
                                           network: currentNetwork,
-                                          chainId: parseInt(item.emitter_chain),
+                                          chainId: +item.emitter_chain,
                                         })
                                   }:
                                 </div>
@@ -878,15 +725,15 @@ const ChainActivity = () => {
                                           return `
                                         <div class="chain-activity-chart-tooltip-container-each-msg">
                                       <div class="chain-activity-chart-tooltip-container-each-msg-icon" style="background-color: ${
-                                        colors[parseInt(detail.emitter_chain)]
-                                          ? colors[parseInt(detail.emitter_chain)]
+                                        colors[+detail.emitter_chain]
+                                          ? colors[+detail.emitter_chain]
                                           : "#fff"
                                       }">
                                       </div>
                                       <div class="chain-activity-chart-tooltip-container-each-msg-name">
                                         ${getChainName({
                                           network: currentNetwork,
-                                          chainId: parseInt(detail.emitter_chain),
+                                          chainId: +detail.emitter_chain,
                                         })}:
                                       </div>
                                       <div class="chain-activity-chart-tooltip-container-each-msg-number">
@@ -928,40 +775,39 @@ interface IColors {
   [key: number]: string;
 }
 
-interface IDataDetails {
-  from: string;
-  to: string;
+interface IDetails {
   emitter_chain: string;
   volume: number;
   count: number;
-  details: {
-    emitter_chain: string;
-    volume: number;
-    count: number;
-  }[];
 }
 
 interface IAccumulator {
-  [key: string]: IDataDetails;
+  [key: string]: IChainActivityDetails;
 }
 
-interface IData {
-  x: string;
-  y: number;
-  volume: number;
-  count: number;
-  emitter_chain: string;
+interface IChainActivityDetails extends IChainActivity {
+  details: IDetails[];
 }
 
 interface IChainList {
+  icon: JSX.Element;
   label: string;
   value: string;
-  icon: JSX.Element;
 }
 
-type TCompleteData = Record<string, IData>;
+interface ICompleteData {
+  [key: string]: {
+    color: string;
+    count: number;
+    details: IDetails[];
+    emitter_chain: string;
+    volume: number;
+    x: string;
+    y: number;
+  };
+}
 
-type TSelectedPeriod = "24h" | "week" | "month" | "6months" | "year" | "custom";
+export type TSelectedPeriod = "24h" | "week" | "month" | "6months" | "year" | "custom";
 
 const colors: IColors = {
   0: "#FD8058",
@@ -1019,5 +865,10 @@ function startOfDayUTC(date: Date) {
 function startOfMonthUTC(date: Date) {
   return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
 }
+
+const calculateDateDifferenceInDays = (start: Date, end: Date) => {
+  const millisecondsPerDay = 1000 * 60 * 60 * 24;
+  return end && start ? Math.floor((end.getTime() - start.getTime()) / millisecondsPerDay) : 0;
+};
 
 export default ChainActivity;

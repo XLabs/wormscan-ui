@@ -75,11 +75,11 @@ export interface IChainActivityInput {
 }
 
 export interface IChainActivity {
+  count: number;
+  emitter_chain: string;
   from: string;
   to: string;
-  emitter_chain: string;
   volume: number;
-  count: number;
 }
 
 export type DateRange = "day" | "week" | "month" | "3-month";

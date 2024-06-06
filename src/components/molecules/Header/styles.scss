@@ -238,6 +238,7 @@
       height: inherit;
       padding-left: 48px;
       width: 100%;
+      z-index: 1;
 
       &::placeholder {
         color: var(--color-white);
