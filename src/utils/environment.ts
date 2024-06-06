@@ -64,6 +64,7 @@ const TESTNET_RPCS: { [key in ChainName]?: string } = {
   bsc: "https://data-seed-prebsc-2-s3.binance.org:8545",
   celo: "https://alfajores-forno.celo-testnet.org",
   ethereum: "https://rpc.ankr.com/eth_goerli",
+  fantom: "https://rpc.testnet.fantom.network",
   moonbeam: "https://rpc.api.moonbase.moonbeam.network",
   sepolia: "https://ethereum-sepolia.publicnode.com",
   optimism: "https://goerli.optimism.io",
@@ -175,6 +176,16 @@ export const testnetEnv: Environment = {
       nativeCurrencyName: "AVAX",
       relayerContractAddress: "0xA3cF45939bD6260bcFe3D66bc73d60f19e49a8BB",
       rpcUrl: TESTNET_RPCS.avalanche || "",
+    },
+    {
+      chainId: 10 as ChainId,
+      chainName: "Fantom",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 4002,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "FTM",
+      relayerContractAddress: "", // TODO: ADD
+      rpcUrl: TESTNET_RPCS.fantom || "",
     },
     {
       chainId: 14 as ChainId,
