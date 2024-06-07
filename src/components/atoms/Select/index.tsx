@@ -97,7 +97,7 @@ const Select = ({
                 styles={{
                   menuPortal: base => ({
                     ...base,
-                    zIndex: 99,
+                    zIndex: 95,
                   }),
                   menu: base => ({
                     ...base,
@@ -105,7 +105,7 @@ const Select = ({
                     width: "calc(100% + 32px)",
                     left: -16,
                     borderRadius: 0,
-                    zIndex: 99,
+                    zIndex: 95,
                   }),
                   control: base => ({
                     cursor: "text !important",
@@ -184,7 +184,7 @@ const Select = ({
       options={items}
       placeholder={placeholder}
       styles={{
-        menuPortal: base => ({ ...base, zIndex: 1000 }),
+        menuPortal: base => ({ ...base, zIndex: 95 }),
         option: base =>
           type === "secondary"
             ? {
