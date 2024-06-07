@@ -14,6 +14,7 @@ import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import { formatNumber } from "src/utils/number";
 import { AnalyticsIcon, CrossIcon, FilterListIcon, GlobeIcon } from "src/icons/generic";
 import { IChainActivity } from "src/api/guardian-network/types";
+import { calculateDateDifferenceInDays, startOfDayUTC, startOfMonthUTC } from "src/utils/date";
 import { Calendar } from "./Calendar";
 import "./styles.scss";
 
@@ -120,7 +121,7 @@ const ChainActivity = () => {
     const dateList: string[] = [];
     const dateDifferenceInDays = calculateDateDifferenceInDays(start, end);
 
-    if (dateDifferenceInDays < 4) {
+    if (dateDifferenceInDays < 6) {
       start.setUTCHours(start.getUTCHours(), 0, 0, 0);
       end.setUTCHours(end.getUTCHours(), 0, 0, 0);
       while (start < end) {
@@ -262,7 +263,7 @@ const ChainActivity = () => {
     if (startDate && endDate) {
       const dateDifferenceInDays = calculateDateDifferenceInDays(startDate, endDate);
 
-      const timespan = dateDifferenceInDays < 4 ? "1h" : dateDifferenceInDays < 365 ? "1d" : "1mo";
+      const timespan = dateDifferenceInDays < 6 ? "1h" : dateDifferenceInDays < 365 ? "1d" : "1mo";
 
       const newFrom = new Date(startDate);
 
@@ -601,7 +602,7 @@ const ChainActivity = () => {
                   crosshairs: {
                     position: "front",
                   },
-                  stepSize: 1,
+                  max: new Date(series?.[0]?.data[series[0].data.length - 1].x).getTime() - 1,
                   labels: {
                     datetimeFormatter: {
                       hour: "HH:mm",
@@ -609,7 +610,7 @@ const ChainActivity = () => {
                       month: "MMM",
                       year: "yyyy",
                     },
-                    datetimeUTC: true,
+                    datetimeUTC: false,
                     hideOverlappingLabels: true,
                     offsetX: 0,
                     style: {
@@ -857,18 +858,5 @@ const colors: IColors = {
 };
 
 const DAY_IN_MILLISECONDS = 86400000;
-
-function startOfDayUTC(date: Date) {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
-}
-
-function startOfMonthUTC(date: Date) {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
-}
-
-const calculateDateDifferenceInDays = (start: Date, end: Date) => {
-  const millisecondsPerDay = 1000 * 60 * 60 * 24;
-  return end && start ? Math.floor((end.getTime() - start.getTime()) / millisecondsPerDay) : 0;
-};
 
 export default ChainActivity;

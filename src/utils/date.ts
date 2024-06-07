@@ -70,3 +70,16 @@ export const formatDate = (date: string | number | Date): string => {
 
   return formattedDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
 };
+
+export const startOfDayUTC = (date: Date) => {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+};
+
+export const startOfMonthUTC = (date: Date) => {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
+};
+
+export const calculateDateDifferenceInDays = (start: Date, end: Date) => {
+  const millisecondsPerDay = 1000 * 60 * 60 * 24;
+  return end && start ? Math.floor((end.getTime() - start.getTime()) / millisecondsPerDay) : 0;
+};
