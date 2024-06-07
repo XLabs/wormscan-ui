@@ -13,6 +13,7 @@
     margin-bottom: 40px;
     margin-top: 32px;
     width: 100%;
+    z-index: 99;
 
     @include desktop {
       gap: 12px;
@@ -156,12 +157,26 @@
 
       &-content {
         @include centered-column;
-        background-color: var(--color-gray-900);
         border-radius: 24px;
         flex-grow: 1;
-        margin-top: 16px;
-        padding: 12px 8px;
+        padding-top: 22px;
         position: absolute;
+        z-index: 99;
+
+        & > a {
+          background-color: var(--color-gray-900);
+          padding: 4px 8px;
+
+          &:first-child {
+            border-radius: 24px 24px 0 0;
+            padding-top: 16px;
+          }
+
+          &:last-child {
+            border-radius: 0 0 24px 24px;
+            padding-bottom: 16px;
+          }
+        }
       }
 
       button {
@@ -200,6 +215,7 @@
       box-shadow: none;
       grid-column: 2;
       grid-row: 1;
+      height: 54px;
     }
 
     & > .header-container-links {
