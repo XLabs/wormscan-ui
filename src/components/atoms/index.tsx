@@ -1,10 +1,12 @@
 export { default as AddToMetaMaskBtn } from "./AddToMetaMaskBtn";
 export { default as Alert } from "./Alert";
 export { default as BlockchainIcon } from "./BlockchainIcon";
+export { default as Checkbox } from "./Checkbox";
 export { default as Chip } from "./Chip";
 export { default as JsonText } from "./JsonText";
 export { default as Link } from "./Link";
 export { default as Loader } from "./Loader";
+export { default as MaintenanceMessage } from "./MaintenanceMessage";
 export { default as NavLink } from "./NavLink";
 export { default as Pagination } from "./Pagination";
 export { default as Select } from "./Select";

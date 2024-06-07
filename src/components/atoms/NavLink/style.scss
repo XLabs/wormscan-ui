@@ -1,5 +1,10 @@
 .navlink {
   &:hover {
-    color: var(--color-secondary-700);
+    color: var(--color-white);
+  }
+
+  &.active {
+    opacity: 1;
+    color: var(--color-white);
   }
 }

@@ -1,25 +1,13 @@
 @import "src/styles/globals.scss";
 
 .wormhole-stats {
-  @include card-container;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  gap: 56px 0;
-  justify-content: space-between;
-  min-height: 588px;
-  width: 100%;
-
-  @include tablet {
-    min-height: 610px;
-  }
+  @include centered-column;
+  margin-bottom: 40px;
+  min-height: 247px;
 
   @include desktop {
-    align-items: flex-start;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0;
-    min-height: 110px;
+    margin-bottom: 60px;
+    min-height: 89px;
   }
 
   &-loader {
@@ -33,56 +21,56 @@
     width: 100%;
   }
 
-  &-title {
-    @include centered-row;
-    gap: 16px;
-    color: var(--color-primary-90);
-    font-weight: 500;
-
-    @include desktop {
-      padding: 4px 24px 24px 0;
-    }
-
-    &:hover {
-      color: var(--color-primary-30);
-    }
-  }
-
   &-container {
-    @include centered-column;
-    align-items: center;
-    gap: 56px 80px;
+    display: grid;
+    gap: 36px;
+    grid-template-columns: repeat(2, 1fr);
+    padding-bottom: 24px;
+    position: relative;
 
     @include desktop {
-      align-items: flex-start;
-      flex-direction: row;
-      flex-wrap: wrap;
-      margin: 0 auto;
-      gap: 24px 50px;
-    }
-
-    @include bigDesktop {
-      gap: 24px 80px;
+      @include centered-row;
+      gap: 24px;
+      justify-content: space-between;
+      padding-bottom: 32px;
     }
 
     &-item {
-      @include centered-column;
-      align-items: center;
-      justify-content: flex-start;
+      display: flex;
+      flex-direction: column;
 
       @include desktop {
         align-items: flex-start;
       }
 
-      &-title {
-        @include text-p1;
+      &:nth-last-child(2) {
+        margin-top: 12px;
 
-        color: var(--color-primary-150);
-        font-size: 14px;
-        font-weight: 500;
+        @include desktop {
+          margin-top: 0;
+        }
+
+        & .wormhole-stats-container-item-title {
+          display: none;
+
+          @include desktop {
+            display: block;
+          }
+        }
+      }
+
+      &-title {
+        @include text-heading6;
+        color: var(--color-gray-400);
+        height: 18px;
         margin-bottom: 8px;
         min-width: max-content;
         text-transform: uppercase;
+
+        &-time {
+          @include text-heading6;
+          color: var(--color-white-30);
+        }
 
         & svg {
           margin-left: 8px;
@@ -91,43 +79,33 @@
       }
 
       &-value {
-        @include text-h5;
+        @include text-heading4;
+        color: var(--color-white);
+        font-size: 20px;
 
-        color: var(--color-primary-10);
-        font-weight: 500;
+        &-link {
+          @include centered-row;
+          @include text-roboto-body-400;
+          color: var(--color-white);
+          cursor: pointer;
+          gap: 4px;
+          max-width: max-content;
+          text-decoration: underline solid var(--color-gray-600);
+
+          &:hover {
+            text-decoration-color: var(--color-white);
+          }
+        }
       }
     }
-  }
 
-  & .w-187 {
-    width: 187px;
-  }
-}
-
-.wormhole-stats-testnet {
-  @include centered-column;
-  justify-content: space-between;
-
-  @include tablet {
-    min-width: 426px;
-  }
-
-  & > .wormhole-stats-error {
-    height: 242px;
-    margin-top: auto;
-  }
-
-  @include desktop {
-    & .wormhole-stats-title {
-      padding: 0;
-    }
-
-    & .wormhole-stats-container {
-      max-width: 410px;
-
-      &-item {
-        width: 164px;
-      }
+    &-line {
+      background-color: var(--color-gray-900);
+      bottom: 0;
+      height: 1px;
+      left: -120px;
+      position: absolute;
+      width: calc(100% + 240px);
     }
   }
 }

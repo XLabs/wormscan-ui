@@ -1,6 +1,7 @@
 import { numberToSuffix } from "./number";
 
 export const formatterYAxis = (() => {
+  let allBillionsYIncludePointZero = false;
   let allMillionsYIncludePointZero = false;
   let allThousandsYIncludePointZero = false;
   let allUnderThousandYIncludePointZero = false;
@@ -14,6 +15,10 @@ export const formatterYAxis = (() => {
         return value < 1000 ? Number(value).toFixed(1) : numberToSuffix(value);
       });
 
+      allBillionsYIncludePointZero = allYAxisFormatted
+        .filter((value: string) => value.includes("B"))
+        .every((value: string) => value.includes(".0"));
+
       allMillionsYIncludePointZero = allYAxisFormatted
         .filter((value: string) => value.includes("M"))
         .every((value: string) => value.includes(".0"));
@@ -25,6 +30,10 @@ export const formatterYAxis = (() => {
       allUnderThousandYIncludePointZero = allYAxisFormatted
         .filter((value: string) => !value.includes("K") && !value.includes("M"))
         .every((value: string) => value.includes(".0"));
+    }
+
+    if (vol >= 1000000000 && allBillionsYIncludePointZero) {
+      result = result.replace(".0", "");
     }
 
     if (vol >= 1000000 && allMillionsYIncludePointZero) {

@@ -14,14 +14,7 @@ type Props = {
   className?: string;
 };
 
-const ToggleGroup = ({
-  value,
-  onValueChange,
-  items,
-  ariaLabel,
-  separatedOptions = false,
-  className = "",
-}: Props) => (
+const ToggleGroup = ({ value, onValueChange, items, ariaLabel, className = "" }: Props) => (
   <div className={`toggle-group ${className}`}>
     <ToggleGroupPrimitive.Root
       type="single"
@@ -33,7 +26,7 @@ const ToggleGroup = ({
       {items.map(({ label, value, ariaLabel = "" }) => (
         <ToggleGroupPrimitive.Item
           key={value}
-          className={`toggle-group-item ${separatedOptions ? "separated" : "grouped"}`}
+          className="toggle-group-item"
           value={value}
           aria-label={ariaLabel}
         >

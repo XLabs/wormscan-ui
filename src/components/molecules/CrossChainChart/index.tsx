@@ -8,8 +8,19 @@ import { ErrorPlaceholder } from "src/components/molecules";
 import { getClient } from "src/api/Client";
 import { CrossChainBy } from "src/api/guardian-network/types";
 import { Chart } from "./Chart";
-import "./styles.scss";
 import { ChainId } from "src/api";
+import { SwapSmallVerticalIcon, GlobeIcon, ChevronDownIcon } from "src/icons/generic";
+import "./styles.scss";
+import { useWindowSize } from "src/utils/hooks/useWindowSize";
+
+interface ICsvRow {
+  "Target Chain": number;
+  "Target Percentage": number;
+  "Target Volume": string;
+  "Source Chain": number;
+  "Source Percentage": number;
+  "Source Volume": string;
+}
 
 const MAINNET_TYPE_LIST = [
   { label: i18n.t("home.crossChain.volume"), value: "notional", ariaLabel: "Volume" },
@@ -28,6 +39,20 @@ const RANGE_LIST = [
   { label: "All Time", value: "all-time" },
 ];
 
+const DOWNLOADABLE_LIST = [
+  { label: "Download CSV", value: "csv" },
+  { label: "Download PNG", value: "png" },
+];
+
+const TABLE_HEADERS = [
+  "Source Chain",
+  "Source Volume",
+  "Source Percentage",
+  "Target Chain",
+  "Target Volume",
+  "Target Percentage",
+];
+
 const CrossChainChart = () => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
@@ -41,6 +66,9 @@ const CrossChainChart = () => {
   );
   const isSources = selectedDestination === "sources";
   const prevChain = useRef<ChainId>(null);
+
+  const { width } = useWindowSize();
+  const isDesktop = width >= 1024;
 
   useEffect(() => {
     if (currentNetwork === "MAINNET") {
@@ -61,39 +89,148 @@ const CrossChainChart = () => {
     { cacheTime: 0 },
   );
 
+  const handleDownloadAs = (downloadAs: "csv" | "png") => {
+    if (!data) return;
+
+    const csvData: any = [];
+    data.forEach(item => {
+      item.destinations.sort((a, b) => b.percentage - a.percentage);
+      item.destinations.forEach(dest => {
+        csvData.push({
+          "Source Chain": item.chain,
+          "Source Volume": item.volume,
+          "Source Percentage": item.percentage,
+          "Target Chain": dest.chain,
+          "Target Volume": dest.volume,
+          "Target Percentage": dest.percentage,
+        });
+      });
+    });
+
+    csvData.sort((a: ICsvRow, b: ICsvRow) => b["Source Percentage"] - a["Source Percentage"]);
+
+    if (downloadAs === "csv") {
+      const rows = csvData.map(
+        (row: ICsvRow) =>
+          `${row["Source Chain"]},${row["Source Volume"]},${row["Source Percentage"]},${row["Target Chain"]},${row["Target Volume"]},${row["Target Percentage"]}`,
+      );
+
+      const csvContent = [TABLE_HEADERS.join(","), ...rows].join("\n");
+      createDownloadLink(
+        csvContent,
+        "text/csv",
+        `Cross-chain activity - ${selectedTimeRange.label}.csv`,
+      );
+    } else if (downloadAs === "png") {
+      const rows = csvData.map((row: ICsvRow) => [
+        row["Source Chain"],
+        row["Source Volume"],
+        row["Source Percentage"],
+        row["Target Chain"],
+        row["Target Volume"],
+        row["Target Percentage"],
+      ]);
+
+      const tableData = [TABLE_HEADERS, ...rows];
+
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      const cellPadding = isDesktop ? 8 : 6;
+      const cellHeight = isDesktop ? 32 : 20;
+      const fontSize = isDesktop ? 16 : 12;
+      const font = `${fontSize}px Roboto, sans-serif`;
+      context.font = font;
+
+      const columnWidths = TABLE_HEADERS.map((header, i) => {
+        return (
+          Math.max(
+            context.measureText(header).width,
+            ...rows.map((row: Array<string | number>) => context.measureText(`${row[i]}`).width),
+          ) +
+          cellPadding * 2
+        );
+      });
+
+      const tableWidth = columnWidths.reduce((a, b) => a + b, 0);
+      const tableHeight = tableData.length * cellHeight;
+
+      canvas.width = tableWidth;
+      canvas.height = tableHeight;
+
+      context.fillStyle = "white";
+      context.fillRect(0, 0, tableWidth, tableHeight);
+      context.strokeStyle = "black";
+      context.lineWidth = 1;
+      context.font = font;
+
+      tableData.forEach((row, rowIndex) => {
+        row.forEach((cell: number | string, colIndex: number) => {
+          const x = columnWidths.slice(0, colIndex).reduce((a, b) => a + b, 0);
+          const y = rowIndex * cellHeight;
+
+          context.strokeRect(x, y, columnWidths[colIndex], cellHeight);
+
+          context.fillStyle = "black";
+          context.fillText(`${cell}`, x + cellPadding, y + cellHeight / 2 + fontSize / 2 - 2);
+        });
+      });
+
+      canvas.toBlob(blob => {
+        try {
+          createDownloadLink(
+            blob,
+            "image/png",
+            `Cross-chain activity - ${selectedTimeRange.label}.png`,
+          );
+        } catch (error) {
+          console.log("Error creating blob", error);
+        }
+      }, "image/png");
+    }
+  };
+
   return (
     <div className="cross-chain" data-testid="cross-chain-card">
-      <div className="cross-chain-title">{t("home.crossChain.title")}</div>
+      <div className="cross-chain-top">
+        <div className="cross-chain-top-title">
+          <GlobeIcon width={24} />
+          {t("home.crossChain.title")}
+        </div>
+
+        <Select
+          ariaLabel="Select Download Format"
+          className="cross-chain-top-download"
+          items={DOWNLOADABLE_LIST}
+          name="downloadAs"
+          onValueChange={({ value }) => handleDownloadAs(value)}
+          placeholder="Download"
+          value={{ label: "Download", value: "" }}
+        />
+      </div>
 
       <div className="cross-chain-options">
         {currentNetwork === "MAINNET" ? (
           <ToggleGroup
-            value={selectedType}
-            onValueChange={value => setSelectedType(value)}
-            items={TYPE_LIST}
             ariaLabel="Select type"
             className="cross-chain-options-items"
+            items={TYPE_LIST}
+            onValueChange={value => setSelectedType(value)}
+            value={selectedType}
           />
         ) : (
           <div className="cross-chain-options-txsText">Transactions</div>
         )}
 
-        <div className="cross-chain-destination" aria-label="Select graphic type">
+        <div className="cross-chain-destination">
           <button
-            onClick={() => setSelectedDestination("sources")}
-            className={`cross-chain-destination-btn ${
-              isSources ? "cross-chain-destination-btn-selected" : ""
-            }`}
+            aria-label="Select graphic type"
+            className="cross-chain-destination-button"
+            onClick={() => setSelectedDestination(isSources ? "destinations" : "sources")}
           >
-            Source
-          </button>
-          <button
-            onClick={() => setSelectedDestination("destinations")}
-            className={`cross-chain-destination-btn ${
-              isSources ? "" : "cross-chain-destination-btn-selected"
-            }`}
-          >
-            Target
+            <SwapSmallVerticalIcon width={24} />
+
+            {isSources ? "Source to Target" : "Target to Source"}
           </button>
         </div>
 
@@ -111,36 +248,38 @@ const CrossChainChart = () => {
         </div>
       </div>
 
-      {isLoading || isFetching ? (
-        <Loader />
-      ) : (
-        <>
-          {isError ? (
-            <ErrorPlaceholder errorType="sankey" />
-          ) : (
-            <Chart
-              currentNetwork={currentNetwork}
-              data={data}
-              prevChain={prevChain}
-              selectedDestination={selectedDestination}
-              selectedType={selectedType}
-              selectedTimeRange={selectedTimeRange.value}
-            />
-          )}
-        </>
-      )}
-
-      <div className="cross-chain-message">
-        {selectedDestination === "destinations" && (
-          <div>{t("home.crossChain.bottomMessageDestinations")}</div>
-        )}
-        <div>Wormhole Activity</div>
-        {selectedDestination === "sources" && (
-          <div>{t("home.crossChain.bottomMessageSources")}</div>
+      <div className="cross-chain-relative">
+        {isLoading || isFetching ? (
+          <Loader />
+        ) : (
+          <>
+            {isError ? (
+              <ErrorPlaceholder errorType="sankey" />
+            ) : (
+              <Chart
+                currentNetwork={currentNetwork}
+                data={data}
+                prevChain={prevChain}
+                selectedDestination={selectedDestination}
+                selectedType={selectedType}
+                selectedTimeRange={selectedTimeRange.value}
+              />
+            )}
+          </>
         )}
       </div>
     </div>
   );
+};
+
+const createDownloadLink = (content: BlobPart, type: string, filename: string) => {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
 };
 
 export default CrossChainChart;

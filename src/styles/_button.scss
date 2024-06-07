@@ -1,28 +1,78 @@
-@mixin button {
+@mixin button-primary {
   @include centered-row;
-  @include text-button;
-
-  justify-content: center;
-  gap: 8px;
+  @include text-roboto-body-500;
+  background: var(--color-primary-100);
+  border-radius: 27px;
+  border: none;
+  color: var(--color-black);
   cursor: pointer;
-  border-radius: 8px;
-  padding: 8px 16px;
-  background-clip: padding-box;
-  border: 3px solid transparent;
-}
-
-@mixin button-secondary {
-  @include button;
-
-  color: var(--color-primary-800);
-  background-color: var(--color-secondary-800);
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  text-decoration: none;
+  white-space: nowrap;
 
   &:hover {
-    background-color: var(--color-secondary-600);
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)),
+      var(--color-primary-100);
   }
 
   &:active {
-    background-color: var(--color-secondary-600);
-    border: 3px solid #f7909f80;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+      var(--color-primary-100);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  & > svg {
+    transition: transform 0.2s ease;
+  }
+}
+
+@mixin button-secondary {
+  @include button-primary;
+  background: var(--color-gray-900);
+  color: var(--color-white);
+
+  &:hover {
+    background: var(--color-gray-800);
+  }
+
+  &:active {
+    background: var(--color-gray-900);
+  }
+}
+
+@mixin button-ghost {
+  @include centered-row;
+  @include text-roboto-body-400;
+  background: transparent;
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  text-decoration: underline 1px var(--color-gray-600);
+
+  &:hover {
+    text-decoration-color: var(--color-gray-400);
+  }
+
+  &:active {
+    text-decoration-color: var(--color-gray-600);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+@mixin dropdown {
+  @include button-secondary;
+  padding-right: 8px;
+  cursor: pointer !important;
+
+  &:active {
+    background: var(--color-gray-800);
   }
 }

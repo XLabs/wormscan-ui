@@ -1,14 +1,13 @@
 type Props = {
   width: number;
-  height: number;
 };
 
-const XlabsIcon = ({ width, height }: Props) => (
+const XlabsIcon = ({ width }: Props) => (
   <svg
     version="1.1"
     id="svg1"
     width={width}
-    height={height}
+    height={width / 0.79279279279}
     viewBox="0 0 259.3873 327.19962"
     xmlns="http://www.w3.org/2000/svg"
   >

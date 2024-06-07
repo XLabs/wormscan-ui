@@ -1,0 +1,149 @@
+@import "src/styles/globals.scss";
+
+.top-assets {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 64px;
+  position: relative;
+
+  @include desktop {
+    gap: 8px;
+  }
+
+  &-loader {
+    @include centered-row;
+    height: 100%;
+    justify-content: center;
+  }
+
+  &-header {
+    @include centered-column;
+    gap: 24px;
+    width: 100%;
+
+    @include desktop {
+      @include centered-row;
+      justify-content: space-between;
+    }
+
+    &-title {
+      @include centered-row;
+      @include text-roboto-subheading-500;
+      gap: 8px;
+    }
+
+    &-select-container {
+      align-items: center;
+      display: flex;
+      gap: 16px;
+    }
+  }
+
+  &-body {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    min-height: 512px;
+    position: relative;
+    width: 100%;
+
+    @include desktop {
+      min-height: 600px;
+    }
+
+    &-table {
+      border-collapse: collapse;
+      flex: 1;
+      width: 100%;
+
+      @include desktop {
+        flex: 0.8;
+        margin-bottom: auto;
+      }
+
+      & > thead {
+        & > tr {
+          & > th {
+            @include text-heading6;
+            color: var(--color-gray-400);
+            height: 64px;
+            padding: 0 8px;
+            text-align: end;
+            white-space: nowrap;
+
+            @include tablet {
+              padding: 0 16px;
+            }
+
+            @include desktop {
+              padding: 0 8px;
+            }
+
+            @include bigDesktop {
+              padding: 0 16px;
+            }
+
+            &:first-child {
+              text-align: center;
+              width: 10%;
+
+              @include tablet {
+                width: 15%;
+              }
+
+              @include desktop {
+                width: 10%;
+              }
+
+              @media (min-width: 1900px) {
+                width: 15%;
+              }
+            }
+
+            &:nth-child(2) {
+              text-align: start;
+              width: 30%;
+            }
+
+            &:nth-child(3) {
+              width: 30%;
+
+              @include tablet {
+                width: 20%;
+              }
+
+              @include desktop {
+                width: 30%;
+              }
+
+              @media (min-width: 1900px) {
+                width: 20%;
+              }
+            }
+
+            &:nth-child(4) {
+              width: 20%;
+
+              @include tablet {
+                width: 25%;
+              }
+
+              @media (min-width: 1900px) {
+                width: 35%;
+              }
+            }
+
+            &:nth-child(5) {
+              width: 10%;
+
+              @include desktop {
+                display: none;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

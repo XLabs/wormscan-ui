@@ -2,127 +2,20 @@
 
 .toggle-group {
   @include centered-row;
+  gap: 12px;
 
   &-root {
-    display: inline-flex;
-    min-height: inherit;
-    height: inherit;
-    width: inherit;
+    @include centered-row;
+    gap: 12px 6px;
   }
 
   &-item {
-    @include text-p2-bold;
-
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-clip: padding-box;
-    background-color: rgba(1, 0, 20, 0.65);
-    border: 2px solid var(--color-white-05);
-    color: var(--color-primary-150);
-    padding: 8px 16px;
-
-    cursor: pointer;
-    white-space: nowrap;
-
-    &:hover {
-      color: var(--color-white);
-      background-color: var(--color-white-10);
-    }
-
-    &:active {
-      color: var(--color-white);
-      background-color: var(--color-secondary-800);
-      border-color: var(--color-secondary-800);
-    }
-
-    &.grouped {
-      font-weight: 400;
-      height: 48px;
-
-      &:active::before {
-        content: "";
-        position: absolute;
-        z-index: 1;
-        top: -3px;
-        left: -1px;
-        right: -1px;
-        bottom: -3px;
-        border: 3px solid #ff2a5780;
-        border-left: none;
-        border-right: none;
-      }
-
-      &:first-child {
-        border-top-left-radius: 8px;
-        border-bottom-left-radius: 8px;
-        border-right: none;
-
-        &::before {
-          border-top-left-radius: 10px;
-          border-bottom-left-radius: 10px;
-          border-left: 3px solid #ff2a5780;
-          left: -3px;
-          right: 0;
-        }
-      }
-
-      &:last-child {
-        border-top-right-radius: 8px;
-        border-bottom-right-radius: 8px;
-        border-left: none;
-
-        &::before {
-          border-top-right-radius: 10px;
-          border-bottom-right-radius: 10px;
-          border-right: 3px solid #ff2a5780;
-          right: -3px;
-          left: 0;
-        }
-      }
-    }
-
-    &.separated {
-      @include text-p2;
-
-      border-radius: 8px;
-      border: 1px solid var(--color-white-05);
-      font-weight: 600;
-      height: 32px;
-      width: 56px;
-
-      &:active::before {
-        content: "";
-        position: absolute;
-        z-index: 1;
-        inset: -3px;
-        border: 3px solid #ff2a5780;
-        border-radius: 10px;
-      }
-
-      & + & {
-        margin-left: 16px;
-      }
-    }
+    @include button-secondary;
+    background-color: transparent;
+    color: var(--color-gray-400);
 
     &[data-state="on"] {
-      background-color: var(--color-secondary-800);
-      border: none;
-      color: var(--color-primary-10);
-      font-weight: 600;
-
-      &:active::before {
-        border: 3px solid #ff2a5780;
-        bottom: -1px;
-        content: "";
-        left: -1px;
-        position: absolute;
-        right: -1px;
-        top: -1px;
-        z-index: 1;
-      }
+      @include button-secondary;
     }
   }
 }

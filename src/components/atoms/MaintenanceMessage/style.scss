@@ -1,0 +1,42 @@
+@import "src/styles/globals.scss";
+
+.maintenance-message {
+  display: flex;
+  gap: 12px;
+  padding: 16px 0;
+  text-wrap: pretty;
+
+  @include desktop {
+    margin-top: 24px;
+    padding: 0;
+  }
+
+  &-icon {
+    align-items: center;
+    background-color: var(--color-primary-10);
+    border-radius: 50%;
+    display: flex;
+    height: 34px;
+    justify-content: center;
+    width: 34px;
+
+    &-dot {
+      background-color: var(--color-primary-100);
+      border-radius: 50%;
+      height: 8px;
+      width: 8px;
+    }
+  }
+
+  &-text {
+    @include text-heading6;
+    color: var(--color-gray-300);
+    height: 48px;
+    max-width: 303px;
+    text-transform: uppercase;
+
+    @include desktop {
+      max-width: 391px;
+    }
+  }
+}

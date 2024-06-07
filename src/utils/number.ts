@@ -31,7 +31,9 @@ export const formatNumber = (value: number, decimals?: number) => {
 };
 
 export const numberToSuffix = (val: number): string => {
-  if (val >= 1000000000) {
+  if (val >= 1000000000000) {
+    return (val / 1000000000000).toFixed(1) + "T";
+  } else if (val >= 1000000000) {
     return (val / 1000000000).toFixed(1) + "B";
   } else if (val >= 1000000) {
     return (val / 1000000).toFixed(1) + "M";

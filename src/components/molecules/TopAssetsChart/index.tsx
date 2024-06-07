@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BREAKPOINTS } from "src/consts";
 import { BlockchainIcon } from "src/components/atoms";
-import { WormholeBrand } from "src/components/molecules";
+import { WormholeScanBrand } from "src/components/molecules";
 import { formatterYAxis } from "src/utils/apexChartUtils";
 import { AssetsByVolumeTransformed } from "src/api/guardian-network/types";
 import NoColorlessIcon from "src/icons/blockchains/colorless/noIcon.svg";
@@ -60,7 +60,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
 
   return (
     <div className="chart-container" ref={chartDomRef}>
-      <WormholeBrand size="regular" />
+      <WormholeScanBrand />
 
       <div>
         {XPositionLabels?.map(({ y, x }, i) => (
@@ -70,19 +70,19 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
             style={{
               position: "absolute",
               top: isMobile
-                ? Number(y) + 35
+                ? Number(y) + 60
                 : isTabletOrMobile
-                ? Number(y) + 30
+                ? Number(y) + 68
                 : isDesktop
-                ? Number(y) + 86
-                : Number(y) + 83,
+                ? Number(y) + 68
+                : Number(y) + 68,
               left: isMobile
-                ? Number(x) + 52
+                ? Number(x) + 6
                 : isTabletOrMobile
-                ? Number(x) + 66
+                ? Number(x) + 4
                 : isDesktop
-                ? Number(x) + 66
-                : Number(x) + 64,
+                ? Number(x) + 3
+                : Number(x) + 1.5,
               zIndex: 10,
               pointerEvents: "none",
             }}
@@ -100,7 +100,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
 
       <ReactApexChart
         type="bar"
-        height={isTabletOrMobile ? "390px" : "695px"}
+        height={isTabletOrMobile ? "390px" : "600px"}
         width="100%"
         series={[
           {
@@ -110,20 +110,16 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
         ]}
         options={{
           title: {
-            text: `${
-              isTabletOrMobile
-                ? t("home.topAssets.chartTitle")
-                : t("home.topAssets.chartTitle").toUpperCase()
-            } ${top7AssetsData?.[rowSelected]?.symbol}`,
+            text: t("home.topAssets.chartTitle") + " " + top7AssetsData?.[rowSelected]?.symbol,
             align: "left",
-            margin: 49,
+            margin: isTabletOrMobile ? 49 : 0,
             offsetX: 0,
-            offsetY: 1,
+            offsetY: isTabletOrMobile ? 0 : 19,
             style: {
-              color: "var(--color-primary-150)",
-              fontFamily: "IBM Plex Sans",
+              color: "var(--color-gray-400)",
+              fontFamily: "Roboto",
               fontSize: "14px",
-              fontWeight: 500,
+              fontWeight: 400,
             },
           },
           states: {
@@ -139,25 +135,8 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
             },
           },
           fill: {
-            type: "gradient",
-            gradient: {
-              type: "vertical",
-              shade: "light",
-              inverseColors: false,
-              opacityFrom: 1,
-              opacityTo: 0,
-              stops: [0, 75, 100],
-              colorStops: [
-                {
-                  offset: 0,
-                  color: "#09FECB",
-                },
-                {
-                  offset: 100,
-                  color: "#09FECB25",
-                },
-              ],
-            },
+            type: "solid",
+            colors: ["var(--color-primary-100)"],
           },
           labels: assetsDataForChart.map(({ chainName }) => chainName),
           chart: {
@@ -177,7 +156,9 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
             toolbar: { show: false },
           },
           grid: {
-            show: false,
+            show: true,
+            borderColor: "var(--color-gray-900)",
+            strokeDashArray: 5,
             padding: {
               top: isTabletOrMobile ? -24 : 32,
               right: 4,
@@ -220,13 +201,13 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
                       ` +
                 `
                       <div>
-                        <span class='chart-container-tooltip-label'>VOLUME</span>
+                        <span class='chart-container-tooltip-label'>Volume:</span>
                         <span class='chart-container-tooltip-volume'>$${volumeFormatted}</span>
                       </div>
                       ` +
                 `
                       <div>
-                        <span class='chart-container-tooltip-label'>TXS</span>
+                        <span class='chart-container-tooltip-label'>TXS:</span>
                         <span class='chart-container-tooltip-txs'>${txsFormatted}</span>
                       </div>
                       ` +
@@ -237,38 +218,44 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
           dataLabels: { enabled: false },
           yaxis: {
             tickAmount: 8,
+            opposite: true,
             axisTicks: { show: false },
             labels: {
               formatter: (vol, opts) => `$${formatterYAxis(vol, opts)}`,
               minWidth: isMobile ? 48 : 64,
               maxWidth: isMobile ? 48 : 64,
-              align: "right",
+              align: "left",
               style: {
-                colors: "#9295BB",
-                fontFamily: "IBM Plex Sans",
+                colors: "var(--color-gray-400)",
+                fontFamily: "Roboto",
                 fontSize: isMobile ? "10px" : "14px",
               },
             },
             axisBorder: {
-              show: true,
-              width: 1,
-              color: "#FFFFFF25",
+              show: false,
             },
           },
           xaxis: {
             tickAmount: assetsDataForChart.length,
             labels: {
               style: {
-                colors: "var(--color-primary-150)",
-                fontFamily: "IBM Plex Sans",
+                colors: "var(--color-gray-400)",
+                fontFamily: "Roboto",
                 fontSize: isMobile ? "10px" : "14px",
+                cssClass: "chart-container-xaxis-label",
               },
               trim: false,
-              rotate: -45,
+              rotate: 45,
               maxHeight: isMobile ? 56 : 88,
+              minHeight: isMobile ? 56 : 88,
             },
             axisTicks: { show: false },
-            axisBorder: { show: true, strokeWidth: 4, color: "#FFFFFF25" },
+            axisBorder: {
+              show: false,
+            },
+            crosshairs: {
+              show: true,
+            },
           },
         }}
       />

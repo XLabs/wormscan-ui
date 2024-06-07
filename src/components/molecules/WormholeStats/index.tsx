@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
-import WormholeStatsImage from "src/assets/wormhole-stats.svg";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { ExternalLinkIcon, InfoCircledIcon } from "@radix-ui/react-icons";
+import {  InfoCircledIcon } from "@radix-ui/react-icons";
 import { WORMHOLE_PAGE_URL } from "src/consts";
 import { Loader, Tooltip } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getClient } from "src/api/Client";
+import { LinkIcon } from "src/icons/generic";
 import "./styles.scss";
 
 const WormholeStats = () => {
@@ -29,17 +29,7 @@ const WormholeStats = () => {
   } = scoreData || {};
 
   return (
-    <div className={`wormhole-stats ${isMainnet ? "" : "wormhole-stats-testnet"}`}>
-      <a
-        className="wormhole-stats-title"
-        href={WORMHOLE_PAGE_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <img src={WormholeStatsImage} alt="wormhole logo" width="132" />
-        <ExternalLinkIcon height={15} width={15} />
-      </a>
-
+    <div className="wormhole-stats">
       {isLoading ? (
         <div className="wormhole-stats-loader">
           <Loader />
@@ -71,7 +61,10 @@ const WormholeStats = () => {
 
           <div className="wormhole-stats-container-item">
             <div className="wormhole-stats-container-item-title">
-              {t("home.statistics.dayMessage")}
+              {t("home.statistics.dayMessage")}{" "}
+              <span className="wormhole-stats-container-item-title-time">
+                {t("home.statistics.dayMessageTime")}
+              </span>
               <Tooltip
                 tooltip={
                   <div>Number of messages sent in the last 24 hours. (Includes Pyth messages)</div>
@@ -105,7 +98,10 @@ const WormholeStats = () => {
 
           <div className="wormhole-stats-container-item">
             <div className="wormhole-stats-container-item-title">
-              {t("home.statistics.messageVolume")}
+              {t("home.statistics.dayVolume")}{" "}
+              <span className="wormhole-stats-container-item-title-time">
+                {t("home.statistics.dayVolumeTime")}
+              </span>
               <Tooltip
                 tooltip={<div>This metric calculates the last 24h USD value of VAA transfers.</div>}
                 type="info"
@@ -117,10 +113,24 @@ const WormholeStats = () => {
               {isMainnet ? <>${volume24h ? formatNumber(Number(volume24h), 0) : "-"}</> : "-"}
             </div>
           </div>
+
+          <div className="wormhole-stats-container-item">
+            <div className="wormhole-stats-container-item-title"></div>
+            <div className="wormhole-stats-container-item-value">
+              <a
+                className="wormhole-stats-container-item-value-link"
+                href={WORMHOLE_PAGE_URL}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Explore Wormhole <LinkIcon width={24} />
+              </a>
+            </div>
+          </div>
+
+          <div className="wormhole-stats-container-line" />
         </div>
       )}
-
-      <div className="w-187" />
     </div>
   );
 };

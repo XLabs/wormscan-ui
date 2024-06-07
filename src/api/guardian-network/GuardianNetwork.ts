@@ -18,6 +18,8 @@ import {
   ScoresOutput,
   VAACount,
   ProtocolsStatsOutput,
+  IChainActivity,
+  IChainActivityInput,
 } from "./types";
 
 export class GuardianNetwork {
@@ -102,6 +104,23 @@ export class GuardianNetwork {
     });
     const result = _get(payload, "txs", []);
     return result;
+  }
+
+  async getChainActivity({
+    // appId,
+    // targetChain,
+    from,
+    sourceChain,
+    timespan,
+    to,
+  }: IChainActivityInput): Promise<IChainActivity[]> {
+    const sourceChainString = sourceChain.join(",");
+
+    const response = await this._client.doGet<IChainActivity[]>(
+      `/x-chain-activity/tops?from=${from}&to=${to}&timespan=${timespan}&sourceChain=${sourceChainString}`,
+    );
+
+    return response || [];
   }
 
   async getLastTxs(range: DateRange): Promise<LastTxs> {

@@ -1,0 +1,16 @@
+@import "src/styles/globals.scss";
+
+.custom-checkbox {
+  @include centered-row;
+  border-radius: 5px;
+  border: 2px solid var(--color-gray-800);
+  color: var(--color-black);
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+
+  &.checked {
+    background-color: var(--color-primary-100);
+    border: none;
+  }
+}

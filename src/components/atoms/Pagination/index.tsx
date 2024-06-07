@@ -1,31 +1,33 @@
 import "./styles.scss";
 
 interface IProps {
-  goFirstPage?: () => void;
-  goPrevPage?: () => void;
-  currentPage?: number;
-  goNextPage?: () => void;
-  goLastPage?: () => void;
-  goPage?: (pageNumber: number) => void;
-  totalPages?: number | undefined;
   className?: string;
+  currentPage?: number;
   disabled?: boolean;
   disableNextButton?: boolean;
+  goFirstPage?: () => void;
+  goLastPage?: () => void;
+  goNextPage?: () => void;
+  goPage?: (pageNumber: number) => void;
+  goPrevPage?: () => void;
   style?: object;
+  totalPages?: number | undefined;
+  visiblePages?: number;
 }
 
 const Pagination = ({
-  goFirstPage,
-  goPrevPage,
-  currentPage = 1,
-  goNextPage,
-  goLastPage,
-  goPage,
-  totalPages = Infinity,
   className = "",
+  currentPage = 1,
   disabled = false,
   disableNextButton = false,
+  goFirstPage,
+  goLastPage,
+  goNextPage,
+  goPage,
+  goPrevPage,
   style = {},
+  totalPages = Infinity,
+  visiblePages = 5,
 }: IProps) => {
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage === totalPages;
@@ -42,15 +44,18 @@ const Pagination = ({
         &lt;
       </button>
 
-      {goPage ? (
-        <PageNumbers
-          currentPage={currentPage}
-          disableNextButton={disableNextButton}
-          goPage={goPage}
-        />
-      ) : (
-        <span className={`pagination current`}>{currentPage}</span>
-      )}
+      <div className="pagination-pages">
+        {goPage ? (
+          <PageNumbers
+            currentPage={currentPage}
+            disableNextButton={disableNextButton}
+            goPage={goPage}
+            visiblePages={visiblePages}
+          />
+        ) : (
+          <span className={`pagination current`}>{currentPage}</span>
+        )}
+      </div>
 
       <button onClick={goNextPage} disabled={disabled || disableNextButton || isLastPage}>
         &gt;
@@ -71,17 +76,21 @@ const Pagination = ({
 
 const PageNumbers = ({
   currentPage,
-  goPage,
   disableNextButton,
+  goPage,
+  visiblePages,
 }: {
   currentPage?: number;
-  goPage?: (pageNumber: number) => void;
   disableNextButton?: boolean;
+  goPage?: (pageNumber: number) => void;
+  visiblePages?: number;
 }) => {
   const TOTAL_PREV_VISIBLE_PAGES = 2;
   const isPrevOffset = currentPage - TOTAL_PREV_VISIBLE_PAGES >= TOTAL_PREV_VISIBLE_PAGES;
   const firstPrevOffsetPageNumber = currentPage - TOTAL_PREV_VISIBLE_PAGES;
-  const pages = [...Array(5)].map((_, i) => (isPrevOffset ? firstPrevOffsetPageNumber + i : i + 1));
+  const pages = [...Array(visiblePages)].map((_, i) =>
+    isPrevOffset ? firstPrevOffsetPageNumber + i : i + 1,
+  );
 
   return pages.map((page, index) => (
     <button
