@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-const WormholeScanBrand = ({ width = 232 }: { width?: number }) => {
+const WormholeScanBrand = ({ width = 215 }: { width?: number }) => {
   return (
     <div className="wormholescan-brand">
       <svg
