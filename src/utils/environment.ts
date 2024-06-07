@@ -42,6 +42,7 @@ const MAINNET_RPCS: { [key in ChainName]?: string } = {
   karura: "https://eth-rpc-karura.aca-api.network",
   klaytn: "https://klaytn-mainnet-rpc.allthatnode.com:8551",
   moonbeam: "https://rpc.ankr.com/moonbeam",
+  mantle: "https://rpc.mantle.xyz",
   near: "https://rpc.mainnet.near.org",
   oasis: "https://emerald.oasis.dev",
   optimism: "https://endpoints.omniatech.io/v1/op/mainnet/public",
@@ -65,6 +66,7 @@ const TESTNET_RPCS: { [key in ChainName]?: string } = {
   celo: "https://alfajores-forno.celo-testnet.org",
   ethereum: "https://rpc.ankr.com/eth_goerli",
   fantom: "https://rpc.testnet.fantom.network",
+  mantle: "https://rpc.testnet.mantle.xyz",
   moonbeam: "https://rpc.api.moonbase.moonbeam.network",
   sepolia: "https://ethereum-sepolia.publicnode.com",
   optimism: "https://goerli.optimism.io",
@@ -267,6 +269,16 @@ export const testnetEnv: Environment = {
       relayerContractAddress: "", // TODO: ADD WHEN EXISTS
       rpcUrl: TESTNET_RPCS.xlayer || "",
     },
+    {
+      chainId: 35 as ChainId,
+      chainName: "Mantle",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 5001,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "MNT",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: TESTNET_RPCS.mantle || "",
+    },
   ],
   guardianRpcs: ["https://wormhole-v2-testnet-api.certus.one"],
 };
@@ -406,6 +418,16 @@ export const mainnetEnv: Environment = {
       nativeCurrencyName: "ETH",
       relayerContractAddress: "", // TODO: ADD WHEN EXISTS
       rpcUrl: MAINNET_RPCS.scroll || "",
+    },
+    {
+      chainId: 35 as ChainId,
+      chainName: "Mantle",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 5000,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "MNT",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: MAINNET_RPCS.mantle || "",
     },
     {
       chainId: 36 as ChainId,
