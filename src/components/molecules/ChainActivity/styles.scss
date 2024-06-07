@@ -168,7 +168,7 @@
         position: fixed;
         transition: inset 0.3s ease;
         width: 100%;
-        z-index: 99;
+        z-index: 95;
 
         @include desktop {
           @include centered-row;
