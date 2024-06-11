@@ -14,7 +14,7 @@ const BaseLayout = ({ children }: Props) => {
   const [loadingPage] = useRecoilState(loadPageState);
   return (
     <>
-      {/* <MaintenanceMessage /> */}
+      <MaintenanceMessage />
       <Header />
       <div className="main-content">{loadingPage ? <Loader /> : children}</div>
       <Footer />
