@@ -31,6 +31,7 @@ const BlockchainIcon = ({
       loading="lazy"
       src={icon}
       style={{ backgroundColor: background }}
+      title={name}
       width={size}
     />
   );
