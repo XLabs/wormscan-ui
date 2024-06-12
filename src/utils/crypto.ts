@@ -1,4 +1,5 @@
-import { ChainId, isEVMChain, tryHexToNativeString } from "@certusone/wormhole-sdk";
+import { isEVMChain, tryHexToNativeString } from "@certusone/wormhole-sdk";
+import { ChainId } from "src/api";
 import { CCTP_MANUAL_APP_ID, GATEWAY_APP_ID, GR_APP_ID } from "src/consts";
 
 export const formatUnits = (value: number, tokenDecimals = 8) => {
@@ -57,6 +58,12 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
         return parsedValue;
       }
       parsedValue = "0x" + parsedValue;
+    }
+    // TODO: remove this once the backend issue is fixed
+    if (chainId === ChainId.Sei) {
+      if (String(parsedValue).startsWith("0x")) {
+        return parsedValue.slice(2);
+      }
     }
   } catch (e: unknown) {
     // console.log(e);
