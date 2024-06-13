@@ -66,6 +66,7 @@ const Governor = () => {
   useLockBodyScroll({ isLocked: !isDesktop && openSortBy });
 
   const handleSelectedSortBy = (value: ISelectSortBy) => {
+    console.log("value", value);
     setSelectedSortBy(value);
     setSortBy([{ id: value.value, desc: selectedSortLowHigh.value }]);
   };
@@ -439,6 +440,7 @@ const Governor = () => {
                 );
                 setSelectedSortLowHigh(SORT_LOW_HIGH_LIST[1]);
                 setSortBy([{ id: selectedSortBy.value, desc: selectedSortLowHigh.value }]);
+                setOpenSortBy(false);
               }}
             >
               Reset
@@ -650,7 +652,7 @@ const columnsTransactions: Column[] | any = [
 ];
 
 const SORT_DASHBOARD_BY_LIST = [
-  { label: "Chain", value: "chainName" },
+  { label: "Chain", value: "chain" },
   { label: "Single Transaction Limit", value: "singleTransactionLimit" },
   { label: "Daily Limit", value: "dailyLimit" },
   { label: "Remaining Transaction Limit", value: "remainingTransactionLimit" },

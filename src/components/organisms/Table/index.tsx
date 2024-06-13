@@ -6,6 +6,8 @@ import {
   TableState,
   UseTableOptions,
   UseSortByOptions,
+  UseSortByInstanceProps,
+  TableInstance,
 } from "react-table";
 import "./styles.scss";
 import { ArrowUpIcon } from "src/icons/generic";
@@ -22,6 +24,10 @@ type Props<T extends object> = {
   sortBy?: { id: string; desc: boolean }[];
 };
 
+type ExtendedTableInstance<T extends object> = TableInstance<T> & {
+  setSortBy?: (updater: any) => void;
+};
+
 const Table = <T extends object>({
   className,
   columns,
@@ -33,7 +39,14 @@ const Table = <T extends object>({
   onRowClick,
   sortBy = [],
 }: Props<T>) => {
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, setSortBy } = useTable(
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    setSortBy,
+  }: ExtendedTableInstance<T> = useTable(
     {
       columns,
       data,
