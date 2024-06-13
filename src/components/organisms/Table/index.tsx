@@ -6,11 +6,10 @@ import {
   TableState,
   UseTableOptions,
   UseSortByOptions,
-  UseSortByInstanceProps,
   TableInstance,
 } from "react-table";
-import "./styles.scss";
 import { ArrowUpIcon } from "src/icons/generic";
+import "./styles.scss";
 
 type Props<T extends object> = {
   className?: string;
@@ -66,7 +65,7 @@ const Table = <T extends object>({
     <>
       <table
         {...getTableProps()}
-        className={`table ${hasSort ? "table-sort" : ""} ${
+        className={`table ${hasSort ? "table-sortable" : ""} ${
           onRowClick ? "table-clickable" : ""
         } ${className}`}
       >

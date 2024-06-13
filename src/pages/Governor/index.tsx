@@ -66,7 +66,6 @@ const Governor = () => {
   useLockBodyScroll({ isLocked: !isDesktop && openSortBy });
 
   const handleSelectedSortBy = (value: ISelectSortBy) => {
-    console.log("value", value);
     setSelectedSortBy(value);
     setSortBy([{ id: value.value, desc: selectedSortLowHigh.value }]);
   };
