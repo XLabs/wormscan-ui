@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "src/components/atoms";
+import { useLocalStorage } from "src/utils/hooks";
 import "./styles.scss";
-import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
 
 const TermsOfUseBanner = () => {
   const { t } = useTranslation();

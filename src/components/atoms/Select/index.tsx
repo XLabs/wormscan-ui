@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import SelectPrimitive, { components } from "react-select";
 import { Checkbox } from "src/components/atoms";
 import { OverviewIcon, ChevronDownIcon, TriangleDownIcon } from "src/icons/generic";
-import useOutsideClick from "src/utils/hooks/useOutsideClick";
+import { useOutsideClick } from "src/utils/hooks";
 import "./styles.scss";
 
 interface Props {
@@ -11,9 +11,10 @@ interface Props {
   isClearable?: boolean;
   items: {
     label: string;
-    value: string;
+    value: string | boolean;
     icon?: JSX.Element;
   }[];
+  menuFixed?: boolean;
   menuPlacement?: "auto" | "bottom" | "top";
   name: string;
   noOptionsMessage?: string;
@@ -29,6 +30,7 @@ const Select = ({
   className = "",
   isClearable = false,
   items,
+  menuFixed = false,
   menuPlacement = "auto",
   name,
   noOptionsMessage = "No Options",
@@ -97,14 +99,15 @@ const Select = ({
                 styles={{
                   menuPortal: base => ({
                     ...base,
+                    position: menuFixed ? "fixed" : "absolute",
                     zIndex: 95,
                   }),
                   menu: base => ({
                     ...base,
+                    borderRadius: 0,
+                    left: -16,
                     marginTop: 16,
                     width: "calc(100% + 32px)",
-                    left: -16,
-                    borderRadius: 0,
                     zIndex: 95,
                   }),
                   control: base => ({
@@ -117,9 +120,9 @@ const Select = ({
                   }),
                   option: base => ({
                     ...base,
+                    backgroundColor: "transparent",
                     padding: "16px",
                     position: "relative",
-                    backgroundColor: "transparent",
                     "&:hover": {
                       backgroundColor: "var(--color-white-05)",
                     },
@@ -128,8 +131,8 @@ const Select = ({
                       bottom: 0,
                       content: '""',
                       height: 1,
-                      position: "absolute",
                       left: 16,
+                      position: "absolute",
                       right: 16,
                     },
                   }),
@@ -184,7 +187,12 @@ const Select = ({
       options={items}
       placeholder={placeholder}
       styles={{
-        menuPortal: base => ({ ...base, zIndex: 95 }),
+        control: () => ({ cursor: "pointer" }),
+        menuPortal: base => ({
+          ...base,
+          position: menuFixed ? "fixed" : "absolute",
+          zIndex: 95,
+        }),
         option: base =>
           type === "secondary"
             ? {

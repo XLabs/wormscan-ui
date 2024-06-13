@@ -12,7 +12,7 @@ import { WormholeScanBrand } from "src/components/molecules";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Search from "./Search";
 import { AnalyticsIcon, HomeIcon, SearchIcon, MenuIcon, SwapVerticalIcon } from "src/icons/generic";
-import { useWindowSize } from "src/utils/hooks/useWindowSize";
+import { useWindowSize } from "src/utils/hooks";
 import "./styles.scss";
 
 type NetworkSelectProps = { label: string; value: Network };

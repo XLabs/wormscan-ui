@@ -6,7 +6,7 @@ interface Props {
   tokenAddress: string;
 }
 
-export function useGetTokenData({ tokenChain, tokenAddress }: Props) {
+function useGetTokenData({ tokenChain, tokenAddress }: Props) {
   const parseTokenAddress: string =
     tokenAddress && tokenAddress.startsWith("0x") ? tokenAddress.slice(2) : tokenAddress;
 
@@ -33,3 +33,5 @@ export function useGetTokenData({ tokenChain, tokenAddress }: Props) {
     tokenData,
   };
 }
+
+export default useGetTokenData;

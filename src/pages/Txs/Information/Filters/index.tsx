@@ -20,8 +20,7 @@ import {
 import { formatAppId } from "src/utils/crypto";
 import { getChainName } from "src/utils/wormhole";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
-import { useWindowSize } from "src/utils/hooks/useWindowSize";
+import { useWindowSize, useNavigateCustom } from "src/utils/hooks";
 import FiltersIcon from "src/icons/filtersIcon.svg";
 import "./styles.scss";
 

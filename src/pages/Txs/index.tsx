@@ -17,7 +17,6 @@ import { GetOperationsInput, GetOperationsOutput } from "src/api/guardian-networ
 import { Information } from "./Information";
 import { Top } from "./Top";
 import analytics from "src/analytics";
-import "./styles.scss";
 import {
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
@@ -29,7 +28,8 @@ import {
   canWeGetDestinationTx,
   txType,
 } from "src/consts";
-import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
+import { useLocalStorage } from "src/utils/hooks";
+import "./styles.scss";
 
 export interface TransactionOutput {
   amount: React.ReactNode;

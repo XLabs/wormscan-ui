@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import { useNavigateCustom } from "src/utils/hooks";
 import analytics from "src/analytics";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";

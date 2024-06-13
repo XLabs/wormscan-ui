@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useQuery } from "react-query";
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,8 +9,7 @@ import { formatterYAxis } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
 import { getClient } from "src/api/Client";
 import { ChainFilterMainnet, ChainFilterTestnet } from "src/pages/Txs/Information/Filters";
-import useOutsideClick from "src/utils/hooks/useOutsideClick";
-import { useWindowSize } from "src/utils/hooks/useWindowSize";
+import { useWindowSize, useOutsideClick, useLockBodyScroll } from "src/utils/hooks";
 import { formatNumber } from "src/utils/number";
 import { AnalyticsIcon, CrossIcon, FilterListIcon, GlobeIcon } from "src/icons/generic";
 import { IChainActivity } from "src/api/guardian-network/types";
@@ -42,34 +41,54 @@ const ChainActivity = () => {
   const [lastBtnSelected, setLastBtnSelected] = useState<TSelectedPeriod>("24h");
   const [openFilters, setOpenFilters] = useState(false);
 
+  const lockBodyScrollOptions = useMemo(
+    () => ({
+      isLocked: !isDesktop && openFilters,
+      scrollableClasses: [
+        "blockchain-icon",
+        "custom-checkbox",
+        "select__option",
+        "select-custom-option-container",
+        "select-custom-option",
+      ],
+    }),
+    [isDesktop, openFilters],
+  );
+
+  useLockBodyScroll(lockBodyScrollOptions);
+
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const orderedChains = currentNetwork === "MAINNET" ? ChainFilterMainnet : ChainFilterTestnet;
 
-  const CHAIN_LIST = [
-    {
-      label: "All Chains",
-      value: "All Chains",
-      icon: <GlobeIcon width={24} style={{ color: "#fff" }} />,
-    },
-    ...orderedChains.map(value => ({
-      label: getChainName({
-        network: currentNetwork,
-        chainId: value,
-      }),
-      value: `${value}`,
-      icon: (
-        <BlockchainIcon
-          background="var(--color-white-10)"
-          chainId={value}
-          className="chain-icon"
-          colorless={true}
-          network={currentNetwork}
-          size={24}
-        />
-      ),
-    })),
-  ];
+  const CHAIN_LIST = useMemo(
+    () => [
+      {
+        label: "All Chains",
+        value: "All Chains",
+        icon: <GlobeIcon width={24} style={{ color: "#fff" }} />,
+      },
+      ...orderedChains.map(value => ({
+        label: getChainName({
+          network: currentNetwork,
+          chainId: value,
+        }),
+        value: `${value}`,
+        icon: (
+          <BlockchainIcon
+            background="var(--color-white-10)"
+            chainId={value}
+            className="chain-icon"
+            colorless={true}
+            lazy={false}
+            network={currentNetwork}
+            size={24}
+          />
+        ),
+      })),
+    ],
+    [orderedChains, currentNetwork],
+  );
 
   const [chainListSelected, setChainListSelected] = useState([CHAIN_LIST[0]]);
 
@@ -191,20 +210,10 @@ const ChainActivity = () => {
   };
 
   const handleFiltersOpened = () => {
-    setOpenFilters(prev => {
-      const newOpenFilters = !prev;
-
-      if (!isDesktop) {
-        document.body.style.overflow = newOpenFilters ? "hidden" : "unset";
-        document.body.style.height = newOpenFilters ? "100%" : "auto";
-      }
-
-      return newOpenFilters;
-    });
+    setOpenFilters(prev => !prev);
   };
 
   const applyFilters = () => {
-    document.body.style.overflow = "unset";
     setOpenFilters(false);
   };
 
@@ -220,7 +229,6 @@ const ChainActivity = () => {
       timespan: "1h",
       sourceChain: [],
     });
-    document.body.style.overflow = "unset";
     setOpenFilters(false);
   };
 
@@ -417,18 +425,6 @@ const ChainActivity = () => {
     }
   }, [allChainsSerie, currentNetwork, data, filters.sourceChain, getDateList, showAllChains]);
 
-  useEffect(() => {
-    if (!isDesktop) {
-      if (openFilters) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "unset";
-      }
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [isDesktop, openFilters]);
-
   return (
     <div className="chain-activity">
       {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
@@ -474,6 +470,7 @@ const ChainActivity = () => {
                 }
                 ariaLabel="Select Time Range"
                 items={CHAIN_LIST}
+                menuFixed={true}
                 name="timeRange"
                 onValueChange={(value: any) => handleChainSelection(value)}
                 type="searchable"
@@ -528,6 +525,40 @@ const ChainActivity = () => {
               </div>
             </div>
           </div>
+
+          {/* <MyComponent
+            CHAIN_LIST={CHAIN_LIST}
+            openFilters={openFilters}
+            handleFiltersOpened={handleFiltersOpened}
+            chainsContainerRef={chainsContainerRef}
+            showAllChains={showAllChains}
+            filters={filters}
+            currentNetwork={currentNetwork}
+            handleChainSelection={handleChainSelection}
+            chainListSelected={chainListSelected}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
+            showCalendar={showCalendar}
+            setShowCalendar={setShowCalendar}
+            dateContainerRef={dateContainerRef}
+            lastBtnSelected={lastBtnSelected}
+            setLastBtnSelected={setLastBtnSelected}
+            startDateDisplayed={startDateDisplayed}
+            endDateDisplayed={endDateDisplayed}
+            isDesktop={isDesktop}
+            applyFilters={applyFilters}
+            resetFilters={resetFilters}
+            isLoading={isLoading}
+            isFetching={isFetching}
+            isLoadingAllChains={isLoadingAllChains}
+            isFetchingAllChains={isFetchingAllChains}
+            isError={isError}
+            isErrorAllChains={isErrorAllChains}
+            allMessagesNumber={allMessagesNumber}
+            messagesNumber={messagesNumber}
+          /> */}
         </div>
 
         {isLoading || isFetching || isLoadingAllChains || isFetchingAllChains ? (
@@ -809,6 +840,123 @@ interface ICompleteData {
 }
 
 export type TSelectedPeriod = "24h" | "week" | "month" | "6months" | "year" | "custom";
+
+/* const MyComponent = memo(
+  ({
+    CHAIN_LIST,
+    openFilters,
+    handleFiltersOpened,
+    chainsContainerRef,
+    showAllChains,
+    filters,
+    currentNetwork,
+    handleChainSelection,
+    chainListSelected,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    showCalendar,
+    setShowCalendar,
+    dateContainerRef,
+    lastBtnSelected,
+    setLastBtnSelected,
+    startDateDisplayed,
+    endDateDisplayed,
+    isDesktop,
+    applyFilters,
+    resetFilters,
+    isLoading,
+    isFetching,
+    isLoadingAllChains,
+    isFetchingAllChains,
+    isError,
+    isErrorAllChains,
+    allMessagesNumber,
+    messagesNumber,
+  }) => {
+    return (
+      <div className={`chain-activity-chart-top-mobile ${openFilters ? "open" : ""}`}>
+        <div className="chain-activity-chart-top-mobile-title">
+          <p>Filters</p>
+          <button onClick={handleFiltersOpened}>
+            <CrossIcon width={24} />
+          </button>
+        </div>
+
+        <div className="chain-activity-chart-top-section" ref={chainsContainerRef}>
+          <Select
+            text={
+              showAllChains || filters?.sourceChain?.length > 0
+                ? showAllChains
+                  ? `All chains${
+                      filters?.sourceChain?.length > 0 ? ` and (${filters.sourceChain.length})` : ""
+                    }`
+                  : filters.sourceChain.length === 1
+                  ? getChainName({
+                      network: currentNetwork,
+                      chainId: filters.sourceChain[0],
+                    })
+                  : `Custom (${filters.sourceChain.length})`
+                : "Select chains"
+            }
+            ariaLabel="Select Time Range"
+            items={CHAIN_LIST}
+            name="timeRange"
+            onValueChange={(value: any) => handleChainSelection(value)}
+            type="searchable"
+            value={chainListSelected}
+          />
+        </div>
+
+        <Calendar
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+          showCalendar={showCalendar}
+          setShowCalendar={setShowCalendar}
+          dateContainerRef={dateContainerRef}
+          lastBtnSelected={lastBtnSelected}
+          setLastBtnSelected={setLastBtnSelected}
+          startDateDisplayed={startDateDisplayed}
+          endDateDisplayed={endDateDisplayed}
+          isDesktop={isDesktop}
+        />
+
+        <div className="chain-activity-chart-top-mobile-buttons">
+          <button className="apply-btn" onClick={applyFilters}>
+            Apply Filters
+          </button>
+
+          <button className="reset-btn" onClick={resetFilters}>
+            Reset Filters
+          </button>
+        </div>
+
+        <div
+          className={`chain-activity-chart-top-legends ${
+            isLoading ||
+            isFetching ||
+            isLoadingAllChains ||
+            isFetchingAllChains ||
+            isError ||
+            isErrorAllChains
+              ? "hidden"
+              : ""
+          }`}
+        >
+          <div className="chain-activity-chart-top-legends-container">
+            <span>Messages: </span>
+            <p>
+              {showAllChains ? formatNumber(allMessagesNumber, 0) : formatNumber(messagesNumber, 0)}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  },
+); */
 
 const colors: IColors = {
   0: "#FD8058",

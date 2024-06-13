@@ -5,56 +5,56 @@
   border-collapse: collapse;
 
   > thead {
-    @include text-caption2;
-    background: var(--color-white-05);
-    color: var(--color-primary-50);
-    font-size: 14px;
-    height: 48px;
-    text-align: left;
+    @include text-heading6;
+    color: var(--color-gray-400);
+    display: none;
+    height: 36px;
+    position: relative;
+
+    &::before {
+      background-color: var(--color-gray-950);
+      border-radius: 16px;
+      content: "";
+      display: block;
+      height: inherit;
+      position: absolute;
+      width: 100%;
+    }
+
+    @include desktop {
+      display: table-header-group;
+    }
 
     > tr {
       height: inherit;
 
       > th {
-        font-weight: 500;
-        padding: 8px 12px;
+        @include text-heading6;
+        padding: 0 8px;
         position: relative;
         white-space: nowrap;
 
         &:first-child {
+          border-radius: 16px 0 0 16px;
           padding-left: 16px;
         }
 
         &:last-child {
+          border-radius: 0 16px 16px 0;
           padding-right: 16px;
-        }
 
-        @include desktop {
-          padding: 8px;
-
-          &:first-child {
-            padding-left: 32px;
+          @include desktop {
+            & .table-head-th-container {
+              justify-content: flex-end;
+            }
           }
-
-          &:last-child {
-            padding-right: 32px;
-          }
-        }
-
-        @include bigDesktop {
-          padding: 8px 16px;
         }
 
         & .table-head-th-container {
           @include centered-row;
-          justify-content: center;
           gap: 4px;
+          justify-content: start;
           line-height: 1;
-
-          &-arrow {
-            height: 18px;
-            width: 18px;
-          }
         }
       }
     }
@@ -62,14 +62,60 @@
 
   > tbody {
     @include text-p3;
-
-    height: 80px;
-    text-align: left;
     color: var(--color-primary-50);
+    text-align: left;
 
     > tr {
-      height: inherit;
-      border-bottom: 1px solid var(--color-white-10);
+      @include centered-column;
+      border-radius: 16px;
+      border: 1px solid var(--color-white-10);
+      margin-bottom: 24px;
+      position: relative;
+      width: 100%;
+      min-height: 80px;
+
+      @include desktop {
+        border: none;
+        border-bottom: 1px solid var(--color-white-10);
+        display: table-row;
+        height: 80px;
+        margin-bottom: 0;
+      }
+
+      & > td {
+        border-bottom: 1px solid var(--color-gray-900);
+        order: 2;
+        padding: 16px 0;
+        margin: 0 16px;
+
+        &:first-child {
+          border: none;
+          padding-bottom: 8px;
+        }
+
+        &:last-child {
+          border: none;
+          text-align: end;
+        }
+
+        @include desktop {
+          padding: 0 8px;
+          margin: 0;
+
+          &:first-child {
+            border-radius: 16px 0 0 16px;
+            border: none;
+            padding-left: 16px;
+          }
+
+          &:last-child {
+            border-radius: 0 16px 16px 0;
+            border: none;
+            padding-right: 16px;
+            text-align: end;
+          }
+        }
+      }
 
       &.appear {
         animation: appear 2s forwards;
@@ -80,42 +126,17 @@
         animation: appear 2s forwards;
       }
 
-      &:hover {
-        background: var(--color-white-03);
-        cursor: pointer;
-      }
-
-      > td {
-        padding: 0px 12px;
-
-        &:first-child {
-          padding-left: 16px;
-        }
-
-        &:last-child {
-          padding-right: 16px;
-        }
+      > .table-row-loading {
+        margin: 0 16px;
+        overflow: hidden;
+        position: relative;
 
         @include desktop {
-          padding: 8px;
-
-          &:first-child {
-            padding-left: 32px;
-          }
-
-          &:last-child {
-            padding-right: 32px;
-          }
+          display: table-cell;
+          height: inherit;
+          line-height: 1;
+          padding: 0 16px;
         }
-
-        @include bigDesktop {
-          padding: 8px 16px;
-        }
-      }
-
-      > .table-row-loading {
-        height: inherit;
-        line-height: 1;
 
         > .loading-animation {
           border-radius: 5px;
@@ -123,8 +144,11 @@
           height: 70%;
           max-width: 100%;
           overflow: hidden;
-          position: relative;
           width: 100%;
+
+          @include desktop {
+            position: relative;
+          }
 
           &::before {
             animation: txs-load 2s linear infinite;
@@ -147,6 +171,63 @@
       }
     }
   }
+
+  &-sort {
+    > thead {
+      > tr {
+        > th {
+          &:hover {
+            cursor: pointer;
+            background-color: var(--color-white-05);
+          }
+
+          & .table-head-th-container {
+            &-arrow {
+              width: 24px;
+            }
+          }
+        }
+      }
+    }
+
+    > tbody {
+      > tr {
+        > td {
+          @include desktop {
+            padding: 0 0 0 36px;
+
+            &:first-child {
+              padding: 0 0 0 16px;
+            }
+
+            &:last-child {
+              padding-right: 16px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &-clickable {
+    & > tbody {
+      > tr {
+        background-color: var(--color-gray-950);
+
+        @include desktop {
+          background-color: transparent;
+
+          &:hover {
+            cursor: pointer;
+
+            & > td {
+              background-color: var(--color-white-03);
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 @keyframes txs-load {
@@ -163,10 +244,10 @@
     background-color: none;
   }
   30% {
-    background-color: var(--color-white-10);
+    background-color: var(--color-white-05);
   }
   70% {
-    background-color: var(--color-white-10);
+    background-color: var(--color-white-05);
   }
   100% {
     background-color: none;
@@ -175,9 +256,8 @@
 
 .table-body-empty {
   @include centered-row;
-  @include text-p2;
-
+  @include text-roboto-body-400;
+  color: var(--color-gray-400);
   justify-content: center;
-  padding: 16px;
-  color: var(--color-primary-50);
+  margin-top: 12px;
 }

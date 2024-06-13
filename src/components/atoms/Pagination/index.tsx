@@ -53,7 +53,9 @@ const Pagination = ({
             visiblePages={visiblePages}
           />
         ) : (
-          <span className={`pagination current`}>{currentPage}</span>
+          <button className={`pagination current`} disabled>
+            {currentPage}
+          </button>
         )}
       </div>
 

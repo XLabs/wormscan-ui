@@ -1,7 +1,7 @@
 import { CopyIcon } from "@radix-ui/react-icons";
 import { useRef } from "react";
 import { CopyToClipboard } from "src/components/molecules";
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import { useNavigateCustom } from "src/utils/hooks";
 import { base64ToHex } from "src/utils/string";
 import { processInputType, processInputValue } from ".";
 

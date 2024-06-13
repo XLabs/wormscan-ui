@@ -13,7 +13,7 @@
   &__control {
     @include centered-row;
     @include dropdown;
-    justify-content: center !important;
+    justify-content: center;
     width: 100%;
 
     @include desktop {

@@ -1,10 +1,7 @@
 @import "src/styles/globals.scss";
 
 .txs-information {
-  @include card-container;
-
   margin-bottom: 32px;
-  padding: 0 !important;
 
   &-loader {
     @include centered-row;
