@@ -525,40 +525,6 @@ const ChainActivity = () => {
               </div>
             </div>
           </div>
-
-          {/* <MyComponent
-            CHAIN_LIST={CHAIN_LIST}
-            openFilters={openFilters}
-            handleFiltersOpened={handleFiltersOpened}
-            chainsContainerRef={chainsContainerRef}
-            showAllChains={showAllChains}
-            filters={filters}
-            currentNetwork={currentNetwork}
-            handleChainSelection={handleChainSelection}
-            chainListSelected={chainListSelected}
-            startDate={startDate}
-            setStartDate={setStartDate}
-            endDate={endDate}
-            setEndDate={setEndDate}
-            showCalendar={showCalendar}
-            setShowCalendar={setShowCalendar}
-            dateContainerRef={dateContainerRef}
-            lastBtnSelected={lastBtnSelected}
-            setLastBtnSelected={setLastBtnSelected}
-            startDateDisplayed={startDateDisplayed}
-            endDateDisplayed={endDateDisplayed}
-            isDesktop={isDesktop}
-            applyFilters={applyFilters}
-            resetFilters={resetFilters}
-            isLoading={isLoading}
-            isFetching={isFetching}
-            isLoadingAllChains={isLoadingAllChains}
-            isFetchingAllChains={isFetchingAllChains}
-            isError={isError}
-            isErrorAllChains={isErrorAllChains}
-            allMessagesNumber={allMessagesNumber}
-            messagesNumber={messagesNumber}
-          /> */}
         </div>
 
         {isLoading || isFetching || isLoadingAllChains || isFetchingAllChains ? (
