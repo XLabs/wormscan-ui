@@ -74,7 +74,6 @@ const ChainActivity = () => {
           chainId={value}
           className="chain-icon"
           colorless={true}
-          lazy={false}
           network={currentNetwork}
           size={24}
         />
