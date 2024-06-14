@@ -111,7 +111,6 @@ const Governor = () => {
                 chainId={chainId}
                 className="chain-icon"
                 colorless={false}
-                lazy={true}
                 network={currentNetwork}
                 size={24}
               />
@@ -286,6 +285,19 @@ const Governor = () => {
     }
   }, [currentNetwork, navigate]);
 
+  const handleReset = (showTxs: boolean) => {
+    if (showTxs) {
+      setSelectedSortBy(SORT_TRANSACTIONS_BY_LIST[4]);
+      setSelectedSortLowHigh(SORT_LOW_HIGH_LIST[0]);
+      setSortBy([{ id: SORT_TRANSACTIONS_BY_LIST[4].value, desc: false }]);
+    } else {
+      setSelectedSortBy(SORT_DASHBOARD_BY_LIST[2]);
+      setSelectedSortLowHigh(SORT_LOW_HIGH_LIST[1]);
+      setSortBy([{ id: SORT_DASHBOARD_BY_LIST[2].value, desc: true }]);
+    }
+    setOpenSortBy(false);
+  };
+
   return (
     <BaseLayout>
       <section className="governor">
@@ -316,11 +328,8 @@ const Governor = () => {
                   className={!showTransactions ? "active" : ""}
                   aria-label="Dashboard"
                   onClick={() => {
-                    if (showTransactions) {
-                      setShowTransactions(false);
-                      setSelectedSortBy(SORT_DASHBOARD_BY_LIST[2]);
-                      setSortBy([{ id: SORT_DASHBOARD_BY_LIST[2].value, desc: true }]);
-                    }
+                    setShowTransactions(false);
+                    handleReset(false);
                   }}
                 >
                   Dashboard
@@ -330,11 +339,8 @@ const Governor = () => {
                   className={`transactions ${showTransactions ? "active" : ""}`}
                   aria-label="Transactions"
                   onClick={() => {
-                    if (!showTransactions) {
-                      setShowTransactions(true);
-                      setSelectedSortBy(SORT_TRANSACTIONS_BY_LIST[4]);
-                      setSortBy([{ id: SORT_TRANSACTIONS_BY_LIST[4].value, desc: false }]);
-                    }
+                    setShowTransactions(true);
+                    handleReset(true);
                   }}
                 >
                   <span className="mobile">Transactions</span>
@@ -442,14 +448,7 @@ const Governor = () => {
 
             <button
               className="governor-mobile-filters-btns-reset"
-              onClick={() => {
-                setSelectedSortBy(
-                  showTransactions ? SORT_TRANSACTIONS_BY_LIST[4] : SORT_DASHBOARD_BY_LIST[2],
-                );
-                setSelectedSortLowHigh(SORT_LOW_HIGH_LIST[1]);
-                setSortBy([{ id: selectedSortBy.value, desc: selectedSortLowHigh.value }]);
-                setOpenSortBy(false);
-              }}
+              onClick={() => handleReset(showTransactions)}
             >
               Reset
             </button>
