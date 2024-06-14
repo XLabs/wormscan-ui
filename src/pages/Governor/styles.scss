@@ -76,7 +76,7 @@
 
         & .transactions {
           & .mobile {
-            @include desktop {
+            @include tablet {
               display: none;
             }
           }
@@ -84,7 +84,7 @@
           & .desktop {
             display: none;
 
-            @include desktop {
+            @include tablet {
               display: block;
             }
           }
@@ -222,23 +222,10 @@
           @include text-roboto-body-500;
         }
 
-        & .status > svg {
-          margin-left: auto;
+        & td:nth-child(4) {
+          border: none;
 
-          @include desktop {
-            margin-left: 0;
-          }
-        }
-
-        & .release-time {
-          color: var(--color-gray-400);
-
-          @include desktop {
-            justify-content: flex-end;
-          }
-
-          & > p {
-            @include text-roboto-body-400;
+          & .status > svg {
             margin-left: auto;
 
             @include desktop {
@@ -247,15 +234,53 @@
           }
         }
 
-        & .view-details {
-          & > a {
-            @include button-secondary;
-            justify-content: center;
-            width: 100%;
-          }
+        & td:nth-child(5) {
+          border: none;
+          position: absolute;
+          top: 0;
+          right: 0;
 
           @include desktop {
-            display: none;
+            position: relative;
+          }
+
+          & .release-time {
+            color: var(--color-gray-400);
+
+            @include desktop {
+              justify-content: flex-end;
+            }
+
+            & > p {
+              @include text-roboto-body-400;
+              color: var(--color-gray-400);
+              margin-left: auto;
+
+              @include desktop {
+                color: var(--color-white);
+                margin-left: 0;
+              }
+            }
+
+            & > svg {
+              display: none;
+            }
+          }
+        }
+
+        & td:nth-child(6) {
+          padding-top: 8px;
+
+          & .view-details {
+            & > a {
+              @include button-secondary;
+              justify-content: center;
+              width: 100%;
+            }
+
+            @include desktop {
+              display: none;
+            }
           }
         }
       }
@@ -282,8 +307,11 @@
       display: none;
     }
 
-    &.open {
+    &.open-dashboard {
       inset: max(16px, calc(100% - 380px)) 0 0 0;
+    }
+    &.open-txs {
+      inset: max(16px, calc(100% - 420px)) 0 0 0;
     }
 
     &-top {

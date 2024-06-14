@@ -54,7 +54,9 @@ const Governor = () => {
   const [selectedSortBy, setSelectedSortBy] = useState(
     showTransactions ? SORT_TRANSACTIONS_BY_LIST[4] : SORT_DASHBOARD_BY_LIST[2],
   );
-  const [selectedSortLowHigh, setSelectedSortLowHigh] = useState(SORT_LOW_HIGH_LIST[1]);
+  const [selectedSortLowHigh, setSelectedSortLowHigh] = useState(
+    showTransactions ? SORT_LOW_HIGH_LIST[0] : SORT_LOW_HIGH_LIST[1],
+  );
   const [sortBy, setSortBy] = useState<{ id: string; desc: boolean }[]>([
     { id: selectedSortBy.value, desc: selectedSortLowHigh.value },
   ]);
@@ -195,7 +197,9 @@ const Governor = () => {
           const diffInMilliseconds = releaseDate.getTime() - currentDate.getTime();
           const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
           const diffInMinutes = Math.floor((diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
-          const timeLeft = `${diffInHours}h${diffInMinutes <= 0 ? "" : `, ${diffInMinutes}m`} left`;
+          const timeLeft = `${diffInHours <= 0 ? "" : `${diffInHours}h, `}${
+            diffInMinutes <= 0 ? "" : `${diffInMinutes}m`
+          } left`;
 
           const row = {
             chainName,
@@ -255,7 +259,6 @@ const Governor = () => {
             ),
             releaseTime: (
               <div className="txs release-time">
-                <h4>RELEASE TIME</h4>
                 <p>{timeLeft}</p>
                 <ClockIcon width={24} />
               </div>
@@ -330,7 +333,7 @@ const Governor = () => {
                     if (!showTransactions) {
                       setShowTransactions(true);
                       setSelectedSortBy(SORT_TRANSACTIONS_BY_LIST[4]);
-                      setSortBy([{ id: SORT_TRANSACTIONS_BY_LIST[4].value, desc: true }]);
+                      setSortBy([{ id: SORT_TRANSACTIONS_BY_LIST[4].value, desc: false }]);
                     }
                   }}
                 >
@@ -391,7 +394,11 @@ const Governor = () => {
           </div>
         </div>
 
-        <div className={`governor-mobile-filters ${openSortBy ? "open" : ""}`}>
+        <div
+          className={`governor-mobile-filters ${
+            openSortBy ? (showTransactions ? "open-txs" : "open-dashboard") : ""
+          }`}
+        >
           <div className="governor-mobile-filters-top">
             <h4>Sort by</h4>
 
@@ -410,6 +417,7 @@ const Governor = () => {
             menuFixed={true}
             name="topAssetTimeRange"
             onValueChange={(value: ISelectSortBy) => handleSelectedSortBy(value)}
+            optionStyles={{ padding: 16 }}
             value={selectedSortBy}
           />
 
@@ -420,6 +428,7 @@ const Governor = () => {
             menuFixed={true}
             name="topAssetTimeRange"
             onValueChange={(value: ISelectSortLowHigh) => handleSelectedSortLowHigh(value)}
+            optionStyles={{ padding: 16 }}
             value={selectedSortLowHigh}
           />
 

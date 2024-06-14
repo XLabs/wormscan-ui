@@ -19,6 +19,7 @@ interface Props {
   name: string;
   noOptionsMessage?: string;
   onValueChange: (value: any) => void;
+  optionStyles?: React.CSSProperties;
   placeholder?: string;
   text?: string;
   type?: "primary" | "searchable" | "secondary";
@@ -35,6 +36,7 @@ const Select = ({
   name,
   noOptionsMessage = "No Options",
   onValueChange,
+  optionStyles,
   placeholder = "Select...",
   text = "",
   type = "primary",
@@ -204,7 +206,7 @@ const Select = ({
                 lineHeight: "16px",
                 textTransform: "uppercase",
               }
-            : base,
+            : { ...base, ...optionStyles },
       }}
       unstyled
       value={value}
