@@ -76,7 +76,7 @@
 
         & .transactions {
           & .mobile {
-            @include tablet {
+            @media (min-width: 410px) {
               display: none;
             }
           }
@@ -84,7 +84,7 @@
           & .desktop {
             display: none;
 
-            @include tablet {
+            @media (min-width: 410px) {
               display: block;
             }
           }
