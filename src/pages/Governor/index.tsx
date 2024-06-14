@@ -391,7 +391,7 @@ const Governor = () => {
                 className="governor-container-table-dashboard"
                 columns={columnsDashboard}
                 data={dataDashboard}
-                emptyMessage="There are no data to display."
+                emptyMessage="There is no data to display."
                 hasSort={true}
                 isLoading={isLoadingDashboard}
                 sortBy={sortBy}
