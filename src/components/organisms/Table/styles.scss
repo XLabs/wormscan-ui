@@ -29,7 +29,6 @@
       height: inherit;
 
       > th {
-        @include text-heading6;
         padding: 0 8px;
         position: relative;
         white-space: nowrap;
@@ -52,6 +51,7 @@
 
         & .table-head-th-container {
           @include centered-row;
+          @include text-heading6;
           gap: 4px;
           justify-content: start;
           line-height: 1;

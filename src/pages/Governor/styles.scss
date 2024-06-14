@@ -149,6 +149,10 @@
       }
 
       &-dashboard {
+        & th > .table-head-th-container > svg {
+          margin: 0 4px;
+        }
+
         & td {
           white-space: nowrap;
         }
