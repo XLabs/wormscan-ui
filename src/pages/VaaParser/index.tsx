@@ -109,13 +109,14 @@ const VaaParser = () => {
         document.querySelectorAll(".json-view-key").forEach(a => {
           // Add chain names and icon to decoded VAA
           if (
+            a.innerHTML?.includes("chain") ||
+            a.innerHTML?.includes("emitterChain") ||
             a.innerHTML?.includes("fromChain") ||
+            a.innerHTML?.includes("recipientChain") ||
+            a.innerHTML?.includes("refundChainId") ||
+            a.innerHTML?.includes("targetChainId") ||
             a.innerHTML?.includes("toChain") ||
             a.innerHTML?.includes("tokenChain") ||
-            a.innerHTML?.includes("emitterChain") ||
-            a.innerHTML?.includes("refundChainId") ||
-            a.innerHTML?.includes("recipientChain") ||
-            a.innerHTML?.includes("targetChainId") ||
             a.innerHTML?.includes("feeChain")
           ) {
             const parentElement = a.parentElement;

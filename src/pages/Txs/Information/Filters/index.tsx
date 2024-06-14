@@ -16,6 +16,7 @@ import {
   // UNKNOWN_APP_ID, disabled until the backend is ready
   GATEWAY_APP_ID,
   USDT_TRANSFER_APP_ID,
+  TBTC_APP_ID,
 } from "src/consts";
 import { formatAppId } from "src/utils/crypto";
 import { getChainName } from "src/utils/wormhole";
@@ -57,6 +58,7 @@ const appIds = [
   PORTAL_NFT_APP_ID,
   PORTAL_APP_ID,
   GR_APP_ID,
+  TBTC_APP_ID,
   // UNKNOWN_APP_ID, // disabled until the backend is ready
   GATEWAY_APP_ID,
 ];
