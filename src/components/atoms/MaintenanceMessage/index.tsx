@@ -8,7 +8,8 @@ const MaintenanceMessage = () => {
       </div>
 
       <p className="maintenance-message-text">
-        Due to maintenance, the WormholeScan will be on May 15th from 15:00 UTC to 18:00 UTC.
+        Due to maintenance, the WormholeScan will be unavailable on July 15th between 15:00 - 18:00
+        UTC
       </p>
     </div>
   );

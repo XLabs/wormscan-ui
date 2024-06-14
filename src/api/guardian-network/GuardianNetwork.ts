@@ -64,6 +64,14 @@ export class GuardianNetwork {
       vaa,
     });
 
+    // // UNCOMMENT TO RUN VAA-PAYLOAD-PARSER LOCALLY
+    // const request = await fetch("http://localhost:3005/vaas/parse", {
+    //   method: "POST",
+    //   headers: [["Content-Type", "text/plain"]],
+    //   body: vaa,
+    // });
+    // const result = await request.json();
+
     return result;
   }
 
