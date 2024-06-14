@@ -9,9 +9,9 @@ import { getClient } from "src/api/Client";
 import { CrossChainBy } from "src/api/guardian-network/types";
 import { Chart } from "./Chart";
 import { ChainId } from "src/api";
-import { SwapSmallVerticalIcon, GlobeIcon, ChevronDownIcon } from "src/icons/generic";
+import { SwapSmallVerticalIcon, GlobeIcon } from "src/icons/generic";
+import { useWindowSize } from "src/utils/hooks";
 import "./styles.scss";
-import { useWindowSize } from "src/utils/hooks/useWindowSize";
 
 interface ICsvRow {
   "Target Chain": number;

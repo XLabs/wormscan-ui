@@ -17,7 +17,7 @@
     "@types/react": "^18.0.27",
     "@types/react-datepicker": "^6.2.0",
     "@types/react-dom": "^18.0.10",
-    "@types/react-table": "^7.7.14",
+    "@types/react-table": "^7.7.20",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
     "assert": "^2.0.0",

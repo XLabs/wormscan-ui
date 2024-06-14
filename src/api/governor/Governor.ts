@@ -34,18 +34,15 @@ export type ChainNotionalLimit = Omit<Notional, "availableNotional">;
 
 export type NotionalLimit = Omit<Notional, "id" | "nodeName" | "createdAt" | "updatedAt">;
 
-export type VAA = {
-  sequence: number;
+export interface GovernorVaa {
+  amount: number;
   chainId: ChainId;
   emitterAddress: string;
-  notionalValue: number;
+  releaseTime: Date;
+  sequence: string;
+  status: string;
   txHash: string;
-  releaseTime: number;
-};
-
-export interface Chain {
-  chainId: ChainId;
-  enqueuedVAA: Omit<VAA, "releaseTime">[];
+  vaaId: string;
 }
 
 export type NodeConfiguration = Node<ChainConfiguration, TokenConfiguration>;
@@ -98,15 +95,6 @@ export class Governor {
     return guardianId ? result.pop() : result;
   }
 
-  async getEnqueuedVaas(): Promise<Chain[]>;
-  async getEnqueuedVaas(chainId: ChainId): Promise<VAA[]>;
-  async getEnqueuedVaas(chainId: ChainId = null) {
-    const effectivePath = chainId ? `/governor/enqueued_vaa/${chainId}` : "/governor/enqueued_vaa";
-    const payload = await this._client.doGet<any>(effectivePath);
-    const result = _get(payload, "data", []);
-    return result.map(chainId ? this._mapVAA : this._mapChainVAA);
-  }
-
   //TODO API is returning 500
   async getMaxAvailableNotional(chainId: ChainId) {
     return this._client.doGet(`/governor/notional/max_available/${chainId}`);
@@ -151,6 +139,11 @@ export class Governor {
   async getLimit(): Promise<NotionalLimit[]> {
     const payload = await this._client.doGet<{ data: any }>("/governor/limit");
     const result = _get(payload, "data", []);
+    return result;
+  }
+
+  async getEnqueuedTransactions(): Promise<GovernorVaa[]> {
+    const result = await this._client.doGet<GovernorVaa[]>("/governor/vaas");
     return result;
   }
 
@@ -273,27 +266,5 @@ export class Governor {
   private _mapAvailableNotional = ({ chainId, availableNotional }: any): NotionalAvailable => ({
     chainId: ChainId[chainId] as unknown as ChainId,
     availableNotional,
-  });
-
-  private _mapChainVAA = ({ chainId, enqueuedVaas }: any): Chain => ({
-    chainId: ChainId[chainId] as unknown as ChainId,
-    enqueuedVAA: enqueuedVaas.map(this._mapVAA),
-  });
-
-  private _mapVAA = ({
-    chainid,
-    chainId,
-    sequence,
-    emitterAddress,
-    notionalValue,
-    txHash,
-    releaseTime,
-  }: any): VAA => ({
-    chainId: ChainId[chainid || chainId] as unknown as ChainId,
-    sequence,
-    emitterAddress,
-    notionalValue,
-    txHash,
-    releaseTime,
   });
 }

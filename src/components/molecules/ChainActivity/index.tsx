@@ -9,8 +9,7 @@ import { formatterYAxis } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
 import { getClient } from "src/api/Client";
 import { ChainFilterMainnet, ChainFilterTestnet } from "src/pages/Txs/Information/Filters";
-import useOutsideClick from "src/utils/hooks/useOutsideClick";
-import { useWindowSize } from "src/utils/hooks/useWindowSize";
+import { useWindowSize, useOutsideClick, useLockBodyScroll } from "src/utils/hooks";
 import { formatNumber } from "src/utils/number";
 import { AnalyticsIcon, CrossIcon, FilterListIcon, GlobeIcon } from "src/icons/generic";
 import { IChainActivity } from "src/api/guardian-network/types";
@@ -41,6 +40,17 @@ const ChainActivity = () => {
 
   const [lastBtnSelected, setLastBtnSelected] = useState<TSelectedPeriod>("24h");
   const [openFilters, setOpenFilters] = useState(false);
+
+  useLockBodyScroll({
+    isLocked: !isDesktop && openFilters,
+    scrollableClasses: [
+      "blockchain-icon",
+      "custom-checkbox",
+      "select__option",
+      "select-custom-option-container",
+      "select-custom-option",
+    ],
+  });
 
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
@@ -191,20 +201,10 @@ const ChainActivity = () => {
   };
 
   const handleFiltersOpened = () => {
-    setOpenFilters(prev => {
-      const newOpenFilters = !prev;
-
-      if (!isDesktop) {
-        document.body.style.overflow = newOpenFilters ? "hidden" : "unset";
-        document.body.style.height = newOpenFilters ? "100%" : "auto";
-      }
-
-      return newOpenFilters;
-    });
+    setOpenFilters(prev => !prev);
   };
 
   const applyFilters = () => {
-    document.body.style.overflow = "unset";
     setOpenFilters(false);
   };
 
@@ -220,7 +220,6 @@ const ChainActivity = () => {
       timespan: "1h",
       sourceChain: [],
     });
-    document.body.style.overflow = "unset";
     setOpenFilters(false);
   };
 
@@ -417,18 +416,6 @@ const ChainActivity = () => {
     }
   }, [allChainsSerie, currentNetwork, data, filters.sourceChain, getDateList, showAllChains]);
 
-  useEffect(() => {
-    if (!isDesktop) {
-      if (openFilters) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "unset";
-      }
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [isDesktop, openFilters]);
-
   return (
     <div className="chain-activity">
       {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
@@ -474,6 +461,7 @@ const ChainActivity = () => {
                 }
                 ariaLabel="Select Time Range"
                 items={CHAIN_LIST}
+                menuFixed={true}
                 name="timeRange"
                 onValueChange={(value: any) => handleChainSelection(value)}
                 type="searchable"

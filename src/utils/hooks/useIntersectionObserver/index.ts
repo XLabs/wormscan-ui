@@ -45,4 +45,4 @@ function useIntersectionObserver({
   }, [root, target, onIntersect, threshold, rootMargin, enabled]);
 }
 
-export { useIntersectionObserver };
+export default useIntersectionObserver;

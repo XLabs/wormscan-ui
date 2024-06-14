@@ -12,7 +12,7 @@ interface Props {
  * @param date The date of data snapshot in dd-mm-yyyy eg. 30-12-2022
  * @returns
  */
-export function useGetTokenPrice({ coingeckoId, date }: Props) {
+function useGetTokenPrice({ coingeckoId, date }: Props) {
   const {
     isLoading: tokenPriceIsLoading,
     error: tokenPriceError,
@@ -38,3 +38,5 @@ export function useGetTokenPrice({ coingeckoId, date }: Props) {
     tokenPrice,
   };
 }
+
+export default useGetTokenPrice;

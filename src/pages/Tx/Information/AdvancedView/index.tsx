@@ -12,7 +12,7 @@ import {
   isRedelivery,
   parseGenericRelayerVaa,
 } from "src/utils/genericRelayerVaaUtils";
-import { useLocalStorage } from "src/utils/hooks/useLocalStorage";
+import { useLocalStorage } from "src/utils/hooks";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import Details from "./Details";
 import RelayerDetails from "./Details/RelayerDetails";

@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import { CSSProperties, useEffect } from "react";
 import {
   useTable,
   Column,
@@ -6,8 +6,9 @@ import {
   TableState,
   UseTableOptions,
   UseSortByOptions,
+  TableInstance,
 } from "react-table";
-import { ArrowDownIcon, ArrowUpIcon } from "@radix-ui/react-icons";
+import { ArrowUpIcon } from "src/icons/generic";
 import "./styles.scss";
 
 type Props<T extends object> = {
@@ -16,10 +17,14 @@ type Props<T extends object> = {
   data: T[];
   emptyMessage?: string;
   hasSort?: boolean;
-  initialSortById?: string;
   isLoading?: boolean;
   numberOfColumns?: number;
   onRowClick?: (row: any) => void;
+  sortBy?: { id: string; desc: boolean }[];
+};
+
+type ExtendedTableInstance<T extends object> = TableInstance<T> & {
+  setSortBy?: (updater: any) => void;
 };
 
 const Table = <T extends object>({
@@ -28,26 +33,42 @@ const Table = <T extends object>({
   data,
   emptyMessage = "No items found.",
   hasSort = false,
-  initialSortById,
   isLoading = false,
   numberOfColumns = 7,
   onRowClick,
+  sortBy = [],
 }: Props<T>) => {
-  const tableHooks = hasSort ? [useSortBy] : [];
-  const initialState = initialSortById ? { sortBy: [{ id: initialSortById, desc: true }] } : {};
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable(
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    setSortBy,
+  }: ExtendedTableInstance<T> = useTable(
     {
       columns,
       data,
-      initialState: initialState as Partial<TableState<T>>,
+      initialState: { sortBy } as Partial<TableState<T>>,
       disableSortRemove: true,
     } as UseTableOptions<T> & UseSortByOptions<T>,
-    ...tableHooks,
+    useSortBy,
   );
+
+  useEffect(() => {
+    if (sortBy.length > 0) {
+      setSortBy(sortBy);
+    }
+  }, [sortBy, setSortBy]);
 
   return (
     <>
-      <table {...getTableProps()} className={`table ${className}`}>
+      <table
+        {...getTableProps()}
+        className={`table ${hasSort ? "table-sortable" : ""} ${
+          onRowClick ? "table-clickable" : ""
+        } ${className}`}
+      >
         <thead className="table-head">
           {headerGroups.map((headerGroup, index) => (
             <tr key={index} {...headerGroup.getHeaderGroupProps()}>
@@ -56,11 +77,12 @@ const Table = <T extends object>({
                 const sortIcon = hasSort && (
                   <span className="table-head-th-container-arrow">
                     {column.isSorted ? (
-                      column.isSortedDesc ? (
-                        <ArrowDownIcon height={18} width={18} />
-                      ) : (
-                        <ArrowUpIcon height={18} width={18} />
-                      )
+                      <ArrowUpIcon
+                        style={{
+                          rotate: column.isSortedDesc ? "180deg" : "0deg",
+                        }}
+                        width={24}
+                      />
                     ) : (
                       ""
                     )}
@@ -71,7 +93,10 @@ const Table = <T extends object>({
                   <th
                     key={index}
                     {...column.getHeaderProps(hasSort ? column.getSortByToggleProps() : {})}
-                    style={style}
+                    style={{
+                      ...style,
+                      color: column.isSorted ? "var(--color-white)" : "var(--color-gray-400)",
+                    }}
                   >
                     <div className="table-head-th-container">
                       {index !== 0 && sortIcon}
@@ -103,7 +128,9 @@ const Table = <T extends object>({
                 const txHash = (row?.original as any)?.txHashId;
 
                 if (justAppeared) {
-                  (row.original as any).justAppeared = false;
+                  setTimeout(() => {
+                    (row.original as any).justAppeared = false;
+                  });
                 }
 
                 return (

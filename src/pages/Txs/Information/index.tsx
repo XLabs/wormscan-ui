@@ -4,7 +4,7 @@ import { Column } from "react-table";
 import { PAGE_SIZE, TransactionOutput } from "..";
 import { Table } from "src/components/organisms";
 import { Pagination, Switch } from "src/components/atoms";
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import { useNavigateCustom } from "src/utils/hooks";
 import Filters from "./Filters";
 import "./styles.scss";
 

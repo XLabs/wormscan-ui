@@ -6,7 +6,7 @@ import { BlockchainIcon, Pagination } from "src/components/atoms";
 import { WormholeScanBrand } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getChainName } from "src/utils/wormhole";
-import { useWindowSize } from "src/utils/hooks/useWindowSize";
+import { useWindowSize } from "src/utils/hooks";
 import { ChainId } from "src/api";
 import { CrossChainActivity, CrossChainBy } from "src/api/guardian-network/types";
 import { processData } from "./chartUtils";

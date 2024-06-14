@@ -5,7 +5,7 @@ import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useRecoilState } from "recoil";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { loadPageState } from "src/utils/recoilStates";
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import { useNavigateCustom } from "src/utils/hooks";
 import analytics from "src/analytics";
 import { getClient } from "src/api/Client";
 

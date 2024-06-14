@@ -1,4 +1,4 @@
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import { useNavigateCustom } from "src/utils/hooks";
 import Error400 from "./Error400";
 import Error500 from "./Error500";
 import Error502 from "./Error502";

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function useLocalStorage<T>(
+function useLocalStorage<T>(
   key: string,
   initialValue: T,
 ): [T, (value: T | ((val: T) => T)) => void] {
@@ -26,3 +26,5 @@ export function useLocalStorage<T>(
 
   return [storedValue, setValue];
 }
+
+export default useLocalStorage;

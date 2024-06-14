@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
+import { useNavigateCustom } from "src/utils/hooks";
 import analytics from "src/analytics";
 import "./styles.scss";
 

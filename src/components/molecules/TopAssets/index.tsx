@@ -5,7 +5,7 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import { BREAKPOINTS } from "src/consts";
 import { Loader, Select } from "src/components/atoms";
 import { ErrorPlaceholder, TopAssetListItem, TopAssetsChart } from "src/components/molecules";
-import { useWindowSize } from "src/utils/hooks/useWindowSize";
+import { useWindowSize } from "src/utils/hooks";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
 import { formatNumber } from "src/utils/number";
 import { ChainId } from "src/api";
