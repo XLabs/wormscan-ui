@@ -105,6 +105,7 @@ const Select = ({
                     ...base,
                     position: menuFixed ? "fixed" : "absolute",
                     zIndex: 95,
+                    ...menuStyles,
                   }),
                   menu: base => ({
                     ...base,
