@@ -415,8 +415,12 @@ export const Chart = ({
   return (
     <>
       <div className="cross-chain-header-container title">
-        <div>{t("home.crossChain.source").toUpperCase()}</div>
-        <div>{t("home.crossChain.destination").toUpperCase()}</div>
+        <div className={isSourcesSelected ? "selected" : ""}>
+          {t("home.crossChain.source").toUpperCase()}
+        </div>
+        <div className={isSourcesSelected ? "" : "selected"}>
+          {t("home.crossChain.destination").toUpperCase()}
+        </div>
       </div>
       <div className="cross-chain-chart">
         <WormholeScanBrand />

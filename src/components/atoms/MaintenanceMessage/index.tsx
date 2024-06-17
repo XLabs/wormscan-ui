@@ -3,6 +3,7 @@ import "./style.scss";
 const MaintenanceMessage = () => {
   return (
     <div className="maintenance-message">
+      <div className="maintenance-message-bg" />
       <div className="maintenance-message-icon">
         <div className="maintenance-message-icon-dot" />
       </div>

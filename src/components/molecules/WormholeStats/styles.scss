@@ -86,14 +86,13 @@
         &-link {
           @include centered-row;
           @include text-roboto-body-400;
-          color: var(--color-white);
+          color: var(--color-white-60);
           cursor: pointer;
           gap: 4px;
           max-width: max-content;
-          text-decoration: underline solid var(--color-gray-600);
 
           &:hover {
-            text-decoration-color: var(--color-white);
+            color: var(--color-white);
           }
         }
       }

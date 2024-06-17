@@ -1,13 +1,14 @@
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import {  InfoCircledIcon } from "@radix-ui/react-icons";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { WORMHOLE_PAGE_URL } from "src/consts";
 import { Loader, Tooltip } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getClient } from "src/api/Client";
 import { LinkIcon } from "src/icons/generic";
+import WormholeLogo from "src/assets/wormhole-stats.svg";
 import "./styles.scss";
 
 const WormholeStats = () => {
@@ -123,7 +124,8 @@ const WormholeStats = () => {
                 rel="noreferrer"
                 target="_blank"
               >
-                Explore Wormhole <LinkIcon width={24} />
+                <img src={WormholeLogo} alt="wormhole" />
+                <LinkIcon width={24} />
               </a>
             </div>
           </div>

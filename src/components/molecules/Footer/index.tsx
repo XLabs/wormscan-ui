@@ -66,7 +66,7 @@ const Footer = () => {
 
       <div className="footer-container">
         <NavLink className="footer-container-logo" to="/" data-testid="footer-logo-link">
-          <WormholeScanBrand />
+          <WormholeScanBrand pos="vertical" />
         </NavLink>
 
         <div className="footer-container-links">

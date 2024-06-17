@@ -29,7 +29,11 @@
     }
 
     &-download {
-      max-width: max-content;
+      display: none !important;
+
+      @include desktop {
+        display: flex !important;
+      }
     }
   }
 
@@ -156,15 +160,24 @@
     }
 
     &-group {
-      @include centered-row;
-      flex-wrap: wrap;
+      display: grid;
       gap: 16px;
-      justify-content: flex-end;
-      width: 100%;
+      grid-template-columns: 1fr 1fr;
 
       @include desktop {
+        @include centered-row;
+        gap: 16px;
+        justify-content: flex-end;
         flex-wrap: nowrap;
         width: inherit;
+      }
+
+      &-download {
+        max-width: 100%;
+
+        @include desktop {
+          display: none !important;
+        }
       }
     }
 
@@ -182,6 +195,7 @@
 
     & .wormholescan-brand {
       bottom: 0;
+      filter: grayscale(1);
       height: 34px;
       left: 0;
       margin: auto;
@@ -620,6 +634,10 @@
     &.title {
       @include text-heading6;
       color: var(--color-gray-400);
+
+      & > .selected {
+        color: var(--color-white);
+      }
     }
   }
 }
