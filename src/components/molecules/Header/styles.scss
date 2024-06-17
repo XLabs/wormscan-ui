@@ -2,7 +2,7 @@
 
 .header {
   @include desktop {
-    height: 204px;
+    height: 172px;
   }
 
   &-container {
@@ -11,12 +11,13 @@
     gap: 28px 0;
     grid-template-columns: 1fr 1fr;
     margin-bottom: 40px;
-    margin-top: 32px;
+    margin-top: 16px;
     width: 100%;
     z-index: 99;
 
     @include desktop {
       gap: 20px 12px;
+      margin-bottom: 30px;
     }
 
     &-mobile {
