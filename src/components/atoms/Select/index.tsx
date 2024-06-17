@@ -16,6 +16,7 @@ interface Props {
   }[];
   menuFixed?: boolean;
   menuPlacement?: "auto" | "bottom" | "top";
+  menuStyles?: React.CSSProperties;
   name: string;
   noOptionsMessage?: string;
   onValueChange: (value: any) => void;
@@ -33,6 +34,7 @@ const Select = ({
   items,
   menuFixed = false,
   menuPlacement = "auto",
+  menuStyles,
   name,
   noOptionsMessage = "No Options",
   onValueChange,
@@ -103,6 +105,7 @@ const Select = ({
                     ...base,
                     position: menuFixed ? "fixed" : "absolute",
                     zIndex: 95,
+                    ...menuStyles,
                   }),
                   menu: base => ({
                     ...base,
@@ -189,24 +192,16 @@ const Select = ({
       options={items}
       placeholder={placeholder}
       styles={{
-        control: () => ({ cursor: "pointer" }),
         menuPortal: base => ({
           ...base,
           position: menuFixed ? "fixed" : "absolute",
           zIndex: 95,
+          ...menuStyles,
         }),
-        option: base =>
-          type === "secondary"
-            ? {
-                ...base,
-                fontFamily: '"Roboto Mono", "Roboto", sans-serif',
-                fontSize: "12px",
-                fontWeight: 400,
-                letterSpacing: "0.03em",
-                lineHeight: "16px",
-                textTransform: "uppercase",
-              }
-            : { ...base, ...optionStyles },
+        option: base => ({
+          ...base,
+          ...optionStyles,
+        }),
       }}
       unstyled
       value={value}

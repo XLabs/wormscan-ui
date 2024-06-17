@@ -120,7 +120,7 @@ const Header = () => {
       <div className={`header-container ${showDesktopFixedNav ? "header-container-fixed" : ""}`}>
         <div className="header-container-logo">
           <NavLink to="/" data-testid="header-logo-link">
-            <WormholeScanBrand />
+            <WormholeScanBrand pos={showDesktopFixedNav ? "horizontal" : "vertical"} />
           </NavLink>
         </div>
 
@@ -182,6 +182,7 @@ const Header = () => {
             name="networkSelect"
             onValueChange={(env: NetworkSelectProps) => onClickChangeNetwork(env.value)}
             type="secondary"
+            menuStyles={{ zIndex: 99 }}
             value={NETWORK_LIST.find(a => a.value === currentNetwork)}
           />
         </nav>
@@ -218,18 +219,22 @@ const Header = () => {
           <MenuIcon width={24} />
           OTHER
         </div>
+      </div>
 
-        <div
-          className={`header-container-mobile-other-menu ${
-            showMobileNav && showMobileOtherMenu ? "open" : ""
-          }`}
-        >
-          {isMainnet && (
-            <NavLink to="/governor" aria-label="Governor">
-              Governor
-            </NavLink>
-          )}
+      <div
+        className={`header-container-mobile-other-menu ${
+          showMobileNav && showMobileOtherMenu ? "open" : ""
+        }`}
+      >
+        {isMainnet && (
+          <NavLink to="/governor" aria-label="Governor">
+            Governor
+          </NavLink>
+        )}
 
+        <div className="header-container-mobile-other-menu-dev-tools-title">Dev tools</div>
+
+        <div className="header-container-mobile-other-menu-dev-tools">
           <NavLink to="/vaa-parser" aria-label="VAA Parser">
             VAA Parser
           </NavLink>
@@ -240,7 +245,7 @@ const Header = () => {
             rel="noopener noreferrer"
             aria-label="API Docs"
           >
-            API Docs
+            API docs
           </a>
 
           <a
@@ -249,7 +254,7 @@ const Header = () => {
             rel="noopener noreferrer"
             aria-label="Wormhole Docs"
           >
-            Wormhole Docs
+            Wormhole docs
           </a>
         </div>
       </div>

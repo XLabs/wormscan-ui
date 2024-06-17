@@ -33,6 +33,7 @@
 
   & .wormholescan-brand {
     bottom: 0;
+    filter: grayscale(1);
     height: 34px;
     left: 0;
     margin: auto;
@@ -168,7 +169,7 @@
         position: fixed;
         transition: inset 0.3s ease;
         width: 100%;
-        z-index: 95;
+        z-index: 99;
 
         @include desktop {
           @include centered-row;

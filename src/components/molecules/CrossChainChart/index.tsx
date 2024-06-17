@@ -244,6 +244,16 @@ const CrossChainChart = () => {
               ariaLabel="Select Time Range"
               className="cross-chain-filters-select"
             />
+
+            <Select
+              ariaLabel="Select Download Format"
+              className="cross-chain-filters-group-download"
+              items={DOWNLOADABLE_LIST}
+              name="downloadAs"
+              onValueChange={({ value }) => handleDownloadAs(value)}
+              placeholder="Download"
+              value={{ label: "Download", value: "" }}
+            />
           </div>
         </div>
       </div>

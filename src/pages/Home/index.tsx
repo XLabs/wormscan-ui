@@ -18,8 +18,8 @@ const Home = () => {
     <BaseLayout>
       <WormholeStats />
       <CrossChainChart />
-      <ProtocolsStats />
       <ChainActivity />
+      <ProtocolsStats />
       <TopAssets />
     </BaseLayout>
   );
