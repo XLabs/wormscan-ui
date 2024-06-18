@@ -77,7 +77,7 @@ const ChainFilterMainnet = [
   ChainId.Injective,
   ChainId.Karura,
   ChainId.Klaytn,
-  // ChainId.Mantle, TODO: add when exists a Mantle transaction
+  ChainId.Mantle, // TODO: add when exists a Mantle transaction
   ChainId.Moonbeam,
   ChainId.Near,
   ChainId.Neon,

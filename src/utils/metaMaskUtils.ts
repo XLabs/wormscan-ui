@@ -21,6 +21,7 @@ import {
   CHAIN_ID_SCROLL,
   Network,
   CHAIN_ID_XLAYER,
+  CHAIN_ID_MANTLE,
 } from "@certusone/wormhole-sdk";
 import detectEthereumProvider from "@metamask/detect-provider";
 
@@ -345,6 +346,20 @@ export const METAMASK_CHAIN_PARAMETERS: {
     rpcUrls: ["https://blast-sepolia.blockpi.network/v1/rpc/public"],
     blockExplorerUrls: ["https://sepolia.blastscan.io"],
   },
+  5000: {
+    chainId: "0x1388",
+    chainName: "Mantle",
+    nativeCurrency: { name: "MNT", symbol: "MNT", decimals: 18 },
+    rpcUrls: ["https://rpc.mantle.xyz"],
+    blockExplorerUrls: [""],
+  },
+  5001: {
+    chainId: "0x1389",
+    chainName: "Mantle Testnet",
+    nativeCurrency: { name: "MNT", symbol: "MNT", decimals: 18 },
+    rpcUrls: ["https://rpc.testnet.mantle.xyz"],
+    blockExplorerUrls: [""],
+  },
 };
 
 export const CHAIN_IDS: ChainIds = {
@@ -360,6 +375,7 @@ export const CHAIN_IDS: ChainIds = {
   FANTOM_NETWORK_CHAIN_ID: { MAINNET: 250, TESTNET: 4002, DEVNET: 4002 },
   KARURA_NETWORK_CHAIN_ID: { MAINNET: 686, TESTNET: 596, DEVNET: 596 },
   KLAYTN_NETWORK_CHAIN_ID: { MAINNET: 8217, TESTNET: 1001, DEVNET: 1001 },
+  MANTLE_NETWORK_CHAIN_ID: { MAINNET: 5000, TESTNET: 5001, DEVNET: 5001 },
   MOONBEAM_NETWORK_CHAIN_ID: { MAINNET: 1284, TESTNET: 1287, DEVNET: 1287 },
   NEON_NETWORK_CHAIN_ID: { MAINNET: 245022934, TESTNET: 245022926, DEVNET: 245022926 },
   OASIS_NETWORK_CHAIN_ID: { MAINNET: 42262, TESTNET: 42261, DEVNET: 42261 },
@@ -384,6 +400,7 @@ export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number
     [CHAIN_ID_FANTOM]: CHAIN_IDS.FANTOM_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_KARURA]: CHAIN_IDS.KARURA_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_KLAYTN]: CHAIN_IDS.KLAYTN_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_MANTLE]: CHAIN_IDS.MANTLE_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_MOONBEAM]: CHAIN_IDS.MOONBEAM_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_NEON]: CHAIN_IDS.NEON_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_OASIS]: CHAIN_IDS.OASIS_NETWORK_CHAIN_ID[currentNetwork],
