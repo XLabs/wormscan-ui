@@ -66,6 +66,7 @@ import {
   DeliveryInstruction,
   parseEVMExecutionInfoV1,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
+import { BlockSection } from "./Information/AdvancedView";
 
 const Tx = () => {
   useEffect(() => {
@@ -94,9 +95,20 @@ const Tx = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isRPC, setIsRPC] = useState(false);
   const [extraRawInfo, setExtraRawInfo] = useState(null);
+  const [observationsOnlyData, setObservationsOnlyData] = useState<any>(false);
   const [blockData, setBlockData] = useState<GetBlockData>(null);
   const [failCount, setFailCount] = useState(0);
   const [shouldTryToGetRpcInfo, setShouldTryToGetRpcInfo] = useState(false);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout | null = null;
+    if (!!observationsOnlyData) {
+      timeout = setTimeout(() => {
+        window.location.reload();
+      }, 30000);
+    }
+    return () => clearTimeout(timeout);
+  }, [observationsOnlyData]);
 
   const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(["getLimit"], () =>
     getClient()
@@ -361,6 +373,35 @@ const Tx = () => {
               setIsLoading(false);
             })
             .catch(() => (cancelRequests.current = false));
+        }
+
+        if (errCount === 2) {
+          getClient()
+            .guardianNetwork.getObservationForTxHash(txHash)
+            .then(observations => {
+              if (!!observations?.length) {
+                const guardianSetList = getGuardianSet(4);
+
+                const signedGuardians = observations.map(({ guardianAddr, signature }) => ({
+                  signature: Buffer.from(signature).toString(),
+                  name: guardianSetList?.find(a => a.pubkey === guardianAddr)?.name,
+                }));
+
+                setExtraRawInfo({ ...extraRawInfo, signatures: signedGuardians, observations });
+                setObservationsOnlyData({
+                  signatures: signedGuardians,
+                  observations,
+                  txHash,
+                  emitterChain: observations[0].emitterChain,
+                });
+
+                cancelRequests.current = true;
+                setIsLoading(false);
+              }
+            })
+            .catch(() => {
+              console.log("no observations found");
+            });
         }
 
         setFailCount(errCount);
@@ -1332,6 +1373,33 @@ const Tx = () => {
               {failCount === 2 && "Still on it..."}
               {failCount === 3 && "We haven't found anything yet..."}
             </p>
+          </>
+        ) : observationsOnlyData ? (
+          <>
+            <Top
+              txHash={observationsOnlyData.txHash}
+              emitterChainId={observationsOnlyData.emitterChain}
+              gatewayInfo={null}
+              payloadType={null}
+            />
+            <div>
+              There is no VAA for this transaction yet. This page will refresh automatically in 30
+              seconds
+            </div>
+            <br />
+            <div>Signatures: {observationsOnlyData.signatures?.length} / 13</div>
+            <br />
+            <div>
+              VAA ID: {observationsOnlyData.observations[0].emitterChain}/
+              {observationsOnlyData.observations[0].emitterAddr}/
+              {observationsOnlyData.observations[0].sequence}
+            </div>
+            <br />
+
+            <BlockSection
+              code={JSON.stringify(observationsOnlyData, null, 4)}
+              title="Observations Data"
+            />
           </>
         ) : (
           <>

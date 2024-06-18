@@ -171,8 +171,8 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             { pageSize: 20, page: 0, sortOrder: Order.ASC },
           );
 
-          if (!!observations.length) {
-            const guardianSetList = getGuardianSet(3);
+          if (!!observations?.length) {
+            const guardianSetList = getGuardianSet(4);
 
             const signedGuardians = observations.map(({ guardianAddr, signature }) => ({
               signature: Buffer.from(signature).toString(),

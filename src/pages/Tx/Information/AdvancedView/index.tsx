@@ -104,7 +104,11 @@ const AdvancedView = ({
           <BlockSection title="PAYLOAD" code={payload && JSON.stringify(payload, null, 4)} />
 
           {!!extraRawInfo && (
-            <BlockSection code={JSON.stringify(extraRawInfo, null, 4)} title="Extra info" />
+            <BlockSection
+              id="signatures2"
+              code={JSON.stringify(extraRawInfo, null, 4)}
+              title="Extra info"
+            />
           )}
 
           {relayerInfo && (
@@ -220,7 +224,11 @@ const AdvancedView = ({
             </>
           )}
 
-          <BlockSection title="SIGNED VAA" code={signedVAA && JSON.stringify(signedVAA, null, 4)} />
+          <BlockSection
+            id="signatures"
+            title="SIGNED VAA"
+            code={signedVAA && JSON.stringify(signedVAA, null, 4)}
+          />
         </div>
       </div>
     </div>
@@ -244,7 +252,7 @@ const Button = ({
   </button>
 );
 
-const BlockSection = ({ title, code }: { title: string; code: any }) => {
+export const BlockSection = ({ title, code, id }: { title: string; code: any; id?: string }) => {
   if (!code) return null;
   const jsonParsed = JSON.parse(code);
 
@@ -268,7 +276,7 @@ const BlockSection = ({ title, code }: { title: string; code: any }) => {
   };
 
   return (
-    <div className="tx-advanced-view-container-block">
+    <div className="tx-advanced-view-container-block" id={id || title.replaceAll(" ", "")}>
       <div className="tx-advanced-view-container-block-top">
         <div className="tx-advanced-view-container-block-title">{title}</div>
         <div className="tx-advanced-view-container-block-copy">
