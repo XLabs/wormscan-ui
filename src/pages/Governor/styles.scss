@@ -72,21 +72,13 @@
               display: none;
             }
           }
-        }
 
-        & .transactions {
-          & .mobile {
-            @media (min-width: 410px) {
-              display: none;
-            }
-          }
-
-          & .desktop {
-            display: none;
-
-            @media (min-width: 410px) {
-              display: block;
-            }
+          &.sort-by-btn {
+            border-radius: 12px;
+            height: 36px;
+            justify-content: center;
+            padding: 0;
+            width: 36px;
           }
         }
       }
@@ -305,7 +297,7 @@
     position: fixed;
     transition: inset 0.3s ease;
     width: 100%;
-    z-index: 95;
+    z-index: 99;
 
     @include desktop {
       display: none;
