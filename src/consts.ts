@@ -107,7 +107,13 @@ export const getGuardianSet = (version: number): GuardianSet[] => {
     name: "xLabs",
   };
 
-  const versions: Record<number, GuardianSet[]> = { 1: v1, 2: v2, 3: v3 };
+  const v4 = [...v3];
+  v4[1] = {
+    pubkey: "0x5893B5A76c3f739645648885bDCcC06cd70a3Cd3",
+    name: "RockawayX",
+  };
+
+  const versions: Record<number, GuardianSet[]> = { 1: v1, 2: v2, 3: v3, 4: v4 };
   return versions[version] || [];
 };
 

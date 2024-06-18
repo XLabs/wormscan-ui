@@ -149,6 +149,11 @@ export class GuardianNetwork {
     return payload || [];
   }
 
+  async getObservationForTxHash(txHash: string): Promise<Observation[]> {
+    const payload = await this._client.doGet<[]>(`/observations?txHash=${txHash}`);
+    return payload || [];
+  }
+
   private _vaaSearchCriteriaToPathSegmentFilter(
     prefix: string,
     criteria: {

@@ -38,6 +38,7 @@ export type OverviewProps = {
     status?: string;
     refundStatus?: string;
   };
+  setShowOverview?: (bool: boolean) => void;
   showMetaMaskBtn?: boolean;
   showSignatures?: boolean;
   sourceSymbol?: string;
@@ -80,6 +81,7 @@ const Overview = ({
   parsedRedeemTx,
   redeemedAmount,
   relayerNTTStatus,
+  setShowOverview,
   showMetaMaskBtn,
   showSignatures,
   sourceSymbol,
@@ -282,7 +284,25 @@ const Overview = ({
             <div>
               <div className="tx-overview-graph-step-title">Signatures</div>
               <div className="tx-overview-graph-step-description">
-                {showSignatures ? `${guardianSignaturesCount} / ${totalGuardiansNeeded}` : "N/A"}
+                <a
+                  onClick={() => {
+                    setShowOverview(false);
+                    setTimeout(() => {
+                      const signedVaaElem = document.getElementById("signatures");
+                      if (signedVaaElem) {
+                        signedVaaElem.scrollIntoView({ behavior: "smooth", block: "start" });
+                      } else {
+                        const extraRawElem = document.getElementById("signatures2");
+                        if (extraRawElem) {
+                          extraRawElem.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }
+                      }
+                    }, 100);
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  {showSignatures ? `${guardianSignaturesCount} / ${totalGuardiansNeeded}` : "N/A"}
+                </a>
               </div>
             </div>
 

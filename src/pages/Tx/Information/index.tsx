@@ -68,7 +68,9 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
   const vaa = data?.vaa;
   const { isDuplicated } = data?.vaa || {};
-  const guardianSignaturesCount = data?.decodedVaa?.guardianSignatures?.length || 0;
+  const guardianSignaturesCount =
+    data?.decodedVaa?.guardianSignatures?.length || extraRawInfo?.signatures?.length || 0;
+
   const hasVAA = !!vaa;
 
   const { currentBlock, lastFinalizedBlock } = blockData || {};
@@ -293,6 +295,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
     parsedPayload,
     parsedRedeemTx,
     redeemedAmount,
+    setShowOverview,
     showMetaMaskBtn,
     showSignatures: !(appIds && appIds.includes(CCTP_MANUAL_APP_ID)),
     sourceSymbol,
