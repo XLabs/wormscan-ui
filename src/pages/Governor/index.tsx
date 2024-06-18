@@ -343,8 +343,7 @@ const Governor = () => {
                     handleReset(true);
                   }}
                 >
-                  <span className="mobile">Transactions</span>
-                  <span className="desktop">Queued Transactions</span>
+                  Queued Transactions
                 </button>
               </div>
 
@@ -353,7 +352,7 @@ const Governor = () => {
                 aria-label="Sort by"
                 onClick={() => setOpenSortBy(!openSortBy)}
               >
-                <FilterListIcon width={24} /> Sort by
+                <FilterListIcon width={24} />
               </button>
             </div>
           </div>
@@ -421,6 +420,7 @@ const Governor = () => {
             className="governor-mobile-filters-select"
             items={showTransactions ? SORT_TRANSACTIONS_BY_LIST : SORT_DASHBOARD_BY_LIST}
             menuFixed={true}
+            menuStyles={{ zIndex: 99 }}
             name="topAssetTimeRange"
             onValueChange={(value: ISelectSortBy) => handleSelectedSortBy(value)}
             optionStyles={{ padding: 16 }}
@@ -432,6 +432,7 @@ const Governor = () => {
             className="governor-mobile-filters-select"
             items={SORT_LOW_HIGH_LIST}
             menuFixed={true}
+            menuStyles={{ zIndex: 99 }}
             name="topAssetTimeRange"
             onValueChange={(value: ISelectSortLowHigh) => handleSelectedSortLowHigh(value)}
             optionStyles={{ padding: 16 }}
