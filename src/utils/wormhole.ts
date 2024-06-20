@@ -419,7 +419,13 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/account/" + value;
-      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "token")
+        return (
+          this.explorer?.[network] +
+          (value.toLowerCase().startsWith("ibc/")
+            ? "/asset/?denom=" + value + "&tokenType=ibc"
+            : "/contract/" + value)
+        );
       if (base === "block") return this.explorer?.[network] + "/block/" + value;
       return this.explorer?.[network] + "/transaction/" + value;
     },
