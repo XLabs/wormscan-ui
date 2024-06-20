@@ -81,22 +81,26 @@ const ProtocolsStats = () => {
       ) : (
         <div className="protocols-stats-container">
           <div className="protocols-stats-container-list">
-            {sortedData?.map((item: ProtocolsStatsOutput) => (
-              <button
-                key={item.protocol}
-                className={`protocols-stats-container-list-item ${
-                  protocolSelected?.protocol === item.protocol ? "active" : ""
-                }`}
-                onClick={() => handleClick(item)}
-              >
-                <div className="protocols-stats-container-list-item-logo">
-                  <img src={protocolIcons[item.protocol]} alt={item.protocol} />
-                </div>
-                <div className="protocols-stats-container-list-item-name">
-                  {protocolNames[item.protocol]}
-                </div>
-              </button>
-            ))}
+            {sortedData?.map((item: ProtocolsStatsOutput) => {
+              if (!protocolNames[item?.protocol]) return null;
+
+              return (
+                <button
+                  key={item.protocol}
+                  className={`protocols-stats-container-list-item ${
+                    protocolSelected?.protocol === item.protocol ? "active" : ""
+                  }`}
+                  onClick={() => handleClick(item)}
+                >
+                  <div className="protocols-stats-container-list-item-logo">
+                    <img src={protocolIcons[item.protocol]} alt={item.protocol} />
+                  </div>
+                  <div className="protocols-stats-container-list-item-name">
+                    {protocolNames[item.protocol]}
+                  </div>
+                </button>
+              );
+            })}
           </div>
           <div className="protocols-stats-container-info">
             <a
