@@ -11,7 +11,6 @@ import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getClient } from "src/api/Client";
 import { ProtocolName, ProtocolsStatsOutput } from "src/api/guardian-network/types";
-import { ExternalLinkIcon } from "@radix-ui/react-icons";
 import { Cube3DIcon, LinkIcon } from "src/icons/generic";
 import { ChainId } from "src/api";
 import "./styles.scss";
@@ -21,6 +20,7 @@ const protocolIcons: Record<ProtocolName, string> = {
   cctp: cctpIcon,
   mayan: mayanIcon,
   portal_token_bridge: portalIcon,
+  native_token_transfer: portalIcon,
 };
 
 const protocolNames: Record<ProtocolName, string> = {
@@ -28,6 +28,7 @@ const protocolNames: Record<ProtocolName, string> = {
   cctp: "CCTP",
   mayan: "Mayan",
   portal_token_bridge: "Portal",
+  native_token_transfer: "NTT",
 };
 
 const protocolLinks: Record<ProtocolName, string> = {
@@ -35,6 +36,7 @@ const protocolLinks: Record<ProtocolName, string> = {
   cctp: CCTP_URL,
   mayan: MAYAN_URL,
   portal_token_bridge: PORTAL_BRIDGE_URL,
+  native_token_transfer: PORTAL_BRIDGE_URL,
 };
 
 const chainsSupported = {
@@ -99,6 +101,7 @@ const chainsSupported = {
     ChainId.Terra2,
     ChainId.Xpla,
   ],
+  native_token_transfer: [ChainId.Ethereum, ChainId.Solana],
 };
 
 const ProtocolsStats = () => {
@@ -149,107 +152,111 @@ const ProtocolsStats = () => {
             <h4 className="protocols-stats-container-header-title">Chains</h4>
           </div>
 
-          {sortedData?.map((item: ProtocolsStatsOutput) => (
-            <div className="protocols-stats-container-element" key={item.protocol}>
-              <a
-                className="protocols-stats-container-element-item"
-                href={protocolLinks[item.protocol]}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <img
-                  src={protocolIcons[item.protocol]}
-                  alt={item.protocol}
-                  height={24}
-                  width={24}
-                />
+          {sortedData?.map((item: ProtocolsStatsOutput) => {
+            if (!chainsSupported[item.protocol]) return null;
 
-                <p className="protocols-stats-container-element-item-protocol">
-                  {protocolNames[item.protocol]}
-                </p>
+            return (
+              <div className="protocols-stats-container-element" key={item.protocol}>
+                <a
+                  className="protocols-stats-container-element-item"
+                  href={protocolLinks[item.protocol]}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img
+                    src={protocolIcons[item.protocol]}
+                    alt={item.protocol}
+                    height={24}
+                    width={24}
+                  />
 
-                <LinkIcon width={24} />
-              </a>
+                  <p className="protocols-stats-container-element-item-protocol">
+                    {protocolNames[item.protocol]}
+                  </p>
 
-              <div className="protocols-stats-container-element-item">
-                <h4 className="protocols-stats-container-element-item-title">
-                  TOTAL VALUE TRANSFERRED
-                </h4>
-                <p className="protocols-stats-container-element-item-value">
-                  $
-                  {item?.total_value_transferred
-                    ? formatNumber(item?.total_value_transferred, 0)
-                    : " -"}
-                </p>
-              </div>
+                  <LinkIcon width={24} />
+                </a>
 
-              <div className="protocols-stats-container-element-item">
-                <h4 className="protocols-stats-container-element-item-title">TOTAL MESSAGES</h4>
-                <p className="protocols-stats-container-element-item-value">
-                  {item?.total_messages ? formatNumber(item?.total_messages, 0) : "-"}
-                </p>
-              </div>
+                <div className="protocols-stats-container-element-item">
+                  <h4 className="protocols-stats-container-element-item-title">
+                    TOTAL VALUE TRANSFERRED
+                  </h4>
+                  <p className="protocols-stats-container-element-item-value">
+                    $
+                    {item?.total_value_transferred
+                      ? formatNumber(item?.total_value_transferred, 0)
+                      : " -"}
+                  </p>
+                </div>
 
-              <div className="protocols-stats-container-element-item">
-                <h4 className="protocols-stats-container-element-item-title">24H MESSAGES</h4>
-                <p className="protocols-stats-container-element-item-value">
-                  {item?.last_day_messages && item?.last_day_diff_percentage ? (
-                    <>
-                      {formatNumber(item?.last_day_messages, 0)}
-                      <span
-                        className={`protocols-stats-container-element-item-value-diff ${
-                          item?.last_day_diff_percentage === "0.00%"
-                            ? ""
-                            : item?.last_day_diff_percentage.startsWith("-")
-                            ? "negative"
-                            : "positive"
-                        }`}
-                      >
-                        {!item?.last_day_diff_percentage.startsWith("-") && "+"}
-                        {item?.last_day_diff_percentage}
-                      </span>
-                    </>
-                  ) : (
-                    "-"
-                  )}
-                </p>
-              </div>
+                <div className="protocols-stats-container-element-item">
+                  <h4 className="protocols-stats-container-element-item-title">TOTAL MESSAGES</h4>
+                  <p className="protocols-stats-container-element-item-value">
+                    {item?.total_messages ? formatNumber(item?.total_messages, 0) : "-"}
+                  </p>
+                </div>
 
-              <div className="protocols-stats-container-element-item">
-                <h4 className="protocols-stats-container-element-item-title">CHAINS</h4>
-                <div className="protocols-stats-container-element-item-value">
-                  <div className="protocols-stats-container-element-item-value-chains">
-                    {chainsSupported[item.protocol].map((chainId, i) => {
-                      if (i > 7) return null;
+                <div className="protocols-stats-container-element-item">
+                  <h4 className="protocols-stats-container-element-item-title">24H MESSAGES</h4>
+                  <p className="protocols-stats-container-element-item-value">
+                    {item?.last_day_messages && item?.last_day_diff_percentage ? (
+                      <>
+                        {formatNumber(item?.last_day_messages, 0)}
+                        <span
+                          className={`protocols-stats-container-element-item-value-diff ${
+                            item?.last_day_diff_percentage === "0.00%"
+                              ? ""
+                              : item?.last_day_diff_percentage.startsWith("-")
+                              ? "negative"
+                              : "positive"
+                          }`}
+                        >
+                          {!item?.last_day_diff_percentage.startsWith("-") && "+"}
+                          {item?.last_day_diff_percentage}
+                        </span>
+                      </>
+                    ) : (
+                      "-"
+                    )}
+                  </p>
+                </div>
 
-                      if (i === 7 && chainsSupported[item.protocol].length > 8) {
+                <div className="protocols-stats-container-element-item">
+                  <h4 className="protocols-stats-container-element-item-title">CHAINS</h4>
+                  <div className="protocols-stats-container-element-item-value">
+                    <div className="protocols-stats-container-element-item-value-chains">
+                      {chainsSupported?.[item.protocol]?.map((chainId, i) => {
+                        if (i > 7) return null;
+
+                        if (i === 7 && chainsSupported[item.protocol].length > 8) {
+                          return (
+                            <div
+                              key={chainId}
+                              className="protocols-stats-container-element-item-value-chains-chain protocols-stats-container-element-item-value-chains-chain-more"
+                            >
+                              {chainsSupported[item.protocol].length - 7}
+                            </div>
+                          );
+                        }
+
                         return (
-                          <div
+                          <BlockchainIcon
+                            background="#1F1F1F"
+                            chainId={chainId}
+                            className="protocols-stats-container-element-item-value-chains-chain"
+                            colorless={true}
                             key={chainId}
-                            className="protocols-stats-container-element-item-value-chains-chain protocols-stats-container-element-item-value-chains-chain-more"
-                          >
-                            {chainsSupported[item.protocol].length - 7}
-                          </div>
+                            network="MAINNET"
+                            size={24}
+                          />
                         );
-                      }
-
-                      return (
-                        <BlockchainIcon
-                          background="#1F1F1F"
-                          chainId={chainId}
-                          className="protocols-stats-container-element-item-value-chains-chain"
-                          colorless={true}
-                          key={chainId}
-                          network="MAINNET"
-                          size={24}
-                        />
-                      );
-                    })}
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
