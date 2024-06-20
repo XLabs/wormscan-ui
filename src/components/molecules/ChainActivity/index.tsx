@@ -11,7 +11,13 @@ import { getClient } from "src/api/Client";
 import { ChainFilterMainnet, ChainFilterTestnet } from "src/pages/Txs/Information/Filters";
 import { useWindowSize, useOutsideClick, useLockBodyScroll } from "src/utils/hooks";
 import { formatNumber } from "src/utils/number";
-import { AnalyticsIcon, CrossIcon, FilterListIcon, GlobeIcon } from "src/icons/generic";
+import {
+  ActivityIcon,
+  AnalyticsIcon,
+  CrossIcon,
+  FilterListIcon,
+  GlobeIcon,
+} from "src/icons/generic";
 import { IChainActivity } from "src/api/guardian-network/types";
 import { calculateDateDifferenceInDays, startOfDayUTC, startOfMonthUTC } from "src/utils/date";
 import { Calendar } from "./Calendar";
@@ -181,8 +187,30 @@ const ChainActivity = () => {
   };
 
   const handleChainSelection = (value: IChainList[]) => {
+    if (
+      value.length === 0 &&
+      chainListSelected.length === 1 &&
+      chainListSelected[0].value === "All Chains"
+    ) {
+      return;
+    }
+
+    if (value.length === 0) {
+      value = [CHAIN_LIST[0]];
+    }
+
+    const lastChainSelected = value[value.length - 1].value;
+
+    if (
+      value.length > 1 &&
+      value.some(item => item.value === "All Chains") &&
+      lastChainSelected !== "All Chains"
+    ) {
+      value = value.filter(item => item.value !== "All Chains");
+    }
+
     setChainListSelected(value);
-    const chainsSelected = value.map((item: any) => item.value);
+    const chainsSelected = value.map((item: IChainList) => item.value);
     const chainsSelectedWithoutAll = chainsSelected.filter(
       (chain: string) => chain !== "All Chains",
     );
@@ -224,7 +252,7 @@ const ChainActivity = () => {
   };
 
   const groupDataByDate = (data: IChainActivity[]) => {
-    return data.reduce((acc: IAccumulator, curr) => {
+    return data.reduce((acc: IAccumulator, curr, i) => {
       const key = `${curr.from}-${curr.to}`;
       if (!acc[key]) {
         acc[key] = {
@@ -244,6 +272,7 @@ const ChainActivity = () => {
         emitter_chain: curr.emitter_chain,
         volume: curr.volume,
         count: curr.count,
+        color: colors2[i] ? colors2[i] : "#fff",
       };
 
       if (index === -1) {
@@ -339,6 +368,9 @@ const ChainActivity = () => {
     }
   }, [dataAllChains, getDateList]);
 
+  const chainIndices = useRef({});
+  const nextIndex = useRef(0);
+
   useEffect(() => {
     if (!data) return;
 
@@ -346,7 +378,7 @@ const ChainActivity = () => {
     const allDates: { [key: string]: boolean } = {};
 
     // Group by emitter_chain and extract all dates
-    data.forEach(item => {
+    data.forEach((item, i) => {
       // formatDate to add milliseconds and match dates when using .toISOString()
       const formatDate = item.from.slice(0, -1) + ".000Z";
 
@@ -354,13 +386,23 @@ const ChainActivity = () => {
         dataByChain[item.emitter_chain] = [];
       }
 
+      if (!(item?.emitter_chain in chainIndices.current)) {
+        chainIndices.current[item?.emitter_chain] = nextIndex.current;
+        nextIndex.current++;
+      }
+      const index = chainIndices.current[item?.emitter_chain];
+
+      const color = colors2[index];
+
+      console.log(i, item.emitter_chain, chainIndices.current);
+
       dataByChain[item.emitter_chain].push({
         x: formatDate,
         y: item.count,
         volume: item.volume,
         count: item.count,
         emitter_chain: item.emitter_chain,
-        color: colors[+item.emitter_chain] ? colors[+item.emitter_chain] : "#fff",
+        color: color,
       });
 
       allDates[formatDate] = true;
@@ -371,7 +413,10 @@ const ChainActivity = () => {
 
     // When there were no movements in that time range, the endpoint does not bring
     // information for that chain, so we need to add it manually
-    selectedChains.forEach(chain => {
+    selectedChains.forEach((chain, i) => {
+      const chainIndex = chainIndices.current[chain];
+      const color = colors2[chainIndex];
+
       dataByChain[chain] = dateList.map((date: string) => {
         const existingData = dataByChain[chain]?.find(item => item.x === date);
         return (
@@ -381,7 +426,7 @@ const ChainActivity = () => {
             volume: 0,
             count: 0,
             emitter_chain: chain,
-            color: colors[+chain] ? colors[+chain] : "#fff",
+            color: color,
           }
         );
       });
@@ -397,14 +442,19 @@ const ChainActivity = () => {
       dataByChain[chain].sort((a, b) => new Date(a.x).getTime() - new Date(b.x).getTime());
     });
 
-    const newSeries = Object.keys(dataByChain).map(chain => ({
-      name: getChainName({
-        network: currentNetwork,
-        chainId: +chain,
-      }),
-      data: dataByChain[chain],
-      color: colors[+chain] ? colors[+chain] : "#fff",
-    }));
+    const newSeries = Object.keys(dataByChain).map((chain, i) => {
+      const chainIndex = chainIndices.current[chain];
+      const color = colors2[chainIndex];
+
+      return {
+        name: getChainName({
+          network: currentNetwork,
+          chainId: +chain,
+        }),
+        data: dataByChain[chain],
+        color: color,
+      };
+    });
 
     const sumOfMessages = data.reduce((acc, item) => acc + item.count, 0);
     setMessagesNumber(sumOfMessages);
@@ -416,12 +466,85 @@ const ChainActivity = () => {
     }
   }, [allChainsSerie, currentNetwork, data, filters.sourceChain, getDateList, showAllChains]);
 
+  const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
+
+  // const [transformedData, setTransformedData] = useState([]);
+
+  // useEffect(() => {
+  //   if (series.length > 0) {
+  //     const maxChains = 9;
+  //     const newTransformedData = [];
+  //     const othersData = {};
+
+  //     series[0].data.forEach(dataPoint => {
+  //       dataPoint.details.forEach(detail => {
+  //         const chainName = getChainName({
+  //           network: currentNetwork,
+  //           chainId: +detail.emitter_chain,
+  //         });
+
+  //         const existingChain = newTransformedData.find(chain => chain.name === chainName);
+  //         if (existingChain) {
+  //           existingChain.data.push({
+  //             x: dataPoint.x,
+  //             y: detail.count,
+  //             volume: detail.volume,
+  //             count: detail.count,
+  //             emitter_chain: detail.emitter_chain,
+  //             color: detail.color,
+  //           });
+  //         } else if (newTransformedData.length < maxChains) {
+  //           newTransformedData.push({
+  //             name: chainName,
+  //             data: [
+  //               {
+  //                 x: dataPoint.x,
+  //                 y: detail.count,
+  //                 volume: detail.volume,
+  //                 count: detail.count,
+  //                 emitter_chain: detail.emitter_chain,
+  //                 color: detail.color,
+  //               },
+  //             ],
+  //             color: detail.color,
+  //           });
+  //         } else {
+  //           // If there are already 10 chains, add to "others"
+  //           if (!othersData[dataPoint.x]) {
+  //             othersData[dataPoint.x] = {
+  //               x: dataPoint.x,
+  //               y: 0,
+  //               volume: 0,
+  //               count: 0,
+  //               emitter_chain: "others",
+  //               color: "grey",
+  //             };
+  //           }
+  //           othersData[dataPoint.x].y += detail.count;
+  //           othersData[dataPoint.x].volume += detail.volume;
+  //           othersData[dataPoint.x].count += detail.count;
+  //         }
+  //       });
+  //     });
+
+  //     // Convert othersData object to array and push to newTransformedData
+  //     const othersChain = {
+  //       name: "others",
+  //       data: Object.values(othersData),
+  //       color: "grey",
+  //     };
+  //     newTransformedData.push(othersChain);
+
+  //     setTransformedData(newTransformedData);
+  //   }
+  // }, [series, currentNetwork]);
+
   return (
     <div className="chain-activity">
       {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
 
       <h2 className="chain-activity-title">
-        <AnalyticsIcon width={24} /> Transaction Activity
+        <AnalyticsIcon width={24} /> Chains Activity
       </h2>
 
       <div className="chain-activity-chart">
@@ -433,6 +556,70 @@ const ChainActivity = () => {
             </button>
           </div>
 
+          <div className="chain-activity-chart-top-section" ref={chainsContainerRef}>
+            <Select
+              text={
+                showAllChains || filters?.sourceChain?.length > 0
+                  ? showAllChains
+                    ? `All chains${
+                        filters?.sourceChain?.length > 0
+                          ? ` and (${filters.sourceChain.length})`
+                          : ""
+                      }`
+                    : filters.sourceChain.length === 1
+                    ? getChainName({
+                        network: currentNetwork,
+                        chainId: filters.sourceChain[0],
+                      })
+                    : `Custom (${filters.sourceChain.length})`
+                  : "Select chains"
+              }
+              ariaLabel="Select Time Range"
+              items={CHAIN_LIST}
+              menuStyles={{ zIndex: 100 }}
+              menuFixed={isDesktop ? false : true}
+              name="timeRange"
+              onValueChange={(value: any) => handleChainSelection(value)}
+              type="searchable"
+              value={chainListSelected}
+            />
+          </div>
+
+          <Calendar
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
+            showCalendar={showCalendar}
+            setShowCalendar={setShowCalendar}
+            dateContainerRef={dateContainerRef}
+            lastBtnSelected={lastBtnSelected}
+            setLastBtnSelected={setLastBtnSelected}
+            startDateDisplayed={startDateDisplayed}
+            endDateDisplayed={endDateDisplayed}
+            isDesktop={isDesktop}
+          />
+
+          <div className="chain-activity-chart-top-section-design">
+            <button
+              className={`"chain-activity-chart-top-section-design-area ${
+                chartSelected === "area" && "active"
+              }`}
+              onClick={() => setChartSelected("area")}
+            >
+              <ActivityIcon width={24} />
+            </button>
+
+            <button
+              className={`"chain-activity-chart-top-section-design-bar ${
+                chartSelected === "bar" && "active"
+              }`}
+              onClick={() => setChartSelected("bar")}
+            >
+              <AnalyticsIcon width={24} />
+            </button>
+          </div>
+
           <div className={`chain-activity-chart-top-mobile ${openFilters ? "open" : ""}`}>
             <div className="chain-activity-chart-top-mobile-title">
               <p>Filters</p>
@@ -440,50 +627,6 @@ const ChainActivity = () => {
                 <CrossIcon width={24} />
               </button>
             </div>
-
-            <div className="chain-activity-chart-top-section" ref={chainsContainerRef}>
-              <Select
-                text={
-                  showAllChains || filters?.sourceChain?.length > 0
-                    ? showAllChains
-                      ? `All chains${
-                          filters?.sourceChain?.length > 0
-                            ? ` and (${filters.sourceChain.length})`
-                            : ""
-                        }`
-                      : filters.sourceChain.length === 1
-                      ? getChainName({
-                          network: currentNetwork,
-                          chainId: filters.sourceChain[0],
-                        })
-                      : `Custom (${filters.sourceChain.length})`
-                    : "Select chains"
-                }
-                ariaLabel="Select Time Range"
-                items={CHAIN_LIST}
-                menuStyles={{ zIndex: 100 }}
-                menuFixed={isDesktop ? false : true}
-                name="timeRange"
-                onValueChange={(value: any) => handleChainSelection(value)}
-                type="searchable"
-                value={chainListSelected}
-              />
-            </div>
-
-            <Calendar
-              startDate={startDate}
-              setStartDate={setStartDate}
-              endDate={endDate}
-              setEndDate={setEndDate}
-              showCalendar={showCalendar}
-              setShowCalendar={setShowCalendar}
-              dateContainerRef={dateContainerRef}
-              lastBtnSelected={lastBtnSelected}
-              setLastBtnSelected={setLastBtnSelected}
-              startDateDisplayed={startDateDisplayed}
-              endDateDisplayed={endDateDisplayed}
-              isDesktop={isDesktop}
-            />
 
             <div className="chain-activity-chart-top-mobile-buttons">
               <button className="apply-btn" onClick={applyFilters}>
@@ -527,14 +670,30 @@ const ChainActivity = () => {
           <>
             <WormholeScanBrand />
 
+            {/* <ReactApexChart options={options} series={series2} type="bar" height="600" /> */}
+
             <ReactApexChart
-              series={series}
-              type="area"
+              key={chartSelected}
+              series={
+                chartSelected === "area"
+                  ? series
+                  : series.map((serie: any) => {
+                      return {
+                        name: serie.name,
+                        data: serie.data,
+                        color: serie.color,
+                      };
+                    })
+
+                /* transformedData */
+              }
+              type={chartSelected}
               height={isDesktop ? 400 : 300}
               options={{
                 chart: {
                   toolbar: { show: false },
                   zoom: { enabled: false },
+                  stacked: chartSelected === "bar",
                 },
                 dataLabels: { enabled: false },
                 grid: {
@@ -552,12 +711,12 @@ const ChainActivity = () => {
                 },
                 stroke: {
                   curve: "straight",
-                  width: 2,
+                  width: chartSelected === "area" ? 2 : 0,
                   dashArray: 0,
                 },
                 fill: {
                   type: "solid",
-                  opacity: 0.05,
+                  opacity: chartSelected === "area" ? 0.05 : 1,
                 },
                 legend: {
                   show: isDesktop,
@@ -627,14 +786,15 @@ const ChainActivity = () => {
                   opposite: true,
                 },
                 tooltip: {
-                  shared: true,
-                  intersect: false,
+                  // shared: false,
+                  // intersect: false,
                   custom: ({ series, seriesIndex, dataPointIndex, w }) => {
                     const data = w.config.series[seriesIndex].data[dataPointIndex];
 
                     const allDataForDate = w.config.series
                       .map((serie: any) => serie.data[dataPointIndex])
-                      .sort((a: any, b: any) => b.y - a.y);
+                      .sort((a: any, b: any) => b.y - a.y)
+                      .filter((item: any) => item !== undefined && item !== null);
 
                     const totalMessages = showAllChains
                       ? allDataForDate[0].count
@@ -652,72 +812,78 @@ const ChainActivity = () => {
                           year: "numeric",
                         })}
                       </p>
-                      <p class="chain-activity-chart-tooltip-total-msg">Total Messages: <span>${formatNumber(
-                        totalMessages,
-                        0,
-                      )}</span></p>
+                      <div class="chain-activity-chart-tooltip-total-msg">
+
+                       <div class="chain-activity-chart-tooltip-container-each-msg-icon" style="background-color: var(--color-primary-100)">
+                        </div>
+
+                      Total Messages: <span>${formatNumber(totalMessages, 0)}</span></div>
                       <p class="chain-activity-chart-tooltip-chains">Chains:</p>
                       <div class="chain-activity-chart-tooltip-container">
                         ${allDataForDate
-                          .map((item: any, index: number) => {
+                          .map((item: any, i: number) => {
                             return `
-                            <div class="chain-activity-chart-tooltip-container-each-msg">
-                                <div class="chain-activity-chart-tooltip-container-each-msg-icon" style="background-color: ${
-                                  item.color
-                                }">
-                                </div>
-                                <div class="chain-activity-chart-tooltip-container-each-msg-name">
-                                  ${
-                                    item.emitter_chain === "allChains"
-                                      ? "All Chains"
-                                      : getChainName({
-                                          network: currentNetwork,
-                                          chainId: +item.emitter_chain,
-                                        })
-                                  }:
-                                </div>
-                                <div class="chain-activity-chart-tooltip-container-each-msg-number">
-                                  ${formatNumber(item.y)}
-                                </div>
-                                </div>
-
                                 ${
-                                  item?.details?.length > 0 &&
-                                  filters.sourceChain.every(chain => chain === "All Chains")
-                                    ? `
-                                   
-                                      ${item.details
-                                        .map((detail: any, i: number) => {
-                                          if (i > 9) return;
+                                  item?.emitter_chain === "allChains"
+                                    ? ``
+                                    : `
+                                      <div class="chain-activity-chart-tooltip-container-each-msg">
+                                        <div class="chain-activity-chart-tooltip-container-each-msg-icon" style="background-color: ${
+                                          item?.color
+                                        }">
+                                        </div>
+                                        <div class="chain-activity-chart-tooltip-container-each-msg-name">
+                                          ${getChainName({
+                                            network: currentNetwork,
+                                            chainId: +item?.emitter_chain,
+                                          })}:
+                                        </div>
+                                        <div class="chain-activity-chart-tooltip-container-each-msg-number">
+                                          ${formatNumber(item?.y)}
+                                        </div>
+                                      </div>
+                                      `
+                                }
+                          
+                          ${
+                            item?.details?.length > 0 &&
+                            filters.sourceChain.every(chain => chain === "All Chains")
+                              ? `
+                                  ${item?.details
+                                    .map((detail: any, i: number) => {
+                                      if (i > 10) return;
 
-                                          if (i > 8) {
-                                            return `
+                                      if (i > 9) {
+                                        return `
                                           <div class="chain-activity-chart-tooltip-container-each-msg">
-                                          <div class="chain-activity-chart-tooltip-container-each-msg-icon" style="background-color: #999999">
-                                          </div>
-                                          <div class="chain-activity-chart-tooltip-container-each-msg-name">
-                                            Others:
-                                          </div>
-                                          <div class="chain-activity-chart-tooltip-container-each-msg-number">
-                                            ${formatNumber(
-                                              item.details
-                                                .slice(i)
-                                                .reduce(
-                                                  (acc: number, item: any) => acc + item.count,
-                                                  0,
-                                                ),
-                                            )}
-                                          </div>
+                                            <div class="chain-activity-chart-tooltip-container-each-msg-icon" style="background-color: ${
+                                              colors3[i]
+                                            }">
+                                            </div>
+                                            <div class="chain-activity-chart-tooltip-container-each-msg-name">
+                                              Others:
+                                            </div>
+                                            <div class="chain-activity-chart-tooltip-container-each-msg-number">
+                                              ${formatNumber(
+                                                item?.details
+                                                  .slice(i)
+                                                  .reduce(
+                                                    (acc: number, item: any) => acc + item?.count,
+                                                    0,
+                                                  ),
+                                              )}
+                                            </div>
                                           </div>
                                           `;
-                                          }
+                                      }
 
-                                          return `
+                                      return `
                                         <div class="chain-activity-chart-tooltip-container-each-msg">
                                       <div class="chain-activity-chart-tooltip-container-each-msg-icon" style="background-color: ${
-                                        colors[+detail.emitter_chain]
-                                          ? colors[+detail.emitter_chain]
-                                          : "#fff"
+                                        // colors[+detail.emitter_chain]
+                                        //   ? colors[+detail.emitter_chain]
+                                        //   : "#fff"
+                                        colors3[i]
                                       }">
                                       </div>
                                       <div class="chain-activity-chart-tooltip-container-each-msg-name">
@@ -731,11 +897,11 @@ const ChainActivity = () => {
                                       </div>
                                       </div>
                                       `;
-                                        })
-                                        .join("")}
+                                    })
+                                    .join("")}
                                    `
-                                    : ""
-                                }
+                              : ""
+                          }
                              `;
                           })
                           .join("")}
@@ -845,6 +1011,33 @@ const colors: IColors = {
   10006: "#627EEA",
   10007: "#8247E5",
 };
+
+const colors2 = [
+  "#B57AFF",
+  "#FF884D",
+  "#7BFFB0",
+  "#5F6FFF",
+  "#FF5B79",
+  "#5BB0FF",
+  "#5535D7",
+  "#F2FF5B",
+  "#FFA3AE",
+  "#11D400",
+];
+
+const colors3 = [
+  "#EEEEEE",
+  "#E0E0E0",
+  "#D3D3D3",
+  "#C6C6C6",
+  "#B9B9B9",
+  "#ACACAC",
+  "#9F9F9F",
+  "#929292",
+  "#858585",
+  "#787878",
+  "#444444",
+];
 
 const DAY_IN_MILLISECONDS = 86400000;
 
