@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
-import { Column, Row } from "react-table";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
 import analytics from "src/analytics";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BREAKPOINTS, MORE_INFO_GOVERNOR_URL } from "src/consts";
