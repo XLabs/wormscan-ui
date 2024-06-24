@@ -13,6 +13,23 @@ import { getChainName } from "src/utils/wormhole";
 import { formatNumber } from "src/utils/number";
 import { useNavigateCustom, useWindowSize, useLockBodyScroll } from "src/utils/hooks";
 import { parseTx, shortAddress } from "src/utils/crypto";
+import {
+  columnsDashboard,
+  columnsTransactions,
+  DailyLimitTooltip,
+  IDataDashboard,
+  IDataTransaction,
+  IRowDashboard,
+  IRowTransaction,
+  ISelectSortBy,
+  ISelectSortLowHigh,
+  MinRemainingBar,
+  RemainingTxLimitTooltip,
+  SingleTxLimitTooltip,
+  SORT_DASHBOARD_BY_LIST,
+  SORT_LOW_HIGH_LIST,
+  SORT_TRANSACTIONS_BY_LIST,
+} from "src/utils/governorUtils";
 import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
 import {
@@ -119,13 +136,17 @@ const Governor = () => {
           ),
           singleTransactionLimit: (
             <div className="dashboard big-transaction">
-              <h4>single tx limit</h4>
+              <h4>
+                single tx limit <SingleTxLimitTooltip />
+              </h4>
               <p>{formatNumber(item.maxTransactionSize, 0)} USD</p>
             </div>
           ),
           dailyLimit: (
             <div className="dashboard daily-limit">
-              <h4>daily limit</h4>
+              <h4>
+                daily limit <DailyLimitTooltip />
+              </h4>
               <p>{formatNumber(item.notionalLimit, 0)} USD</p>
             </div>
           ),
@@ -138,13 +159,15 @@ const Governor = () => {
                       color={
                         100 - availablePercentage >= 80 ? "#FF884D" : "var(--color-success-100)"
                       }
-                      percentage={100 - availablePercentage}
+                      percentage={availablePercentage}
                     />
                   </div>
                 </Tooltip>
               </div>
 
-              <h4>remaining tx limit</h4>
+              <h4>
+                remaining tx limit <RemainingTxLimitTooltip />
+              </h4>
               <p>{formatNumber(item.availableNotional, 0)} USD</p>
             </div>
           ),
@@ -464,235 +487,6 @@ const Governor = () => {
         )}
       </section>
     </BaseLayout>
-  );
-};
-
-interface IDataDashboard {
-  availableNotional: number;
-  chainId: number;
-  maxTransactionSize: number;
-  notionalLimit: number;
-}
-
-interface IRowDashboard {
-  availableNotional: number;
-  chain: React.ReactNode;
-  chainId: number;
-  chainName: string;
-  dailyLimit: React.ReactNode;
-  maxTransactionSize: number;
-  notionalLimit: number;
-  remainingTransactionLimit: React.ReactNode;
-  singleTransactionLimit: React.ReactNode;
-}
-
-interface IDataTransaction {
-  amount: number;
-  chainId: number;
-  emmiterAddress: string;
-  releaseTime: string;
-  sequence: string;
-  status: string;
-  txHash: string;
-  vaaId: string;
-}
-
-interface IRowTransaction {
-  amount: React.ReactNode;
-  chain: React.ReactNode;
-  chainName: string;
-  formatedStatus: string;
-  parseTxHash: string;
-  releaseDate: Date;
-  releaseTime: React.ReactNode;
-  status: React.ReactNode;
-  txHash: React.ReactNode;
-  usdAmount: string;
-}
-
-interface ISelectSortBy {
-  label: string;
-  value: string;
-}
-
-interface ISelectSortLowHigh {
-  label: string;
-  value: boolean;
-}
-
-const columnsDashboard: Column[] | any = [
-  {
-    Header: "CHAIN",
-    accessor: "chain",
-    sortType: (rowA: Row<IRowDashboard>, rowB: Row<IRowDashboard>) => {
-      const a = rowA.original.chainName.toUpperCase();
-      const b = rowB.original.chainName.toUpperCase();
-
-      return a.localeCompare(b);
-    },
-  },
-  {
-    Header: (
-      <>
-        SINGLE TRANSACTION LIMIT
-        <Tooltip
-          className="governor-container-table-title-tooltip"
-          tooltip={
-            <div>
-              Transactions exceeding this single-transaction threshold activate a 24-hour finality
-              delay before being signed by Wormhole Guardians. These transactions are not included
-              in the total value counted towards the 24-hour rolling period limit.
-            </div>
-          }
-          type="info"
-        >
-          <InfoCircledIcon height={18} width={18} />
-        </Tooltip>
-      </>
-    ),
-    accessor: "singleTransactionLimit",
-    sortType: (rowA: Row<IRowDashboard>, rowB: Row<IRowDashboard>) => {
-      return rowA.original.maxTransactionSize - rowB.original.maxTransactionSize;
-    },
-  },
-  {
-    Header: (
-      <>
-        DAILY LIMIT
-        <Tooltip
-          className="governor-container-table-title-tooltip"
-          tooltip={
-            <div>
-              Maximum total value of transactions that can be signed without delay in any 24-hour
-              rolling period. If this limit is exceeded, additional transactions are delayed until
-              earlier transactions age beyond this 24-hour window, thereby freeing up bandwidth to
-              process the delayed transactions.
-            </div>
-          }
-          type="info"
-        >
-          <InfoCircledIcon height={18} width={18} />
-        </Tooltip>
-      </>
-    ),
-    accessor: "dailyLimit",
-    sortType: (rowA: Row<IRowDashboard>, rowB: Row<IRowDashboard>) => {
-      return rowA.original.notionalLimit - rowB.original.notionalLimit;
-    },
-  },
-  {
-    Header: (
-      <>
-        REMAINING TRANSACTION LIMIT
-        <Tooltip
-          className="governor-container-table-title-tooltip"
-          tooltip={
-            <div>
-              This shows the remaining value of transaction volume that can be processed without
-              delay today. Once this limit is reached, further transactions will be delayed until
-              sufficient limit is available within the 24-hour rolling window.
-            </div>
-          }
-          type="info"
-        >
-          <InfoCircledIcon height={18} width={18} />
-        </Tooltip>
-      </>
-    ),
-    accessor: "remainingTransactionLimit",
-    sortType: (rowA: Row<IRowDashboard>, rowB: Row<IRowDashboard>) => {
-      return (
-        (rowA.original.availableNotional / rowA.original.notionalLimit) * 100 -
-        (rowB.original.availableNotional / rowB.original.notionalLimit) * 100
-      );
-    },
-  },
-];
-
-const columnsTransactions: Column[] | any = [
-  {
-    Header: "CHAIN",
-    accessor: "chain",
-    sortType: (rowA: Row<IRowTransaction>, rowB: Row<IRowTransaction>) => {
-      const a = rowA.original.chainName.toUpperCase();
-      const b = rowB.original.chainName.toUpperCase();
-
-      return a.localeCompare(b);
-    },
-  },
-  {
-    Header: "TX HASH",
-    accessor: "txHash",
-    sortType: (rowA: Row<IRowTransaction>, rowB: Row<IRowTransaction>) => {
-      const a = rowA.original.parseTxHash.toUpperCase();
-      const b = rowB.original.parseTxHash.toUpperCase();
-
-      return a.localeCompare(b);
-    },
-  },
-  {
-    Header: "AMOUNT",
-    accessor: "amount",
-    sortType: (rowA: Row<IRowTransaction>, rowB: Row<IRowTransaction>) => {
-      return +rowA.original.usdAmount - +rowB.original.usdAmount;
-    },
-  },
-  {
-    Header: "STATUS",
-    accessor: "status",
-    sortType: (rowA: Row<IRowTransaction>, rowB: Row<IRowTransaction>) => {
-      const a = rowA.original.formatedStatus.toUpperCase();
-      const b = rowB.original.formatedStatus.toUpperCase();
-
-      return a.localeCompare(b);
-    },
-  },
-  {
-    Header: "RELEASE TIME",
-    accessor: "releaseTime",
-    sortType: (rowA: Row<IRowTransaction>, rowB: Row<IRowTransaction>) => {
-      const a = new Date(rowA.original.releaseDate);
-      const b = new Date(rowB.original.releaseDate);
-
-      return a.getTime() - b.getTime();
-    },
-  },
-];
-
-const SORT_DASHBOARD_BY_LIST = [
-  { label: "Chain", value: "chain" },
-  { label: "Single Transaction Limit", value: "singleTransactionLimit" },
-  { label: "Daily Limit", value: "dailyLimit" },
-  { label: "Remaining Transaction Limit", value: "remainingTransactionLimit" },
-];
-
-const SORT_TRANSACTIONS_BY_LIST = [
-  { label: "Chain", value: "chain" },
-  { label: "Tx Hash", value: "txHash" },
-  { label: "Amount", value: "amount" },
-  { label: "Status", value: "status" },
-  { label: "Release Time", value: "releaseTime" },
-];
-
-const SORT_LOW_HIGH_LIST = [
-  { label: "Low to High", value: false },
-  { label: "High to Low", value: true },
-];
-
-const MinRemainingBar = ({ percentage, color }: { percentage: number; color: string }) => {
-  const totalSegments = 13;
-  const activeSegments = Math.round((percentage / 100) * totalSegments);
-
-  return (
-    <div className="min-remaining-container-bar">
-      {Array.from({ length: totalSegments }, (_, i) => (
-        <div
-          key={i}
-          className="min-remaining-container-bar-segment"
-          style={{ backgroundColor: i < activeSegments ? color : undefined }}
-        />
-      ))}
-    </div>
   );
 };
 
