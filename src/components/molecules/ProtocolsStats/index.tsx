@@ -5,7 +5,8 @@ import allBridgeIcon from "src/icons/Protocols/allBridgeIcon.svg";
 import cctpIcon from "src/icons/Protocols/cctpIcon.svg";
 import mayanIcon from "src/icons/Protocols/mayanIcon.svg";
 import portalIcon from "src/icons/Protocols/portalIcon.svg";
-import { ALLBRIDGE_URL, CCTP_URL, MAYAN_URL, PORTAL_BRIDGE_URL } from "src/consts";
+import nttIcon from "src/icons/Protocols/nttIcon.svg";
+import { ALLBRIDGE_URL, CCTP_URL, MAYAN_URL, PORTAL_BRIDGE_URL, NTT_URL } from "src/consts";
 import { Loader } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeBrand } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
@@ -18,6 +19,7 @@ const protocolIcons: Record<ProtocolName, string> = {
   cctp: cctpIcon,
   mayan: mayanIcon,
   portal_token_bridge: portalIcon,
+  native_token_transfer: nttIcon,
 };
 
 const protocolNames: Record<ProtocolName, string> = {
@@ -25,6 +27,7 @@ const protocolNames: Record<ProtocolName, string> = {
   cctp: "CCTP",
   mayan: "Mayan",
   portal_token_bridge: "Portal",
+  native_token_transfer: "Native Token Transfer",
 };
 
 const protocolLinks: Record<ProtocolName, string> = {
@@ -32,6 +35,7 @@ const protocolLinks: Record<ProtocolName, string> = {
   cctp: CCTP_URL,
   mayan: MAYAN_URL,
   portal_token_bridge: PORTAL_BRIDGE_URL,
+  native_token_transfer: NTT_URL,
 };
 
 const ProtocolsStats = () => {
