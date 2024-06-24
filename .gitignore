@@ -127,3 +127,6 @@ dist
 #misc
 
 **/.DS_Store
+
+## intellij files
+.idea/
