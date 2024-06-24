@@ -1,0 +1,108 @@
+@import "src/styles/globals.scss";
+
+.address-tooltip {
+  color: var(--color-primary-30);
+
+  &-content {
+    width: 360px;
+    background-color: var(--color-primary-700);
+    padding: 6px;
+  }
+
+  &-closeIcon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+
+    cursor: pointer;
+  }
+}
+
+.address-chain-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+  font-size: 16px;
+
+  .arkham-icons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &-twitter {
+      transform: scale(0.7);
+    }
+  }
+
+  a {
+    color: var(--color-secondary-800);
+    transform: translateY(2px);
+
+    &:hover path {
+      fill: var(--color-secondary-700);
+    }
+
+    &:hover {
+      text-decoration: underline;
+      color: var(--color-primary-50);
+    }
+  }
+
+  &-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-top: 6px;
+  }
+
+  &-tags {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 12px;
+    gap: 4px;
+
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-top: 2px solid var(--color-primary-300);
+    border-bottom: 2px solid var(--color-primary-300);
+
+    &-tag {
+      border-radius: 8px;
+      background-color: var(--color-primary-600);
+      font-size: 14px;
+
+      padding-left: 4px;
+      padding-right: 4px;
+      width: fit-content;
+    }
+  }
+}
+
+.address-chain-arkham {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 16px;
+  margin-top: 4px;
+  margin-bottom: 2px;
+  gap: 2px;
+  color: var(--color-primary-50);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-primary-100);
+    text-decoration: underline;
+  }
+}
+
+.info-tooltip-icon {
+  cursor: pointer;
+  transform: scale(1.1);
+}

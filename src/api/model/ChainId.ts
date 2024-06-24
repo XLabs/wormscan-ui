@@ -29,6 +29,11 @@ export enum ChainId {
   Btc = 29,
   Base = 30,
   Sei = 32,
+  Scroll = 34,
+  Mantle = 35,
+  Blast = 36,
+  XLayer = 37,
+  Wormchain = 3104,
   Evmos = 4001,
   Kujira = 4002,
   Dymension = 4007,
@@ -37,5 +42,5 @@ export enum ChainId {
   BaseSepolia = 10004,
   OptimismSepolia = 10005,
   Holesky = 10006,
-  Wormchain = 3104,
+  PolygonSepolia = 10007,
 }

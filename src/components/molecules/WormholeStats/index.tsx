@@ -54,11 +54,7 @@ const WormholeStats = () => {
             <div className="wormhole-stats-container-item-title">
               {t("home.statistics.allMessage")}
               <Tooltip
-                tooltip={
-                  <div>
-                    Total messages sent since the creation of the network. (Includes Pyth messages)
-                  </div>
-                }
+                tooltip={<div>Total messages sent since the creation of the network.</div>}
                 type="info"
               >
                 <InfoCircledIcon height={18} width={18} />
@@ -73,9 +69,7 @@ const WormholeStats = () => {
             <div className="wormhole-stats-container-item-title">
               {t("home.statistics.dayMessage")}
               <Tooltip
-                tooltip={
-                  <div>Number of messages sent in the last 24 hours. (Includes Pyth messages)</div>
-                }
+                tooltip={<div>Number of messages sent in the last 24 hours.</div>}
                 type="info"
               >
                 <InfoCircledIcon height={18} width={18} />

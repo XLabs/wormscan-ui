@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-type Props = {
+interface IProps {
   goFirstPage?: () => void;
   goPrevPage?: () => void;
   currentPage?: number;
@@ -12,7 +12,7 @@ type Props = {
   disabled?: boolean;
   disableNextButton?: boolean;
   style?: object;
-};
+}
 
 const Pagination = ({
   goFirstPage,
@@ -26,7 +26,7 @@ const Pagination = ({
   disabled = false,
   disableNextButton = false,
   style = {},
-}: Props) => {
+}: IProps) => {
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage === totalPages;
 
@@ -43,9 +43,13 @@ const Pagination = ({
       </button>
 
       {goPage ? (
-        <PageNumbers currentPage={currentPage} goPage={goPage} />
+        <PageNumbers
+          currentPage={currentPage}
+          disableNextButton={disableNextButton}
+          goPage={goPage}
+        />
       ) : (
-        <span className={`pagination number current`}>{currentPage}</span>
+        <span className={`pagination current`}>{currentPage}</span>
       )}
 
       <button onClick={goNextPage} disabled={disabled || disableNextButton || isLastPage}>
@@ -68,29 +72,27 @@ const Pagination = ({
 const PageNumbers = ({
   currentPage,
   goPage,
+  disableNextButton,
 }: {
   currentPage?: number;
   goPage?: (pageNumber: number) => void;
+  disableNextButton?: boolean;
 }) => {
   const TOTAL_PREV_VISIBLE_PAGES = 2;
   const isPrevOffset = currentPage - TOTAL_PREV_VISIBLE_PAGES >= TOTAL_PREV_VISIBLE_PAGES;
   const firstPrevOffsetPageNumber = currentPage - TOTAL_PREV_VISIBLE_PAGES;
   const pages = [...Array(5)].map((_, i) => (isPrevOffset ? firstPrevOffsetPageNumber + i : i + 1));
 
-  return (
-    <>
-      {pages.map((page, index) => (
-        <button
-          key={index}
-          className={`pagination number ${page === currentPage ? "current" : "page"}`}
-          onClick={() => goPage && goPage(page)}
-          disabled={page === currentPage}
-        >
-          {page}
-        </button>
-      ))}
-    </>
-  );
+  return pages.map((page, index) => (
+    <button
+      key={index}
+      className={`pagination ${page === currentPage ? "current" : "page"}`}
+      onClick={() => goPage && goPage(page)}
+      disabled={page === currentPage || (disableNextButton && page > currentPage)}
+    >
+      {page}
+    </button>
+  ));
 };
 
 export default Pagination;

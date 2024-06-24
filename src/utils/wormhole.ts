@@ -8,7 +8,9 @@ import ArbitrumIcon from "src/icons/blockchains/arbitrum.svg";
 import AuroraIcon from "src/icons/blockchains/aurora.svg";
 import AvalancheIcon from "src/icons/blockchains/avax.svg";
 import BaseIcon from "src/icons/blockchains/base.svg";
+import BlastIcon from "src/icons/blockchains/blast.svg";
 import BSCIcon from "src/icons/blockchains/bsc.svg";
+import BtcIcon from "src/icons/blockchains/btc.svg";
 import CeloIcon from "src/icons/blockchains/celo.svg";
 import DymensionIcon from "src/icons/blockchains/dymension.svg";
 import EthereumIcon from "src/icons/blockchains/eth.svg";
@@ -18,6 +20,7 @@ import InjectiveIcon from "src/icons/blockchains/injective.svg";
 import KaruraIcon from "src/icons/blockchains/karura.svg";
 import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KujiraIcon from "src/icons/blockchains/kujira.svg";
+import MantleIcon from "src/icons/blockchains/mantle.svg";
 import MoonbeamIcon from "src/icons/blockchains/moonbeam.svg";
 import NearIcon from "src/icons/blockchains/near.svg";
 import NeonIcon from "src/icons/blockchains/neon.svg";
@@ -25,12 +28,15 @@ import OasisIcon from "src/icons/blockchains/oasis.svg";
 import OptimismIcon from "src/icons/blockchains/optimism.svg";
 import OsmosisIcon from "src/icons/blockchains/osmosis.svg";
 import PolygonIcon from "src/icons/blockchains/polygon.svg";
+import PythIcon from "src/icons/blockchains/pyth.svg";
+import ScrollIcon from "src/icons/blockchains/scroll.svg";
 import SeiIcon from "src/icons/blockchains/sei.svg";
 import SolanaIcon from "src/icons/blockchains/solana.svg";
 import SuiIcon from "src/icons/blockchains/sui.svg";
 import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
 import TerraIcon from "src/icons/blockchains/terra.svg";
 import WormChainIcon from "src/icons/blockchains/wormchain.svg";
+import XLayerIcon from "src/icons/blockchains/xlayer.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
 
 import AcalaColorlessIcon from "src/icons/blockchains/colorless/acala.svg";
@@ -40,8 +46,11 @@ import ArbitrumColorlessIcon from "src/icons/blockchains/colorless/arbitrum.svg"
 import AuroraColorlessIcon from "src/icons/blockchains/colorless/aurora.svg";
 import AvalancheColorlessIcon from "src/icons/blockchains/colorless/avax.svg";
 import BaseColorlessIcon from "src/icons/blockchains/colorless/base.svg";
+import BlastColorlessIcon from "src/icons/blockchains/colorless/blast.svg";
 import BSCColorlessIcon from "src/icons/blockchains/colorless/bsc.svg";
+import BtcColorlessIcon from "src/icons/blockchains/colorless/btc.svg";
 import CeloColorlessIcon from "src/icons/blockchains/colorless/celo.svg";
+import DymensionColorlessIcon from "src/icons/blockchains/colorless/dymension.svg";
 import EthereumColorlessIcon from "src/icons/blockchains/colorless/eth.svg";
 import EvmosColorlessIcon from "src/icons/blockchains/colorless/evmos.svg";
 import FantomColorlessIcon from "src/icons/blockchains/colorless/fantom.svg";
@@ -49,20 +58,24 @@ import InjectiveColorlessIcon from "src/icons/blockchains/colorless/injective.sv
 import KaruraColorlessIcon from "src/icons/blockchains/colorless/karura.svg";
 import KlaytnColorlessIcon from "src/icons/blockchains/colorless/klaytn.svg";
 import KujiraColorlessIcon from "src/icons/blockchains/colorless/kujira.svg";
+import MantleColorlessIcon from "src/icons/blockchains/colorless/mantle.svg";
 import MoonbeamColorlessIcon from "src/icons/blockchains/colorless/moonbeam.svg";
 import NearColorlessIcon from "src/icons/blockchains/colorless/near.svg";
 import NeonColorlessIcon from "src/icons/blockchains/colorless/neon.svg";
 import NoColorlessIcon from "src/icons/blockchains/colorless/noIcon.svg";
 import OasisColorlessIcon from "src/icons/blockchains/colorless/oasis.svg";
 import OptimismColorlessIcon from "src/icons/blockchains/colorless/optimism.svg";
-import OsmosisColorlessIcon from "src/icons/blockchains/osmosis.svg";
+import OsmosisColorlessIcon from "src/icons/blockchains/colorless/osmosis.svg";
 import PolygonColorlessIcon from "src/icons/blockchains/colorless/polygon.svg";
+import PythColorlessIcon from "src/icons/blockchains/colorless/pyth.svg";
+import ScrollColorlessIcon from "src/icons/blockchains/colorless/scroll.svg";
 import SeiColorlessIcon from "src/icons/blockchains/colorless/sei.svg";
 import SolanaColorlessIcon from "src/icons/blockchains/colorless/solana.svg";
 import SuiColorlessIcon from "src/icons/blockchains/colorless/sui.svg";
 import TerraClassicColorlessIcon from "src/icons/blockchains/colorless/terra-classic.svg";
 import TerraColorlessIcon from "src/icons/blockchains/colorless/terra.svg";
 import WormChainColorlessIcon from "src/icons/blockchains/colorless/wormchain.svg";
+import XLayerColorlessIcon from "src/icons/blockchains/colorless/xlayer.svg";
 import XplaColorlessIcon from "src/icons/blockchains/colorless/xpla.svg";
 
 import { parseAddress, parseTx } from "./crypto";
@@ -104,8 +117,8 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.PythNet]: {
     name: "PythNet",
-    icon: NoColorlessIcon,
-    colorlessIcon: NoColorlessIcon,
+    icon: PythIcon,
+    colorlessIcon: PythColorlessIcon,
     explorer: {
       TESTNET: "",
       MAINNET: "",
@@ -118,8 +131,8 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   },
   [ChainId.Btc]: {
     name: "Btc",
-    icon: NoColorlessIcon,
-    colorlessIcon: NoColorlessIcon,
+    icon: BtcIcon,
+    colorlessIcon: BtcColorlessIcon,
     explorer: {
       TESTNET: "",
       MAINNET: "",
@@ -204,7 +217,7 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
   [ChainId.Dymension]: {
     name: "Dymension",
     icon: DymensionIcon,
-    colorlessIcon: DymensionIcon,
+    colorlessIcon: DymensionColorlessIcon,
     explorer: {
       TESTNET: "https://www.mintscan.io/dymension", // TODO: EXPLORER CHANGES WHEN EXISTS
       MAINNET: "https://www.mintscan.io/dymension", // TODO: EXPLORER CHANGES WHEN EXISTS
@@ -615,6 +628,21 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
+  [ChainId.XLayer]: {
+    name: "XLayer",
+    icon: XLayerIcon,
+    colorlessIcon: XLayerColorlessIcon,
+    explorer: {
+      TESTNET: "https://www.okx.com/web3/explorer/xlayer-test",
+      MAINNET: "https://www.okx.com/web3/explorer/xlayer",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
   [ChainId.Sei]: {
     name: "Sei",
     icon: SeiIcon,
@@ -628,6 +656,51 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
       if (base === "token") return this.explorer?.[network] + "/contracts/" + value;
       if (base === "block") return this.explorer?.[network] + "/blocks/" + value;
       return this.explorer?.[network] + "/txs/" + value;
+    },
+  },
+  [ChainId.Scroll]: {
+    name: "Scroll",
+    icon: ScrollIcon,
+    colorlessIcon: ScrollColorlessIcon,
+    explorer: {
+      TESTNET: "https://sepolia.scrollscan.com",
+      MAINNET: "https://scrollscan.com",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.Mantle]: {
+    name: "Mantle",
+    icon: MantleIcon,
+    colorlessIcon: MantleColorlessIcon,
+    explorer: {
+      TESTNET: "https://sepolia.mantlescan.xyz",
+      MAINNET: "https://explorer.mantle.xyz",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.Blast]: {
+    name: "Blast",
+    icon: BlastIcon,
+    colorlessIcon: BlastColorlessIcon,
+    explorer: {
+      TESTNET: "https://testnet.blastscan.io",
+      MAINNET: "https://blastscan.io",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
     },
   },
   [ChainId.Base]: {
@@ -684,6 +757,22 @@ const WORMHOLE_CHAINS: { [key in ChainId]: any } = {
     explorer: {
       TESTNET: "https://holesky.etherscan.io",
       MAINNET: "https://holesky.etherscan.io",
+    },
+    getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [ChainId.PolygonSepolia]: {
+    name: "Polygon",
+    nameTestnet: "Amoy",
+    icon: PolygonIcon,
+    colorlessIcon: PolygonColorlessIcon,
+    explorer: {
+      TESTNET: "https://amoy.polygonscan.com",
+      MAINNET: "https://polygonscan.com",
     },
     getExplorerBaseURL: function ({ network = "MAINNET", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
@@ -758,6 +847,10 @@ export const getExplorerLink = ({
     }
 
     parsedValue = parseTx({ value: value, chainId: chainId });
+  }
+
+  if (chainId === ChainId.Kujira || chainId === ChainId.Evmos || chainId === ChainId.Osmosis) {
+    parsedValue = parsedValue.startsWith("0x") ? parsedValue.replace("0x", "") : parsedValue;
   }
 
   return WORMHOLE_CHAINS[chainId]?.getExplorerBaseURL({ network, value: parsedValue, base }) || "";

@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { ChainId, ParsedVaa, parseVaa } from "@certusone/wormhole-sdk";
+import { ChainId, Network, ParsedVaa, parseVaa } from "@certusone/wormhole-sdk";
 import {
   DeliveryInstruction,
   RedeliveryInstruction,
@@ -19,6 +19,39 @@ export type WormholeTransaction = {
   txHash: string;
 };
 
+export type RelayerOverviewProps = {
+  budgetText: () => string;
+  copyBudgetText: () => string;
+  currentNetwork: Network;
+  decodeExecution: any;
+  deliveryAttempt: string;
+  deliveryInstruction: DeliveryInstruction;
+  deliveryParsedRefundAddress: string;
+  deliveryParsedRefundProviderAddress: string;
+  deliveryParsedSenderAddress: string;
+  deliveryParsedSourceProviderAddress: string;
+  deliveryParsedTargetAddress: string;
+  deliveryStatus: AutomaticRelayOutput;
+  fromChain: number;
+  gasUsed: number;
+  gasUsedText: () => string;
+  guardianSignaturesCount: number;
+  isDelivery: boolean;
+  isDuplicated: boolean;
+  maxRefundText: () => string;
+  parsedEmitterAddress: string;
+  parsedVaa: any;
+  receiverValueText: () => string;
+  refundStatus: string;
+  refundText: () => string;
+  resultLog: string;
+  sourceAddress: string;
+  sourceTxHash: string;
+  targetTxTimestamp: number;
+  totalGuardiansNeeded: number;
+  VAAId: string;
+};
+
 export type DeliveryLifecycleRecord = {
   sourceTxHash?: string;
   sourceTxReceipt?: ethers.providers.TransactionReceipt;
@@ -32,6 +65,7 @@ export type DeliveryLifecycleRecord = {
     targetChainId?: ChainId;
     targetTxTimestamp?: number;
   };
+  props?: RelayerOverviewProps;
 };
 
 export async function populateDeliveryLifecycleRecordByVaa(

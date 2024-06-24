@@ -303,6 +303,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             payloadType,
             sender,
             sequence: sequence.toString(),
+            STATUS: "IN_PROGRESS",
             symbol,
             timestamp,
             toAddress,
@@ -425,6 +426,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             id: VAA_ID,
             parsedFromAddress,
             sequence: sequence.toString(),
+            STATUS: "IN_PROGRESS",
             symbol: "USDC",
             timestamp,
             toAddress: cctpResult.toAddress,
@@ -478,6 +480,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               lastFinalizedBlock,
               payloadType: RelayerPayloadId.Delivery,
               sequence: sequence.toString(),
+              STATUS: "IN_PROGRESS" as IStatus,
               timestamp,
               toAddress: deliveryInstructions.targetAddress.toString("hex"),
               toChain: deliveryInstructions.targetChainId,
@@ -518,6 +521,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               lastFinalizedBlock,
               payloadType: RelayerPayloadId.Redelivery,
               sequence: sequence.toString(),
+              STATUS: "IN_PROGRESS" as IStatus,
               timestamp,
               toChain: redeliveryInstructions.targetChainId,
               tokenAddress: wrappedTokenAddress,
@@ -640,7 +644,7 @@ const STABLE_ADDRESSES: Record<Network, Array<string>> = {
   DEVNET: null,
 };
 
-const getCctpDomain = (dom: number) => {
+export const getCctpDomain = (dom: number) => {
   if (dom === 0) return ChainId.Ethereum;
   if (dom === 1) return ChainId.Avalanche;
   if (dom === 2) return ChainId.Optimism;

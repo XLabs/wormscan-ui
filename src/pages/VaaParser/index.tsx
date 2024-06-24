@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
@@ -21,13 +21,14 @@ import { getGuardianSet, txType } from "src/consts";
 import { formatDate } from "src/utils/date";
 import { useParams } from "react-router-dom";
 import { hexToBase64 } from "src/utils/string";
-import { parseVaa } from "@certusone/wormhole-sdk";
+import { parseVaa, parse } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { waitForElement } from "./waitForElement";
 
 import VaaInput from "./Input";
 import CopyContent from "./CopyContent";
 import "./styles.scss";
+import { bigintToReadable } from "./bigintToReadable";
 
 const VaaParser = () => {
   useEffect(() => {
@@ -68,13 +69,44 @@ const VaaParser = () => {
     }, 50);
   };
 
-  const renderExtras = (renderTo: Element | Document) => {
+  const renderExtras = useCallback(() => {
     waitForElement(".json-view-key")
       .then(() => {
-        renderTo.querySelectorAll(".added-stuff").forEach(a => a.remove());
+        document.querySelectorAll(".added-stuff").forEach(a => a.remove());
+
+        // Add collapse/expand behaviour
+        document.querySelectorAll(".json-view-collapseIcon").forEach(a => {
+          const renderAtCollapse = (ev: MouseEvent) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+
+            if (a.getAttribute("isCollapsed") !== "true") {
+              a.setAttribute("isCollapsed", "true");
+
+              a.parentElement.childNodes.forEach(block => {
+                if ((block as HTMLElement).tagName === "DIV") {
+                  (block as HTMLElement).style.display = "none";
+                  (a as HTMLElement).style.transform = "rotate(-90deg)";
+                }
+              });
+            } else {
+              a.setAttribute("isCollapsed", "false");
+
+              a.parentElement.childNodes.forEach(block => {
+                if ((block as HTMLElement).tagName === "DIV") {
+                  (block as HTMLElement).style.display = "block";
+                  (a as HTMLElement).style.transform = "rotate(0deg)";
+                }
+              });
+            }
+          };
+
+          (a as HTMLElement).removeEventListener("click", renderAtCollapse);
+          (a as HTMLElement).addEventListener("click", renderAtCollapse);
+        });
 
         // Add texts to enhace information
-        renderTo.querySelectorAll(".json-view-key").forEach(a => {
+        document.querySelectorAll(".json-view-key").forEach(a => {
           // Add chain names and icon to decoded VAA
           if (
             a.innerHTML?.includes("fromChain") ||
@@ -193,7 +225,7 @@ const VaaParser = () => {
         });
 
         // Add a copy to clipboard to strings and numbers (single values)
-        renderTo.querySelectorAll(".json-view-string, .json-view-number").forEach(text => {
+        document.querySelectorAll(".json-view-string, .json-view-number").forEach(text => {
           if (text.innerHTML?.length > 15) {
             const reactContainer = document.createElement("span");
             reactContainer.classList.add("copy-item");
@@ -211,16 +243,9 @@ const VaaParser = () => {
           }
         });
 
-        // Add a copy to clipboard to objects and arrays (multiple values)
-        renderTo.querySelectorAll(".json-view-collapseIcon").forEach(item => {
+        // Add a copy to clipboard to objects and arrays (multiple value``s)
+        document.querySelectorAll(".json-view-collapseIcon").forEach(item => {
           const parentElement = item.parentElement;
-
-          const clickedCollapse = (ev: MouseEvent) => {
-            // console.log("call"); // todo: fix multiple attached events
-            renderExtras(parentElement);
-          };
-
-          (item as HTMLElement).addEventListener("click", clickedCollapse);
 
           if (parentElement?.parentElement?.parentElement?.className === "json-view") return;
 
@@ -242,11 +267,22 @@ const VaaParser = () => {
         });
       })
       .catch(_err => {});
-  };
+  }, [environment.network]);
 
   const getGuardianName = (guardianSet: number, index: number) => {
     const guardianSetList = getGuardianSet(guardianSet);
     return guardianSetList?.[index]?.name;
+  };
+
+  const getSdkParsedPayload = () => {
+    try {
+      const parsed = parse(Buffer.from(input, "base64"));
+
+      if (parsed.payload) return parsed.payload;
+      else return null;
+    } catch {
+      return null;
+    }
   };
 
   const {
@@ -256,10 +292,12 @@ const VaaParser = () => {
   } = useQuery(["getParsedVaa", input], () => getClient().guardianNetwork.getParsedVaa(input), {
     enabled: !!input,
     retry: 0,
-    onSettled: _data => {
+    onSettled: async _data => {
       // success or fail, process RAW vaa (no API) and set it
       try {
-        const parsedVaa = parseVaa(Buffer.from(input, "base64"));
+        const vaaBuffer = Buffer.from(input, "base64");
+        const parsedVaa = parseVaa(vaaBuffer);
+
         const { emitterAddress, guardianSignatures, hash, sequence, guardianSetIndex } =
           parsedVaa || {};
 
@@ -271,6 +309,11 @@ const VaaParser = () => {
           signature: Buffer.from(signature).toString("hex"),
           name: getGuardianName(guardianSetIndex, index),
         }));
+
+        const parsedPayload = getSdkParsedPayload();
+        if (parsedPayload) {
+          (parsedVaa as any).parsedPayload = bigintToReadable(parsedPayload);
+        }
 
         setResultRaw({
           ...parsedVaa,
@@ -299,13 +342,19 @@ const VaaParser = () => {
           },
         };
       }
+
+      if (!data.parsedPayload) {
+        const sdkPayload = getSdkParsedPayload();
+        if (sdkPayload) data.parsedPayload = bigintToReadable(sdkPayload);
+      }
+
       setResult(data);
 
       const vaaID = `${data?.vaa?.emitterChain}/${data?.vaa?.emitterAddress}/${data?.vaa?.sequence}`;
       if (!txSearch) {
         setTxSearch(vaaID);
       }
-      renderExtras(document);
+      renderExtras();
       collapseGuardianSignatures();
     },
   });
@@ -440,7 +489,7 @@ const VaaParser = () => {
                   <span>Decoded VAA: {parsedRaw ? "Raw" : "Parsed"}</span>
                   <span
                     onClick={() => {
-                      renderExtras(document);
+                      renderExtras();
                       collapseGuardianSignatures();
                       setParsedRaw(!parsedRaw);
                     }}

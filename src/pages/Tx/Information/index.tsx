@@ -1,13 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
-import { ChainId, isEVMChain, parseVaa } from "@certusone/wormhole-sdk";
-import {
-  DeliveryInstruction,
-  parseEVMExecutionInfoV1,
-} from "@certusone/wormhole-sdk/lib/cjs/relayer";
-
+import { ChainId, isEVMChain } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import {
   CCTP_MANUAL_APP_ID,
@@ -17,23 +11,18 @@ import {
   GATEWAY_APP_ID,
   GR_APP_ID,
   MAYAN_APP_ID,
+  MORE_INFO_GOVERNOR_URL,
   NTT_APP_ID,
   PORTAL_APP_ID,
   txType,
   UNKNOWN_APP_ID,
 } from "src/consts";
-import { Alert, Loader } from "src/components/atoms";
+import { Alert } from "src/components/atoms";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
 import { formatNumber } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import analytics from "src/analytics";
-import {
-  DeliveryLifecycleRecord,
-  isRedelivery,
-  parseGenericRelayerVaa,
-  populateDeliveryLifecycleRecordByVaa,
-} from "src/utils/genericRelayerVaaUtils";
 import { tryGetRedeemTxn } from "src/utils/cryptoToolkit";
 import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
@@ -41,7 +30,6 @@ import { GetBlockData } from "src/api/search/types";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
 import { TokenInfo, getTokenLogo } from "src/utils/metaMaskUtils";
-import { ChainLimit } from "src/api";
 
 import Summary from "./Summary";
 import Tabs from "./Tabs";
@@ -53,26 +41,13 @@ import "./styles.scss";
 
 interface Props {
   blockData: GetBlockData;
-  chainLimitsData?: ChainLimit[];
-  extraRawInfo: any;
-  setTxData: (x: any) => void;
   data: GetOperationsOutput;
+  extraRawInfo: any;
   isRPC: boolean;
+  setTxData: (x: any) => void;
 }
 
-const ETH_LIMIT = {
-  maxTransactionSize: 5000000,
-  availableNotional: 50000000,
-};
-
-const Information = ({
-  blockData,
-  chainLimitsData,
-  extraRawInfo,
-  setTxData,
-  data,
-  isRPC,
-}: Props) => {
+const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [showSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
@@ -92,6 +67,7 @@ const Information = ({
 
   const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
   const vaa = data?.vaa;
+  const { isDuplicated } = data?.vaa || {};
   const guardianSignaturesCount = data?.decodedVaa?.guardianSignatures?.length || 0;
   const hasVAA = !!vaa;
 
@@ -124,7 +100,7 @@ const Information = ({
     wrappedTokenSymbol,
   } = standarizedProperties || {};
 
-  const { STATUS } = data;
+  const { STATUS, isBigTransaction, isDailyLimitExceeded, transactionLimit } = data;
 
   const fromChainOrig = emitterChain || stdFromChain;
   const fromAddress = data?.sourceChain?.from || stdFromAddress;
@@ -220,7 +196,7 @@ const Information = ({
   let targetTokenChain = tokenChain;
   const wrappedSide = tokenChain !== toChain ? "target" : "source";
 
-  if (wrappedTokenAddress && !standarizedProperties?.appIds.includes("ETH_BRIDGE")) {
+  if (wrappedTokenAddress && !standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID)) {
     if (wrappedSide === "target") {
       targetTokenChain = toChain;
       targetTokenAddress = wrappedTokenAddress;
@@ -304,6 +280,8 @@ const Information = ({
     fromChain: extraRawInfoFromChainId || fromChain,
     fromChainOrig,
     guardianSignaturesCount,
+    isAttestation,
+    isDuplicated,
     isGatewaySource,
     isMayanOnly: appIds?.length === 1 && appIds.includes(MAYAN_APP_ID),
     isUnknownApp,
@@ -329,8 +307,12 @@ const Information = ({
 
   const [loadingRedeem, setLoadingRedeem] = useState(false);
   const [foundRedeem, setFoundRedeem] = useState<null | boolean>(null);
+
+  const date_30_min_before = new Date(new Date().getTime() - 30 * 60000);
   const canTryToGetRedeem =
-    (STATUS === "EXTERNAL_TX" || STATUS === "VAA_EMITTED") &&
+    (STATUS === "EXTERNAL_TX" ||
+      STATUS === "VAA_EMITTED" ||
+      (STATUS === "PENDING_REDEEM" && new Date(timestamp) < date_30_min_before)) &&
     (isEVMChain(toChain) || toChain === 1 || toChain === 21) &&
     toChain === targetTokenChain &&
     !!toAddress &&
@@ -399,7 +381,7 @@ const Information = ({
       setFoundRedeem(true);
 
       setTimeout(() => {
-        setIsGenericRelayerTx(false);
+        // setIsGenericRelayerTx(false);
         setTxData(newData);
       }, 2000);
     } else {
@@ -414,118 +396,12 @@ const Information = ({
   };
 
   const isLatestBlockHigherThanVaaEmitBlock = lastFinalizedBlock > currentBlock;
-  const limitDataForChain = chainLimitsData
-    ? chainLimitsData.find((data: ChainLimit) => data.chainId === fromChain)
-    : ETH_LIMIT;
-  const transactionLimit = limitDataForChain?.maxTransactionSize;
-  const isBigTransaction = transactionLimit <= Number(usdAmount);
-  const isDailyLimitExceeded = limitDataForChain?.availableNotional < Number(usdAmount);
 
-  // --- Automatic Relayer Detection and handling ---
-  const [genericRelayerInfo, setGenericRelayerInfo] = useState<DeliveryLifecycleRecord>(null);
-  const [loadingRelayers, setLoadingRelayers] = useState(false);
-  const getRelayerInfo = useCallback(async () => {
-    setLoadingRelayers(true);
-
-    // TODO: handle generic relayer non-vaa txns without rpcs
-    if (!vaa || !vaa.raw) {
-      setLoadingRelayers(false);
-      setIsGenericRelayerTx(false);
-      console.log("automatic relayer tx without vaa yet");
-      return;
-    }
-
-    populateDeliveryLifecycleRecordByVaa(environment, vaa.raw)
-      .then((result: DeliveryLifecycleRecord) => {
-        analytics.track("txDetail", {
-          appIds: [GR_APP_ID].join(", "),
-          chain: getChainName({
-            chainId: (result?.sourceChainId as any)
-              ? (result.sourceChainId as any)
-              : standarizedProperties?.fromChain
-              ? standarizedProperties?.fromChain
-              : 0,
-            network: currentNetwork,
-          }),
-          toChain: getChainName({
-            chainId: result?.targetTransaction?.targetChainId
-              ? result.targetTransaction?.targetChainId
-              : standarizedProperties?.toChain
-              ? standarizedProperties?.toChain
-              : 0,
-            network: currentNetwork,
-          }),
-        });
-
-        setGenericRelayerInfo(result);
-        setLoadingRelayers(false);
-      })
-      .catch((e: any) => {
-        setLoadingRelayers(false);
-        console.error("automatic relayer tx errored:", e);
-        setIsGenericRelayerTx(false);
-      });
-  }, [
-    environment,
-    vaa,
-    standarizedProperties?.fromChain,
-    standarizedProperties?.toChain,
-    currentNetwork,
-  ]);
-
-  const targetContract = environment.chainInfos.find(
-    a => a.chainId === fromChain,
-  )?.relayerContractAddress;
-
-  const [isGenericRelayerTx, setIsGenericRelayerTx] = useState(null);
-
-  useEffect(() => {
-    if (targetContract || parsedEmitterAddress) {
-      const isGeneric = targetContract?.toUpperCase() === parsedEmitterAddress?.toUpperCase();
-
-      setIsGenericRelayerTx(isGeneric && !appIds?.includes(NTT_APP_ID));
-      if (isGeneric) {
-        console.log("isGenericRelayerTx!!!");
-        getRelayerInfo();
-      }
-    }
-  }, [targetContract, parsedEmitterAddress, getRelayerInfo, appIds]);
-  // --- x ---
-
-  useEffect(() => {
-    if (!loadingRelayers && genericRelayerInfo) {
-      if (
-        genericRelayerInfo?.targetTransaction?.targetTxHash &&
-        data &&
-        data.STATUS !== "COMPLETED"
-      ) {
-        setTxData({
-          ...data,
-          STATUS: "COMPLETED",
-          targetChain: {
-            ...data?.targetChain,
-            timestamp: genericRelayerInfo?.targetTransaction?.targetTxTimestamp * 1000,
-            transaction: {
-              ...data?.targetChain?.transaction,
-              txHash: genericRelayerInfo.targetTransaction.targetTxHash,
-            },
-          },
-        });
-
-        return;
-      }
-    }
-  }, [data, genericRelayerInfo, loadingRelayers, setTxData]);
+  const isGenericRelayerTx = data.relayerInfo !== null;
 
   const Content = () => {
-    if (isGenericRelayerTx === null) {
-      return <Loader />;
-    }
-
     if (isGenericRelayerTx || isRelayerNTT) {
-      if (loadingRelayers) return <Loader />;
-
-      const deliveryStatus = genericRelayerInfo?.DeliveryStatus;
+      const deliveryStatus = data.relayerInfo?.DeliveryStatus;
 
       if (isRelayerNTT && showOverview) {
         return (
@@ -539,223 +415,29 @@ const Information = ({
         );
       }
 
-      if (!genericRelayerInfo?.vaa) {
-        setIsGenericRelayerTx(false);
-        setTxData({
-          ...data,
-          vaa: null,
-        } as GetOperationsOutput);
-        return <div>No VAA was found</div>;
-      }
-
-      const vaa = genericRelayerInfo.vaa;
-      const parsedVaa = parseVaa(vaa);
-      const sourceTxHash = genericRelayerInfo.sourceTxHash;
-
-      const resultLogRegex =
-        deliveryStatus?.data?.delivery?.execution?.detail.match(/Status: ([^\r\n]+)/);
-      const resultLog = resultLogRegex ? resultLogRegex?.[1] : null;
-
-      const gasUsed = Number(deliveryStatus?.data?.delivery?.execution?.gasUsed);
-      const targetTxTimestamp = genericRelayerInfo?.targetTransaction?.targetTxTimestamp;
-
-      const { emitterAddress, emitterChain, guardianSignatures } = parsedVaa || {};
-
-      const bufferEmitterAddress = Buffer.from(emitterAddress).toString("hex");
-      const parsedEmitterAddress = parseAddress({
-        value: bufferEmitterAddress,
-        chainId: emitterChain as ChainId,
-      });
-
-      const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
-      const guardianSignaturesCount = Array.isArray(guardianSignatures)
-        ? guardianSignatures?.length || 0
-        : 0;
-
-      const fromChain = emitterChain;
-
-      const instruction = parseGenericRelayerVaa(parsedVaa);
-      const deliveryInstruction = instruction as DeliveryInstruction | null;
-      const isDelivery = deliveryInstruction && !isRedelivery(deliveryInstruction);
-
-      const decodeExecution = deliveryInstruction.encodedExecutionInfo
-        ? parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0]
-        : null;
-      const gasLimit = decodeExecution ? decodeExecution.gasLimit : null;
-
-      if (!deliveryInstruction?.targetAddress) {
-        return (
-          <div className="tx-information-errored-info">
-            This is either not an Automatic Relayer VAA or something&apos;s wrong with it
-          </div>
-        );
-      }
-
-      const trunkStringsDecimal = (num: string, decimals: number) => {
-        const [whole, fraction] = num.split(".");
-        if (!fraction) return whole;
-        return `${whole}.${fraction.slice(0, decimals)}`;
-      };
-
-      const maxRefund = deliveryStatus?.data?.delivery?.maxRefund
-        ? Number(
-            trunkStringsDecimal(
-              ethers.utils.formatUnits(
-                deliveryStatus?.data?.delivery?.maxRefund,
-                deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
-              ),
-              3,
-            ),
-          )
-        : 0;
-
-      const deliveryParsedTargetAddress = parseAddress({
-        value: Buffer.from(deliveryInstruction?.targetAddress).toString("hex"),
-        chainId: deliveryInstruction?.targetChainId as ChainId,
-      });
-
-      const deliveryParsedRefundAddress = parseAddress({
-        value: Buffer.from(deliveryInstruction?.refundAddress).toString("hex"),
-        chainId: deliveryInstruction?.refundChainId as ChainId,
-      });
-
-      const deliveryParsedRefundProviderAddress = parseAddress({
-        value: Buffer.from(deliveryInstruction?.refundDeliveryProvider).toString("hex"),
-        chainId: deliveryInstruction?.refundChainId as ChainId,
-      });
-
-      const deliveryParsedSenderAddress = parseAddress({
-        value: Buffer.from(deliveryInstruction?.senderAddress).toString("hex"),
-        chainId: fromChain as ChainId,
-      });
-
-      const deliveryParsedSourceProviderAddress = parseAddress({
-        value: Buffer.from(deliveryInstruction?.sourceDeliveryProvider).toString("hex"),
-        chainId: fromChain as ChainId,
-      });
-
-      const maxRefundText = () => {
-        return `${maxRefund} ${
-          environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
-            .nativeCurrencyName
-        }`;
-      };
-
-      const gasUsedText = () => {
-        return isNaN(gasUsed) ? `${gasLimit}` : `${gasUsed}/${gasLimit}`;
-      };
-
-      const receiverValueText = () => {
-        const receiverValue = trunkStringsDecimal(
-          ethers.utils.formatUnits(
-            deliveryStatus?.data?.instructions?.requestedReceiverValue,
-            deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
-          ),
-          3,
-        );
-
-        return `${receiverValue} ${
-          environment.chainInfos.find(chain => chain.chainId === deliveryInstruction.targetChainId)
-            .nativeCurrencyName
-        }`;
-      };
-
-      const budgetText = () => {
-        if (deliveryStatus?.data?.delivery?.budget) {
-          return `${trunkStringsDecimal(
-            ethers.utils.formatUnits(
-              deliveryStatus?.data?.delivery?.budget,
-              deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
-            ),
-            3,
-          )} ${
-            environment.chainInfos.find(
-              chain => chain.chainId === deliveryInstruction.targetChainId,
-            ).nativeCurrencyName
-          }`;
+      if (!data.relayerInfo?.vaa) {
+        if (showOverview) {
+          return <Overview {...overviewAndDetailProps} />;
+        } else {
+          return (
+            <AdvancedView
+              overviewAndDetailProps={overviewAndDetailProps}
+              extraRawInfo={extraRawInfo}
+              lifecycleRecord={data.relayerInfo}
+              data={data}
+            />
+          );
         }
-
-        return "N/A";
-      };
-
-      const refundText = () => {
-        const refundAmountRegex = deliveryStatus?.data?.delivery?.execution?.detail.match(
-          /Refund amount:\s*([0-9.]+)/,
-        );
-        const refundAmount = refundAmountRegex ? refundAmountRegex?.[1] : null;
-
-        if (refundAmount)
-          return `${refundAmount} ${
-            environment.chainInfos.find(
-              chain => chain.chainId === deliveryInstruction.targetChainId,
-            ).nativeCurrencyName
-          }`;
-
-        return "";
-      };
-
-      const copyBudgetText = () => {
-        return `Budget: ${budgetText()}\n\nMax Refund:\n${maxRefundText()}\n\n${
-          !isNaN(gasUsed) ? "Gas Used/" : ""
-        }Gas limit\n${gasUsedText()}\n\n${
-          !isNaN(gasUsed) ? "Refund Amount\n" + refundText() : ""
-        }\n\nReceiver Value: ${receiverValueText()}`
-          .replaceAll("  ", "")
-          .replaceAll("\n\n\n\n", "\n\n");
-      };
-
-      const refundStatusRegex =
-        deliveryStatus?.data?.delivery?.execution?.detail.match(/Refund status: ([^\r\n]+)/);
-      const refundStatus = refundStatusRegex ? refundStatusRegex?.[1] : null;
-
-      const deliveryAttemptRegex = deliveryStatus?.data?.delivery?.execution?.detail.match(
-        /Delivery attempt \s*([0-9.]+)/,
-      );
-      const deliveryAttempt = deliveryAttemptRegex ? deliveryAttemptRegex?.[1] : null;
-
-      const genericRelayerProps = {
-        budgetText,
-        copyBudgetText,
-        currentNetwork,
-        decodeExecution,
-        deliveryAttempt,
-        deliveryInstruction,
-        deliveryParsedRefundAddress,
-        deliveryParsedRefundProviderAddress,
-        deliveryParsedSenderAddress,
-        deliveryParsedSourceProviderAddress,
-        deliveryParsedTargetAddress,
-        deliveryStatus,
-        fromChain,
-        gasUsed,
-        gasUsedText,
-        guardianSignaturesCount,
-        isDelivery,
-        maxRefundText,
-        parsedEmitterAddress,
-        parsedVaa,
-        receiverValueText,
-        refundStatus,
-        refundText,
-        resultLog,
-        sourceTxHash,
-        targetTxTimestamp,
-        totalGuardiansNeeded,
-        VAAId,
-      };
+      }
 
       if (showOverview) {
-        return <RelayerOverview {...genericRelayerProps} />;
+        return <RelayerOverview {...data.relayerInfo.props} />;
       } else {
-        if (isGenericRelayerTx === null || (isGenericRelayerTx && loadingRelayers)) {
-          return <Loader />;
-        }
-
         return (
           <AdvancedView
-            genericRelayerProps={genericRelayerProps}
+            genericRelayerProps={data.relayerInfo.props}
             extraRawInfo={extraRawInfo}
-            lifecycleRecord={genericRelayerInfo}
+            lifecycleRecord={data.relayerInfo}
             data={data}
           />
         );
@@ -764,13 +446,13 @@ const Information = ({
 
     if (!isGenericRelayerTx) {
       if (showOverview) {
-        return <Overview {...overviewAndDetailProps} isAttestation={isAttestation} />;
+        return <Overview {...overviewAndDetailProps} />;
       } else {
         return (
           <AdvancedView
             overviewAndDetailProps={overviewAndDetailProps}
             extraRawInfo={extraRawInfo}
-            lifecycleRecord={genericRelayerInfo}
+            lifecycleRecord={data.relayerInfo}
             data={data}
           />
         );
@@ -877,6 +559,7 @@ const Information = ({
     <section className="tx-information">
       <Summary
         appIds={appIds}
+        isAttestation={isAttestation}
         currentNetwork={currentNetwork}
         isUnknownApp={isUnknownApp}
         parsedDestinationAddress={parsedDestinationAddress}
@@ -920,7 +603,7 @@ const DiscordSupportLink = () => (
 const LearnMoreLink = () => (
   <a
     className="tx-information-alerts-unknown-payload-type-link"
-    href="https://github.com/wormhole-foundation/wormhole/blob/main/whitepapers/0007_governor.md"
+    href={MORE_INFO_GOVERNOR_URL}
     target="_blank"
     rel="noopener noreferrer"
   >

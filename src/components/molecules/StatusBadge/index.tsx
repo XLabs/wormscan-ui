@@ -17,6 +17,7 @@ const StatusBadge = ({ STATUS, className, small = false }: Props) => {
           {STATUS === "EXTERNAL_TX" && <StatusExternalTxSmall />}
           {STATUS === "COMPLETED" && <StatusCompletedSmall />}
           {STATUS === "IN_PROGRESS" && <StatusInProgressSmall />}
+          {STATUS === "IN_GOVERNORS" && <StatusInGovernorsSmall />}
           {STATUS === "PENDING_REDEEM" && <StatusPendingRedeemSmall />}
           {STATUS === "VAA_EMITTED" && <StatusVaaEmittedSmall />}
         </>
@@ -25,6 +26,7 @@ const StatusBadge = ({ STATUS, className, small = false }: Props) => {
           {STATUS === "EXTERNAL_TX" && <StatusExternalTx />}
           {STATUS === "COMPLETED" && <StatusCompleted />}
           {STATUS === "IN_PROGRESS" && <StatusInProgress />}
+          {STATUS === "IN_GOVERNORS" && <StatusInGovernors />}
           {STATUS === "PENDING_REDEEM" && <StatusPendingRedeem />}
           {STATUS === "VAA_EMITTED" && <StatusVaaEmitted />}
         </>
@@ -37,6 +39,13 @@ export default StatusBadge;
 
 // ------
 
+const StatusInGovernorsSmall = () => (
+  <Tooltip side="top" type="onlyContent" tooltip={<StatusInGovernors />}>
+    <div className="status-badge-small progress">
+      <ClockIcon height={20} width={20} />
+    </div>
+  </Tooltip>
+);
 const StatusInProgressSmall = () => (
   <Tooltip side="top" type="onlyContent" tooltip={<StatusInProgress />}>
     <div className="status-badge-small progress">
@@ -75,6 +84,12 @@ const StatusCompletedSmall = () => (
 
 // ------
 
+const StatusInGovernors = () => (
+  <Chip className="status-badge-status" color="progress">
+    <ClockIcon height={16} width={16} />
+    IN GOVERNORS
+  </Chip>
+);
 const StatusInProgress = () => (
   <Chip className="status-badge-status" color="progress">
     <ClockIcon height={16} width={16} />

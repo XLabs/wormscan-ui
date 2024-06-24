@@ -1,42 +1,54 @@
-import { Table } from "src/components/organisms";
+import { Dispatch, SetStateAction } from "react";
+import { useLocation } from "react-router-dom";
 import { Column } from "react-table";
 import { PAGE_SIZE, TransactionOutput } from "..";
-import { Dispatch, SetStateAction } from "react";
+import { Table } from "src/components/organisms";
 import { Pagination, Switch } from "src/components/atoms";
 import { useNavigateCustom } from "src/utils/hooks/useNavigateCustom";
-import { useLocation } from "react-router-dom";
+import Filters from "./Filters";
 import "./styles.scss";
 
-const columns: Column<TransactionOutput>[] | any = [
-  {
-    Header: "STATUS",
-    accessor: "status",
-  },
-  {
-    Header: "SOURCE TX HASH",
-    accessor: "txHash",
-  },
-  {
-    Header: "FROM",
-    accessor: "from",
-  },
-  {
-    Header: "TO",
-    accessor: "to",
-  },
-  {
-    Header: "PROTOCOL",
-    accessor: "originApp",
-  },
-  {
-    Header: "TYPE",
-    accessor: "amount",
-  },
-  {
-    Header: "TIME",
-    accessor: "time",
-  },
-];
+const getColumns = (condition: boolean): Column<TransactionOutput>[] => {
+  const baseColumns: Column<TransactionOutput>[] = [
+    {
+      Header: "STATUS",
+      accessor: "status",
+    },
+    {
+      Header: "SOURCE TX HASH",
+      accessor: "txHash",
+    },
+    {
+      Header: "FROM",
+      accessor: "from",
+    },
+    {
+      Header: "TO",
+      accessor: "to",
+    },
+    {
+      Header: "PROTOCOL",
+      accessor: "originApp",
+    },
+    {
+      Header: "TYPE",
+      accessor: "amount",
+    },
+    {
+      Header: "TIME",
+      accessor: "time",
+    },
+  ];
+
+  if (condition) {
+    baseColumns.splice(3, 0, {
+      Header: "",
+      accessor: "inOut",
+    });
+  }
+
+  return baseColumns;
+};
 
 interface Props {
   currentPage: number;
@@ -59,6 +71,7 @@ const Information = ({
   setIsPaginationLoading,
   setLiveMode,
 }: Props) => {
+  const columns = getColumns(isTxsFiltered);
   const navigate = useNavigateCustom();
   const location = useLocation();
   const currentUrlPage = +new URLSearchParams(location.search).get("page") || 1;
@@ -108,42 +121,42 @@ const Information = ({
   };
 
   return (
-    <>
-      <section className="txs-information">
-        <>
-          <div>
-            <div className="txs-information-top">
-              <div
-                className="txs-information-top-title"
-                onClick={() => {
-                  setLiveMode(!liveMode);
-                }}
-              >
-                <Switch label={`LIVE MODE ${liveMode ? "ON" : "OFF"}`} value={liveMode} />
-              </div>
-              <div>
-                <PaginationComponent className="txs-information-top-pagination" />
-              </div>
-            </div>
+    <section className="txs-information">
+      <div className="txs-information-top">
+        <div className="txs-information-top-buttons">
+          <div
+            className="txs-information-top-buttons-live-mode"
+            onClick={() => {
+              setLiveMode(!liveMode);
+            }}
+          >
+            <Switch label={`LIVE MODE ${liveMode ? "ON" : "OFF"}`} value={liveMode} />
           </div>
 
-          <div className="table-container">
-            <Table
-              className="txs"
-              columns={columns}
-              data={parsedTxsData}
-              emptyMessage="No txs found."
-              isLoading={isPaginationLoading}
-              onRowClick={onRowClick}
-            />
-          </div>
+          {!isTxsFiltered && <Filters />}
+        </div>
 
-          <div className="txs-pagination">
-            <PaginationComponent />
-          </div>
-        </>
-      </section>
-    </>
+        <div>
+          <PaginationComponent className="txs-information-top-pagination" />
+        </div>
+      </div>
+
+      <div className="table-container">
+        <Table
+          className="txs"
+          columns={columns}
+          data={parsedTxsData}
+          emptyMessage="No transactions found."
+          isLoading={isPaginationLoading}
+          numberOfColumns={isTxsFiltered ? 8 : 7}
+          onRowClick={onRowClick}
+        />
+      </div>
+
+      <div className="txs-pagination">
+        <PaginationComponent />
+      </div>
+    </section>
   );
 };
 

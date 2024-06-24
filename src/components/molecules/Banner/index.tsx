@@ -22,7 +22,7 @@ const BannerWarning = () => (
             during the upgrade. Follow:{" "}
             <a
               className="banner-content-description-link"
-              href="https://x.com/wormholecrypto"
+              href="https://x.com/wormhole"
               target="_blank"
               rel="noreferrer"
             >
@@ -68,7 +68,7 @@ const BannerError = () => (
           Follow:{" "}
           <a
             className="banner-content-description-link"
-            href="https://x.com/wormholecrypto"
+            href="https://x.com/wormhole"
             target="_blank"
             rel="noreferrer"
           >

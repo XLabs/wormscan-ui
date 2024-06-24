@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CopyIcon } from "@radix-ui/react-icons";
-import { RelayerOverviewProps } from "src/pages/Tx/Information/Overview/RelayerOverview";
+import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
@@ -11,6 +10,12 @@ import {
 } from "src/utils/environment";
 import { formatDate } from "src/utils/date";
 import "../styles.scss";
+import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
+import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
+import { ChainId } from "src/api";
+import { RelayerOverviewProps } from "src/utils/genericRelayerVaaUtils";
+import { useRecoilState } from "recoil";
+import { addressesInfoState } from "src/utils/recoilStates";
 
 const RelayerDetails = ({
   budgetText,
@@ -30,6 +35,7 @@ const RelayerDetails = ({
   gasUsedText,
   guardianSignaturesCount,
   isDelivery,
+  isDuplicated,
   maxRefundText,
   parsedEmitterAddress,
   parsedVaa,
@@ -37,11 +43,15 @@ const RelayerDetails = ({
   refundStatus,
   refundText,
   resultLog,
+  sourceAddress,
   sourceTxHash,
   targetTxTimestamp,
   totalGuardiansNeeded,
   VAAId,
 }: RelayerOverviewProps) => {
+  const [addressesInfo] = useRecoilState(addressesInfoState);
+
+  const extraWidthDuplicated = isDuplicated ? 53 : 30;
   const lineValueRef = useRef<HTMLDivElement>(null);
   const [lineValueWidth, setLineValueWidth] = useState<number>(0);
 
@@ -85,6 +95,66 @@ const RelayerDetails = ({
         </div>
 
         <div className="tx-details-group-line">
+          <div className="tx-details-group-line-key">Source Address</div>
+          <div className="tx-details-group-line-value">
+            <a
+              href={getExplorerLink({
+                network: currentNetwork,
+                chainId: fromChain,
+                value: sourceAddress,
+                base: "address",
+                isNativeAddress: true,
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <TruncateText containerWidth={lineValueWidth} text={sourceAddress.toUpperCase()} />
+            </a>
+            <CopyToClipboard toCopy={sourceAddress}>
+              <CopyIcon height={20} width={20} />
+            </CopyToClipboard>
+            {addressesInfo?.[sourceAddress.toLowerCase()] && (
+              <AddressInfoTooltip
+                info={addressesInfo[sourceAddress.toLowerCase()]}
+                chain={fromChain}
+              />
+            )}
+          </div>
+        </div>
+
+        <div className="tx-details-group-line">
+          <div className="tx-details-group-line-key">Source App Contract</div>
+          <div className="tx-details-group-line-value">
+            <a
+              href={getExplorerLink({
+                network: currentNetwork,
+                chainId: fromChain,
+                value: deliveryParsedSenderAddress,
+                base: "address",
+                isNativeAddress: true,
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <TruncateText
+                containerWidth={lineValueWidth}
+                text={deliveryParsedSenderAddress.toUpperCase()}
+              />
+            </a>
+            <CopyToClipboard toCopy={deliveryParsedSenderAddress}>
+              <CopyIcon height={20} width={20} />
+            </CopyToClipboard>
+            {ARKHAM_CHAIN_NAME[fromChain as ChainId] &&
+              addressesInfo?.[deliveryParsedSenderAddress.toLowerCase()] && (
+                <AddressInfoTooltip
+                  info={addressesInfo[deliveryParsedSenderAddress.toLowerCase()]}
+                  chain={fromChain}
+                />
+              )}
+          </div>
+        </div>
+
+        <div className="tx-details-group-line">
           <div className="tx-details-group-line-key">Contract Address</div>
           <div className="tx-details-group-line-value">
             <a
@@ -106,53 +176,12 @@ const RelayerDetails = ({
             <CopyToClipboard toCopy={parsedEmitterAddress}>
               <CopyIcon height={20} width={20} />
             </CopyToClipboard>
-          </div>
-        </div>
-
-        <div className="tx-details-group-line">
-          <div className="tx-details-group-line-key">From</div>
-          <div className="tx-details-group-line-value">
-            <a
-              href={getExplorerLink({
-                network: currentNetwork,
-                chainId: fromChain,
-                value: deliveryParsedSenderAddress,
-                base: "address",
-                isNativeAddress: true,
-              })}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <TruncateText
-                containerWidth={lineValueWidth}
-                text={deliveryParsedSenderAddress.toUpperCase()}
+            {addressesInfo?.[parsedEmitterAddress.toLowerCase()] && (
+              <AddressInfoTooltip
+                info={addressesInfo[parsedEmitterAddress.toLowerCase()]}
+                chain={fromChain}
               />
-            </a>
-            <CopyToClipboard toCopy={deliveryParsedSenderAddress}>
-              <CopyIcon height={20} width={20} />
-            </CopyToClipboard>
-          </div>
-        </div>
-
-        <div className="tx-details-group-line">
-          <div className="tx-details-group-line-key">Source Tx Hash</div>
-          <div className="tx-details-group-line-value">
-            <a
-              href={getExplorerLink({
-                network: currentNetwork,
-                chainId: fromChain,
-                value: sourceTxHash,
-                base: "tx",
-                isNativeAddress: true,
-              })}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <TruncateText containerWidth={lineValueWidth} text={sourceTxHash.toUpperCase()} />
-            </a>
-            <CopyToClipboard toCopy={sourceTxHash}>
-              <CopyIcon height={20} width={20} />
-            </CopyToClipboard>
+            )}
           </div>
         </div>
       </div>
@@ -175,10 +204,19 @@ const RelayerDetails = ({
         <div className="tx-details-group-line">
           <div className="tx-details-group-line-key">VAA ID</div>
           <div className="tx-details-group-line-value">
-            <TruncateText containerWidth={lineValueWidth} text={VAAId} />
+            <TruncateText
+              containerWidth={lineValueWidth}
+              extraWidth={extraWidthDuplicated}
+              text={VAAId}
+            />
             <CopyToClipboard toCopy={VAAId}>
               <CopyIcon height={20} width={20} />
             </CopyToClipboard>
+            {isDuplicated && (
+              <Tooltip tooltip={<div>VAA ID duplicated</div>} type="info">
+                <InfoCircledIcon />
+              </Tooltip>
+            )}
           </div>
         </div>
 
@@ -212,6 +250,12 @@ const RelayerDetails = ({
               <CopyToClipboard toCopy={deliveryParsedSourceProviderAddress}>
                 <CopyIcon height={20} width={20} />
               </CopyToClipboard>
+              {addressesInfo?.[deliveryParsedSourceProviderAddress.toLowerCase()] && (
+                <AddressInfoTooltip
+                  info={addressesInfo[deliveryParsedSourceProviderAddress.toLowerCase()]}
+                  chain={deliveryInstruction.targetChainId}
+                />
+              )}
             </div>
           </div>
         )}
@@ -255,7 +299,6 @@ const RelayerDetails = ({
                   cursor: "pointer",
                   backgroundColor: "#ddddff05",
                   borderRadius: 6,
-                  padding: "2px 8px",
                 }}
               >
                 {budgetText()}
@@ -291,6 +334,12 @@ const RelayerDetails = ({
               <CopyToClipboard toCopy={deliveryParsedRefundAddress}>
                 <CopyIcon height={20} width={20} />
               </CopyToClipboard>
+              {addressesInfo?.[deliveryParsedRefundAddress.toLowerCase()] && (
+                <AddressInfoTooltip
+                  info={addressesInfo[deliveryParsedRefundAddress.toLowerCase()]}
+                  chain={deliveryInstruction.refundChainId}
+                />
+              )}
             </div>
           </div>
         )}
@@ -373,6 +422,13 @@ const RelayerDetails = ({
             <CopyToClipboard toCopy={deliveryParsedTargetAddress}>
               <CopyIcon height={20} width={20} />
             </CopyToClipboard>
+            {ARKHAM_CHAIN_NAME[deliveryInstruction.targetChainId as ChainId] &&
+              addressesInfo?.[deliveryParsedTargetAddress.toLowerCase()] && (
+                <AddressInfoTooltip
+                  info={addressesInfo[deliveryParsedTargetAddress.toLowerCase()]}
+                  chain={deliveryInstruction.targetChainId}
+                />
+              )}
           </div>
         </div>
 

@@ -5,8 +5,11 @@ import "./styles.scss";
 
 type Props = {
   children: React.ReactNode;
+  className?: string;
   controlled?: boolean;
+  enableTooltip?: boolean;
   maxWidth?: boolean;
+  onClickOutside?: () => void;
   open?: boolean;
   side?: "top" | "right" | "bottom" | "left";
   tooltip: React.ReactNode;
@@ -15,14 +18,18 @@ type Props = {
 
 const Tooltip = ({
   children,
+  className = "",
   controlled = false,
+  enableTooltip = true,
   maxWidth = true,
+  onClickOutside,
   open = false,
   side = "right",
   tooltip,
   type = "default",
 }: Props) => {
   const [isOpen, setIsOpen] = useState(controlled ? open : undefined);
+  const triggerRef = useRef(null);
   const tooltipRef = useRef(null);
   const selectSide = type === "info" ? "top" : side;
 
@@ -33,32 +40,50 @@ const Tooltip = ({
   useEffect(() => {
     if (controlled || window.innerWidth >= BREAKPOINTS.desktop) return;
 
-    const handleScroll = () => {
-      if (
-        tooltipRef.current &&
-        (tooltipRef.current.getBoundingClientRect().top < -50 ||
-          tooltipRef.current.getBoundingClientRect().bottom > window.innerHeight + 50)
-      ) {
+    const handleInteraction = (e: MouseEvent | TouchEvent) => {
+      if (triggerRef?.current && !triggerRef.current.contains(e.target)) {
         setIsOpen(false);
       }
     };
 
-    window.addEventListener("scroll", handleScroll, true);
+    document.addEventListener("mousedown", handleInteraction);
+    document.addEventListener("touchstart", handleInteraction);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll, true);
+      document.removeEventListener("mousedown", handleInteraction);
+      document.removeEventListener("touchstart", handleInteraction);
     };
   }, [controlled]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: any) => {
+      if (!tooltipRef?.current?.contains(e?.target)) {
+        if (onClickOutside) onClickOutside();
+      }
+    };
+
+    window.addEventListener("mouseup", handleClickOutside, true);
+    window.addEventListener("scroll", handleClickOutside, true);
+    return () => {
+      window.removeEventListener("mouseup", handleClickOutside, true);
+      window.removeEventListener("scroll", handleClickOutside, true);
+    };
+  }, [onClickOutside]);
 
   const handleSetIsOpen = (isOpen: boolean) => {
     controlled === false && setIsOpen(isOpen);
   };
+
+  if (!enableTooltip) {
+    return <>{children}</>;
+  }
 
   return (
     <TooltipPrimitive.Provider>
       <TooltipPrimitive.Root open={isOpen}>
         <TooltipPrimitive.Trigger
           asChild
+          ref={triggerRef}
           onMouseEnter={() => handleSetIsOpen(true)}
           onMouseLeave={() => handleSetIsOpen(false)}
           onFocus={() => handleSetIsOpen(true)}
@@ -70,7 +95,7 @@ const Tooltip = ({
         <TooltipPrimitive.Portal className="tooltip">
           <TooltipPrimitive.Content
             ref={tooltipRef}
-            className={`tooltip-container ${type} ${maxWidth ? "max-width" : ""}`}
+            className={`tooltip-container ${type} ${maxWidth ? "max-width" : ""} ${className}`}
             sideOffset={5}
             side={selectSide}
           >

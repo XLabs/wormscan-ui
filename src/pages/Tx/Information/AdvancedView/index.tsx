@@ -1,4 +1,3 @@
-import { JsonView } from "react-json-view-lite";
 import { CopyIcon, TriangleDownIcon } from "@radix-ui/react-icons";
 import { parseVaa } from "@certusone/wormhole-sdk";
 import {
@@ -38,7 +37,10 @@ const AdvancedView = ({
   const [showDetails, setShowDetails] = useLocalStorage<boolean>("showDetails", true);
   const [showJson, setShowJson] = useLocalStorage<boolean>("showJson", false);
   const payload = data?.content?.payload;
-  const dataNoPayload = JSON.parse(JSON.stringify(data)) as GetOperationsOutput;
+
+  const noRelayerData = { ...data, relayerInfo: null as any };
+  const dataNoPayload = JSON.parse(JSON.stringify(noRelayerData)) as GetOperationsOutput;
+  delete dataNoPayload.relayerInfo;
   if (dataNoPayload.content) dataNoPayload.content.payload = undefined;
   if (dataNoPayload.decodedVaa) dataNoPayload.decodedVaa = undefined;
 
@@ -109,7 +111,7 @@ const AdvancedView = ({
             <>
               {relayerInfo.isDelivery ? (
                 <BlockSection
-                  title="VAA DELIVERY INSTRUCTIONS"
+                  title="DELIVERY INSTRUCTIONS"
                   code={JSON.stringify(
                     {
                       "Target Chain": deliveryInstruction.targetChainId,

@@ -1,30 +1,42 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import { parseVaa, tryHexToNativeString } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
 import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
+import { ethers } from "ethers";
 import {
   fetchWithRpcFallThrough,
+  getCctpDomain,
   getEvmBlockInfo,
   getTokenInformation,
   getUsdcAddress,
 } from "src/utils/fetchWithRPCsFallthrough";
-import { formatUnits, parseTx } from "src/utils/crypto";
-import { ChainId } from "src/api";
+import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
+import { ChainId, ChainLimit } from "src/api";
 import { getClient } from "src/api/Client";
 import analytics from "src/analytics";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { GetBlockData } from "src/api/search/types";
 import { Information } from "./Information";
 import { Top } from "./Top";
-import "./styles.scss";
 import { getChainName } from "src/utils/wormhole";
-import { getAlgorandTokenInfo, tryGetWrappedToken } from "src/utils/cryptoToolkit";
+import {
+  getAlgorandTokenInfo,
+  getSolanaCctp,
+  tryGetAddressInfo,
+  tryGetWrappedToken,
+} from "src/utils/cryptoToolkit";
 import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import { useRecoilState } from "recoil";
-import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
+import {
+  showSourceTokenUrlState,
+  showTargetTokenUrlState,
+  addressesInfoState,
+} from "src/utils/recoilStates";
+import { getNttInfo } from "src/utils/wh-ntt-rpc";
 import {
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
@@ -36,11 +48,23 @@ import {
   NTT_APP_ID,
   PORTAL_APP_ID,
   UNKNOWN_APP_ID,
+  USDT_TRANSFER_APP_ID,
   canWeGetDestinationTx,
   getGuardianSet,
 } from "src/consts";
-import { CHAIN_ID_SOLANA, parseVaa } from "@certusone/wormhole-sdk";
-import { getNttInfo } from "src/utils/wh-ntt-rpc";
+import { ETH_LIMIT } from "../Txs";
+import "./styles.scss";
+import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
+import {
+  DeliveryLifecycleRecord,
+  isRedelivery,
+  parseGenericRelayerVaa,
+  populateDeliveryLifecycleRecordByVaa,
+} from "src/utils/genericRelayerVaaUtils";
+import {
+  DeliveryInstruction,
+  parseEVMExecutionInfoV1,
+} from "@certusone/wormhole-sdk/lib/cjs/relayer";
 
 const Tx = () => {
   useEffect(() => {
@@ -54,10 +78,12 @@ const Tx = () => {
 
   const [, setShowSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
   const [, setShowTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
+  const [, setAddressesInfo] = useRecoilState(addressesInfoState);
 
   // pattern match the search value to see if it's a candidate for being an EVM transaction hash.
   const search = txHash ? (txHash.startsWith("0x") ? txHash : "0x" + txHash) : "";
   const isEvmTxHash = !!search.match(/0x[0-9a-fA-F]{64}/);
+  const canBeSolanaTxHash = !!txHash?.match(/^[A-HJ-NP-Za-km-z1-9]+$/);
 
   const VAAId: string = `${chainId}/${emitter}/${seq}`;
   const isTxHashSearch = Boolean(txHash);
@@ -66,9 +92,16 @@ const Tx = () => {
   const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isRPC, setIsRPC] = useState(false);
-  const [emitterChainId, setEmitterChainId] = useState<ChainId | undefined>(undefined);
   const [extraRawInfo, setExtraRawInfo] = useState(null);
   const [blockData, setBlockData] = useState<GetBlockData>(null);
+  const [failCount, setFailCount] = useState(0);
+  const [shouldTryToGetRpcInfo, setShouldTryToGetRpcInfo] = useState(false);
+
+  const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(["getLimit"], () =>
+    getClient()
+      .governor.getLimit()
+      .catch(() => null),
+  );
 
   const cancelRequests = useRef(false);
   const tryToGetRpcInfo = useCallback(async () => {
@@ -85,8 +118,15 @@ const Tx = () => {
           toChain: getChainName({ chainId: txData?.toChain ?? 0, network }),
         });
 
+        const limitDataForChain = chainLimitsData
+          ? chainLimitsData.find((d: ChainLimit) => d.chainId === txData.chain)
+          : ETH_LIMIT;
+        const transactionLimit = limitDataForChain?.maxTransactionSize;
+        const isBigTransaction = transactionLimit <= Number(txData?.usdAmount);
+        const isDailyLimitExceeded =
+          limitDataForChain?.availableNotional < Number(txData?.usdAmount);
+
         setIsRPC(true);
-        setEmitterChainId(txData.chain as ChainId);
         setTxData([
           {
             emitterAddress: {
@@ -131,7 +171,13 @@ const Tx = () => {
               tokenAmount: txData.tokenAmount,
               usdAmount: txData.usdAmount,
             },
-            STATUS: txData.STATUS,
+            STATUS:
+              txData.STATUS === "IN_PROGRESS" && (isBigTransaction || isDailyLimitExceeded)
+                ? "IN_GOVERNORS"
+                : txData.STATUS,
+            isBigTransaction,
+            isDailyLimitExceeded,
+            transactionLimit,
             sequence: "",
             sourceChain: {
               chainId: txData.chain,
@@ -167,7 +213,7 @@ const Tx = () => {
     } else {
       cancelRequests.current = false;
     }
-  }, [environment, network, txHash]);
+  }, [chainLimitsData, environment, network, txHash]);
 
   useEffect(() => {
     setErrorCode(undefined);
@@ -184,8 +230,14 @@ const Tx = () => {
     setIsLoading(false);
   };
 
-  const [isInProgress, setIsInProgress] = useState(false);
-  const [failCount, setFailCount] = useState(0);
+  useEffect(() => {
+    // check that the limits are already loaded before executing tryToGetRpcInfo
+    if (!isLoadingLimits && shouldTryToGetRpcInfo) {
+      tryToGetRpcInfo();
+      setShouldTryToGetRpcInfo(false);
+    }
+  }, [isLoadingLimits, shouldTryToGetRpcInfo, tryToGetRpcInfo]);
+
   const { data: VAADataByTx } = useQuery(
     ["getVAAbyTxHash", txHash],
     async () => {
@@ -247,7 +299,68 @@ const Tx = () => {
         if (errCount === 0) return true;
 
         // second error, if hash is evm-like, hit rpcs
-        if (errCount === 1 && isEvmTxHash) tryToGetRpcInfo();
+        if (errCount === 1 && isEvmTxHash) {
+          setShouldTryToGetRpcInfo(true);
+        }
+        // second error, if hash is solana-like, check if its manual cctp
+        if (errCount === 1 && canBeSolanaTxHash) {
+          getSolanaCctp(network, txHash)
+            .then(resp => {
+              cancelRequests.current = true;
+              const toChain = getCctpDomain(resp.destinationDomain);
+
+              setTxData([
+                {
+                  emitterAddress: {
+                    hex: resp.contractAddress,
+                    native: resp.contractAddress,
+                  },
+                  emitterChain: 1,
+                  id: null,
+                  content: {
+                    payload: null,
+                    standarizedProperties: {
+                      amount: resp.amount,
+                      appIds: [CCTP_MANUAL_APP_ID],
+                      fee: "0",
+                      feeAddress: "",
+                      feeChain: 1,
+                      fromAddress: resp.sourceAddress,
+                      fromChain: 1,
+                      toAddress: resp.targetAddress,
+                      toChain: toChain,
+                      tokenAddress: resp.sourceTokenAddress,
+                      tokenChain: 1,
+                      overwriteTargetTokenAddress: getUsdcAddress(network, toChain),
+                      overwriteTargetTokenChain: toChain,
+                    },
+                  },
+                  data: {
+                    symbol: "USDC",
+                    tokenAmount: "" + +resp.amount / 10 ** 6,
+                    usdAmount: "" + +resp.amount / 10 ** 6,
+                  },
+                  STATUS: "EXTERNAL_TX",
+                  sequence: "",
+                  sourceChain: {
+                    chainId: 1,
+                    timestamp: new Date(resp.timestamp),
+                    from: resp.sourceAddress,
+                    status: undefined,
+                    transaction: {
+                      txHash: txHash,
+                    },
+                  },
+                  targetChain: undefined,
+                  vaa: undefined,
+                },
+              ]);
+
+              setErrorCode(undefined);
+              setIsLoading(false);
+            })
+            .catch(() => (cancelRequests.current = false));
+        }
 
         setFailCount(errCount);
         // more than three fails, stop retrying
@@ -289,15 +402,6 @@ const Tx = () => {
     },
   );
 
-  const { data: chainLimitsData } = useQuery(
-    ["getLimit"],
-    () =>
-      getClient()
-        .governor.getLimit()
-        .catch(() => null),
-    { enabled: failCount > 0 || isInProgress },
-  );
-
   const VAAData: GetOperationsOutput[] = useMemo(() => {
     if (isTxHashSearch) {
       return VAADataByTx;
@@ -312,52 +416,50 @@ const Tx = () => {
 
   const processVaaData = useCallback(
     async (apiTxData: GetOperationsOutput[]) => {
-      if (!emitterChainId && !!apiTxData.length) {
-        setEmitterChainId(apiTxData[0].emitterChain);
-        return;
-      }
+      let wrappedTokenChain = null;
 
-      // Check if its generic relayer tx without vaa and go with RPCs
-      // TODO: handle generic relayer no-vaa txns without RPCs
       for (const data of apiTxData) {
+        let relayerInfo: DeliveryLifecycleRecord;
+
+        // Check if its generic relayer tx without vaa and go with RPCs
+        // TODO: handle generic relayer no-vaa txns without RPCs
         if (data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID) && !data?.vaa?.raw) {
-          await tryToGetRpcInfo();
+          setShouldTryToGetRpcInfo(true);
         }
-      }
+        // ---
 
-      // Signed VAA logic
-      for (const data of apiTxData) {
+        // Signed VAA logic
         const vaa = data.vaa?.raw;
-        if (!vaa) break;
+        if (vaa) {
+          const guardianSetIndex = data.vaa.guardianSetIndex;
+          // Decode SignedVAA and get guardian signatures with name
+          const guardianSetList = getGuardianSet(guardianSetIndex);
+          const vaaBuffer = Buffer.from(vaa, "base64");
+          const parsedVaa = parseVaa(vaaBuffer);
 
-        const guardianSetIndex = data.vaa.guardianSetIndex;
-        // Decode SignedVAA and get guardian signatures with name
-        const guardianSetList = getGuardianSet(guardianSetIndex);
-        const vaaBuffer = Buffer.from(vaa, "base64");
-        const parsedVaa = parseVaa(vaaBuffer);
+          const { emitterAddress, guardianSignatures, hash, sequence } = parsedVaa || {};
+          const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
+          const parsedHash = Buffer.from(hash).toString("hex");
+          const parsedSequence = Number(sequence);
+          const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
+            index,
+            signature: Buffer.from(signature).toString("hex"),
+            name: guardianSetList?.[index]?.name,
+          }));
 
-        const { emitterAddress, guardianSignatures, hash, sequence } = parsedVaa || {};
-        const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
-        const parsedHash = Buffer.from(hash).toString("hex");
-        const parsedSequence = Number(sequence);
-        const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
-          index,
-          signature: Buffer.from(signature).toString("hex"),
-          name: guardianSetList?.[index]?.name,
-        }));
+          data.decodedVaa = {
+            ...parsedVaa,
+            payload: parsedVaa.payload ? Buffer.from(parsedVaa.payload).toString("hex") : null,
+            emitterAddress: parsedEmitterAddress,
+            guardianSignatures: parsedGuardianSignatures,
+            hash: parsedHash,
+            sequence: parsedSequence,
+          };
+        }
 
-        data.decodedVaa = {
-          ...parsedVaa,
-          payload: parsedVaa.payload ? Buffer.from(parsedVaa.payload).toString("hex") : null,
-          emitterAddress: parsedEmitterAddress,
-          guardianSignatures: parsedGuardianSignatures,
-          hash: parsedHash,
-          sequence: parsedSequence,
-        };
-      }
+        // ---
 
-      // check CCTP
-      for (const data of apiTxData) {
+        // check CCTP
         if (data?.content?.standarizedProperties?.appIds?.includes(CCTP_APP_ID)) {
           // if the amount is not there, we get it from the payload
           //     (we assume 6 decimals because its always USDC)
@@ -432,10 +534,231 @@ const Tx = () => {
             }
           }
         }
-      }
+        // ----
 
-      // check NTT
-      for (const data of apiTxData) {
+        // Check Standard Relayer
+        if (data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID)) {
+          // TODO: handle generic relayer non-vaa txns without rpcs
+          if (!data.vaa || !data.vaa?.raw) {
+            console.log("standard relayer tx without vaa yet");
+            return;
+          }
+
+          try {
+            const result = await populateDeliveryLifecycleRecordByVaa(environment, data.vaa.raw);
+            relayerInfo = result;
+
+            const vaa = relayerInfo.vaa;
+            const parsedVaa = parseVaa(vaa);
+            const sourceTxHash = relayerInfo.sourceTxHash;
+
+            const deliveryStatus = relayerInfo.DeliveryStatus;
+
+            const resultLogRegex =
+              deliveryStatus?.data?.delivery?.execution?.detail.match(/Status: ([^\r\n]+)/);
+            const resultLog = resultLogRegex ? resultLogRegex?.[1] : null;
+
+            const gasUsed = Number(deliveryStatus?.data?.delivery?.execution?.gasUsed);
+            const targetTxTimestamp = relayerInfo?.targetTransaction?.targetTxTimestamp;
+
+            const { emitterAddress, emitterChain, guardianSignatures } = parsedVaa || {};
+
+            const bufferEmitterAddress = Buffer.from(emitterAddress).toString("hex");
+            const parsedEmitterAddress = parseAddress({
+              value: bufferEmitterAddress,
+              chainId: emitterChain as ChainId,
+            });
+
+            const totalGuardiansNeeded = network === "MAINNET" ? 13 : 1;
+            const guardianSignaturesCount = Array.isArray(guardianSignatures)
+              ? guardianSignatures?.length || 0
+              : 0;
+
+            const fromChain = emitterChain;
+
+            const instruction = parseGenericRelayerVaa(parsedVaa);
+            const deliveryInstruction = instruction as DeliveryInstruction | null;
+            const isDelivery = deliveryInstruction && !isRedelivery(deliveryInstruction);
+
+            const decodeExecution = deliveryInstruction.encodedExecutionInfo
+              ? parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0]
+              : null;
+            const gasLimit = decodeExecution ? decodeExecution.gasLimit : null;
+
+            if (!deliveryInstruction?.targetAddress) {
+              return (
+                <div className="tx-information-errored-info">
+                  This is either not an Standard Relayer VAA or something&apos;s wrong with it
+                </div>
+              );
+            }
+
+            const trunkStringsDecimal = (num: string, decimals: number) => {
+              const [whole, fraction] = num.split(".");
+              if (!fraction) return whole;
+              return `${whole}.${fraction.slice(0, decimals)}`;
+            };
+
+            const maxRefund = deliveryStatus?.data?.delivery?.maxRefund
+              ? Number(
+                  trunkStringsDecimal(
+                    ethers.utils.formatUnits(
+                      deliveryStatus?.data?.delivery?.maxRefund,
+                      deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
+                    ),
+                    3,
+                  ),
+                )
+              : 0;
+
+            const deliveryParsedTargetAddress = parseAddress({
+              value: Buffer.from(deliveryInstruction?.targetAddress).toString("hex"),
+              chainId: deliveryInstruction?.targetChainId as ChainId,
+            });
+
+            const deliveryParsedRefundAddress = parseAddress({
+              value: Buffer.from(deliveryInstruction?.refundAddress).toString("hex"),
+              chainId: deliveryInstruction?.refundChainId as ChainId,
+            });
+
+            const deliveryParsedRefundProviderAddress = parseAddress({
+              value: Buffer.from(deliveryInstruction?.refundDeliveryProvider).toString("hex"),
+              chainId: deliveryInstruction?.refundChainId as ChainId,
+            });
+
+            const deliveryParsedSenderAddress = parseAddress({
+              value: Buffer.from(deliveryInstruction?.senderAddress).toString("hex"),
+              chainId: fromChain as ChainId,
+            });
+
+            const deliveryParsedSourceProviderAddress = parseAddress({
+              value: Buffer.from(deliveryInstruction?.sourceDeliveryProvider).toString("hex"),
+              chainId: fromChain as ChainId,
+            });
+
+            const maxRefundText = () => {
+              return `${maxRefund} ${
+                environment.chainInfos.find(
+                  chain => chain.chainId === deliveryInstruction.targetChainId,
+                ).nativeCurrencyName
+              }`;
+            };
+
+            const gasUsedText = () => {
+              return isNaN(gasUsed) ? `${gasLimit}` : `${gasUsed}/${gasLimit}`;
+            };
+
+            const receiverValueText = () => {
+              const receiverValue = trunkStringsDecimal(
+                ethers.utils.formatUnits(
+                  deliveryStatus?.data?.instructions?.requestedReceiverValue,
+                  deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
+                ),
+                3,
+              );
+
+              return `${receiverValue} ${
+                environment.chainInfos.find(
+                  chain => chain.chainId === deliveryInstruction.targetChainId,
+                ).nativeCurrencyName
+              }`;
+            };
+
+            const budgetText = () => {
+              if (deliveryStatus?.data?.delivery?.budget) {
+                return `${trunkStringsDecimal(
+                  ethers.utils.formatUnits(
+                    deliveryStatus?.data?.delivery?.budget,
+                    deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
+                  ),
+                  3,
+                )} ${
+                  environment.chainInfos.find(
+                    chain => chain.chainId === deliveryInstruction.targetChainId,
+                  ).nativeCurrencyName
+                }`;
+              }
+
+              return "N/A";
+            };
+
+            const refundText = () => {
+              const refundAmountRegex = deliveryStatus?.data?.delivery?.execution?.detail.match(
+                /Refund amount:\s*([0-9.]+)/,
+              );
+              const refundAmount = refundAmountRegex ? refundAmountRegex?.[1] : null;
+
+              if (refundAmount)
+                return `${refundAmount} ${
+                  environment.chainInfos.find(
+                    chain => chain.chainId === deliveryInstruction.targetChainId,
+                  ).nativeCurrencyName
+                }`;
+
+              return "";
+            };
+
+            const copyBudgetText = () => {
+              return `Budget: ${budgetText()}\n\nMax Refund:\n${maxRefundText()}\n\n${
+                !isNaN(gasUsed) ? "Gas Used/" : ""
+              }Gas limit\n${gasUsedText()}\n\n${
+                !isNaN(gasUsed) ? "Refund Amount\n" + refundText() : ""
+              }\n\nReceiver Value: ${receiverValueText()}`
+                .replaceAll("  ", "")
+                .replaceAll("\n\n\n\n", "\n\n");
+            };
+
+            const refundStatusRegex =
+              deliveryStatus?.data?.delivery?.execution?.detail.match(/Refund status: ([^\r\n]+)/);
+            const refundStatus = refundStatusRegex ? refundStatusRegex?.[1] : null;
+
+            const deliveryAttemptRegex = deliveryStatus?.data?.delivery?.execution?.detail.match(
+              /Delivery attempt \s*([0-9.]+)/,
+            );
+            const deliveryAttempt = deliveryAttemptRegex ? deliveryAttemptRegex?.[1] : null;
+
+            const sourceAddress =
+              data?.sourceChain?.from || data?.content?.standarizedProperties?.fromAddress;
+
+            relayerInfo.props = {
+              budgetText,
+              copyBudgetText,
+              currentNetwork: network,
+              decodeExecution,
+              deliveryAttempt,
+              deliveryInstruction,
+              deliveryParsedRefundAddress,
+              deliveryParsedRefundProviderAddress,
+              deliveryParsedSenderAddress,
+              deliveryParsedSourceProviderAddress,
+              deliveryParsedTargetAddress,
+              deliveryStatus,
+              fromChain,
+              gasUsed,
+              gasUsedText,
+              guardianSignaturesCount,
+              isDelivery,
+              isDuplicated: data.vaa?.isDuplicated,
+              maxRefundText,
+              parsedEmitterAddress,
+              parsedVaa,
+              receiverValueText,
+              refundStatus,
+              refundText,
+              resultLog,
+              sourceAddress,
+              sourceTxHash,
+              targetTxTimestamp,
+              totalGuardiansNeeded,
+              VAAId: `${data.emitterChain}/${data.emitterAddress?.hex}/${data.sequence}`,
+            };
+          } catch (e) {
+            console.error("standard relayer tx errored:", e);
+          }
+        }
+        // ----
+
+        // Check NTT
         if (data?.content?.standarizedProperties?.appIds?.includes(NTT_APP_ID)) {
           const parsedPayload = data?.content?.payload?.nttMessage
             ? data?.content?.payload
@@ -444,9 +767,9 @@ const Tx = () => {
           if (!!parsedPayload?.nttMessage?.trimmedAmount?.amount) {
             const decimals = parsedPayload?.nttMessage?.trimmedAmount?.decimals;
 
-            const amount = String(
-              +parsedPayload?.nttMessage?.trimmedAmount?.amount / 10 ** decimals,
-            );
+            const amount = decimals
+              ? String(+parsedPayload?.nttMessage?.trimmedAmount?.amount / 10 ** decimals)
+              : null;
 
             data.content.payload = {
               ...data.content.payload,
@@ -479,49 +802,68 @@ const Tx = () => {
             }
           }
         }
-      }
+        // ----
 
-      // if there's no tokenAmount or symbol, try to get them with RPC info
-      for (const data of apiTxData) {
-        if (
-          (!data.data?.tokenAmount || !data.data?.symbol) &&
-          data.content.standarizedProperties?.tokenAddress &&
-          data.content.standarizedProperties?.tokenChain &&
-          (data.content?.payload?.amount || data.content.standarizedProperties?.amount)
-        ) {
-          const tokenInfo = await getTokenInformation(
-            data.content.standarizedProperties?.tokenChain,
-            environment,
-            data.content.standarizedProperties.tokenAddress,
-          );
+        // if there's no tokenAmount or symbol...
+        // ...check if its attestation...
+        if (data?.content?.payload?.payloadType === 2) {
+          if (data?.content?.payload?.symbol) {
+            data.data = {
+              symbol: `${data?.content?.payload?.symbol} (${data?.content?.payload?.name})`,
+              tokenAmount: "0",
+              usdAmount: "0",
+            };
+          }
+        }
+        // ...and if not try to get them with RPC info.
+        else {
+          if (
+            (!data.data?.tokenAmount || !data.data?.symbol) &&
+            data.content.standarizedProperties?.tokenAddress &&
+            data.content.standarizedProperties?.tokenChain &&
+            (data.content?.payload?.amount || data.content.standarizedProperties?.amount)
+          ) {
+            const tokenInfo = await getTokenInformation(
+              data.content.standarizedProperties?.tokenChain,
+              environment,
+              data.content.standarizedProperties.tokenAddress,
+            );
 
-          if (tokenInfo.symbol && tokenInfo.tokenDecimals) {
-            const amount =
-              data.content?.payload?.amount || data.content.standarizedProperties?.amount;
+            if (tokenInfo.symbol && tokenInfo.tokenDecimals) {
+              const amount =
+                data.content?.payload?.amount || data.content.standarizedProperties?.amount;
 
-            if (amount && tokenInfo.tokenDecimals) {
-              data.data = {
-                tokenAmount: "" + formatUnits(+amount, tokenInfo.tokenDecimals),
-                symbol: tokenInfo.symbol,
-                usdAmount: data?.data?.usdAmount || null,
-              };
+              const scaled =
+                tokenInfo.tokenDecimals > 8 && data.content?.payload?.amount
+                  ? +amount * 10 ** (tokenInfo.tokenDecimals - 8)
+                  : +amount;
+
+              if (amount && tokenInfo.tokenDecimals) {
+                data.data = {
+                  tokenAmount: "" + formatUnits(scaled, tokenInfo.tokenDecimals),
+                  symbol: tokenInfo.symbol,
+                  usdAmount: data?.data?.usdAmount || null,
+                };
+              }
             }
           }
         }
-      }
+        // ----
 
-      // try to get wrapped token address and symbol
-      let wrappedTokenChain = null;
-      for (const data of apiTxData) {
-        if (data?.content?.standarizedProperties?.appIds?.includes(PORTAL_APP_ID)) {
+        // try to get wrapped token address and symbol
+        if (
+          data?.content?.standarizedProperties?.appIds?.includes(PORTAL_APP_ID) ||
+          data?.content?.payload?.payloadType === 2
+        ) {
           if (
             data?.content?.standarizedProperties?.fromChain &&
             data?.content?.standarizedProperties?.tokenAddress &&
             data?.content?.standarizedProperties?.tokenChain &&
-            data?.content?.standarizedProperties?.toChain
+            (data?.content?.standarizedProperties?.toChain || data?.targetChain?.chainId)
           ) {
-            const { fromChain, tokenAddress, tokenChain, toChain } =
-              data.content.standarizedProperties;
+            const { fromChain, tokenAddress, tokenChain } = data.content.standarizedProperties;
+            const toChain =
+              data?.content?.standarizedProperties?.toChain || data?.targetChain?.chainId;
 
             const wrapped = tokenChain !== toChain ? "target" : "source";
 
@@ -558,10 +900,9 @@ const Tx = () => {
             }
           }
         }
-      }
+        // ----
 
-      // get algorand extra informations needed
-      for (const data of apiTxData) {
+        // get algorand extra informations needed
         if (
           data?.content?.standarizedProperties?.tokenChain === ChainId.Algorand &&
           data?.content?.standarizedProperties?.tokenAddress
@@ -576,10 +917,13 @@ const Tx = () => {
               tokenInfo.assetId ?? data.content.standarizedProperties.tokenAddress;
 
             if (tokenInfo.decimals && !data?.data?.tokenAmount && data?.content?.payload?.amount) {
-              data.data.tokenAmount = `${+data.content.payload.amount / 10 ** tokenInfo.decimals}`;
+              if (data.data)
+                data.data.tokenAmount = `${
+                  +data.content.payload.amount / 10 ** tokenInfo.decimals
+                }`;
             }
             if (tokenInfo.symbol && !data?.data?.symbol) {
-              data.data.symbol = tokenInfo.symbol;
+              if (data.data) data.data.symbol = tokenInfo.symbol;
             }
           }
         }
@@ -620,11 +964,13 @@ const Tx = () => {
             data.sourceChain.from = appId;
           }
         }
-      }
+        // ----
 
-      // check Eth Bridge
-      for (const data of apiTxData) {
-        if (data?.content?.standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID)) {
+        // check Portico
+        if (
+          data?.content?.standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID) ||
+          data?.content?.standarizedProperties?.appIds?.includes(USDT_TRANSFER_APP_ID)
+        ) {
           const porticoInfo = await getPorticoInfo(environment, data);
           if (porticoInfo) {
             const {
@@ -648,9 +994,6 @@ const Tx = () => {
               ?.standarizedProperties?.toChain as ChainId;
 
             data.content.payload.parsedPayload = parsedPayload;
-            if (!data.content.standarizedProperties.appIds.includes(ETH_BRIDGE_APP_ID)) {
-              data.content.standarizedProperties.appIds.push(ETH_BRIDGE_APP_ID);
-            }
 
             setShowSourceTokenUrl(shouldShowSourceTokenUrl);
             setShowTargetTokenUrl(shouldShowTargetTokenUrl);
@@ -665,10 +1008,9 @@ const Tx = () => {
             data.content.standarizedProperties.overwriteFee = formattedRelayerFee;
           }
         }
-      }
+        // ----
 
-      // track analytics on non-rpc and non-generic-relayer txs (those are tracked on other place)
-      for (const data of apiTxData) {
+        // track analytics on non-rpc txs (those are tracked on top)
         if (!data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID)) {
           const appIds = data?.content?.standarizedProperties?.appIds?.filter(a => a !== "UNKNOWN");
 
@@ -680,15 +1022,33 @@ const Tx = () => {
               network,
             }),
           });
+        } else if (relayerInfo) {
+          analytics.track("txDetail", {
+            appIds: [GR_APP_ID].join(", "),
+            chain: getChainName({
+              chainId: (relayerInfo?.sourceChainId as any)
+                ? (relayerInfo.sourceChainId as any)
+                : data.content?.standarizedProperties?.fromChain
+                ? data.content?.standarizedProperties?.fromChain
+                : 0,
+              network: network,
+            }),
+            toChain: getChainName({
+              chainId: relayerInfo?.targetTransaction?.targetChainId
+                ? relayerInfo.targetTransaction?.targetChainId
+                : data.content?.standarizedProperties?.toChain
+                ? data.content?.standarizedProperties?.toChain
+                : 0,
+              network: network,
+            }),
+          });
         }
-      }
+        // ----
 
-      // Add STATUS logic
-      for (const data of apiTxData) {
+        // Add STATUS logic
         const { fromChain, appIds } = data?.content?.standarizedProperties || {};
         const payloadType = data?.content?.payload?.payloadType;
         const isTransferWithPayload = payloadType === 3;
-        const vaa = data?.vaa?.raw;
 
         const isCCTP = appIds?.includes(CCTP_APP_ID);
         const isConnect = appIds?.includes(CONNECT_APP_ID);
@@ -705,6 +1065,16 @@ const Tx = () => {
           )?.length
         );
 
+        const limitDataForChain = chainLimitsData
+          ? chainLimitsData.find(
+              (d: ChainLimit) => d.chainId === data.content.standarizedProperties.fromChain,
+            )
+          : ETH_LIMIT;
+        const transactionLimit = limitDataForChain?.maxTransactionSize;
+        const isBigTransaction = transactionLimit <= Number(data?.data?.usdAmount);
+        const isDailyLimitExceeded =
+          limitDataForChain?.availableNotional < Number(data?.data?.usdAmount);
+
         const STATUS: IStatus = data?.targetChain?.transaction?.txHash
           ? "COMPLETED"
           : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
@@ -720,10 +1090,14 @@ const Tx = () => {
               ? "PENDING_REDEEM"
               : "VAA_EMITTED"
             : "VAA_EMITTED"
+          : isBigTransaction || isDailyLimitExceeded
+          ? "IN_GOVERNORS"
           : "IN_PROGRESS";
 
         data.STATUS = STATUS;
-        setIsInProgress(STATUS === "IN_PROGRESS");
+        data.isBigTransaction = isBigTransaction;
+        data.isDailyLimitExceeded = isDailyLimitExceeded;
+        data.transactionLimit = transactionLimit;
 
         if (STATUS === "IN_PROGRESS" && isEvmTxHash) {
           const timestamp = new Date(data?.sourceChain?.timestamp);
@@ -741,19 +1115,141 @@ const Tx = () => {
               });
           }
         }
+
+        // extra relayer logic
+        if (relayerInfo) {
+          // Check relayer txn: if it has a redeem txn, move status to completed.
+          if (relayerInfo?.targetTransaction?.targetTxHash && data && data.STATUS !== "COMPLETED") {
+            data.STATUS = "COMPLETED";
+            data.targetChain = {
+              ...data?.targetChain,
+              timestamp: new Date(relayerInfo?.targetTransaction?.targetTxTimestamp * 1000),
+              transaction: {
+                ...data?.targetChain?.transaction,
+                txHash: relayerInfo.targetTransaction.targetTxHash,
+              },
+            };
+          }
+
+          // set relayer info
+          data.relayerInfo = relayerInfo;
+        }
       }
 
       setTxData(apiTxData);
       setIsLoading(false);
+
+      // Arkham address info logic
+      const newAddressesInfo: any = {};
+
+      for (const data of apiTxData) {
+        const emitterChain = data?.emitterChain as ChainId;
+        const emitterAddress =
+          data?.emitterAddress?.native ||
+          tryHexToNativeString(data?.emitterAddress?.hex, "ethereum"); // ethereum means evm here.
+        const emitterInfo =
+          emitterAddress && ARKHAM_CHAIN_NAME[emitterChain]
+            ? await tryGetAddressInfo(network, emitterAddress)
+            : null;
+
+        const targetChain = (data?.targetChain?.chainId ||
+          data?.content?.standarizedProperties?.toChain) as ChainId;
+        const targetAddress = data?.content?.standarizedProperties?.toAddress;
+        const targetInfo =
+          targetAddress && ARKHAM_CHAIN_NAME[targetChain]
+            ? await tryGetAddressInfo(network, targetAddress)
+            : null;
+
+        const sourceChain = (data?.sourceChain?.chainId ||
+          data?.content?.standarizedProperties?.fromChain) as ChainId;
+        const sourceAddress =
+          data?.sourceChain?.from || data?.content?.standarizedProperties?.fromAddress;
+        const sourceInfo =
+          sourceAddress && ARKHAM_CHAIN_NAME[sourceChain]
+            ? await tryGetAddressInfo(network, sourceAddress)
+            : null;
+
+        newAddressesInfo[emitterAddress.toLowerCase()] = emitterInfo;
+        newAddressesInfo[targetAddress.toLowerCase()] = targetInfo;
+        newAddressesInfo[sourceAddress.toLowerCase()] = sourceInfo;
+
+        if (!!data.relayerInfo) {
+          const fromChain = data.content?.standarizedProperties?.fromChain;
+          const deliveryInstruction = data.relayerInfo.props.deliveryInstruction;
+          const refundChainId = deliveryInstruction.refundChainId;
+          const targetChainId = deliveryInstruction.targetChainId;
+
+          const {
+            deliveryParsedTargetAddress,
+            deliveryParsedRefundAddress,
+            deliveryParsedSourceProviderAddress,
+            parsedEmitterAddress,
+            deliveryParsedSenderAddress,
+          } = data.relayerInfo.props;
+
+          const deliveryParsedSenderAddressInfo =
+            deliveryParsedSenderAddress && fromChain && ARKHAM_CHAIN_NAME[fromChain as ChainId]
+              ? await tryGetAddressInfo(network, deliveryParsedSenderAddress)
+              : null;
+
+          const deliveryParsedTargetAddressInfo =
+            deliveryParsedTargetAddress &&
+            data.relayerInfo &&
+            ARKHAM_CHAIN_NAME[targetChainId as ChainId]
+              ? await tryGetAddressInfo(network, deliveryParsedTargetAddress)
+              : null;
+
+          const deliveryParsedRefundAddressInfo =
+            deliveryParsedRefundAddress &&
+            refundChainId &&
+            ARKHAM_CHAIN_NAME[refundChainId as ChainId]
+              ? await tryGetAddressInfo(network, deliveryParsedRefundAddress)
+              : null;
+
+          const deliveryParsedSourceProviderAddressInfo =
+            deliveryParsedSourceProviderAddress &&
+            targetChainId &&
+            ARKHAM_CHAIN_NAME[targetChainId as ChainId]
+              ? await tryGetAddressInfo(network, deliveryParsedSourceProviderAddress)
+              : null;
+
+          const parsedEmitterAddressInfo =
+            parsedEmitterAddress && fromChain && ARKHAM_CHAIN_NAME[fromChain as ChainId]
+              ? await tryGetAddressInfo(network, parsedEmitterAddress)
+              : null;
+
+          if (!newAddressesInfo[deliveryParsedTargetAddress.toLowerCase()]) {
+            newAddressesInfo[deliveryParsedTargetAddress.toLowerCase()] =
+              deliveryParsedTargetAddressInfo;
+          }
+          if (!newAddressesInfo[deliveryParsedRefundAddress.toLowerCase()]) {
+            newAddressesInfo[deliveryParsedRefundAddress.toLowerCase()] =
+              deliveryParsedRefundAddressInfo;
+          }
+          if (!newAddressesInfo[deliveryParsedSourceProviderAddress.toLowerCase()]) {
+            newAddressesInfo[deliveryParsedSourceProviderAddress.toLowerCase()] =
+              deliveryParsedSourceProviderAddressInfo;
+          }
+          if (!newAddressesInfo[parsedEmitterAddress.toLowerCase()]) {
+            newAddressesInfo[parsedEmitterAddress.toLowerCase()] = parsedEmitterAddressInfo;
+          }
+          if (!newAddressesInfo[deliveryParsedSenderAddress.toLowerCase()]) {
+            newAddressesInfo[deliveryParsedSenderAddress.toLowerCase()] =
+              deliveryParsedSenderAddressInfo;
+          }
+        }
+      }
+
+      setAddressesInfo(newAddressesInfo);
     },
     [
-      emitterChainId,
+      chainLimitsData,
       environment,
       isEvmTxHash,
       network,
+      setAddressesInfo,
       setShowSourceTokenUrl,
       setShowTargetTokenUrl,
-      tryToGetRpcInfo,
     ],
   );
 
@@ -787,7 +1283,7 @@ const Tx = () => {
           <>
             <Top
               txHash={VAADataTxHash ?? txData?.[0]?.sourceChain?.transaction?.txHash}
-              emitterChainId={emitterChainId}
+              emitterChainId={txData?.[0]?.emitterChain || txData?.[0]?.sourceChain?.chainId}
               gatewayInfo={txData?.[0]?.sourceChain?.attribute?.value}
               payloadType={txData?.[0]?.content?.payload?.payloadType}
             />
@@ -801,7 +1297,6 @@ const Tx = () => {
                     isRPC={isRPC}
                     blockData={blockData}
                     setTxData={newData => updateTxData(newData, i)}
-                    chainLimitsData={chainLimitsData}
                   />
                 ),
             )}

@@ -9,10 +9,12 @@ import BSC from "src/icons/tokens/BSC.svg";
 import BUSD from "src/icons/tokens/BUSD.svg";
 import CELO from "src/icons/tokens/CELO.svg";
 import DAI from "src/icons/tokens/DAI.svg";
+import DEXE from "src/icons/tokens/DEXE.svg";
 import ETH from "src/icons/tokens/ETH.svg";
 import EVMOS from "src/icons/tokens/EVMOS.svg";
 import FTM from "src/icons/tokens/FTM.svg";
 import GLMR from "src/icons/tokens/GLMR.svg";
+import HXRO from "src/icons/tokens/HXRO.svg";
 import IDIA from "src/icons/tokens/IDIA.svg";
 import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KUJI from "src/icons/tokens/KUJI.svg";
@@ -30,8 +32,10 @@ import tBTC from "src/icons/tokens/tBTC.svg";
 import TRUMP from "src/icons/tokens/TRUMP.webp";
 import USDC from "src/icons/tokens/USDC.svg";
 import USDT from "src/icons/tokens/USDT.svg";
+import W from "src/icons/tokens/W.svg";
 import WAVAX from "src/icons/tokens/WAVAX.svg";
 import WBTC from "src/icons/tokens/WBTC.svg";
+import WELL from "src/icons/tokens/WELL.svg";
 import WETH from "src/icons/tokens/WETH.svg";
 import WFTM from "src/icons/tokens/WFTM.svg";
 import WMATIC from "src/icons/tokens/WMATIC.svg";
@@ -50,10 +54,12 @@ const iconTokens = {
   BUSD,
   CELO,
   DAI,
+  DEXE,
   ETH,
   EVMOS,
   FTM,
   GLMR,
+  HXRO,
   IDIA,
   KLAY: KlaytnIcon,
   KUJI,
@@ -78,12 +84,14 @@ const iconTokens = {
   WAVAX,
   WBNB: BNB,
   WBTC,
+  WELL,
   WETH,
   WFTM,
   WGLMR: GLMR,
   WKLAY: KlaytnIcon,
   WMATIC,
   WSTETH,
+  W,
   wstETH: WSTETH,
 } as { [K in string]: SVGAElement };
 

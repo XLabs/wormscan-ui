@@ -6,19 +6,19 @@
 
   > thead {
     @include text-caption2;
+    background: var(--color-white-05);
+    color: var(--color-primary-50);
     font-size: 14px;
-
     height: 48px;
     text-align: left;
-    color: var(--color-primary-50);
-    background: var(--color-white-05);
 
     > tr {
       height: inherit;
 
       > th {
-        padding: 8px 12px;
         font-weight: 500;
+        padding: 8px 12px;
+        position: relative;
         white-space: nowrap;
 
         &:first-child {
@@ -43,6 +43,18 @@
 
         @include bigDesktop {
           padding: 8px 16px;
+        }
+
+        & .table-head-th-container {
+          @include centered-row;
+          justify-content: center;
+          gap: 4px;
+          line-height: 1;
+
+          &-arrow {
+            height: 18px;
+            width: 18px;
+          }
         }
       }
     }

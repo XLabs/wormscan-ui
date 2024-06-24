@@ -1,6 +1,4 @@
-import { ArrowDownIcon, CheckboxIcon, CopyIcon } from "@radix-ui/react-icons";
-import { Network } from "@certusone/wormhole-sdk";
-import { DeliveryInstruction } from "@certusone/wormhole-sdk/lib/cjs/relayer";
+import { ArrowRightIcon, CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import RelayIcon from "src/icons/relayIcon.svg";
@@ -13,37 +11,13 @@ import {
 import { formatDate } from "src/utils/date";
 import "../styles.scss";
 import { AutomaticRelayOutput } from "src/api/search/types";
-
-export type RelayerOverviewProps = {
-  budgetText: () => string;
-  copyBudgetText: () => string;
-  currentNetwork: Network;
-  decodeExecution: any;
-  deliveryAttempt: string;
-  deliveryInstruction: DeliveryInstruction;
-  deliveryParsedRefundAddress: string;
-  deliveryParsedRefundProviderAddress: string;
-  deliveryParsedSenderAddress: string;
-  deliveryParsedSourceProviderAddress: string;
-  deliveryParsedTargetAddress: string;
-  deliveryStatus: AutomaticRelayOutput;
-  fromChain: number;
-  gasUsed: number;
-  gasUsedText: () => string;
-  guardianSignaturesCount: number;
-  isDelivery: boolean;
-  maxRefundText: () => string;
-  parsedEmitterAddress: string;
-  parsedVaa: any;
-  receiverValueText: () => string;
-  refundStatus: string;
-  refundText: () => string;
-  resultLog: string;
-  sourceTxHash: string;
-  targetTxTimestamp: number;
-  totalGuardiansNeeded: number;
-  VAAId: string;
-};
+import { addressesInfoState } from "src/utils/recoilStates";
+import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
+import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
+import { ChainId } from "src/api";
+import { RelayerOverviewProps } from "src/utils/genericRelayerVaaUtils";
+import { useRecoilState } from "recoil";
+import { CHAIN_ID_GATEWAY } from "@certusone/wormhole-sdk";
 
 const RelayerOverview = ({
   budgetText,
@@ -63,6 +37,7 @@ const RelayerOverview = ({
   gasUsedText,
   guardianSignaturesCount,
   isDelivery,
+  isDuplicated,
   maxRefundText,
   parsedEmitterAddress,
   parsedVaa,
@@ -70,11 +45,14 @@ const RelayerOverview = ({
   refundStatus,
   refundText,
   resultLog,
+  sourceAddress,
   sourceTxHash,
   targetTxTimestamp,
   totalGuardiansNeeded,
   VAAId,
 }: RelayerOverviewProps) => {
+  const [addressesInfo] = useRecoilState(addressesInfoState);
+
   const renderDeliveryStatus = (deliveryStatus: AutomaticRelayOutput) => {
     return (
       <div className={`tx-overview-graph-step-data-container`}>
@@ -107,7 +85,18 @@ const RelayerOverview = ({
         </div>
         {deliveryStatus.data?.toTxHash && (
           <div>
-            <div className="tx-overview-graph-step-title">Target Tx Hash</div>
+            <div className="tx-overview-graph-step-title">
+              <Tooltip
+                maxWidth={false}
+                tooltip={<div>{formatDate(targetTxTimestamp * 1000)}</div>}
+                enableTooltip={!!targetTxTimestamp}
+                type="info"
+              >
+                <span style={{ cursor: targetTxTimestamp ? "pointer" : "default" }}>
+                  Target Tx Hash
+                </span>
+              </Tooltip>
+            </div>
             <div className="tx-overview-graph-step-description">
               <Tooltip
                 maxWidth={false}
@@ -133,14 +122,6 @@ const RelayerOverview = ({
             </div>
           </div>
         )}
-        {!!targetTxTimestamp && (
-          <div>
-            <div className="tx-overview-graph-step-title">Time</div>
-            <div className="tx-overview-graph-step-description">
-              {formatDate(targetTxTimestamp * 1000)}
-            </div>
-          </div>
-        )}
       </div>
     );
   };
@@ -150,7 +131,67 @@ const RelayerOverview = ({
       <div className="tx-overview-graph">
         <div className={`tx-overview-graph-step green source`}>
           <div className="tx-overview-graph-step-name">
-            <div>APP CONTRACT</div>
+            <div>SOURCE</div>
+          </div>
+          <div className="tx-overview-graph-step-iconWrapper">
+            {fromChain && (
+              <Tooltip
+                tooltip={<div>{getChainName({ chainId: fromChain, network: currentNetwork })}</div>}
+                type="info"
+              >
+                <div className="tx-overview-graph-step-iconContainer">
+                  <BlockchainIcon chainId={fromChain} network={currentNetwork} size={32} />
+                </div>
+              </Tooltip>
+            )}
+          </div>
+          <div className={`tx-overview-graph-step-data-container`}>
+            <div>
+              <div className="tx-overview-graph-step-title">Source Address</div>
+              <div className="tx-overview-graph-step-description">
+                <Tooltip
+                  maxWidth={false}
+                  tooltip={<div>{sourceAddress.toUpperCase()}</div>}
+                  type="info"
+                >
+                  <a
+                    href={getExplorerLink({
+                      network: currentNetwork,
+                      chainId: fromChain,
+                      value: sourceAddress,
+                      base: "address",
+                      isNativeAddress: true,
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {shortAddress(sourceAddress).toUpperCase()}
+                  </a>
+                </Tooltip>
+                <CopyToClipboard toCopy={sourceAddress}>
+                  <CopyIcon height={20} width={20} />
+                </CopyToClipboard>
+                {ARKHAM_CHAIN_NAME[fromChain as ChainId] &&
+                  addressesInfo?.[sourceAddress.toLowerCase()] && (
+                    <AddressInfoTooltip
+                      info={addressesInfo[sourceAddress.toLowerCase()]}
+                      chain={fromChain}
+                    />
+                  )}
+              </div>
+            </div>
+            <div>
+              <div className="tx-overview-graph-step-title">Time</div>
+              <div className="tx-overview-graph-step-description">
+                {formatDate(parsedVaa.timestamp * 1000)}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className={`tx-overview-graph-step green source`}>
+          <div className="tx-overview-graph-step-name">
+            <div>SOURCE APP CONTRACT</div>
           </div>
           <div className="tx-overview-graph-step-iconWrapper">
             {fromChain && (
@@ -191,50 +232,14 @@ const RelayerOverview = ({
                   <CopyToClipboard toCopy={deliveryParsedSenderAddress}>
                     <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
+                  {ARKHAM_CHAIN_NAME[fromChain as ChainId] &&
+                    addressesInfo?.[deliveryParsedSenderAddress.toLowerCase()] && (
+                      <AddressInfoTooltip
+                        info={addressesInfo[deliveryParsedSenderAddress.toLowerCase()]}
+                        chain={fromChain}
+                      />
+                    )}
                 </div>
-                <div>
-                  (
-                  {fromChain &&
-                    getChainName({
-                      chainId: fromChain,
-                      acronym: true,
-                      network: currentNetwork,
-                    }).toUpperCase()}
-                  )
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className="tx-overview-graph-step-title">Source Tx Hash</div>
-              <div className="tx-overview-graph-step-description">
-                <Tooltip
-                  maxWidth={false}
-                  tooltip={<div>{sourceTxHash.toUpperCase()}</div>}
-                  type="info"
-                >
-                  <a
-                    href={getExplorerLink({
-                      network: currentNetwork,
-                      chainId: fromChain,
-                      value: sourceTxHash,
-                      base: "tx",
-                      isNativeAddress: true,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {shortAddress(sourceTxHash).toUpperCase()}
-                  </a>
-                </Tooltip>
-                <CopyToClipboard toCopy={sourceTxHash}>
-                  <CopyIcon height={20} width={20} />
-                </CopyToClipboard>
-              </div>
-            </div>
-            <div>
-              <div className="tx-overview-graph-step-title">Time</div>
-              <div className="tx-overview-graph-step-description">
-                {formatDate(parsedVaa.timestamp * 1000)}
               </div>
             </div>
           </div>
@@ -242,18 +247,13 @@ const RelayerOverview = ({
 
         <div className="tx-overview-graph-step green">
           <div className="tx-overview-graph-step-name">
-            <div>AUTOMATIC RELAYER CONTRACT</div>
+            <div>STANDARD RELAYER CONTRACT</div>
           </div>
           <div className="tx-overview-graph-step-iconWrapper">
             {fromChain && (
-              <Tooltip
-                tooltip={<div>{getChainName({ chainId: fromChain, network: currentNetwork })}</div>}
-                type="info"
-              >
-                <div className="tx-overview-graph-step-iconContainer">
-                  <BlockchainIcon chainId={fromChain} network={currentNetwork} size={32} />
-                </div>
-              </Tooltip>
+              <div className="tx-overview-graph-step-iconContainer">
+                <BlockchainIcon chainId={CHAIN_ID_GATEWAY} network={currentNetwork} size={32} />
+              </div>
             )}
           </div>
           <div className="tx-overview-graph-step-data-container">
@@ -283,73 +283,172 @@ const RelayerOverview = ({
                   <CopyToClipboard toCopy={parsedEmitterAddress}>
                     <CopyIcon height={20} width={20} />
                   </CopyToClipboard>
-                </div>
-                <div>
-                  (
-                  {fromChain &&
-                    getChainName({
-                      chainId: fromChain,
-                      acronym: true,
-                      network: currentNetwork,
-                    }).toUpperCase()}
-                  )
+                  {addressesInfo?.[parsedEmitterAddress.toLowerCase()] && (
+                    <AddressInfoTooltip
+                      info={addressesInfo[parsedEmitterAddress.toLowerCase()]}
+                      chain={fromChain}
+                    />
+                  )}
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className={`tx-overview-graph-step signatures green`}>
-          <div className="tx-overview-graph-step-name">
-            <div>SIGNED VAA</div>
-          </div>
-          <div className="tx-overview-graph-step-iconWrapper">
-            <div className="tx-overview-graph-step-iconContainer">
-              <CheckboxIcon height={24} width={24} />
-            </div>
-          </div>
-
-          <div className="tx-overview-graph-step-data-container signatures">
             <div>
-              <div className="tx-overview-graph-step-title">Signatures</div>
-              <div className="tx-overview-graph-step-description">
-                {guardianSignaturesCount} / {totalGuardiansNeeded}
+              <div className="tx-overview-graph-step-title">
+                VAA ID
+                {isDuplicated && (
+                  <Tooltip tooltip={<div>VAA ID duplicated</div>} type="info">
+                    <InfoCircledIcon />
+                  </Tooltip>
+                )}
               </div>
-            </div>
-            <div>
-              <div className="tx-overview-graph-step-title">VAA ID</div>
               <div className="tx-overview-graph-step-description">
-                <Tooltip maxWidth={false} tooltip={<div>{VAAId}</div>} type="info">
-                  <p>{shortVaaId(VAAId)}</p>
+                <Tooltip
+                  maxWidth={false}
+                  tooltip={
+                    <div style={{ textAlign: "center" }}>
+                      <p>{VAAId}</p>
+                      <p>
+                        Signatures: {guardianSignaturesCount} / {totalGuardiansNeeded}
+                      </p>
+                      <p>{formatDate(deliveryStatus?.receivedAt)}</p>
+                    </div>
+                  }
+                  type="info"
+                >
+                  <p style={{ cursor: "pointer" }}>{shortVaaId(VAAId)}</p>
                 </Tooltip>
                 <CopyToClipboard toCopy={VAAId}>
                   <CopyIcon height={20} width={20} />
                 </CopyToClipboard>
               </div>
             </div>
-            {deliveryStatus?.receivedAt && (
-              <div>
-                <div className="tx-overview-graph-step-title">Time</div>
-                <div className="tx-overview-graph-step-description">
-                  {formatDate(deliveryStatus?.receivedAt)}
-                </div>
-              </div>
-            )}
           </div>
         </div>
+
+        {deliveryParsedRefundAddress !== deliveryParsedTargetAddress && (
+          <div className="tx-overview-graph-step green">
+            <div className="tx-overview-graph-step-name">
+              <div>
+                <span>REFUND</span> <span>INSTRUCTIONS</span>
+              </div>
+            </div>
+            <div className="tx-overview-graph-step-iconWrapper">
+              <Tooltip
+                tooltip={
+                  <div>
+                    {getChainName({
+                      chainId: deliveryInstruction.refundChainId,
+                      network: currentNetwork,
+                    })}
+                  </div>
+                }
+                type="info"
+              >
+                <div className="tx-overview-graph-step-iconContainer">
+                  <BlockchainIcon
+                    chainId={deliveryInstruction.refundChainId}
+                    network={currentNetwork}
+                    size={32}
+                  />
+                </div>
+              </Tooltip>
+            </div>
+            <div className="tx-overview-graph-step-data-container">
+              <div>
+                <div className="tx-overview-graph-step-title">Refund Address</div>
+                <div className="tx-overview-graph-step-description">
+                  <Tooltip
+                    maxWidth={false}
+                    tooltip={<div>{deliveryParsedRefundAddress.toUpperCase()}</div>}
+                    type="info"
+                  >
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: deliveryInstruction.refundChainId,
+                        value: deliveryParsedRefundAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {shortAddress(deliveryParsedRefundAddress).toUpperCase()}
+                    </a>
+                  </Tooltip>
+                  <CopyToClipboard toCopy={deliveryParsedRefundAddress}>
+                    <CopyIcon height={20} width={20} />
+                  </CopyToClipboard>
+                  {addressesInfo?.[deliveryParsedRefundAddress.toLowerCase()] && (
+                    <AddressInfoTooltip
+                      info={addressesInfo[deliveryParsedRefundAddress.toLowerCase()]}
+                      chain={deliveryInstruction.refundChainId}
+                    />
+                  )}
+                </div>
+              </div>
+              {deliveryParsedRefundProviderAddress.toLowerCase() !==
+                testnetDefaultDeliveryProviderContractAddress.toLowerCase() &&
+                deliveryParsedRefundProviderAddress.toLowerCase() !==
+                  mainnetDefaultDeliveryProviderContractAddress.toLowerCase() && (
+                  <div>
+                    <div className="tx-overview-graph-step-title">Refund Provider</div>
+                    <div className="tx-overview-graph-step-description">
+                      <Tooltip
+                        maxWidth={false}
+                        tooltip={<div>{deliveryParsedRefundProviderAddress.toUpperCase()}</div>}
+                        type="info"
+                      >
+                        <a
+                          href={getExplorerLink({
+                            network: currentNetwork,
+                            chainId: deliveryInstruction.refundChainId,
+                            value: deliveryParsedRefundProviderAddress,
+                            base: "address",
+                            isNativeAddress: true,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {shortAddress(deliveryParsedRefundProviderAddress).toUpperCase()}
+                        </a>
+                      </Tooltip>
+                      <CopyToClipboard toCopy={deliveryParsedRefundProviderAddress}>
+                        <CopyIcon height={20} width={20} />
+                      </CopyToClipboard>
+                    </div>
+                  </div>
+                )}
+            </div>
+          </div>
+        )}
 
         {isDelivery && (
           <>
             <div className="tx-overview-graph-step green">
               <div className="tx-overview-graph-step-name">
-                <div>
-                  <span>VAA</span> <span>DELIVERY</span> <span>INSTRUCTIONS</span>
-                </div>
+                <div>DELIVERY INSTRUCTIONS</div>
               </div>
               <div className="tx-overview-graph-step-iconWrapper">
-                <div className="tx-overview-graph-step-iconContainer">
-                  <ArrowDownIcon height={24} width={24} />
-                </div>
+                <Tooltip
+                  tooltip={
+                    <div>
+                      {getChainName({
+                        chainId: deliveryInstruction.targetChainId,
+                        network: currentNetwork,
+                      })}
+                    </div>
+                  }
+                  type="info"
+                >
+                  <div className="tx-overview-graph-step-iconContainer">
+                    <BlockchainIcon
+                      chainId={deliveryInstruction.targetChainId}
+                      network={currentNetwork}
+                      size={32}
+                    />
+                  </div>
+                </Tooltip>
               </div>
               <div className="tx-overview-graph-step-data-container">
                 <div>
@@ -378,15 +477,13 @@ const RelayerOverview = ({
                       <CopyToClipboard toCopy={deliveryParsedTargetAddress}>
                         <CopyIcon height={20} width={20} />
                       </CopyToClipboard>
-                    </div>
-                    <div className="tx-overview-graph-step-description">
-                      (
-                      {getChainName({
-                        chainId: deliveryInstruction.targetChainId,
-                        acronym: true,
-                        network: currentNetwork,
-                      }).toUpperCase()}
-                      )
+                      {ARKHAM_CHAIN_NAME[deliveryInstruction.targetChainId as ChainId] &&
+                        addressesInfo?.[deliveryParsedTargetAddress.toLowerCase()] && (
+                          <AddressInfoTooltip
+                            info={addressesInfo[deliveryParsedTargetAddress.toLowerCase()]}
+                            chain={deliveryInstruction.targetChainId}
+                          />
+                        )}
                     </div>
                   </div>
                 </div>
@@ -420,184 +517,26 @@ const RelayerOverview = ({
                     <CopyToClipboard toCopy={deliveryParsedSourceProviderAddress}>
                       <CopyIcon height={20} width={20} />
                     </CopyToClipboard>
+                    {addressesInfo?.[deliveryParsedSourceProviderAddress.toLowerCase()] && (
+                      <AddressInfoTooltip
+                        info={addressesInfo[deliveryParsedSourceProviderAddress.toLowerCase()]}
+                        chain={deliveryInstruction.targetChainId}
+                      />
+                    )}
                   </div>
                 </div>
-                {deliveryStatus ? (
-                  <Tooltip
-                    tooltip={
-                      <div className="budget-tooltip">
-                        <div className="budget-tooltip-title">Max Refund:</div>
-                        <div>{maxRefundText()}</div>
-
-                        {decodeExecution && gasUsedText() && (
-                          <>
-                            <div className="budget-tooltip-title">
-                              {isNaN(gasUsed) ? "Gas Limit" : "Gas Used/Gas Limit"}
-                            </div>
-                            <div>{gasUsedText()}</div>
-                          </>
-                        )}
-
-                        {!isNaN(gasUsed) && (
-                          <>
-                            <div className="budget-tooltip-title">Refund amount:</div>
-                            <div>{refundText()}</div>
-                          </>
-                        )}
-
-                        <div className="budget-tooltip-title">Receiver Value:</div>
-                        <div>{receiverValueText()}</div>
-                      </div>
-                    }
-                    side="bottom"
-                  >
-                    <div
-                      style={{
-                        cursor: "pointer",
-                        backgroundColor: "#ddddff05",
-                        borderRadius: 6,
-                      }}
-                    >
-                      <div className="tx-overview-graph-step-title budget-copy">
-                        <div>Budget</div>
-                        <CopyToClipboard toCopy={copyBudgetText()}>
-                          <CopyIcon height={20} width={20} />
-                        </CopyToClipboard>
-                      </div>
-
-                      <div className="tx-overview-graph-step-description">
-                        <div>{budgetText()}</div>
-                      </div>
-                    </div>
-                  </Tooltip>
-                ) : null}
               </div>
             </div>
-
-            {deliveryParsedRefundAddress !== deliveryParsedTargetAddress && (
-              <div className="tx-overview-graph-step green">
-                <div className="tx-overview-graph-step-name">
-                  <div></div>
-                </div>
-                <div className="tx-overview-graph-step-iconWrapper">
-                  <Tooltip
-                    tooltip={
-                      <div>
-                        {getChainName({
-                          chainId: deliveryInstruction.refundChainId,
-                          network: currentNetwork,
-                        })}
-                      </div>
-                    }
-                    type="info"
-                  >
-                    <div className="tx-overview-graph-step-iconContainer">
-                      <BlockchainIcon
-                        chainId={deliveryInstruction.refundChainId}
-                        network={currentNetwork}
-                        size={32}
-                      />
-                    </div>
-                  </Tooltip>
-                </div>
-                <div className="tx-overview-graph-step-data-container">
-                  <div>
-                    <div className="tx-overview-graph-step-title">Refund Address</div>
-                    <div className="tx-overview-graph-step-description">
-                      <Tooltip
-                        maxWidth={false}
-                        tooltip={<div>{deliveryParsedRefundAddress.toUpperCase()}</div>}
-                        type="info"
-                      >
-                        <a
-                          href={getExplorerLink({
-                            network: currentNetwork,
-                            chainId: deliveryInstruction.refundChainId,
-                            value: deliveryParsedRefundAddress,
-                            base: "address",
-                            isNativeAddress: true,
-                          })}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {shortAddress(deliveryParsedRefundAddress).toUpperCase()}
-                        </a>
-                      </Tooltip>
-                      <CopyToClipboard toCopy={deliveryParsedRefundAddress}>
-                        <CopyIcon height={20} width={20} />
-                      </CopyToClipboard>
-                      <div className="tx-overview-graph-step-description">
-                        (
-                        {getChainName({
-                          chainId: deliveryInstruction.refundChainId,
-                          acronym: true,
-                          network: currentNetwork,
-                        }).toUpperCase()}
-                        )
-                      </div>
-                    </div>
-                  </div>
-                  {deliveryParsedRefundProviderAddress.toLowerCase() !==
-                    testnetDefaultDeliveryProviderContractAddress.toLowerCase() &&
-                    deliveryParsedRefundProviderAddress.toLowerCase() !==
-                      mainnetDefaultDeliveryProviderContractAddress.toLowerCase() && (
-                      <div>
-                        <div className="tx-overview-graph-step-title">Refund Provider</div>
-                        <div className="tx-overview-graph-step-description">
-                          <Tooltip
-                            maxWidth={false}
-                            tooltip={<div>{deliveryParsedRefundProviderAddress.toUpperCase()}</div>}
-                            type="info"
-                          >
-                            <a
-                              href={getExplorerLink({
-                                network: currentNetwork,
-                                chainId: deliveryInstruction.refundChainId,
-                                value: deliveryParsedRefundProviderAddress,
-                                base: "address",
-                                isNativeAddress: true,
-                              })}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {shortAddress(deliveryParsedRefundProviderAddress).toUpperCase()}
-                            </a>
-                          </Tooltip>
-                          <CopyToClipboard toCopy={deliveryParsedRefundProviderAddress}>
-                            <CopyIcon height={20} width={20} />
-                          </CopyToClipboard>
-                        </div>
-                      </div>
-                    )}
-                </div>
-              </div>
-            )}
 
             {deliveryStatus && (
               <div className={`tx-overview-graph-step green source`}>
                 <div className="tx-overview-graph-step-name">
-                  <div>DELIVERY STATUS</div>
+                  <div>RELAY STATUS</div>
                 </div>
                 <div className="tx-overview-graph-step-iconWrapper">
-                  <Tooltip
-                    tooltip={
-                      <div>
-                        {getChainName({
-                          chainId: deliveryInstruction.targetChainId,
-                          network: currentNetwork,
-                        })}
-                      </div>
-                    }
-                    type="info"
-                  >
-                    <div className="tx-overview-graph-step-iconContainer">
-                      <BlockchainIcon
-                        chainId={deliveryInstruction.targetChainId}
-                        network={currentNetwork}
-                        size={32}
-                      />
-                    </div>
-                  </Tooltip>
+                  <div className="tx-overview-graph-step-iconContainer">
+                    <ArrowRightIcon height={24} width={24} />
+                  </div>
                 </div>
 
                 {deliveryStatus.status === "failed" && (

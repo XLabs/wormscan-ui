@@ -32,7 +32,6 @@
 
   &-top {
     @include centered-column;
-
     column-gap: 24px;
 
     @include desktop {
@@ -40,19 +39,27 @@
       justify-content: space-between;
     }
 
-    &-title {
+    &-buttons {
       @include centered-row;
       @include text-p3;
-
-      font-weight: 600;
-      color: var(--color-primary-100);
-      min-height: 50px;
       border-bottom: 1px solid var(--color-white-10);
+      gap: 16px;
+      justify-content: space-between;
+      min-height: 50px;
       padding: 12px 16px;
 
       @include desktop {
         border-bottom: none;
+        gap: 32px;
         padding: 12px 32px;
+      }
+
+      &-live-mode {
+        @include text-p3;
+        color: var(--color-primary-100);
+        font-weight: 600;
+        gap: 32px;
+        width: 145px;
       }
     }
 
@@ -113,6 +120,36 @@
           @include centered-row;
 
           gap: 12px;
+        }
+      }
+
+      .tx-flow {
+        @include centered-column;
+        align-items: center;
+        border-radius: 5px;
+        border: 1px solid transparent;
+        font-size: 10px;
+        font-weight: 600;
+        height: 24px;
+        margin: auto;
+        width: 40px;
+
+        &-in {
+          background-color: var(--color-success-10);
+          border-color: var(--color-success-20);
+          color: var(--color-success-100);
+        }
+
+        &-out {
+          background-color: var(--color-alert-10);
+          border-color: var(--color-alert-20);
+          color: var(--color-alert-100);
+        }
+
+        &-self {
+          background-color: var(--color-white-10);
+          border-color: var(--color-white-20);
+          color: var(--color-white);
         }
       }
     }

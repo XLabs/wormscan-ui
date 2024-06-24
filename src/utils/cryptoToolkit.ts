@@ -1,5 +1,6 @@
 import { ChainId, Network } from "@certusone/wormhole-sdk";
 import { fetchWithTimeout } from "./asyncUtils";
+import { IArkhamResponse } from "./arkham";
 
 interface IWrappedResponse {
   wrappedToken: string;
@@ -17,7 +18,37 @@ interface IAlgorandTokenResponse {
   symbol?: string;
 }
 
+interface ISolanaCctpResponse {
+  amount: string;
+  contractAddress: string;
+  destinationDomain: number;
+  sourceAddress: string;
+  sourceTokenAddress: string;
+  targetAddress: string;
+  timestamp: Date;
+}
+
 const BFF_URL = process.env.WORMSCAN_BFF_URL;
+
+export const tryGetAddressInfo = async (
+  network: Network,
+  address: string,
+): Promise<IArkhamResponse> => {
+  try {
+    const addressInfoResp = await fetch(
+      `${BFF_URL}/getAddressInfo?network=${network}&address=${address}`,
+    );
+
+    if (!addressInfoResp.ok) {
+      return null;
+    }
+
+    const addressInfo = (await addressInfoResp.json()) as IArkhamResponse;
+    return addressInfo ? addressInfo : null;
+  } catch (e) {
+    return null;
+  }
+};
 
 export const tryGetRedeemTxn = async (
   network: Network,
@@ -71,6 +102,19 @@ export const getAlgorandTokenInfo = async (network: Network, tokenAddress: strin
 
     const algoTokenResponse = (await algoTokenRequest.json()) as IAlgorandTokenResponse | null;
     return algoTokenResponse;
+  } catch (e) {
+    return null;
+  }
+};
+
+export const getSolanaCctp = async (network: Network, txHash: string) => {
+  try {
+    const solanaCctpRequest = await fetchWithTimeout(
+      `${BFF_URL}/getSolanaCctp?network=${network}&txHash=${txHash}`,
+    );
+
+    const solanaCctpResponse = (await solanaCctpRequest.json()) as ISolanaCctpResponse | null;
+    return solanaCctpResponse;
   } catch (e) {
     return null;
   }

@@ -4,7 +4,6 @@ import { Loader } from "src/components/atoms";
 import { TermsOfUseBanner } from "src/components/molecules";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { EnvironmentProvider } from "src/context/EnvironmentContext";
-import { ScrollControl } from "src/utils/scrollControl";
 import { AnalyticsLinkTracker } from "src/utils/analyticsLinkTracker";
 import ErrorBoundary from "src/utils/errorBoundary";
 
@@ -15,11 +14,11 @@ const TermsOfUse = lazy(() => import("../pages/TermsOfUse"));
 const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 const VaaParser = lazy(() => import("../pages/VaaParser"));
+const Governor = lazy(() => import("../pages/Governor"));
 
 const Navigation = () => {
   return (
     <Router>
-      <ScrollControl />
       <AnalyticsLinkTracker>
         <EnvironmentProvider>
           <ErrorBoundary>
@@ -40,6 +39,7 @@ const Navigation = () => {
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/vaa-parser" element={<VaaParser />} />
                 <Route path="/vaa-parser/*" element={<VaaParser />} />
+                <Route path="/governor" element={<Governor />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

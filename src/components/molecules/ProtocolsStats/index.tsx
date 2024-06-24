@@ -13,6 +13,8 @@ import { formatNumber } from "src/utils/number";
 import { getClient } from "src/api/Client";
 import { ProtocolName, ProtocolsStatsOutput } from "src/api/guardian-network/types";
 import "./styles.scss";
+import analytics from "src/analytics";
+import { useEnvironment } from "src/context/EnvironmentContext";
 
 const protocolIcons: Record<ProtocolName, string> = {
   allbridge: allBridgeIcon,
@@ -39,6 +41,8 @@ const protocolLinks: Record<ProtocolName, string> = {
 };
 
 const ProtocolsStats = () => {
+  const { environment } = useEnvironment();
+
   const [protocolSelected, setProtocolSelected] = useState<ProtocolsStatsOutput>();
   const [sortedData, setSortedData] = useState<ProtocolsStatsOutput[]>([]);
 
@@ -61,6 +65,10 @@ const ProtocolsStats = () => {
 
   const handleClick = (item: ProtocolsStatsOutput) => {
     setProtocolSelected(item);
+    analytics.track("featuredProtocols", {
+      selected: item.protocol,
+      network: environment.network,
+    });
   };
 
   return (
@@ -77,22 +85,26 @@ const ProtocolsStats = () => {
       ) : (
         <div className="protocols-stats-container">
           <div className="protocols-stats-container-list">
-            {sortedData?.map((item: ProtocolsStatsOutput) => (
-              <button
-                key={item.protocol}
-                className={`protocols-stats-container-list-item ${
-                  protocolSelected?.protocol === item.protocol ? "active" : ""
-                }`}
-                onClick={() => handleClick(item)}
-              >
-                <div className="protocols-stats-container-list-item-logo">
-                  <img src={protocolIcons[item.protocol]} alt={item.protocol} />
-                </div>
-                <div className="protocols-stats-container-list-item-name">
-                  {protocolNames[item.protocol]}
-                </div>
-              </button>
-            ))}
+            {sortedData?.map((item: ProtocolsStatsOutput) => {
+              if (!protocolNames[item?.protocol]) return null;
+
+              return (
+                <button
+                  key={item.protocol}
+                  className={`protocols-stats-container-list-item ${
+                    protocolSelected?.protocol === item.protocol ? "active" : ""
+                  }`}
+                  onClick={() => handleClick(item)}
+                >
+                  <div className="protocols-stats-container-list-item-logo">
+                    <img src={protocolIcons[item.protocol]} alt={item.protocol} />
+                  </div>
+                  <div className="protocols-stats-container-list-item-name">
+                    {protocolNames[item.protocol]}
+                  </div>
+                </button>
+              );
+            })}
           </div>
           <div className="protocols-stats-container-info">
             <a

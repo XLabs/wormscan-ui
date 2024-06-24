@@ -7,6 +7,7 @@ import {
   CHAIN_ID_ETH,
   CHAIN_ID_OPTIMISM,
   CHAIN_ID_POLYGON,
+  CHAIN_ID_XLAYER,
   ChainId,
   ChainName,
   Network,
@@ -22,6 +23,7 @@ export const SLOW_FINALITY_CHAINS = [
   CHAIN_ID_AVAX,
   CHAIN_ID_BASE,
   CHAIN_ID_CELO,
+  CHAIN_ID_XLAYER,
 ];
 
 const MAINNET_RPCS: { [key in ChainName]?: string } = {
@@ -29,25 +31,29 @@ const MAINNET_RPCS: { [key in ChainName]?: string } = {
   algorand: "https://mainnet-api.algonode.cloud",
   aptos: "https://fullnode.mainnet.aptoslabs.com/",
   arbitrum: "https://arb1.arbitrum.io/rpc",
-  avalanche: "https://rpc.ankr.com/avalanche",
+  avalanche: "https://api.avax.network/ext/bc/C/rpc",
   base: "https://mainnet.base.org",
+  blast: "https://rpc.ankr.com/blast",
   bsc: process.env.BSC_RPC || "https://bsc-dataseed2.defibit.io",
   celo: "https://forno.celo.org",
-  ethereum: process.env.ETH_RPC || "https://rpc.ankr.com/eth",
+  ethereum: process.env.ETH_RPC || "https://ethereum-rpc.publicnode.com",
   fantom: "https://rpc.ankr.com/fantom",
   injective: "https://api.injective.network",
   karura: "https://eth-rpc-karura.aca-api.network",
   klaytn: "https://klaytn-mainnet-rpc.allthatnode.com:8551",
   moonbeam: "https://rpc.ankr.com/moonbeam",
+  mantle: "https://rpc.mantle.xyz",
   near: "https://rpc.mainnet.near.org",
   oasis: "https://emerald.oasis.dev",
-  optimism: "https://rpc.ankr.com/optimism",
-  polygon: "https://rpc.ankr.com/polygon",
+  optimism: "https://endpoints.omniatech.io/v1/op/mainnet/public",
+  polygon: "https://1rpc.io/matic",
+  scroll: "https://rpc.ankr.com/scroll",
   solana: process.env.SOLANA_RPC ?? "https://api.mainnet-beta.solana.com",
   sui: "https://rpc.mainnet.sui.io",
   terra: "https://terra-classic-fcd.publicnode.com",
-  terra2: "https://phoenix-lcd.terra.dev",
+  terra2: "https://lcd-terra.tfl.foundation",
   xpla: "https://dimension-lcd.xpla.dev",
+  xlayer: "https://xlayerrpc.okx.com",
 };
 
 const TESTNET_RPCS: { [key in ChainName]?: string } = {
@@ -59,11 +65,16 @@ const TESTNET_RPCS: { [key in ChainName]?: string } = {
   bsc: "https://data-seed-prebsc-2-s3.binance.org:8545",
   celo: "https://alfajores-forno.celo-testnet.org",
   ethereum: "https://rpc.ankr.com/eth_goerli",
+  fantom: "https://rpc.testnet.fantom.network",
+  mantle: "https://rpc.testnet.mantle.xyz",
   moonbeam: "https://rpc.api.moonbase.moonbeam.network",
   sepolia: "https://ethereum-sepolia.publicnode.com",
   optimism: "https://goerli.optimism.io",
   optimism_sepolia: "https://sepolia.optimism.io",
   polygon: "https://rpc.ankr.com/polygon_mumbai",
+  scroll: "https://rpc.ankr.com/scroll_sepolia_testnet",
+  blast: "https://sepolia.blast.io",
+  xlayer: "https://xlayertestrpc.okx.com",
 };
 
 export type Environment = {
@@ -169,6 +180,16 @@ export const testnetEnv: Environment = {
       rpcUrl: TESTNET_RPCS.avalanche || "",
     },
     {
+      chainId: 10 as ChainId,
+      chainName: "Fantom",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 4002,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "FTM",
+      relayerContractAddress: "", // TODO: ADD
+      rpcUrl: TESTNET_RPCS.fantom || "",
+    },
+    {
       chainId: 14 as ChainId,
       chainName: "Celo - Alfajores",
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
@@ -217,6 +238,46 @@ export const testnetEnv: Environment = {
       nativeCurrencyName: "ETH",
       relayerContractAddress: "0x01A957A525a5b7A72808bA9D10c389674E459891",
       rpcUrl: TESTNET_RPCS.optimism || "",
+    },
+    {
+      chainId: 34 as ChainId,
+      chainName: "SCROLL",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 534351,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: TESTNET_RPCS.scroll || "",
+    },
+    {
+      chainId: 36 as ChainId,
+      chainName: "BLAST",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 23888,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: TESTNET_RPCS.blast || "",
+    },
+    {
+      chainId: 37 as ChainId,
+      chainName: "XLayer",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 195,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "OKB",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: TESTNET_RPCS.xlayer || "",
+    },
+    {
+      chainId: 35 as ChainId,
+      chainName: "Mantle",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 5001,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "MNT",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: TESTNET_RPCS.mantle || "",
     },
   ],
   guardianRpcs: ["https://wormhole-v2-testnet-api.certus.one"],
@@ -347,6 +408,46 @@ export const mainnetEnv: Environment = {
       nativeCurrencyName: "ETH",
       relayerContractAddress: "0x706f82e9bb5b0813501714ab5974216704980e31",
       rpcUrl: MAINNET_RPCS.base || "",
+    },
+    {
+      chainId: 34 as ChainId,
+      chainName: "SCROLL",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 534352,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: MAINNET_RPCS.scroll || "",
+    },
+    {
+      chainId: 35 as ChainId,
+      chainName: "Mantle",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 5000,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "MNT",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: MAINNET_RPCS.mantle || "",
+    },
+    {
+      chainId: 36 as ChainId,
+      chainName: "BLAST",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 81457,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: MAINNET_RPCS.blast || "",
+    },
+    {
+      chainId: 37 as ChainId,
+      chainName: "XLayer",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 196,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "OKB",
+      relayerContractAddress: "", // TODO: ADD WHEN EXISTS
+      rpcUrl: MAINNET_RPCS.xlayer || "",
     },
   ],
   guardianRpcs: [

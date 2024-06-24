@@ -10,8 +10,11 @@ const JoinUs = () => {
     <section className="home-join">
       <div className="home-join-text-container">
         <div className="home-join-text">
-          {t("home.join.initText")}
-          <span> {t("home.join.endText")}</span>
+          <p>{t("home.join.initText")}</p>
+          <p>
+            {t("home.join.secondText")}
+            <span className="home-join-text-secondary"> {t("home.join.endText")}</span>
+          </p>
         </div>
         <a
           aria-label="Discord link"
@@ -24,6 +27,9 @@ const JoinUs = () => {
           <DiscordIcon /> {t("home.join.discord")}
         </a>
       </div>
+
+      <div className="home-join-bg-white" />
+      <div className="home-join-bg-secondary" />
     </section>
   );
 };

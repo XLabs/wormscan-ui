@@ -78,7 +78,7 @@ const Header = () => {
 
   const NavLinkItem = ({ to, label }: NavLinkItemProps) => (
     <div className="header-navigation-item">
-      <NavLink to={to} onClick={hideMobileMenu}>
+      <NavLink to={to} onClick={hideMobileMenu} aria-label={label}>
         {label}
       </NavLink>
     </div>
@@ -86,7 +86,7 @@ const Header = () => {
 
   const ExternalLinkItem = ({ href, label, children }: ExternalLinkItemProps) => (
     <div className="header-navigation-item">
-      <a href={href} target="_blank" rel="noopener noreferrer">
+      <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
         {label}
       </a>
       {children}
@@ -97,6 +97,7 @@ const Header = () => {
     <nav data-testid="header-nav">
       {isMobile && <NavLinkItem to="/" label={t("home.footer.home")} />}
       <NavLinkItem to="/txs" label={t("home.header.txs")} />
+      {isMainnet && <NavLinkItem to="/governor" label="Governor" />}
 
       <NavigationMenu.Root delayDuration={0}>
         <NavigationMenu.List className="dropdown-menu">

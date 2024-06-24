@@ -1,5 +1,6 @@
 import { ChainId, PageRequest } from "src/api/model";
 import { IStatus } from "src/consts";
+import { DeliveryLifecycleRecord } from "src/utils/genericRelayerVaaUtils";
 
 export type Observation = {
   hash: string;
@@ -144,10 +145,14 @@ export interface GetParsedVaaOutput {
 }
 
 export interface GetOperationsInput {
-  txHash?: string;
   address?: string;
-  vaaID?: string;
+  appId?: string;
+  exclusiveAppId?: string;
   pagination?: PageRequest;
+  sourceChain?: string;
+  targetChain?: string;
+  txHash?: string;
+  vaaID?: string;
 }
 
 export interface GetOperationsOutput {
@@ -160,6 +165,7 @@ export interface GetOperationsOutput {
   sequence: string;
   vaa: {
     guardianSetIndex: number;
+    isDuplicated: boolean;
     raw: string;
   };
   content: {
@@ -192,6 +198,11 @@ export interface GetOperationsOutput {
       };
       transceiverMessage?: any;
       // ---     ---
+
+      // --- Attestation ---
+      symbol?: string;
+      name?: string;
+      decimals?: number;
     };
     standarizedProperties: {
       appIds: string[];
@@ -253,5 +264,9 @@ export interface GetOperationsOutput {
   };
   decodedVaa?: any;
   STATUS?: IStatus;
+  isBigTransaction?: boolean;
+  isDailyLimitExceeded?: boolean;
+  transactionLimit?: number;
+  relayerInfo?: DeliveryLifecycleRecord;
 }
 [];

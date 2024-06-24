@@ -1,0 +1,178 @@
+@import "src/styles/globals.scss";
+
+.governor {
+  &-title {
+    @include text-h5;
+    margin: 32px 0 16px 0;
+  }
+
+  &-description {
+    color: var(--color-primary-90);
+    font-size: 14px;
+    margin-bottom: 32px;
+    text-wrap: pretty;
+
+    @include tablet {
+      font-size: 16px;
+    }
+
+    &-link {
+      color: var(--color-information-100);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &-container {
+    @include card-container;
+    margin-bottom: 32px;
+    padding: 0 !important;
+
+    &-top {
+      @include centered-column;
+      justify-content: space-between;
+      min-height: 70px;
+
+      @include tablet {
+        @include centered-row;
+      }
+
+      &-btns {
+        @include centered-row;
+        min-height: inherit;
+
+        & > button {
+          @include centered-row;
+          @include text-p3;
+          background-color: transparent;
+          border: none;
+          border-bottom: 1px solid var(--color-primary-100);
+          color: var(--color-primary-100);
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: 600;
+          justify-content: center;
+          min-height: inherit;
+          padding: 6px 8px;
+          white-space: nowrap;
+          width: 100%;
+
+          @include tablet {
+            border-bottom: 1px solid transparent;
+            font-size: 14px;
+            padding: 6px 16px;
+            width: 146px;
+          }
+
+          &:hover:not(&.active) {
+            border-bottom: 1px solid var(--color-primary-100);
+          }
+
+          &.active {
+            border-bottom: 1px solid var(--color-secondary-800);
+            color: var(--color-secondary-800);
+          }
+        }
+      }
+
+      &-pagination {
+        @include centered-row;
+        justify-content: center;
+        padding: 24px 16px 24px 24px;
+
+        @include tablet {
+          padding: 0 16px 0 0;
+        }
+
+        @include desktop {
+          padding: 0 32px 0 0;
+        }
+      }
+    }
+
+    &-table {
+      overflow-x: auto;
+
+      & th {
+        cursor: pointer;
+        text-align: center;
+        width: 25%;
+
+        &:hover {
+          background-color: var(--color-white-10);
+        }
+      }
+
+      & th:first-child > .table-head-th-container {
+        justify-content: start;
+      }
+
+      & th:last-child > .table-head-th-container {
+        justify-content: end;
+      }
+
+      & tr:hover {
+        background-color: unset !important;
+        cursor: default !important;
+      }
+
+      & td {
+        text-align: center;
+        width: 25%;
+      }
+
+      & td:first-child {
+        text-align: start;
+      }
+
+      & td:last-child {
+        text-align: end;
+      }
+
+      & .chain {
+        @include centered-row;
+        gap: 16px;
+      }
+
+      & .min-remaining {
+        position: relative;
+
+        &-bar {
+          bottom: -20px;
+          margin-left: auto;
+          padding: 8px 0;
+          position: absolute;
+          right: 0;
+          width: 120px;
+
+          &-fill {
+            border-radius: 2px;
+            height: 4px;
+
+            &-used {
+              border-radius: 2px;
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+
+    &-bottom {
+      @include centered-column;
+      align-items: center;
+      min-height: 70px;
+
+      @include tablet {
+        align-items: end;
+      }
+    }
+  }
+}
+
+.governor-container-table-title-tooltip {
+  max-width: 440px !important;
+}
