@@ -37,9 +37,6 @@
   --color-gray-900: #1f1f1f;
   --color-gray-950: #121212;
 
-  --color-primary-100: #ff884d;
-  --color-primary-10: #ff884d1a;
-
   --color-primary-100: #7abfff;
   --color-primary-40: #7abfff66;
   --color-primary-12: #7abfff1f;
@@ -103,6 +100,8 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Roboto", sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-white-20) var(--color-black-10);
 }
 
 html {
@@ -111,25 +110,6 @@ html {
   -webkit-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
-}
-
-::-webkit-scrollbar {
-  background-color: transparent;
-  height: 12px;
-  width: 12px;
-}
-
-::-webkit-scrollbar-corner {
-  background-color: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: var(--color-white-20);
-  border-radius: 6px;
-
-  &:hover {
-    background-color: var(--color-white-50);
-  }
 }
 
 body {
@@ -160,29 +140,5 @@ body {
     display: flex;
     flex-direction: column;
     flex: 1;
-  }
-
-  .bg-gradient-top {
-    background: radial-gradient(50% 50% at 50% 50%, #3b234e 0%, rgba(59, 35, 78, 0) 100%);
-    border-radius: 1175px;
-    flex-shrink: 0;
-    height: 1169px;
-    left: -683px;
-    position: absolute;
-    top: -703px;
-    width: 1175px;
-    z-index: -1;
-  }
-
-  .bg-gradient-bottom {
-    background: radial-gradient(50% 50% at 50% 50%, #3b234e 0%, rgba(59, 35, 78, 0) 100%);
-    border-radius: 1175px;
-    bottom: -650px;
-    flex-shrink: 0;
-    height: 1169px;
-    left: calc(50% - 587.5px);
-    position: absolute;
-    width: 1175px;
-    z-index: -1;
   }
 }

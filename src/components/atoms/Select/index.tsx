@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import SelectPrimitive, { components } from "react-select";
 import { Checkbox } from "src/components/atoms";
-import { OverviewIcon, ChevronDownIcon, TriangleDownIcon } from "src/icons/generic";
+import { OverviewIcon, ChevronDownIcon, TriangleDownIcon, MinusIcon } from "src/icons/generic";
 import { useOutsideClick } from "src/utils/hooks";
 import "./styles.scss";
 
@@ -10,9 +10,11 @@ interface Props {
   className?: string;
   isClearable?: boolean;
   items: {
-    label: string;
-    value: string | boolean;
+    disabled?: boolean;
     icon?: JSX.Element;
+    label: string;
+    showMinus?: boolean;
+    value: string | boolean;
   }[];
   menuFixed?: boolean;
   menuPlacement?: "auto" | "bottom" | "top";
@@ -82,16 +84,17 @@ const Select = ({
                           {props.data.icon}
                           {children}
                         </div>
-                        <Checkbox checked={props.isSelected} />
+                        <Checkbox checked={props.isSelected} locked={props.data.showMinus} />
                       </div>
                     </components.Option>
                   ),
                 }}
                 controlShouldRenderValue={false}
+                defaultMenuIsOpen={false}
                 hideSelectedOptions={false}
                 isClearable={isClearable}
                 isMulti
-                defaultMenuIsOpen={false}
+                isOptionDisabled={option => option?.disabled}
                 isSearchable
                 menuIsOpen
                 menuPortalTarget={document.body}
@@ -128,7 +131,7 @@ const Select = ({
                     backgroundColor: "transparent",
                     padding: "16px",
                     position: "relative",
-                    "&:hover": {
+                    "&:hover:not(.select__option--is-disabled)": {
                       backgroundColor: "var(--color-white-05)",
                     },
                     "&:not(:last-child)::before": {

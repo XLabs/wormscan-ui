@@ -299,32 +299,35 @@
         }
       }
 
-      &-section {
-        position: relative;
+      &-design {
+        @include centered-row;
+        gap: 6px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 9;
 
-        &-design {
-          @include centered-row;
-          gap: 6px;
-          margin-left: auto;
+        & > button {
+          @include button-secondary;
+          background-color: transparent;
+          border-radius: 12px;
+          color: var(--color-white-60);
+          height: 36px;
+          justify-content: center;
+          padding: 0;
+          width: 36px;
 
-          & > button {
+          &.active {
             @include button-secondary;
-            background-color: transparent;
             border-radius: 12px;
-            color: var(--color-white-60);
-            height: 36px;
-            justify-content: center;
+            color: var(--color-white);
             padding: 0;
-            width: 36px;
-
-            &.active {
-              @include button-secondary;
-              border-radius: 12px;
-              color: var(--color-white);
-              padding: 0;
-            }
           }
         }
+      }
+
+      &-section {
+        position: relative;
 
         &-btn {
           @include button-secondary;
@@ -770,6 +773,10 @@
                 gap: 20px;
                 position: absolute;
                 right: 16px;
+
+                & > .clear-btn {
+                  @include button-ghost;
+                }
 
                 & > .done-btn {
                   @include button-primary;

@@ -18,10 +18,11 @@ import {
   FilterListIcon,
   GlobeIcon,
 } from "src/icons/generic";
-import { IChainActivity } from "src/api/guardian-network/types";
+import { IChainActivity, IChainActivityInput } from "src/api/guardian-network/types";
 import { calculateDateDifferenceInDays, startOfDayUTC, startOfMonthUTC } from "src/utils/date";
 import { Calendar } from "./Calendar";
 import "./styles.scss";
+import { ChainId } from "src/api";
 
 const ChainActivity = () => {
   const { width } = useWindowSize();
@@ -61,35 +62,40 @@ const ChainActivity = () => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const orderedChains = currentNetwork === "MAINNET" ? ChainFilterMainnet : ChainFilterTestnet;
+  const ALL_CHAINS = {
+    label: "All Chains",
+    value: "All Chains",
+    icon: <GlobeIcon width={24} style={{ color: "#fff" }} />,
+    showMinus: !showAllChains,
+    disabled: false,
+  };
+  const [chainListSelected, setChainListSelected] = useState([ALL_CHAINS]);
 
   const CHAIN_LIST = [
-    {
-      label: "All Chains",
-      value: "All Chains",
-      icon: <GlobeIcon width={24} style={{ color: "#fff" }} />,
-    },
-    ...orderedChains.map(value => ({
+    ALL_CHAINS,
+    ...orderedChains.map(chainId => ({
       label: getChainName({
         network: currentNetwork,
-        chainId: value,
+        chainId: chainId,
       }),
-      value: `${value}`,
+      value: `${chainId}`,
       icon: (
         <BlockchainIcon
           background="var(--color-white-10)"
-          chainId={value}
+          chainId={chainId}
           className="chain-icon"
           colorless={true}
           network={currentNetwork}
           size={24}
         />
       ),
+      showMinus: false,
+      disabled:
+        chainListSelected.length >= 10 && !chainListSelected.some(item => +item.value === chainId),
     })),
   ];
 
-  const [chainListSelected, setChainListSelected] = useState([CHAIN_LIST[0]]);
-
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<IChainActivityInput>({
     from: startDate?.toISOString(),
     to: endDate?.toISOString(),
     timespan: "1h",
@@ -102,23 +108,17 @@ const ChainActivity = () => {
   const {
     data: dataAllChains,
     isError: isErrorAllChains,
-    isLoading: isLoadingAllChains,
     isFetching: isFetchingAllChains,
-  } = useQuery(
-    ["getChainActivity", filters.from, filters.to],
-    () =>
-      getClient().guardianNetwork.getChainActivity({
-        from: filters.from,
-        to: filters.to,
-        timespan: filters.timespan,
-        sourceChain: [],
-      }),
-    {
-      enabled: showAllChains,
-    },
+  } = useQuery(["getChainActivity", filters.from, filters.to], () =>
+    getClient().guardianNetwork.getChainActivity({
+      from: filters.from,
+      to: filters.to,
+      timespan: filters.timespan,
+      sourceChain: [],
+    }),
   );
 
-  const { data, isError, isLoading, isFetching } = useQuery(["getChainActivity", filters], () => {
+  const { data, isError, isFetching } = useQuery(["getChainActivity", filters], () => {
     if (filters?.sourceChain?.length === 0) {
       return Promise.resolve([]);
     }
@@ -195,25 +195,20 @@ const ChainActivity = () => {
       return;
     }
 
-    if (value.length === 0) {
+    const lastChainSelected = value?.[value.length - 1]?.value;
+
+    if (value.length === 0 || lastChainSelected === "All Chains") {
       value = [CHAIN_LIST[0]];
-    }
-
-    const lastChainSelected = value[value.length - 1].value;
-
-    if (
-      value.length > 1 &&
-      value.some(item => item.value === "All Chains") &&
-      lastChainSelected !== "All Chains"
-    ) {
+    } else {
       value = value.filter(item => item.value !== "All Chains");
     }
 
     setChainListSelected(value);
     const chainsSelected = value.map((item: IChainList) => item.value);
-    const chainsSelectedWithoutAll = chainsSelected.filter(
-      (chain: string) => chain !== "All Chains",
-    );
+    const chainsSelectedWithoutAll = chainsSelected.filter((chain: string) => {
+      console.log({ chain });
+      return chain !== "All Chains";
+    });
     const isAllChainsSelected = chainsSelected.includes("All Chains");
 
     if (isAllChainsSelected) {
@@ -252,7 +247,7 @@ const ChainActivity = () => {
   };
 
   const groupDataByDate = (data: IChainActivity[]) => {
-    return data.reduce((acc: IAccumulator, curr, i) => {
+    return data.reduce((acc: IAccumulator, curr) => {
       const key = `${curr.from}-${curr.to}`;
       if (!acc[key]) {
         acc[key] = {
@@ -272,7 +267,6 @@ const ChainActivity = () => {
         emitter_chain: curr.emitter_chain,
         volume: curr.volume,
         count: curr.count,
-        color: colors2[i] ? colors2[i] : "#fff",
       };
 
       if (index === -1) {
@@ -368,14 +362,15 @@ const ChainActivity = () => {
     }
   }, [dataAllChains, getDateList]);
 
-  const chainIndices = useRef({});
-  const nextIndex = useRef(0);
-
   useEffect(() => {
     if (!data) return;
 
     const dataByChain: { [key: string]: any[] } = {};
     const allDates: { [key: string]: boolean } = {};
+    const chainIndices: { [key: string]: number } = {};
+    chainListSelected.forEach((chain: IChainList, i: number) => {
+      chainIndices[chain.value] = i;
+    });
 
     // Group by emitter_chain and extract all dates
     data.forEach((item, i) => {
@@ -386,23 +381,13 @@ const ChainActivity = () => {
         dataByChain[item.emitter_chain] = [];
       }
 
-      if (!(item?.emitter_chain in chainIndices.current)) {
-        chainIndices.current[item?.emitter_chain] = nextIndex.current;
-        nextIndex.current++;
-      }
-      const index = chainIndices.current[item?.emitter_chain];
-
-      const color = colors2[index];
-
-      console.log(i, item.emitter_chain, chainIndices.current);
-
       dataByChain[item.emitter_chain].push({
         x: formatDate,
         y: item.count,
         volume: item.volume,
         count: item.count,
         emitter_chain: item.emitter_chain,
-        color: color,
+        color: colors[chainIndices[item.emitter_chain]] || "#fff",
       });
 
       allDates[formatDate] = true;
@@ -414,9 +399,6 @@ const ChainActivity = () => {
     // When there were no movements in that time range, the endpoint does not bring
     // information for that chain, so we need to add it manually
     selectedChains.forEach((chain, i) => {
-      const chainIndex = chainIndices.current[chain];
-      const color = colors2[chainIndex];
-
       dataByChain[chain] = dateList.map((date: string) => {
         const existingData = dataByChain[chain]?.find(item => item.x === date);
         return (
@@ -426,7 +408,7 @@ const ChainActivity = () => {
             volume: 0,
             count: 0,
             emitter_chain: chain,
-            color: color,
+            color: colors[chainIndices[chain]] || "#fff",
           }
         );
       });
@@ -442,19 +424,18 @@ const ChainActivity = () => {
       dataByChain[chain].sort((a, b) => new Date(a.x).getTime() - new Date(b.x).getTime());
     });
 
-    const newSeries = Object.keys(dataByChain).map((chain, i) => {
-      const chainIndex = chainIndices.current[chain];
-      const color = colors2[chainIndex];
-
-      return {
-        name: getChainName({
-          network: currentNetwork,
-          chainId: +chain,
-        }),
-        data: dataByChain[chain],
-        color: color,
-      };
-    });
+    const newSeries = Object.keys(dataByChain)
+      .map(chain => {
+        return {
+          name: getChainName({
+            network: currentNetwork,
+            chainId: +chain,
+          }),
+          data: dataByChain[chain],
+          color: colors[chainIndices[chain]] || "#fff",
+        };
+      })
+      .sort((a, b) => a.name.localeCompare(b.name));
 
     const sumOfMessages = data.reduce((acc, item) => acc + item.count, 0);
     setMessagesNumber(sumOfMessages);
@@ -464,80 +445,17 @@ const ChainActivity = () => {
     } else {
       setSeries(newSeries);
     }
-  }, [allChainsSerie, currentNetwork, data, filters.sourceChain, getDateList, showAllChains]);
+  }, [
+    allChainsSerie,
+    chainListSelected,
+    currentNetwork,
+    data,
+    filters.sourceChain,
+    getDateList,
+    showAllChains,
+  ]);
 
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
-
-  // const [transformedData, setTransformedData] = useState([]);
-
-  // useEffect(() => {
-  //   if (series.length > 0) {
-  //     const maxChains = 9;
-  //     const newTransformedData = [];
-  //     const othersData = {};
-
-  //     series[0].data.forEach(dataPoint => {
-  //       dataPoint.details.forEach(detail => {
-  //         const chainName = getChainName({
-  //           network: currentNetwork,
-  //           chainId: +detail.emitter_chain,
-  //         });
-
-  //         const existingChain = newTransformedData.find(chain => chain.name === chainName);
-  //         if (existingChain) {
-  //           existingChain.data.push({
-  //             x: dataPoint.x,
-  //             y: detail.count,
-  //             volume: detail.volume,
-  //             count: detail.count,
-  //             emitter_chain: detail.emitter_chain,
-  //             color: detail.color,
-  //           });
-  //         } else if (newTransformedData.length < maxChains) {
-  //           newTransformedData.push({
-  //             name: chainName,
-  //             data: [
-  //               {
-  //                 x: dataPoint.x,
-  //                 y: detail.count,
-  //                 volume: detail.volume,
-  //                 count: detail.count,
-  //                 emitter_chain: detail.emitter_chain,
-  //                 color: detail.color,
-  //               },
-  //             ],
-  //             color: detail.color,
-  //           });
-  //         } else {
-  //           // If there are already 10 chains, add to "others"
-  //           if (!othersData[dataPoint.x]) {
-  //             othersData[dataPoint.x] = {
-  //               x: dataPoint.x,
-  //               y: 0,
-  //               volume: 0,
-  //               count: 0,
-  //               emitter_chain: "others",
-  //               color: "grey",
-  //             };
-  //           }
-  //           othersData[dataPoint.x].y += detail.count;
-  //           othersData[dataPoint.x].volume += detail.volume;
-  //           othersData[dataPoint.x].count += detail.count;
-  //         }
-  //       });
-  //     });
-
-  //     // Convert othersData object to array and push to newTransformedData
-  //     const othersChain = {
-  //       name: "others",
-  //       data: Object.values(othersData),
-  //       color: "grey",
-  //     };
-  //     newTransformedData.push(othersChain);
-
-  //     setTransformedData(newTransformedData);
-  //   }
-  // }, [series, currentNetwork]);
 
   return (
     <div className="chain-activity">
@@ -556,53 +474,9 @@ const ChainActivity = () => {
             </button>
           </div>
 
-          <div className="chain-activity-chart-top-section" ref={chainsContainerRef}>
-            <Select
-              text={
-                showAllChains || filters?.sourceChain?.length > 0
-                  ? showAllChains
-                    ? `All chains${
-                        filters?.sourceChain?.length > 0
-                          ? ` and (${filters.sourceChain.length})`
-                          : ""
-                      }`
-                    : filters.sourceChain.length === 1
-                    ? getChainName({
-                        network: currentNetwork,
-                        chainId: filters.sourceChain[0],
-                      })
-                    : `Custom (${filters.sourceChain.length})`
-                  : "Select chains"
-              }
-              ariaLabel="Select Time Range"
-              items={CHAIN_LIST}
-              menuStyles={{ zIndex: 100 }}
-              menuFixed={isDesktop ? false : true}
-              name="timeRange"
-              onValueChange={(value: any) => handleChainSelection(value)}
-              type="searchable"
-              value={chainListSelected}
-            />
-          </div>
-
-          <Calendar
-            startDate={startDate}
-            setStartDate={setStartDate}
-            endDate={endDate}
-            setEndDate={setEndDate}
-            showCalendar={showCalendar}
-            setShowCalendar={setShowCalendar}
-            dateContainerRef={dateContainerRef}
-            lastBtnSelected={lastBtnSelected}
-            setLastBtnSelected={setLastBtnSelected}
-            startDateDisplayed={startDateDisplayed}
-            endDateDisplayed={endDateDisplayed}
-            isDesktop={isDesktop}
-          />
-
-          <div className="chain-activity-chart-top-section-design">
+          <div className="chain-activity-chart-top-design">
             <button
-              className={`"chain-activity-chart-top-section-design-area ${
+              className={`"chain-activity-chart-top-design-area ${
                 chartSelected === "area" && "active"
               }`}
               onClick={() => setChartSelected("area")}
@@ -611,7 +485,7 @@ const ChainActivity = () => {
             </button>
 
             <button
-              className={`"chain-activity-chart-top-section-design-bar ${
+              className={`"chain-activity-chart-top-design-bar ${
                 chartSelected === "bar" && "active"
               }`}
               onClick={() => setChartSelected("bar")}
@@ -628,6 +502,50 @@ const ChainActivity = () => {
               </button>
             </div>
 
+            <div className="chain-activity-chart-top-section" ref={chainsContainerRef}>
+              <Select
+                text={
+                  showAllChains || filters?.sourceChain?.length > 0
+                    ? showAllChains
+                      ? `All chains${
+                          filters?.sourceChain?.length > 0
+                            ? ` and (${filters.sourceChain.length})`
+                            : ""
+                        }`
+                      : filters.sourceChain.length === 1
+                      ? getChainName({
+                          network: currentNetwork,
+                          chainId: filters.sourceChain[0] as ChainId,
+                        })
+                      : `Custom (${filters.sourceChain.length})`
+                    : "Select chains"
+                }
+                ariaLabel="Select Time Range"
+                items={CHAIN_LIST}
+                menuFixed={isDesktop ? false : true}
+                menuStyles={{ zIndex: 100 }}
+                name="timeRange"
+                onValueChange={(value: any) => handleChainSelection(value)}
+                type="searchable"
+                value={chainListSelected}
+              />
+            </div>
+
+            <Calendar
+              startDate={startDate}
+              setStartDate={setStartDate}
+              endDate={endDate}
+              setEndDate={setEndDate}
+              showCalendar={showCalendar}
+              setShowCalendar={setShowCalendar}
+              dateContainerRef={dateContainerRef}
+              lastBtnSelected={lastBtnSelected}
+              setLastBtnSelected={setLastBtnSelected}
+              startDateDisplayed={startDateDisplayed}
+              endDateDisplayed={endDateDisplayed}
+              isDesktop={isDesktop}
+            />
+
             <div className="chain-activity-chart-top-mobile-buttons">
               <button className="apply-btn" onClick={applyFilters}>
                 Apply Filters
@@ -640,14 +558,7 @@ const ChainActivity = () => {
 
             <div
               className={`chain-activity-chart-top-legends ${
-                isLoading ||
-                isFetching ||
-                isLoadingAllChains ||
-                isFetchingAllChains ||
-                isError ||
-                isErrorAllChains
-                  ? "hidden"
-                  : ""
+                isFetching || isFetchingAllChains || isError || isErrorAllChains ? "hidden" : ""
               }`}
             >
               <div className="chain-activity-chart-top-legends-container">
@@ -662,15 +573,13 @@ const ChainActivity = () => {
           </div>
         </div>
 
-        {isLoading || isFetching || isLoadingAllChains || isFetchingAllChains ? (
-          <Loader />
-        ) : isError || isErrorAllChains ? (
+        {isError || isErrorAllChains ? (
           <ErrorPlaceholder errorType="chart" />
+        ) : isFetching || isFetchingAllChains ? (
+          <Loader />
         ) : (
           <>
             <WormholeScanBrand />
-
-            {/* <ReactApexChart options={options} series={series2} type="bar" height="600" /> */}
 
             <ReactApexChart
               key={chartSelected}
@@ -684,8 +593,6 @@ const ChainActivity = () => {
                         color: serie.color,
                       };
                     })
-
-                /* transformedData */
               }
               type={chartSelected}
               height={isDesktop ? 400 : 300}
@@ -723,9 +630,6 @@ const ChainActivity = () => {
                   fontFamily: "Roboto",
                   fontSize: "14px",
                   fontWeight: 400,
-                  formatter: function (seriesName, opts) {
-                    return seriesName.toUpperCase();
-                  },
                   floating: true,
                   labels: {
                     colors: "var(--color-white)",
@@ -753,10 +657,10 @@ const ChainActivity = () => {
                   max: new Date(series?.[0]?.data[series[0].data.length - 1].x).getTime() - 1,
                   labels: {
                     datetimeFormatter: {
-                      hour: "HH:mm",
-                      day: "dd MMM",
-                      month: "MMM",
-                      year: "yyyy",
+                      hour: "\u00A0\u00A0HH:mm\u00A0\u00A0",
+                      day: "\u00A0\u00A0dd\u00A0MMM\u00A0\u00A0",
+                      month: "\u00A0\u00A0MMM\u00A0\u00A0",
+                      year: "\u00A0\u00A0yyyy\u00A0\u00A0",
                     },
                     datetimeUTC: false,
                     hideOverlappingLabels: true,
@@ -767,6 +671,7 @@ const ChainActivity = () => {
                       fontSize: "12px",
                       fontWeight: 400,
                     },
+                    rotate: 0,
                     trim: false,
                   },
                   type: "datetime",
@@ -786,19 +691,16 @@ const ChainActivity = () => {
                   opposite: true,
                 },
                 tooltip: {
-                  // shared: false,
-                  // intersect: false,
+                  shared: false,
+                  intersect: false,
                   custom: ({ series, seriesIndex, dataPointIndex, w }) => {
                     const data = w.config.series[seriesIndex].data[dataPointIndex];
 
                     const allDataForDate = w.config.series
                       .map((serie: any) => serie.data[dataPointIndex])
-                      .sort((a: any, b: any) => b.y - a.y)
-                      .filter((item: any) => item !== undefined && item !== null);
+                      .sort((a: any, b: any) => b.y - a.y);
 
-                    const totalMessages = showAllChains
-                      ? allDataForDate[0].count
-                      : allDataForDate.reduce((acc: any, item: any) => acc + item.y, 0);
+                    const totalMessages = allChainsSerie[0].data[dataPointIndex]?.y;
 
                     return `<div class="chain-activity-chart-tooltip">
                       <p class="chain-activity-chart-tooltip-date">
@@ -813,15 +715,16 @@ const ChainActivity = () => {
                         })}
                       </p>
                       <div class="chain-activity-chart-tooltip-total-msg">
-
-                       <div class="chain-activity-chart-tooltip-container-each-msg-icon" style="background-color: var(--color-primary-100)">
-                        </div>
-
+                        ${
+                          showAllChains
+                            ? "<div class='chain-activity-chart-tooltip-container-each-msg-icon' style='background-color: var(--color-primary-100)'></div>"
+                            : ""
+                        }
                       Total Messages: <span>${formatNumber(totalMessages, 0)}</span></div>
                       <p class="chain-activity-chart-tooltip-chains">Chains:</p>
                       <div class="chain-activity-chart-tooltip-container">
                         ${allDataForDate
-                          .map((item: any, i: number) => {
+                          .map((item: any) => {
                             return `
                                 ${
                                   item?.emitter_chain === "allChains"
@@ -857,7 +760,7 @@ const ChainActivity = () => {
                                         return `
                                           <div class="chain-activity-chart-tooltip-container-each-msg">
                                             <div class="chain-activity-chart-tooltip-container-each-msg-icon" style="background-color: ${
-                                              colors3[i]
+                                              grayColors[i]
                                             }">
                                             </div>
                                             <div class="chain-activity-chart-tooltip-container-each-msg-name">
@@ -880,10 +783,7 @@ const ChainActivity = () => {
                                       return `
                                         <div class="chain-activity-chart-tooltip-container-each-msg">
                                       <div class="chain-activity-chart-tooltip-container-each-msg-icon" style="background-color: ${
-                                        // colors[+detail.emitter_chain]
-                                        //   ? colors[+detail.emitter_chain]
-                                        //   : "#fff"
-                                        colors3[i]
+                                        grayColors[i]
                                       }">
                                       </div>
                                       <div class="chain-activity-chart-tooltip-container-each-msg-name">
@@ -927,10 +827,6 @@ const ChainActivity = () => {
   );
 };
 
-interface IColors {
-  [key: number]: string;
-}
-
 interface IDetails {
   emitter_chain: string;
   volume: number;
@@ -946,8 +842,10 @@ interface IChainActivityDetails extends IChainActivity {
 }
 
 interface IChainList {
+  disabled: boolean;
   icon: JSX.Element;
   label: string;
+  showMinus: boolean;
   value: string;
 }
 
@@ -965,54 +863,7 @@ interface ICompleteData {
 
 export type TSelectedPeriod = "24h" | "week" | "month" | "6months" | "year" | "custom";
 
-const colors: IColors = {
-  0: "#FD8058",
-  1: "#815AF0",
-  2: "#627EEA",
-  3: "#5795ED",
-  4: "#F0B90B",
-  5: "#8247E5",
-  6: "#E84142",
-  7: "#0089DB",
-  8: "#FFFFFF",
-  9: "#4AB64B",
-  10: "#1969FF",
-  11: "#F53447",
-  12: "#B72896",
-  13: "#FA4212",
-  14: "#5EA33B",
-  15: "#FFFFFF",
-  16: "#53CBC8",
-  17: "#df42ab",
-  18: "#56B39A",
-  19: "#00AEFC",
-  20: "#A600C0",
-  21: "#2A4362",
-  22: "#FFFFFF",
-  23: "#405870",
-  24: "#FF0420",
-  26: "#E6DAFE",
-  28: "#00AAFF",
-  29: "#F7931A",
-  30: "#0052FF",
-  32: "#A60B13",
-  34: "#FFEEDA",
-  35: "#FFFFFF",
-  36: "#FCFC03",
-  37: "#FFFFFF",
-  3104: "#00E6FD",
-  4001: "#ed4e33",
-  4002: "#e53935",
-  4007: "#F1E1D4",
-  10002: "#627EEA",
-  10003: "#405870",
-  10004: "#0052FF",
-  10005: "#FF0420",
-  10006: "#627EEA",
-  10007: "#8247E5",
-};
-
-const colors2 = [
+const colors = [
   "#B57AFF",
   "#FF884D",
   "#7BFFB0",
@@ -1025,7 +876,7 @@ const colors2 = [
   "#11D400",
 ];
 
-const colors3 = [
+const grayColors = [
   "#EEEEEE",
   "#E0E0E0",
   "#D3D3D3",

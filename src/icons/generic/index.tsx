@@ -15,6 +15,7 @@ export { default as InfoCircleIcon } from "./InfoCircleIcon";
 export { default as LayersIcon } from "./LayersIcon";
 export { default as LinkIcon } from "./LinkIcon";
 export { default as MenuIcon } from "./MenuIcon";
+export { default as MinusIcon } from "./MinusIcon";
 export { default as MoneyIcon } from "./MoneyIcon";
 export { default as OverviewIcon } from "./OverviewIcon";
 export { default as PercentageIcon } from "./PercentageIcon";

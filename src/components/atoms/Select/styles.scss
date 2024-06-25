@@ -109,7 +109,7 @@
     user-select: none;
     border: 1px solid transparent;
 
-    &:hover:not(.select__option--is-selected) {
+    &:hover:not(.select__option--is-selected):not(.select__option--is-disabled) {
       background-color: var(--color-white-05);
     }
 
@@ -121,6 +121,11 @@
     &--is-selected {
       background-color: var(--color-gray-800);
       color: var(--color-white);
+    }
+
+    &--is-disabled {
+      color: var(--color-white-50);
+      cursor: not-allowed !important;
     }
   }
 
