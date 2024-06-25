@@ -7,6 +7,7 @@ import { BlockchainIcon, Loader, Select } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { formatterYAxis } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
+import { ChainId } from "src/api";
 import { getClient } from "src/api/Client";
 import { ChainFilterMainnet, ChainFilterTestnet } from "src/pages/Txs/Information/Filters";
 import { useWindowSize, useOutsideClick, useLockBodyScroll } from "src/utils/hooks";
@@ -22,7 +23,6 @@ import { IChainActivity, IChainActivityInput } from "src/api/guardian-network/ty
 import { calculateDateDifferenceInDays, startOfDayUTC, startOfMonthUTC } from "src/utils/date";
 import { Calendar } from "./Calendar";
 import "./styles.scss";
-import { ChainId } from "src/api";
 
 const ChainActivity = () => {
   const { width } = useWindowSize();
@@ -205,10 +205,9 @@ const ChainActivity = () => {
 
     setChainListSelected(value);
     const chainsSelected = value.map((item: IChainList) => item.value);
-    const chainsSelectedWithoutAll = chainsSelected.filter((chain: string) => {
-      console.log({ chain });
-      return chain !== "All Chains";
-    });
+    const chainsSelectedWithoutAll = chainsSelected.filter(
+      (chain: string) => chain !== "All Chains",
+    );
     const isAllChainsSelected = chainsSelected.includes("All Chains");
 
     if (isAllChainsSelected) {
@@ -373,7 +372,7 @@ const ChainActivity = () => {
     });
 
     // Group by emitter_chain and extract all dates
-    data.forEach((item, i) => {
+    data.forEach(item => {
       // formatDate to add milliseconds and match dates when using .toISOString()
       const formatDate = item.from.slice(0, -1) + ".000Z";
 
@@ -398,7 +397,7 @@ const ChainActivity = () => {
 
     // When there were no movements in that time range, the endpoint does not bring
     // information for that chain, so we need to add it manually
-    selectedChains.forEach((chain, i) => {
+    selectedChains.forEach(chain => {
       dataByChain[chain] = dateList.map((date: string) => {
         const existingData = dataByChain[chain]?.find(item => item.x === date);
         return (
@@ -586,7 +585,7 @@ const ChainActivity = () => {
               series={
                 chartSelected === "area"
                   ? series
-                  : series.map((serie: any) => {
+                  : series.map(serie => {
                       return {
                         name: serie.name,
                         data: serie.data,
@@ -614,6 +613,18 @@ const ChainActivity = () => {
                   },
                   padding: {
                     top: isDesktop ? 50 : 0,
+                  },
+                },
+                states: {
+                  hover: {
+                    filter: {
+                      type: "none",
+                    },
+                  },
+                  active: {
+                    filter: {
+                      type: "none",
+                    },
                   },
                 },
                 stroke: {
@@ -691,8 +702,8 @@ const ChainActivity = () => {
                   opposite: true,
                 },
                 tooltip: {
-                  shared: false,
-                  intersect: false,
+                  shared: chartSelected === "area",
+                  intersect: chartSelected === "bar",
                   custom: ({ series, seriesIndex, dataPointIndex, w }) => {
                     const data = w.config.series[seriesIndex].data[dataPointIndex];
 
@@ -700,14 +711,14 @@ const ChainActivity = () => {
                       .map((serie: any) => serie.data[dataPointIndex])
                       .sort((a: any, b: any) => b.y - a.y);
 
-                    const totalMessages = allChainsSerie[0].data[dataPointIndex]?.y;
+                    const totalMessages = allChainsSerie[0].data[dataPointIndex]?.y || 0;
 
                     return `<div class="chain-activity-chart-tooltip">
                       <p class="chain-activity-chart-tooltip-date">
                         ${new Date(data.x).toLocaleString("en-GB", {
                           hour: "2-digit",
                           minute: "2-digit",
-                        })}, 
+                        })},
                         ${new Date(data.x).toLocaleString("en-GB", {
                           day: "2-digit",
                           month: "long",
@@ -747,7 +758,7 @@ const ChainActivity = () => {
                                       </div>
                                       `
                                 }
-                          
+
                           ${
                             item?.details?.length > 0 &&
                             filters.sourceChain.every(chain => chain === "All Chains")
