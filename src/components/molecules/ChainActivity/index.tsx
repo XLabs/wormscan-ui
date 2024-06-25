@@ -31,6 +31,7 @@ const ChainActivity = () => {
   const chainsContainerRef = useRef<HTMLDivElement>(null);
   const dateContainerRef = useRef<HTMLDivElement>(null);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
 
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
@@ -453,8 +454,6 @@ const ChainActivity = () => {
     getDateList,
     showAllChains,
   ]);
-
-  const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
 
   return (
     <div className="chain-activity">
