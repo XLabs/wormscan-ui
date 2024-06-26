@@ -7,7 +7,7 @@ const ActivityIcon = ({ style, width }: { style?: any; width: number }) => (
     width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M4 12.0001H8L10 7L14 17.0001L16 12.0001H20" stroke="white" strokeWidth="1.5" />
+    <path d="M4 12.0001H8L10 7L14 17.0001L16 12.0001H20" stroke="currentColor" strokeWidth="1.5" />
   </svg>
 );
 

@@ -138,6 +138,16 @@ export const Calendar = ({
 
           <div className="chain-activity-chart-top-section-box-date-calendar-btns">
             <button
+              className="clear-btn"
+              onClick={() => {
+                handleLast24Hours();
+                setShowCalendar(false);
+              }}
+            >
+              Clear
+            </button>
+
+            <button
               className="done-btn"
               onClick={() => setShowCalendar(false)}
               disabled={!startDate || !endDate}

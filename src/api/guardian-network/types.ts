@@ -68,9 +68,9 @@ export type LastTxs = {
 export interface IChainActivityInput {
   from: string;
   to: string;
-  timespan: string;
-  sourceChain: Array<number>;
-  targetChain?: Array<number>;
+  timespan: "1h" | "1d" | "1mo";
+  sourceChain: Array<number | string>;
+  targetChain?: Array<number | string>;
   appId?: Array<string>;
 }
 

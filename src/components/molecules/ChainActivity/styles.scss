@@ -91,6 +91,7 @@
         color: var(--color-white);
         font-size: 14px;
         margin-bottom: 16px;
+        gap: 10px;
 
         @include desktop {
           margin-bottom: 24px;
@@ -125,7 +126,7 @@
 
         &-each-msg {
           @include centered-row;
-          gap: 12px;
+          gap: 10px;
 
           &-icon {
             border-radius: 3px;
@@ -294,6 +295,33 @@
               @include text-heading5;
               color: var(--color-white);
             }
+          }
+        }
+      }
+
+      &-design {
+        @include centered-row;
+        gap: 6px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 9;
+
+        & > button {
+          @include button-secondary;
+          background-color: transparent;
+          border-radius: 12px;
+          color: var(--color-white-60);
+          height: 36px;
+          justify-content: center;
+          padding: 0;
+          width: 36px;
+
+          &.active {
+            @include button-secondary;
+            border-radius: 12px;
+            color: var(--color-white);
+            padding: 0;
           }
         }
       }
@@ -745,6 +773,10 @@
                 gap: 20px;
                 position: absolute;
                 right: 16px;
+
+                & > .clear-btn {
+                  @include button-ghost;
+                }
 
                 & > .done-btn {
                   @include button-primary;
