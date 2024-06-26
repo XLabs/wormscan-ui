@@ -1,5 +1,4 @@
 import { InfoCircledIcon } from "@radix-ui/react-icons";
-import { Network } from "@certusone/wormhole-sdk";
 import { Tooltip } from "src/components/atoms";
 import { formatAppIds, shortAddress } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
@@ -9,6 +8,7 @@ import { GetRedeem } from "./GetRedeem";
 import { VerifyRedemption } from "./VerifyRedemption";
 import { StatusBadge } from "src/components/molecules";
 import "./styles.scss";
+import { Network } from "@wormhole-foundation/sdk/dist/cjs";
 
 type Props = {
   appIds: string[];

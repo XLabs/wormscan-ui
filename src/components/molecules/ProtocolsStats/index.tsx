@@ -247,7 +247,7 @@ const ProtocolsStats = () => {
                             className="protocols-stats-container-element-item-value-chains-chain"
                             colorless={true}
                             key={chainId}
-                            network="MAINNET"
+                            network="Mainnet"
                             size={24}
                           />
                         );

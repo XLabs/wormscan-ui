@@ -1,8 +1,8 @@
 import React, { ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Network } from "@certusone/wormhole-sdk";
 import { Environment, testnetEnv, mainnetEnv } from "src/utils/environment";
 import { changeClientNetwork } from "src/api/Client";
+import { Network } from "@wormhole-foundation/sdk/dist/cjs";
 
 interface EnvironmentContext {
   environment: Environment;
@@ -19,7 +19,7 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
 
   const networkParam = searchParams.get("network")?.toUpperCase();
   const [currentEnv, setCurrentEnv] = useState<Environment>(
-    networkParam === "TESTNET" ? testnetEnv : mainnetEnv,
+    networkParam === "Testnet" ? testnetEnv : mainnetEnv,
   );
   const [clearChildren, setClearChildren] = useState<boolean>(true);
 
@@ -27,17 +27,17 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
     (env: Network) => {
       /* if (env === "DEVNET") {
         setSearchParams(prev => {
-          prev.set("network", "testnet");
+          prev.set("network", "Testnet");
           return prev;
         });
-      } else */ if (env === "TESTNET") {
+      } else */ if (env === "Testnet") {
         setSearchParams(prev => {
-          prev.set("network", "TESTNET");
+          prev.set("network", "Mainnet");
           return prev;
         });
-      } else if (env === "MAINNET") {
+      } else if (env === "Mainnet") {
         setSearchParams(prev => {
-          prev.set("network", "MAINNET");
+          prev.set("network", "Testnet");
           return prev;
         });
       }
@@ -52,12 +52,12 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
 
 
         setClearChildren(true);
-      } else */ if (env === "TESTNET") {
-      changeClientNetwork("TESTNET");
+      } else */ if (env === "Testnet") {
+      changeClientNetwork("Testnet");
       setCurrentEnv(testnetEnv);
       setClearChildren(true);
-    } else if (env === "MAINNET") {
-      changeClientNetwork("MAINNET");
+    } else if (env === "Mainnet") {
+      changeClientNetwork("Mainnet");
       setCurrentEnv(mainnetEnv);
       setClearChildren(true);
     }
@@ -66,7 +66,7 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    let selectedNetwork = "MAINNET";
+    let selectedNetwork = "Mainnet";
     if (networkParam) selectedNetwork = networkParam;
     changeEnvironment(selectedNetwork as Network);
   }, [changeEnvironment, networkParam]);

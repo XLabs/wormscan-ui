@@ -655,7 +655,7 @@ export const getCctpDomain = (dom: number) => {
 };
 
 const getCctpEmitterAddress = (env: Environment, chain: ChainId) => {
-  if (env.network === "MAINNET") {
+  if (env.network === "Mainnet") {
     if (chain === ChainId.Ethereum) return "0xaada05bd399372f0b0463744c09113c137636f6a";
     if (chain === ChainId.Avalanche) return "0x09fb06a271faff70a651047395aaeb6265265f13";
     if (chain === ChainId.Arbitrum) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
@@ -672,7 +672,7 @@ const getCctpEmitterAddress = (env: Environment, chain: ChainId) => {
 };
 
 export const getUsdcAddress = (network: Network, chain: ChainId) => {
-  if (network === "MAINNET") {
+  if (network === "Mainnet") {
     if (chain === ChainId.Ethereum) return "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
     if (chain === ChainId.Avalanche) return "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E";
     if (chain === ChainId.Arbitrum) return "0xaf88d065e77c8cc2239327c5edb3a432268e5831";

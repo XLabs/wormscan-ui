@@ -1,4 +1,4 @@
-import { CHAIN_ID_SOLANA, ChainId, tryHexToNativeString } from "@certusone/wormhole-sdk";
+import { ChainId, chainToChainId, toChain, toNative } from "@wormhole-foundation/sdk";
 import { ethers } from "ethers";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
@@ -22,7 +22,7 @@ export async function getNttInfo(env: Environment, data: GetOperationsOutput, pa
   let contractAddress: string = parsedPayload?.transceiverMessage?.recipientNttManager;
 
   try {
-    contractAddress = tryHexToNativeString(contractAddress, targetChain);
+    contractAddress = toNative(toChain(targetChain), contractAddress).toString();
 
     if (NTT_MANAGER_TOKENS[env.network][contractAddress]) {
       return {
@@ -32,7 +32,7 @@ export async function getNttInfo(env: Environment, data: GetOperationsOutput, pa
 
     console.log("ntt token not found");
 
-    if (targetChain !== CHAIN_ID_SOLANA) {
+    if (targetChain !== chainToChainId("Solana")) {
       const contractProvider = getEthersProvider(getChainInfo(env, targetChain as ChainId));
       const tokenAbi = ["function token() view returns (address)"];
       const contract = new ethers.Contract(contractAddress, tokenAbi, contractProvider);

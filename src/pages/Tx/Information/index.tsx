@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { ChainId, isEVMChain } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import {
   CCTP_MANUAL_APP_ID,
@@ -38,6 +37,8 @@ import RelayerOverview from "./Overview/RelayerOverview";
 import AdvancedView from "./AdvancedView";
 
 import "./styles.scss";
+import { ChainId } from "@wormhole-foundation/sdk/dist/cjs";
+import { platformToChains } from "@wormhole-foundation/sdk";
 
 interface Props {
   blockData: GetBlockData;
@@ -65,7 +66,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
 
-  const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
+  const totalGuardiansNeeded = currentNetwork === "Mainnet" ? 13 : 1;
   const vaa = data?.vaa;
   const { isDuplicated } = data?.vaa || {};
   const guardianSignaturesCount =
@@ -245,11 +246,10 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   // --- ⬇ Add to MetaMask ⬇ ---
   const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
   const tokenEffectiveAddress = wrappedSide === "target" ? wrappedTokenAddress : tokenAddress;
-  const showMetaMaskBtn =
-    isEVMChain(toChain) && tokenInfo?.tokenDecimals && toChain === targetTokenChain;
+  const showMetaMaskBtn = toChain && tokenInfo?.tokenDecimals && toChain === targetTokenChain;
 
   useEffect(() => {
-    if (isEVMChain(toChain)) {
+    if (platformToChains("Evm").includes(toChain)) {
       getTokenInformation(targetTokenChain, environment, targetTokenAddress).then(data => {
         if (data) {
           getTokenLogo({ tokenAddress: targetTokenAddress }).then(tokenImage => {
@@ -318,7 +318,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
     (STATUS === "EXTERNAL_TX" ||
       STATUS === "VAA_EMITTED" ||
       (STATUS === "PENDING_REDEEM" && new Date(timestamp) < date_30_min_before)) &&
-    (isEVMChain(toChain) || toChain === 1 || toChain === 21) &&
+    (platformToChains("Evm").includes(toChain) || toChain === 1 || toChain === 21) &&
     toChain === targetTokenChain &&
     !!toAddress &&
     !!(wrappedTokenAddress && tokenEffectiveAddress) &&
@@ -526,7 +526,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
                   </div>
                 )}
 
-                {isBigTransaction && currentNetwork === "MAINNET" ? (
+                {isBigTransaction && currentNetwork === "Mainnet" ? (
                   <p>
                     This transaction will take 24 hours to process, as it exceeds the Wormhole
                     network&apos;s temporary transaction limit of $
@@ -534,7 +534,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
                     {getChainName({ chainId: fromChain, network: currentNetwork })} for security
                     reasons. <LearnMoreLink /> about this temporary security measure.
                   </p>
-                ) : isDailyLimitExceeded && currentNetwork === "MAINNET" ? (
+                ) : isDailyLimitExceeded && currentNetwork === "Mainnet" ? (
                   <p>
                     This transaction will take up to 24 hours to process as Wormhole has reached the
                     daily limit for source Blockchain{" "}

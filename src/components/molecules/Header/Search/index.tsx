@@ -37,7 +37,7 @@ const Search = forwardRef<HTMLInputElement, Props>((props, ref) => {
 
   const { mutate: mutateFindVAAByAddress } = useMutation(
     async ({ address }: { address: string }) => {
-      const otherNetwork = environment.network === "MAINNET" ? "TESTNET" : "MAINNET";
+      const otherNetwork = environment.network === "Mainnet" ? "Testnet" : "Mainnet";
 
       const [currentNetworkResult, otherNetworkResult] = (await Promise.all([
         getClient().guardianNetwork.getOperations({ address }),

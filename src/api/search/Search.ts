@@ -1,4 +1,4 @@
-import { Network } from "@certusone/wormhole-sdk";
+import { Network } from "@wormhole-foundation/sdk/dist/cjs";
 import axios, { AxiosError } from "axios";
 import { APIClient } from "src/api/api-client";
 import { COINGECKO_URL } from "src/api/consts";
@@ -27,7 +27,7 @@ export class Search {
     const CORS_PROXY = "https://corsproxy.io/?";
 
     let cctpURL = CORS_PROXY + "https://relayer.stable.io/v1/relays?txHash=";
-    if (network === "TESTNET") {
+    if (network === "Testnet") {
       cctpURL = CORS_PROXY + "https://relayer.dev.stable.io/v1/relays?txHash=";
     }
 

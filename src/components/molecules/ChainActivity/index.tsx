@@ -62,7 +62,7 @@ const ChainActivity = () => {
 
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
-  const orderedChains = currentNetwork === "MAINNET" ? ChainFilterMainnet : ChainFilterTestnet;
+  const orderedChains = currentNetwork === "Mainnet" ? ChainFilterMainnet : ChainFilterTestnet;
   const ALL_CHAINS = {
     label: "All Chains",
     value: "All Chains",

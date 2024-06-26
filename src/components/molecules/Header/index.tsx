@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-import { HamburgerMenuIcon, Cross1Icon, TriangleDownIcon } from "@radix-ui/react-icons";
-import { Network } from "@certusone/wormhole-sdk";
-import DiscordIcon from "src/icons/DiscordIcon";
-import TwitterIcon from "src/icons/TwitterIcon";
+import { TriangleDownIcon } from "@radix-ui/react-icons";
+import { Network } from "@wormhole-foundation/sdk/dist/cjs";
 import { TWITTER_URL, DISCORD_URL, WORMHOLE_DOCS_URL, XLABS_CAREERS_URL } from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { NavLink, Select, Tag } from "src/components/atoms";
@@ -18,8 +16,8 @@ import "./styles.scss";
 type NetworkSelectProps = { label: string; value: Network };
 
 const NETWORK_LIST: NetworkSelectProps[] = [
-  { label: "Mainnet", value: "MAINNET" },
-  { label: "Testnet", value: "TESTNET" },
+  { label: "Mainnet", value: "Mainnet" },
+  { label: "Testnet", value: "Testnet" },
 ];
 
 const Header = () => {
@@ -38,7 +36,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const currentNetwork = environment.network;
-  const isMainnet = currentNetwork === "MAINNET";
+  const isMainnet = currentNetwork === "Mainnet";
 
   useEffect(() => {
     if (isDesktop) {

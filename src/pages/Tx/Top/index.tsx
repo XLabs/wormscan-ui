@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { CopyIcon } from "@radix-ui/react-icons";
-import { CHAIN_ID_WORMCHAIN } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { txType } from "src/consts";
 import { Tag } from "src/components/atoms";
@@ -44,7 +43,7 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
         <div>Tx Hash:</div>
         <div className="tx-top-txId-container">
           {/* delete conditional when WORMCHAIN gets an explorer */}
-          {(emitterChainId === CHAIN_ID_WORMCHAIN || emitterChainId === ChainId.Sei) &&
+          {(emitterChainId === 3104 || emitterChainId === ChainId.Sei) &&
           !gatewayInfo?.originTxHash ? (
             <div>
               <span>{parseTxHash}</span>

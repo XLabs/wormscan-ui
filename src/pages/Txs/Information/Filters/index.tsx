@@ -174,7 +174,7 @@ const Filters = () => {
 
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
-  const orderedChains = currentNetwork === "MAINNET" ? ChainFilterMainnet : ChainFilterTestnet;
+  const orderedChains = currentNetwork === "Mainnet" ? ChainFilterMainnet : ChainFilterTestnet;
 
   useEffect(() => {
     if (isMobile) {

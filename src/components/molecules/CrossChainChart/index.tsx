@@ -71,7 +71,7 @@ const CrossChainChart = () => {
   const isDesktop = width >= 1024;
 
   useEffect(() => {
-    if (currentNetwork === "MAINNET") {
+    if (currentNetwork === "Mainnet") {
       setTypeList(MAINNET_TYPE_LIST);
     } else {
       setSelectedType("tx");
@@ -210,7 +210,7 @@ const CrossChainChart = () => {
       </div>
 
       <div className="cross-chain-options">
-        {currentNetwork === "MAINNET" ? (
+        {currentNetwork === "Mainnet" ? (
           <ToggleGroup
             ariaLabel="Select type"
             className="cross-chain-options-items"

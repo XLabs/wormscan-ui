@@ -19,7 +19,7 @@ export const processData = (
       destinations: item.destinations.filter(dest => dest.percentage !== 0),
     }))
     .filter(item => item.percentage > PERCENTAGE_THRESHOLD)
-    .filter(item => getChainName({ chainId: item.chain, network: "MAINNET" }) !== "Unset");
+    .filter(item => getChainName({ chainId: item.chain, network: "Mainnet" }) !== "Unset");
 
   // if showing sources -> destinations, just cut the 'data' depending on page:
   if (selectedDestination === "sources") {
@@ -73,7 +73,7 @@ export const processData = (
     const newData = [...finalInvertedData]
       .sort((a, b) => +b.volume - +a.volume)
       .filter(a => a.percentage > PERCENTAGE_THRESHOLD)
-      .filter(item => getChainName({ chainId: item.chain, network: "MAINNET" }) !== "Unset");
+      .filter(item => getChainName({ chainId: item.chain, network: "Mainnet" }) !== "Unset");
 
     return (showOthers ? newData.slice(10) : newData.slice(0, 10)) as CrossChainActivity;
   }

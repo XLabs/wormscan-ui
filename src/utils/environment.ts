@@ -1,32 +1,19 @@
-import {
-  CHAIN_ID_ARBITRUM,
-  CHAIN_ID_AVAX,
-  CHAIN_ID_BASE,
-  CHAIN_ID_BSC,
-  CHAIN_ID_CELO,
-  CHAIN_ID_ETH,
-  CHAIN_ID_OPTIMISM,
-  CHAIN_ID_POLYGON,
-  CHAIN_ID_XLAYER,
-  ChainId,
-  ChainName,
-  Network,
-} from "@certusone/wormhole-sdk";
+import { chainToChainId, ChainId, Network } from "@wormhole-foundation/sdk";
 import { ethers } from "ethers";
 
 export const SLOW_FINALITY_CHAINS = [
-  CHAIN_ID_ETH,
-  CHAIN_ID_POLYGON,
-  CHAIN_ID_BSC,
-  CHAIN_ID_OPTIMISM,
-  CHAIN_ID_ARBITRUM,
-  CHAIN_ID_AVAX,
-  CHAIN_ID_BASE,
-  CHAIN_ID_CELO,
-  CHAIN_ID_XLAYER,
+  chainToChainId("Ethereum"),
+  chainToChainId("Polygon"),
+  chainToChainId("Bsc"),
+  chainToChainId("Optimism"),
+  chainToChainId("Arbitrum"),
+  chainToChainId("Avalanche"),
+  chainToChainId("Base"),
+  chainToChainId("Celo"),
+  chainToChainId("Xlayer"),
 ];
 
-const MAINNET_RPCS: { [key in ChainName]?: string } = {
+const MAINNET_RPCS = {
   acala: "https://eth-rpc-acala.aca-api.network",
   algorand: "https://mainnet-api.algonode.cloud",
   aptos: "https://fullnode.mainnet.aptoslabs.com/",
@@ -56,7 +43,7 @@ const MAINNET_RPCS: { [key in ChainName]?: string } = {
   xlayer: "https://xlayerrpc.okx.com",
 };
 
-const TESTNET_RPCS: { [key in ChainName]?: string } = {
+const TESTNET_RPCS = {
   arbitrum: "https://goerli-rollup.arbitrum.io/rpc",
   arbitrum_sepolia: "https://sepolia-rollup.arbitrum.io/rpc",
   avalanche: "https://api.avax-test.network/ext/bc/C/rpc",
@@ -97,7 +84,7 @@ export type ChainInfo = {
 export const testnetDefaultDeliveryProviderContractAddress =
   "0x60a86b97a7596eBFd25fb769053894ed0D9A8366";
 export const testnetEnv: Environment = {
-  network: "TESTNET",
+  network: "Testnet",
   chainInfos: [
     {
       chainId: 2 as ChainId,
@@ -286,7 +273,7 @@ export const testnetEnv: Environment = {
 export const mainnetDefaultDeliveryProviderContractAddress =
   "0x7A0a53847776f7e94Cc35742971aCb2217b0Db81";
 export const mainnetEnv: Environment = {
-  network: "MAINNET",
+  network: "Mainnet",
   chainInfos: [
     {
       chainId: 2 as ChainId,
@@ -460,7 +447,7 @@ export const mainnetEnv: Environment = {
 };
 
 export function getEthersProvider(chainInfo: ChainInfo) {
-  if (chainInfo?.rpcUrl) return new ethers.providers.JsonRpcProvider(chainInfo.rpcUrl);
+  if (chainInfo?.rpcUrl) return new ethers.JsonRpcProvider(chainInfo.rpcUrl);
 
   return null;
 }

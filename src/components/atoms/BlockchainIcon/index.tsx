@@ -1,4 +1,4 @@
-import { Network } from "@certusone/wormhole-sdk";
+import { Network } from "@wormhole-foundation/sdk/dist/cjs";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
 import { ChainId } from "src/api";
 import "./styles.scss";

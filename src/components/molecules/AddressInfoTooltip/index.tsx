@@ -18,7 +18,7 @@ const ChainInfo = ({ data, chainId }: ChainInfoProps) => {
       {(data.arkhamEntity || data.arkhamLabel) && (
         <>
           <div className="address-chain-info">
-            <BlockchainIcon chainId={chainId} network="MAINNET" size={22} />
+            <BlockchainIcon chainId={chainId} network="Mainnet" size={22} />
             <span>{data.arkhamEntity?.name}</span>
 
             {(data.arkhamEntity?.website || data.arkhamEntity?.twitter) && (

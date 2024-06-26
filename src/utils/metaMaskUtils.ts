@@ -1,28 +1,5 @@
 import { toast } from "react-toastify";
-import {
-  ChainId,
-  CHAIN_ID_ACALA,
-  CHAIN_ID_ARBITRUM,
-  CHAIN_ID_AURORA,
-  CHAIN_ID_AVAX,
-  CHAIN_ID_BASE,
-  CHAIN_ID_BLAST,
-  CHAIN_ID_BSC,
-  CHAIN_ID_CELO,
-  CHAIN_ID_ETH,
-  CHAIN_ID_FANTOM,
-  CHAIN_ID_KARURA,
-  CHAIN_ID_KLAYTN,
-  CHAIN_ID_MOONBEAM,
-  CHAIN_ID_NEON,
-  CHAIN_ID_OASIS,
-  CHAIN_ID_OPTIMISM,
-  CHAIN_ID_POLYGON,
-  CHAIN_ID_SCROLL,
-  Network,
-  CHAIN_ID_XLAYER,
-  CHAIN_ID_MANTLE,
-} from "@certusone/wormhole-sdk";
+import { ChainId, Network, chainToChainId, chains, toChainId } from "@wormhole-foundation/sdk";
 import detectEthereumProvider from "@metamask/detect-provider";
 
 export interface AddEthereumChainParameter {
@@ -47,9 +24,9 @@ export interface TokenInfo {
 }
 
 interface ChainData {
-  MAINNET: number;
-  TESTNET: number;
-  DEVNET: number;
+  Mainnet: number;
+  Testnet: number;
+  Devnet: number;
 }
 
 interface ChainIds {
@@ -363,51 +340,51 @@ export const METAMASK_CHAIN_PARAMETERS: {
 };
 
 export const CHAIN_IDS: ChainIds = {
-  ACALA_NETWORK_CHAIN_ID: { MAINNET: 787, TESTNET: 597, DEVNET: 597 },
-  ARBITRUM_NETWORK_CHAIN_ID: { MAINNET: 42161, TESTNET: 421613, DEVNET: 421613 },
-  AURORA_NETWORK_CHAIN_ID: { MAINNET: 1313161554, TESTNET: 1313161555, DEVNET: 1313161555 },
-  AVAX_NETWORK_CHAIN_ID: { MAINNET: 43114, TESTNET: 43113, DEVNET: 43113 },
-  BASE_NETWORK_CHAIN_ID: { MAINNET: 8453, TESTNET: 84531, DEVNET: 84531 },
-  BLAST_NETWORK_CHAIN_ID: { MAINNET: 81457, TESTNET: 168587773, DEVNET: 168587773 },
-  BSC_NETWORK_CHAIN_ID: { MAINNET: 56, TESTNET: 97, DEVNET: 97 },
-  CELO_NETWORK_CHAIN_ID: { MAINNET: 42220, TESTNET: 44787, DEVNET: 44787 },
-  ETH_NETWORK_CHAIN_ID: { MAINNET: 1, TESTNET: 5, DEVNET: 5 },
-  FANTOM_NETWORK_CHAIN_ID: { MAINNET: 250, TESTNET: 4002, DEVNET: 4002 },
-  KARURA_NETWORK_CHAIN_ID: { MAINNET: 686, TESTNET: 596, DEVNET: 596 },
-  KLAYTN_NETWORK_CHAIN_ID: { MAINNET: 8217, TESTNET: 1001, DEVNET: 1001 },
-  MANTLE_NETWORK_CHAIN_ID: { MAINNET: 5000, TESTNET: 5001, DEVNET: 5001 },
-  MOONBEAM_NETWORK_CHAIN_ID: { MAINNET: 1284, TESTNET: 1287, DEVNET: 1287 },
-  NEON_NETWORK_CHAIN_ID: { MAINNET: 245022934, TESTNET: 245022926, DEVNET: 245022926 },
-  OASIS_NETWORK_CHAIN_ID: { MAINNET: 42262, TESTNET: 42261, DEVNET: 42261 },
-  OPTIMISM_NETWORK_CHAIN_ID: { MAINNET: 10, TESTNET: 420, DEVNET: 420 },
-  POLYGON_NETWORK_CHAIN_ID: { MAINNET: 137, TESTNET: 80001, DEVNET: 80001 },
-  ROPSTEN_ETH_NETWORK_CHAIN_ID: { MAINNET: 1, TESTNET: 3, DEVNET: 3 },
-  SCROLL_NETWORK_CHAIN_ID: { MAINNET: 534352, TESTNET: 534351, DEVNET: 534351 },
-  XLAYER_NETWORK_CHAIN_ID: { MAINNET: 196, TESTNET: 195, DEVNET: 195 },
+  ACALA_NETWORK_CHAIN_ID: { Mainnet: 787, Testnet: 597, Devnet: 597 },
+  ARBITRUM_NETWORK_CHAIN_ID: { Mainnet: 42161, Testnet: 421613, Devnet: 421613 },
+  AURORA_NETWORK_CHAIN_ID: { Mainnet: 1313161554, Testnet: 1313161555, Devnet: 1313161555 },
+  AVAX_NETWORK_CHAIN_ID: { Mainnet: 43114, Testnet: 43113, Devnet: 43113 },
+  BASE_NETWORK_CHAIN_ID: { Mainnet: 8453, Testnet: 84531, Devnet: 84531 },
+  BLAST_NETWORK_CHAIN_ID: { Mainnet: 81457, Testnet: 168587773, Devnet: 168587773 },
+  BSC_NETWORK_CHAIN_ID: { Mainnet: 56, Testnet: 97, Devnet: 97 },
+  CELO_NETWORK_CHAIN_ID: { Mainnet: 42220, Testnet: 44787, Devnet: 44787 },
+  ETH_NETWORK_CHAIN_ID: { Mainnet: 1, Testnet: 5, Devnet: 5 },
+  FANTOM_NETWORK_CHAIN_ID: { Mainnet: 250, Testnet: 4002, Devnet: 4002 },
+  KARURA_NETWORK_CHAIN_ID: { Mainnet: 686, Testnet: 596, Devnet: 596 },
+  KLAYTN_NETWORK_CHAIN_ID: { Mainnet: 8217, Testnet: 1001, Devnet: 1001 },
+  MANTLE_NETWORK_CHAIN_ID: { Mainnet: 5000, Testnet: 5001, Devnet: 5001 },
+  MOONBEAM_NETWORK_CHAIN_ID: { Mainnet: 1284, Testnet: 1287, Devnet: 1287 },
+  NEON_NETWORK_CHAIN_ID: { Mainnet: 245022934, Testnet: 245022926, Devnet: 245022926 },
+  OASIS_NETWORK_CHAIN_ID: { Mainnet: 42262, Testnet: 42261, Devnet: 42261 },
+  OPTIMISM_NETWORK_CHAIN_ID: { Mainnet: 10, Testnet: 420, Devnet: 420 },
+  POLYGON_NETWORK_CHAIN_ID: { Mainnet: 137, Testnet: 80001, Devnet: 80001 },
+  ROPSTEN_ETH_NETWORK_CHAIN_ID: { Mainnet: 1, Testnet: 3, Devnet: 3 },
+  SCROLL_NETWORK_CHAIN_ID: { Mainnet: 534352, Testnet: 534351, Devnet: 534351 },
+  XLAYER_NETWORK_CHAIN_ID: { Mainnet: 196, Testnet: 195, Devnet: 195 },
 };
 
 export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number | undefined => {
   const chainNetworks = {
-    [CHAIN_ID_ACALA]: CHAIN_IDS.ACALA_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_ARBITRUM]: CHAIN_IDS.ARBITRUM_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_AURORA]: CHAIN_IDS.AURORA_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_AVAX]: CHAIN_IDS.AVAX_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_BASE]: CHAIN_IDS.BASE_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_BLAST]: CHAIN_IDS.BLAST_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_BSC]: CHAIN_IDS.BSC_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_CELO]: CHAIN_IDS.CELO_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_ETH]: CHAIN_IDS.ETH_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_FANTOM]: CHAIN_IDS.FANTOM_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_KARURA]: CHAIN_IDS.KARURA_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_KLAYTN]: CHAIN_IDS.KLAYTN_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_MANTLE]: CHAIN_IDS.MANTLE_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_MOONBEAM]: CHAIN_IDS.MOONBEAM_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_NEON]: CHAIN_IDS.NEON_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_OASIS]: CHAIN_IDS.OASIS_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_OPTIMISM]: CHAIN_IDS.OPTIMISM_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_POLYGON]: CHAIN_IDS.POLYGON_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_SCROLL]: CHAIN_IDS.SCROLL_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_XLAYER]: CHAIN_IDS.XLAYER_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Acala")]: CHAIN_IDS.ACALA_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Arbitrum")]: CHAIN_IDS.ARBITRUM_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Aurora")]: CHAIN_IDS.AURORA_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Avalanche")]: CHAIN_IDS.AVAX_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Base")]: CHAIN_IDS.BASE_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Blast")]: CHAIN_IDS.BLAST_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Bsc")]: CHAIN_IDS.BSC_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Celo")]: CHAIN_IDS.CELO_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Ethereum")]: CHAIN_IDS.ETH_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Fantom")]: CHAIN_IDS.FANTOM_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Karura")]: CHAIN_IDS.KARURA_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Klaytn")]: CHAIN_IDS.KLAYTN_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Mantle")]: CHAIN_IDS.MANTLE_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Moonbeam")]: CHAIN_IDS.MOONBEAM_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Neon")]: CHAIN_IDS.NEON_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Oasis")]: CHAIN_IDS.OASIS_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Optimism")]: CHAIN_IDS.OPTIMISM_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Polygon")]: CHAIN_IDS.POLYGON_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Scroll")]: CHAIN_IDS.SCROLL_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Xlayer")]: CHAIN_IDS.XLAYER_NETWORK_CHAIN_ID[currentNetwork],
   };
 
   const evmChainId = chainNetworks[chainId as keyof typeof chainNetworks];

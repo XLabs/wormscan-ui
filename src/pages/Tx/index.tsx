@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { parseVaa, tryHexToNativeString } from "@certusone/wormhole-sdk";
+import { deserialize, encoding, toNative } from "@wormhole-foundation/sdk/dist/cjs";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
 import { SearchNotFound } from "src/components/organisms";
@@ -62,10 +62,10 @@ import {
   parseGenericRelayerVaa,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
-import {
-  DeliveryInstruction,
-  parseEVMExecutionInfoV1,
-} from "@certusone/wormhole-sdk/lib/cjs/relayer";
+// import {
+//   DeliveryInstruction,
+//   parseEVMExecutionInfoV1,
+// } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { BlockSection } from "./Information/AdvancedView";
 
 const Tx = () => {
@@ -254,7 +254,7 @@ const Tx = () => {
   const { data: VAADataByTx } = useQuery(
     ["getVAAbyTxHash", txHash],
     async () => {
-      const otherNetwork = network === "MAINNET" ? "TESTNET" : "MAINNET";
+      const otherNetwork = network === "Mainnet" ? "Testnet" : "Mainnet";
 
       const currentNetworkResponse = await getClient()
         .guardianNetwork.getOperations({
@@ -420,7 +420,7 @@ const Tx = () => {
       if (isNaN(Number(chainId)) || isNaN(Number(seq))) {
         throw new Error("Request failed with status code 400");
       }
-      const otherNetwork = network === "MAINNET" ? "TESTNET" : "MAINNET";
+      const otherNetwork = network === "Mainnet" ? "Testnet" : "Mainnet";
 
       const currentNetworkResponse = await getClient().guardianNetwork.getOperations({
         vaaID: `${chainId}/${emitter}/${seq}`,
@@ -477,10 +477,15 @@ const Tx = () => {
           // Decode SignedVAA and get guardian signatures with name
           const guardianSetList = getGuardianSet(guardianSetIndex);
           const vaaBuffer = Buffer.from(vaa, "base64");
-          const parsedVaa = parseVaa(vaaBuffer);
+          const parsedVaa = deserialize("Uint8Array", vaaBuffer);
 
-          const { emitterAddress, guardianSignatures, hash, sequence } = parsedVaa || {};
-          const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
+          const guardianSignatures = parsedVaa.signatures.map(sig => ({
+            index: sig.guardianIndex,
+            signature: encoding.b64.encode(sig.signature.encode()),
+          }));
+
+          const { emitterAddress, hash, sequence, emitterChain } = parsedVaa || {};
+          const parsedEmitterAddress = emitterAddress.toNative(emitterChain).toString();
           const parsedHash = Buffer.from(hash).toString("hex");
           const parsedSequence = Number(sequence);
           const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
@@ -536,7 +541,7 @@ const Tx = () => {
           // or if the real chainId is probably ArbitrumSepolia, BaseSepolia or OptimismSepolia
           if (
             !data.targetChain?.transaction?.txHash ||
-            (network === "TESTNET" &&
+            (network === "Testnet" &&
               (data.content.standarizedProperties.fromChain === ChainId.Arbitrum ||
                 data.content.standarizedProperties.fromChain === ChainId.Base ||
                 data.content.standarizedProperties.fromChain === ChainId.Optimism ||
@@ -591,7 +596,7 @@ const Tx = () => {
             relayerInfo = result;
 
             const vaa = relayerInfo.vaa;
-            const parsedVaa = parseVaa(vaa);
+            const parsedVaa = deserialize("Uint8Array", vaa);
             const sourceTxHash = relayerInfo.sourceTxHash;
 
             const deliveryStatus = relayerInfo.DeliveryStatus;
@@ -603,15 +608,16 @@ const Tx = () => {
             const gasUsed = Number(deliveryStatus?.data?.delivery?.execution?.gasUsed);
             const targetTxTimestamp = relayerInfo?.targetTransaction?.targetTxTimestamp;
 
-            const { emitterAddress, emitterChain, guardianSignatures } = parsedVaa || {};
+            const guardianSignatures = parsedVaa.signatures.map(sig => ({
+              index: sig.guardianIndex,
+              signature: encoding.b64.encode(sig.signature.encode()),
+            }));
 
-            const bufferEmitterAddress = Buffer.from(emitterAddress).toString("hex");
-            const parsedEmitterAddress = parseAddress({
-              value: bufferEmitterAddress,
-              chainId: emitterChain as ChainId,
-            });
+            const { emitterAddress, emitterChain } = parsedVaa || {};
 
-            const totalGuardiansNeeded = network === "MAINNET" ? 13 : 1;
+            const parsedEmitterAddress = emitterAddress.toNative(emitterChain).toString();
+
+            const totalGuardiansNeeded = network === "Mainnet" ? 13 : 1;
             const guardianSignaturesCount = Array.isArray(guardianSignatures)
               ? guardianSignatures?.length || 0
               : 0;

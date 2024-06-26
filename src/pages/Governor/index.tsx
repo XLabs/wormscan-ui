@@ -301,7 +301,7 @@ const Governor = () => {
   });
 
   useEffect(() => {
-    if (currentNetwork !== "MAINNET") {
+    if (currentNetwork !== "Mainnet") {
       navigate("/");
     }
   }, [currentNetwork, navigate]);

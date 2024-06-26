@@ -21,7 +21,6 @@ import { getGuardianSet, txType } from "src/consts";
 import { formatDate } from "src/utils/date";
 import { useParams } from "react-router-dom";
 import { hexToBase64 } from "src/utils/string";
-import { parseVaa, parse } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { waitForElement } from "./waitForElement";
 
@@ -29,6 +28,7 @@ import VaaInput from "./Input";
 import CopyContent from "./CopyContent";
 import "./styles.scss";
 import { bigintToReadable } from "./bigintToReadable";
+import { deserialize, encoding } from "@wormhole-foundation/sdk/dist/cjs";
 
 const VaaParser = () => {
   useEffect(() => {
@@ -275,17 +275,6 @@ const VaaParser = () => {
     return guardianSetList?.[index]?.name;
   };
 
-  const getSdkParsedPayload = () => {
-    try {
-      const parsed = parse(Buffer.from(input, "base64"));
-
-      if (parsed.payload) return parsed.payload;
-      else return null;
-    } catch {
-      return null;
-    }
-  };
-
   const {
     isError,
     isLoading: isLoadingParse,
@@ -297,24 +286,23 @@ const VaaParser = () => {
       // success or fail, process RAW vaa (no API) and set it
       try {
         const vaaBuffer = Buffer.from(input, "base64");
-        const parsedVaa = parseVaa(vaaBuffer);
+        const parsedVaa = deserialize("Uint8Array", vaaBuffer);
 
-        const { emitterAddress, guardianSignatures, hash, sequence, guardianSetIndex } =
-          parsedVaa || {};
+        const guardianSignatures = parsedVaa.signatures.map(sig => ({
+          index: sig.guardianIndex,
+          signature: encoding.b64.encode(sig.signature.encode()),
+        }));
 
-        const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
+        const { emitterAddress, hash, sequence, guardianSet, emitterChain } = parsedVaa || {};
+
+        const parsedEmitterAddress = emitterAddress.toNative(emitterChain).toString();
         const parsedHash = Buffer.from(hash).toString("hex");
         const parsedSequence = Number(sequence);
         const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
           index,
           signature: Buffer.from(signature).toString("hex"),
-          name: getGuardianName(guardianSetIndex, index),
+          name: getGuardianName(guardianSet, index),
         }));
-
-        const parsedPayload = getSdkParsedPayload();
-        if (parsedPayload) {
-          (parsedVaa as any).parsedPayload = bigintToReadable(parsedPayload);
-        }
 
         setResultRaw({
           ...parsedVaa,
@@ -344,11 +332,6 @@ const VaaParser = () => {
         };
       }
 
-      if (!data.parsedPayload) {
-        const sdkPayload = getSdkParsedPayload();
-        if (sdkPayload) data.parsedPayload = bigintToReadable(sdkPayload);
-      }
-
       setResult(data);
 
       const vaaID = `${data?.vaa?.emitterChain}/${data?.vaa?.emitterAddress}/${data?.vaa?.sequence}`;
@@ -376,7 +359,7 @@ const VaaParser = () => {
       if (!!currentNetworkResponse?.length) return currentNetworkResponse;
 
       // if no result, check other network and make the switch
-      const otherNetwork = environment.network === "MAINNET" ? "TESTNET" : "MAINNET";
+      const otherNetwork = environment.network === "Mainnet" ? "Testnet" : "Mainnet";
       const otherNetworkResponse = await getClient(otherNetwork).guardianNetwork.getOperations(
         send,
       );

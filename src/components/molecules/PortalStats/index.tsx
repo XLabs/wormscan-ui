@@ -51,7 +51,7 @@ const PortalStats = ({ isLoading, isError, total_volume, volume24h }: Props) => 
                   </Tooltip>
                 </div>
                 <div className="portal-data-container-item-value">
-                  {environment.network === "MAINNET" ? (
+                  {environment.network === "Mainnet" ? (
                     <>${total_volume ? formatNumber(Number(total_volume)) : "-"}</>
                   ) : (
                     "-"
@@ -74,7 +74,7 @@ const PortalStats = ({ isLoading, isError, total_volume, volume24h }: Props) => 
                   </Tooltip>
                 </div>
                 <div className="portal-data-container-item-value">
-                  {environment.network === "MAINNET" ? (
+                  {environment.network === "Mainnet" ? (
                     <>${volume24h ? formatNumber(Number(volume24h), 0) : "-"}</>
                   ) : (
                     "-"
