@@ -397,9 +397,10 @@ const VaaParser = () => {
           setInput(rawVAA);
           setInputType("base64");
 
-          if (data.length > 1) {
-            const rawVAAs = data.map(a => a?.vaa?.raw);
-            setInputs(rawVAAs);
+          const multiple = data.map(a => a.vaa?.raw).filter(a => !!a);
+
+          if (multiple.length > 1) {
+            setInputs(multiple);
             setInputsIndex(0);
           }
 

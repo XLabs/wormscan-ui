@@ -35,8 +35,11 @@ export async function getPorticoInfo(
     const parsedPayload = data?.content?.payload?.parsedPayload;
     if (!parsedPayload?.flagSet) return null;
 
-    const shouldWrapNative = parsedPayload?.flagSet?.shouldWrapNative;
-    const shouldUnwrapNative = parsedPayload?.flagSet?.shouldUnwrapNative;
+    const shouldWrapNative =
+      parsedPayload?.flagSet?.shouldWrapNative || parsedPayload?.flagSet?.flags?.shouldWrapNative;
+    const shouldUnwrapNative =
+      parsedPayload?.flagSet?.shouldUnwrapNative ||
+      parsedPayload?.flagSet?.flags?.shouldUnwrapNative;
 
     if (shouldWrapNative) {
       shouldShowSourceTokenUrl = false;

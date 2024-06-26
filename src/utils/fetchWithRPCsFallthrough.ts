@@ -730,8 +730,10 @@ const getEvmTokenDetails = async (env: Environment, tokenChain: ChainId, tokenAd
   ];
 
   try {
+    const addr = tryHexToNativeString(tokenAddress, tokenChain);
+
     const tokenEthersProvider = getEthersProvider(getChainInfo(env, tokenChain as ChainId));
-    const contract = new ethers.Contract(tokenAddress, tokenInterfaceAbi, tokenEthersProvider);
+    const contract = new ethers.Contract(addr, tokenInterfaceAbi, tokenEthersProvider);
 
     const [name, symbol, tokenDecimals] = await Promise.all([
       contract.name(),
