@@ -1,16 +1,16 @@
 import { CopyIcon, TriangleDownIcon } from "@radix-ui/react-icons";
-import { parseVaa } from "@certusone/wormhole-sdk";
-import {
-  DeliveryInstruction,
-  RedeliveryInstruction,
-  parseEVMExecutionInfoV1,
-} from "@certusone/wormhole-sdk/lib/cjs/relayer";
+import { deserialize } from "@wormhole-foundation/sdk/dist/cjs";
+// import {
+//   DeliveryInstruction,
+//   RedeliveryInstruction,
+//   parseEVMExecutionInfoV1,
+// } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { OverviewProps } from "src/pages/Tx/Information/Overview";
 import { CopyToClipboard } from "src/components/molecules";
 import {
   DeliveryLifecycleRecord,
-  isRedelivery,
-  parseGenericRelayerVaa,
+  // isRedelivery,
+  // parseGenericRelayerVaa,
 } from "src/utils/genericRelayerVaaUtils";
 import { useLocalStorage } from "src/utils/hooks";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
@@ -26,6 +26,8 @@ type Props = {
   lifecycleRecord: DeliveryLifecycleRecord;
   overviewAndDetailProps?: OverviewProps;
 };
+
+// TODO : NEW SDK ALL THIS FILE
 
 const AdvancedView = ({
   data,
@@ -50,26 +52,26 @@ const AdvancedView = ({
       : null
     : null;
 
-  const readVAA = (record: DeliveryLifecycleRecord) => {
-    const vaa = record.vaa;
-    const parsedVaa = parseVaa(vaa);
-    const instruction: DeliveryInstruction | RedeliveryInstruction | null =
-      parseGenericRelayerVaa(parsedVaa);
+  // const readVAA = (record: DeliveryLifecycleRecord) => {
+  //   const vaa = record.vaa;
+  //   const parsedVaa = deserialize("Uint8Array", vaa);
+  //   const instruction: DeliveryInstruction | RedeliveryInstruction | null =
+  //     parseGenericRelayerVaa(parsedVaa);
 
-    const isDelivery = instruction && !isRedelivery(instruction);
+  //   const isDelivery = instruction && !isRedelivery(instruction);
 
-    return { parsedVaa, isDelivery, instruction };
-  };
+  //   return { parsedVaa, isDelivery, instruction };
+  // };
 
-  const relayerInfo = !!lifecycleRecord ? readVAA(lifecycleRecord) : null;
-  const deliveryInstruction = relayerInfo ? (relayerInfo.instruction as DeliveryInstruction) : null;
-  const redeliveryInstruction = relayerInfo
-    ? (relayerInfo.instruction as RedeliveryInstruction)
-    : null;
-  const decodeExecution =
-    relayerInfo && deliveryInstruction.encodedExecutionInfo
-      ? parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0]
-      : null;
+  // const relayerInfo = !!lifecycleRecord ? readVAA(lifecycleRecord) : null;
+  // const deliveryInstruction = relayerInfo ? (relayerInfo.instruction as DeliveryInstruction) : null;
+  // const redeliveryInstruction = relayerInfo
+  //   ? (relayerInfo.instruction as RedeliveryInstruction)
+  //   : null;
+  // const decodeExecution =
+  //   relayerInfo && deliveryInstruction.encodedExecutionInfo
+  //     ? parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0]
+  //     : null;
 
   const handleShowDetails = () => {
     setShowDetails(!showDetails);
@@ -111,7 +113,7 @@ const AdvancedView = ({
             />
           )}
 
-          {relayerInfo && (
+          {/* {relayerInfo && (
             <>
               {relayerInfo.isDelivery ? (
                 <BlockSection
@@ -222,7 +224,7 @@ const AdvancedView = ({
                 />
               )}
             </>
-          )}
+          )} */}
 
           <BlockSection
             id="signatures"

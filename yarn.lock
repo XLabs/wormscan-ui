@@ -230,7 +230,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.7":
+"@babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.7":
   version: 7.22.6
   resolution: "@babel/runtime@npm:7.22.6"
   dependencies:
@@ -3179,15 +3179,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/helpers@npm:^0.5.11":
-  version: 0.5.11
-  resolution: "@swc/helpers@npm:0.5.11"
-  dependencies:
-    tslib: ^2.4.0
-  checksum: 5d85e641d993264f38871bf53e7509da959cdff7646a40d876153291146b9d0aa701518546e5bfef18fa17c5944333bbeb66c2f0d7a570e8c5535d0937d76bd9
-  languageName: node
-  linkType: hard
-
 "@szmarczak/http-timer@npm:^4.0.5":
   version: 4.0.6
   resolution: "@szmarczak/http-timer@npm:4.0.6"
@@ -3421,28 +3412,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:^8.3.4":
-  version: 8.3.4
-  resolution: "@types/uuid@npm:8.3.4"
-  checksum: 6f11f3ff70f30210edaa8071422d405e9c1d4e53abbe50fdce365150d3c698fe7bbff65c1e71ae080cbfb8fded860dbb5e174da96fdbbdfcaa3fb3daa474d20f
-  languageName: node
-  linkType: hard
-
 "@types/ws@npm:^7.4.4":
   version: 7.4.7
   resolution: "@types/ws@npm:7.4.7"
   dependencies:
     "@types/node": "*"
   checksum: b4c9b8ad209620c9b21e78314ce4ff07515c0cadab9af101c1651e7bfb992d7fd933bd8b9c99d110738fd6db523ed15f82f29f50b45510288da72e964dedb1a3
-  languageName: node
-  linkType: hard
-
-"@types/ws@npm:^8.2.2":
-  version: 8.5.10
-  resolution: "@types/ws@npm:8.5.10"
-  dependencies:
-    "@types/node": "*"
-  checksum: 3ec416ea2be24042ebd677932a462cf16d2080393d8d7d0b1b3f5d6eaa4a7387aaf0eefb99193c0bfd29444857cf2e0c3ac89899e130550dc6c14ada8a46d25e
   languageName: node
   linkType: hard
 
@@ -3697,6 +3672,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@wormhole-foundation/sdk-base@npm:0.6.5":
+  version: 0.6.5
+  resolution: "@wormhole-foundation/sdk-base@npm:0.6.5"
+  dependencies:
+    "@scure/base": ^1.1.3
+  checksum: b21df73f958b17c44c147c0fcfd8eb9ccce59847242b59f568fc4b44ecb7074f1c8beb0a8eaf444cd3a6e3a3cc0f1c99a2d452768daf03ccb3072a3a0326c962
+  languageName: node
+  linkType: hard
+
 "@wormhole-foundation/sdk-base@npm:0.7.1-beta.2":
   version: 0.7.1-beta.2
   resolution: "@wormhole-foundation/sdk-base@npm:0.7.1-beta.2"
@@ -3768,6 +3752,28 @@ __metadata:
     "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
     cosmjs-types: ^0.9.0
   checksum: 99c0fa5d41534d10b1300a18299dfe271ef5ec0cdc424a14ec6ac4a9f646e3e8d030507b28da455333be810356a8b93dcbc0daf6674f38d311840572d49f72d8
+  languageName: node
+  linkType: hard
+
+"@wormhole-foundation/sdk-definitions-ntt@npm:^0.0.1-beta.0":
+  version: 0.0.1-beta.5
+  resolution: "@wormhole-foundation/sdk-definitions-ntt@npm:0.0.1-beta.5"
+  dependencies:
+    "@noble/hashes": ^1.3.1
+    "@wormhole-foundation/sdk-base": 0.6.5
+    "@wormhole-foundation/sdk-definitions": 0.6.5
+  checksum: e1d45ae7a64dfc5405894a0815046467f5142c2fcbda941a5eec1d591e2ba41c213ca32027bcbe790b4e1ff4b584e067688b23e730123a20347c7330d3bc187a
+  languageName: node
+  linkType: hard
+
+"@wormhole-foundation/sdk-definitions@npm:0.6.5":
+  version: 0.6.5
+  resolution: "@wormhole-foundation/sdk-definitions@npm:0.6.5"
+  dependencies:
+    "@noble/curves": ^1.4.0
+    "@noble/hashes": ^1.3.1
+    "@wormhole-foundation/sdk-base": 0.6.5
+  checksum: 951e0067f4c8423912f96fac86e0d00abce478000a405f1aabe8e2efeb95e8f7937032311682409f8b9addd192dce5689f1c0b26516d11d146136738e58207c0
   languageName: node
   linkType: hard
 
@@ -9325,11 +9331,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpc-websockets@npm:^7.5.1":
-  version: 7.5.1
-  resolution: "rpc-websockets@npm:7.5.1"
+"rpc-websockets@npm:7.11.0":
+  version: 7.11.0
+  resolution: "rpc-websockets@npm:7.11.0"
   dependencies:
-    "@babel/runtime": ^7.17.2
     bufferutil: ^4.0.1
     eventemitter3: ^4.0.7
     utf-8-validate: ^5.0.2
@@ -9340,29 +9345,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 9dda8c63a1d3e85e11597e1c364835ec6aa9a8de1b5cfb1629d0eafc3ae04509011d485025ed4f717c0b1dd048e2aafdd75080e866540b93e55fd8a2cd91bcfe
-  languageName: node
-  linkType: hard
-
-"rpc-websockets@npm:^9.0.2":
-  version: 9.0.2
-  resolution: "rpc-websockets@npm:9.0.2"
-  dependencies:
-    "@swc/helpers": ^0.5.11
-    "@types/uuid": ^8.3.4
-    "@types/ws": ^8.2.2
-    buffer: ^6.0.3
-    bufferutil: ^4.0.1
-    eventemitter3: ^5.0.1
-    utf-8-validate: ^5.0.2
-    uuid: ^8.3.2
-    ws: ^8.5.0
-  dependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: c93cd2e5b348ecfc6a4714d88b34c23470d086cecde5d1ba459750f9f1269c6e8edf80f3c628bab423f8720a49a653093e52821b9b0779fb79e041313d0e7173
+  checksum: bf8b760e661a1ac4a26d4d139cf98978d14b79dd6463d7acfd8a300355db4be57675f8e2cf5e2feada8cd9cc2ab063914f3b63fce442540a66141dff69e74f60
   languageName: node
   linkType: hard
 
@@ -10520,6 +10503,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": latest
     "@typescript-eslint/parser": latest
     "@wormhole-foundation/sdk": 0.7.1-beta.2
+    "@wormhole-foundation/sdk-definitions-ntt": ^0.0.1-beta.0
     analytics: ^0.8.9
     apexcharts: ^3.49.1
     assert: ^2.0.0

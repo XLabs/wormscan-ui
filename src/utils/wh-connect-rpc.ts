@@ -1,4 +1,4 @@
-import { chainToChainId, ChainId } from "@wormhole-foundation/sdk";
+import { chainToChainId, ChainId } from "@wormhole-foundation/sdk/dist/cjs";
 
 const connectAddresses: any = {
   Mainnet: {

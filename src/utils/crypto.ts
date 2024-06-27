@@ -4,7 +4,7 @@ import {
   platformToChains,
   toChainId,
   toNative,
-} from "@wormhole-foundation/sdk";
+} from "@wormhole-foundation/sdk/dist/cjs";
 import { CCTP_MANUAL_APP_ID, GATEWAY_APP_ID, GR_APP_ID } from "src/consts";
 
 export const formatUnits = (value: number, tokenDecimals = 8) => {

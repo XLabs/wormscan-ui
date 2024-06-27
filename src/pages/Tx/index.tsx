@@ -1,21 +1,28 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { deserialize, encoding, toNative } from "@wormhole-foundation/sdk/dist/cjs";
+import {
+  deserialize,
+  encoding,
+  toNative,
+  ChainId,
+  chainToChainId,
+  toChainId,
+} from "@wormhole-foundation/sdk/dist/cjs";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
 import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { ethers } from "ethers";
 import {
-  fetchWithRpcFallThrough,
+  // fetchWithRpcFallThrough,
   getCctpDomain,
   getEvmBlockInfo,
   getTokenInformation,
   getUsdcAddress,
 } from "src/utils/fetchWithRPCsFallthrough";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
-import { ChainId, ChainLimit } from "src/api";
+import { ChainLimit } from "src/api";
 import { getClient } from "src/api/Client";
 import analytics from "src/analytics";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
@@ -58,8 +65,8 @@ import "./styles.scss";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 import {
   DeliveryLifecycleRecord,
-  isRedelivery,
-  parseGenericRelayerVaa,
+  // isRedelivery,
+  // parseGenericRelayerVaa,
   populateDeliveryLifecycleRecordByVaa,
 } from "src/utils/genericRelayerVaaUtils";
 // import {
@@ -117,116 +124,116 @@ const Tx = () => {
   );
 
   const cancelRequests = useRef(false);
-  const tryToGetRpcInfo = useCallback(async () => {
-    const txsData = await fetchWithRpcFallThrough(environment, txHash);
+  // const tryToGetRpcInfo = useCallback(async () => {
+  //   const txsData = await fetchWithRpcFallThrough(environment, txHash);
 
-    if (txsData) {
-      const txData = await txsData[0];
-      if (txData) {
-        cancelRequests.current = true;
+  //   if (txsData) {
+  //     const txData = await txsData[0];
+  //     if (txData) {
+  //       cancelRequests.current = true;
 
-        analytics.track("txDetail", {
-          appIds: txData?.appIds?.join(", ") ? txData.appIds.join(", ") : "null",
-          chain: getChainName({ chainId: txData?.chain ?? 0, network }),
-          toChain: getChainName({ chainId: txData?.toChain ?? 0, network }),
-        });
+  //       analytics.track("txDetail", {
+  //         appIds: txData?.appIds?.join(", ") ? txData.appIds.join(", ") : "null",
+  //         chain: txData?.chain ? getChainName({ chainId: txData?.chain, network }) : 0,
+  //         toChain: txData?.toChain ? getChainName({ chainId: txData.toChain, network }) : 0,
+  //       });
 
-        const limitDataForChain = chainLimitsData
-          ? chainLimitsData.find((d: ChainLimit) => d.chainId === txData.chain)
-          : ETH_LIMIT;
-        const transactionLimit = limitDataForChain?.maxTransactionSize;
-        const isBigTransaction = transactionLimit <= Number(txData?.usdAmount);
-        const isDailyLimitExceeded =
-          limitDataForChain?.availableNotional < Number(txData?.usdAmount);
+  //       const limitDataForChain = chainLimitsData
+  //         ? chainLimitsData.find((d: ChainLimit) => d.chainId === txData.chain)
+  //         : ETH_LIMIT;
+  //       const transactionLimit = limitDataForChain?.maxTransactionSize;
+  //       const isBigTransaction = transactionLimit <= Number(txData?.usdAmount);
+  //       const isDailyLimitExceeded =
+  //         limitDataForChain?.availableNotional < Number(txData?.usdAmount);
 
-        setIsRPC(true);
-        setTxData([
-          {
-            emitterAddress: {
-              hex: txData.emitterAddress,
-              native: txData.emitterNattiveAddress,
-            },
-            emitterChain: txData.chain,
-            id: txData.id,
-            content: {
-              payload: {
-                payloadType: txData.payloadType,
-                parsedPayload: {
-                  feeAmount: txData?.fee,
-                  toNativeAmount: txData?.toNativeAmount,
-                },
-                amount: txData.amount,
-                fee: txData.fee,
-                fromAddress: txData.fromAddress,
-                payload: undefined,
-                toAddress: txData.toAddress,
-                toChain: txData.toChain,
-                tokenAddress: txData.tokenAddress,
-                tokenChain: txData.tokenChain,
-              },
-              standarizedProperties: {
-                amount: txData.amount,
-                appIds: txData.appIds ?? [],
-                fee: txData.fee,
-                feeAddress: "",
-                feeChain: txData.chain,
-                fromAddress: txData.fromAddress,
-                fromChain: txData.chain,
-                toAddress: txData.toAddress,
-                toChain: txData.toChain,
-                tokenAddress: txData.tokenAddress,
-                tokenChain: txData.tokenChain,
-                wrappedTokenAddress: txData.wrappedTokenAddress,
-              },
-            },
-            data: {
-              symbol: txData.symbol,
-              tokenAmount: txData.tokenAmount,
-              usdAmount: txData.usdAmount,
-            },
-            STATUS:
-              txData.STATUS === "IN_PROGRESS" && (isBigTransaction || isDailyLimitExceeded)
-                ? "IN_GOVERNORS"
-                : txData.STATUS,
-            isBigTransaction,
-            isDailyLimitExceeded,
-            transactionLimit,
-            sequence: "",
-            sourceChain: {
-              chainId: txData.chain,
-              timestamp: new Date(txData.timestamp),
-              from: txData.fromAddress,
-              status: undefined,
-              transaction: {
-                txHash: txData.txHash,
-              },
-            },
-            targetChain: {
-              chainId: txData.toChain,
-              timestamp: undefined,
-              transaction: undefined,
-              from: undefined,
-              status: undefined,
-              to: undefined,
-            },
-            vaa: undefined,
-          },
-        ]);
-        setBlockData({
-          currentBlock: txData.blockNumber,
-          lastFinalizedBlock: txData.lastFinalizedBlock,
-        });
+  //       setIsRPC(true);
+  //       setTxData([
+  //         {
+  //           emitterAddress: {
+  //             hex: txData.emitterAddress,
+  //             native: txData.emitterNattiveAddress,
+  //           },
+  //           emitterChain: txData.chain,
+  //           id: txData.id,
+  //           content: {
+  //             payload: {
+  //               payloadType: txData.payloadType,
+  //               parsedPayload: {
+  //                 feeAmount: txData?.fee,
+  //                 toNativeAmount: txData?.toNativeAmount,
+  //               },
+  //               amount: txData.amount,
+  //               fee: txData.fee,
+  //               fromAddress: txData.fromAddress,
+  //               payload: undefined,
+  //               toAddress: txData.toAddress,
+  //               toChain: txData.toChain,
+  //               tokenAddress: txData.tokenAddress,
+  //               tokenChain: txData.tokenChain,
+  //             },
+  //             standarizedProperties: {
+  //               amount: txData.amount,
+  //               appIds: txData.appIds ?? [],
+  //               fee: txData.fee,
+  //               feeAddress: "",
+  //               feeChain: txData.chain,
+  //               fromAddress: txData.fromAddress,
+  //               fromChain: txData.chain,
+  //               toAddress: txData.toAddress,
+  //               toChain: txData.toChain,
+  //               tokenAddress: txData.tokenAddress,
+  //               tokenChain: txData.tokenChain,
+  //               wrappedTokenAddress: txData.wrappedTokenAddress,
+  //             },
+  //           },
+  //           data: {
+  //             symbol: txData.symbol,
+  //             tokenAmount: txData.tokenAmount,
+  //             usdAmount: txData.usdAmount,
+  //           },
+  //           STATUS:
+  //             txData.STATUS === "IN_PROGRESS" && (isBigTransaction || isDailyLimitExceeded)
+  //               ? "IN_GOVERNORS"
+  //               : txData.STATUS,
+  //           isBigTransaction,
+  //           isDailyLimitExceeded,
+  //           transactionLimit,
+  //           sequence: "",
+  //           sourceChain: {
+  //             chainId: txData.chain,
+  //             timestamp: new Date(txData.timestamp),
+  //             from: txData.fromAddress,
+  //             status: undefined,
+  //             transaction: {
+  //               txHash: txData.txHash,
+  //             },
+  //           },
+  //           targetChain: {
+  //             chainId: txData.toChain,
+  //             timestamp: undefined,
+  //             transaction: undefined,
+  //             from: undefined,
+  //             status: undefined,
+  //             to: undefined,
+  //           },
+  //           vaa: undefined,
+  //         },
+  //       ]);
+  //       setBlockData({
+  //         currentBlock: txData.blockNumber,
+  //         lastFinalizedBlock: txData.lastFinalizedBlock,
+  //       });
 
-        if (txData.extraRawInfo) setExtraRawInfo(txData.extraRawInfo);
-        setErrorCode(undefined);
-        setIsLoading(false);
-      } else {
-        cancelRequests.current = false;
-      }
-    } else {
-      cancelRequests.current = false;
-    }
-  }, [chainLimitsData, environment, network, txHash]);
+  //       if (txData.extraRawInfo) setExtraRawInfo(txData.extraRawInfo);
+  //       setErrorCode(undefined);
+  //       setIsLoading(false);
+  //     } else {
+  //       cancelRequests.current = false;
+  //     }
+  //   } else {
+  //     cancelRequests.current = false;
+  //   }
+  // }, [chainLimitsData, environment, network, txHash]);
 
   useEffect(() => {
     setErrorCode(undefined);
@@ -246,10 +253,10 @@ const Tx = () => {
   useEffect(() => {
     // check that the limits are already loaded before executing tryToGetRpcInfo
     if (!isLoadingLimits && shouldTryToGetRpcInfo) {
-      tryToGetRpcInfo();
+      // tryToGetRpcInfo();
       setShouldTryToGetRpcInfo(false);
     }
-  }, [isLoadingLimits, shouldTryToGetRpcInfo, tryToGetRpcInfo]);
+  }, [isLoadingLimits, shouldTryToGetRpcInfo /* tryToGetRpcInfo */]);
 
   const { data: VAADataByTx } = useQuery(
     ["getVAAbyTxHash", txHash],
@@ -533,7 +540,7 @@ const Tx = () => {
           if (data.content?.standarizedProperties?.toChain) {
             data.content.standarizedProperties.wrappedTokenAddress = getUsdcAddress(
               network,
-              data.content?.standarizedProperties?.toChain,
+              data.content?.standarizedProperties?.toChain as ChainId,
             );
           }
 
@@ -542,12 +549,12 @@ const Tx = () => {
           if (
             !data.targetChain?.transaction?.txHash ||
             (network === "Testnet" &&
-              (data.content.standarizedProperties.fromChain === ChainId.Arbitrum ||
-                data.content.standarizedProperties.fromChain === ChainId.Base ||
-                data.content.standarizedProperties.fromChain === ChainId.Optimism ||
-                data.content.standarizedProperties.toChain === ChainId.Arbitrum ||
-                data.content.standarizedProperties.toChain === ChainId.Base ||
-                data.content.standarizedProperties.toChain === ChainId.Optimism))
+              (data.content.standarizedProperties.fromChain === chainToChainId("Arbitrum") ||
+                data.content.standarizedProperties.fromChain === chainToChainId("Base") ||
+                data.content.standarizedProperties.fromChain === chainToChainId("Optimism") ||
+                data.content.standarizedProperties.toChain === chainToChainId("Arbitrum") ||
+                data.content.standarizedProperties.toChain === chainToChainId("Base") ||
+                data.content.standarizedProperties.toChain === chainToChainId("Optimism")))
           ) {
             // get CCTP relayer information
             const relayResponse = await getClient().search.getCctpRelay({
@@ -591,218 +598,220 @@ const Tx = () => {
             return;
           }
 
-          try {
-            const result = await populateDeliveryLifecycleRecordByVaa(environment, data.vaa.raw);
-            relayerInfo = result;
+          return;
 
-            const vaa = relayerInfo.vaa;
-            const parsedVaa = deserialize("Uint8Array", vaa);
-            const sourceTxHash = relayerInfo.sourceTxHash;
+          // try {
+          //   const result = await populateDeliveryLifecycleRecordByVaa(environment, data.vaa.raw);
+          //   relayerInfo = result;
 
-            const deliveryStatus = relayerInfo.DeliveryStatus;
+          //   const vaa = relayerInfo.vaa;
+          //   const parsedVaa = deserialize("Uint8Array", vaa);
+          //   const sourceTxHash = relayerInfo.sourceTxHash;
 
-            const resultLogRegex =
-              deliveryStatus?.data?.delivery?.execution?.detail.match(/Status: ([^\r\n]+)/);
-            const resultLog = resultLogRegex ? resultLogRegex?.[1] : null;
+          //   const deliveryStatus = relayerInfo.DeliveryStatus;
 
-            const gasUsed = Number(deliveryStatus?.data?.delivery?.execution?.gasUsed);
-            const targetTxTimestamp = relayerInfo?.targetTransaction?.targetTxTimestamp;
+          //   const resultLogRegex =
+          //     deliveryStatus?.data?.delivery?.execution?.detail.match(/Status: ([^\r\n]+)/);
+          //   const resultLog = resultLogRegex ? resultLogRegex?.[1] : null;
 
-            const guardianSignatures = parsedVaa.signatures.map(sig => ({
-              index: sig.guardianIndex,
-              signature: encoding.b64.encode(sig.signature.encode()),
-            }));
+          //   const gasUsed = Number(deliveryStatus?.data?.delivery?.execution?.gasUsed);
+          //   const targetTxTimestamp = relayerInfo?.targetTransaction?.targetTxTimestamp;
 
-            const { emitterAddress, emitterChain } = parsedVaa || {};
+          //   const guardianSignatures = parsedVaa.signatures.map(sig => ({
+          //     index: sig.guardianIndex,
+          //     signature: encoding.b64.encode(sig.signature.encode()),
+          //   }));
 
-            const parsedEmitterAddress = emitterAddress.toNative(emitterChain).toString();
+          //   const { emitterAddress, emitterChain } = parsedVaa || {};
 
-            const totalGuardiansNeeded = network === "Mainnet" ? 13 : 1;
-            const guardianSignaturesCount = Array.isArray(guardianSignatures)
-              ? guardianSignatures?.length || 0
-              : 0;
+          //   const parsedEmitterAddress = emitterAddress.toNative(emitterChain).toString();
 
-            const fromChain = emitterChain;
+          //   const totalGuardiansNeeded = network === "Mainnet" ? 13 : 1;
+          //   const guardianSignaturesCount = Array.isArray(guardianSignatures)
+          //     ? guardianSignatures?.length || 0
+          //     : 0;
 
-            const instruction = parseGenericRelayerVaa(parsedVaa);
-            const deliveryInstruction = instruction as DeliveryInstruction | null;
-            const isDelivery = deliveryInstruction && !isRedelivery(deliveryInstruction);
+          //   const fromChain = toChainId(emitterChain);
 
-            const decodeExecution = deliveryInstruction.encodedExecutionInfo
-              ? parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0]
-              : null;
-            const gasLimit = decodeExecution ? decodeExecution.gasLimit : null;
+          //   const instruction = parseGenericRelayerVaa(parsedVaa);
+          //   const deliveryInstruction = instruction as DeliveryInstruction | null;
+          //   const isDelivery = deliveryInstruction && !isRedelivery(deliveryInstruction);
 
-            if (!deliveryInstruction?.targetAddress) {
-              return (
-                <div className="tx-information-errored-info">
-                  This is either not an Standard Relayer VAA or something&apos;s wrong with it
-                </div>
-              );
-            }
+          //   const decodeExecution = deliveryInstruction.encodedExecutionInfo
+          //     ? parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0]
+          //     : null;
+          //   const gasLimit = decodeExecution ? decodeExecution.gasLimit : null;
 
-            const trunkStringsDecimal = (num: string, decimals: number) => {
-              const [whole, fraction] = num.split(".");
-              if (!fraction) return whole;
-              return `${whole}.${fraction.slice(0, decimals)}`;
-            };
+          //   if (!deliveryInstruction?.targetAddress) {
+          //     return (
+          //       <div className="tx-information-errored-info">
+          //         This is either not an Standard Relayer VAA or something&apos;s wrong with it
+          //       </div>
+          //     );
+          //   }
 
-            const maxRefund = deliveryStatus?.data?.delivery?.maxRefund
-              ? Number(
-                  trunkStringsDecimal(
-                    ethers.utils.formatUnits(
-                      deliveryStatus?.data?.delivery?.maxRefund,
-                      deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
-                    ),
-                    3,
-                  ),
-                )
-              : 0;
+          //   const trunkStringsDecimal = (num: string, decimals: number) => {
+          //     const [whole, fraction] = num.split(".");
+          //     if (!fraction) return whole;
+          //     return `${whole}.${fraction.slice(0, decimals)}`;
+          //   };
 
-            const deliveryParsedTargetAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.targetAddress).toString("hex"),
-              chainId: deliveryInstruction?.targetChainId as ChainId,
-            });
+          //   const maxRefund = deliveryStatus?.data?.delivery?.maxRefund
+          //     ? Number(
+          //         trunkStringsDecimal(
+          //           ethers.formatUnits(
+          //             deliveryStatus?.data?.delivery?.maxRefund,
+          //             deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
+          //           ),
+          //           3,
+          //         ),
+          //       )
+          //     : 0;
 
-            const deliveryParsedRefundAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.refundAddress).toString("hex"),
-              chainId: deliveryInstruction?.refundChainId as ChainId,
-            });
+          //   const deliveryParsedTargetAddress = parseAddress({
+          //     value: Buffer.from(deliveryInstruction?.targetAddress).toString("hex"),
+          //     chainId: deliveryInstruction?.targetChainId as ChainId,
+          //   });
 
-            const deliveryParsedRefundProviderAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.refundDeliveryProvider).toString("hex"),
-              chainId: deliveryInstruction?.refundChainId as ChainId,
-            });
+          //   const deliveryParsedRefundAddress = parseAddress({
+          //     value: Buffer.from(deliveryInstruction?.refundAddress).toString("hex"),
+          //     chainId: deliveryInstruction?.refundChainId as ChainId,
+          //   });
 
-            const deliveryParsedSenderAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.senderAddress).toString("hex"),
-              chainId: fromChain as ChainId,
-            });
+          //   const deliveryParsedRefundProviderAddress = parseAddress({
+          //     value: Buffer.from(deliveryInstruction?.refundDeliveryProvider).toString("hex"),
+          //     chainId: deliveryInstruction?.refundChainId as ChainId,
+          //   });
 
-            const deliveryParsedSourceProviderAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.sourceDeliveryProvider).toString("hex"),
-              chainId: fromChain as ChainId,
-            });
+          //   const deliveryParsedSenderAddress = parseAddress({
+          //     value: Buffer.from(deliveryInstruction?.senderAddress).toString("hex"),
+          //     chainId: fromChain as ChainId,
+          //   });
 
-            const maxRefundText = () => {
-              return `${maxRefund} ${
-                environment.chainInfos.find(
-                  chain => chain.chainId === deliveryInstruction.targetChainId,
-                ).nativeCurrencyName
-              }`;
-            };
+          //   const deliveryParsedSourceProviderAddress = parseAddress({
+          //     value: Buffer.from(deliveryInstruction?.sourceDeliveryProvider).toString("hex"),
+          //     chainId: fromChain as ChainId,
+          //   });
 
-            const gasUsedText = () => {
-              return isNaN(gasUsed) ? `${gasLimit}` : `${gasUsed}/${gasLimit}`;
-            };
+          //   const maxRefundText = () => {
+          //     return `${maxRefund} ${
+          //       environment.chainInfos.find(
+          //         chain => chain.chainId === deliveryInstruction.targetChainId,
+          //       ).nativeCurrencyName
+          //     }`;
+          //   };
 
-            const receiverValueText = () => {
-              const receiverValue = trunkStringsDecimal(
-                ethers.utils.formatUnits(
-                  deliveryStatus?.data?.instructions?.requestedReceiverValue,
-                  deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
-                ),
-                3,
-              );
+          //   const gasUsedText = () => {
+          //     return isNaN(gasUsed) ? `${gasLimit}` : `${gasUsed}/${gasLimit}`;
+          //   };
 
-              return `${receiverValue} ${
-                environment.chainInfos.find(
-                  chain => chain.chainId === deliveryInstruction.targetChainId,
-                ).nativeCurrencyName
-              }`;
-            };
+          //   const receiverValueText = () => {
+          //     const receiverValue = trunkStringsDecimal(
+          //       ethers.formatUnits(
+          //         deliveryStatus?.data?.instructions?.requestedReceiverValue,
+          //         deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
+          //       ),
+          //       3,
+          //     );
 
-            const budgetText = () => {
-              if (deliveryStatus?.data?.delivery?.budget) {
-                return `${trunkStringsDecimal(
-                  ethers.utils.formatUnits(
-                    deliveryStatus?.data?.delivery?.budget,
-                    deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
-                  ),
-                  3,
-                )} ${
-                  environment.chainInfos.find(
-                    chain => chain.chainId === deliveryInstruction.targetChainId,
-                  ).nativeCurrencyName
-                }`;
-              }
+          //     return `${receiverValue} ${
+          //       environment.chainInfos.find(
+          //         chain => chain.chainId === deliveryInstruction.targetChainId,
+          //       ).nativeCurrencyName
+          //     }`;
+          //   };
 
-              return "N/A";
-            };
+          //   const budgetText = () => {
+          //     if (deliveryStatus?.data?.delivery?.budget) {
+          //       return `${trunkStringsDecimal(
+          //         ethers.formatUnits(
+          //           deliveryStatus?.data?.delivery?.budget,
+          //           deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
+          //         ),
+          //         3,
+          //       )} ${
+          //         environment.chainInfos.find(
+          //           chain => chain.chainId === deliveryInstruction.targetChainId,
+          //         ).nativeCurrencyName
+          //       }`;
+          //     }
 
-            const refundText = () => {
-              const refundAmountRegex = deliveryStatus?.data?.delivery?.execution?.detail.match(
-                /Refund amount:\s*([0-9.]+)/,
-              );
-              const refundAmount = refundAmountRegex ? refundAmountRegex?.[1] : null;
+          //     return "N/A";
+          //   };
 
-              if (refundAmount)
-                return `${refundAmount} ${
-                  environment.chainInfos.find(
-                    chain => chain.chainId === deliveryInstruction.targetChainId,
-                  ).nativeCurrencyName
-                }`;
+          //   const refundText = () => {
+          //     const refundAmountRegex = deliveryStatus?.data?.delivery?.execution?.detail.match(
+          //       /Refund amount:\s*([0-9.]+)/,
+          //     );
+          //     const refundAmount = refundAmountRegex ? refundAmountRegex?.[1] : null;
 
-              return "";
-            };
+          //     if (refundAmount)
+          //       return `${refundAmount} ${
+          //         environment.chainInfos.find(
+          //           chain => chain.chainId === deliveryInstruction.targetChainId,
+          //         ).nativeCurrencyName
+          //       }`;
 
-            const copyBudgetText = () => {
-              return `Budget: ${budgetText()}\n\nMax Refund:\n${maxRefundText()}\n\n${
-                !isNaN(gasUsed) ? "Gas Used/" : ""
-              }Gas limit\n${gasUsedText()}\n\n${
-                !isNaN(gasUsed) ? "Refund Amount\n" + refundText() : ""
-              }\n\nReceiver Value: ${receiverValueText()}`
-                .replaceAll("  ", "")
-                .replaceAll("\n\n\n\n", "\n\n");
-            };
+          //     return "";
+          //   };
 
-            const refundStatusRegex =
-              deliveryStatus?.data?.delivery?.execution?.detail.match(/Refund status: ([^\r\n]+)/);
-            const refundStatus = refundStatusRegex ? refundStatusRegex?.[1] : null;
+          //   const copyBudgetText = () => {
+          //     return `Budget: ${budgetText()}\n\nMax Refund:\n${maxRefundText()}\n\n${
+          //       !isNaN(gasUsed) ? "Gas Used/" : ""
+          //     }Gas limit\n${gasUsedText()}\n\n${
+          //       !isNaN(gasUsed) ? "Refund Amount\n" + refundText() : ""
+          //     }\n\nReceiver Value: ${receiverValueText()}`
+          //       .replaceAll("  ", "")
+          //       .replaceAll("\n\n\n\n", "\n\n");
+          //   };
 
-            const deliveryAttemptRegex = deliveryStatus?.data?.delivery?.execution?.detail.match(
-              /Delivery attempt \s*([0-9.]+)/,
-            );
-            const deliveryAttempt = deliveryAttemptRegex ? deliveryAttemptRegex?.[1] : null;
+          //   const refundStatusRegex =
+          //     deliveryStatus?.data?.delivery?.execution?.detail.match(/Refund status: ([^\r\n]+)/);
+          //   const refundStatus = refundStatusRegex ? refundStatusRegex?.[1] : null;
 
-            const sourceAddress =
-              data?.sourceChain?.from || data?.content?.standarizedProperties?.fromAddress;
+          //   const deliveryAttemptRegex = deliveryStatus?.data?.delivery?.execution?.detail.match(
+          //     /Delivery attempt \s*([0-9.]+)/,
+          //   );
+          //   const deliveryAttempt = deliveryAttemptRegex ? deliveryAttemptRegex?.[1] : null;
 
-            relayerInfo.props = {
-              budgetText,
-              copyBudgetText,
-              currentNetwork: network,
-              decodeExecution,
-              deliveryAttempt,
-              deliveryInstruction,
-              deliveryParsedRefundAddress,
-              deliveryParsedRefundProviderAddress,
-              deliveryParsedSenderAddress,
-              deliveryParsedSourceProviderAddress,
-              deliveryParsedTargetAddress,
-              deliveryStatus,
-              fromChain,
-              gasUsed,
-              gasUsedText,
-              guardianSignaturesCount,
-              isDelivery,
-              isDuplicated: data.vaa?.isDuplicated,
-              maxRefundText,
-              parsedEmitterAddress,
-              parsedVaa,
-              receiverValueText,
-              refundStatus,
-              refundText,
-              resultLog,
-              sourceAddress,
-              sourceTxHash,
-              targetTxTimestamp,
-              totalGuardiansNeeded,
-              VAAId: `${data.emitterChain}/${data.emitterAddress?.hex}/${data.sequence}`,
-            };
-          } catch (e) {
-            console.error("standard relayer tx errored:", e);
-          }
+          //   const sourceAddress =
+          //     data?.sourceChain?.from || data?.content?.standarizedProperties?.fromAddress;
+
+          //   relayerInfo.props = {
+          //     budgetText,
+          //     copyBudgetText,
+          //     currentNetwork: network,
+          //     decodeExecution,
+          //     deliveryAttempt,
+          //     deliveryInstruction,
+          //     deliveryParsedRefundAddress,
+          //     deliveryParsedRefundProviderAddress,
+          //     deliveryParsedSenderAddress,
+          //     deliveryParsedSourceProviderAddress,
+          //     deliveryParsedTargetAddress,
+          //     deliveryStatus,
+          //     fromChain,
+          //     gasUsed,
+          //     gasUsedText,
+          //     guardianSignaturesCount,
+          //     isDelivery,
+          //     isDuplicated: data.vaa?.isDuplicated,
+          //     maxRefundText,
+          //     parsedEmitterAddress,
+          //     parsedVaa,
+          //     receiverValueText,
+          //     refundStatus,
+          //     refundText,
+          //     resultLog,
+          //     sourceAddress,
+          //     sourceTxHash,
+          //     targetTxTimestamp,
+          //     totalGuardiansNeeded,
+          //     VAAId: `${data.emitterChain}/${data.emitterAddress?.hex}/${data.sequence}`,
+          //   };
+          // } catch (e) {
+          //   console.error("standard relayer tx errored:", e);
+          // }
         }
         // ----
 
@@ -952,7 +961,7 @@ const Tx = () => {
 
         // get algorand extra informations needed
         if (
-          data?.content?.standarizedProperties?.tokenChain === ChainId.Algorand &&
+          data?.content?.standarizedProperties?.tokenChain === chainToChainId("Algorand") &&
           data?.content?.standarizedProperties?.tokenAddress
         ) {
           const tokenInfo = await getAlgorandTokenInfo(
@@ -976,7 +985,7 @@ const Tx = () => {
           }
         }
 
-        if (wrappedTokenChain === ChainId.Algorand) {
+        if (wrappedTokenChain === chainToChainId("Algorand")) {
           const tokenInfo = await getAlgorandTokenInfo(
             network,
             data?.content?.standarizedProperties?.wrappedTokenAddress,
@@ -1116,11 +1125,15 @@ const Tx = () => {
 
           analytics.track("txDetail", {
             appIds: appIds?.join(", ") ? appIds.join(", ") : "null",
-            chain: getChainName({ chainId: data?.emitterChain ?? 0, network }),
-            toChain: getChainName({
-              chainId: data?.content?.standarizedProperties?.toChain ?? 0,
-              network,
-            }),
+            chain: data?.emitterChain
+              ? getChainName({ chainId: data?.emitterChain as ChainId, network })
+              : "Unset",
+            toChain: data?.content?.standarizedProperties?.toChain
+              ? getChainName({
+                  chainId: data?.content?.standarizedProperties?.toChain as ChainId,
+                  network,
+                })
+              : "Unset",
           });
         } else if (relayerInfo) {
           analytics.track("txDetail", {
@@ -1134,11 +1147,11 @@ const Tx = () => {
               network: network,
             }),
             toChain: getChainName({
-              chainId: relayerInfo?.targetTransaction?.targetChainId
+              chainId: (relayerInfo?.targetTransaction?.targetChainId
                 ? relayerInfo.targetTransaction?.targetChainId
                 : data.content?.standarizedProperties?.toChain
                 ? data.content?.standarizedProperties?.toChain
-                : 0,
+                : 0) as ChainId,
               network: network,
             }),
           });
@@ -1206,7 +1219,11 @@ const Tx = () => {
 
           // if fromChain is 5 (Polygon), wait 5 minutes before fetching block info
           if (fromChain !== 5 || differenceInMinutes >= 5) {
-            getEvmBlockInfo(environment, fromChain, data?.sourceChain?.transaction?.txHash)
+            getEvmBlockInfo(
+              environment,
+              fromChain as ChainId,
+              data?.sourceChain?.transaction?.txHash,
+            )
               .then(blockInfo => {
                 setBlockData(blockInfo);
               })
@@ -1247,7 +1264,7 @@ const Tx = () => {
         const emitterChain = data?.emitterChain as ChainId;
         const emitterAddress =
           data?.emitterAddress?.native ||
-          tryHexToNativeString(data?.emitterAddress?.hex, "ethereum"); // ethereum means evm here.
+          toNative("Ethereum", data?.emitterAddress?.hex)?.toString(); // ethereum means evm here.
         const emitterInfo =
           emitterAddress && ARKHAM_CHAIN_NAME[emitterChain]
             ? await tryGetAddressInfo(network, emitterAddress)

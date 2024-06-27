@@ -1,4 +1,4 @@
-import { ChainId, Network } from "@wormhole-foundation/sdk";
+import { ChainId, Network } from "@wormhole-foundation/sdk/dist/cjs";
 import { fetchWithTimeout } from "./asyncUtils";
 import { IArkhamResponse } from "./arkham";
 

@@ -1,4 +1,4 @@
-import { Network, ChainId, chainToChainId } from "@wormhole-foundation/sdk";
+import { Network, ChainId, chainToChainId } from "@wormhole-foundation/sdk/dist/cjs";
 
 import AcalaIcon from "src/icons/blockchains/acala.svg";
 import AlgorandIcon from "src/icons/blockchains/algorand.svg";

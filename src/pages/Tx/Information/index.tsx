@@ -38,7 +38,7 @@ import AdvancedView from "./AdvancedView";
 
 import "./styles.scss";
 import { ChainId } from "@wormhole-foundation/sdk/dist/cjs";
-import { platformToChains } from "@wormhole-foundation/sdk";
+import { platformToChains } from "@wormhole-foundation/sdk/dist/cjs";
 
 interface Props {
   blockData: GetBlockData;
@@ -133,9 +133,9 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   const isGatewaySource = data?.sourceChain?.attribute?.type === "wormchain-gateway";
 
   // Gateway Transfers
-  const fromChain = isGatewaySource
-    ? data?.sourceChain?.attribute?.value?.originChainId
-    : fromChainOrig;
+  const fromChain = (
+    isGatewaySource ? data?.sourceChain?.attribute?.value?.originChainId : fromChainOrig
+  ) as ChainId;
   const toChain = parsedPayload?.["gateway_transfer"]?.chain
     ? parsedPayload?.["gateway_transfer"].chain
     : stdToChain || data?.targetChain?.chainId;
@@ -197,7 +197,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
 
   let sourceSymbol = symbol;
   let targetSymbol = symbol;
-  let targetTokenChain = tokenChain;
+  let targetTokenChain = tokenChain as ChainId;
   const wrappedSide = tokenChain !== toChain ? "target" : "source";
 
   if (wrappedTokenAddress && !standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID)) {
@@ -237,7 +237,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
     sourceSymbol = standarizedProperties?.overwriteSourceSymbol;
   }
   if (standarizedProperties?.overwriteTargetTokenChain) {
-    targetTokenChain = standarizedProperties?.overwriteTargetTokenChain;
+    targetTokenChain = standarizedProperties?.overwriteTargetTokenChain as ChainId;
   }
   if (standarizedProperties?.overwriteTargetSymbol) {
     targetSymbol = standarizedProperties?.overwriteTargetSymbol;

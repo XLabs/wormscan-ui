@@ -1,4 +1,4 @@
-import { ChainId } from "src/api";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk/dist/cjs";
 
 export interface IArkhamInfoByChain {
   address?: string;
@@ -45,13 +45,13 @@ export interface IArkhamResponse {
 }
 
 export const ARKHAM_CHAIN_NAME: Partial<Record<ChainId, keyof IArkhamResponse>> = {
-  [ChainId.Arbitrum]: "arbitrum_one",
-  [ChainId.Avalanche]: "avalanche",
-  [ChainId.Base]: "base",
-  [ChainId.BSC]: "bsc",
-  [ChainId.Ethereum]: "ethereum",
-  [ChainId.Optimism]: "optimism",
-  [ChainId.Polygon]: "polygon",
+  [chainToChainId("Arbitrum")]: "arbitrum_one",
+  [chainToChainId("Avalanche")]: "avalanche",
+  [chainToChainId("Base")]: "base",
+  [chainToChainId("Bsc")]: "bsc",
+  [chainToChainId("Ethereum")]: "ethereum",
+  [chainToChainId("Optimism")]: "optimism",
+  [chainToChainId("Polygon")]: "polygon",
 };
 
 export interface IArkhamRelayerCheck {

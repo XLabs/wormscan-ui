@@ -1,4 +1,4 @@
-import { chainToChainId, ChainId, Network } from "@wormhole-foundation/sdk";
+import { chainToChainId, ChainId, Network } from "@wormhole-foundation/sdk/dist/cjs";
 import { ethers } from "ethers";
 
 export const SLOW_FINALITY_CHAINS = [

@@ -1,5 +1,4 @@
-import { ChainId } from "@certusone/wormhole-sdk";
-import { hexStripZeros } from "ethers/lib/utils";
+import { ChainId } from "@wormhole-foundation/sdk/dist/cjs";
 import { ethers } from "ethers";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
 import { parseTx } from "./crypto";
@@ -65,7 +64,7 @@ export async function getPorticoInfo(
 
     formattedRelayerFee = data.content.standarizedProperties.appIds.includes(USDT_TRANSFER_APP_ID)
       ? "" + parsedPayload.relayerFee * 10 ** 2 // +2 decimals because fee gets formated later with 8
-      : ethers.utils.formatUnits(parsedPayload.relayerFee, decimals - 8); // -8 because fee gets formated later with 8
+      : ethers.formatUnits(parsedPayload.relayerFee, decimals - 8); // -8 because fee gets formated later with 8
     // formattedRelayerFee = parsedPayload.relayerFee;
 
     const processTarget = async () => {
@@ -88,15 +87,15 @@ export async function getPorticoInfo(
       // if we get here then the swap succeeded or did not occur if the destination chain is Ethereum.
       // no swap needs to be done on Ethereum since the canonical/bridged token is the final token
       else {
-        const finalUserAmount = ethers.BigNumber.from(`0x${swapFinishedLog.data.slice(66, 130)}`);
-        const relayerFeeAmount = ethers.BigNumber.from(`0x${swapFinishedLog.data.slice(130, 194)}`);
+        const finalUserAmount = BigInt(`0x${swapFinishedLog.data.slice(66, 130)}`);
+        const relayerFeeAmount = BigInt(`0x${swapFinishedLog.data.slice(130, 194)}`);
 
-        formattedFinalUserAmount = ethers.utils.formatUnits(finalUserAmount, decimals);
+        formattedFinalUserAmount = ethers.formatUnits(finalUserAmount, decimals);
         formattedRelayerFee = data.content.standarizedProperties.appIds.includes(
           USDT_TRANSFER_APP_ID,
         )
           ? "" + parsedPayload.relayerFeeAmount * 10 ** 2 // +2 decimals because fee gets formated later with 8
-          : ethers.utils.formatUnits(relayerFeeAmount, decimals - 8); // -8 because fee gets formated later with 8
+          : ethers.formatUnits(relayerFeeAmount, decimals - 8); // -8 because fee gets formated later with 8
       }
     };
 
@@ -163,10 +162,6 @@ const parseFlagSet = (buffer: Buffer): IParsedFlags => ({
   shouldUnwrapNative: !!(buffer.readUInt8(31) & (1 << 1)),
 });
 
-const parseAddress = (buffer: Buffer): string => {
-  return ethers.utils.hexZeroPad(hexStripZeros(buffer), 20);
-};
-
 interface IParsedSourceTransfer {
   flagSet: IParsedFlags;
   startTokenAddress: string;
@@ -179,17 +174,36 @@ interface IParsedSourceTransfer {
   minAmountFinish: string;
   relayerFee: string;
 }
+
+// const parseAddress = (buffer: Buffer): string => {
+//   return ethers.utils.hexZeroPad(hexStripZeros(buffer), 20);
+// };
+
 export function parsePorticoTransfer(payload: Buffer): IParsedSourceTransfer {
   return {
-    flagSet: parseFlagSet(payload),
-    startTokenAddress: parseAddress(payload.slice(32, 64)),
-    canonAssetAddress: parseAddress(payload.slice(64, 96)),
-    finalTokenAddress: parseAddress(payload.slice(96, 128)),
-    recipientAddress: parseAddress(payload.slice(128, 160)),
-    destinationPorticoAddress: parseAddress(payload.slice(160, 192)),
-    amountSpecified: ethers.BigNumber.from(payload.slice(192, 224))?.toString(),
-    minAmountStart: ethers.BigNumber.from(payload.slice(224, 256))?.toString(),
-    minAmountFinish: ethers.BigNumber.from(payload.slice(256, 288))?.toString(),
-    relayerFee: ethers.BigNumber.from(payload.slice(288, 320))?.toString(),
+    flagSet: null,
+    startTokenAddress: null,
+    canonAssetAddress: null,
+    finalTokenAddress: null,
+    recipientAddress: null,
+    destinationPorticoAddress: null,
+    amountSpecified: null,
+    minAmountStart: null,
+    minAmountFinish: null,
+    relayerFee: null,
   };
+
+  // TODO : HOW TO DO THIS WITH NEW SDK
+  // return {
+  //   flagSet: parseFlagSet(payload),
+  //   startTokenAddress: parseAddress(payload.slice(32, 64)),
+  //   canonAssetAddress: parseAddress(payload.slice(64, 96)),
+  //   finalTokenAddress: parseAddress(payload.slice(96, 128)),
+  //   recipientAddress: parseAddress(payload.slice(128, 160)),
+  //   destinationPorticoAddress: parseAddress(payload.slice(160, 192)),
+  //   amountSpecified: ethers.BigNumber.from(payload.slice(192, 224))?.toString(),
+  //   minAmountStart: ethers.BigNumber.from(payload.slice(224, 256))?.toString(),
+  //   minAmountFinish: ethers.BigNumber.from(payload.slice(256, 288))?.toString(),
+  //   relayerFee: ethers.BigNumber.from(payload.slice(288, 320))?.toString(),
+  // };
 }
