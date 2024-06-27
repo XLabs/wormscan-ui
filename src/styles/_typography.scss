@@ -123,10 +123,13 @@
 
 @mixin text-heading4 {
   font-family: "Roboto Mono", "Roboto", sans-serif;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 400;
   letter-spacing: -0.06em;
-  line-height: 31.65px;
+
+  @include desktop {
+    font-size: 24px;
+  }
 }
 
 @mixin text-heading5 {
