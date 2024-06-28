@@ -89,6 +89,9 @@
     "lodash": false,
     "elliptic": false
   },
+  "@parcel/resolver-default": {
+    "packageExports": true
+  },
   "lint-staged": {
     "*.{svg,ts,tsx,js,jsx,scss,css,md}": "prettier --write"
   },
