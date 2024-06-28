@@ -933,6 +933,9 @@ const Tx = () => {
             ) {
               gatewayChain = data.content?.payload?.parsedPayload?.gateway_transfer?.chain;
             }
+            if (wrapped === "source" && !!data.sourceChain?.attribute?.value?.originChainId) {
+              gatewayChain = data.sourceChain?.attribute?.value?.originChainId;
+            }
 
             const wrappedToken = await tryGetWrappedToken(
               network,
