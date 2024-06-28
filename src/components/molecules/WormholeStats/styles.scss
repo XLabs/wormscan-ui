@@ -25,11 +25,12 @@
     display: grid;
     gap: 36px;
     grid-template-columns: repeat(2, 1fr);
-    padding-bottom: 24px;
+    padding-bottom: 40px;
     position: relative;
 
     @include desktop {
       @include centered-row;
+      flex-wrap: wrap;
       gap: 24px;
       justify-content: space-between;
       padding-bottom: 32px;
@@ -44,12 +45,6 @@
       }
 
       &:nth-last-child(2) {
-        margin-top: 12px;
-
-        @include desktop {
-          margin-top: 0;
-        }
-
         & .wormhole-stats-container-item-title {
           display: none;
 
@@ -81,7 +76,6 @@
       &-value {
         @include text-heading4;
         color: var(--color-white);
-        font-size: 20px;
 
         &-link {
           @include centered-row;
