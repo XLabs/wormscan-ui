@@ -1,5 +1,5 @@
 import { CopyIcon, TriangleDownIcon } from "@radix-ui/react-icons";
-import { deserialize } from "@wormhole-foundation/sdk/dist/cjs";
+import { deserialize } from "@wormhole-foundation/sdk";
 // import {
 //   DeliveryInstruction,
 //   RedeliveryInstruction,

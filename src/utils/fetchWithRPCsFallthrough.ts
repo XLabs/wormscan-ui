@@ -25,11 +25,11 @@ import {
   contracts,
   platformToChains,
   toNative,
-} from "@wormhole-foundation/sdk/dist/cjs";
-import { ethers } from "ethers";
+} from "@wormhole-foundation/sdk";
+import { Contract, TransactionReceipt } from "ethers";
 import { CCTP_MANUAL_APP_ID, GR_APP_ID, IStatus, getGuardianSet } from "src/consts";
 import { Order, WormholeTokenList } from "src/api";
-import { ChainId } from "@wormhole-foundation/sdk/dist/cjs";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { Environment, SLOW_FINALITY_CHAINS, getChainInfo, getEthersProvider } from "./environment";
 import { formatUnits, parseAddress } from "./crypto";
@@ -38,7 +38,7 @@ import { TokenMessenger__factory } from "./TokenMessenger__factory";
 import { hexToBase58 } from "./string";
 
 type TxReceiptHolder = {
-  receipt: ethers.TransactionReceipt;
+  receipt: TransactionReceipt;
   chainId: ChainId;
 };
 
@@ -79,7 +79,7 @@ async function hitAllSlowChains(
   searchValue: string,
 ): Promise<TxReceiptHolder | null> {
   //map of chainId to promises
-  const allPromises: Map<ChainId, Promise<ethers.TransactionReceipt | null>> = new Map();
+  const allPromises: Map<ChainId, Promise<TransactionReceipt | null>> = new Map();
 
   for (const chain of SLOW_FINALITY_CHAINS) {
     const ethersProvider = getEthersProvider(getChainInfo(env, chain as ChainId));
@@ -743,7 +743,8 @@ const getEvmTokenDetails = async (env: Environment, tokenChain: ChainId, tokenAd
     const addr = toNative(chainIdToChain(tokenChain), tokenAddress)?.toString();
 
     const tokenEthersProvider = getEthersProvider(getChainInfo(env, tokenChain as ChainId));
-    const contract = new ethers.Contract(addr, tokenInterfaceAbi, tokenEthersProvider);
+    const evmContract = new Contract(addr, tokenInterfaceAbi, tokenEthersProvider);
+    const contract = evmContract;
 
     const [name, symbol, tokenDecimals] = await Promise.all([
       contract.name(),

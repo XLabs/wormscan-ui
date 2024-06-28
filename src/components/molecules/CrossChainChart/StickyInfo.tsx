@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Network } from "@wormhole-foundation/sdk/dist/cjs";
+import { Network } from "@wormhole-foundation/sdk";
 import { BlockchainIcon } from "src/components/atoms";
 import { WormholeScanBrand } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";

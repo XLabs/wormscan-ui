@@ -1,4 +1,4 @@
-import { Network } from "@wormhole-foundation/sdk/dist/cjs";
+import { Network } from "@wormhole-foundation/sdk";
 import { queryClient } from "src/App";
 import { createClient } from "src/api";
 

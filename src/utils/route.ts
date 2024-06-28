@@ -1,4 +1,4 @@
-import { Network } from "@wormhole-foundation/sdk/dist/cjs";
+import { Network } from "@wormhole-foundation/sdk";
 import { Path, To } from "react-router-dom";
 import { isOfTypeNetwork } from "src/api/Client";
 

@@ -1,5 +1,5 @@
-import { chainToChainId, ChainId, Network } from "@wormhole-foundation/sdk/dist/cjs";
-import { ethers } from "ethers";
+import { chainToChainId, ChainId, Network } from "@wormhole-foundation/sdk";
+import { JsonRpcProvider } from "ethers";
 
 export const SLOW_FINALITY_CHAINS = [
   chainToChainId("Ethereum"),
@@ -447,7 +447,9 @@ export const mainnetEnv: Environment = {
 };
 
 export function getEthersProvider(chainInfo: ChainInfo) {
-  if (chainInfo?.rpcUrl) return new ethers.JsonRpcProvider(chainInfo.rpcUrl);
+  const provider = new JsonRpcProvider(chainInfo.rpcUrl);
+
+  if (chainInfo?.rpcUrl) return provider;
 
   return null;
 }

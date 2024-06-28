@@ -8,7 +8,7 @@ import {
   ChainId,
   chainToChainId,
   toChainId,
-} from "@wormhole-foundation/sdk/dist/cjs";
+} from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
 import { SearchNotFound } from "src/components/organisms";

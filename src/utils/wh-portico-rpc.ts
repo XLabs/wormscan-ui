@@ -1,4 +1,4 @@
-import { ChainId } from "@wormhole-foundation/sdk/dist/cjs";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { ethers } from "ethers";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
 import { parseTx } from "./crypto";

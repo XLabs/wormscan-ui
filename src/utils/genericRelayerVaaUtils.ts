@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { ChainId, Network, deserialize, toChainId } from "@wormhole-foundation/sdk/dist/cjs";
+import { ChainId, Network, deserialize, toChainId } from "@wormhole-foundation/sdk";
 // import { ChainId, Network, ParsedVaa, parseVaa } from "@certusone/wormhole-sdk";
 // import {
 //   DeliveryInstruction,

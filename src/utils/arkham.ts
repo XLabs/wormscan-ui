@@ -1,4 +1,4 @@
-import { ChainId, chainToChainId } from "@wormhole-foundation/sdk/dist/cjs";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 
 export interface IArkhamInfoByChain {
   address?: string;

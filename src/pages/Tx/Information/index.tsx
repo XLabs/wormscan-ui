@@ -37,8 +37,8 @@ import RelayerOverview from "./Overview/RelayerOverview";
 import AdvancedView from "./AdvancedView";
 
 import "./styles.scss";
-import { ChainId } from "@wormhole-foundation/sdk/dist/cjs";
-import { platformToChains } from "@wormhole-foundation/sdk/dist/cjs";
+import { ChainId } from "@wormhole-foundation/sdk";
+import { platformToChains } from "@wormhole-foundation/sdk";
 
 interface Props {
   blockData: GetBlockData;

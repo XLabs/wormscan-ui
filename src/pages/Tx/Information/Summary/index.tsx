@@ -8,7 +8,7 @@ import { GetRedeem } from "./GetRedeem";
 import { VerifyRedemption } from "./VerifyRedemption";
 import { StatusBadge } from "src/components/molecules";
 import "./styles.scss";
-import { Network } from "@wormhole-foundation/sdk/dist/cjs";
+import { Network } from "@wormhole-foundation/sdk";
 
 type Props = {
   appIds: string[];

@@ -9,7 +9,7 @@ import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import "./styles.scss";
 import { useRecoilState } from "recoil";
 import { addressesInfoState } from "src/utils/recoilStates";
-import { ChainId } from "@wormhole-foundation/sdk/dist/cjs";
+import { ChainId } from "@wormhole-foundation/sdk";
 
 const Details = ({
   amountSent,

@@ -28,7 +28,7 @@ import VaaInput from "./Input";
 import CopyContent from "./CopyContent";
 import "./styles.scss";
 import { bigintToReadable } from "./bigintToReadable";
-import { deserialize, encoding } from "@wormhole-foundation/sdk/dist/cjs";
+import { deserialize, encoding } from "@wormhole-foundation/sdk";
 
 const VaaParser = () => {
   useEffect(() => {

@@ -10,7 +10,7 @@ import { useRecoilState } from "recoil";
 import { addressesInfoState } from "src/utils/recoilStates";
 import { INFTInfo } from "src/api/guardian-network/types";
 import "./styles.scss";
-import { ChainId, Network } from "@wormhole-foundation/sdk/dist/cjs";
+import { ChainId, Network } from "@wormhole-foundation/sdk";
 
 export type OverviewProps = {
   amountSent?: string;

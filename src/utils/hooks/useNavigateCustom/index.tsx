@@ -1,5 +1,5 @@
 import { Path, useNavigate, useSearchParams } from "react-router-dom";
-import { Network } from "@wormhole-foundation/sdk/dist/cjs";
+import { Network } from "@wormhole-foundation/sdk";
 import { parseTo } from "../../route";
 
 function useNavigateCustom() {
