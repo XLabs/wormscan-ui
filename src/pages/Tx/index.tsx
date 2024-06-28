@@ -497,8 +497,24 @@ const Tx = () => {
             hash: parsedHash,
             sequence: parsedSequence,
           };
-        }
+        } else {
+          if (!!txHash) {
+            const observations = await getClient().guardianNetwork.getObservationForTxHash(txHash);
 
+            if (!!observations?.length) {
+              const guardianSetList = getGuardianSet(4);
+
+              const signedGuardians = observations.map(({ guardianAddr, signature }) => ({
+                signature: Buffer.from(signature).toString(),
+                name: guardianSetList?.find(a => a.pubkey === guardianAddr)?.name,
+              }));
+
+              data.decodedVaa = {
+                guardianSignatures: signedGuardians,
+              };
+            }
+          }
+        }
         // ---
 
         // check CCTP
@@ -1345,6 +1361,7 @@ const Tx = () => {
       setAddressesInfo,
       setShowSourceTokenUrl,
       setShowTargetTokenUrl,
+      txHash,
     ],
   );
 
@@ -1397,7 +1414,11 @@ const Tx = () => {
             <br />
 
             <BlockSection
-              code={JSON.stringify(observationsOnlyData, null, 4)}
+              code={JSON.stringify(observationsOnlyData.signatures, null, 4)}
+              title="Signatures Data"
+            />
+            <BlockSection
+              code={JSON.stringify(observationsOnlyData.observations, null, 4)}
               title="Observations Data"
             />
           </>
