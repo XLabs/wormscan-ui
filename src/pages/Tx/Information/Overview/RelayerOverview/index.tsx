@@ -14,7 +14,7 @@ import { AutomaticRelayOutput } from "src/api/search/types";
 import { addressesInfoState } from "src/utils/recoilStates";
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { RelayerOverviewProps } from "src/utils/genericRelayerVaaUtils";
 import { useRecoilState } from "recoil";
 

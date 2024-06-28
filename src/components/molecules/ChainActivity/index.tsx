@@ -7,7 +7,7 @@ import { BlockchainIcon, Loader, Select } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { formatterYAxis } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { ChainFilterMainnet, ChainFilterTestnet } from "src/pages/Txs/Information/Filters";
 import { useWindowSize, useOutsideClick, useLockBodyScroll } from "src/utils/hooks";

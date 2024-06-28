@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
 import { Loader } from "src/components/atoms";
 import { getClient } from "src/api/Client";
-import { ChainId } from "src/api";
+import { chainIdToChain, chainToChainId } from "@wormhole-foundation/sdk";
 import { VAACount } from "src/api/guardian-network/types";
 import { Chart } from "./Chart";
 import "./styles.scss";
@@ -24,10 +24,14 @@ const VAACountChart = () => {
     if (data) {
       const sortedData = data.sort((a, b) => b.count - a.count);
       setChartData(
-        sortedData.filter(a => a.chainId !== ChainId.PythNet && a.count > MIN_VALUE_ON_CHART),
+        sortedData.filter(
+          a => a.chainId !== chainToChainId("Pythnet") && a.count > MIN_VALUE_ON_CHART,
+        ),
       );
       setExcludedChartData(
-        sortedData.filter(a => a.chainId === ChainId.PythNet || a.count <= MIN_VALUE_ON_CHART),
+        sortedData.filter(
+          a => a.chainId === chainToChainId("Pythnet") || a.count <= MIN_VALUE_ON_CHART,
+        ),
       );
     }
   }, [data]);
@@ -54,7 +58,7 @@ const VAACountChart = () => {
                       a.count > MIN_VALUE_ON_CHART ? "red" : "grey"
                     }`}
                   >
-                    {ChainId[a.chainId]} ({a.count})
+                    {chainIdToChain(a.chainId)} ({a.count})
                   </span>
                 ))}
               </div>

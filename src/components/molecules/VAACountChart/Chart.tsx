@@ -1,5 +1,5 @@
 import ApexChart from "react-apexcharts";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { VAACount } from "src/api/guardian-network/types";
 
 const chartColors = [

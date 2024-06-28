@@ -4,7 +4,7 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import { CopyToClipboard } from "src/components/molecules";
 import { parseAddress } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import "./styles.scss";
 
 interface Props {

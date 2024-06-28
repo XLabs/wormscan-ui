@@ -8,7 +8,7 @@ import { ErrorPlaceholder } from "src/components/molecules";
 import { getClient } from "src/api/Client";
 import { CrossChainBy } from "src/api/guardian-network/types";
 import { Chart } from "./Chart";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { SwapSmallVerticalIcon, GlobeIcon } from "src/icons/generic";
 import { useWindowSize } from "src/utils/hooks";
 import "./styles.scss";

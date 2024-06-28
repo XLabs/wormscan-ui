@@ -12,7 +12,7 @@ import { formatDate } from "src/utils/date";
 import "../styles.scss";
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { RelayerOverviewProps } from "src/utils/genericRelayerVaaUtils";
 import { useRecoilState } from "recoil";
 import { addressesInfoState } from "src/utils/recoilStates";

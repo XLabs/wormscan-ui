@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { ChainId, deserialize, encoding } from "@wormhole-foundation/sdk";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { useNavigateCustom } from "src/utils/hooks";
 import analytics from "src/analytics";
@@ -16,7 +17,6 @@ import {
 } from "@radix-ui/react-icons";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
-import { ChainId } from "src/api";
 import { getGuardianSet, txType } from "src/consts";
 import { formatDate } from "src/utils/date";
 import { useParams } from "react-router-dom";
@@ -27,8 +27,6 @@ import { waitForElement } from "./waitForElement";
 import VaaInput from "./Input";
 import CopyContent from "./CopyContent";
 import "./styles.scss";
-import { bigintToReadable } from "./bigintToReadable";
-import { deserialize, encoding } from "@wormhole-foundation/sdk";
 
 const VaaParser = () => {
   useEffect(() => {

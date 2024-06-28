@@ -2,7 +2,7 @@ import { Cross2Icon, ExternalLinkIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import ArkhamIcon from "src/icons/arkham.svg";
 import { useState } from "react";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import TwitterIcon from "src/icons/TwitterIcon";
 import { ARKHAM_CHAIN_NAME, IArkhamInfoByChain, IArkhamResponse } from "src/utils/arkham";
 import "./styles.scss";

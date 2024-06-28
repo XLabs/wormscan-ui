@@ -6,7 +6,7 @@ import { Tag } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { parseTx } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
-import { ChainId } from "src/api";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import "./styles.scss";
 
 interface Props {
@@ -43,7 +43,7 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
         <div>Tx Hash:</div>
         <div className="tx-top-txId-container">
           {/* delete conditional when WORMCHAIN gets an explorer */}
-          {(emitterChainId === 3104 || emitterChainId === ChainId.Sei) &&
+          {(emitterChainId === 3104 || emitterChainId === chainToChainId("Sei")) &&
           !gatewayInfo?.originTxHash ? (
             <div>
               <span>{parseTxHash}</span>

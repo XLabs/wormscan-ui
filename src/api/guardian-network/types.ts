@@ -1,4 +1,5 @@
-import { ChainId, PageRequest } from "src/api/model";
+import { PageRequest } from "src/api/model";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { IStatus } from "src/consts";
 import { DeliveryLifecycleRecord } from "src/utils/genericRelayerVaaUtils";
 
@@ -31,9 +32,9 @@ export type VAADetail = {
     payload: string;
     payloadType: number;
     toAddress: string;
-    toChain: number;
+    toChain: ChainId;
     tokenAddress: string;
-    tokenChain: number;
+    tokenChain: ChainId;
   };
 };
 
@@ -149,7 +150,7 @@ export interface ChainPairsByTransfersInput {
   timeSpan?: "7d" | "15d" | "30d";
 }
 export interface ChainPairsByTransfersOutput {
-  emitterChain: number;
+  emitterChain: ChainId;
   destinationChain: number;
   numberOfTransfers: string;
 }
@@ -166,8 +167,8 @@ export interface GetOperationsInput {
   appId?: string;
   exclusiveAppId?: string;
   pagination?: PageRequest;
-  sourceChain?: string;
-  targetChain?: string;
+  sourceChain?: ChainId;
+  targetChain?: ChainId;
   txHash?: string;
   vaaID?: string;
 }
@@ -183,7 +184,7 @@ export interface INFTInfo {
 
 export interface GetOperationsOutput {
   id: string;
-  emitterChain: number;
+  emitterChain: ChainId;
   emitterAddress: {
     hex: string;
     native: string;
@@ -203,9 +204,9 @@ export interface GetOperationsOutput {
       payload?: string;
       payloadType?: number;
       toAddress?: string;
-      toChain?: number;
+      toChain?: ChainId;
       tokenAddress?: string;
-      tokenChain?: number;
+      tokenChain?: ChainId;
 
       // --- NTT ---
       nttManagerMessage?: {
@@ -216,7 +217,7 @@ export interface GetOperationsOutput {
         prefix: string;
         sourceToken: string;
         to: string;
-        toChain: number;
+        toChain: ChainId;
         trimmedAmount: {
           amount: string;
           decimals: number;
@@ -236,15 +237,15 @@ export interface GetOperationsOutput {
     };
     standarizedProperties: {
       appIds: string[];
-      fromChain: number;
+      fromChain: ChainId;
       fromAddress: string;
-      toChain: number;
+      toChain: ChainId;
       toAddress: string;
-      tokenChain: number;
+      tokenChain: ChainId;
       tokenAddress: string;
       amount: string;
       feeAddress: string;
-      feeChain: number;
+      feeChain: ChainId;
       fee: string;
 
       wrappedTokenAddress?: string;
@@ -253,14 +254,14 @@ export interface GetOperationsOutput {
       overwriteRedeemAmount?: string;
       overwriteSourceSymbol?: string;
       overwriteSourceTokenAddress?: string;
-      overwriteSourceTokenChain?: number;
+      overwriteSourceTokenChain?: ChainId;
       overwriteTargetSymbol?: string;
       overwriteTargetTokenAddress?: string;
-      overwriteTargetTokenChain?: number;
+      overwriteTargetTokenChain?: ChainId;
     };
   };
   sourceChain: {
-    chainId: number;
+    chainId: ChainId;
     timestamp: Date | string;
     transaction: {
       txHash: string;
@@ -272,13 +273,13 @@ export interface GetOperationsOutput {
       type: string;
       value?: {
         originAddress: string;
-        originChainId: number;
+        originChainId: ChainId;
         originTxHash: string;
       };
     };
   };
   targetChain: {
-    chainId: number;
+    chainId: ChainId;
     timestamp: Date | string;
     transaction: {
       txHash: string;

@@ -2,7 +2,7 @@ import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { Tooltip } from "src/components/atoms";
 import { formatAppIds, shortAddress } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { IStatus } from "src/consts";
 import { GetRedeem } from "./GetRedeem";
 import { VerifyRedemption } from "./VerifyRedemption";

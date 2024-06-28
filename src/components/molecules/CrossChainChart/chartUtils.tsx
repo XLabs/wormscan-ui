@@ -1,4 +1,4 @@
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { CrossChainActivity } from "src/api/guardian-network/types";
 import { getChainName } from "src/utils/wormhole";
 

@@ -1,7 +1,7 @@
 import { CheckIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ChainId } from "src/api";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import {
   CCTP_APP_ID,
@@ -63,77 +63,77 @@ const appIds = [
 ];
 
 export const ChainFilterMainnet = [
-  ChainId.Acala,
-  ChainId.Algorand,
-  ChainId.Aptos,
-  ChainId.Arbitrum,
-  ChainId.Aurora,
-  ChainId.Avalanche,
-  ChainId.Base,
-  ChainId.Blast,
-  ChainId.BSC,
-  ChainId.Celo,
-  ChainId.Ethereum,
-  ChainId.Fantom,
-  ChainId.Injective,
-  ChainId.Karura,
-  ChainId.Klaytn,
-  ChainId.Mantle, // TODO: add when exists a Mantle transaction
-  ChainId.Moonbeam,
-  ChainId.Near,
-  ChainId.Neon,
-  ChainId.Oasis,
-  ChainId.Optimism,
-  ChainId.Polygon,
-  ChainId.Scroll,
-  ChainId.Sei,
-  ChainId.Solana,
-  ChainId.Sui,
-  ChainId.Terra,
-  ChainId.Terra2,
-  ChainId.Wormchain,
-  ChainId.XLayer,
-  ChainId.Xpla,
+  chainToChainId("Acala"),
+  chainToChainId("Algorand"),
+  chainToChainId("Aptos"),
+  chainToChainId("Arbitrum"),
+  chainToChainId("Aurora"),
+  chainToChainId("Avalanche"),
+  chainToChainId("Base"),
+  chainToChainId("Blast"),
+  chainToChainId("Bsc"),
+  chainToChainId("Celo"),
+  chainToChainId("Ethereum"),
+  chainToChainId("Fantom"),
+  chainToChainId("Injective"),
+  chainToChainId("Karura"),
+  chainToChainId("Klaytn"),
+  chainToChainId("Mantle"), // TODO: add when exists a Mantle transaction
+  chainToChainId("Moonbeam"),
+  chainToChainId("Near"),
+  chainToChainId("Neon"),
+  chainToChainId("Oasis"),
+  chainToChainId("Optimism"),
+  chainToChainId("Polygon"),
+  chainToChainId("Scroll"),
+  chainToChainId("Sei"),
+  chainToChainId("Solana"),
+  chainToChainId("Sui"),
+  chainToChainId("Terra"),
+  chainToChainId("Terra2"),
+  chainToChainId("Wormchain"),
+  chainToChainId("Xlayer"),
+  chainToChainId("Xpla"),
 ];
 
 export const ChainFilterTestnet = [
-  ChainId.Acala,
-  ChainId.Celo,
-  ChainId.Algorand,
-  ChainId.PolygonSepolia,
-  ChainId.Aptos,
-  ChainId.Arbitrum,
-  ChainId.ArbitrumSepolia,
-  ChainId.Aurora,
-  ChainId.Base,
-  ChainId.BaseSepolia,
-  ChainId.Blast,
-  ChainId.BSC,
-  ChainId.Fantom,
-  ChainId.Avalanche,
-  ChainId.Ethereum,
-  ChainId.Holesky,
-  ChainId.Injective,
-  ChainId.Karura,
-  ChainId.Klaytn,
-  ChainId.Mantle, // TODO: add when exists a Mantle transaction
-  ChainId.Moonbeam,
-  ChainId.Polygon,
-  ChainId.Near,
-  ChainId.Neon,
-  ChainId.Oasis,
-  ChainId.Optimism,
-  ChainId.OptimismSepolia,
-  ChainId.Scroll,
-  ChainId.Sei,
-  ChainId.Sepolia,
-  ChainId.Solana,
-  ChainId.Sui,
-  ChainId.Terra,
-  ChainId.Terra2,
-  ChainId.Wormchain,
-  ChainId.XLayer,
-  ChainId.Xpla,
+  chainToChainId("Acala"),
+  chainToChainId("Celo"),
+  chainToChainId("Algorand"),
+  chainToChainId("PolygonSepolia"),
+  chainToChainId("Aptos"),
+  chainToChainId("Arbitrum"),
+  chainToChainId("ArbitrumSepolia"),
+  chainToChainId("Aurora"),
+  chainToChainId("Base"),
+  chainToChainId("BaseSepolia"),
+  chainToChainId("Blast"),
+  chainToChainId("Bsc"),
+  chainToChainId("Fantom"),
+  chainToChainId("Avalanche"),
+  chainToChainId("Ethereum"),
+  chainToChainId("Holesky"),
+  chainToChainId("Injective"),
+  chainToChainId("Karura"),
+  chainToChainId("Klaytn"),
+  chainToChainId("Mantle"), // TODO: add when exists a Mantle transaction
+  chainToChainId("Moonbeam"),
+  chainToChainId("Polygon"),
+  chainToChainId("Near"),
+  chainToChainId("Neon"),
+  chainToChainId("Oasis"),
+  chainToChainId("Optimism"),
+  chainToChainId("OptimismSepolia"),
+  chainToChainId("Scroll"),
+  chainToChainId("Sei"),
+  chainToChainId("Sepolia"),
+  chainToChainId("Solana"),
+  chainToChainId("Sui"),
+  chainToChainId("Terra"),
+  chainToChainId("Terra2"),
+  chainToChainId("Wormchain"),
+  chainToChainId("Xlayer"),
+  chainToChainId("Xpla"),
 ];
 
 const Filters = () => {
@@ -433,7 +433,7 @@ const Filters = () => {
               {orderedChains.map(value => (
                 <Tooltip
                   key={value}
-                  enableTooltip={value === ChainId.Wormchain}
+                  enableTooltip={value === chainToChainId("Wormchain")}
                   tooltip={<div>This chain includes Injective, Osmosis, Kujira, and Evmos.</div>}
                   type="info"
                 >
@@ -499,7 +499,7 @@ const Filters = () => {
               {orderedChains.map(value => (
                 <Tooltip
                   key={value}
-                  enableTooltip={value === ChainId.Wormchain}
+                  enableTooltip={value === chainToChainId("Wormchain")}
                   tooltip={<div>This chain includes Injective, Osmosis, Kujira, and Evmos.</div>}
                   type="info"
                 >

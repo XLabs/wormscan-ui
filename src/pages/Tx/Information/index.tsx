@@ -39,6 +39,7 @@ import AdvancedView from "./AdvancedView";
 import "./styles.scss";
 import { ChainId } from "@wormhole-foundation/sdk";
 import { platformToChains } from "@wormhole-foundation/sdk";
+import { deepCloneWithBigInt } from "src/utils/object";
 
 interface Props {
   blockData: GetBlockData;
@@ -358,7 +359,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
         to: null,
       };
 
-      const newData: GetOperationsOutput = JSON.parse(JSON.stringify(data));
+      const newData: GetOperationsOutput = deepCloneWithBigInt(data);
 
       newData.STATUS = "COMPLETED";
       newData.targetChain = newDestinationTx;

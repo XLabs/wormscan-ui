@@ -8,7 +8,7 @@ import { ErrorPlaceholder, TopAssetListItem, TopAssetsChart } from "src/componen
 import { useWindowSize } from "src/utils/hooks";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
 import { formatNumber } from "src/utils/number";
-import { ChainId } from "src/api";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { AssetsByVolumeOutput, Tokens } from "src/api/guardian-network/types";
 import analytics from "src/analytics";
@@ -76,13 +76,13 @@ const TopAssets = () => {
           );
           groups[emitter_chain].txsFormatted = formatNumber(groups[emitter_chain].txs, 0);
           groups[emitter_chain].chainName = getChainName({
-            acronym: emitter_chain === ChainId.BSC,
-            chainId: emitter_chain,
+            acronym: emitter_chain === chainToChainId("Bsc"),
+            chainId: emitter_chain as ChainId,
             network: currentNetwork,
           });
           groups[emitter_chain].chainImageSrc = getChainIcon({
             colorless: true,
-            chainId: emitter_chain,
+            chainId: emitter_chain as ChainId,
           });
         });
 

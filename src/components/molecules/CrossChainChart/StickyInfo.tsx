@@ -3,7 +3,7 @@ import { Network } from "@wormhole-foundation/sdk";
 import { BlockchainIcon } from "src/components/atoms";
 import { WormholeScanBrand } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { CrossChainBy } from "src/api/guardian-network/types";
 import { Info } from "./Chart";
 

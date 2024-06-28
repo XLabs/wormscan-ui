@@ -18,6 +18,7 @@ import Details from "./Details";
 import RelayerDetails from "./Details/RelayerDetails";
 import "./styles.scss";
 import { JsonText } from "src/components/atoms";
+import { deepCloneWithBigInt, stringifyWithBigInt } from "src/utils/object";
 
 type Props = {
   data: GetOperationsOutput;
@@ -41,8 +42,9 @@ const AdvancedView = ({
   const payload = data?.content?.payload;
 
   const noRelayerData = { ...data, relayerInfo: null as any };
-  const dataNoPayload = JSON.parse(JSON.stringify(noRelayerData)) as GetOperationsOutput;
+  const dataNoPayload = deepCloneWithBigInt(noRelayerData) as GetOperationsOutput;
   delete dataNoPayload.relayerInfo;
+
   if (dataNoPayload.content) dataNoPayload.content.payload = undefined;
   if (dataNoPayload.decodedVaa) dataNoPayload.decodedVaa = undefined;
 
@@ -51,6 +53,12 @@ const AdvancedView = ({
       ? data.decodedVaa
       : null
     : null;
+  if (signedVAA.signatures) {
+    delete signedVAA.signatures;
+    delete signedVAA.protocolName;
+    delete signedVAA.payloadName;
+    delete signedVAA.payloadLiteral;
+  }
 
   // const readVAA = (record: DeliveryLifecycleRecord) => {
   //   const vaa = record.vaa;
@@ -229,7 +237,7 @@ const AdvancedView = ({
           <BlockSection
             id="signatures"
             title="SIGNED VAA"
-            code={signedVAA && JSON.stringify(signedVAA, null, 4)}
+            code={signedVAA && stringifyWithBigInt(signedVAA, 4)}
           />
         </div>
       </div>

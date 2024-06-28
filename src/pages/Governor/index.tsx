@@ -28,7 +28,7 @@ import {
   SORT_LOW_HIGH_LIST,
   SORT_TRANSACTIONS_BY_LIST,
 } from "src/utils/governorUtils";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import {
   ClockIcon,

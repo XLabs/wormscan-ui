@@ -781,7 +781,7 @@ export const getTokenInformation = async (
 
     name = tokenResult.name;
     symbol = tokenResult.symbol;
-    tokenDecimals = tokenResult.tokenDecimals;
+    tokenDecimals = Number(tokenResult.tokenDecimals);
   }
 
   // solana token
@@ -789,7 +789,7 @@ export const getTokenInformation = async (
     const tokenResult = await getSolanaTokenDetails(parsedTokenAddress);
     name = tokenResult?.name ? tokenResult.name : null;
     symbol = tokenResult?.symbol ? tokenResult.symbol : null;
-    tokenDecimals = tokenResult?.tokenDecimals ? tokenResult.tokenDecimals : null;
+    tokenDecimals = tokenResult?.tokenDecimals ? Number(tokenResult.tokenDecimals) : null;
   }
 
   if (name || !wrappedTokenAddress) {
@@ -808,7 +808,7 @@ export const getTokenInformation = async (
 
     name = tokenResult.name;
     symbol = tokenResult.symbol;
-    tokenDecimals = tokenResult.tokenDecimals;
+    tokenDecimals = Number(tokenResult.tokenDecimals);
   }
 
   // solana wrapped token
@@ -816,7 +816,7 @@ export const getTokenInformation = async (
     const tokenResult = await getSolanaTokenDetails(wrappedTokenAddress);
     name = tokenResult?.name ? tokenResult.name : null;
     symbol = tokenResult?.symbol ? tokenResult.symbol : null;
-    tokenDecimals = tokenResult?.tokenDecimals ? tokenResult.tokenDecimals : null;
+    tokenDecimals = tokenResult?.tokenDecimals ? Number(tokenResult.tokenDecimals) : null;
   }
 
   return { name, symbol, tokenDecimals };

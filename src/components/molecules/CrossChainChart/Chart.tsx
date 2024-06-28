@@ -7,7 +7,7 @@ import { WormholeScanBrand } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getChainName } from "src/utils/wormhole";
 import { useWindowSize } from "src/utils/hooks";
-import { ChainId } from "src/api";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { CrossChainActivity, CrossChainBy } from "src/api/guardian-network/types";
 import { processData } from "./chartUtils";
 import analytics from "src/analytics";
@@ -336,7 +336,7 @@ export const Chart = ({
           {getAbbreviatedName({
             abbreviateIf: !isDesktop,
             chainName: getChainName({
-              acronym: item.chain === ChainId.BSC,
+              acronym: item.chain === chainToChainId("Bsc"),
               chainId: item.chain,
               network: currentNetwork,
             }),
@@ -387,7 +387,7 @@ export const Chart = ({
           {getAbbreviatedName({
             abbreviateIf: !isDesktop,
             chainName: getChainName({
-              acronym: item.chain === ChainId.BSC,
+              acronym: item.chain === chainToChainId("Bsc"),
               chainId: item.chain,
               network: currentNetwork,
             }),
