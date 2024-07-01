@@ -29,7 +29,7 @@ const protocolNames: Record<ProtocolName, string> = {
   cctp: "CCTP",
   mayan: "Mayan",
   portal_token_bridge: "Portal",
-  native_token_transfer: "Native Token Transfer",
+  native_token_transfer: "NTT",
 };
 
 const protocolLinks: Record<ProtocolName, string> = {
@@ -113,7 +113,9 @@ const ProtocolsStats = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {protocolNames[protocolSelected?.protocol]}
+              {protocolSelected?.protocol === "native_token_transfer"
+                ? "Native Token Transfers"
+                : protocolNames[protocolSelected?.protocol]}
               <ExternalLinkIcon height={15} width={15} />
             </a>
             <WormholeBrand />
