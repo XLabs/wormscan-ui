@@ -1,60 +1,79 @@
 @import "src/styles/globals.scss";
 
 .switch {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-
-  &-container {
-    @include centered-row;
-    justify-content: center;
-
-    width: 32px;
-    height: 32px;
-    border: 1px solid black;
-    border-radius: 9999px;
-    position: relative;
-    transition: background-color 0.2s;
-    background-color: var(--color-primary-150);
-    cursor: pointer;
-  }
-
-  &-thumb {
-    @include centered-row;
-    width: 24px;
-    height: 24px;
-    border-radius: 9999px;
-    border: 0;
-
-    &.on {
-      animation: pulse 1.5s infinite;
-      background-color: var(--color-secondary-800);
-    }
-    &.off {
-      animation: none;
-      background-color: var(--color-primary-700);
-    }
-  }
+  @include centered-row;
+  gap: 19px;
 
   &-label {
-    &.on {
-      color: var(--color-secondary-100);
+    @include centered-row;
+    @include text-heading6;
+    color: var(--color-white);
+    gap: 10px;
+
+    &-indicator {
+      @include centered-row;
+      background-color: var(--color-gray-20);
+      border-radius: 50%;
+      height: 24px;
+      justify-content: center;
+      width: 24px;
+
+      &-dot {
+        background-color: var(--color-gray-200);
+        border-radius: 50%;
+        height: 8px;
+        width: 8px;
+      }
+
+      &.active {
+        background-color: var(--color-primary-20);
+
+        & .switch-label-indicator-dot {
+          animation: pulse 1.5s infinite;
+          background-color: var(--color-primary-100);
+        }
+      }
     }
-    &.off {
-      color: inherit;
+  }
+
+  &-root {
+    all: unset;
+    background-color: var(--color-gray-800);
+    border-radius: 9999px;
+    cursor: pointer;
+    height: 24px;
+    position: relative;
+    transition: background-color 0.2s;
+    width: 44px;
+
+    &[data-state="checked"] {
+      background-color: #4a90e2;
+    }
+
+    &-thumb {
+      background-color: var(--color-gray-200);
+      border-radius: 9999px;
+      display: block;
+      height: 18px;
+      transform: translateX(3px);
+      transition: transform 0.2s;
+      width: 18px;
+
+      &[data-state="checked"] {
+        transform: translateX(23px);
+      }
     }
   }
 }
 
 @keyframes pulse {
   0% {
-    transform: scale(0.85);
+    transform: scale(1);
   }
   50% {
-    transform: scale(1.1);
+    transform: scale(1.5);
   }
   100% {
-    transform: scale(0.9);
+    transform: scale(1);
   }
 }

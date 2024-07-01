@@ -1,7 +1,9 @@
 export { default as ActivityIcon } from "./ActivityIcon";
 export { default as AnalyticsIcon } from "./AnalyticsIcon";
+export { default as ArrowRightIcon } from "./ArrowRightIcon";
 export { default as ArrowUpIcon } from "./ArrowUpIcon";
 export { default as ChatIcon } from "./ChatIcon";
+export { default as CheckCircle2 } from "./CheckCircle2";
 export { default as CheckIcon } from "./CheckIcon";
 export { default as ChevronDownIcon } from "./ChevronDownIcon";
 export { default as ClockIcon } from "./ClockIcon";
@@ -25,3 +27,4 @@ export { default as StaticsIncreaseIcon } from "./StaticsIncreaseIcon";
 export { default as SwapSmallVerticalIcon } from "./SwapSmallVerticalIcon";
 export { default as SwapVerticalIcon } from "./SwapVerticalIcon";
 export { default as TriangleDownIcon } from "./TriangleDownIcon";
+export { default as VAAEmittedIcon } from "./VAAEmittedIcon";

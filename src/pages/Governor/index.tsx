@@ -441,7 +441,7 @@ const Governor = () => {
             className="governor-mobile-filters-select"
             items={showTransactions ? SORT_TRANSACTIONS_BY_LIST : SORT_DASHBOARD_BY_LIST}
             menuFixed={true}
-            menuStyles={{ zIndex: 99 }}
+            menuPortalStyles={{ zIndex: 99 }}
             name="topAssetTimeRange"
             onValueChange={(value: ISelectSortBy) => handleSelectedSortBy(value)}
             optionStyles={{ padding: 16 }}
@@ -453,7 +453,7 @@ const Governor = () => {
             className="governor-mobile-filters-select"
             items={SORT_LOW_HIGH_LIST}
             menuFixed={true}
-            menuStyles={{ zIndex: 99 }}
+            menuPortalStyles={{ zIndex: 99 }}
             name="topAssetTimeRange"
             onValueChange={(value: ISelectSortLowHigh) => handleSelectedSortLowHigh(value)}
             optionStyles={{ padding: 16 }}

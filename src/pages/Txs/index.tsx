@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
-import { CopyIcon, WidthIcon } from "@radix-ui/react-icons";
+import { WidthIcon } from "@radix-ui/react-icons";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { BlockchainIcon, Loader, NavLink } from "src/components/atoms";
+import { BlockchainIcon, NavLink, Tooltip } from "src/components/atoms";
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { formatAppIds, parseAddress, parseTx, shortAddress } from "src/utils/crypto";
+import { formatAppId, formatAppIds, parseAddress, parseTx, shortAddress } from "src/utils/crypto";
 import { timeAgo } from "src/utils/date";
-import { formatNumber } from "src/utils/number";
+import { allBridgeIcon, cctpIcon, mayanIcon, nttIcon, portalIcon } from "src/icons/protocols";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { ChainId, ChainLimit, Order } from "src/api";
 import { getClient } from "src/api/Client";
@@ -21,29 +21,33 @@ import {
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
   CONNECT_APP_ID,
+  GATEWAY_APP_ID,
+  GR_APP_ID,
   IStatus,
+  MAYAN_APP_ID,
   NTT_APP_ID,
   PORTAL_APP_ID,
+  PORTAL_NFT_APP_ID,
+  TBTC_APP_ID,
   UNKNOWN_APP_ID,
   canWeGetDestinationTx,
   txType,
 } from "src/consts";
 import { useLocalStorage } from "src/utils/hooks";
-import "./styles.scss";
+import { ArrowRightIcon, CopyIcon } from "src/icons/generic";
 
 export interface TransactionOutput {
-  amount: React.ReactNode;
-  from: React.ReactNode;
-  inOut?: React.ReactNode;
-  justAppeared: boolean;
-  originApp: React.ReactNode;
-  status: React.ReactNode;
-  statusString: string;
-  time: Date | string;
-  to: React.ReactNode;
-  txHash: React.ReactNode;
-  txHashId: string;
   VAAId: string;
+  justAppeared: boolean;
+  txHashId: string;
+  statusString: string;
+  status: React.ReactNode;
+  txHash: React.ReactNode;
+  type: React.ReactNode;
+  chains: React.ReactNode;
+  protocol: React.ReactNode;
+  viewDetails?: React.ReactNode;
+  time: React.ReactNode;
 }
 
 export const PAGE_SIZE = 50;
@@ -51,6 +55,18 @@ export const PAGE_SIZE = 50;
 export const ETH_LIMIT = {
   maxTransactionSize: 5000000,
   availableNotional: 50000000,
+};
+
+const protocolIcons: Record<string, string> = {
+  [CCTP_APP_ID]: cctpIcon,
+  [CONNECT_APP_ID]: portalIcon,
+  [GATEWAY_APP_ID]: portalIcon,
+  [GR_APP_ID]: portalIcon,
+  [MAYAN_APP_ID]: mayanIcon,
+  [NTT_APP_ID]: nttIcon,
+  [PORTAL_APP_ID]: portalIcon,
+  [PORTAL_NFT_APP_ID]: portalIcon,
+  [TBTC_APP_ID]: portalIcon,
 };
 
 const Txs = () => {
@@ -129,6 +145,8 @@ const Txs = () => {
     sourceChain,
     targetChain,
   };
+
+  const [highlightedAddress, setHighlightedAddress] = useState(null);
 
   const { refetch, isLoading: isLoadingOperations } = useQuery(
     ["getTxs", getOperationsInput],
@@ -316,67 +334,127 @@ const Txs = () => {
                 }
               }
 
+              let portalIconDisplayed = false;
+
               const timestampDate = new Date(timestamp);
               const row = {
                 VAAId: VAAId,
                 justAppeared: justAppeared,
                 txHashId: parseTxHash,
+                statusString: STATUS,
+                status: (
+                  <StatusBadge
+                    key={`${tx.sequence} ${STATUS}`}
+                    className={statusChanged ? "appear" : ""}
+                    size="responsive"
+                    STATUS={STATUS}
+                  />
+                ),
                 txHash: (
                   <div className="tx-hash">
+                    <h4>TX HASH</h4>
+
                     {parseTxHash ? (
                       <>
                         <NavLink to={`/tx/${parseTxHash}`} onClick={stopPropagation}>
                           {shortAddress(parseTxHash).toUpperCase()}
                         </NavLink>
                         <CopyToClipboard toCopy={parseTxHash}>
-                          <CopyIcon height={20} width={20} />
+                          <CopyIcon width={24} />
                         </CopyToClipboard>
                       </>
                     ) : (
-                      "-"
+                      <div className="not-found">-</div>
                     )}
                   </div>
                 ),
-                originApp: appIds?.length > 0 ? formatAppIds(appIds) : "-",
-                from: (
-                  <div className="tx-from">
-                    <BlockchainIcon chainId={fromChain} network={currentNetwork} size={24} />
-                    <div>
-                      {getChainName({ chainId: fromChain, network: currentNetwork })}
-                      {sourceAddress && (
-                        <div className="tx-from-address">
-                          <a
-                            href={getExplorerLink({
-                              network: currentNetwork,
-                              chainId: fromChain,
-                              value: sourceAddress,
-                              base: "address",
-                              isNativeAddress: true,
-                            })}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={stopPropagation}
-                          >
-                            {shortAddress(sourceAddress).toUpperCase()}
-                          </a>
+                type: (
+                  <div className="tx-type">
+                    <h4>TYPE</h4>
 
-                          <CopyToClipboard toCopy={sourceAddress}>
-                            <CopyIcon height={20} width={20} />
-                          </CopyToClipboard>
-                        </div>
-                      )}
-                    </div>
+                    <div>{payloadType ? txType[payloadType] : "Unknown"}</div>
                   </div>
                 ),
-                inOut: <></>,
-                to: (
-                  <div className="tx-to">
-                    {toChain ? (
-                      <>
-                        <BlockchainIcon chainId={toChain} network={currentNetwork} size={24} />
-                        <div>
-                          {getChainName({ chainId: toChain, network: currentNetwork })}
-                          <div className="tx-from-address">
+                chains: (
+                  <div className="tx-chains">
+                    <h4>CHAINS</h4>
+
+                    <div className="tx-chains-container">
+                      <div
+                        className={`tx-chains-container-item ${
+                          highlightedAddress === fromChain ? "highlight" : ""
+                        }`}
+                        onMouseEnter={() => setHighlightedAddress(fromChain)}
+                        onMouseLeave={() => setHighlightedAddress(null)}
+                      >
+                        <Tooltip
+                          tooltip={getChainName({ chainId: fromChain, network: currentNetwork })}
+                          type="info"
+                        >
+                          <div>
+                            <BlockchainIcon
+                              chainId={fromChain}
+                              network={currentNetwork}
+                              size={24}
+                            />
+                          </div>
+                        </Tooltip>
+                        {sourceAddress && (
+                          <>
+                            <a
+                              href={getExplorerLink({
+                                network: currentNetwork,
+                                chainId: fromChain,
+                                value: sourceAddress,
+                                base: "address",
+                                isNativeAddress: true,
+                              })}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={stopPropagation}
+                            >
+                              {shortAddress(sourceAddress).toUpperCase()}
+                            </a>
+
+                            <CopyToClipboard toCopy={sourceAddress}>
+                              <CopyIcon width={24} />
+                            </CopyToClipboard>
+                          </>
+                        )}
+                      </div>
+
+                      {toChain && (
+                        <>
+                          <div className="tx-chains-container-arrow">
+                            <ArrowRightIcon
+                              className={`arrow-icon ${address ? "is-address" : ""}`}
+                              width={24}
+                            />
+
+                            {address && !isAttestation && (isInOut || isOutflow || isInflow) && (
+                              <div
+                                className={`tx-chains-container-arrow-flow tx-chains-container-arrow-flow-${
+                                  isInOut ? "self" : isOutflow ? "out" : "in"
+                                }`}
+                              >
+                                {isInOut ? "SELF" : isOutflow ? "OUT" : "IN"}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="tx-chains-container-item">
+                            <Tooltip
+                              tooltip={getChainName({ chainId: toChain, network: currentNetwork })}
+                              type="info"
+                            >
+                              <div>
+                                <BlockchainIcon
+                                  chainId={toChain}
+                                  network={currentNetwork}
+                                  size={24}
+                                />
+                              </div>
+                            </Tooltip>
                             <a
                               href={getExplorerLink({
                                 network: currentNetwork,
@@ -393,46 +471,73 @@ const Txs = () => {
                             </a>
 
                             <CopyToClipboard toCopy={targetAddress}>
-                              <CopyIcon height={20} width={20} />
+                              <CopyIcon width={24} />
                             </CopyToClipboard>
                           </div>
-                        </div>
-                      </>
-                    ) : (
-                      "-"
-                    )}
+                        </>
+                      )}
+                    </div>
                   </div>
                 ),
-                statusString: STATUS,
-                status: (
-                  <StatusBadge
-                    key={`${tx.sequence} ${STATUS}`}
-                    className={statusChanged ? "appear" : ""}
-                    STATUS={STATUS}
-                    small
-                  />
-                ),
-                amount: (
-                  <>
-                    {payloadType && <div>{txType[payloadType]}</div>}
-                    {tokenAmount && (
-                      <div>
-                        {formatNumber(Number(tokenAmount)) + " " + (symbol ? symbol : "N/A")}
-                      </div>
-                    )}
-                    {!payloadType && !tokenAmount && "-"}
-                  </>
-                ),
-                time: (timestampDate && timeAgo(timestampDate)) || "-",
-              };
+                protocol: (
+                  <div className="tx-protocol">
+                    <h4>PROTOCOL</h4>
 
-              if (address && !isAttestation && (isInOut || isOutflow || isInflow)) {
-                row.inOut = (
-                  <div className={`tx-flow tx-flow-${isInOut ? "self" : isOutflow ? "out" : "in"}`}>
-                    {isInOut ? <WidthIcon height={20} width={20} /> : isOutflow ? "OUT" : "IN"}
+                    {appIds?.length > 0 ? (
+                      <div className="tx-protocol-icons">
+                        <Tooltip
+                          maxWidth={false}
+                          tooltip={<div>{formatAppIds(appIds)}</div>}
+                          type="info"
+                        >
+                          <div>
+                            {appIds?.map(appId => {
+                              let iconSrc = protocolIcons[appId];
+
+                              if (
+                                !portalIconDisplayed &&
+                                (appId === PORTAL_APP_ID ||
+                                  appId === GATEWAY_APP_ID ||
+                                  appId === TBTC_APP_ID ||
+                                  appId === PORTAL_NFT_APP_ID ||
+                                  appId === GR_APP_ID ||
+                                  appId === CONNECT_APP_ID)
+                              ) {
+                                portalIconDisplayed = true;
+                              } else if (
+                                appId === PORTAL_APP_ID ||
+                                appId === GATEWAY_APP_ID ||
+                                appId === TBTC_APP_ID ||
+                                appId === PORTAL_NFT_APP_ID ||
+                                appId === GR_APP_ID ||
+                                appId === CONNECT_APP_ID
+                              ) {
+                                iconSrc = null;
+                              }
+
+                              return iconSrc ? (
+                                <img key={appId} src={iconSrc} alt={appId} height={24} width={24} />
+                              ) : null;
+                            })}
+                          </div>
+                        </Tooltip>
+                      </div>
+                    ) : (
+                      <div className="not-found">-</div>
+                    )}
                   </div>
-                );
-              }
+                ),
+                viewDetails: (
+                  <div className="tx-view-details">
+                    <NavLink to={`/tx/${parseTxHash}`}>View details</NavLink>
+                  </div>
+                ),
+                time: (
+                  <div className="tx-time">
+                    {timestampDate ? timeAgo(timestampDate) : <div className="not-found">-</div>}
+                  </div>
+                ),
+              };
 
               tempRows.push(row);
             })
@@ -466,10 +571,13 @@ const Txs = () => {
           <SearchNotFound q={q} errorCode={errorCode} />
         ) : (
           <>
-            <Top address={address} addressChainId={addressChainId} />
-            <Information
+            <Top
+              address={address}
+              addressChainId={addressChainId}
               liveMode={liveMode}
               setLiveMode={setLiveMode}
+            />
+            <Information
               parsedTxsData={isPaginationLoading ? [] : parsedTxsData}
               currentPage={currentPage}
               onChangePagination={setCurrentPage}

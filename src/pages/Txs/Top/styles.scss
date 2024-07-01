@@ -2,65 +2,59 @@
 
 .txs-top {
   @include centered-column;
-
   gap: 16px;
-  margin: 32px 0;
+  margin-bottom: 20px;
+
+  @include desktop {
+    margin-top: 55px;
+  }
 
   &-header {
     @include centered-row;
     flex-wrap: wrap;
     gap: 24px;
+    justify-content: space-between;
     width: 100%;
 
     &-title {
-      @include text-h5;
+      @include centered-row;
+      @include text-roboto-subheading-500;
+      gap: 8px;
     }
 
-    &-search-bar {
-      max-width: 424px;
+    &-live-mode {
+      @include text-heading6;
+      color: var(--color-white);
+      gap: 32px;
+      width: 145px;
     }
   }
 
   &-txId {
-    @include text-p3;
+    @include text-roboto-body-400;
     @include centered-column;
+    color: var(--color-gray-400);
+    word-break: break-all;
 
     @include desktop {
       @include centered-row;
-
       justify-content: start;
       gap: 8px;
     }
 
-    color: var(--color-primary-100);
-    word-break: break-all;
-
     &-container {
       @include centered-row;
+      gap: 8px;
 
-      line-height: 1.4;
-      gap: 24px;
-
-      svg {
-        height: 25px;
-        width: 25px;
+      & > a {
+        @include button-ghost;
       }
 
-      > a {
-        color: var(--color-information-100);
-        text-decoration: none;
+      & svg {
+        margin: 0 16px 0 4px;
 
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-
-      @include tablet {
-        gap: 8px;
-
-        svg {
-          height: unset;
-          width: unset;
+        @include desktop {
+          margin: 0;
         }
       }
     }

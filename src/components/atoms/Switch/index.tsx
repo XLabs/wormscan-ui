@@ -3,18 +3,28 @@ import "./styles.scss";
 
 type Props = {
   label?: string;
+  showIndicator?: boolean;
   setValue?: (b: boolean) => void;
   value: boolean;
 };
 
-const SwitchComponent = ({ label, value, setValue = () => {} }: Props) => {
+const SwitchComponent = ({ label, showIndicator = false, value, setValue = () => {} }: Props) => {
   return (
     <div className="switch">
-      <Switch className={"switch-container"} checked={value} onCheckedChange={setValue}>
-        <Thumb className={`switch-thumb ${value ? "on" : "off"}`} />
-      </Switch>
+      {label && (
+        <div className="switch-label">
+          {showIndicator && (
+            <div className={`switch-label-indicator ${value ? "active" : ""}`}>
+              <div className="switch-label-indicator-dot" />
+            </div>
+          )}
+          <span>{label}</span>
+        </div>
+      )}
 
-      <span className={`switch-label ${value ? "on" : "off"}`}>{label}</span>
+      <Switch className="switch-root" checked={value} onCheckedChange={setValue}>
+        <Thumb className="switch-root-thumb" />
+      </Switch>
     </div>
   );
 };

@@ -1,4 +1,6 @@
 .status-badge {
+  max-width: max-content;
+
   &-tooltip {
     color: var(--color-primary-30);
     font-size: 12px;
@@ -8,67 +10,56 @@
   }
 
   &-status {
-    font-size: 16px;
-    font-weight: 500;
     min-width: max-content;
+    text-transform: uppercase;
 
     &.progress {
-      background-color: #ffd600;
-      color: #473c01;
+      background-color: var(--color-alert-10);
+      color: var(--color-alert-100);
 
       & > svg > path {
-        stroke-width: 0.3;
-        stroke: #473c01;
+        stroke-width: 1;
       }
     }
 
     &.completed {
-      background-color: #00ffa3;
-      color: #023523;
+      background-color: var(--color-success-10);
+      color: var(--color-success-100);
 
       & > svg > path {
-        stroke-width: 0.3;
-        stroke: #023523;
+        stroke-width: 1;
       }
     }
 
     &.emitted {
-      background-color: #0078e8;
-      color: #ebf4fc;
+      background-color: var(--color-information-12);
+      color: var(--color-information-100);
 
       & > svg > path {
-        stroke-width: 0.3;
-        stroke: #ebf4fc;
+        stroke-width: 1;
       }
     }
   }
 
   &-small {
     border-radius: 40px;
-    width: 40px;
-    height: 40px;
-
-    font-size: 24px;
-    font-weight: 500;
     margin: auto;
 
     &.progress {
       & > svg {
-        color: #ffd600 !important;
+        color: var(--color-alert-100) !important;
       }
     }
 
     &.completed {
       & > svg {
-        color: #00ffa3 !important;
+        color: var(--color-success-100) !important;
       }
     }
 
     &.emitted {
       & > svg {
-        border-radius: 10px;
-        border: 1px solid #0078e8;
-        color: #0078e8 !important;
+        color: var(--color-information-100) !important;
       }
     }
   }

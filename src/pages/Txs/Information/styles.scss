@@ -1,30 +1,8 @@
 @import "src/styles/globals.scss";
 
 .txs-information {
-  margin-bottom: 32px;
-
-  &-loader {
-    @include centered-row;
-    justify-content: center;
-    height: 100%;
-    min-height: 220px;
-  }
-
   & .table-container {
     overflow-x: auto;
-  }
-
-  &-table-results {
-    @include text-p3;
-
-    padding: 24px;
-    color: var(--color-primary-50);
-  }
-
-  .tabs {
-    overflow-x: auto;
-    overflow-y: visible;
-    height: 100%;
   }
 
   &-top {
@@ -35,119 +13,193 @@
       @include centered-row;
       justify-content: space-between;
     }
-
-    &-buttons {
-      @include centered-row;
-      @include text-p3;
-      border-bottom: 1px solid var(--color-white-10);
-      gap: 16px;
-      justify-content: space-between;
-      min-height: 50px;
-      padding: 12px 16px;
-
-      @include desktop {
-        border-bottom: none;
-        gap: 32px;
-        padding: 12px 32px;
-      }
-
-      &-live-mode {
-        @include text-p3;
-        color: var(--color-primary-100);
-        font-weight: 600;
-        gap: 32px;
-        width: 145px;
-      }
-    }
-
-    &-pagination {
-      @include centered-row;
-      justify-content: center;
-
-      padding: 24px 16px;
-
-      @include desktop {
-        border-bottom: none;
-        padding: 12px 32px;
-      }
-    }
   }
 
   .table {
-    th {
-      text-align: center;
-
-      &:first-child {
-        width: 80px;
-      }
-    }
-
     td {
-      text-align: center;
+      @include text-roboto-body-500;
+      color: var(--color-white);
+
+      &:nth-last-child(2) {
+        position: absolute;
+        right: 0;
+        top: 0;
+        border-bottom: 0;
+
+        @include desktop {
+          position: relative;
+        }
+      }
+
+      &:nth-last-child(3) {
+        border-bottom: 0;
+      }
+
+      & > div {
+        @include centered-row;
+        gap: 4px;
+        height: 24px;
+
+        & > h4 {
+          @include text-heading6;
+          color: var(--color-gray-400);
+          margin-right: auto;
+
+          @include desktop {
+            display: none;
+          }
+        }
+      }
     }
 
     & a {
-      color: var(--color-information-100);
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    & svg {
-      color: var(--color-primary-90);
+      @include button-ghost;
     }
 
     &.txs {
-      .tx-hash {
-        @include centered-row;
-        gap: 12px;
-        justify-content: center;
+      .not-found {
+        color: var(--color-white-40);
       }
 
-      .tx-from,
-      .tx-to {
-        @include centered-row;
-        gap: 12px;
-        justify-content: center;
-        text-align: left;
+      .status-badge-status {
+        background-color: transparent;
+        padding: 0;
+        text-transform: none;
 
-        &-address {
-          @include centered-row;
-
-          gap: 12px;
-        }
-      }
-
-      .tx-flow {
-        @include centered-column;
-        align-items: center;
-        border-radius: 5px;
-        border: 1px solid transparent;
-        font-size: 10px;
-        font-weight: 600;
-        height: 24px;
-        margin: auto;
-        width: 40px;
-
-        &-in {
-          background-color: var(--color-success-10);
-          border-color: var(--color-success-20);
-          color: var(--color-success-100);
-        }
-
-        &-out {
-          background-color: var(--color-alert-10);
-          border-color: var(--color-alert-20);
-          color: var(--color-alert-100);
-        }
-
-        &-self {
-          background-color: var(--color-white-10);
-          border-color: var(--color-white-20);
+        & > p {
           color: var(--color-white);
         }
+      }
+
+      .tx-hash {
+        @include centered-row;
+        gap: 4px;
+        height: 24px;
+
+        & .copy-to-clipboard {
+          color: var(--color-gray-400);
+        }
+      }
+
+      .tx-chains {
+        @include centered-row;
+        align-items: start;
+        gap: 8px;
+        height: auto;
+        min-height: 24px;
+
+        &-container {
+          @include centered-column;
+          gap: 8px;
+
+          @include desktop {
+            @include centered-row;
+          }
+
+          &-arrow {
+            @include centered-row;
+
+            @include desktop {
+              flex-direction: column-reverse;
+            }
+
+            & .arrow-icon {
+              color: var(--color-gray-600);
+              margin: 0 12px;
+              rotate: 90deg;
+
+              @include desktop {
+                rotate: 0deg;
+
+                &.is-address {
+                  display: none;
+                }
+              }
+            }
+
+            &-flow {
+              @include centered-column;
+              align-items: center;
+              border-radius: 5px;
+              border: 1px solid transparent;
+              font-size: 10px;
+              font-weight: 600;
+              height: 24px;
+              width: 40px;
+
+              @include desktop {
+                margin: 0 12px;
+              }
+
+              &-in {
+                background-color: var(--color-success-10);
+                border-color: var(--color-success-20);
+                color: var(--color-success-100);
+              }
+
+              &-out {
+                background-color: var(--color-alert-10);
+                border-color: var(--color-alert-20);
+                color: var(--color-alert-100);
+              }
+
+              &-self {
+                background-color: var(--color-white-10);
+                border-color: var(--color-white-20);
+                color: var(--color-white);
+              }
+            }
+          }
+
+          &-item {
+            @include centered-row;
+
+            & .blockchain-icon {
+              margin: 0 12px;
+
+              @include desktop {
+                margin: 0;
+              }
+            }
+
+            & > a {
+              margin-left: auto;
+
+              @include desktop {
+                margin-left: 12px;
+              }
+            }
+
+            & .copy-to-clipboard {
+              color: var(--color-gray-400);
+              margin-left: 4px;
+            }
+          }
+        }
+      }
+
+      .tx-protocol-icons {
+        & img:not(:first-child) {
+          margin-left: -4px;
+        }
+      }
+
+      .tx-view-details {
+        & > a {
+          @include button-secondary;
+          justify-content: center;
+          width: 100%;
+        }
+
+        @include desktop {
+          display: none;
+        }
+      }
+
+      .tx-time {
+        @include text-roboto-body-400;
+        color: var(--color-gray-400);
+        justify-content: flex-end;
       }
     }
   }
@@ -155,11 +207,11 @@
   .txs-pagination {
     display: flex;
     justify-content: center;
-    padding: 48px 16px;
+    padding: 8px 0 64px 0;
 
     @include desktop {
-      justify-content: end;
-      padding: 32px;
+      justify-content: flex-start;
+      padding: 36px 0 80px 0;
     }
   }
 }

@@ -1,332 +1,153 @@
 @import "src/styles/globals.scss";
 
 .filters {
+  @include centered-column;
   position: relative;
-
-  &-btn {
-    @include centered-row;
-    background-color: var(--color-white-03);
-    border-radius: 5px;
-    border: 2px solid var(--color-white-10);
-    color: var(--color-primary-100);
-    cursor: pointer;
-    display: flex;
-    font-size: 16px;
-    font-weight: 500;
-    gap: 8px;
-    height: 44px;
-    justify-content: space-between;
-    padding: 0 16px;
-
-    @include desktop {
-      width: 150px;
-    }
-
-    &.active {
-      background-color: var(--color-white-05);
-      border: 2px solid var(--color-primary-200);
-    }
-
-    &:hover {
-      background-color: var(--color-white-10);
-    }
-  }
+  width: 100%;
 
   &-bg {
     background-color: var(--color-black-50);
     inset: 0;
     position: fixed;
+    z-index: 9;
+  }
+
+  &-top {
+    @include centered-column;
+    gap: 17px;
+    margin-bottom: 32px;
 
     @include desktop {
-      display: none;
+      @include centered-row;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    &-tab {
+      @include button-secondary;
+      cursor: default;
+
+      max-width: max-content;
+      &:not(:disabled) {
+        &:hover,
+        &:active {
+          background: var(--color-gray-900);
+        }
+      }
+    }
+
+    &-btn {
+      @include button-secondary;
+      justify-content: center;
+      width: 100%;
+
+      @include desktop {
+        width: auto;
+      }
+
+      & > svg {
+        color: var(--color-white-60);
+      }
     }
   }
 
   &-container {
-    background-color: #1f1937;
-    border-left: 2px solid var(--color-white-10);
-    border-radius: 16px 16px 0 0;
-    border-right: 2px solid var(--color-white-10);
-    border-top: 2px solid var(--color-white-10);
+    @include centered-column;
+    background-color: var(--color-gray-950);
+    border-radius: 40px 40px 0 0;
+    border: 1px solid var(--color-gray-900);
+    border-bottom: none;
     display: flex;
-    flex-direction: column;
-    inset: 110vh 0 0 0;
+    gap: 16px;
+    inset: 120vh 0 0 0;
+    justify-content: flex-start;
+    padding: 20px;
     position: fixed;
     transition: inset 0.3s ease;
-    z-index: 1;
+    width: 100%;
+    z-index: 99;
 
     @include desktop {
-      backdrop-filter: blur(48px);
-      background-color: var(--color-white-03);
-      -webkit-backdrop-filter: blur(48px) !important;
-      border-radius: 5px;
-      border: 2px solid var(--color-white-10);
+      @include centered-row;
+      background-color: transparent;
+      border-radius: 0;
+      border: none;
+      border-top: 1px solid var(--color-gray-900);
       display: none;
       inset: unset;
-      left: 0;
-      position: absolute;
-      transition: none;
+      margin-bottom: 28px;
+      padding: 20px 0 0 0;
+      position: relative;
+      z-index: unset;
+    }
 
-      & header {
+    &.show {
+      inset: max(16px, calc(100% - 600px)) 0 0 0;
+
+      @include desktop {
+        @include centered-row;
+        inset: unset;
+      }
+    }
+
+    &-title {
+      @include text-roboto-subheading-500;
+      text-align: center;
+
+      @include desktop {
         display: none;
       }
     }
 
-    &.show {
-      inset: 48px 0 0 0;
+    &-close-btn {
+      @include button-secondary;
+      height: 24px;
+      padding: 0;
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      width: 24px;
 
       @include desktop {
-        display: block;
-        inset: unset;
-        top: 52px;
-
-        @media (max-width: 1190px) {
-          transform: translateX(-170px);
-        }
+        display: none;
       }
     }
 
-    & > main {
-      overflow-y: auto;
+    & .select-searchable-dropdown {
+      height: 48px;
+      justify-content: space-between;
+      width: 100%;
 
       @include desktop {
-        display: flex;
-        gap: 16px;
-        padding: 16px 16px 0 16px;
-      }
-
-      &::-webkit-scrollbar {
-        width: 8px;
+        height: 36px;
       }
     }
 
-    &-box {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 16px 0;
+    &-apply-btn {
+      @include button-primary;
+      height: 48px;
+      justify-content: center;
+      margin-top: auto;
 
       @include desktop {
-        width: 250px;
-        padding: 0;
+        height: 36px;
+        margin-left: auto;
+        order: 2;
       }
+    }
 
-      &-btn {
-        align-items: center;
-        background-color: var(--color-white-03);
-        border-radius: 5px;
-        border: 2px solid var(--color-white-10);
-        color: var(--color-primary-100);
-        cursor: pointer;
-        display: flex;
-        height: 44px;
-        justify-content: center;
-        margin: 0 16px 0 auto;
-        width: 44px;
-      }
+    &-reset-btn {
+      @include button-ghost;
+      height: 48px;
+      justify-content: center;
 
-      &-top {
-        align-items: center;
-        display: flex;
-        gap: 32px;
-        justify-content: space-between;
-        padding-left: 16px;
+      @include desktop {
+        height: 36px;
+        margin-left: 12px;
+        order: 1;
 
-        @include desktop {
-          padding: 0;
-        }
-
-        &-title {
-          @include centered-row;
-          color: var(--color-primary-100);
-          font-weight: 500;
-          gap: 8px;
-        }
-
-        &-tooltip {
-          max-width: calc(100vw - 32px) !important;
-          margin: 0 16px;
-        }
-
-        & > .filters-container-box-content-item {
-          height: auto;
-
-          @include desktop {
-            margin-right: 6px;
-          }
-        }
-      }
-
-      &-content {
-        overflow-y: hidden;
-        transition: height 0.3s ease;
-
-        @include desktop {
-          border-radius: 5px;
-          border: 2px solid var(--color-white-10);
-          height: 190px;
-          overflow-y: auto;
-          padding: 16px 0;
-          transition: none;
-
-          &::-webkit-scrollbar {
-            width: 4px;
-          }
-
-          &::-webkit-scrollbar-thumb {
-            background-color: #6e71a3;
-
-            &:hover {
-              background-color: #8587b1;
-            }
-          }
-        }
-
-        &-item {
-          @include centered-row;
-          cursor: pointer;
-          display: flex;
-          height: 32px;
-          justify-content: space-between;
-          padding: 0 16px;
-
-          &:hover {
-            background-color: var(--color-white-03);
-          }
-
-          &.protocol-filter {
-            padding: 0 8px 0 16px;
-          }
-
-          &-exclusive {
-            @include centered-row;
-            cursor: pointer;
-            height: inherit;
-            margin-left: auto;
-            padding: 0 8px;
-
-            &:hover {
-              background-color: var(--color-white-03);
-            }
-          }
-
-          & .custom-input {
-            @include centered-row;
-            height: inherit;
-            padding: 0 8px;
-
-            &-checkbox {
-              @include centered-row;
-              border-radius: 2px;
-              border: 1px solid #6e71a3;
-              color: var(--color-white);
-              cursor: pointer;
-              height: 16px;
-              justify-content: center;
-              width: 16px;
-
-              &.checked {
-                background-color: var(--color-secondary-800);
-                border: 1px solid var(--color-secondary-800);
-              }
-            }
-          }
-
-          & > p {
-            @include centered-row;
-            gap: 8px;
-
-            @include desktop {
-              & > span {
-                max-width: 160px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-              }
-            }
-          }
-
-          & > input {
-            background-color: transparent;
-            border: 1px solid var(--color-white-10);
-          }
-        }
-      }
-
-      &-show-more-btn {
-        background-color: transparent;
-        border: none;
-        color: var(--color-secondary-800);
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: 500;
-        height: 32px;
-        margin: 0 auto;
-        max-width: max-content;
-        padding: 0 32px;
-
-        @include desktop {
+        &.hidden {
           display: none;
-        }
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-
-    &-bottom {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: 1fr 1fr;
-      padding: 24px 16px 16px 16px;
-
-      @include desktop {
-        display: flex;
-        flex-direction: row-reverse;
-      }
-
-      & > button {
-        align-items: center;
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        font-size: 16px;
-        font-weight: 600;
-        gap: 16px;
-        height: 44px;
-        justify-content: center;
-
-        &:disabled {
-          cursor: not-allowed;
-          opacity: 0.3;
-        }
-      }
-
-      &-apply-btn {
-        background-color: var(--color-secondary-800);
-        border: none;
-        color: var(--color-white);
-        grid-column: span 2;
-        min-width: 220px;
-
-        &:not(:disabled):hover {
-          background-color: var(--color-secondary-600);
-        }
-      }
-
-      &-close-btn {
-        background-color: var(--color-black-25);
-        border: 2px solid var(--color-white-10);
-        color: var(--color-primary-100);
-        min-width: 120px;
-
-        &:hover {
-          background-color: var(--color-white-10);
-        }
-
-        &:active {
-          border-color: var(--color-primary-200);
         }
       }
     }
@@ -334,16 +155,17 @@
 }
 
 .counter {
+  @include text-roboto-body-400;
   align-items: center;
-  background-color: var(--color-secondary-800);
+  background-color: var(--color-white);
   border-radius: 50%;
-  color: var(--color-white);
+  color: var(--color-gray-900);
   display: flex;
   font-size: 12px;
   font-weight: 400;
-  height: 24px;
+  height: 20px;
   justify-content: center;
-  width: 24px;
+  width: 20px;
 
   &.inverted {
     background-color: var(--color-white);

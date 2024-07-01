@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import allBridgeIcon from "src/icons/Protocols/allBridgeIcon.svg";
-import cctpIcon from "src/icons/Protocols/cctpIcon.svg";
-import mayanIcon from "src/icons/Protocols/mayanIcon.svg";
-import portalIcon from "src/icons/Protocols/portalIcon.svg";
-import nttIcon from "src/icons/Protocols/nttIcon.svg";
+import { allBridgeIcon, cctpIcon, mayanIcon, nttIcon, portalIcon } from "src/icons/protocols";
 import { ALLBRIDGE_URL, CCTP_URL, MAYAN_URL, PORTAL_BRIDGE_URL } from "src/consts";
 import { BlockchainIcon, Loader } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
