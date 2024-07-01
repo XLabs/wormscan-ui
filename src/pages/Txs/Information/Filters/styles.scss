@@ -123,6 +123,13 @@
       }
     }
 
+    &-select-text {
+      @include centered-row;
+      @include text-roboto-body-500;
+      color: var(--color-white);
+      gap: 8px;
+    }
+
     &-apply-btn {
       @include button-primary;
       height: 48px;

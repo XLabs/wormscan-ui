@@ -146,8 +146,6 @@ const Txs = () => {
     targetChain,
   };
 
-  const [highlightedAddress, setHighlightedAddress] = useState(null);
-
   const { refetch, isLoading: isLoadingOperations } = useQuery(
     ["getTxs", getOperationsInput],
     () => getClient().guardianNetwork.getOperations(getOperationsInput),
@@ -380,13 +378,7 @@ const Txs = () => {
                     <h4>CHAINS</h4>
 
                     <div className="tx-chains-container">
-                      <div
-                        className={`tx-chains-container-item ${
-                          highlightedAddress === fromChain ? "highlight" : ""
-                        }`}
-                        onMouseEnter={() => setHighlightedAddress(fromChain)}
-                        onMouseLeave={() => setHighlightedAddress(null)}
-                      >
+                      <div className="tx-chains-container-item">
                         <Tooltip
                           tooltip={getChainName({ chainId: fromChain, network: currentNetwork })}
                           type="info"

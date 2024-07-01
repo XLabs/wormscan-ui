@@ -271,7 +271,6 @@ const Filters = () => {
 
         <Select
           ariaLabel="Select Protocol"
-          className="top-assets-header-select"
           controlStyles={{ minWidth: 272 }}
           isMulti={false}
           items={PROTOCOL_LIST}
@@ -287,12 +286,12 @@ const Filters = () => {
           }
           optionStyles={{ padding: 16 }}
           text={
-            <>
+            <div className="filters-container-select-text">
               {checkedState.appId.length > 0 && (
                 <span className="counter">{checkedState.appId.length}</span>
               )}
               Protocol
-            </>
+            </div>
           }
           type="searchable"
           value={checkedState.appId}
@@ -300,7 +299,6 @@ const Filters = () => {
 
         <Select
           ariaLabel="Select Source Chain"
-          className="top-assets-header-select"
           items={CHAIN_LIST}
           menuFixed={!isDesktop}
           menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
@@ -309,12 +307,12 @@ const Filters = () => {
           onValueChange={(value: any) => setCheckedState({ ...checkedState, sourceChain: value })}
           optionStyles={{ padding: 16 }}
           text={
-            <>
+            <div className="filters-container-select-text">
               {checkedState.sourceChain.length > 0 && (
                 <span className="counter">{checkedState.sourceChain.length}</span>
               )}
               Source chain
-            </>
+            </div>
           }
           type="searchable"
           value={checkedState.sourceChain}
@@ -322,7 +320,6 @@ const Filters = () => {
 
         <Select
           ariaLabel="Select Target Chain"
-          className="top-assets-header-select"
           items={CHAIN_LIST}
           menuFixed={!isDesktop}
           menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
@@ -331,12 +328,12 @@ const Filters = () => {
           onValueChange={(value: any) => setCheckedState({ ...checkedState, targetChain: value })}
           optionStyles={{ padding: 16 }}
           text={
-            <>
+            <div className="filters-container-select-text">
               {checkedState.targetChain.length > 0 && (
                 <span className="counter">{checkedState.targetChain.length}</span>
               )}
               Target chain
-            </>
+            </div>
           }
           type="searchable"
           value={checkedState.targetChain}
