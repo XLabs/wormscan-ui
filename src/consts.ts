@@ -183,3 +183,4 @@ export const NTT_APP_ID = "NATIVE_TOKEN_TRANSFER";
 export const GR_APP_ID = "GENERIC_RELAYER";
 export const MAYAN_APP_ID = "MAYAN";
 export const TBTC_APP_ID = "TBTC";
+export const ALL_BRIDGE_APP_ID = "ALL_BRIDGE";
