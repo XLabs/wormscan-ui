@@ -141,7 +141,7 @@ const Txs = () => {
     ["getTxs", getOperationsInput],
     () => getClient().guardianNetwork.getOperations(getOperationsInput),
     {
-      refetchInterval: () => (liveMode ? REFETCH_TIME : false),
+      refetchInterval: () => (liveMode && !address ? REFETCH_TIME : false),
       onError: (err: Error) => {
         let statusCode = 404;
 
