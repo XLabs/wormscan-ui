@@ -1419,6 +1419,7 @@ const Tx = () => {
       setShowSourceTokenUrl,
       setShowTargetTokenUrl,
       txHash,
+      VAAId,
     ],
   );
 
