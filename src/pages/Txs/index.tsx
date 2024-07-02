@@ -3,13 +3,12 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BlockchainIcon, NavLink, Tooltip } from "src/components/atoms";
-import { CopyToClipboard, StatusBadge } from "src/components/molecules";
+import { CopyToClipboard, ProtocolsIcons, StatusBadge } from "src/components/molecules";
 import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { formatAppIds, parseAddress, parseTx, shortAddress } from "src/utils/crypto";
+import { parseAddress, parseTx, shortAddress } from "src/utils/crypto";
 import { timeAgo } from "src/utils/date";
 import { ArrowRightIcon, CopyIcon } from "src/icons/generic";
-import { allBridgeIcon, cctpIcon, mayanIcon, nttIcon, portalIcon } from "src/icons/protocols";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { ChainId, ChainLimit, Order } from "src/api";
 import { getClient } from "src/api/Client";
@@ -17,12 +16,10 @@ import { GetOperationsInput, GetOperationsOutput } from "src/api/guardian-networ
 import { Information } from "./Information";
 import analytics from "src/analytics";
 import {
-  ALL_BRIDGE_APP_ID,
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
   CONNECT_APP_ID,
   IStatus,
-  MAYAN_APP_ID,
   NTT_APP_ID,
   PORTAL_APP_ID,
   UNKNOWN_APP_ID,
@@ -51,13 +48,6 @@ export const PAGE_SIZE = 50;
 export const ETH_LIMIT = {
   maxTransactionSize: 5000000,
   availableNotional: 50000000,
-};
-
-const protocolIcons: Record<string, string> = {
-  [ALL_BRIDGE_APP_ID]: allBridgeIcon,
-  [CCTP_APP_ID]: cctpIcon,
-  [MAYAN_APP_ID]: mayanIcon,
-  [NTT_APP_ID]: nttIcon,
 };
 
 const Txs = () => {
@@ -323,8 +313,6 @@ const Txs = () => {
                 }
               }
 
-              let portalIconDisplayed = false;
-
               const timestampDate = new Date(timestamp);
               const row = {
                 VAAId: VAAId,
@@ -361,7 +349,9 @@ const Txs = () => {
                   <div className="tx-type">
                     <h4>TYPE</h4>
 
-                    <div>{payloadType ? txType[payloadType] : "Unknown"}</div>
+                    <div>
+                      {payloadType ? txType[payloadType] : <div className="not-found">-</div>}
+                    </div>
                   </div>
                 ),
                 chains: (
@@ -467,29 +457,7 @@ const Txs = () => {
                     <h4>PROTOCOL</h4>
 
                     {appIds?.length > 0 ? (
-                      <div className="tx-protocol-icons">
-                        <Tooltip
-                          maxWidth={false}
-                          tooltip={<div>{formatAppIds(appIds)}</div>}
-                          type="info"
-                        >
-                          <div>
-                            {appIds?.map(appId => {
-                              if (portalIconDisplayed) return null;
-
-                              const iconSrc = protocolIcons[appId] || portalIcon;
-
-                              if (iconSrc === portalIcon) {
-                                portalIconDisplayed = true;
-                              }
-
-                              return (
-                                <img key={appId} src={iconSrc} alt={appId} height={24} width={24} />
-                              );
-                            })}
-                          </div>
-                        </Tooltip>
-                      </div>
+                      <ProtocolsIcons appIds={appIds} />
                     ) : (
                       <div className="not-found">-</div>
                     )}
