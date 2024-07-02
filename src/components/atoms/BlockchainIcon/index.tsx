@@ -8,6 +8,7 @@ type Props = {
   chainId: ChainId;
   className?: string;
   colorless?: boolean;
+  lazy?: boolean;
   network: Network;
   size?: number;
 };
@@ -17,6 +18,7 @@ const BlockchainIcon = ({
   chainId,
   className = "",
   colorless = false,
+  lazy = true,
   network,
   size = 24,
 }: Props) => {
@@ -28,7 +30,7 @@ const BlockchainIcon = ({
       alt={`${name} icon`}
       className={`blockchain-icon ${className}`}
       height={size}
-      loading="lazy"
+      loading={lazy ? "lazy" : "eager"}
       src={icon}
       style={{ backgroundColor: background }}
       title={name}

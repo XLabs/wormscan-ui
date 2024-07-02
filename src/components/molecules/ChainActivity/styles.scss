@@ -69,9 +69,14 @@
     }
 
     &-tooltip {
-      background-color: #191919;
+      background-color: var(--color-gray-900);
       border-radius: 16px;
       padding: 12px 16px 16px 16px;
+      width: 200px;
+
+      @include desktop {
+        width: 264px;
+      }
 
       &-date {
         @include text-heading6;
@@ -118,7 +123,6 @@
       &-container {
         @include centered-column;
         gap: 4px;
-        width: 264px;
 
         @include desktop {
           gap: 8px;
@@ -229,26 +233,40 @@
           }
         }
 
+        & .select-searchable-dropdown {
+          height: 48px;
+
+          @include desktop {
+            height: 36px;
+          }
+        }
+
         &-buttons {
           @include centered-column;
           gap: 8px;
           margin-top: auto;
 
-          @include desktop {
-            display: none;
-          }
-
           & > .apply-btn {
             @include button-primary;
+            height: 48px;
             justify-content: center;
             width: 100%;
+
+            @include desktop {
+              display: none;
+            }
           }
 
           & > .reset-btn {
             @include button-ghost;
+            height: 48px;
             justify-content: center;
             padding: 8px;
             width: 100%;
+
+            @include desktop {
+              height: 36px;
+            }
           }
         }
       }
@@ -333,6 +351,11 @@
           @include button-secondary;
           color: var(--color-white);
           padding-right: 12px;
+          height: 48px;
+
+          @include desktop {
+            height: 36px;
+          }
         }
 
         &-box {
@@ -802,6 +825,10 @@
   }
 
   & .apexcharts {
+    &-tooltip {
+      overflow: visible !important;
+    }
+
     &-legend {
       display: inline;
       white-space: nowrap;
