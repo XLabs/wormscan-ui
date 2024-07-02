@@ -491,7 +491,13 @@ const Txs = () => {
                         >
                           <div>
                             {appIdsToDisplay.map(icon => (
-                              <img key={txHash} src={icon} alt={icon} height={24} width={24} />
+                              <img
+                                key={`${tx.sequence} ${icon}`}
+                                src={icon}
+                                alt={icon}
+                                height={24}
+                                width={24}
+                              />
                             ))}
                           </div>
                         </Tooltip>
