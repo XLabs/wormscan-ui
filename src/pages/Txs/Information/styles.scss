@@ -178,6 +178,12 @@
         }
       }
 
+      .tx-protocols-icons {
+        & img:not(:first-child) {
+          margin-left: -4px;
+        }
+      }
+
       .tx-view-details {
         & > a {
           @include button-secondary;
