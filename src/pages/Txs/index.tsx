@@ -494,7 +494,7 @@ const Txs = () => {
                               <img
                                 key={`${tx.sequence} ${icon}`}
                                 src={icon}
-                                alt={icon}
+                                alt="protocol icon"
                                 height={24}
                                 width={24}
                               />
