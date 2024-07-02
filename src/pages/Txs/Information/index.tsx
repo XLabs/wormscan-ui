@@ -3,82 +3,67 @@ import { useLocation } from "react-router-dom";
 import { Column } from "react-table";
 import { PAGE_SIZE, TransactionOutput } from "..";
 import { Table } from "src/components/organisms";
-import { Pagination, Switch } from "src/components/atoms";
-import { useNavigateCustom } from "src/utils/hooks";
+import { Pagination } from "src/components/atoms";
+import { useNavigateCustom, useWindowSize } from "src/utils/hooks";
 import Filters from "./Filters";
+import { BREAKPOINTS } from "src/consts";
 import "./styles.scss";
 
-const getColumns = (condition: boolean): Column<TransactionOutput>[] => {
-  const baseColumns: Column<TransactionOutput>[] = [
-    {
-      Header: "STATUS",
-      accessor: "status",
-    },
-    {
-      Header: "SOURCE TX HASH",
-      accessor: "txHash",
-    },
-    {
-      Header: "FROM",
-      accessor: "from",
-    },
-    {
-      Header: "TO",
-      accessor: "to",
-    },
-    {
-      Header: "PROTOCOL",
-      accessor: "originApp",
-    },
-    {
-      Header: "TYPE",
-      accessor: "amount",
-    },
-    {
-      Header: "TIME",
-      accessor: "time",
-    },
-  ];
-
-  if (condition) {
-    baseColumns.splice(3, 0, {
-      Header: "",
-      accessor: "inOut",
-    });
-  }
-
-  return baseColumns;
-};
+const columns: Column[] | any = [
+  {
+    Header: "STATUS",
+    accessor: "status",
+  },
+  {
+    Header: "SOURCE TX HASH",
+    accessor: "txHash",
+  },
+  {
+    Header: "TYPE",
+    accessor: "type",
+  },
+  {
+    Header: "CHAINS",
+    accessor: "chains",
+  },
+  {
+    Header: "PROTOCOL",
+    accessor: "protocol",
+  },
+  {
+    Header: "TIME",
+    accessor: "time",
+  },
+];
 
 interface Props {
   currentPage: number;
   isPaginationLoading: boolean;
   isTxsFiltered: boolean;
-  liveMode: boolean;
   onChangePagination: (pageNumber: number) => void;
   parsedTxsData: TransactionOutput[] | undefined;
   setIsPaginationLoading: Dispatch<SetStateAction<boolean>>;
-  setLiveMode: (b: boolean) => void;
 }
 
 const Information = ({
   currentPage = 1,
   isPaginationLoading,
   isTxsFiltered = false,
-  liveMode,
   onChangePagination,
   parsedTxsData,
   setIsPaginationLoading,
-  setLiveMode,
 }: Props) => {
-  const columns = getColumns(isTxsFiltered);
   const navigate = useNavigateCustom();
   const location = useLocation();
   const currentUrlPage = +new URLSearchParams(location.search).get("page") || 1;
+  const { width } = useWindowSize();
+  const isDesktop = width >= BREAKPOINTS.desktop;
 
   const onRowClick = (row: TransactionOutput) => {
-    const { txHashId } = row || {};
-    txHashId && navigate(`/tx/${txHashId}`);
+    if (isDesktop) {
+      const { txHashId } = row || {};
+      txHashId && navigate(`/tx/${txHashId}`);
+    }
   };
 
   const goFirstPage = () => {
@@ -122,33 +107,26 @@ const Information = ({
 
   return (
     <section className="txs-information">
-      <div className="txs-information-top">
-        <div className="txs-information-top-buttons">
-          <div
-            className="txs-information-top-buttons-live-mode"
-            onClick={() => {
-              setLiveMode(!liveMode);
-            }}
-          >
-            <Switch label={`LIVE MODE ${liveMode ? "ON" : "OFF"}`} value={liveMode} />
-          </div>
-
-          {!isTxsFiltered && <Filters />}
-        </div>
-
-        <div>
-          <PaginationComponent className="txs-information-top-pagination" />
-        </div>
-      </div>
+      <div className="txs-information-top">{!isTxsFiltered && <Filters />}</div>
 
       <div className="table-container">
         <Table
           className="txs"
-          columns={columns}
+          columns={
+            isDesktop
+              ? columns
+              : [
+                  ...columns,
+                  {
+                    Header: "VIEW DETAILS",
+                    accessor: "viewDetails",
+                  },
+                ]
+          }
           data={parsedTxsData}
           emptyMessage="No transactions found."
           isLoading={isPaginationLoading}
-          numberOfColumns={isTxsFiltered ? 8 : 7}
+          numberOfColumns={8}
           onRowClick={onRowClick}
         />
       </div>

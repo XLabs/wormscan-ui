@@ -1,8 +1,7 @@
-import { CheckIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ChainId } from "src/api";
-import { BlockchainIcon, Tooltip } from "src/components/atoms";
+import { BlockchainIcon, Select, Tooltip } from "src/components/atoms";
 import {
   CCTP_APP_ID,
   // CCTP_MANUAL_APP_ID_STRING, we are putting them from the front in the tx detail
@@ -17,28 +16,27 @@ import {
   GATEWAY_APP_ID,
   USDT_TRANSFER_APP_ID,
   TBTC_APP_ID,
+  BREAKPOINTS,
 } from "src/consts";
 import { formatAppId } from "src/utils/crypto";
 import { getChainName } from "src/utils/wormhole";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { useWindowSize, useNavigateCustom } from "src/utils/hooks";
-import FiltersIcon from "src/icons/filtersIcon.svg";
+import {
+  useWindowSize,
+  useNavigateCustom,
+  useLockBodyScroll,
+  useLocalStorage,
+} from "src/utils/hooks";
+import { CrossIcon, FilterListIcon } from "src/icons/generic";
 import "./styles.scss";
 
 interface ICheckedState {
-  appId: string;
-  exclusiveAppId: string;
-  sourceChain: string;
-  targetChain: string;
+  appId: Array<{ value: string }>;
+  exclusiveAppId: Array<{ value: string }>;
+  sourceChain: Array<{ value: string }>;
+  targetChain: Array<{ value: string }>;
 }
 type TCheckedStateKey = keyof ICheckedState;
-
-interface IShowMore {
-  appId: boolean;
-  sourceChain: boolean;
-  targetChain: boolean;
-}
-type TShowMoreKey = keyof IShowMore;
 
 enum FilterKeys {
   AppId = "appId",
@@ -78,7 +76,7 @@ export const ChainFilterMainnet = [
   ChainId.Injective,
   ChainId.Karura,
   ChainId.Klaytn,
-  ChainId.Mantle, // TODO: add when exists a Mantle transaction
+  ChainId.Mantle,
   ChainId.Moonbeam,
   ChainId.Near,
   ChainId.Neon,
@@ -116,7 +114,7 @@ export const ChainFilterTestnet = [
   ChainId.Injective,
   ChainId.Karura,
   ChainId.Klaytn,
-  ChainId.Mantle, // TODO: add when exists a Mantle transaction
+  ChainId.Mantle,
   ChainId.Moonbeam,
   ChainId.Polygon,
   ChainId.Near,
@@ -136,19 +134,17 @@ export const ChainFilterTestnet = [
   ChainId.Xpla,
 ];
 
+const parseParams = (params: string | null) => {
+  if (!params) return [];
+  return params.split(",").map(value => ({ value }));
+};
+
 const Filters = () => {
   const navigate = useNavigateCustom();
-  const filtersBtnRef = useRef<HTMLButtonElement>(null);
-  const filtersContainerRef = useRef<HTMLDivElement>(null);
-  const [showFilters, setShowFilters] = useState<boolean>(false);
-  const [showMore, setShowMore] = useState<IShowMore>({
-    appId: false,
-    sourceChain: false,
-    targetChain: false,
-  });
+  const [showFilters, setShowFilters] = useLocalStorage<boolean>("showTxsFilters", false);
 
   const { width } = useWindowSize();
-  const isMobile = width < 1024;
+  const isDesktop = width >= BREAKPOINTS.desktop;
 
   const [searchParams, setSearchParams] = useSearchParams();
   const appIdParams = searchParams.get(FilterKeys.AppId) || "";
@@ -157,419 +153,213 @@ const Filters = () => {
   const targetChainParams = searchParams.get(FilterKeys.TargetChain) || "";
 
   const [checkedState, setCheckedState] = useState<ICheckedState>({
-    appId: appIdParams,
-    exclusiveAppId: exclusiveAppIdParams,
-    sourceChain: sourceChainParams,
-    targetChain: targetChainParams,
+    appId: parseParams(appIdParams),
+    exclusiveAppId: parseParams(exclusiveAppIdParams),
+    sourceChain: parseParams(sourceChainParams),
+    targetChain: parseParams(targetChainParams),
   });
-  const totalFilterCounter = Object.values(checkedState).reduce(
-    (total, value) => total + value.split(",").filter(Boolean).length,
-    0,
-  );
+
+  const totalFilterCounter =
+    (appIdParams ? 1 : 0) +
+    (exclusiveAppIdParams ? 1 : 0) +
+    (sourceChainParams ? 1 : 0) +
+    (targetChainParams ? 1 : 0);
+
   const disableApplyButton =
-    checkedState.appId === appIdParams &&
-    checkedState.exclusiveAppId === exclusiveAppIdParams &&
-    checkedState.sourceChain === sourceChainParams &&
-    checkedState.targetChain === targetChainParams;
+    checkedState.exclusiveAppId.map(item => item.value).join(",") === exclusiveAppIdParams &&
+    checkedState.appId.map(item => item.value).join(",") === appIdParams &&
+    checkedState.sourceChain.map(item => item.value).join(",") === sourceChainParams &&
+    checkedState.targetChain.map(item => item.value).join(",") === targetChainParams;
 
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const orderedChains = currentNetwork === "MAINNET" ? ChainFilterMainnet : ChainFilterTestnet;
 
-  useEffect(() => {
-    if (isMobile) {
-      if (showFilters) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "unset";
-      }
-    } else {
-      document.body.style.overflow = "unset";
-    }
+  const PROTOCOL_LIST: { label: string; value: string }[] = appIds.map(appId => ({
+    label: formatAppId(appId),
+    value: String(appId),
+  }));
 
-    setCheckedState({
-      appId: appIdParams,
-      exclusiveAppId: exclusiveAppIdParams,
-      sourceChain: sourceChainParams,
-      targetChain: targetChainParams,
-    });
-
-    const handleClickOutside = (e: any) => {
-      if (
-        filtersContainerRef.current &&
-        !filtersContainerRef.current.contains(e.target) &&
-        filtersBtnRef.current &&
-        !filtersBtnRef.current.contains(e.target)
-      ) {
-        setShowFilters(false);
-      }
-    };
-
-    document.addEventListener("mouseup", handleClickOutside);
-    return () => {
-      document.removeEventListener("mouseup", handleClickOutside);
-    };
-  }, [
-    appIdParams,
-    exclusiveAppIdParams,
-    isMobile,
-    showFilters,
-    sourceChainParams,
-    targetChainParams,
-  ]);
+  const CHAIN_LIST: { label: string; value: string }[] = orderedChains.map(chainId => ({
+    icon: (
+      <BlockchainIcon
+        background="var(--color-white-10)"
+        chainId={chainId}
+        colorless
+        network={currentNetwork}
+        size={24}
+      />
+    ),
+    label: getChainName({ network: currentNetwork, chainId }),
+    value: String(chainId),
+  }));
 
   const handleShowFilters = () => {
     setShowFilters(!showFilters);
   };
 
-  const handleShowMore = (key: TShowMoreKey) => {
-    setShowMore(prevState => ({
-      ...prevState,
-      [key]: !prevState[key],
-    }));
-  };
-
-  const handleFilters = (key: TCheckedStateKey, value: string | ChainId) => {
-    setCheckedState(prevState => {
-      const newState: any = { ...prevState };
-
-      if (key === FilterKeys.AppId && newState.exclusiveAppId) {
-        newState.exclusiveAppId = "";
-      }
-
-      if (key === FilterKeys.SourceChain || key === FilterKeys.TargetChain) {
-        const values = new Set((newState[key] || "").split(","));
-        if (values.has(String(value))) {
-          values.delete(String(value));
-        } else {
-          values.add(String(value));
-        }
-        newState[key] = Array.from(values).filter(Boolean).join(",");
-      } else {
-        newState[key] = newState[key] === value ? "" : value;
-      }
-
-      return newState;
-    });
-  };
-
-  const clearFilters = () => {
+  const resetFilters = () => {
     setCheckedState({
-      appId: "",
-      exclusiveAppId: "",
-      sourceChain: "",
-      targetChain: "",
+      appId: [],
+      exclusiveAppId: [],
+      sourceChain: [],
+      targetChain: [],
     });
-  };
-
-  const applyFilters = () => {
-    const url = Object.keys(checkedState).reduce((acc, key: string) => {
-      const checkedStateKey = key as TCheckedStateKey;
-      if (checkedState[checkedStateKey]) {
-        return `${acc}&${key}=${checkedState[checkedStateKey]}`;
-      }
-      return acc;
-    }, "/txs?page=1");
-
-    navigate(url);
+    navigate("/txs?page=1");
     setShowFilters(false);
   };
 
+  const applyFilters = () => {
+    let url = "/txs?page=1";
+
+    for (const key in checkedState) {
+      const checkedStateKey = key as TCheckedStateKey;
+      if (checkedState[checkedStateKey].length > 0) {
+        const stateValue = checkedState[checkedStateKey];
+        const values = stateValue.map(item => item.value).join(",");
+        url += `&${key}=${values}`;
+      }
+    }
+
+    navigate(url);
+    !isDesktop && setShowFilters(false);
+  };
+
+  useEffect(() => {
+    setCheckedState({
+      appId: parseParams(appIdParams),
+      exclusiveAppId: parseParams(exclusiveAppIdParams),
+      sourceChain: parseParams(sourceChainParams),
+      targetChain: parseParams(targetChainParams),
+    });
+  }, [appIdParams, exclusiveAppIdParams, sourceChainParams, targetChainParams]);
+
+  useLockBodyScroll({
+    isLocked: !isDesktop && showFilters,
+    scrollableClasses: [
+      "blockchain-icon",
+      "custom-checkbox",
+      "select__option",
+      "select-custom-option-container",
+      "select-custom-option",
+    ],
+  });
+
   return (
     <div className="filters">
-      <button
-        className={`filters-btn ${showFilters ? "active" : ""}`}
-        ref={filtersBtnRef}
-        onClick={handleShowFilters}
-      >
-        <span>Filters</span>
-        {totalFilterCounter > 0 && <span className="counter">{totalFilterCounter}</span>}
-        <img src={FiltersIcon} alt="filters icon" height={12} loading="lazy" />
-      </button>
+      {showFilters && !isDesktop && <div className="filters-bg" onClick={handleShowFilters} />}
 
-      {showFilters && <div className="filters-bg" />}
+      <div className="filters-top">
+        <button className="filters-top-tab">All</button>
 
-      <div className={`filters-container ${showFilters ? "show" : ""}`} ref={filtersContainerRef}>
-        <header>
-          <div className="filters-container-box">
-            <button className="filters-container-box-btn" onClick={() => setShowFilters(false)}>
-              <Cross1Icon height={24} width={24} />
-            </button>
-          </div>
-        </header>
+        <button
+          className={`filters-top-btn ${showFilters ? "active" : ""}`}
+          onClick={handleShowFilters}
+        >
+          <FilterListIcon width={24} />
+          <span>Filters</span>
+          {totalFilterCounter > 0 && <span className="counter">{totalFilterCounter}</span>}
+        </button>
+      </div>
 
-        <main>
-          <div className="filters-container-box">
-            <div className="filters-container-box-top">
-              <p className="filters-container-box-top-title">
-                Protocol
-                {(checkedState.appId || checkedState.exclusiveAppId) && (
-                  <span className="counter">
-                    {checkedState.appId && checkedState.exclusiveAppId ? "2" : "1"}
-                  </span>
-                )}
-              </p>
+      <div className={`filters-container ${showFilters ? "show" : ""}`}>
+        <h4 className="filters-container-title">Filters</h4>
+
+        <button className="filters-container-close-btn" onClick={() => setShowFilters(false)}>
+          <CrossIcon width={24} />
+        </button>
+
+        <Select
+          ariaLabel="Select Protocol"
+          controlStyles={{ minWidth: 272 }}
+          isMulti={false}
+          items={PROTOCOL_LIST}
+          menuFixed={!isDesktop}
+          menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
+          menuPortalStyles={{ zIndex: 100 }}
+          name="topAssetTimeRange"
+          onValueChange={(value: any) =>
+            setCheckedState({
+              ...checkedState,
+              appId: value?.value === checkedState.appId?.[0]?.value ? [] : [value],
+            })
+          }
+          optionStyles={{ padding: 16 }}
+          text={
+            <div className="filters-container-select-text">
+              {checkedState.appId.length > 0 && (
+                <span className="counter">{checkedState.appId.length}</span>
+              )}
+              Protocol
             </div>
+          }
+          type="searchable"
+          value={checkedState.appId}
+        />
 
-            <div
-              className="filters-container-box-content"
-              style={{ height: isMobile ? (showMore.appId ? appIds.length * 32 : 160) : 190 }}
-            >
-              {appIds.map(appId => (
-                <div
-                  className="filters-container-box-content-item protocol-filter"
-                  key={appId}
-                  onClick={() => handleFilters(FilterKeys.AppId, appId)}
-                >
-                  <p>
-                    <span>{formatAppId(appId)}</span>
-                  </p>
-
-                  {appId === checkedState.appId &&
-                    (appId === MAYAN_APP_ID ||
-                      appId === PORTAL_APP_ID ||
-                      appId === NTT_APP_ID ||
-                      appId === GR_APP_ID) && (
-                      <Tooltip
-                        className="filters-container-box-top-tooltip"
-                        tooltip={
-                          <div>
-                            Displays only {formatAppId(appId)} transactions.
-                            <br />
-                            E.g.{" "}
-                            {
-                              {
-                                [MAYAN_APP_ID]: "Mayan",
-                                [PORTAL_APP_ID]: "Portal Token Bridge",
-                                [NTT_APP_ID]: "Native Token Transfer",
-                                [GR_APP_ID]: "Standard Relayer",
-                              }[appId]
-                            }
-                          </div>
-                        }
-                        type="info"
-                      >
-                        <div
-                          className="filters-container-box-content-item-exclusive"
-                          onClick={e => {
-                            e.stopPropagation();
-                            return handleFilters(FilterKeys.ExclusiveAppId, "true");
-                          }}
-                        >
-                          <div
-                            className={`custom-input-checkbox ${
-                              checkedState.exclusiveAppId ? "checked" : ""
-                            }`}
-                          >
-                            {checkedState.exclusiveAppId && <CheckIcon height={14} width={14} />}
-                          </div>
-                        </div>
-                      </Tooltip>
-                    )}
-
-                  <Tooltip
-                    className="filters-container-box-top-tooltip"
-                    enableTooltip={
-                      appId === MAYAN_APP_ID ||
-                      appId === PORTAL_APP_ID ||
-                      appId === NTT_APP_ID ||
-                      appId === GR_APP_ID
-                    }
-                    tooltip={
-                      <div>
-                        Displays all transactions, including additional protocols.
-                        <br />
-                        E.g.{" "}
-                        {
-                          {
-                            [MAYAN_APP_ID]: "Portal Token Bridge, Mayan",
-                            [PORTAL_APP_ID]: "Portal Token Bridge, Connect",
-                            [NTT_APP_ID]: "Standard Relayer, Native Token Transfer",
-                            [GR_APP_ID]: "Standard Relayer, Native Token Transfer",
-                          }[appId]
-                        }
-                      </div>
-                    }
-                    type="info"
-                  >
-                    <div className="custom-input">
-                      <div
-                        className={`custom-input-checkbox ${
-                          checkedState.appId === appId ? "checked" : ""
-                        }`}
-                      >
-                        {checkedState.appId === appId && <CheckIcon height={14} width={14} />}
-                      </div>
-                    </div>
-                  </Tooltip>
-                </div>
-              ))}
+        <Select
+          ariaLabel="Select Source Chain"
+          items={CHAIN_LIST}
+          menuFixed={!isDesktop}
+          menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
+          menuPortalStyles={{ zIndex: 100 }}
+          name="topAssetTimeRange"
+          onValueChange={(value: any) => setCheckedState({ ...checkedState, sourceChain: value })}
+          optionStyles={{ padding: 16 }}
+          text={
+            <div className="filters-container-select-text">
+              {checkedState.sourceChain.length > 0 && (
+                <span className="counter">{checkedState.sourceChain.length}</span>
+              )}
+              Source chain
             </div>
+          }
+          type="searchable"
+          value={checkedState.sourceChain}
+        />
 
-            <button
-              className="filters-container-box-show-more-btn"
-              onClick={() => handleShowMore(FilterKeys.AppId)}
-            >
-              {showMore.appId ? "Show Less" : "Show More"}
-            </button>
-          </div>
-
-          <div className="filters-container-box">
-            <div className="filters-container-box-top">
-              <p className="filters-container-box-top-title">
-                Source Chain
-                {checkedState.sourceChain && (
-                  <span className="counter">{checkedState.sourceChain.split(",").length}</span>
-                )}
-              </p>
+        <Select
+          ariaLabel="Select Target Chain"
+          items={CHAIN_LIST}
+          menuFixed={!isDesktop}
+          menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
+          menuPortalStyles={{ zIndex: 100 }}
+          name="topAssetTimeRange"
+          onValueChange={(value: any) => setCheckedState({ ...checkedState, targetChain: value })}
+          optionStyles={{ padding: 16 }}
+          text={
+            <div className="filters-container-select-text">
+              {checkedState.targetChain.length > 0 && (
+                <span className="counter">{checkedState.targetChain.length}</span>
+              )}
+              Target chain
             </div>
+          }
+          type="searchable"
+          value={checkedState.targetChain}
+        />
 
-            <div
-              className="filters-container-box-content"
-              style={{
-                height: isMobile ? (showMore.sourceChain ? orderedChains.length * 32 : 160) : 190,
-              }}
-            >
-              {orderedChains.map(value => (
-                <Tooltip
-                  key={value}
-                  enableTooltip={value === ChainId.Wormchain}
-                  tooltip={<div>This chain includes Injective, Osmosis, Kujira, and Evmos.</div>}
-                  type="info"
-                >
-                  <div
-                    key={value}
-                    className="filters-container-box-content-item"
-                    onClick={() => handleFilters(FilterKeys.SourceChain, value)}
-                  >
-                    <p>
-                      <BlockchainIcon
-                        background="var(--color-white-10)"
-                        chainId={value}
-                        className="chain-icon"
-                        colorless={true}
-                        network={currentNetwork}
-                        size={24}
-                      />
-                      <span>
-                        {getChainName({
-                          network: currentNetwork,
-                          chainId: value,
-                        })}
-                      </span>
-                    </p>
-                    <div
-                      className={`custom-input-checkbox ${
-                        checkedState.sourceChain.split(",").includes(String(value)) ? "checked" : ""
-                      }`}
-                    >
-                      {checkedState.sourceChain.split(",").includes(String(value)) && (
-                        <CheckIcon height={14} width={14} />
-                      )}
-                    </div>
-                  </div>
-                </Tooltip>
-              ))}
-            </div>
+        <button
+          className="filters-container-apply-btn"
+          disabled={disableApplyButton}
+          onClick={applyFilters}
+        >
+          Apply Filters
+        </button>
 
-            <button
-              className="filters-container-box-show-more-btn"
-              onClick={() => handleShowMore(FilterKeys.SourceChain)}
-            >
-              {showMore.sourceChain ? "Show Less" : "Show More"}
-            </button>
-          </div>
-
-          <div className="filters-container-box">
-            <div className="filters-container-box-top">
-              <p className="filters-container-box-top-title">
-                Target Chain
-                {checkedState.targetChain && (
-                  <span className="counter">{checkedState.targetChain.split(",").length}</span>
-                )}
-              </p>
-            </div>
-
-            <div
-              className="filters-container-box-content"
-              style={{
-                height: isMobile ? (showMore.targetChain ? orderedChains.length * 32 : 160) : 190,
-              }}
-            >
-              {orderedChains.map(value => (
-                <Tooltip
-                  key={value}
-                  enableTooltip={value === ChainId.Wormchain}
-                  tooltip={<div>This chain includes Injective, Osmosis, Kujira, and Evmos.</div>}
-                  type="info"
-                >
-                  <div
-                    key={value}
-                    className="filters-container-box-content-item"
-                    onClick={() => handleFilters(FilterKeys.TargetChain, value)}
-                  >
-                    <p>
-                      <BlockchainIcon
-                        background="var(--color-white-10)"
-                        chainId={value}
-                        className="chain-icon"
-                        colorless={true}
-                        network={currentNetwork}
-                        size={24}
-                      />
-                      <span>
-                        {getChainName({
-                          network: currentNetwork,
-                          chainId: value,
-                        })}
-                      </span>
-                    </p>
-                    <div
-                      className={`custom-input-checkbox ${
-                        checkedState.targetChain.split(",").includes(String(value)) ? "checked" : ""
-                      }`}
-                    >
-                      {checkedState.targetChain.split(",").includes(String(value)) && (
-                        <CheckIcon height={14} width={14} />
-                      )}
-                    </div>
-                  </div>
-                </Tooltip>
-              ))}
-            </div>
-
-            <button
-              className="filters-container-box-show-more-btn"
-              onClick={() => handleShowMore(FilterKeys.TargetChain)}
-            >
-              {showMore.targetChain ? "Show Less" : "Show More"}
-            </button>
-          </div>
-        </main>
-
-        <div className="filters-container-bottom">
-          <button
-            className="filters-container-bottom-apply-btn"
-            disabled={disableApplyButton}
-            onClick={applyFilters}
-          >
-            Apply
-            {totalFilterCounter > 0 && (
-              <span className="counter inverted mobile">{totalFilterCounter}</span>
-            )}
-          </button>
-
-          <button className="filters-container-bottom-close-btn" onClick={clearFilters}>
-            Clear
-          </button>
-
-          <button
-            className="filters-container-bottom-close-btn"
-            onClick={() => setShowFilters(false)}
-          >
-            Close
-          </button>
-        </div>
+        <button
+          className={`filters-container-reset-btn ${
+            checkedState.exclusiveAppId.length === 0 &&
+            checkedState.appId.length === 0 &&
+            checkedState.sourceChain.length === 0 &&
+            checkedState.targetChain.length === 0
+              ? "hidden"
+              : ""
+          }`}
+          onClick={resetFilters}
+        >
+          Reset Filters
+        </button>
       </div>
     </div>
   );

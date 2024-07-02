@@ -27,23 +27,23 @@ export const timeAgo = (date: Date) => {
 
   interval = Math.floor(seconds / 3600);
   if (interval === 1) {
-    return interval + " hour ago";
+    return interval + " hr ago";
   }
   if (interval > 1) {
-    return interval + " hours ago";
+    return interval + " hrs ago";
   }
 
   interval = Math.floor(seconds / 60);
   if (interval === 1) {
-    return interval + " minute ago";
+    return interval + " min ago";
   }
   if (interval > 1) {
-    return interval + " minutes ago";
+    return interval + " mins ago";
   }
 
   if (seconds < 10) return "just now";
 
-  return Math.floor(seconds) + " seconds ago";
+  return Math.floor(seconds) + " secs ago";
 };
 
 export const daysAgoDate = (daysAgo: number) => {
