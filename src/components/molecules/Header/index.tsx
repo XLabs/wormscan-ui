@@ -141,6 +141,10 @@ const Header = () => {
             </NavLink>
           )}
 
+          <NavLink to="/analytics" aria-label="Analytics">
+            Analytics
+          </NavLink>
+
           <NavigationMenu.Root delayDuration={0}>
             <NavigationMenu.List className="dropdown-menu">
               <NavigationMenu.Item>
@@ -209,7 +213,7 @@ const Header = () => {
 
         <NavLink to="/analytics" aria-label="Analytics">
           <AnalyticsIcon width={24} />
-          STATS
+          ANALYTICS
         </NavLink>
 
         <div
