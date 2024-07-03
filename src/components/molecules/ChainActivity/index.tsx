@@ -21,12 +21,14 @@ import {
 } from "src/icons/generic";
 import { IChainActivity, IChainActivityInput } from "src/api/guardian-network/types";
 import { calculateDateDifferenceInDays, startOfDayUTC, startOfMonthUTC } from "src/utils/date";
+import { BREAKPOINTS } from "src/consts";
 import { Calendar } from "./Calendar";
 import "./styles.scss";
 
 const ChainActivity = () => {
   const { width } = useWindowSize();
-  const isDesktop = width >= 1024;
+  const isDesktop = width >= BREAKPOINTS.desktop;
+  const isOnlyMobile = width < BREAKPOINTS.tablet;
 
   const chainsContainerRef = useRef<HTMLDivElement>(null);
   const dateContainerRef = useRef<HTMLDivElement>(null);
@@ -86,6 +88,7 @@ const ChainActivity = () => {
           chainId={chainId}
           className="chain-icon"
           colorless={true}
+          lazy={false}
           network={currentNetwork}
           size={24}
         />
@@ -237,6 +240,8 @@ const ChainActivity = () => {
     setStartDateDisplayed(yesterday);
     setEndDateDisplayed(new Date());
     setLastBtnSelected("24h");
+    setShowAllChains(true);
+    setChainListSelected([ALL_CHAINS]);
     setFilters({
       from: yesterday?.toISOString(),
       to: new Date()?.toISOString(),
@@ -518,7 +523,7 @@ const ChainActivity = () => {
                       : `Custom (${filters.sourceChain.length})`
                     : "Select chains"
                 }
-                ariaLabel="Select Time Range"
+                ariaLabel="Select Chains"
                 items={CHAIN_LIST}
                 menuFixed={isDesktop ? false : true}
                 menuPortalStyles={{ zIndex: 100 }}
@@ -712,7 +717,21 @@ const ChainActivity = () => {
 
                     const totalMessages = allChainsSerie[0].data[dataPointIndex]?.y || 0;
 
-                    return `<div class="chain-activity-chart-tooltip">
+                    const tooltipWidth = 200;
+                    const containerWidth = w.globals.svgWidth;
+                    const left = w.globals.seriesXvalues[0][dataPointIndex];
+                    let adjustedLeft = left;
+                    let style = "";
+
+                    if (chartSelected === "bar" && isOnlyMobile) {
+                      if (left + tooltipWidth > containerWidth) {
+                        adjustedLeft = left - tooltipWidth;
+                      }
+                      adjustedLeft = Math.max(0, adjustedLeft);
+                      style = `style="left: ${adjustedLeft}px; position:absolute;"`;
+                    }
+
+                    return `<div class="chain-activity-chart-tooltip" ${style}>
                       <p class="chain-activity-chart-tooltip-date">
                         ${new Date(data.x).toLocaleString("en-GB", {
                           hour: "2-digit",
@@ -749,6 +768,7 @@ const ChainActivity = () => {
                                           ${getChainName({
                                             network: currentNetwork,
                                             chainId: +item?.emitter_chain,
+                                            acronym: +item?.emitter_chain === ChainId.BSC,
                                           })}:
                                         </div>
                                         <div class="chain-activity-chart-tooltip-container-each-msg-number">
@@ -798,6 +818,7 @@ const ChainActivity = () => {
                                       </div>
                                       <div class="chain-activity-chart-tooltip-container-each-msg-name">
                                         ${getChainName({
+                                          acronym: +detail.emitter_chain === ChainId.BSC,
                                           network: currentNetwork,
                                           chainId: +detail.emitter_chain,
                                         })}:
@@ -827,6 +848,17 @@ const ChainActivity = () => {
                       return `Count: ${value}<br>Volume: ${data.volume}`;
                     },
                   },
+                  fixed:
+                    chartSelected === "bar" && isOnlyMobile
+                      ? {
+                          enabled: true,
+                          position: "topLeft",
+                          offsetX: width / series?.[0]?.data?.length,
+                          offsetY: -140,
+                        }
+                      : {
+                          enabled: false,
+                        },
                 },
               }}
             />
