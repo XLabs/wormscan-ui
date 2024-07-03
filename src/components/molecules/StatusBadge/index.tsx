@@ -1,18 +1,22 @@
-import { CheckCircledIcon, CheckIcon, ClockIcon } from "@radix-ui/react-icons";
+import { CheckCircle2, ClockIcon, VAAEmittedIcon } from "src/icons/generic";
 import { Chip, Tooltip } from "src/components/atoms";
-import { IStatus } from "src/consts";
+import { BREAKPOINTS, IStatus } from "src/consts";
+import { useWindowSize } from "src/utils/hooks";
 import "./styles.scss";
 
 type Props = {
-  STATUS: IStatus;
-  small?: boolean;
   className?: string;
+  size?: "normal" | "small" | "responsive";
+  STATUS: IStatus;
 };
 
-const StatusBadge = ({ STATUS, className, small = false }: Props) => {
+const StatusBadge = ({ STATUS, className, size = "normal" }: Props) => {
+  const { width } = useWindowSize();
+  const isDesktop = width >= BREAKPOINTS.desktop;
+
   return (
     <div className={`status-badge ${className ?? ""}`}>
-      {small ? (
+      {size === "small" || (size === "responsive" && isDesktop) ? (
         <>
           {STATUS === "EXTERNAL_TX" && <StatusExternalTxSmall />}
           {STATUS === "COMPLETED" && <StatusCompletedSmall />}
@@ -42,42 +46,42 @@ export default StatusBadge;
 const StatusInGovernorsSmall = () => (
   <Tooltip side="top" type="onlyContent" tooltip={<StatusInGovernors />}>
     <div className="status-badge-small progress">
-      <ClockIcon height={20} width={20} />
+      <ClockIcon width={24} />
     </div>
   </Tooltip>
 );
 const StatusInProgressSmall = () => (
   <Tooltip side="top" type="onlyContent" tooltip={<StatusInProgress />}>
     <div className="status-badge-small progress">
-      <ClockIcon height={20} width={20} />
+      <ClockIcon width={24} />
     </div>
   </Tooltip>
 );
 const StatusVaaEmittedSmall = () => (
   <Tooltip side="top" type="onlyContent" tooltip={<StatusVaaEmitted />}>
     <div className="status-badge-small emitted">
-      <CheckIcon height={20} width={20} />
+      <VAAEmittedIcon width={24} />
     </div>
   </Tooltip>
 );
 const StatusExternalTxSmall = () => (
   <Tooltip side="top" type="onlyContent" tooltip={<StatusExternalTx />}>
     <div className="status-badge-small emitted">
-      <CheckIcon height={20} width={20} />
+      <VAAEmittedIcon width={24} />
     </div>
   </Tooltip>
 );
 const StatusPendingRedeemSmall = () => (
   <Tooltip side="top" type="onlyContent" tooltip={<StatusPendingRedeem />}>
     <div className="status-badge-small progress">
-      <ClockIcon height={20} width={20} />
+      <ClockIcon width={24} />
     </div>
   </Tooltip>
 );
 const StatusCompletedSmall = () => (
   <Tooltip side="top" type="onlyContent" tooltip={<StatusCompleted />}>
     <div className="status-badge-small completed">
-      <CheckCircledIcon height={20} width={20} />
+      <CheckCircle2 width={24} />
     </div>
   </Tooltip>
 );
@@ -86,26 +90,26 @@ const StatusCompletedSmall = () => (
 
 const StatusInGovernors = () => (
   <Chip className="status-badge-status" color="progress">
-    <ClockIcon height={16} width={16} />
-    IN GOVERNORS
+    <ClockIcon width={24} />
+    <p>In governors</p>
   </Chip>
 );
 const StatusInProgress = () => (
   <Chip className="status-badge-status" color="progress">
-    <ClockIcon height={16} width={16} />
-    IN PROGRESS
+    <ClockIcon width={24} />
+    <p>In progress</p>
   </Chip>
 );
 const StatusVaaEmitted = () => (
   <Chip className="status-badge-status" color="emitted">
-    <CheckIcon height={16} width={16} />
-    VAA EMITTED
+    <VAAEmittedIcon width={24} />
+    <p>VAA emitted</p>
   </Chip>
 );
 const StatusExternalTx = () => (
   <Chip className="status-badge-status" color="emitted">
-    <CheckIcon height={16} width={16} />
-    EXTERNAL TX
+    <VAAEmittedIcon width={24} />
+    <p>External Tx</p>
   </Chip>
 );
 const StatusPendingRedeem = () => (
@@ -120,15 +124,15 @@ const StatusPendingRedeem = () => (
   >
     <div>
       <Chip className="status-badge-status" color="progress">
-        <ClockIcon height={16} width={16} />
-        PENDING REDEEM
+        <ClockIcon width={24} />
+        <p>Pending redeem</p>
       </Chip>
     </div>
   </Tooltip>
 );
 const StatusCompleted = () => (
   <Chip className="status-badge-status" color="completed">
-    <CheckCircledIcon height={16} width={16} />
-    COMPLETED
+    <CheckCircle2 width={24} />
+    <p>Completed</p>
   </Chip>
 );

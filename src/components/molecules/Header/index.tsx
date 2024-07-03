@@ -180,7 +180,7 @@ const Header = () => {
             name="networkSelect"
             onValueChange={(env: NetworkSelectProps) => onClickChangeNetwork(env.value)}
             type="secondary"
-            menuStyles={{ zIndex: 99 }}
+            menuPortalStyles={{ zIndex: 99 }}
             value={NETWORK_LIST.find(a => a.value === currentNetwork)}
           />
         </nav>

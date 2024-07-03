@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
-import { CopyIcon } from "@radix-ui/react-icons";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { CopyIcon, SwapVerticalIcon } from "src/icons/generic";
 import { CopyToClipboard } from "src/components/molecules";
-import { parseAddress } from "src/utils/crypto";
+import { Switch } from "src/components/atoms";
 import { getExplorerLink } from "src/utils/wormhole";
 import { ChainId } from "@wormhole-foundation/sdk";
 import "./styles.scss";
@@ -10,9 +10,11 @@ import "./styles.scss";
 interface Props {
   address: string;
   addressChainId: ChainId;
+  liveMode: boolean;
+  setLiveMode: (b: boolean) => void;
 }
 
-const Top = ({ address, addressChainId }: Props) => {
+const Top = ({ address, addressChainId, liveMode, setLiveMode }: Props) => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
 
@@ -21,8 +23,21 @@ const Top = ({ address, addressChainId }: Props) => {
   return (
     <section className="txs-top">
       <div className="txs-top-header">
-        <h1 className="txs-top-header-title">{t("txs.top.title")}</h1>
+        <h1 className="txs-top-header-title">
+          <SwapVerticalIcon width={24} />
+          {t("txs.top.title")}
+        </h1>
+
+        {!address && (
+          <Switch
+            label="LIVE MODE"
+            showIndicator
+            value={liveMode}
+            setValue={() => setLiveMode(!liveMode)}
+          />
+        )}
       </div>
+
       {address && (
         <div className="txs-top-txId">
           <div>Address:</div>
@@ -42,7 +57,7 @@ const Top = ({ address, addressChainId }: Props) => {
             </a>
 
             <CopyToClipboard toCopy={address}>
-              <CopyIcon height={20} width={20} />
+              <CopyIcon width={24} />
             </CopyToClipboard>
           </div>
         </div>

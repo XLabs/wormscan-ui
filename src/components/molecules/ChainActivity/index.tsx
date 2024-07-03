@@ -521,7 +521,7 @@ const ChainActivity = () => {
                 ariaLabel="Select Time Range"
                 items={CHAIN_LIST}
                 menuFixed={isDesktop ? false : true}
-                menuStyles={{ zIndex: 100 }}
+                menuPortalStyles={{ zIndex: 100 }}
                 name="timeRange"
                 onValueChange={(value: any) => handleChainSelection(value)}
                 type="searchable"

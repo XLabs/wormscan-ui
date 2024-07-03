@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import allBridgeIcon from "src/icons/Protocols/allBridgeIcon.svg";
-import cctpIcon from "src/icons/Protocols/cctpIcon.svg";
-import mayanIcon from "src/icons/Protocols/mayanIcon.svg";
-import portalIcon from "src/icons/Protocols/portalIcon.svg";
-import nttIcon from "src/icons/Protocols/nttIcon.svg";
-import { ALLBRIDGE_URL, CCTP_URL, MAYAN_URL, PORTAL_BRIDGE_URL } from "src/consts";
+import { allBridgeIcon, cctpIcon, mayanIcon, nttIcon, portalIcon } from "src/icons/Protocols";
+import { ALLBRIDGE_URL, CCTP_URL, MAYAN_URL, NTT_URL, PORTAL_BRIDGE_URL } from "src/consts";
 import { BlockchainIcon, Loader } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
@@ -37,7 +33,7 @@ const protocolLinks: Record<ProtocolName, string> = {
   cctp: CCTP_URL,
   mayan: MAYAN_URL,
   portal_token_bridge: PORTAL_BRIDGE_URL,
-  native_token_transfer: PORTAL_BRIDGE_URL,
+  native_token_transfer: NTT_URL,
 };
 
 const chainsSupported = {

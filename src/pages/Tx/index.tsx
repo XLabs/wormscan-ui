@@ -25,7 +25,7 @@ import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { ChainLimit } from "src/api";
 import { getClient } from "src/api/Client";
 import analytics from "src/analytics";
-import { GetOperationsOutput } from "src/api/guardian-network/types";
+import { GetOperationsOutput, Observation } from "src/api/guardian-network/types";
 import { GetBlockData } from "src/api/search/types";
 import { Information } from "./Information";
 import { Top } from "./Top";
@@ -383,6 +383,7 @@ const Tx = () => {
         }
 
         if (errCount === 2) {
+          // check observations for txHash
           getClient()
             .guardianNetwork.getObservationForTxHash(txHash)
             .then(observations => {
@@ -429,17 +430,60 @@ const Tx = () => {
       }
       const otherNetwork = network === "Mainnet" ? "Testnet" : "Mainnet";
 
-      const currentNetworkResponse = await getClient().guardianNetwork.getOperations({
-        vaaID: `${chainId}/${emitter}/${seq}`,
-      });
-      if (!!currentNetworkResponse) return currentNetworkResponse;
+      console.log("FIRST TRY");
+      try {
+        const currentNetworkResponse = await getClient().guardianNetwork.getOperations({
+          vaaID: `${chainId}/${emitter}/${seq}`,
+        });
+        if (!!currentNetworkResponse) return currentNetworkResponse;
+      } catch {
+        // go to the next call
+      }
 
-      const otherNetworkResponse = await getClient(otherNetwork).guardianNetwork.getOperations({
-        vaaID: `${chainId}/${emitter}/${seq}`,
-      });
-      if (!!otherNetworkResponse) return otherNetworkResponse;
+      console.log("SECOND TRY");
+      try {
+        const otherNetworkResponse = await getClient(otherNetwork).guardianNetwork.getOperations({
+          vaaID: `${chainId}/${emitter}/${seq}`,
+        });
+        if (!!otherNetworkResponse) return otherNetworkResponse;
+      } catch {
+        // go check observations
+      }
 
-      throw new Error("no vaaID data");
+      // no vaa, check observations for vaa ID
+      const [a, b, c] = VAAId.split("/");
+      await getClient()
+        .guardianNetwork.getObservation({
+          chainId: +a,
+          emmiter: b,
+          specific: {
+            sequence: +c,
+          },
+        })
+        .then(observations => {
+          if (!!observations?.length) {
+            const guardianSetList = getGuardianSet(4);
+
+            const signedGuardians = observations.map(({ guardianAddr, signature }) => ({
+              signature: Buffer.from(signature).toString(),
+              name: guardianSetList?.find(a => a.pubkey === guardianAddr)?.name,
+            }));
+
+            setExtraRawInfo({ ...extraRawInfo, signatures: signedGuardians, observations });
+            setObservationsOnlyData({
+              signatures: signedGuardians,
+              observations,
+              txHash,
+              emitterChain: observations[0].emitterChain,
+            });
+
+            setIsLoading(false);
+          }
+        })
+        .catch(() => {
+          console.log("no observations found");
+          throw new Error("no vaaID nor observations data");
+        });
     },
     {
       onError: (err: Error) => {
@@ -510,21 +554,31 @@ const Tx = () => {
             sequence: parsedSequence,
           };
         } else {
-          if (!!txHash) {
-            const observations = await getClient().guardianNetwork.getObservationForTxHash(txHash);
+          let observations: Observation[];
+          if (txHash) {
+            observations = await getClient().guardianNetwork.getObservationForTxHash(txHash);
+          } else {
+            const [a, b, c] = VAAId.split("/");
+            observations = await getClient().guardianNetwork.getObservation({
+              chainId: +a,
+              emmiter: b,
+              specific: {
+                sequence: +c,
+              },
+            });
+          }
 
-            if (!!observations?.length) {
-              const guardianSetList = getGuardianSet(4);
+          if (!!observations?.length) {
+            const guardianSetList = getGuardianSet(4);
 
-              const signedGuardians = observations.map(({ guardianAddr, signature }) => ({
-                signature: Buffer.from(signature).toString(),
-                name: guardianSetList?.find(a => a.pubkey === guardianAddr)?.name,
-              }));
+            const signedGuardians = observations.map(({ guardianAddr, signature }) => ({
+              signature: Buffer.from(signature).toString(),
+              name: guardianSetList?.find(a => a.pubkey === guardianAddr)?.name,
+            }));
 
-              data.decodedVaa = {
-                guardianSignatures: signedGuardians,
-              };
-            }
+            data.decodedVaa = {
+              guardianSignatures: signedGuardians,
+            };
           }
         }
         // ---
@@ -1388,6 +1442,7 @@ const Tx = () => {
       setShowSourceTokenUrl,
       setShowTargetTokenUrl,
       txHash,
+      VAAId,
     ],
   );
 

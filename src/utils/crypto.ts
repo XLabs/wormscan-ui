@@ -101,8 +101,7 @@ export const formatAppId = (appId: string) => {
     .join(" ");
 };
 
-export const formatAppIds = (appIds: string[]) =>
-  appIds
-    .filter(appId => appId !== "UNKNOWN" && appId !== "STABLE")
-    .map(formatAppId)
-    .join(", ");
+export const filterAppIds = (appIds: string[]) =>
+  appIds.filter(appId => appId !== "UNKNOWN" && appId !== "STABLE");
+
+export const formatAppIds = (appIds: string[]) => filterAppIds(appIds).map(formatAppId).join(", ");
