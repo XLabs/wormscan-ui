@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 
-// SOLANA MANAGET <--> TOKEN
+// SOLANA MANAGER <--> TOKEN
 const NTT_MANAGER_TOKENS = {
   MAINNET: {
     // W
@@ -24,13 +24,13 @@ export async function getNttInfo(env: Environment, data: GetOperationsOutput, pa
   try {
     contractAddress = toNative(toChain(targetChain), contractAddress).toString();
 
-    if (NTT_MANAGER_TOKENS[env.network][contractAddress]) {
+    if (NTT_MANAGER_TOKENS[env.network]?.[contractAddress]) {
       return {
         targetTokenAddress: NTT_MANAGER_TOKENS[env.network][contractAddress],
       };
     }
 
-    console.log("ntt token not found");
+    console.log("ntt token not found in solana list managers list");
 
     if (targetChain !== chainToChainId("Solana")) {
       const contractProvider = getEthersProvider(getChainInfo(env, targetChain as ChainId));

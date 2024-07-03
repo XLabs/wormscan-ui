@@ -703,9 +703,7 @@ export const getUsdcAddress = (network: Network, chain: ChainId) => {
 
 // RPCs UTILS -----
 const getRelayersEmitterAddress = (env: Environment, chain: ChainId) => {
-  const relayeEmitterAddress = env.chainInfos?.find(
-    a => a.chainId === chain,
-  )?.relayerContractAddress;
+  const relayeEmitterAddress = contracts.relayer.get(env.network, chainIdToChain(chain));
 
   return relayeEmitterAddress ? relayeEmitterAddress : null;
 };

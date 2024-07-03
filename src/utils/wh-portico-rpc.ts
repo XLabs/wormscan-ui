@@ -1,5 +1,5 @@
-import { ChainId } from "@wormhole-foundation/sdk";
-import { ethers } from "ethers";
+import { ChainId, UniversalAddress } from "@wormhole-foundation/sdk";
+import { formatUnits } from "ethers";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
 import { parseTx } from "./crypto";
 import { getTokenInformation } from "./fetchWithRPCsFallthrough";
@@ -64,7 +64,7 @@ export async function getPorticoInfo(
 
     formattedRelayerFee = data.content.standarizedProperties.appIds.includes(USDT_TRANSFER_APP_ID)
       ? "" + parsedPayload.relayerFee * 10 ** 2 // +2 decimals because fee gets formated later with 8
-      : ethers.formatUnits(parsedPayload.relayerFee, decimals - 8); // -8 because fee gets formated later with 8
+      : formatUnits(parsedPayload.relayerFee, decimals - 8); // -8 because fee gets formated later with 8
     // formattedRelayerFee = parsedPayload.relayerFee;
 
     const processTarget = async () => {
@@ -90,12 +90,12 @@ export async function getPorticoInfo(
         const finalUserAmount = BigInt(`0x${swapFinishedLog.data.slice(66, 130)}`);
         const relayerFeeAmount = BigInt(`0x${swapFinishedLog.data.slice(130, 194)}`);
 
-        formattedFinalUserAmount = ethers.formatUnits(finalUserAmount, decimals);
+        formattedFinalUserAmount = formatUnits(finalUserAmount, decimals);
         formattedRelayerFee = data.content.standarizedProperties.appIds.includes(
           USDT_TRANSFER_APP_ID,
         )
           ? "" + parsedPayload.relayerFeeAmount * 10 ** 2 // +2 decimals because fee gets formated later with 8
-          : ethers.formatUnits(relayerFeeAmount, decimals - 8); // -8 because fee gets formated later with 8
+          : formatUnits(relayerFeeAmount, decimals - 8); // -8 because fee gets formated later with 8
       }
     };
 
@@ -175,35 +175,21 @@ interface IParsedSourceTransfer {
   relayerFee: string;
 }
 
-// const parseAddress = (buffer: Buffer): string => {
-//   return ethers.utils.hexZeroPad(hexStripZeros(buffer), 20);
-// };
-
 export function parsePorticoTransfer(payload: Buffer): IParsedSourceTransfer {
   return {
-    flagSet: null,
-    startTokenAddress: null,
-    canonAssetAddress: null,
-    finalTokenAddress: null,
-    recipientAddress: null,
-    destinationPorticoAddress: null,
-    amountSpecified: null,
-    minAmountStart: null,
-    minAmountFinish: null,
-    relayerFee: null,
+    flagSet: parseFlagSet(payload),
+    startTokenAddress: new UniversalAddress(payload.slice(32, 64)).toNative("Ethereum").toString(),
+    canonAssetAddress: new UniversalAddress(payload.slice(64, 96)).toNative("Ethereum").toString(),
+    finalTokenAddress: new UniversalAddress(payload.slice(96, 128)).toNative("Ethereum").toString(),
+    recipientAddress: new UniversalAddress(payload.slice(128, 160)).toNative("Ethereum").toString(),
+    destinationPorticoAddress: new UniversalAddress(payload.slice(160, 192))
+      .toNative("Ethereum")
+      .toString(),
+    amountSpecified: BigInt("0x" + Buffer.from(payload.slice(192, 224)).toString("hex")).toString(),
+    minAmountStart: BigInt("0x" + Buffer.from(payload.slice(224, 256))?.toString("hex")).toString(),
+    minAmountFinish: BigInt(
+      "0x" + Buffer.from(payload.slice(256, 288))?.toString("hex"),
+    ).toString(),
+    relayerFee: BigInt("0x" + Buffer.from(payload.slice(288, 320))?.toString("hex")).toString(),
   };
-
-  // TODO : HOW TO DO THIS WITH NEW SDK
-  // return {
-  //   flagSet: parseFlagSet(payload),
-  //   startTokenAddress: parseAddress(payload.slice(32, 64)),
-  //   canonAssetAddress: parseAddress(payload.slice(64, 96)),
-  //   finalTokenAddress: parseAddress(payload.slice(96, 128)),
-  //   recipientAddress: parseAddress(payload.slice(128, 160)),
-  //   destinationPorticoAddress: parseAddress(payload.slice(160, 192)),
-  //   amountSpecified: ethers.BigNumber.from(payload.slice(192, 224))?.toString(),
-  //   minAmountStart: ethers.BigNumber.from(payload.slice(224, 256))?.toString(),
-  //   minAmountFinish: ethers.BigNumber.from(payload.slice(256, 288))?.toString(),
-  //   relayerFee: ethers.BigNumber.from(payload.slice(288, 320))?.toString(),
-  // };
 }
