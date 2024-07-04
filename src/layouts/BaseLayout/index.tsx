@@ -8,14 +8,15 @@ import { loadPageState } from "src/utils/recoilStates";
 
 type Props = {
   children: React.ReactNode;
+  secondaryHeader?: boolean;
 };
 
-const BaseLayout = ({ children }: Props) => {
+const BaseLayout = ({ children, secondaryHeader }: Props) => {
   const [loadingPage] = useRecoilState(loadPageState);
   return (
     <>
       <MaintenanceMessage />
-      <Header />
+      <Header secondaryHeader={secondaryHeader} />
       <div className="main-content">{loadingPage ? <Loader /> : children}</div>
       <Footer />
       <ToastContainer />

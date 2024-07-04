@@ -1,4 +1,5 @@
 export { default as ActivityIcon } from "./ActivityIcon";
+export { default as AlertTriangle } from "./AlertTriangle";
 export { default as AnalyticsIcon } from "./AnalyticsIcon";
 export { default as ArrowRightIcon } from "./ArrowRightIcon";
 export { default as ArrowUpIcon } from "./ArrowUpIcon";

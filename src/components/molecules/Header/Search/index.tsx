@@ -1,13 +1,13 @@
 import React, { forwardRef, useState } from "react";
 import { useMutation } from "react-query";
 import { useTranslation } from "react-i18next";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useRecoilState } from "recoil";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { loadPageState } from "src/utils/recoilStates";
 import { useNavigateCustom } from "src/utils/hooks";
 import analytics from "src/analytics";
 import { getClient } from "src/api/Client";
+import { SearchIcon } from "src/icons/generic";
 
 interface Props {
   onBlur: React.FocusEventHandler<HTMLInputElement>;
@@ -95,7 +95,7 @@ const Search = forwardRef<HTMLInputElement, Props>((props, ref) => {
         {isLoading || loadingPage ? (
           <span className="search-loader"></span>
         ) : (
-          <MagnifyingGlassIcon height={24} width={24} />
+          <SearchIcon width={24} />
         )}
 
         <input

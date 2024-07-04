@@ -1,7 +1,6 @@
-import React from "react";
-import "./styles.scss";
 import { JsonView } from "react-json-view-lite";
 import { addQuotesInKeys } from "src/utils/string";
+import "./styles.scss";
 
 type Props = {
   data: object;

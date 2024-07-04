@@ -1,6 +1,5 @@
-const InfoCircleIcon = ({ style, width, ...props }: { style?: any; width: number }) => (
+const InfoCircleIcon = ({ style, width }: { style?: React.CSSProperties; width: number }) => (
   <svg
-    {...props}
     fill="none"
     height={width}
     style={style}
