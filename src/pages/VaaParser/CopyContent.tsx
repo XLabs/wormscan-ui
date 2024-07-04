@@ -1,5 +1,5 @@
-import { CheckIcon, CopyIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
+import { CheckIcon, CopyIcon } from "src/icons/generic";
 
 const CopyContent = ({ text }: { text: string }) => {
   const [copied, setCopied] = useState(false);
@@ -15,16 +15,19 @@ const CopyContent = ({ text }: { text: string }) => {
   return (
     <>
       {copied ? (
-        <CheckIcon height={16} width={16} />
+        <div style={{ marginRight: 6 }}>
+          <CheckIcon width={24} />
+        </div>
       ) : (
-        <CopyIcon
-          height={14}
-          width={14}
+        <div
+          style={{ marginRight: 6 }}
           onClick={async () => {
             setCopied(true);
             await navigator.clipboard.writeText(text);
           }}
-        />
+        >
+          <CopyIcon width={24} />
+        </div>
       )}
     </>
   );
