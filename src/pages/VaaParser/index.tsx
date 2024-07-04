@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { ChainId, deserialize, encoding } from "@wormhole-foundation/sdk";
+import { ChainId, VAA, chainToChainId, deserialize, encoding } from "@wormhole-foundation/sdk";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { useNavigateCustom } from "src/utils/hooks";
 import analytics from "src/analytics";
@@ -28,6 +28,7 @@ import { waitForElement } from "./waitForElement";
 import VaaInput from "./Input";
 import CopyContent from "./CopyContent";
 import "./styles.scss";
+import { deepCloneWithBigInt, stringifyWithBigInt } from "src/utils/object";
 
 const VaaParser = () => {
   useEffect(() => {
@@ -297,10 +298,14 @@ const VaaParser = () => {
           name: getGuardianName(guardianSet, index),
         }));
 
+        const parsedVaaAny = parsedVaa as any;
+        delete parsedVaaAny.signatures;
+
         setResultRaw({
-          ...parsedVaa,
+          ...parsedVaaAny,
           payload: parsedVaa.payload ? Buffer.from(parsedVaa.payload).toString("hex") : null,
           emitterAddress: parsedEmitterAddress,
+          emitterChain: chainToChainId(parsedVaa.emitterChain),
           guardianSignatures: parsedGuardianSignatures,
           hash: parsedHash,
           sequence: parsedSequence,
@@ -533,9 +538,9 @@ const VaaParser = () => {
                       <CopyToClipboard
                         toCopy={
                           result && !parsedRaw
-                            ? JSON.stringify(result, null, 4)
+                            ? stringifyWithBigInt(result, 4)
                             : resultRaw && parsedRaw
-                            ? JSON.stringify(resultRaw, null, 4)
+                            ? stringifyWithBigInt(resultRaw, 4)
                             : "{}"
                         }
                       >
