@@ -454,7 +454,7 @@ const VaaParser = () => {
               {txSearch && !input && !isLoading && (
                 <div className="parse-txType-error">
                   <AlertTriangle width={24} />
-                  VAA cannot be found. Please try again or search different ID.
+                  VAA cannot be found. Please try again or search something different.
                 </div>
               )}
 
