@@ -76,7 +76,7 @@ export const ChainFilterMainnet = [
   chainToChainId("Injective"),
   chainToChainId("Karura"),
   chainToChainId("Klaytn"),
-  chainToChainId("Mantle"), // TODO: add when exists a Mantle transaction
+  chainToChainId("Mantle"),
   chainToChainId("Moonbeam"),
   chainToChainId("Near"),
   chainToChainId("Neon"),
@@ -114,7 +114,7 @@ export const ChainFilterTestnet = [
   chainToChainId("Injective"),
   chainToChainId("Karura"),
   chainToChainId("Klaytn"),
-  chainToChainId("Mantle"), // TODO: add when exists a Mantle transaction
+  chainToChainId("Mantle"),
   chainToChainId("Moonbeam"),
   chainToChainId("Polygon"),
   chainToChainId("Near"),

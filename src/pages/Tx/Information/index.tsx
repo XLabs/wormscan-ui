@@ -106,7 +106,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
 
   const { STATUS, isBigTransaction, isDailyLimitExceeded, transactionLimit } = data;
 
-  const fromChainOrig = emitterChain || stdFromChain;
+  const fromChainOrig: ChainId = emitterChain || stdFromChain;
   const fromAddress = data?.sourceChain?.from || stdFromAddress;
   const toAddress = stdToAddress || data?.targetChain?.to;
   const startDate = timestamp || data?.sourceChain?.timestamp;
@@ -145,7 +145,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
     ? data?.sourceChain?.attribute?.value?.originAddress
     : parseAddress({
         value: fromAddress,
-        chainId: fromChainOrig as ChainId,
+        chainId: fromChainOrig,
       });
   const parsedDestinationAddress = parsedPayload?.["gateway_transfer"]?.recipient
     ? parsedPayload?.["gateway_transfer"].recipient
@@ -172,8 +172,8 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   const destinationDateParsed = formatDate(endDate);
 
   // TODO - when the backend supports all chainIds, remove
-  const extraRawInfoFromChainId = extraRawInfo?.from?.chainId || null;
-  const extraRawInfoToChainId = extraRawInfo?.to?.chainId || null;
+  const extraRawInfoFromChainId: ChainId = extraRawInfo?.from?.chainId || null;
+  const extraRawInfoToChainId: ChainId = extraRawInfo?.to?.chainId || null;
   // ---
 
   let sourceTokenLink = showSourceTokenUrl
@@ -429,7 +429,6 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
             <AdvancedView
               overviewAndDetailProps={overviewAndDetailProps}
               extraRawInfo={extraRawInfo}
-              lifecycleRecord={data.relayerInfo}
               data={data}
             />
           );
@@ -443,7 +442,6 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
           <AdvancedView
             genericRelayerProps={data.relayerInfo.props}
             extraRawInfo={extraRawInfo}
-            lifecycleRecord={data.relayerInfo}
             data={data}
           />
         );
@@ -458,7 +456,6 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
           <AdvancedView
             overviewAndDetailProps={overviewAndDetailProps}
             extraRawInfo={extraRawInfo}
-            lifecycleRecord={data.relayerInfo}
             data={data}
           />
         );

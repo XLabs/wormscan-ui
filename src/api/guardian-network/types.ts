@@ -225,6 +225,20 @@ export interface GetOperationsOutput {
       };
       transceiverMessage?: any;
 
+      // Standard Relayers
+      encodedExecutionInfo?: {
+        gasLimit?: string;
+        targetChainRefundPerGasUnused?: string;
+      };
+      targetAddress?: string;
+      targetChainId?: ChainId;
+      sourceDeliveryProvider?: string;
+      senderAddress?: string;
+      refundDeliveryProvider?: string;
+      refundChainId?: ChainId;
+      refundAddress?: string;
+      newSenderAddress?: string;
+
       // --- Attestation ---
       symbol?: string;
       name?: string;

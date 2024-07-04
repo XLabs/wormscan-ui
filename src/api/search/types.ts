@@ -88,8 +88,8 @@ export interface AutomaticRelayOutput {
       targetAddress: string;
       targetChainId: number;
       vaaKeys: any;
-      extraReceiverValue: bigint;
-      requestedReceiverValue: bigint;
+      extraReceiverValue: { _hex: string; _isBigNumber: boolean };
+      requestedReceiverValue: { _hex: string; _isBigNumber: boolean };
     };
   };
 }

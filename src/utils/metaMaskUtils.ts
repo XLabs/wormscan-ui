@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { ChainId, Network, chainToChainId, chains, toChainId } from "@wormhole-foundation/sdk";
+import { ChainId, Network, chainToChainId } from "@wormhole-foundation/sdk";
 import detectEthereumProvider from "@metamask/detect-provider";
 
 export interface AddEthereumChainParameter {

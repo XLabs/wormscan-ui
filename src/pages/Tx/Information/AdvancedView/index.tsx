@@ -1,50 +1,38 @@
 import { CopyIcon, TriangleDownIcon } from "@radix-ui/react-icons";
-import { deserialize } from "@wormhole-foundation/sdk";
-// import {
-//   DeliveryInstruction,
-//   RedeliveryInstruction,
-//   parseEVMExecutionInfoV1,
-// } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 import { OverviewProps } from "src/pages/Tx/Information/Overview";
 import { CopyToClipboard } from "src/components/molecules";
-import {
-  DeliveryLifecycleRecord,
-  // isRedelivery,
-  // parseGenericRelayerVaa,
-} from "src/utils/genericRelayerVaaUtils";
 import { useLocalStorage } from "src/utils/hooks";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
+import { JsonText } from "src/components/atoms";
+import { deepCloneWithBigInt, stringifyWithBigInt } from "src/utils/object";
 import Details from "./Details";
 import RelayerDetails from "./Details/RelayerDetails";
 import "./styles.scss";
-import { JsonText } from "src/components/atoms";
-import { deepCloneWithBigInt, stringifyWithBigInt } from "src/utils/object";
 
 type Props = {
   data: GetOperationsOutput;
   extraRawInfo: any;
   genericRelayerProps?: any;
-  lifecycleRecord: DeliveryLifecycleRecord;
   overviewAndDetailProps?: OverviewProps;
 };
-
-// TODO : NEW SDK ALL THIS FILE
 
 const AdvancedView = ({
   data,
   extraRawInfo,
   genericRelayerProps,
-  lifecycleRecord,
   overviewAndDetailProps,
 }: Props) => {
   const [showDetails, setShowDetails] = useLocalStorage<boolean>("showDetails", true);
   const [showJson, setShowJson] = useLocalStorage<boolean>("showJson", false);
   const payload = data?.content?.payload;
 
-  const noRelayerData = { ...data, relayerInfo: null as any };
-  const dataNoPayload = deepCloneWithBigInt(noRelayerData) as GetOperationsOutput;
-  delete dataNoPayload.relayerInfo;
+  const lifecycleRecord = data.relayerInfo;
+  const relayerInfo = data.relayerInfo?.props;
+  const deliveryInstruction = relayerInfo?.deliveryInstruction;
+  const decodeExecution = relayerInfo.decodeExecution;
 
+  const dataNoPayload = deepCloneWithBigInt(data) as GetOperationsOutput;
+  delete dataNoPayload.relayerInfo;
   if (dataNoPayload.content) dataNoPayload.content.payload = undefined;
   if (dataNoPayload.decodedVaa) dataNoPayload.decodedVaa = undefined;
 
@@ -59,27 +47,6 @@ const AdvancedView = ({
     delete signedVAA.payloadName;
     delete signedVAA.payloadLiteral;
   }
-
-  // const readVAA = (record: DeliveryLifecycleRecord) => {
-  //   const vaa = record.vaa;
-  //   const parsedVaa = deserialize("Uint8Array", vaa);
-  //   const instruction: DeliveryInstruction | RedeliveryInstruction | null =
-  //     parseGenericRelayerVaa(parsedVaa);
-
-  //   const isDelivery = instruction && !isRedelivery(instruction);
-
-  //   return { parsedVaa, isDelivery, instruction };
-  // };
-
-  // const relayerInfo = !!lifecycleRecord ? readVAA(lifecycleRecord) : null;
-  // const deliveryInstruction = relayerInfo ? (relayerInfo.instruction as DeliveryInstruction) : null;
-  // const redeliveryInstruction = relayerInfo
-  //   ? (relayerInfo.instruction as RedeliveryInstruction)
-  //   : null;
-  // const decodeExecution =
-  //   relayerInfo && deliveryInstruction.encodedExecutionInfo
-  //     ? parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0]
-  //     : null;
 
   const handleShowDetails = () => {
     setShowDetails(!showDetails);
@@ -109,67 +76,54 @@ const AdvancedView = ({
         </Button>
 
         <div className={`tx-advanced-view-container-json ${showJson ? "show" : "hide"}`}>
-          <BlockSection title="TX DATA" code={JSON.stringify(dataNoPayload, null, 4)} />
+          <BlockSection title="TX DATA" code={stringifyWithBigInt(dataNoPayload, 4)} />
 
-          <BlockSection title="PAYLOAD" code={payload && JSON.stringify(payload, null, 4)} />
+          <BlockSection title="PAYLOAD" code={payload && stringifyWithBigInt(payload, 4)} />
 
           {!!extraRawInfo && (
             <BlockSection
               id="signatures2"
-              code={JSON.stringify(extraRawInfo, null, 4)}
+              code={stringifyWithBigInt(extraRawInfo, 4)}
               title="Extra info"
             />
           )}
 
-          {/* {relayerInfo && (
+          {relayerInfo && (
             <>
               {relayerInfo.isDelivery ? (
                 <BlockSection
                   title="DELIVERY INSTRUCTIONS"
-                  code={JSON.stringify(
+                  code={stringifyWithBigInt(
                     {
                       "Target Chain": deliveryInstruction.targetChainId,
-                      "Target Address": Buffer.from(deliveryInstruction.targetAddress).toString(
-                        "hex",
-                      ),
-                      "Extra Receiver Value": deliveryInstruction.extraReceiverValue.toString(),
-                      "Refund Address": Buffer.from(deliveryInstruction.refundAddress).toString(
-                        "hex",
-                      ),
+                      "Target Address": deliveryInstruction.targetAddress,
+                      "Extra Receiver Value": BigInt(
+                        deliveryInstruction.extraReceiverValue?._hex || 0,
+                      )?.toString(),
+                      "Refund Address": deliveryInstruction.refundAddress,
                       "Refund Chain": deliveryInstruction.refundChainId,
-                      "Refund Delivery Provider": Buffer.from(
-                        deliveryInstruction.refundDeliveryProvider,
-                      ).toString("hex"),
+                      "Refund Delivery Provider": deliveryInstruction.refundDeliveryProvider,
                       "Receiver Value": deliveryInstruction.requestedReceiverValue.toString(),
-                      "Sender Address": Buffer.from(deliveryInstruction.senderAddress).toString(
-                        "hex",
-                      ),
+                      "Sender Address": deliveryInstruction.senderAddress,
                       "Source Delivery Provider": Buffer.from(
                         deliveryInstruction.sourceDeliveryProvider,
                       ).toString("hex"),
                       "Encoded Execution Info:": decodeExecution
-                        ? {
-                            gasLimit: decodeExecution.gasLimit,
-                            targetChainRefundPerGasUnused:
-                              decodeExecution.targetChainRefundPerGasUnused,
-                          }
+                        ? decodeExecution
                         : { gasLimit: null, targetChainRefundPerGasUnused: null },
-                      Payload: Buffer.from(deliveryInstruction.payload).toString("hex"),
+                      Payload: deliveryInstruction.payload,
                     },
-                    null,
                     4,
                   )}
                 />
               ) : (
                 <BlockSection
                   title="VAA REDELIVERY INSTRUCTIONS"
-                  code={JSON.stringify(
+                  code={stringifyWithBigInt(
                     {
-                      "Original Chain": redeliveryInstruction.deliveryVaaKey.chainId,
-                      "Original Emitter": Buffer.from(
-                        redeliveryInstruction.deliveryVaaKey.emitterAddress,
-                      ).toString("hex"),
-                      "Original Sequence": redeliveryInstruction.deliveryVaaKey.sequence,
+                      "Original Chain": deliveryInstruction.deliveryVaaKey.chainId,
+                      "Original Emitter": deliveryInstruction.deliveryVaaKey.emitterAddress,
+                      "Original Sequence": deliveryInstruction.deliveryVaaKey.sequence,
                       "Encoded Execution Info": decodeExecution
                         ? {
                             gasLimit: decodeExecution.gasLimit,
@@ -177,16 +131,11 @@ const AdvancedView = ({
                               decodeExecution.targetChainRefundPerGasUnused,
                           }
                         : { gasLimit: null, targetChainRefundPerGasUnused: null },
-                      "New Receiver Value": redeliveryInstruction.newRequestedReceiverValue,
-                      "New Sender Address": Buffer.from(
-                        redeliveryInstruction.newSenderAddress,
-                      ).toString("hex"),
-                      "New Delivery Provider": Buffer.from(
-                        redeliveryInstruction.newSourceDeliveryProvider,
-                      ).toString("hex"),
-                      "Target Chain": redeliveryInstruction.targetChainId,
+                      "New Receiver Value": deliveryInstruction.newRequestedReceiverValue,
+                      "New Sender Address": deliveryInstruction.newSenderAddress,
+                      "New Delivery Provider": deliveryInstruction.newSourceDeliveryProvider,
+                      "Target Chain": deliveryInstruction.targetChainId,
                     },
-                    null,
                     4,
                   )}
                 />
@@ -232,7 +181,7 @@ const AdvancedView = ({
                 />
               )}
             </>
-          )} */}
+          )}
 
           <BlockSection
             id="signatures"

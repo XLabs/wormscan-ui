@@ -18,8 +18,8 @@ export type OverviewProps = {
   currentNetwork?: Network;
   destinationDateParsed?: string;
   fee?: string;
-  fromChain?: ChainId | number;
-  fromChainOrig?: ChainId | number;
+  fromChain?: ChainId;
+  fromChainOrig?: ChainId;
   guardianSignaturesCount?: number;
   isAttestation?: boolean;
   isDuplicated?: boolean;
@@ -45,7 +45,7 @@ export type OverviewProps = {
   sourceTokenLink?: string;
   targetSymbol?: string;
   targetTokenLink?: string;
-  toChain?: ChainId | number;
+  toChain?: ChainId;
   tokenAmount?: string;
   tokenInfo?: TokenInfo;
   totalGuardiansNeeded?: number;
