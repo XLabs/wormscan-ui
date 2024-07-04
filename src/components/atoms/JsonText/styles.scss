@@ -17,7 +17,7 @@
     position: absolute;
 
     &::before {
-      border-color: transparent transparent transparent var(--color-primary-90);
+      border-color: transparent transparent transparent var(--color-white);
       border-style: solid;
       border-width: 4px 0 4px 6px;
       content: "";
@@ -25,7 +25,7 @@
     }
 
     &:hover {
-      filter: brightness(1.4);
+      opacity: 0.5;
     }
   }
 
@@ -36,7 +36,7 @@
     position: absolute;
 
     &::before {
-      border-color: var(--color-primary-90) transparent transparent transparent;
+      border-color: var(--color-white) transparent transparent transparent;
       border-style: solid;
       border-width: 6px 4px 0 4px;
       content: "";
@@ -45,7 +45,7 @@
     }
 
     &:hover {
-      filter: brightness(1.4);
+      opacity: 0.5;
     }
   }
 
@@ -62,18 +62,19 @@
   }
 
   &-key {
+    color: var(--color-gray-500);
     padding-right: 4px;
   }
 
   &-info {
-    color: var(--color-information-100);
+    color: #ff884d;
   }
 
   &-number {
-    color: var(--color-alert-100);
+    color: var(--color-primary-100);
   }
 
   &-string {
-    color: var(--color-white-90);
+    color: var(--color-white);
   }
 }

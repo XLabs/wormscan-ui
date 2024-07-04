@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-import { HamburgerMenuIcon, Cross1Icon, TriangleDownIcon } from "@radix-ui/react-icons";
+import { TriangleDownIcon } from "@radix-ui/react-icons";
 import { Network } from "@certusone/wormhole-sdk";
-import DiscordIcon from "src/icons/DiscordIcon";
-import TwitterIcon from "src/icons/TwitterIcon";
-import { TWITTER_URL, DISCORD_URL, WORMHOLE_DOCS_URL, XLABS_CAREERS_URL } from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { NavLink, Select, Tag } from "src/components/atoms";
 import { WormholeScanBrand } from "src/components/molecules";
@@ -22,7 +19,7 @@ const NETWORK_LIST: NetworkSelectProps[] = [
   { label: "Testnet", value: "TESTNET" },
 ];
 
-const Header = () => {
+const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
   const [showDesktopFixedNav, setShowDesktopFixedNav] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const [showMobileNav, setShowMobileNav] = useState(true);
@@ -116,8 +113,16 @@ const Header = () => {
   };
 
   return (
-    <header className="header" data-testid="header" ref={headerRef}>
-      <div className={`header-container ${showDesktopFixedNav ? "header-container-fixed" : ""}`}>
+    <header
+      className={`header ${secondaryHeader ? "header-secondary" : ""}`}
+      data-testid="header"
+      ref={headerRef}
+    >
+      <div
+        className={`header-container ${secondaryHeader ? "header-container-secondary" : ""} ${
+          showDesktopFixedNav ? "header-container-fixed" : ""
+        }`}
+      >
         <div className="header-container-logo">
           <NavLink to="/" data-testid="header-logo-link">
             <WormholeScanBrand pos={showDesktopFixedNav ? "horizontal" : "vertical"} />

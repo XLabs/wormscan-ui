@@ -8,12 +8,13 @@ import { getClient } from "src/api/Client";
 import { GetParsedVaaOutput } from "src/api/guardian-network/types";
 import { JsonText, Loader, NavLink, Tooltip } from "src/components/atoms";
 import {
+  AlertTriangle,
   CopyIcon,
-  ExternalLinkIcon,
-  InfoCircledIcon,
-  TriangleRightIcon,
-  WidthIcon,
-} from "@radix-ui/react-icons";
+  InfoCircleIcon,
+  LinkIcon,
+  SearchIcon,
+  TriangleDownIcon,
+} from "src/icons/generic";
 import { CopyToClipboard } from "src/components/molecules";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
 import { ChainId } from "src/api";
@@ -27,8 +28,8 @@ import { waitForElement } from "./waitForElement";
 
 import VaaInput from "./Input";
 import CopyContent from "./CopyContent";
-import "./styles.scss";
 import { bigintToReadable } from "./bigintToReadable";
+import "./styles.scss";
 
 const VaaParser = () => {
   useEffect(() => {
@@ -55,6 +56,17 @@ const VaaParser = () => {
   const [parsedRaw, setParsedRaw] = useState(false);
   const [result, setResult] = useState<GetParsedVaaOutput>(null);
   const [resultRaw, setResultRaw] = useState<any>(null);
+  const [hideJson, setHideJson] = useState(false);
+
+  const resetResult = () => {
+    setInputs(null);
+    setInputsIndex(0);
+    setInput("");
+    setTxSearch("");
+    setResult(null);
+    setResultRaw(null);
+    navigate("/vaa-parser");
+  };
 
   const collapseGuardianSignatures = () => {
     setTimeout(() => {
@@ -136,23 +148,10 @@ const VaaParser = () => {
 
               const chainIcon = getChainIcon({ chainId });
               root.render(
-                <div
-                  style={{
-                    display: "inline-block",
-                    marginLeft: 8,
-                    cursor: "default",
-                    userSelect: "none",
-                  }}
-                >
+                <div className="chain-icon">
                   <img
                     src={chainIcon}
                     alt={`${chain} icon`}
-                    style={{
-                      display: "inline-block",
-                      transform: "scale(1.2) translateY(2px)",
-                      marginLeft: 4,
-                      marginRight: 6,
-                    }}
                     loading="lazy"
                     width={16}
                     height={16}
@@ -199,7 +198,9 @@ const VaaParser = () => {
                   }
                   type="info"
                 >
-                  <InfoCircledIcon />
+                  <div className="copy-item">
+                    <InfoCircleIcon width={24} />
+                  </div>
                 </Tooltip>
               );
 
@@ -211,13 +212,7 @@ const VaaParser = () => {
               a.parentElement?.appendChild(reactContainer);
               root.render(
                 <>
-                  <span
-                    style={{
-                      display: "inline-block",
-                      transform: "translateY(-2px)",
-                      marginRight: 5,
-                    }}
-                  >{` // ${formatted}`}</span>
+                  <span>{` // ${formatted}`}</span>
                   <TimestampTooltip />
                 </>,
               );
@@ -395,7 +390,6 @@ const VaaParser = () => {
           const rawVAA = data[0].vaa?.raw;
 
           setInput(rawVAA);
-          setInputType("base64");
 
           const multiple = data.map(a => a.vaa?.raw).filter(a => !!a);
 
@@ -421,18 +415,26 @@ const VaaParser = () => {
   const isLoading = isLoadingParse || isFetchingParse || isLoadingTx || isFetchingTx;
 
   return (
-    <BaseLayout>
+    <BaseLayout secondaryHeader>
       <div className="devtools-page">
         <div className="devtools-page-container">
           <h1 className="devtools-page-title">VAA Parser</h1>
+          <h2 className="devtools-page-description">
+            The VAA Parser tool is currently located within the Dev-Tools section. It allows
+            decoding a VAA using various input methods such as txHash, VAA ID (wormholeChainID,
+            EmitterAddress, Sequence), a VAA in hexadecimal format, or in base64 format.
+          </h2>
           <div className="devtools-page-body">
             <div className="parse">
               <div className="parse-txType">
-                <label htmlFor="parse-txType-input">TxHash/VaaID search</label>
+                <SearchIcon width={24} />
                 <input
                   type="text"
-                  className="parse-txType-input"
+                  className={`parse-txType-input ${
+                    txSearch && !input && !isLoading ? "error" : ""
+                  }`}
                   id="parse-txType-input"
+                  placeholder="TxHash/VaaID search"
                   ref={inputTxRef}
                   value={txSearch}
                   onChange={e => {
@@ -449,10 +451,36 @@ const VaaParser = () => {
                   spellCheck={false}
                 />
               </div>
+              {txSearch && !input && !isLoading && (
+                <div className="parse-txType-error">
+                  <AlertTriangle width={24} />
+                  VAA cannot be found. Please try again or search something different.
+                </div>
+              )}
+
+              {txSearch && (
+                <div className="parse-links">
+                  <button className="parse-links-reset" onClick={resetResult}>
+                    Reset search result
+                  </button>
+
+                  {(!!result || !!resultRaw) && input && VAA_ID && (
+                    <NavLink
+                      className="parse-links-navlink"
+                      target="_blank"
+                      to={`/tx/${txSearch ? txSearch : VAA_ID}`}
+                    >
+                      <span>View transaction details</span>
+                      <LinkIcon width={24} />
+                    </NavLink>
+                  )}
+                </div>
+              )}
+
               {!!inputs?.length && (
                 <div className="parse-multiple">
                   <span className="parse-multiple-left">
-                    <InfoCircledIcon color="#0078e8" />
+                    <InfoCircleIcon width={24} />
                     This txHash has multiple VAAs.
                   </span>
 
@@ -471,9 +499,7 @@ const VaaParser = () => {
                     <span className="vaa-pages">
                       {inputsIndex + 1}/{inputs.length}
                     </span>
-                    <span className="right-icon">
-                      <TriangleRightIcon width={18} height={18} />
-                    </span>
+                    <TriangleDownIcon className="triangle-icon" width={18} />
                   </div>
                 </div>
               )}
@@ -486,61 +512,91 @@ const VaaParser = () => {
                 setInputs={setInputs}
                 setInputsIndex={setInputsIndex}
               />
-              <div className="parse-result" id="parse-result" aria-label="Parsed result">
-                <div className="parse-result-title">
-                  <span>Decoded VAA: {parsedRaw ? "Raw" : "Parsed"}</span>
-                  <span
-                    onClick={() => {
-                      renderExtras();
-                      collapseGuardianSignatures();
-                      setParsedRaw(!parsedRaw);
-                    }}
-                    className="parse-result-title-switch"
-                  >
-                    <span className="parse-result-title-switch-text">
-                      Switch to {parsedRaw ? "parsed" : "raw"} decode
-                    </span>
-                    <WidthIcon height={24} width={24} className="parse-result-title-switch-icon" />
-                  </span>
-                </div>
 
-                <div className="parse-result-copy">
-                  <CopyToClipboard
-                    toCopy={
-                      result && !parsedRaw
-                        ? JSON.stringify(result, null, 4)
-                        : resultRaw && parsedRaw
-                        ? JSON.stringify(resultRaw, null, 4)
-                        : "{}"
-                    }
-                  >
-                    <CopyIcon height={24} width={24} />
-                  </CopyToClipboard>
-                </div>
+              <div className="parse-content">
+                <span
+                  className={`parse-content-title ${hideJson ? "" : "rotate"}`}
+                  onClick={() => setHideJson(!hideJson)}
+                >
+                  Decoded VAA <TriangleDownIcon width={10} />
+                </span>
 
-                {isError && !resultRaw ? (
-                  <span className="parse-result-not-found">Parsing failed</span>
-                ) : isLoading ? (
-                  <Loader />
-                ) : (
+                <div
+                  className={`parse-result ${input ? "with-data" : ""} ${hideJson ? "hide" : ""}`}
+                  id="parse-result"
+                  aria-label="Parsed result"
+                >
+                  <div className="parse-result-top">
+                    <button
+                      className={`parse-result-top-btn ${parsedRaw ? "" : "active"}`}
+                      onClick={() => {
+                        renderExtras();
+                        collapseGuardianSignatures();
+                        setParsedRaw(false);
+                      }}
+                    >
+                      Parsed
+                    </button>
+                    <button
+                      className={`parse-result-top-btn ${parsedRaw ? "active" : ""}`}
+                      onClick={() => {
+                        renderExtras();
+                        collapseGuardianSignatures();
+                        setParsedRaw(true);
+                      }}
+                    >
+                      Raw
+                    </button>
+
+                    <div className="parse-result-top-copy">
+                      <CopyToClipboard
+                        toCopy={
+                          result && !parsedRaw
+                            ? JSON.stringify(result, null, 4)
+                            : resultRaw && parsedRaw
+                            ? JSON.stringify(resultRaw, null, 4)
+                            : "{}"
+                        }
+                      >
+                        Copy all
+                        <CopyIcon width={24} />
+                      </CopyToClipboard>
+                    </div>
+                  </div>
+
                   <div className="parse-result-json">
-                    {(!!result || !!resultRaw) && input && VAA_ID && (
-                      <div className="parse-result-json-text">
-                        <JsonText
-                          data={
-                            result && !parsedRaw ? result : resultRaw && parsedRaw ? resultRaw : {}
-                          }
-                        />
-                        <NavLink target="_blank" to={`/tx/${txSearch ? txSearch : VAA_ID}`}>
-                          <div className="parse-result-bottom">
-                            <span>View on Transactions</span>
-                            <ExternalLinkIcon height={15} width={15} />
+                    {isError && !resultRaw ? (
+                      <span className="parse-result-not-found">Parsing failed</span>
+                    ) : isLoading ? (
+                      <Loader />
+                    ) : (
+                      <>
+                        {(!result || !resultRaw) && (
+                          <div className="devtools-page-alert">
+                            <div className="devtools-page-alert-info">
+                              <InfoCircleIcon width={24} />
+                              <p>Decoded VAA data will be displayed here</p>
+                            </div>
                           </div>
-                        </NavLink>
-                      </div>
+                        )}
+
+                        {(!!result || !!resultRaw) && input && VAA_ID && (
+                          <div className="parse-result-json-text">
+                            <JsonText
+                              data={
+                                result && !parsedRaw
+                                  ? result
+                                  : resultRaw && parsedRaw
+                                  ? resultRaw
+                                  : {}
+                              }
+                            />
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
