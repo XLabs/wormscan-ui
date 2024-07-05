@@ -1,28 +1,26 @@
 @import "src/styles/globals.scss";
 
 .terms-of-use {
-  @include card-container;
+  display: flex;
+  flex-direction: column-reverse;
+  margin: 38px 0 80px 0;
 
   @include desktop {
-    max-width: 1096px;
-    margin: 48px auto;
+    flex-direction: row;
+    gap: 10%;
+    justify-content: space-between;
   }
 
   &-content {
-    @include desktop {
-      padding: 10px 40px;
-    }
-
-    @include bigDesktop {
-      padding: 10px 80px;
-    }
+    flex: 1;
 
     &-top {
+      @include centered-column;
+      gap: 32px;
+      margin: 88px 0 32px 0;
+
       @include desktop {
-        display: grid;
-        grid-template-columns: 1fr 0.7fr;
-        gap: 60px 54px;
-        margin-bottom: 54px;
+        margin: 0 0 32px 0;
       }
 
       &-header {
@@ -31,136 +29,55 @@
         flex-direction: column;
 
         &-title {
-          @include text-p2-bold;
-          color: var(--color-primary-30);
-          font-size: 18px;
+          @include text-roboto-heading-500;
+          color: var(--color-white);
           margin-bottom: 8px;
-
-          @include desktop {
-            font-size: 32px;
-          }
         }
 
         &-subtitle {
-          @include text-p2;
-          color: var(--color-primary-50);
-          margin-bottom: 32px;
-
-          @include desktop {
-            font-size: 20px;
-            margin-bottom: 0;
-          }
+          @include text-roboto-body-400;
+          color: var(--color-gray-100);
         }
       }
 
       &-text {
-        @include text-p3;
-        color: var(--color-primary-90);
+        @include text-roboto-body-400;
+        color: var(--color-gray-200);
         margin-bottom: 32px;
-        line-height: 24px;
-
-        @include desktop {
-          font-size: 16px;
-        }
       }
 
-      &-list {
-        @include card-container;
-        color: var(--color-primary-90);
-        margin-bottom: 32px;
+      &-left-list {
+        color: var(--color-gray-200);
         padding-left: 32px;
-        display: flex;
-        flex-direction: column;
-
-        @include desktop {
-          height: 296px;
-          margin: 0 24px 0 auto;
-          padding: 32px 8px 32px 32px;
-          width: 310px;
-        }
-
-        &-title {
-          @include text-p2-bold;
-          color: var(--color-primary-50);
-          margin-bottom: 24px;
-        }
 
         & > ul {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
+          padding-left: 16px;
 
-          @include desktop {
-            overflow-y: auto;
-
-            &::-webkit-scrollbar {
-              width: 8px;
-            }
-          }
-        }
-
-        &-item {
-          list-style: none;
-
-          & > p {
-            @include text-p3;
-            background-color: transparent;
-            border: none;
-            color: var(--color-information-100);
-            cursor: pointer;
-            line-height: 24px;
-
-            @include desktop {
-              font-size: 16px;
-            }
-
-            &:hover {
-              text-decoration: underline;
-            }
+          & > li {
+            @include text-roboto-body-400;
+            margin-bottom: 32px;
           }
         }
       }
     }
 
     &-bottom {
-      border-top: 1px solid var(--color-white-10);
-
-      @include desktop {
-        padding: 24px 51px 24px 0;
-      }
-
       &-title {
-        @include text-p2-bold;
-        color: var(--color-primary-30);
-        font-size: 18px;
+        @include text-roboto-heading-500;
+        color: var(--color-white);
         margin-bottom: 24px;
         padding-top: 24px;
       }
 
       &-text {
-        @include text-p3;
-        color: var(--color-primary-30);
+        @include text-roboto-body-400;
+        color: var(--color-white);
         margin-bottom: 24px;
         position: relative;
-        line-height: 18.2px;
-
-        @include desktop {
-          line-height: 24px;
-        }
 
         & > a {
-          @include text-p3;
-          color: var(--color-information-100);
-          text-decoration: none;
-          line-height: 18.2px;
-
-          &:hover {
-            text-decoration: underline;
-          }
-
-          @include desktop {
-            line-height: 24px;
-          }
+          @include button-ghost;
+          display: inline;
         }
 
         &-number {
@@ -184,6 +101,173 @@
 
         & > ul {
           padding-left: 16px;
+        }
+      }
+    }
+  }
+
+  &-aside {
+    background-color: var(--color-gray-950);
+    position: webkit-sticky;
+    position: sticky;
+    top: 0;
+    transform: translateX(-16px);
+    width: 100vw;
+
+    @include tablet {
+      transform: translateX(-60px);
+    }
+
+    @include desktop {
+      background-color: transparent;
+      display: block;
+      position: relative;
+      transform: translateX(0);
+      width: 312px;
+    }
+
+    &-container {
+      background-color: var(--color-gray-950);
+      position: absolute;
+      width: 100%;
+
+      @include desktop {
+        background-color: transparent;
+        position: sticky;
+        position: webkit-sticky;
+        top: 100px;
+      }
+
+      &.show {
+        & .terms-of-use-aside-container-title {
+          & > svg {
+            rotate: -180deg;
+          }
+        }
+
+        & > ul {
+          border-bottom: 1px solid var(--color-gray-900);
+          display: flex;
+          padding: 32px 0;
+
+          @include desktop {
+            border-bottom: none;
+            padding: 0;
+          }
+        }
+      }
+
+      @include desktop {
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          width: 2px;
+          background: linear-gradient(
+            90deg,
+            transparent 0,
+            transparent 1px,
+            var(--color-gray-900) 1px,
+            var(--color-gray-900) 2px
+          );
+        }
+      }
+
+      &-title {
+        @include text-heading6;
+        @include centered-row;
+        color: var(--color-gray-600);
+        padding: 16px;
+        text-transform: uppercase;
+        cursor: pointer;
+        justify-content: flex-end;
+        border-bottom: 1px solid var(--color-gray-900);
+
+        @include desktop {
+          cursor: default;
+          border: none;
+          justify-content: flex-start;
+          padding: 0;
+        }
+
+        & > svg {
+          transition: rotate 0.2s;
+
+          @include desktop {
+            display: none;
+          }
+        }
+
+        & > span {
+          display: none;
+
+          @include desktop {
+            display: block;
+          }
+        }
+
+        @include desktop {
+          padding: 0 0 32px 24px;
+        }
+      }
+
+      & > ul {
+        display: none;
+        flex-direction: column;
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+
+        @include desktop {
+          border-bottom: none;
+          display: flex;
+          padding: 0;
+        }
+      }
+
+      &-item {
+        @include centered-row;
+        list-style: none;
+        position: relative;
+
+        &:not(:last-child) {
+          padding-bottom: 20px;
+        }
+
+        & .marker {
+          background-color: var(--color-white);
+          display: none;
+          height: 20px;
+          left: 0.5px;
+          position: absolute;
+          width: 2px;
+        }
+
+        & .text {
+          @include text-roboto-body-400;
+          background-color: transparent;
+          border: none;
+          color: var(--color-gray-400);
+          cursor: pointer;
+          padding-left: 24px;
+          width: 100%;
+
+          &:hover {
+            color: var(--color-white);
+          }
+        }
+
+        &.active {
+          & .marker {
+            @include desktop {
+              display: block;
+            }
+          }
+
+          & .text {
+            color: var(--color-white);
+          }
         }
       }
     }

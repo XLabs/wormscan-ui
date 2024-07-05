@@ -637,8 +637,14 @@ const ChainActivity = () => {
                   dashArray: 0,
                 },
                 fill: {
-                  type: "solid",
-                  opacity: chartSelected === "area" ? 0.05 : 1,
+                  type: chartSelected === "area" ? "gradient" : "solid",
+                  gradient: {
+                    type: "vertical",
+                    shadeIntensity: 0,
+                    opacityFrom: 0.4,
+                    opacityTo: 0,
+                    stops: [0, 100],
+                  },
                 },
                 legend: {
                   show: isDesktop,
