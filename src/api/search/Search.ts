@@ -1,4 +1,3 @@
-import { Network } from "@wormhole-foundation/sdk";
 import axios, { AxiosError } from "axios";
 import { APIClient } from "src/api/api-client";
 import { COINGECKO_URL } from "src/api/consts";
@@ -6,7 +5,6 @@ import { _get } from "src/api/utils/Objects";
 
 import {
   AutomaticRelayOutput,
-  CctpRelayOutput,
   GetTokenInput,
   GetTokenOutput,
   GetTokenPriceInput,

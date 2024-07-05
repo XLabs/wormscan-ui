@@ -336,8 +336,6 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               : parsed2?.payload?.targetRecipient?.toNative("Ethereum")?.toString(),
           };
 
-          console.log({ circleInfo });
-
           const amount = "" + 0.000001 * +circleInfo.amount; // 6 decimals for USDC
           const fee = "" + 0.000001 * +circleInfo.feeAmount; // 6 decimals for USDC
           const toNativeAmount = "" + 0.000001 * +circleInfo.toNativeAmount; // 6 decimals for USDC

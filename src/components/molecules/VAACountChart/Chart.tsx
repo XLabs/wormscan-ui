@@ -1,5 +1,5 @@
 import ApexChart from "react-apexcharts";
-import { ChainId } from "@wormhole-foundation/sdk";
+import { chainIdToChain } from "@wormhole-foundation/sdk";
 import { VAACount } from "src/api/guardian-network/types";
 
 const chartColors = [
@@ -24,7 +24,9 @@ type Props = {
 export function Chart({ chartData }: Props) {
   return (
     <ApexChart
-      series={[{ data: chartData.map((a: VAACount) => ({ x: ChainId[a.chainId], y: a.count })) }]}
+      series={[
+        { data: chartData.map((a: VAACount) => ({ x: chainIdToChain(a.chainId), y: a.count })) },
+      ]}
       options={{
         chart: {
           type: "treemap",

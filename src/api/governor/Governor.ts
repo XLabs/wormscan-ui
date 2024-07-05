@@ -1,5 +1,5 @@
 import { APIClient } from "src/api/api-client";
-import { ChainId } from "src/api/model";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { _get } from "src/api/utils/Objects";
 
 type Notional = {
@@ -86,54 +86,8 @@ export type WormholeTokenList = {
 
 export class Governor {
   constructor(private readonly _client: APIClient) {}
-  async getConfiguration(): Promise<NodeConfiguration[]>;
-  async getConfiguration(guardianId: string): Promise<NodeConfiguration>;
-  async getConfiguration(guardianId: string = null) {
-    const effectivePath = guardianId ? `/governor/config/${guardianId}` : "/governor/config";
-    const payload = await this._client.doGet<any>(effectivePath);
-    const result = _get(payload, "data", []).map(this._mapNodeConfiguration);
-    return guardianId ? result.pop() : result;
-  }
-
-  //TODO API is returning 500
   async getMaxAvailableNotional(chainId: ChainId) {
     return this._client.doGet(`/governor/notional/max_available/${chainId}`);
-  }
-
-  async getAvailableNotional(): Promise<NotionalAvailable[]>;
-  async getAvailableNotional(chainId: ChainId): Promise<ChainNotionalAvailable[]>;
-  async getAvailableNotional(chainId: ChainId = null) {
-    const effectivePath = chainId
-      ? `/governor/notional/available/${chainId}`
-      : "/governor/notional/available";
-    const payload = await this._client.doGet<any>(effectivePath);
-    const result = _get(payload, "data", []);
-    return result.map(chainId ? this._mapChainAvailableNotional : this._mapAvailableNotional);
-  }
-
-  async getNotionalLimit(): Promise<NotionalLimit[]>;
-  async getNotionalLimit(chainId: ChainId): Promise<ChainNotionalLimit[]>;
-  async getNotionalLimit(chainId: ChainId = null) {
-    const effectivePath = chainId
-      ? `/governor/notional/limit/${chainId}`
-      : "/governor/notional/limit";
-    const payload = await this._client.doGet<any>(effectivePath);
-    const result = _get(payload, "data", []);
-    return result.map(chainId ? this._mapChainNotionalLimit : this._mapNotionalLimit);
-  }
-
-  async getStatus(): Promise<NodeStatus[]>;
-  async getStatus(guardianId: string): Promise<NodeStatus>;
-  async getStatus(guardianId: string = null) {
-    const effectivePath = guardianId ? `/governor/status/${guardianId}` : "/governor/status";
-    const payload = await this._client.doGet<any>(effectivePath);
-    if (guardianId) {
-      const result = _get(payload, "data", {});
-      return this._mapStatus(result);
-    } else {
-      const result = _get(payload, "data", []);
-      return result.map(this._mapStatus);
-    }
   }
 
   async getLimit(): Promise<NotionalLimit[]> {
@@ -154,117 +108,4 @@ export class Governor {
     const result = _get(payload, "entries", []);
     return result;
   }
-
-  private _mapNodeConfiguration = ({
-    id,
-    nodename,
-    createdAt,
-    updatedAt,
-    counter,
-    chains,
-    tokens,
-  }: any) => ({
-    id,
-    nodeName: nodename,
-    createdAt: new Date(createdAt),
-    updatedAt: new Date(updatedAt),
-    counter,
-    chains: chains?.map(this._mapChainConfiguration),
-    tokens: tokens?.map(this._mapTokenConfiguration),
-  });
-
-  private _mapStatus = ({ id, nodename, chains, createdAt, updatedAt }: any): NodeStatus => ({
-    id,
-    nodeName: nodename,
-    chains: chains.map(this._mapChainStatus),
-    createdAt: new Date(createdAt),
-    updatedAt: new Date(updatedAt),
-  });
-
-  private _mapChainStatus = ({
-    chainid,
-    remainingavailablenotional,
-    emitters,
-  }: any): ChainStatus => ({
-    chainId: ChainId[chainid] as unknown as ChainId,
-    remainingAvailableNotional: remainingavailablenotional,
-    emitters: emitters.map(this._mapEmitterStatus),
-  });
-
-  private _mapEmitterStatus = ({ emitteraddress, totalenqueuedvaas }: any): EmitterStatus => ({
-    emitterAddress: emitteraddress,
-    totalEnqueuedVAAs: totalenqueuedvaas,
-  });
-
-  private _mapChainConfiguration = ({
-    chainid,
-    notionallimit: notionalLimit,
-    bigtransactionsize: bigTransactionSize,
-  }: any): ChainConfiguration => ({
-    chainId: ChainId[chainid] as unknown as ChainId,
-    notionalLimit,
-    bigTransactionSize,
-  });
-
-  private _mapTokenConfiguration = ({
-    originchainid,
-    originaddress: originAddress,
-    price,
-  }: any): TokenConfiguration => ({
-    originChainId: ChainId[originchainid] as unknown as ChainId,
-    originAddress,
-    price,
-  });
-
-  private _mapChainNotionalLimit = ({
-    id,
-    chainId,
-    nodename,
-    notionalLimit,
-    maxTransactionSize,
-    createdAt,
-    updatedAt,
-  }: any): ChainNotionalLimit => ({
-    id,
-    chainId: ChainId[chainId] as unknown as ChainId,
-    nodeName: nodename,
-    notionalLimit,
-    maxTransactionSize,
-    createdAt: new Date(createdAt),
-    updatedAt: new Date(updatedAt),
-  });
-
-  private _mapNotionalLimit = ({
-    chainid,
-    chainId,
-    availableNotional,
-    notionalLimit,
-    maxTransactionSize,
-  }: any): NotionalLimit => ({
-    chainId: ChainId[chainid | chainId] as unknown as ChainId,
-    availableNotional,
-    notionalLimit,
-    maxTransactionSize,
-  });
-
-  private _mapChainAvailableNotional = ({
-    id,
-    chainId,
-    nodeName,
-    availableNotional,
-    createdAt,
-    updatedAt,
-  }: any): ChainNotionalAvailable => ({
-    id,
-    nodeName,
-    chainId: ChainId[chainId] as unknown as ChainId,
-    availableNotional,
-    createdAt: new Date(createdAt),
-    updatedAt: new Date(updatedAt),
-  });
-
-  private _mapAvailableNotional = ({ chainId, availableNotional }: any): NotionalAvailable => ({
-    chainId: ChainId[chainId] as unknown as ChainId,
-    availableNotional,
-  });
 }
