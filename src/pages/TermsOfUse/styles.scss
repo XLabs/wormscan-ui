@@ -253,8 +253,10 @@
           padding-left: 24px;
           width: 100%;
 
-          &:hover {
-            color: var(--color-white);
+          @include desktop {
+            &:hover {
+              color: var(--color-white);
+            }
           }
         }
 
