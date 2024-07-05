@@ -538,11 +538,11 @@ const Tx = () => {
 
         // Check Standard Relayer
         if (data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID)) {
-          // TODO: handle generic relayer non-vaa txns without rpcs
-          if (!data.vaa || !data.vaa?.raw) {
-            console.log("standard relayer tx without vaa yet");
-            return;
-          }
+          // // TODO: handle generic relayer non-vaa txns without rpcs
+          // if (!data.vaa || !data.vaa?.raw) {
+          //   console.log("standard relayer tx without vaa yet");
+          //   return;
+          // }
 
           try {
             const result = await populateDeliveryLifecycleRecordByVaa(environment, data.vaa.raw);
