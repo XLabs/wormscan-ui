@@ -10,7 +10,7 @@ import { useRecoilState } from "recoil";
 import { addressesInfoState } from "src/utils/recoilStates";
 import { INFTInfo } from "src/api/guardian-network/types";
 import "./styles.scss";
-import { ChainId, Network } from "@wormhole-foundation/sdk";
+import { ChainId, Network, chainToChainId } from "@wormhole-foundation/sdk";
 
 export type OverviewProps = {
   amountSent?: string;
@@ -220,7 +220,7 @@ const Overview = ({
                 <>
                   <div className="tx-overview-graph-step-description">
                     {/* delete conditional when WORMCHAIN gets an explorer */}
-                    {fromChainOrig === 3104 ? (
+                    {fromChainOrig === chainToChainId("Wormchain") ? (
                       <div>
                         <Tooltip
                           maxWidth={false}

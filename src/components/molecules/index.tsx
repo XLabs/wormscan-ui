@@ -11,6 +11,5 @@ export { default as TermsOfUseBanner } from "./TermsOfUseBanner";
 export { default as TopAssetListItem } from "./TopAssetListItem";
 export { default as TopAssets } from "./TopAssets";
 export { default as TopAssetsChart } from "./TopAssetsChart";
-export { default as VAACountChart } from "./VAACountChart";
 export { default as WormholeScanBrand } from "./WormholeScanBrand";
 export { default as WormholeStats } from "./WormholeStats";

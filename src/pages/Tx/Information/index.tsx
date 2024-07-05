@@ -139,7 +139,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   ) as ChainId;
   const toChain: ChainId = parsedPayload?.["gateway_transfer"]?.chain
     ? parsedPayload?.["gateway_transfer"].chain
-    : stdToChain || data?.targetChain?.chainId;
+    : stdToChain || data?.targetChain?.chainId || 0;
 
   const parsedOriginAddress = isGatewaySource
     ? data?.sourceChain?.attribute?.value?.originAddress

@@ -118,8 +118,6 @@ const Tx = () => {
   const tryToGetRpcInfo = useCallback(async () => {
     const txsData = await fetchWithRpcFallThrough(environment, txHash);
 
-    console.log({ txsData });
-
     if (txsData) {
       const txData = await txsData[0];
       if (txData) {

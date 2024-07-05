@@ -431,7 +431,6 @@ const ChainActivity = () => {
 
     const newSeries = Object.keys(dataByChain)
       .map(chain => {
-        console.log({ chain });
         return {
           name: getChainName({
             network: currentNetwork,

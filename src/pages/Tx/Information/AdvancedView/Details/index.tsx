@@ -9,7 +9,7 @@ import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import "./styles.scss";
 import { useRecoilState } from "recoil";
 import { addressesInfoState } from "src/utils/recoilStates";
-import { ChainId } from "@wormhole-foundation/sdk";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 
 const Details = ({
   amountSent,
@@ -91,7 +91,7 @@ const Details = ({
             {parsedEmitterAddress ? (
               <>
                 {/* delete conditional when WORMCHAIN gets an explorer */}
-                {fromChainOrig === 3104 ? (
+                {fromChainOrig === chainToChainId("Wormchain") ? (
                   <div>
                     <span>
                       <TruncateText

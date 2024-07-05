@@ -75,7 +75,7 @@ async function hitAllSlowChains(
         .getTransactionReceipt(searchValue)
         .then(async receipt => {
           if ((await receipt.confirmations()) > 0) {
-            console.log(`tx is from chain ${chain}`);
+            console.log(`tx is from chain ${chain} (${chainIdToChain(chain)})`);
             return receipt;
           } else {
             console.log(`no confirmations for this tx on chain ${chain}`);
@@ -110,8 +110,6 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
 
   if (result) {
     const chainName = chainIdToChain(result.chainId);
-
-    console.log("result for", chainName);
 
     // This is the hash for topic[0] of the core contract event LogMessagePublished
     // https://github.com/wormhole-foundation/wormhole/blob/main/ethereum/contracts/Implementation.sol#L12
