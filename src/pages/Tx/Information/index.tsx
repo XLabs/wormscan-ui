@@ -37,7 +37,7 @@ import RelayerOverview from "./Overview/RelayerOverview";
 import AdvancedView from "./AdvancedView";
 
 import "./styles.scss";
-import { ChainId } from "@wormhole-foundation/sdk";
+import { ChainId, chainIdToChain } from "@wormhole-foundation/sdk";
 import { platformToChains } from "@wormhole-foundation/sdk";
 import { deepCloneWithBigInt } from "src/utils/object";
 
@@ -137,7 +137,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   const fromChain = (
     isGatewaySource ? data?.sourceChain?.attribute?.value?.originChainId : fromChainOrig
   ) as ChainId;
-  const toChain = parsedPayload?.["gateway_transfer"]?.chain
+  const toChain: ChainId = parsedPayload?.["gateway_transfer"]?.chain
     ? parsedPayload?.["gateway_transfer"].chain
     : stdToChain || data?.targetChain?.chainId;
 
@@ -250,7 +250,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   const showMetaMaskBtn = toChain && tokenInfo?.tokenDecimals && toChain === targetTokenChain;
 
   useEffect(() => {
-    if (platformToChains("Evm").includes(toChain)) {
+    if (platformToChains("Evm").includes(chainIdToChain(toChain) as any)) {
       getTokenInformation(targetTokenChain, environment, targetTokenAddress).then(data => {
         if (data) {
           getTokenLogo({ tokenAddress: targetTokenAddress }).then(tokenImage => {
@@ -319,7 +319,9 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
     (STATUS === "EXTERNAL_TX" ||
       STATUS === "VAA_EMITTED" ||
       (STATUS === "PENDING_REDEEM" && new Date(timestamp) < date_30_min_before)) &&
-    (platformToChains("Evm").includes(toChain) || toChain === 1 || toChain === 21) &&
+    (platformToChains("Evm").includes(chainIdToChain(toChain) as any) ||
+      toChain === 1 ||
+      toChain === 21) &&
     toChain === targetTokenChain &&
     !!toAddress &&
     !!(wrappedTokenAddress && tokenEffectiveAddress) &&

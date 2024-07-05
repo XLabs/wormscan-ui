@@ -16,32 +16,6 @@ import {
 export class Search {
   constructor(private readonly _client: APIClient) {}
 
-  async getCctpRelay({
-    txHash,
-    network,
-  }: {
-    txHash: string;
-    network: Network;
-  }): Promise<CctpRelayOutput> {
-    // Remove CORS_PROXY when the endpoint stops responding with CORS err.
-    const CORS_PROXY = "https://corsproxy.io/?";
-
-    let cctpURL = CORS_PROXY + "https://relayer.stable.io/v1/relays?txHash=";
-    if (network === "Testnet") {
-      cctpURL = CORS_PROXY + "https://relayer.dev.stable.io/v1/relays?txHash=";
-    }
-
-    try {
-      const response = await axios.get(cctpURL + txHash);
-      if (response?.data?.data) {
-        return response.data.data;
-      }
-      return null;
-    } catch {
-      return null;
-    }
-  }
-
   async getAutomaticRelay({
     emitterChain,
     emitterAddress,

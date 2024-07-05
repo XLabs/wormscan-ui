@@ -16,7 +16,7 @@ type Props = {
   isUnknownApp: boolean;
   parsedDestinationAddress: string;
   STATUS: IStatus;
-  toChain: ChainId | number;
+  toChain: ChainId;
 
   canTryToGetRedeem: boolean;
   foundRedeem: boolean;

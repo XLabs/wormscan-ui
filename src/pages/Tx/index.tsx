@@ -604,60 +604,12 @@ const Tx = () => {
               data.content?.standarizedProperties?.toChain as ChainId,
             );
           }
-
-          // // if destinationTx is not there, we get it from relayer endpoint
-          // // or if the real chainId is probably ArbitrumSepolia, BaseSepolia or OptimismSepolia
-          // if (
-          //   !data.targetChain?.transaction?.txHash ||
-          //   (network === "Testnet" &&
-          //     (data.content.standarizedProperties.fromChain === chainToChainId("Arbitrum") ||
-          //       data.content.standarizedProperties.fromChain === chainToChainId("Base") ||
-          //       data.content.standarizedProperties.fromChain === chainToChainId("Optimism") ||
-          //       data.content.standarizedProperties.toChain === chainToChainId("Arbitrum") ||
-          //       data.content.standarizedProperties.toChain === chainToChainId("Base") ||
-          //       data.content.standarizedProperties.toChain === chainToChainId("Optimism")))
-          // ) {
-          //   // get CCTP relayer information
-          //   const relayResponse = await getClient().search.getCctpRelay({
-          //     txHash: parseTx({ value: data.sourceChain?.transaction?.txHash, chainId: 2 }),
-          //     network: network,
-          //   });
-
-          //   // add Redeem Txn information to the tx response
-          //   if (relayResponse?.to?.txHash) {
-          //     data.targetChain = {
-          //       chainId: relayResponse.to.chainId,
-          //       status: relayResponse.status,
-          //       timestamp: relayResponse.metrics?.completedAt,
-          //       transaction: {
-          //         txHash: relayResponse.to.txHash,
-          //       },
-          //       from: relayResponse.to.txHash,
-          //       to: "",
-          //     };
-
-          //     setExtraRawInfo(relayResponse);
-          //   }
-
-          //   if (relayResponse?.to?.recipientAddress) {
-          //     data.content.standarizedProperties.toAddress = relayResponse?.to?.recipientAddress;
-          //   }
-          //   if (relayResponse?.fee?.amount) {
-          //     data.content.standarizedProperties.fee =
-          //       "" +
-          //       (relayResponse?.fee?.amount + (relayResponse?.from?.amountToSwap || 0)) * 100000000;
-          //   }
-          // }
         }
         // ----
 
         // Check Standard Relayer
         if (data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID)) {
-          // TODO: handle generic relayer non-vaa txns without rpcs
-          if (!data.vaa || !data.vaa?.raw) {
-            console.log("standard relayer tx without vaa yet");
-            return;
-          }
+          // TODO: handle generic relayer non-vaa txns without rpcs (shows no amount)
 
           try {
             const result = await populateRelayerInfo(environment, data);
