@@ -3672,15 +3672,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-base@npm:0.6.5":
-  version: 0.6.5
-  resolution: "@wormhole-foundation/sdk-base@npm:0.6.5"
-  dependencies:
-    "@scure/base": ^1.1.3
-  checksum: b21df73f958b17c44c147c0fcfd8eb9ccce59847242b59f568fc4b44ecb7074f1c8beb0a8eaf444cd3a6e3a3cc0f1c99a2d452768daf03ccb3072a3a0326c962
-  languageName: node
-  linkType: hard
-
 "@wormhole-foundation/sdk-base@npm:0.7.1-beta.2":
   version: 0.7.1-beta.2
   resolution: "@wormhole-foundation/sdk-base@npm:0.7.1-beta.2"
@@ -3752,28 +3743,6 @@ __metadata:
     "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
     cosmjs-types: ^0.9.0
   checksum: 99c0fa5d41534d10b1300a18299dfe271ef5ec0cdc424a14ec6ac4a9f646e3e8d030507b28da455333be810356a8b93dcbc0daf6674f38d311840572d49f72d8
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-definitions-ntt@npm:^0.0.1-beta.0":
-  version: 0.0.1-beta.5
-  resolution: "@wormhole-foundation/sdk-definitions-ntt@npm:0.0.1-beta.5"
-  dependencies:
-    "@noble/hashes": ^1.3.1
-    "@wormhole-foundation/sdk-base": 0.6.5
-    "@wormhole-foundation/sdk-definitions": 0.6.5
-  checksum: e1d45ae7a64dfc5405894a0815046467f5142c2fcbda941a5eec1d591e2ba41c213ca32027bcbe790b4e1ff4b584e067688b23e730123a20347c7330d3bc187a
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-definitions@npm:0.6.5":
-  version: 0.6.5
-  resolution: "@wormhole-foundation/sdk-definitions@npm:0.6.5"
-  dependencies:
-    "@noble/curves": ^1.4.0
-    "@noble/hashes": ^1.3.1
-    "@wormhole-foundation/sdk-base": 0.6.5
-  checksum: 951e0067f4c8423912f96fac86e0d00abce478000a405f1aabe8e2efeb95e8f7937032311682409f8b9addd192dce5689f1c0b26516d11d146136738e58207c0
   languageName: node
   linkType: hard
 
@@ -10503,8 +10472,6 @@ __metadata:
     "@typescript-eslint/eslint-plugin": latest
     "@typescript-eslint/parser": latest
     "@wormhole-foundation/sdk": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-definitions-ntt": ^0.0.1-beta.0
-    "@wormhole-foundation/sdk-evm": 0.7.1-beta.2
     analytics: ^0.8.9
     apexcharts: ^3.49.1
     assert: ^2.0.0
