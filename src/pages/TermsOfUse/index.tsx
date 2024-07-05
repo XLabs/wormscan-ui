@@ -1,17 +1,60 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BaseLayout } from "src/layouts/BaseLayout";
+import { ChevronDownIcon } from "src/icons/generic";
 import { NavLink } from "src/components/atoms";
 import "./styles.scss";
 
+const tableOfContents = [
+  { id: "#acceptance-of-agreement", text: "termsOfUse.page.header.list.item1" },
+  { id: "#amendments", text: "termsOfUse.page.header.list.item2" },
+  { id: "#definitions-and-other", text: "termsOfUse.page.header.list.item3" },
+  { id: "#the-service", text: "termsOfUse.page.header.list.item4" },
+  { id: "#privacy", text: "termsOfUse.page.header.list.item5" },
+  { id: "#communication-with-users", text: "termsOfUse.page.header.list.item6" },
+  { id: "#third-party-links", text: "termsOfUse.page.header.list.item7" },
+  { id: "#intellectual-property", text: "termsOfUse.page.header.list.item8" },
+  { id: "#indemnification", text: "termsOfUse.page.header.list.item9" },
+  { id: "#assumptions-of-risk", text: "termsOfUse.page.header.list.item10" },
+  { id: "#limitation-of-liability", text: "termsOfUse.page.header.list.item11" },
+  { id: "#term-and-termination", text: "termsOfUse.page.header.list.item12" },
+  { id: "#general-terms", text: "termsOfUse.page.header.list.item13" },
+];
+
+export const goToSection = (dataTarget: string) => {
+  scrollBy({
+    top: document.querySelector(dataTarget)?.getBoundingClientRect().top - 64,
+    behavior: "smooth",
+  });
+};
+
 const TermsOfUse = () => {
   const { t } = useTranslation();
+  const [activeSection, setActiveSection] = useState("");
+  const [showContentsMobile, setShowContentsMobile] = useState(false);
 
-  const handleClick = (dataTarget: string) => {
-    scrollBy({
-      top: document.querySelector(dataTarget)?.getBoundingClientRect().top - 16,
-      behavior: "smooth",
-    });
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      let currentSection = "";
+      for (const item of tableOfContents) {
+        const element = document.querySelector(item.id);
+        const rect = element.getBoundingClientRect();
+        if (rect.top <= 100 && rect.bottom > 56) {
+          currentSection = item.id;
+          break;
+        }
+      }
+
+      if (currentSection && currentSection !== activeSection) {
+        setActiveSection(currentSection);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [activeSection]);
 
   return (
     <BaseLayout>
@@ -30,80 +73,6 @@ const TermsOfUse = () => {
             <div>
               <p className="terms-of-use-content-top-text">{t("termsOfUse.page.header.text1")}</p>
               <p className="terms-of-use-content-top-text">{t("termsOfUse.page.header.text2")}</p>
-            </div>
-
-            <div className="terms-of-use-content-top-list">
-              <h3 className="terms-of-use-content-top-list-title">
-                {t("termsOfUse.page.header.list.title")}
-              </h3>
-
-              <ul>
-                <li className="terms-of-use-content-top-list-item">
-                  <p onClick={() => handleClick("#acceptance-of-agreement")}>
-                    {t("termsOfUse.page.header.list.item1")}
-                  </p>
-                </li>
-                <li className="terms-of-use-content-top-list-item">
-                  <p onClick={() => handleClick("#amendments")}>
-                    {t("termsOfUse.page.header.list.item2")}
-                  </p>
-                </li>
-                <li className="terms-of-use-content-top-list-item">
-                  <p onClick={() => handleClick("#definitions-and-other")}>
-                    {t("termsOfUse.page.header.list.item3")}
-                  </p>
-                </li>
-                <li className="terms-of-use-content-top-list-item">
-                  <p onClick={() => handleClick("#the-service")}>
-                    {t("termsOfUse.page.header.list.item4")}
-                  </p>
-                </li>
-                <li className="terms-of-use-content-top-list-item">
-                  <p onClick={() => handleClick("#privacy")}>
-                    {t("termsOfUse.page.header.list.item5")}
-                  </p>
-                </li>
-                <li className="terms-of-use-content-top-list-item">
-                  <p onClick={() => handleClick("#communication-with-users")}>
-                    {t("termsOfUse.page.header.list.item6")}
-                  </p>
-                </li>
-                <li className="terms-of-use-content-top-list-item">
-                  <p onClick={() => handleClick("#third-party-links")}>
-                    {t("termsOfUse.page.header.list.item7")}
-                  </p>
-                </li>
-                <li className="terms-of-use-content-top-list-item">
-                  <p onClick={() => handleClick("#intellectual-property")}>
-                    {t("termsOfUse.page.header.list.item8")}
-                  </p>
-                </li>
-                <li className="terms-of-use-content-top-list-item">
-                  <p onClick={() => handleClick("#indemnification")}>
-                    {t("termsOfUse.page.header.list.item9")}
-                  </p>
-                </li>
-                <li className="terms-of-use-content-top-list-item">
-                  <p onClick={() => handleClick("#assumptions-of-risk")}>
-                    {t("termsOfUse.page.header.list.item10")}
-                  </p>
-                </li>
-                <li className="terms-of-use-content-top-list-item">
-                  <p onClick={() => handleClick("#limitation-of-liability")}>
-                    {t("termsOfUse.page.header.list.item11")}
-                  </p>
-                </li>
-                <li className="terms-of-use-content-top-list-item">
-                  <p onClick={() => handleClick("#term-and-termination")}>
-                    {t("termsOfUse.page.header.list.item12")}
-                  </p>
-                </li>
-                <li className="terms-of-use-content-top-list-item">
-                  <p onClick={() => handleClick("#general-terms")}>
-                    {t("termsOfUse.page.header.list.item13")}
-                  </p>
-                </li>
-              </ul>
             </div>
           </div>
 
@@ -643,6 +612,41 @@ const TermsOfUse = () => {
                 <a href="mailto:legal@xlabs.xyz">legal@xlabs.xyz.</a>
               </p>
             </section>
+          </div>
+        </div>
+
+        <div className="terms-of-use-aside">
+          <div className={`terms-of-use-aside-container ${showContentsMobile ? "show" : ""}`}>
+            <h3
+              className="terms-of-use-aside-container-title"
+              onClick={() => setShowContentsMobile(!showContentsMobile)}
+            >
+              {t("termsOfUse.page.header.list.title")}
+              <ChevronDownIcon width={24} />
+              <span>:</span>
+            </h3>
+
+            <ul>
+              {tableOfContents.map(item => (
+                <li
+                  key={item.id}
+                  className={`terms-of-use-aside-container-item ${
+                    activeSection === item.id ? "active" : ""
+                  }`}
+                >
+                  <div className="marker" />
+                  <p
+                    className="text"
+                    onClick={() => {
+                      goToSection(item.id);
+                      setShowContentsMobile(false);
+                    }}
+                  >
+                    {t(item.text)}
+                  </p>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>

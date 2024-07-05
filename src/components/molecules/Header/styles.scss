@@ -50,12 +50,16 @@
         @include centered-column;
         @include text-heading6;
         align-items: center;
-        color: var(--color-white-80);
+        color: var(--color-white);
         cursor: pointer;
         gap: 8px;
         opacity: 0.5;
         text-decoration: none;
         width: 32px;
+
+        &.active {
+          opacity: 1;
+        }
       }
 
       &-other-menu {
@@ -94,6 +98,10 @@
           color: var(--color-gray-200);
           font-weight: 400;
           text-decoration: none;
+
+          &.active {
+            color: var(--color-white);
+          }
 
           @include desktop {
             color: var(--color-white-80);
@@ -151,6 +159,10 @@
           text-decoration: none;
           text-transform: uppercase;
           padding: 4px 0;
+
+          &.active {
+            color: var(--color-white);
+          }
 
           &:hover {
             color: var(--color-white);

@@ -1,7 +1,6 @@
 import { NavLink as RouterLink, NavLinkProps, useSearchParams } from "react-router-dom";
 import { Network } from "@wormhole-foundation/sdk";
 import { parseTo } from "src/utils/route";
-import "./style.scss";
 
 const NavLink = (props: NavLinkProps) => {
   const { to, onClick } = props;

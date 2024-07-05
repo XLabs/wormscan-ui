@@ -2,6 +2,7 @@
 
 .chain-activity {
   margin-bottom: 60px;
+  overflow-x: clip;
 
   @include desktop {
     margin-bottom: 80px;
