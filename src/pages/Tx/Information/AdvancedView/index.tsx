@@ -29,7 +29,7 @@ const AdvancedView = ({
   const lifecycleRecord = data.relayerInfo;
   const relayerInfo = data.relayerInfo?.props;
   const deliveryInstruction = relayerInfo?.deliveryInstruction;
-  const decodeExecution = relayerInfo.decodeExecution;
+  const decodeExecution = relayerInfo?.decodeExecution;
 
   const dataNoPayload = deepCloneWithBigInt(data) as GetOperationsOutput;
   delete dataNoPayload.relayerInfo;
@@ -41,7 +41,7 @@ const AdvancedView = ({
       ? data.decodedVaa
       : null
     : null;
-  if (signedVAA.signatures) {
+  if (signedVAA?.signatures) {
     delete signedVAA.signatures;
     delete signedVAA.protocolName;
     delete signedVAA.payloadName;

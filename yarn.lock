@@ -10504,6 +10504,7 @@ __metadata:
     "@typescript-eslint/parser": latest
     "@wormhole-foundation/sdk": 0.7.1-beta.2
     "@wormhole-foundation/sdk-definitions-ntt": ^0.0.1-beta.0
+    "@wormhole-foundation/sdk-evm": 0.7.1-beta.2
     analytics: ^0.8.9
     apexcharts: ^3.49.1
     assert: ^2.0.0

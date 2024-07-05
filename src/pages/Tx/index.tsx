@@ -15,7 +15,7 @@ import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { ethers } from "ethers";
 import {
-  // fetchWithRpcFallThrough,
+  fetchWithRpcFallThrough,
   getCctpDomain,
   getEvmBlockInfo,
   getTokenInformation,
@@ -115,116 +115,118 @@ const Tx = () => {
   );
 
   const cancelRequests = useRef(false);
-  // const tryToGetRpcInfo = useCallback(async () => {
-  //   const txsData = await fetchWithRpcFallThrough(environment, txHash);
+  const tryToGetRpcInfo = useCallback(async () => {
+    const txsData = await fetchWithRpcFallThrough(environment, txHash);
 
-  //   if (txsData) {
-  //     const txData = await txsData[0];
-  //     if (txData) {
-  //       cancelRequests.current = true;
+    console.log({ txsData });
 
-  //       analytics.track("txDetail", {
-  //         appIds: txData?.appIds?.join(", ") ? txData.appIds.join(", ") : "null",
-  //         chain: txData?.chain ? getChainName({ chainId: txData?.chain, network }) : 0,
-  //         toChain: txData?.toChain ? getChainName({ chainId: txData.toChain, network }) : 0,
-  //       });
+    if (txsData) {
+      const txData = await txsData[0];
+      if (txData) {
+        cancelRequests.current = true;
 
-  //       const limitDataForChain = chainLimitsData
-  //         ? chainLimitsData.find((d: ChainLimit) => d.chainId === txData.chain)
-  //         : ETH_LIMIT;
-  //       const transactionLimit = limitDataForChain?.maxTransactionSize;
-  //       const isBigTransaction = transactionLimit <= Number(txData?.usdAmount);
-  //       const isDailyLimitExceeded =
-  //         limitDataForChain?.availableNotional < Number(txData?.usdAmount);
+        analytics.track("txDetail", {
+          appIds: txData?.appIds?.join(", ") ? txData.appIds.join(", ") : "null",
+          chain: txData?.chain ? getChainName({ chainId: txData?.chain, network }) : 0,
+          toChain: txData?.toChain ? getChainName({ chainId: txData.toChain, network }) : 0,
+        });
 
-  //       setIsRPC(true);
-  //       setTxData([
-  //         {
-  //           emitterAddress: {
-  //             hex: txData.emitterAddress,
-  //             native: txData.emitterNattiveAddress,
-  //           },
-  //           emitterChain: txData.chain,
-  //           id: txData.id,
-  //           content: {
-  //             payload: {
-  //               payloadType: txData.payloadType,
-  //               parsedPayload: {
-  //                 feeAmount: txData?.fee,
-  //                 toNativeAmount: txData?.toNativeAmount,
-  //               },
-  //               amount: txData.amount,
-  //               fee: txData.fee,
-  //               fromAddress: txData.fromAddress,
-  //               payload: undefined,
-  //               toAddress: txData.toAddress,
-  //               toChain: txData.toChain,
-  //               tokenAddress: txData.tokenAddress,
-  //               tokenChain: txData.tokenChain,
-  //             },
-  //             standarizedProperties: {
-  //               amount: txData.amount,
-  //               appIds: txData.appIds ?? [],
-  //               fee: txData.fee,
-  //               feeAddress: "",
-  //               feeChain: txData.chain,
-  //               fromAddress: txData.fromAddress,
-  //               fromChain: txData.chain,
-  //               toAddress: txData.toAddress,
-  //               toChain: txData.toChain,
-  //               tokenAddress: txData.tokenAddress,
-  //               tokenChain: txData.tokenChain,
-  //               wrappedTokenAddress: txData.wrappedTokenAddress,
-  //             },
-  //           },
-  //           data: {
-  //             symbol: txData.symbol,
-  //             tokenAmount: txData.tokenAmount,
-  //             usdAmount: txData.usdAmount,
-  //           },
-  //           STATUS:
-  //             txData.STATUS === "IN_PROGRESS" && (isBigTransaction || isDailyLimitExceeded)
-  //               ? "IN_GOVERNORS"
-  //               : txData.STATUS,
-  //           isBigTransaction,
-  //           isDailyLimitExceeded,
-  //           transactionLimit,
-  //           sequence: "",
-  //           sourceChain: {
-  //             chainId: txData.chain,
-  //             timestamp: new Date(txData.timestamp),
-  //             from: txData.fromAddress,
-  //             status: undefined,
-  //             transaction: {
-  //               txHash: txData.txHash,
-  //             },
-  //           },
-  //           targetChain: {
-  //             chainId: txData.toChain,
-  //             timestamp: undefined,
-  //             transaction: undefined,
-  //             from: undefined,
-  //             status: undefined,
-  //             to: undefined,
-  //           },
-  //           vaa: undefined,
-  //         },
-  //       ]);
-  //       setBlockData({
-  //         currentBlock: txData.blockNumber,
-  //         lastFinalizedBlock: txData.lastFinalizedBlock,
-  //       });
+        const limitDataForChain = chainLimitsData
+          ? chainLimitsData.find((d: ChainLimit) => d.chainId === txData.chain)
+          : ETH_LIMIT;
+        const transactionLimit = limitDataForChain?.maxTransactionSize;
+        const isBigTransaction = transactionLimit <= Number(txData?.usdAmount);
+        const isDailyLimitExceeded =
+          limitDataForChain?.availableNotional < Number(txData?.usdAmount);
 
-  //       if (txData.extraRawInfo) setExtraRawInfo(txData.extraRawInfo);
-  //       setErrorCode(undefined);
-  //       setIsLoading(false);
-  //     } else {
-  //       cancelRequests.current = false;
-  //     }
-  //   } else {
-  //     cancelRequests.current = false;
-  //   }
-  // }, [chainLimitsData, environment, network, txHash]);
+        setIsRPC(true);
+        setTxData([
+          {
+            emitterAddress: {
+              hex: txData.emitterAddress,
+              native: txData.emitterNattiveAddress,
+            },
+            emitterChain: txData.chain,
+            id: txData.id,
+            content: {
+              payload: {
+                payloadType: txData.payloadType,
+                parsedPayload: {
+                  feeAmount: txData?.fee,
+                  toNativeAmount: txData?.toNativeAmount,
+                },
+                amount: txData.amount,
+                fee: txData.fee,
+                fromAddress: txData.fromAddress,
+                payload: undefined,
+                toAddress: txData.toAddress,
+                toChain: txData.toChain,
+                tokenAddress: txData.tokenAddress,
+                tokenChain: txData.tokenChain,
+              },
+              standarizedProperties: {
+                amount: txData.amount,
+                appIds: txData.appIds ?? [],
+                fee: txData.fee,
+                feeAddress: "",
+                feeChain: txData.chain,
+                fromAddress: txData.fromAddress,
+                fromChain: txData.chain,
+                toAddress: txData.toAddress,
+                toChain: txData.toChain,
+                tokenAddress: txData.tokenAddress,
+                tokenChain: txData.tokenChain,
+                wrappedTokenAddress: txData.wrappedTokenAddress,
+              },
+            },
+            data: {
+              symbol: txData.symbol,
+              tokenAmount: txData.tokenAmount,
+              usdAmount: txData.usdAmount,
+            },
+            STATUS:
+              txData.STATUS === "IN_PROGRESS" && (isBigTransaction || isDailyLimitExceeded)
+                ? "IN_GOVERNORS"
+                : txData.STATUS,
+            isBigTransaction,
+            isDailyLimitExceeded,
+            transactionLimit,
+            sequence: "",
+            sourceChain: {
+              chainId: txData.chain,
+              timestamp: new Date(txData.timestamp),
+              from: txData.fromAddress,
+              status: undefined,
+              transaction: {
+                txHash: txData.txHash,
+              },
+            },
+            targetChain: {
+              chainId: txData.toChain,
+              timestamp: undefined,
+              transaction: undefined,
+              from: undefined,
+              status: undefined,
+              to: undefined,
+            },
+            vaa: undefined,
+          },
+        ]);
+        setBlockData({
+          currentBlock: txData.blockNumber,
+          lastFinalizedBlock: txData.lastFinalizedBlock,
+        });
+
+        if (txData.extraRawInfo) setExtraRawInfo(txData.extraRawInfo);
+        setErrorCode(undefined);
+        setIsLoading(false);
+      } else {
+        cancelRequests.current = false;
+      }
+    } else {
+      cancelRequests.current = false;
+    }
+  }, [chainLimitsData, environment, network, txHash]);
 
   useEffect(() => {
     setErrorCode(undefined);
@@ -244,10 +246,10 @@ const Tx = () => {
   useEffect(() => {
     // check that the limits are already loaded before executing tryToGetRpcInfo
     if (!isLoadingLimits && shouldTryToGetRpcInfo) {
-      // tryToGetRpcInfo();
+      tryToGetRpcInfo();
       setShouldTryToGetRpcInfo(false);
     }
-  }, [isLoadingLimits, shouldTryToGetRpcInfo /* tryToGetRpcInfo */]);
+  }, [isLoadingLimits, shouldTryToGetRpcInfo, tryToGetRpcInfo]);
 
   const { data: VAADataByTx } = useQuery(
     ["getVAAbyTxHash", txHash],

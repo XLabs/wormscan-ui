@@ -52,6 +52,7 @@
     "@radix-ui/react-tooltip": "1.0.5",
     "@wormhole-foundation/sdk": "0.7.1-beta.2",
     "@wormhole-foundation/sdk-definitions-ntt": "^0.0.1-beta.0",
+    "@wormhole-foundation/sdk-evm": "0.7.1-beta.2",
     "analytics": "^0.8.9",
     "apexcharts": "^3.49.1",
     "axios": "^1.4.0",

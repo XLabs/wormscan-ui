@@ -20,8 +20,6 @@ interface Props {
   payloadType: number;
 }
 
-const BIGDIPPER_TRANSACTIONS = "https://bigdipper.live/wormhole/transactions";
-
 const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
@@ -73,11 +71,14 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
           <div>Gateway Tx Hash:</div>
           <div className="tx-top-txId-container">
             <a
-              href={`${BIGDIPPER_TRANSACTIONS}/${
-                parseTxHashUpperCase.startsWith("0X")
+              href={getExplorerLink({
+                network: currentNetwork,
+                chainId: chainToChainId("Wormchain"),
+                value: parseTxHashUpperCase.startsWith("0X")
                   ? parseTxHashUpperCase.substring(2)
-                  : parseTxHashUpperCase
-              }`}
+                  : parseTxHashUpperCase,
+                isNativeAddress: true,
+              })}
               target="_blank"
               rel="noopener noreferrer"
             >

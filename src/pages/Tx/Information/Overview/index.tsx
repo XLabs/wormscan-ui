@@ -94,6 +94,18 @@ const Overview = ({
   totalGuardiansNeeded,
   VAAId,
 }: OverviewProps) => {
+  console.log({
+    1: getExplorerLink({
+      network: currentNetwork,
+      chainId: toChain,
+      value: parsedDestinationAddress,
+      base: "address",
+      isNativeAddress: true,
+    }),
+    toChain,
+    parsedDestinationAddress,
+  });
+
   const [addressesInfo] = useRecoilState(addressesInfoState);
   return (
     <div className="tx-overview">

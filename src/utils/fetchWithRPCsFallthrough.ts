@@ -1,40 +1,21 @@
-// import {
-//   CHAIN_ID_SUI,
-//   CONTRACTS,
-//   Network,
-//   coalesceChainName,
-//   isCosmWasmChain,
-//   isEVMChain,
-//   tryHexToNativeString,
-//   tryUint8ArrayToNative,
-//   uint8ArrayToHex,
-// } from "@certusone/wormhole-sdk";
-// import {
-//   RelayerPayloadId,
-//   parseWormholeRelayerPayloadType,
-//   parseWormholeRelayerResend,
-//   parseWormholeRelayerSend,
-// } from "@certusone/wormhole-sdk/lib/cjs/relayer";
-// import { Implementation__factory } from "@certusone/wormhole-sdk/lib/cjs/ethers-contracts";
-// import { humanAddress } from "@certusone/wormhole-sdk/lib/cjs/cosmos";
-
 import {
-  Network,
+  ChainId,
   chainIdToChain,
   chainToChainId,
   contracts,
+  Network,
   platformToChains,
   toNative,
+  UniversalAddress,
 } from "@wormhole-foundation/sdk";
-import { Contract, TransactionReceipt } from "ethers";
+import { ethers_contracts } from "@wormhole-foundation/sdk-evm-core";
+import { Contract, TransactionReceipt, formatUnits as ethersFormatUnits } from "ethers";
 import { CCTP_MANUAL_APP_ID, GR_APP_ID, IStatus, getGuardianSet } from "src/consts";
 import { Order, WormholeTokenList } from "src/api";
-import { ChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { Environment, SLOW_FINALITY_CHAINS, getChainInfo, getEthersProvider } from "./environment";
 import { formatUnits, parseAddress } from "./crypto";
 import { isConnect, parseConnectPayload } from "./wh-connect-rpc";
-import { TokenMessenger__factory } from "./TokenMessenger__factory";
 import { hexToBase58 } from "./string";
 
 type TxReceiptHolder = {
@@ -119,505 +100,501 @@ async function hitAllSlowChains(
 
 // Before this, a normal search should be performed.
 // If unsuccessful, we hit the RPCs.
-// export async function fetchWithRpcFallThrough(env: Environment, searchValue: string) {
-//   const result = await hitAllSlowChains(env, searchValue);
+export async function fetchWithRpcFallThrough(env: Environment, searchValue: string) {
+  const result = await hitAllSlowChains(env, searchValue);
 
-//   if (result) {
-//     const chainName = chainIdToChain(result.chainId);
+  if (result) {
+    const chainName = chainIdToChain(result.chainId);
 
-//     // This is the hash for topic[0] of the core contract event LogMessagePublished
-//     // https://github.com/wormhole-foundation/wormhole/blob/main/ethereum/contracts/Implementation.sol#L12
-//     const LOG_MESSAGE_PUBLISHED_TOPIC =
-//       "0x6eb224fb001ed210e379b335e35efe88672a8ce935d981a6896b27ffdf52a3b2";
-//     const LOG_TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
-//     const LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC =
-//       "0x2fa9ca894982930190727e75500a97d8dc500233a5065e0f3126c48fbe0343c0";
+    console.log("result for", chainName);
 
-//     const wrappedTokenAddress = result.receipt?.logs.findLast(
-//       l => l.topics[0] === LOG_TRANSFER_TOPIC,
-//     )?.address;
+    // This is the hash for topic[0] of the core contract event LogMessagePublished
+    // https://github.com/wormhole-foundation/wormhole/blob/main/ethereum/contracts/Implementation.sol#L12
+    const LOG_MESSAGE_PUBLISHED_TOPIC =
+      "0x6eb224fb001ed210e379b335e35efe88672a8ce935d981a6896b27ffdf52a3b2";
+    const LOG_TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+    const LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC =
+      "0x2fa9ca894982930190727e75500a97d8dc500233a5065e0f3126c48fbe0343c0";
 
-//     // getting block to read the timestamp
-//     const ethersProvider = getEthersProvider(getChainInfo(env, result.chainId as ChainId));
-//     const block = await ethersProvider.getBlock(result.receipt.blockNumber);
-//     const timestamp = Number(BigInt(block.timestamp)) * 1000;
-//     const tokenList = await getClient()
-//       .governor.getTokenList()
-//       .catch(() => null);
+    const wrappedTokenAddress = result.receipt?.logs.findLast(
+      l => l.topics[0] === LOG_TRANSFER_TOPIC,
+    )?.address;
 
-//     let fromAddress = result.receipt.from;
-//     let parsedFromAddress = parseAddress({
-//       chainId: result.chainId,
-//       value: fromAddress,
-//     });
+    // getting block to read the timestamp
+    const ethersProvider = getEthersProvider(getChainInfo(env, result.chainId as ChainId));
+    const block = await ethersProvider.getBlock(result.receipt.blockNumber);
+    const timestamp = Number(BigInt(block.timestamp)) * 1000;
+    const tokenList = await getClient()
+      .governor.getTokenList()
+      .catch(() => null);
 
-//     const txsData: Promise<RPCResponse>[] = result.receipt?.logs
-//       .filter(
-//         l =>
-//           l.address.toLowerCase() === contracts.coreBridge.get(env.network, chainName)?.toLowerCase() &&
-//           l.topics[0] === LOG_MESSAGE_PUBLISHED_TOPIC,
-//       )
-//       .map(async l => {
-//         const { args } = Implementation__factory.createInterface().parseLog(l);
-//         const { consistencyLevel, payload, sender, sequence } = args;
+    let fromAddress = result.receipt.from;
+    let parsedFromAddress = parseAddress({
+      chainId: result.chainId,
+      value: fromAddress,
+    });
 
-//         const emitterAddress = l.topics[1].slice(2);
-//         const emitterNattiveAddress = parseAddress({
-//           chainId: result.chainId,
-//           value: emitterAddress,
-//         });
+    const txsData: Promise<RPCResponse>[] = result.receipt?.logs
+      .filter(
+        l =>
+          l.address.toLowerCase() ===
+            contracts.coreBridge.get(env.network, chainName)?.toLowerCase() &&
+          l.topics[0] === LOG_MESSAGE_PUBLISHED_TOPIC,
+      )
+      .map(async l => {
+        const { args } = ethers_contracts.Implementation__factory.createInterface().parseLog(l);
+        const { consistencyLevel, payload, sender, sequence } = args;
 
-//         const VAA_ID = `${result.chainId}/${emitterAddress}/${sequence}`;
-//         let extraRawInfo = {};
+        const emitterAddress = l.topics[1].slice(2);
+        const emitterNattiveAddress = parseAddress({
+          chainId: result.chainId,
+          value: emitterAddress,
+        });
 
-//         // get already signed guardians
-//         try {
-//           const observations = await getClient().guardianNetwork.getObservation(
-//             {
-//               chainId: result.chainId,
-//               emmiter: emitterAddress,
-//               specific: { sequence: sequence },
-//             },
-//             { pageSize: 20, page: 0, sortOrder: Order.ASC },
-//           );
+        const VAA_ID = `${result.chainId}/${emitterAddress}/${sequence}`;
+        let extraRawInfo = {};
 
-//           if (!!observations?.length) {
-//             const guardianSetList = getGuardianSet(4);
+        // get already signed guardians
+        try {
+          const observations = await getClient().guardianNetwork.getObservation(
+            {
+              chainId: result.chainId,
+              emmiter: emitterAddress,
+              specific: { sequence: sequence },
+            },
+            { pageSize: 20, page: 0, sortOrder: Order.ASC },
+          );
 
-//             const signedGuardians = observations.map(({ guardianAddr, signature }) => ({
-//               signature: Buffer.from(signature).toString(),
-//               name: guardianSetList?.find(a => a.pubkey === guardianAddr)?.name,
-//             }));
+          if (!!observations?.length) {
+            const guardianSetList = getGuardianSet(4);
 
-//             extraRawInfo = { ...extraRawInfo, signatures: signedGuardians };
-//           }
-//         } catch (error) {
-//           console.log("no observations");
-//         }
+            const signedGuardians = observations.map(({ guardianAddr, signature }) => ({
+              signature: Buffer.from(signature).toString(),
+              name: guardianSetList?.find(a => a.pubkey === guardianAddr)?.name,
+            }));
 
-//         // block info
-//         let lastFinalizedBlock: number;
-//         try {
-//           lastFinalizedBlock = (await ethersProvider.getBlock("finalized")).number;
-//         } catch (error) {
-//           lastFinalizedBlock = await ethersProvider.getBlockNumber();
-//         }
+            extraRawInfo = { ...extraRawInfo, signatures: signedGuardians };
+          }
+        } catch (error) {
+          console.log("no observations");
+        }
 
-//         // checking if we know how to read the payloads:
-//         //   token bridge
-//         const TOKEN_BRIDGE_CONTRACT = contracts.tokenBridge.get(env.network, chainName);
-//         if (emitterNattiveAddress.toUpperCase() === TOKEN_BRIDGE_CONTRACT.toUpperCase()) {
-//           const buff = Buffer.from(payload.slice(2), "hex");
-//           const payloadType = buff.subarray(0, 1)?.[0];
-//           const amount = BigInt(`0x${buff.subarray(1, 33).toString("hex")}`).toString();
+        // block info
+        let lastFinalizedBlock: number;
+        try {
+          lastFinalizedBlock = (await ethersProvider.getBlock("finalized")).number;
+        } catch (error) {
+          lastFinalizedBlock = await ethersProvider.getBlockNumber();
+        }
 
-//           const tokenChain = buff.readUInt16BE(65);
-//           const tokenAddress = buff.subarray(33, 65)?.toString("hex");
+        // checking if we know how to read the payloads:
+        //   token bridge
+        const TOKEN_BRIDGE_CONTRACT = contracts.tokenBridge.get(env.network, chainName);
+        if (emitterNattiveAddress.toUpperCase() === TOKEN_BRIDGE_CONTRACT.toUpperCase()) {
+          const buff = Buffer.from(payload.slice(2), "hex");
+          const payloadType = buff.subarray(0, 1)?.[0];
+          const amount = BigInt(`0x${buff.subarray(1, 33).toString("hex")}`).toString();
 
-//           const toChain = buff.readUInt16BE(99);
-//           let toAddress = buff.subarray(67, 99)?.toString("hex");
+          const tokenChain = buff.readUInt16BE(65) as ChainId;
+          const tokenAddress = buff.subarray(33, 65)?.toString("hex");
 
-//           if (platformToChains('Cosmwasm').map(a => chainToChainId(a)).includes(toChain as any)) {
-//             const addressBytes = ethers.utils.arrayify("0x" + toAddress);
-//             /* TODO ??
-//              * backend should probably NOT use last20bytes and use all bytes here.
-//              * but for now, to maintain the same info with or without VAA, we use last 20 bytes */
-//             const addressLast20Bytes = new Uint8Array(addressBytes.buffer.slice(-20));
-//             const chainName = chainIdToChain(toChain as ChainId);
-//             const cosmAddr = humanAddress(chainName, addressLast20Bytes);
-//             toAddress = cosmAddr;
-//           } else {
-//             try {
-//               toAddress = tryUint8ArrayToNative(buff.subarray(67, 99), toChain as ChainId);
-//             } catch {
-//               //
-//             }
-//           }
+          const toChain = buff.readUInt16BE(99) as ChainId;
+          let toAddress = buff.subarray(67, 99)?.toString("hex");
 
-//           let fee =
-//             payloadType === 1
-//               ? BigInt(`0x${buff.subarray(101, 133).toString("hex")}`).toString()
-//               : null;
+          // gateway target
+          if (
+            platformToChains("Cosmwasm")
+              .map(a => chainToChainId(a))
+              .includes(toChain as any)
+          ) {
+            const cosmAddr = new UniversalAddress(toAddress)
+              ?.toNative(chainIdToChain(toChain))
+              ?.toString();
+            toAddress = cosmAddr;
+          }
 
-//           fromAddress =
-//             payloadType === 3 ? buff.subarray(101, 133)?.toString("hex") : result.receipt.from;
+          let fee =
+            payloadType === 1
+              ? BigInt(`0x${buff.subarray(101, 133).toString("hex")}`).toString()
+              : null;
 
-//           parsedFromAddress = parseAddress({
-//             chainId: result.chainId,
-//             value: fromAddress,
-//           });
+          fromAddress =
+            payloadType === 3 ? buff.subarray(101, 133)?.toString("hex") : result.receipt.from;
 
-//           const tokenTransferPayload =
-//             payloadType === 3 ? buff.subarray(133)?.toString("hex") : null;
+          parsedFromAddress = parseAddress({
+            chainId: result.chainId,
+            value: fromAddress,
+          });
 
-//           let appIds = ["PORTAL_TOKEN_BRIDGE"];
-//           if (tokenTransferPayload) {
-//             if (isConnect(env.network, result.chainId, fromAddress)) {
-//               appIds = ["PORTAL_TOKEN_BRIDGE", "CONNECT"];
-//               const parsed = parseConnectPayload(buff.subarray(133));
+          const tokenTransferPayload =
+            payloadType === 3 ? buff.subarray(133)?.toString("hex") : null;
 
-//               if (toChain === chainToChainId("Sui")) {
-//                 toAddress = `0x${parsed.recipientWallet}`;
-//               } else {
-//                 toAddress = toNative(chainIdToChain(toChain as ChainId), parsed.recipientWallet)?.toString();
-//               }
-//               fee = parsed.targetRelayerFee.toString();
-//             }
-//           }
+          let appIds = ["PORTAL_TOKEN_BRIDGE"];
+          if (tokenTransferPayload) {
+            if (isConnect(env.network, result.chainId, fromAddress)) {
+              appIds = ["PORTAL_TOKEN_BRIDGE", "CONNECT"];
+              const parsed = parseConnectPayload(buff.subarray(133));
 
-//           // other values
-//           const parsedTokenAddress = parseAddress({
-//             chainId: tokenChain as ChainId,
-//             value: tokenAddress,
-//             anyChain: true,
-//           });
+              if (toChain === chainToChainId("Sui")) {
+                toAddress = `0x${parsed.recipientWallet}`;
+              } else {
+                toAddress = toNative(
+                  chainIdToChain(toChain as ChainId),
+                  parsed.recipientWallet,
+                )?.toString();
+              }
+              fee = parsed.targetRelayerFee.toString();
+            }
+          }
 
-//           const { name, symbol, tokenDecimals } = await getTokenInformation(
-//             tokenChain,
-//             env,
-//             parsedTokenAddress,
-//             wrappedTokenAddress,
-//             result.chainId,
-//           );
-//           const decimals = tokenDecimals ? Math.min(8, tokenDecimals) : 8;
+          // other values
+          const parsedTokenAddress = parseAddress({
+            chainId: tokenChain,
+            value: tokenAddress,
+            anyChain: true,
+          });
 
-//           const tokenAmount =
-//             amount && decimals ? ethers.formatUnits(amount, decimals) : null;
+          const { name, symbol, tokenDecimals } = await getTokenInformation(
+            tokenChain,
+            env,
+            parsedTokenAddress,
+            wrappedTokenAddress,
+            result.chainId,
+          );
+          const decimals = tokenDecimals ? Math.min(8, tokenDecimals) : 8;
 
-//           const usdAmount =
-//             "" +
-//               tokenList?.find((t: WormholeTokenList) =>
-//                 t.originAddress.toLowerCase().includes(tokenAddress.toLowerCase()),
-//               )?.price *
-//                 Number(tokenAmount) || null;
+          const tokenAmount = amount && decimals ? ethersFormatUnits(amount, decimals) : null;
 
-//           return {
-//             amount:
-//               amount && decimals
-//                 ? ethers.formatUnits(amount, decimals)
-//                 : amount
-//                 ? amount
-//                 : null,
-//             appIds,
-//             blockNumber: result.receipt.blockNumber,
-//             chain: result.chainId,
-//             consistencyLevel,
-//             emitterAddress,
-//             emitterNattiveAddress,
-//             extraRawInfo,
-//             fee: fee && decimals ? ethers.formatUnits(fee, decimals) : fee ? fee : null,
-//             fromAddress: parsedFromAddress,
-//             id: VAA_ID,
-//             lastFinalizedBlock,
-//             name,
-//             payloadType,
-//             sender,
-//             sequence: sequence.toString(),
-//             STATUS: "IN_PROGRESS",
-//             symbol,
-//             timestamp,
-//             toAddress,
-//             toChain,
-//             tokenAddress: parsedTokenAddress,
-//             tokenAmount,
-//             tokenChain,
-//             txHash: searchValue,
-//             usdAmount,
-//           };
-//         }
-//         // CCTP USDC-BRIDGE
-//         else if (
-//           emitterNattiveAddress.toUpperCase() ===
-//           getCctpEmitterAddress(env, result.chainId)?.toUpperCase()
-//         ) {
-//           const parseCCTPRelayerPayload = (payloadArray: Buffer): CircleRelayerPayload => {
-//             // start vaa payload
-//             let offset = 0;
-//             const version = payloadArray.readUint8(offset);
-//             offset += 1; // 1
-//             const tokenAddress = parseAddress({
-//               chainId: result.chainId,
-//               value: payloadArray.subarray(offset, offset + 32)?.toString("hex"),
-//             });
-//             offset += 32; // 33
-//             const amount = ethers.BigNumber.from(payloadArray.subarray(offset, offset + 32));
-//             offset += 32; // 65
-//             const fromDomain = payloadArray.readUInt32BE(offset);
-//             offset += 4; // 69
-//             const toDomain = payloadArray.readUInt32BE(offset);
-//             offset += 4; // 73
+          const usdAmount =
+            "" +
+              tokenList?.find((t: WormholeTokenList) =>
+                t.originAddress.toLowerCase().includes(tokenAddress.toLowerCase()),
+              )?.price *
+                Number(tokenAmount) || null;
 
-//             function readBigUint64BE(arr: any, offset = 0) {
-//               let result = BigInt(0);
-//               for (let i = 0; i < 8; i++) {
-//                 result = (result << BigInt(8)) + BigInt(arr[offset + i]);
-//               }
-//               return result;
-//             }
-//             const nonce = readBigUint64BE(payloadArray, offset).toString();
-//             offset += 8; // 81
-//             const fromAddressBytes = payloadArray.subarray(offset, offset + 32);
-//             offset += 32; // 113
-//             const mintRecipientBuff = payloadArray.subarray(offset, offset + 32);
-//             offset += 32; // 145
-//             offset += 2; // 147 (2 bytes for payload length)
-//             const payload = payloadArray.subarray(offset);
-//             // end vaa payload
+          return {
+            amount:
+              amount && decimals ? ethersFormatUnits(amount, decimals) : amount ? amount : null,
+            appIds,
+            blockNumber: result.receipt.blockNumber,
+            chain: result.chainId,
+            consistencyLevel,
+            emitterAddress,
+            emitterNattiveAddress,
+            extraRawInfo,
+            fee: fee && decimals ? ethersFormatUnits(fee, decimals) : fee ? fee : null,
+            fromAddress: parsedFromAddress,
+            id: VAA_ID,
+            lastFinalizedBlock,
+            name,
+            payloadType,
+            sender,
+            sequence: sequence.toString(),
+            STATUS: "IN_PROGRESS" as IStatus,
+            symbol,
+            timestamp,
+            toAddress,
+            toChain,
+            tokenAddress: parsedTokenAddress,
+            tokenAmount,
+            tokenChain,
+            txHash: searchValue,
+            usdAmount,
+          };
+        }
+        // CCTP USDC-BRIDGE
+        // else if (
+        //   emitterNattiveAddress.toUpperCase() ===
+        //   getCctpEmitterAddress(env, result.chainId)?.toUpperCase()
+        // ) {
+        //   const parseCCTPRelayerPayload = (payloadArray: Buffer): CircleRelayerPayload => {
+        //     // start vaa payload
+        //     let offset = 0;
+        //     const version = payloadArray.readUint8(offset);
+        //     offset += 1; // 1
+        //     const tokenAddress = parseAddress({
+        //       chainId: result.chainId,
+        //       value: payloadArray.subarray(offset, offset + 32)?.toString("hex"),
+        //     });
+        //     offset += 32; // 33
+        //     const amount = ethers.BigNumber.from(payloadArray.subarray(offset, offset + 32));
+        //     offset += 32; // 65
+        //     const fromDomain = payloadArray.readUInt32BE(offset);
+        //     offset += 4; // 69
+        //     const toDomain = payloadArray.readUInt32BE(offset);
+        //     offset += 4; // 73
 
-//             // different cctp payloads here:
-//             // STABLE
-//             let appIds = ["CCTP_WORMHOLE_INTEGRATION"];
-//             let payloadId = null;
-//             let feeAmount = null;
-//             let toNativeAmount = null;
-//             let toAddress = null;
-//             if (STABLE_ADDRESSES[env.network].includes(fromAddressBytes.toString("hex"))) {
-//               appIds = ["CCTP_WORMHOLE_INTEGRATION", "STABLE"];
+        //     function readBigUint64BE(arr: any, offset = 0) {
+        //       let result = BigInt(0);
+        //       for (let i = 0; i < 8; i++) {
+        //         result = (result << BigInt(8)) + BigInt(arr[offset + i]);
+        //       }
+        //       return result;
+        //     }
+        //     const nonce = readBigUint64BE(payloadArray, offset).toString();
+        //     offset += 8; // 81
+        //     const fromAddressBytes = payloadArray.subarray(offset, offset + 32);
+        //     offset += 32; // 113
+        //     const mintRecipientBuff = payloadArray.subarray(offset, offset + 32);
+        //     offset += 32; // 145
+        //     offset += 2; // 147 (2 bytes for payload length)
+        //     const payload = payloadArray.subarray(offset);
+        //     // end vaa payload
 
-//               // start payload of vaa payload reading
-//               offset = 0;
-//               payloadId = payload.readUint8(offset);
-//               offset += 1; // 148
-//               feeAmount = ethers.BigNumber.from(payload.subarray(offset, offset + 32));
-//               offset += 32; // 180
-//               toNativeAmount = ethers.BigNumber.from(
-//                 payload.subarray(offset, offset + 32),
-//               ).toString();
-//               offset += 32; // 212
+        //     // different cctp payloads here:
+        //     // STABLE
+        //     let appIds = ["CCTP_WORMHOLE_INTEGRATION"];
+        //     let payloadId = null;
+        //     let feeAmount = null;
+        //     let toNativeAmount = null;
+        //     let toAddress = null;
+        //     if (STABLE_ADDRESSES[env.network].includes(fromAddressBytes.toString("hex"))) {
+        //       appIds = ["CCTP_WORMHOLE_INTEGRATION", "STABLE"];
 
-//               const recipientWalletBytes = Uint8Array.from(payload.subarray(offset, offset + 32));
-//               toAddress = uint8ArrayToHex(recipientWalletBytes);
-//               // end payload
-//             }
+        //       // start payload of vaa payload reading
+        //       offset = 0;
+        //       payloadId = payload.readUint8(offset);
+        //       offset += 1; // 148
+        //       feeAmount = ethers.BigNumber.from(payload.subarray(offset, offset + 32));
+        //       offset += 32; // 180
+        //       toNativeAmount = ethers.BigNumber.from(
+        //         payload.subarray(offset, offset + 32),
+        //       ).toString();
+        //       offset += 32; // 212
 
-//             const circleInfo = {
-//               amount,
-//               appIds,
-//               feeAmount,
-//               fromAddressBytes,
-//               fromDomain,
-//               mintRecipientBuff,
-//               nonce,
-//               payload,
-//               payloadId,
-//               toAddress,
-//               toDomain,
-//               tokenAddress,
-//               toNativeAmount,
-//               version,
-//             };
-//             return circleInfo;
-//           };
+        //       const recipientWalletBytes = Uint8Array.from(payload.subarray(offset, offset + 32));
+        //       toAddress = uint8ArrayToHex(recipientWalletBytes);
+        //       // end payload
+        //     }
 
-//           const cctpResult = parseCCTPRelayerPayload(Buffer.from(payload.slice(2), "hex"));
-//           const amount = "" + 0.000001 * +cctpResult.amount; // 6 decimals for USDC
-//           const fee = "" + 0.000001 * +cctpResult.feeAmount; // 6 decimals for USDC
-//           const toNativeAmount = "" + 0.000001 * +cctpResult.toNativeAmount; // 6 decimals for USDC
+        //     const circleInfo = {
+        //       amount,
+        //       appIds,
+        //       feeAmount,
+        //       fromAddressBytes,
+        //       fromDomain,
+        //       mintRecipientBuff,
+        //       nonce,
+        //       payload,
+        //       payloadId,
+        //       toAddress,
+        //       toDomain,
+        //       tokenAddress,
+        //       toNativeAmount,
+        //       version,
+        //     };
+        //     return circleInfo;
+        //   };
 
-//           const usdAmount =
-//             "" +
-//               tokenList?.find((t: WormholeTokenList) =>
-//                 t.originAddress
-//                   .toLowerCase()
-//                   .includes(cctpResult.tokenAddress.slice(2).toLowerCase()),
-//               )?.price *
-//                 Number(amount) || amount;
+        //   const cctpResult = parseCCTPRelayerPayload(Buffer.from(payload.slice(2), "hex"));
+        //   const amount = "" + 0.000001 * +cctpResult.amount; // 6 decimals for USDC
+        //   const fee = "" + 0.000001 * +cctpResult.feeAmount; // 6 decimals for USDC
+        //   const toNativeAmount = "" + 0.000001 * +cctpResult.toNativeAmount; // 6 decimals for USDC
 
-//           return {
-//             amount,
-//             appIds: cctpResult.appIds,
-//             chain: result.chainId,
-//             consistencyLevel,
-//             emitterAddress,
-//             emitterNattiveAddress,
-//             extraRawInfo,
-//             fee: `${+fee + +toNativeAmount}`,
-//             fromAddress,
-//             id: VAA_ID,
-//             parsedFromAddress,
-//             sequence: sequence.toString(),
-//             STATUS: "IN_PROGRESS",
-//             symbol: "USDC",
-//             timestamp,
-//             toAddress: cctpResult.toAddress,
-//             toChain: getCctpDomain(cctpResult.toDomain),
-//             tokenAddress: cctpResult.tokenAddress,
-//             tokenAmount: amount,
-//             tokenChain: result.chainId,
-//             toNativeAmount,
-//             txHash: searchValue,
-//             usdAmount,
-//             wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(cctpResult.toDomain)),
-//           };
-//         }
-//         // GENERIC-RELAYER
-//         else if (
-//           emitterNattiveAddress.toUpperCase() ===
-//           getRelayersEmitterAddress(env, result.chainId)?.toUpperCase()
-//         ) {
-//           const parseGenericRelayerDelivery = async (
-//             payloadArray: Buffer,
-//           ): Promise<RPCResponse> => {
-//             const deliveryInstructions = parseWormholeRelayerSend(payloadArray);
+        //   const usdAmount =
+        //     "" +
+        //       tokenList?.find((t: WormholeTokenList) =>
+        //         t.originAddress
+        //           .toLowerCase()
+        //           .includes(cctpResult.tokenAddress.slice(2).toLowerCase()),
+        //       )?.price *
+        //         Number(amount) || amount;
 
-//             extraRawInfo = {
-//               ...extraRawInfo,
-//               targetChainId: deliveryInstructions.targetChainId,
-//               targetAddress: deliveryInstructions.targetAddress.toString("hex"),
-//               payload: deliveryInstructions.payload.toString("hex"),
-//               requestedReceiverValue: deliveryInstructions.requestedReceiverValue.toString(),
-//               extraReceiverValue: deliveryInstructions.extraReceiverValue.toString(),
-//               encodedExecutionInfo: deliveryInstructions.encodedExecutionInfo.toString("hex"),
-//               refundChainId: deliveryInstructions.refundChainId,
-//               refundAddress: deliveryInstructions.refundAddress.toString("hex"),
-//               refundDeliveryProvider: deliveryInstructions.refundDeliveryProvider.toString("hex"),
-//               sourceDeliveryProvider: deliveryInstructions.sourceDeliveryProvider.toString("hex"),
-//               senderAddress: deliveryInstructions.senderAddress.toString("hex"),
-//               // deliveryInstructions.vaaKeys was deleted from wormholes sdk
-//               //vaaKeys: serializeVaaKeys(deliveryInstructions.vaaKeys),
-//             };
+        //   return {
+        //     amount,
+        //     appIds: cctpResult.appIds,
+        //     chain: result.chainId,
+        //     consistencyLevel,
+        //     emitterAddress,
+        //     emitterNattiveAddress,
+        //     extraRawInfo,
+        //     fee: `${+fee + +toNativeAmount}`,
+        //     fromAddress,
+        //     id: VAA_ID,
+        //     parsedFromAddress,
+        //     sequence: sequence.toString(),
+        //     STATUS: "IN_PROGRESS",
+        //     symbol: "USDC",
+        //     timestamp,
+        //     toAddress: cctpResult.toAddress,
+        //     toChain: getCctpDomain(cctpResult.toDomain),
+        //     tokenAddress: cctpResult.tokenAddress,
+        //     tokenAmount: amount,
+        //     tokenChain: result.chainId,
+        //     toNativeAmount,
+        //     txHash: searchValue,
+        //     usdAmount,
+        //     wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(cctpResult.toDomain)),
+        //   };
+        // }
+        // // GENERIC-RELAYER
+        // else if (
+        //   emitterNattiveAddress.toUpperCase() ===
+        //   getRelayersEmitterAddress(env, result.chainId)?.toUpperCase()
+        // ) {
+        //   const parseGenericRelayerDelivery = async (
+        //     payloadArray: Buffer,
+        //   ): Promise<RPCResponse> => {
+        //     const deliveryInstructions = parseWormholeRelayerSend(payloadArray);
 
-//             const deliveryResult = {
-//               appIds: [GR_APP_ID],
-//               blockNumber: result.receipt.blockNumber,
-//               chain: result.chainId,
-//               consistencyLevel,
-//               emitterAddress,
-//               emitterNattiveAddress,
-//               extraRawInfo,
-//               fromAddress: parsedFromAddress,
-//               id: VAA_ID,
-//               lastFinalizedBlock,
-//               payloadType: RelayerPayloadId.Delivery,
-//               sequence: sequence.toString(),
-//               STATUS: "IN_PROGRESS" as IStatus,
-//               timestamp,
-//               toAddress: deliveryInstructions.targetAddress.toString("hex"),
-//               toChain: deliveryInstructions.targetChainId,
-//               tokenAddress: wrappedTokenAddress,
-//               tokenChain: result.chainId,
-//               txHash: searchValue,
-//             };
+        //     extraRawInfo = {
+        //       ...extraRawInfo,
+        //       targetChainId: deliveryInstructions.targetChainId,
+        //       targetAddress: deliveryInstructions.targetAddress.toString("hex"),
+        //       payload: deliveryInstructions.payload.toString("hex"),
+        //       requestedReceiverValue: deliveryInstructions.requestedReceiverValue.toString(),
+        //       extraReceiverValue: deliveryInstructions.extraReceiverValue.toString(),
+        //       encodedExecutionInfo: deliveryInstructions.encodedExecutionInfo.toString("hex"),
+        //       refundChainId: deliveryInstructions.refundChainId,
+        //       refundAddress: deliveryInstructions.refundAddress.toString("hex"),
+        //       refundDeliveryProvider: deliveryInstructions.refundDeliveryProvider.toString("hex"),
+        //       sourceDeliveryProvider: deliveryInstructions.sourceDeliveryProvider.toString("hex"),
+        //       senderAddress: deliveryInstructions.senderAddress.toString("hex"),
+        //       // deliveryInstructions.vaaKeys was deleted from wormholes sdk
+        //       //vaaKeys: serializeVaaKeys(deliveryInstructions.vaaKeys),
+        //     };
 
-//             return deliveryResult;
-//           };
+        //     const deliveryResult = {
+        //       appIds: [GR_APP_ID],
+        //       blockNumber: result.receipt.blockNumber,
+        //       chain: result.chainId,
+        //       consistencyLevel,
+        //       emitterAddress,
+        //       emitterNattiveAddress,
+        //       extraRawInfo,
+        //       fromAddress: parsedFromAddress,
+        //       id: VAA_ID,
+        //       lastFinalizedBlock,
+        //       payloadType: RelayerPayloadId.Delivery,
+        //       sequence: sequence.toString(),
+        //       STATUS: "IN_PROGRESS" as IStatus,
+        //       timestamp,
+        //       toAddress: deliveryInstructions.targetAddress.toString("hex"),
+        //       toChain: deliveryInstructions.targetChainId,
+        //       tokenAddress: wrappedTokenAddress,
+        //       tokenChain: result.chainId,
+        //       txHash: searchValue,
+        //     };
 
-//           const parseGenericRelayerRedelivery = async (payloadArray: Buffer): Promise<any> => {
-//             const redeliveryInstructions = parseWormholeRelayerResend(payloadArray);
+        //     return deliveryResult;
+        //   };
 
-//             extraRawInfo = {
-//               ...extraRawInfo,
-//               payloadType: RelayerPayloadId.Redelivery,
-//               targetChainId: redeliveryInstructions.targetChainId,
-//               newRequestedReceiverValue:
-//                 redeliveryInstructions.newRequestedReceiverValue.toString(),
-//               newEncodedExecutionInfo:
-//                 redeliveryInstructions.newEncodedExecutionInfo.toString("hex"),
-//               newSourceDeliveryProvider:
-//                 redeliveryInstructions.newSourceDeliveryProvider.toString("hex"),
-//               newSenderAddress: redeliveryInstructions.newSenderAddress.toString("hex"),
-//             };
+        //   const parseGenericRelayerRedelivery = async (payloadArray: Buffer): Promise<any> => {
+        //     const redeliveryInstructions = parseWormholeRelayerResend(payloadArray);
 
-//             const redeliveryResult = {
-//               appIds: [GR_APP_ID],
-//               blockNumber: result.receipt.blockNumber,
-//               chain: result.chainId,
-//               consistencyLevel,
-//               emitterAddress,
-//               emitterNattiveAddress,
-//               extraRawInfo,
-//               fromAddress: parsedFromAddress,
-//               id: VAA_ID,
-//               lastFinalizedBlock,
-//               payloadType: RelayerPayloadId.Redelivery,
-//               sequence: sequence.toString(),
-//               STATUS: "IN_PROGRESS" as IStatus,
-//               timestamp,
-//               toChain: redeliveryInstructions.targetChainId,
-//               tokenAddress: wrappedTokenAddress,
-//               tokenChain: result.chainId,
-//               txHash: searchValue,
-//             };
-//             return redeliveryResult;
-//           };
+        //     extraRawInfo = {
+        //       ...extraRawInfo,
+        //       payloadType: RelayerPayloadId.Redelivery,
+        //       targetChainId: redeliveryInstructions.targetChainId,
+        //       newRequestedReceiverValue:
+        //         redeliveryInstructions.newRequestedReceiverValue.toString(),
+        //       newEncodedExecutionInfo:
+        //         redeliveryInstructions.newEncodedExecutionInfo.toString("hex"),
+        //       newSourceDeliveryProvider:
+        //         redeliveryInstructions.newSourceDeliveryProvider.toString("hex"),
+        //       newSenderAddress: redeliveryInstructions.newSenderAddress.toString("hex"),
+        //     };
 
-//           const relayerVaa = Buffer.from(payload.slice(2), "hex");
-//           const payloadType = parseWormholeRelayerPayloadType(relayerVaa);
+        //     const redeliveryResult = {
+        //       appIds: [GR_APP_ID],
+        //       blockNumber: result.receipt.blockNumber,
+        //       chain: result.chainId,
+        //       consistencyLevel,
+        //       emitterAddress,
+        //       emitterNattiveAddress,
+        //       extraRawInfo,
+        //       fromAddress: parsedFromAddress,
+        //       id: VAA_ID,
+        //       lastFinalizedBlock,
+        //       payloadType: RelayerPayloadId.Redelivery,
+        //       sequence: sequence.toString(),
+        //       STATUS: "IN_PROGRESS" as IStatus,
+        //       timestamp,
+        //       toChain: redeliveryInstructions.targetChainId,
+        //       tokenAddress: wrappedTokenAddress,
+        //       tokenChain: result.chainId,
+        //       txHash: searchValue,
+        //     };
+        //     return redeliveryResult;
+        //   };
 
-//           if (payloadType === RelayerPayloadId.Delivery) {
-//             return parseGenericRelayerDelivery(relayerVaa);
-//           }
-//           if (payloadType === RelayerPayloadId.Redelivery) {
-//             return parseGenericRelayerRedelivery(relayerVaa);
-//           }
-//           throw new Error("Expected GR Delivery payload type");
-//         }
-//         // default, no token-bridge nor cctp ones
-//         // (can add other wormhole payload readers here)
-//         else {
-//           return null;
-//         }
-//       });
+        //   const relayerVaa = Buffer.from(payload.slice(2), "hex");
+        //   const payloadType = parseWormholeRelayerPayloadType(relayerVaa);
 
-//     if (!!txsData.length) return txsData;
+        //   if (payloadType === RelayerPayloadId.Delivery) {
+        //     return parseGenericRelayerDelivery(relayerVaa);
+        //   }
+        //   if (payloadType === RelayerPayloadId.Redelivery) {
+        //     return parseGenericRelayerRedelivery(relayerVaa);
+        //   }
+        //   throw new Error("Expected GR Delivery payload type");
+        // }
+        // default, no token-bridge nor cctp ones
+        // (can add other wormhole payload readers here)
+        else {
+          return null;
+        }
+      });
 
-//     // Check if receipt is from non-wormhole CCTP
-//     const manualCctpData: Promise<RPCResponse>[] = result.receipt?.logs
-//       .filter(
-//         l => l.topics[0]?.toLowerCase() === LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC.toLowerCase(),
-//       )
-//       .map(async l => {
-//         const { args } = TokenMessenger__factory.createInterface().parseLog(l);
+    if (!!txsData.length) return txsData;
 
-//         const emitterAddress = l.address;
-//         const emitterNattiveAddress = parseAddress({
-//           chainId: result.chainId,
-//           value: emitterAddress,
-//         });
+    // // Check if receipt is from non-wormhole CCTP
+    // const manualCctpData: Promise<RPCResponse>[] = result.receipt?.logs
+    //   .filter(
+    //     l => l.topics[0]?.toLowerCase() === LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC.toLowerCase(),
+    //   )
+    //   .map(async l => {
+    //     const { args } = TokenMessenger__factory.createInterface().parseLog(l);
 
-//         const { amount, burnToken, destinationDomain, mintRecipient } = args;
+    //     const emitterAddress = l.address;
+    //     const emitterNattiveAddress = parseAddress({
+    //       chainId: result.chainId,
+    //       value: emitterAddress,
+    //     });
 
-//         const toChain = getCctpDomain(destinationDomain);
-//         const toAddress =
-//           toChain === 1 ? hexToBase58(mintRecipient) : "0x" + mintRecipient.substring(26);
+    //     const { amount, burnToken, destinationDomain, mintRecipient } = args;
 
-//         return {
-//           amount: "" + formatUnits(amount.toString(), 6),
-//           appIds: [CCTP_MANUAL_APP_ID],
-//           chain: result.chainId,
-//           emitterAddress,
-//           emitterNattiveAddress,
-//           fee: "0",
-//           fromAddress,
-//           parsedFromAddress,
-//           payloadAmount: amount.toString(),
-//           symbol: "USDC",
-//           timestamp,
-//           toAddress,
-//           toChain,
-//           tokenAddress: burnToken,
-//           tokenAmount: "" + formatUnits(amount.toString(), 6),
-//           tokenChain: result.chainId,
-//           txHash: searchValue,
-//           usdAmount: "" + formatUnits(amount.toString(), 6),
-//           wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(destinationDomain)),
-//           STATUS: "EXTERNAL_TX" as IStatus,
+    //     const toChain = getCctpDomain(destinationDomain);
+    //     const toAddress =
+    //       toChain === 1 ? hexToBase58(mintRecipient) : "0x" + mintRecipient.substring(26);
 
-//           // no data properties
-//           id: null,
-//           payloadType: null,
-//           sequence: null,
-//           toNativeAmount: null,
-//           blockNumber: null,
-//           lastFinalizedBlock: null,
-//         };
-//       });
+    //     return {
+    //       amount: "" + formatUnits(amount.toString(), 6),
+    //       appIds: [CCTP_MANUAL_APP_ID],
+    //       chain: result.chainId,
+    //       emitterAddress,
+    //       emitterNattiveAddress,
+    //       fee: "0",
+    //       fromAddress,
+    //       parsedFromAddress,
+    //       payloadAmount: amount.toString(),
+    //       symbol: "USDC",
+    //       timestamp,
+    //       toAddress,
+    //       toChain,
+    //       tokenAddress: burnToken,
+    //       tokenAmount: "" + formatUnits(amount.toString(), 6),
+    //       tokenChain: result.chainId,
+    //       txHash: searchValue,
+    //       usdAmount: "" + formatUnits(amount.toString(), 6),
+    //       wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(destinationDomain)),
+    //       STATUS: "EXTERNAL_TX" as IStatus,
 
-//     return !!manualCctpData.length ? manualCctpData : null;
-//   } else {
-//     return null;
-//   }
-// }
+    //       // no data properties
+    //       id: null,
+    //       payloadType: null,
+    //       sequence: null,
+    //       toNativeAmount: null,
+    //       blockNumber: null,
+    //       lastFinalizedBlock: null,
+    //     };
+    //   });
+
+    // return !!manualCctpData.length ? manualCctpData : null;
+  } else {
+    return null;
+  }
+}
 
 // CCTP UTILS -----
 interface CircleRelayerPayload {

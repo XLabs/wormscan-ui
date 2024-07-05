@@ -153,12 +153,12 @@ const WORMHOLE_CHAINS: any = {
     explorer: {
       Testnet: "",
       Devnet: "",
-      Mainnet: "",
+      Mainnet: "https://bigdipper.live/wormhole",
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return "";
+      if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
       if (base === "token") return "";
-      return "";
+      return this.explorer?.[network] + "/transactions/" + value;
     },
   },
   [chainToChainId("Osmosis")]: {
