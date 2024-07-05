@@ -172,6 +172,14 @@
         width: inherit;
       }
 
+      & .select__control {
+        justify-content: center;
+
+        @include desktop {
+          justify-content: space-between;
+        }
+      }
+
       &-download {
         max-width: 100%;
 
