@@ -96,9 +96,17 @@
       background-color: var(--color-gray-900);
       bottom: 0;
       height: 1px;
-      left: -120px;
+      left: -16px;
       position: absolute;
-      width: calc(100% + 240px);
+      width: 100vw;
+
+      @include tablet {
+        left: -60px;
+      }
+
+      @include desktop {
+        left: -120px;
+      }
     }
   }
 }
