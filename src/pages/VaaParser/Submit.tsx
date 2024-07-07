@@ -1,21 +1,18 @@
 import { useEffect, useState } from "react";
 import {
-  ChainId,
-  VAA,
   chainToChainId,
-  deserialize,
   deserializeLayout,
-  deserializePayload,
   layoutItems,
-  encoding,
-  Layout,
   CustomConversion,
   LayoutItem,
   range,
+  UniversalAddress,
+  chains,
 } from "@wormhole-foundation/sdk";
-import { stringifyWithBigInt } from "src/utils/object";
-import "./submitStyles.scss";
+import { deepCloneWithBigInt } from "src/utils/object";
 import { Cross2Icon } from "@radix-ui/react-icons";
+import { JsonText } from "src/components/atoms";
+import "./submitStyles.scss";
 
 type Layouts =
   | "payloadId"
@@ -23,7 +20,8 @@ type Layouts =
   | "chain"
   | "amount"
   | "fixedLengthString"
-  | "variableLengthString";
+  | "variableLengthString"
+  | "booleanItem";
 
 export const Submit = ({ resultRaw }: any) => {
   const [userLayout, setUserLayout] = useState([]);
@@ -33,6 +31,7 @@ export const Submit = ({ resultRaw }: any) => {
   const [selectionValue, setSelectionValue] = useState("");
 
   const [result, setResult] = useState({});
+  const [resultLength, setResultLength] = useState(0);
 
   const layouts: { [key in Layouts]: any } = {
     payloadId: (id: string) => layoutItems.payloadIdItem(+id),
@@ -41,25 +40,66 @@ export const Submit = ({ resultRaw }: any) => {
     amount: () => layoutItems.amountItem,
     fixedLengthString: (length: string) => fixedLengthStringItem(+length),
     variableLengthString: () => variableLengthStringItem,
+    booleanItem: () => booleanItem,
   };
+
+  const resultRawHex = resultRaw ? Buffer.from(resultRaw).toString("hex") : "";
+  const resultParsed = resultRawHex.substring(0, resultLength);
+  const resultUnparsed = resultRawHex.substring(resultLength);
 
   useEffect(() => {
     try {
-      const prueba = deserializeLayout(userLayout, resultRaw);
-      console.log({ prueba });
-      setResult(prueba);
+      const result = deserializeLayout(userLayout, resultRaw);
+      console.log(processResult(result));
+
+      setResultLength(resultRawHex.length);
+      setResult(processResult(result));
     } catch (e) {
-      setResult({});
-      console.log({ e });
+      const err = e as unknown as Error;
+
+      let partialParsingWorked = false;
+      try {
+        if (err?.message?.includes("longer than expected: ")) {
+          const errStr = err.message.split("longer than expected: ");
+          if (errStr?.[1]) {
+            const expectedAndCurrent = errStr[1];
+            const [expected, current] = expectedAndCurrent.split(" > ");
+
+            console.log({ expected, current });
+
+            const resultRawPartial = resultRaw.slice(0, current);
+
+            const resultPartial = deserializeLayout(userLayout, resultRawPartial);
+            console.log(processResult(resultPartial));
+
+            Object.entries(resultPartial);
+
+            setResultLength(+current * 2);
+            setResult(processResult(resultPartial));
+            partialParsingWorked = true;
+          }
+        }
+      } catch (e2) {
+        setResult({});
+        console.log("error parsing partial payload");
+        console.log({ err: e2 });
+      }
+
+      if (!partialParsingWorked) {
+        setResult({});
+        console.log("error parsing full payload");
+        console.log({ err: e });
+      }
     }
-  }, [resultRaw, userLayout]);
+  }, [resultRaw, resultRawHex.length, userLayout]);
 
   return (
     <div className="submit">
       PAYLOAD:
       <br />
       <br />
-      {resultRaw}
+      <span style={{ color: "green" }}>{resultParsed}</span>
+      <span style={{ color: "grey" }}>{resultUnparsed}</span>
       <br />
       <br />
       Create your layout
@@ -67,7 +107,6 @@ export const Submit = ({ resultRaw }: any) => {
       <br />
       <div>
         {userLayout.map((item, i) => {
-          console.log({ item });
           return (
             <div key={i} className="submit-selectedLayouts">
               {JSON.stringify(item)}
@@ -126,7 +165,7 @@ export const Submit = ({ resultRaw }: any) => {
 
         <br />
         <br />
-        {stringifyWithBigInt(result)}
+        <JsonText data={deepCloneWithBigInt(result)} />
       </div>
     </div>
   );
@@ -213,3 +252,36 @@ export const variableLengthStringItem = {
   lengthSize: 1,
   custom: stringConversion(),
 } as const satisfies LayoutItem;
+
+export const booleanItem = {
+  binary: "uint",
+  size: 1,
+  custom: {
+    to: (val: bigint) => Boolean(val),
+    from: (val: boolean) => (val ? 1n : 0n),
+  },
+} as const satisfies LayoutItem;
+
+// parse UniversalAddress to address, chainNames to chainId, etc.
+const processResult = (result: object) => {
+  const entries = Object.entries(result);
+
+  const entriesProcessed = entries.map(([key, value]) => {
+    if (value instanceof UniversalAddress) {
+      return [key, value.toString()];
+    }
+
+    if (chains.includes(value)) {
+      return [key, chainToChainId(value)];
+    }
+
+    return [key, value];
+  });
+
+  const toObjectAgain: any = {};
+  entriesProcessed.forEach(([key, value]) => {
+    toObjectAgain[key] = value;
+  });
+
+  return toObjectAgain;
+};
