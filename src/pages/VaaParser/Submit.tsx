@@ -174,7 +174,6 @@ export const Submit = ({ resultRaw }: any) => {
   };
 
   const resultRawHex = resultRaw ? encoding.hex.encode(resultRaw) : "";
-  // const resultRawHex = resultRaw ? Buffer.from(resultRaw).toString("hex") : "";
   const resultParsed = resultRawHex.substring(0, resultLength);
   const resultUnparsed = resultRawHex.substring(resultLength);
 
