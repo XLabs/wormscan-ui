@@ -128,6 +128,8 @@ const VaaParser = () => {
             a.innerHTML?.includes("recipientChain") ||
             a.innerHTML?.includes("refundChainId") ||
             a.innerHTML?.includes("targetChainId") ||
+            a.innerHTML?.includes("sourceChainId") ||
+            a.innerHTML?.includes("destChainId") ||
             a.innerHTML?.includes("toChain") ||
             a.innerHTML?.includes("tokenChain") ||
             a.innerHTML?.includes("feeChain")

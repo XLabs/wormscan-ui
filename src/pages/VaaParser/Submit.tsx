@@ -8,9 +8,11 @@ import {
   range,
   UniversalAddress,
   chains,
+  bitsetItem as layoutBitsetItem,
+  bitsetItem,
 } from "@wormhole-foundation/sdk";
 import { deepCloneWithBigInt } from "src/utils/object";
-import { Cross2Icon } from "@radix-ui/react-icons";
+import { CheckCircledIcon, Cross2Icon, PlusIcon } from "@radix-ui/react-icons";
 import { JsonText } from "src/components/atoms";
 import "./submitStyles.scss";
 
@@ -21,7 +23,12 @@ type Layouts =
   | "amount"
   | "fixedLengthString"
   | "variableLengthString"
-  | "booleanItem";
+  | "booleanItem"
+  | "custom"
+  | "bitsetItem";
+
+type Binaries = "uint" | "int" | "bytes";
+type Endianness = "default" | "little";
 
 export const Submit = ({ resultRaw }: any) => {
   const [userLayout, setUserLayout] = useState([]);
@@ -29,18 +36,27 @@ export const Submit = ({ resultRaw }: any) => {
   const [inputName, setInputName] = useState("");
 
   const [selectionValue, setSelectionValue] = useState("");
+  const [binarySelected, setBinarySelected] = useState<Binaries>(null);
+  const [endianness, setEndianness] = useState<Endianness>("default");
+  const [bitsetValues, setBitsetValues] = useState<string[]>([]);
 
   const [result, setResult] = useState({});
   const [resultLength, setResultLength] = useState(0);
 
   const layouts: { [key in Layouts]: any } = {
-    payloadId: (id: string) => layoutItems.payloadIdItem(+id),
+    payloadId: (id: string) => ({ ...layoutItems.payloadIdItem(+id), name: inputName }),
     address: () => layoutItems.universalAddressItem,
     chain: () => layoutItems.chainItem(),
     amount: () => layoutItems.amountItem,
     fixedLengthString: (length: string) => fixedLengthStringItem(+length),
     variableLengthString: () => variableLengthStringItem,
     booleanItem: () => booleanItem,
+    bitsetItem: () => bitsetItem(bitsetValues),
+    custom: (size: string) => ({
+      binary: binarySelected,
+      size: +size,
+      endianness: endianness === "default" ? "big" : "little",
+    }),
   };
 
   const resultRawHex = resultRaw ? Buffer.from(resultRaw).toString("hex") : "";
@@ -100,6 +116,9 @@ export const Submit = ({ resultRaw }: any) => {
       <br />
       <span style={{ color: "green" }}>{resultParsed}</span>
       <span style={{ color: "grey" }}>{resultUnparsed}</span>
+      {resultLength && resultUnparsed.length === 0 && (
+        <CheckCircledIcon style={{ marginLeft: 6 }} color="green" width={20} height={20} />
+      )}
       <br />
       <br />
       Create your layout
@@ -110,12 +129,14 @@ export const Submit = ({ resultRaw }: any) => {
           return (
             <div key={i} className="submit-selectedLayouts">
               {JSON.stringify(item)}
-              <Cross2Icon
-                onClick={() => {
-                  setUserLayout(userLayout.filter(a => a.name !== item.name));
-                }}
-                className="submit-selectedLayouts-remove"
-              />
+              {userLayout.length - 1 === i && (
+                <Cross2Icon
+                  onClick={() => {
+                    setUserLayout(userLayout.filter(a => a.name !== item.name));
+                  }}
+                  className="submit-selectedLayouts-remove"
+                />
+              )}
             </div>
           );
         })}
@@ -135,11 +156,17 @@ export const Submit = ({ resultRaw }: any) => {
         {(Object.keys(layouts) as Layouts[]).map(item => (
           <div key={item}>
             <LayoutItemButton
+              binarySelected={binarySelected}
+              setBinarySelected={setBinarySelected}
               selectionValue={selectionValue}
               setSelectionValue={setSelectionValue}
               id={item}
               selected={selected}
               setSelected={setSelected}
+              endianness={endianness}
+              setEndianness={setEndianness}
+              bitsetValues={bitsetValues}
+              setBitsetValues={setBitsetValues}
             />
           </div>
         ))}
@@ -151,12 +178,17 @@ export const Submit = ({ resultRaw }: any) => {
             if (selected && inputName) {
               if (selected === "payloadId" && !selectionValue) return;
               if (selected === "fixedLengthString" && !selectionValue) return;
+              if (selected === "bitsetItem" && bitsetValues.length === 0) return;
+              if (selected === "custom" && (!binarySelected || !selectionValue)) return;
               if (userLayout.find(a => a.name === inputName)) return;
 
               setUserLayout([
                 ...userLayout,
                 { name: inputName, ...layouts[selected](selectionValue) },
               ]);
+
+              setSelectionValue("");
+              setBitsetValues([]);
             }
           }}
         >
@@ -177,6 +209,12 @@ interface ILayoutItemButtonProps {
   setSelected: (a: Layouts) => void;
   selectionValue: string;
   setSelectionValue: (str: string) => void;
+  binarySelected: Binaries;
+  setBinarySelected: (binary: Binaries) => void;
+  endianness: Endianness;
+  setEndianness: (end: Endianness) => void;
+  bitsetValues: string[];
+  setBitsetValues: (a: string[]) => void;
 }
 
 const LayoutItemButton = ({
@@ -185,6 +223,12 @@ const LayoutItemButton = ({
   selected,
   selectionValue,
   setSelectionValue,
+  binarySelected,
+  setBinarySelected,
+  endianness,
+  setEndianness,
+  bitsetValues,
+  setBitsetValues,
 }: ILayoutItemButtonProps) => {
   const isSelected = selected === id;
 
@@ -200,6 +244,37 @@ const LayoutItemButton = ({
         {id}
       </button>
 
+      {id === "bitsetItem" && isSelected && (
+        <div className="submit-layout-bitset">
+          {bitsetValues.map((bit, i) => (
+            <div key={i}>
+              <span>{bit}</span>
+              <Cross2Icon
+                className="submit-layout-bitset-close"
+                onClick={() => {
+                  setBitsetValues(bitsetValues.filter((_val, idx) => i !== idx));
+                }}
+              />
+            </div>
+          ))}
+
+          <input
+            className="submit-layout-input"
+            placeholder={`bitset item #${bitsetValues.length + 1}`}
+            value={selectionValue}
+            onChange={e => setSelectionValue(e.target.value)}
+          />
+          <div
+            onClick={() => {
+              setBitsetValues([...bitsetValues, selectionValue]);
+              setSelectionValue("");
+            }}
+            className="submit-layout-plus"
+          >
+            <PlusIcon />
+          </div>
+        </div>
+      )}
       {id === "payloadId" && isSelected && (
         <input
           className="submit-layout-input"
@@ -215,6 +290,66 @@ const LayoutItemButton = ({
           value={selectionValue}
           onChange={e => setSelectionValue(e.target.value)}
         />
+      )}
+      {id === "custom" && isSelected && (
+        <>
+          <div style={{ marginTop: 16 }}>binary:</div>
+          <button
+            className="submit-layout-button"
+            onClick={() => {
+              setBinarySelected("uint");
+            }}
+            style={{ backgroundColor: binarySelected === "uint" ? "green" : "grey" }}
+          >
+            uint
+          </button>
+          <button
+            className="submit-layout-button"
+            onClick={() => {
+              setBinarySelected("int");
+            }}
+            style={{ backgroundColor: binarySelected === "int" ? "green" : "grey" }}
+          >
+            int
+          </button>
+          <button
+            className="submit-layout-button"
+            onClick={() => {
+              setBinarySelected("bytes");
+            }}
+            style={{ backgroundColor: binarySelected === "bytes" ? "green" : "grey" }}
+          >
+            bytes
+          </button>
+
+          <div>endianness:</div>
+          <button
+            className="submit-layout-button"
+            onClick={() => {
+              setEndianness("default");
+            }}
+            style={{ backgroundColor: endianness === "default" ? "green" : "grey" }}
+          >
+            default
+          </button>
+          <button
+            className="submit-layout-button"
+            onClick={() => {
+              setEndianness("little");
+            }}
+            style={{ backgroundColor: endianness === "little" ? "green" : "grey" }}
+          >
+            little
+          </button>
+
+          <div>size:</div>
+          <input
+            className="submit-layout-input"
+            placeholder="size"
+            value={selectionValue}
+            onChange={e => setSelectionValue(e.target.value)}
+          />
+        </>
       )}
     </>
   );

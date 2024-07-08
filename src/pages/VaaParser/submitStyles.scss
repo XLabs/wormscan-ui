@@ -30,5 +30,29 @@
     &-button {
       width: 140px;
     }
+
+    &-bitset {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+
+      &-close {
+        cursor: pointer;
+        margin-left: 2px;
+        color: grey;
+      }
+    }
+
+    &-plus {
+      width: 22px;
+      height: 22px;
+      border-radius: 60%;
+      background-color: var(--color-white-10);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
   }
 }
