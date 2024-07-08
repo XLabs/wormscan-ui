@@ -12,7 +12,7 @@ import {
   encoding,
 } from "@wormhole-foundation/sdk";
 import { deepCloneWithBigInt } from "src/utils/object";
-import { CheckCircledIcon, Cross2Icon, PlusIcon } from "@radix-ui/react-icons";
+import { CheckCircledIcon, CheckIcon, Cross2Icon, PlusIcon } from "@radix-ui/react-icons";
 import { JsonText } from "src/components/atoms";
 import "./submitStyles.scss";
 
@@ -33,10 +33,13 @@ type Endianness = "default" | "little";
 type UserLayout = {
   selected: Layouts;
   inputName: string;
-  selectionValue?: string;
+  id?: string;
+  size?: string;
+  lengthSize?: string;
   binarySelected?: Binaries;
   endianness?: Endianness;
   bitsetValues?: string[];
+  omit?: boolean;
 };
 
 export const Submit = ({ resultRaw }: any) => {
@@ -46,17 +49,23 @@ export const Submit = ({ resultRaw }: any) => {
   const [selected, setSelected] = useState<Layouts>(null);
   const [inputName, setInputName] = useState("");
 
-  const [selectionValue, setSelectionValue] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const [binarySelected, setBinarySelected] = useState<Binaries>(null);
   const [endianness, setEndianness] = useState<Endianness>("default");
   const [bitsetValues, setBitsetValues] = useState<string[]>([]);
+  const [isLengthSize, setIsLengthSize] = useState(false);
+  const [shouldOmit, setShouldOmit] = useState(false);
 
   const [result, setResult] = useState({});
   const [resultLength, setResultLength] = useState(0);
 
   const layouts: { [key in Layouts]: any } = useMemo(
     () => ({
-      payloadId: (id: string, name: string) => ({ ...layoutItems.payloadIdItem(+id), name }),
+      payloadId: (id: string, name: string, omit: boolean) => ({
+        ...layoutItems.payloadIdItem(+id),
+        name,
+        omit,
+      }),
       address: () => layoutItems.universalAddressItem,
       chain: () => layoutItems.chainItem(),
       amount: () => layoutItems.amountItem,
@@ -64,11 +73,19 @@ export const Submit = ({ resultRaw }: any) => {
       variableLengthString: () => variableLengthStringItem,
       booleanItem: () => booleanItem,
       bitsetItem: (bitsets: string[]) => bitsetItem(bitsets),
-      custom: (size: string, binary: Binaries, endian: Endianness) => ({
-        binary: binary,
-        size: +size,
-        endianness: endian === "default" ? "big" : "little",
-      }),
+      custom: (size: string, lengthSize: string, binary: Binaries, endian: Endianness) => {
+        const newLayout: any = {
+          binary: binary,
+          endianness: endian === "default" ? "big" : "little",
+        };
+        if (size) {
+          newLayout.size = +size;
+        }
+        if (lengthSize) {
+          newLayout.lengthSize = +lengthSize;
+        }
+        return newLayout;
+      },
     }),
     [],
   );
@@ -78,35 +95,49 @@ export const Submit = ({ resultRaw }: any) => {
 
     setParsingLayout(
       userLayout.map(layout => {
+        let parsedLayout: any = {
+          name: layout.inputName,
+        };
+
+        if (layout.omit) parsedLayout.omit = true;
+
         if (
           ["address", "chain", "amount", "variableLengthString", "booleanItem"].includes(
             layout.selected,
           )
         ) {
-          return { name: layout.inputName, ...layouts[layout.selected]() };
+          parsedLayout = { ...parsedLayout, ...layouts[layout.selected]() };
         }
 
         if (layout.selected === "payloadId") {
-          return {
-            name: layout.inputName,
-            ...layouts["payloadId"](layout.selectionValue, layout.inputName),
+          parsedLayout = {
+            ...parsedLayout,
+            ...layouts["payloadId"](layout.id, layout.inputName, layout.omit),
           };
         }
 
         if (layout.selected === "fixedLengthString") {
-          return { name: layout.inputName, ...layouts["fixedLengthString"](layout.selectionValue) };
+          parsedLayout = { ...parsedLayout, ...layouts["fixedLengthString"](layout.size) };
         }
 
         if (layout.selected === "custom") {
-          return {
-            name: layout.inputName,
-            ...layouts["custom"](layout.selectionValue, layout.binarySelected, layout.endianness),
+          parsedLayout = {
+            ...parsedLayout,
+            ...layouts["custom"](
+              layout.size,
+              layout.lengthSize,
+              layout.binarySelected,
+              layout.endianness,
+            ),
           };
         }
 
         if (layout.selected === "bitsetItem") {
-          return { name: layout.inputName, ...layouts["bitsetItem"](layout.bitsetValues) };
+          parsedLayout = { ...parsedLayout, ...layouts["bitsetItem"](layout.bitsetValues) };
         }
+
+        console.log("here", { parsedLayout });
+        return parsedLayout;
       }),
     );
   }, [layouts, userLayout]);
@@ -170,6 +201,52 @@ export const Submit = ({ resultRaw }: any) => {
           binarySelected: "uint",
           endianness: "default",
         },
+      ] as UserLayout[],
+    "Standard Relayer": () =>
+      [
+        { inputName: "payloadId", selected: "payloadId", id: "1", omit: true },
+        { inputName: "targetChainId", selected: "chain" },
+        { inputName: "targetAddress", selected: "address" },
+        {
+          inputName: "payload",
+          selected: "custom",
+          lengthSize: "4",
+          binarySelected: "bytes",
+          endianness: "default",
+        },
+        { inputName: "requestedReceiverValue", selected: "amount" },
+        { inputName: "extraReceiverValue", selected: "amount" },
+        {
+          inputName: "size",
+          selected: "custom",
+          size: "4",
+          binarySelected: "uint",
+          endianness: "default",
+          omit: true,
+        },
+        {
+          inputName: "waste",
+          selected: "custom",
+          size: "31",
+          binarySelected: "uint",
+          endianness: "default",
+          omit: true,
+        },
+        {
+          inputName: "version",
+          selected: "custom",
+          size: "1",
+          binarySelected: "uint",
+          endianness: "default",
+          omit: true,
+        },
+        { inputName: "gasLimit", selected: "amount" },
+        { inputName: "targetChainRefundPerGasUnused", selected: "amount" },
+        { inputName: "refundChain", selected: "chain" },
+        { inputName: "refundAddress", selected: "address" },
+        { inputName: "refundDeliveryProvider", selected: "address" },
+        { inputName: "sourceDeliveryProvider", selected: "address" },
+        { inputName: "senderAddress", selected: "address" },
       ] as UserLayout[],
   };
 
@@ -293,8 +370,8 @@ export const Submit = ({ resultRaw }: any) => {
             <LayoutItemButton
               binarySelected={binarySelected}
               setBinarySelected={setBinarySelected}
-              selectionValue={selectionValue}
-              setSelectionValue={setSelectionValue}
+              inputValue={inputValue}
+              setInputValue={setInputValue}
               id={item}
               selected={selected}
               setSelected={setSelected}
@@ -302,26 +379,47 @@ export const Submit = ({ resultRaw }: any) => {
               setEndianness={setEndianness}
               bitsetValues={bitsetValues}
               setBitsetValues={setBitsetValues}
+              isLengthSize={isLengthSize}
+              setIsLengthSize={setIsLengthSize}
             />
           </div>
         ))}
 
         <br />
+        <div className="submit-options">
+          <div onClick={() => setShouldOmit(!shouldOmit)} className="submit-options-checkbox">
+            {shouldOmit && <CheckIcon />}
+          </div>
+          <div>omit from payload parsing</div>
+        </div>
+
+        <div className="submit-options">
+          <div onClick={() => setShouldOmit(!shouldOmit)} className="submit-options-checkbox">
+            {shouldOmit && <CheckIcon />}
+          </div>
+          <div>create a layout for this item</div>
+        </div>
+
         <div
           onClick={() => {
             if (selected && inputName) {
-              if (selected === "payloadId" && !selectionValue) return;
-              if (selected === "fixedLengthString" && !selectionValue) return;
+              if (selected === "payloadId" && !inputValue) return;
+              if (selected === "fixedLengthString" && !inputValue) return;
               if (selected === "bitsetItem" && bitsetValues.length === 0) return;
-              if (selected === "custom" && (!binarySelected || !selectionValue)) return;
+              if (selected === "custom" && (!binarySelected || !inputValue)) return;
               if (userLayout.find(a => a.inputName === inputName)) return;
 
               const newUserLayout: UserLayout = { inputName, selected };
               if (selected === "payloadId") {
-                newUserLayout.selectionValue = selectionValue;
+                newUserLayout.id = inputValue;
               }
               if (selected === "custom") {
-                newUserLayout.selectionValue = selectionValue;
+                if (isLengthSize) {
+                  newUserLayout.lengthSize = inputValue;
+                } else {
+                  newUserLayout.size = inputValue;
+                }
+
                 newUserLayout.binarySelected = binarySelected;
                 newUserLayout.endianness = endianness;
               }
@@ -329,14 +427,18 @@ export const Submit = ({ resultRaw }: any) => {
                 newUserLayout.bitsetValues = bitsetValues;
               }
               if (selected === "fixedLengthString") {
-                newUserLayout.selectionValue = selectionValue;
+                newUserLayout.size = inputValue;
               }
+
+              if (shouldOmit) newUserLayout.omit = true;
 
               setUserLayout([...userLayout, newUserLayout]);
 
-              setSelectionValue("");
+              setShouldOmit(false);
+              setInputValue("");
               setBitsetValues([]);
               setInputName("");
+              setIsLengthSize(false);
             }
           }}
           className="submit-btn"
@@ -359,28 +461,32 @@ interface ILayoutItemButtonProps {
   id: Layouts;
   selected: Layouts;
   setSelected: (a: Layouts) => void;
-  selectionValue: string;
-  setSelectionValue: (str: string) => void;
+  inputValue: string;
+  setInputValue: (str: string) => void;
   binarySelected: Binaries;
   setBinarySelected: (binary: Binaries) => void;
   endianness: Endianness;
   setEndianness: (end: Endianness) => void;
   bitsetValues: string[];
   setBitsetValues: (a: string[]) => void;
+  isLengthSize: boolean;
+  setIsLengthSize: (b: boolean) => void;
 }
 
 const LayoutItemButton = ({
   id,
   setSelected,
   selected,
-  selectionValue,
-  setSelectionValue,
+  inputValue,
+  setInputValue,
   binarySelected,
   setBinarySelected,
   endianness,
   setEndianness,
   bitsetValues,
   setBitsetValues,
+  isLengthSize,
+  setIsLengthSize,
 }: ILayoutItemButtonProps) => {
   const isSelected = selected === id;
 
@@ -413,13 +519,13 @@ const LayoutItemButton = ({
           <input
             className="submit-layout-input"
             placeholder={`bitset item #${bitsetValues.length + 1}`}
-            value={selectionValue}
-            onChange={e => setSelectionValue(e.target.value)}
+            value={inputValue}
+            onChange={e => setInputValue(e.target.value)}
           />
           <div
             onClick={() => {
-              setBitsetValues([...bitsetValues, selectionValue]);
-              setSelectionValue("");
+              setBitsetValues([...bitsetValues, inputValue]);
+              setInputValue("");
             }}
             className="submit-layout-plus"
           >
@@ -431,16 +537,16 @@ const LayoutItemButton = ({
         <input
           className="submit-layout-input"
           placeholder="id"
-          value={selectionValue}
-          onChange={e => setSelectionValue(e.target.value)}
+          value={inputValue}
+          onChange={e => setInputValue(e.target.value)}
         />
       )}
       {id === "fixedLengthString" && isSelected && (
         <input
           className="submit-layout-input"
           placeholder="length"
-          value={selectionValue}
-          onChange={e => setSelectionValue(e.target.value)}
+          value={inputValue}
+          onChange={e => setInputValue(e.target.value)}
         />
       )}
       {id === "custom" && isSelected && (
@@ -494,13 +600,16 @@ const LayoutItemButton = ({
             little
           </button>
 
-          <div>size:</div>
+          <div>{isLengthSize ? "lengthSize" : "size"}:</div>
           <input
             className="submit-layout-input"
             placeholder="size"
-            value={selectionValue}
-            onChange={e => setSelectionValue(e.target.value)}
+            value={inputValue}
+            onChange={e => setInputValue(e.target.value)}
           />
+          <span onClick={() => setIsLengthSize(!isLengthSize)} className="submit-switch-size-text">
+            switch to {isLengthSize ? "size" : "lengthSize"}
+          </span>
           <br />
           <br />
         </>
