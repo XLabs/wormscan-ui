@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   chainToChainId,
   deserializeLayout,
@@ -9,6 +9,7 @@ import {
   UniversalAddress,
   chains,
   bitsetItem,
+  encoding,
 } from "@wormhole-foundation/sdk";
 import { deepCloneWithBigInt } from "src/utils/object";
 import { CheckCircledIcon, Cross2Icon, PlusIcon } from "@radix-ui/react-icons";
@@ -29,8 +30,19 @@ type Layouts =
 type Binaries = "uint" | "int" | "bytes";
 type Endianness = "default" | "little";
 
+type UserLayout = {
+  selected: Layouts;
+  inputName: string;
+  selectionValue?: string;
+  binarySelected?: Binaries;
+  endianness?: Endianness;
+  bitsetValues?: string[];
+};
+
 export const Submit = ({ resultRaw }: any) => {
-  const [userLayout, setUserLayout] = useState([]);
+  const [userLayout, setUserLayout] = useState<UserLayout[]>([]);
+  const [parsingLayout, setParsingLayout] = useState([]);
+
   const [selected, setSelected] = useState<Layouts>(null);
   const [inputName, setInputName] = useState("");
 
@@ -42,64 +54,134 @@ export const Submit = ({ resultRaw }: any) => {
   const [result, setResult] = useState({});
   const [resultLength, setResultLength] = useState(0);
 
-  const layouts: { [key in Layouts]: any } = {
-    payloadId: (id: string, name = inputName) => ({ ...layoutItems.payloadIdItem(+id), name }),
-    address: () => layoutItems.universalAddressItem,
-    chain: () => layoutItems.chainItem(),
-    amount: () => layoutItems.amountItem,
-    fixedLengthString: (length: string) => fixedLengthStringItem(+length),
-    variableLengthString: () => variableLengthStringItem,
-    booleanItem: () => booleanItem,
-    bitsetItem: () => bitsetItem(bitsetValues),
-    custom: (size: string, binary = binarySelected, endian = endianness) => ({
-      binary: binary,
-      size: +size,
-      endianness: endian === "default" ? "big" : "little",
+  const layouts: { [key in Layouts]: any } = useMemo(
+    () => ({
+      payloadId: (id: string, name: string) => ({ ...layoutItems.payloadIdItem(+id), name }),
+      address: () => layoutItems.universalAddressItem,
+      chain: () => layoutItems.chainItem(),
+      amount: () => layoutItems.amountItem,
+      fixedLengthString: (length: string) => fixedLengthStringItem(+length),
+      variableLengthString: () => variableLengthStringItem,
+      booleanItem: () => booleanItem,
+      bitsetItem: (bitsets: string[]) => bitsetItem(bitsets),
+      custom: (size: string, binary: Binaries, endian: Endianness) => ({
+        binary: binary,
+        size: +size,
+        endianness: endian === "default" ? "big" : "little",
+      }),
     }),
-  };
+    [],
+  );
 
-  const submitLayouts: any = {
+  useEffect(() => {
+    console.log({ userLayout });
+
+    setParsingLayout(
+      userLayout.map(layout => {
+        if (
+          ["address", "chain", "amount", "variableLengthString", "booleanItem"].includes(
+            layout.selected,
+          )
+        ) {
+          return { name: layout.inputName, ...layouts[layout.selected]() };
+        }
+
+        if (layout.selected === "payloadId") {
+          return {
+            name: layout.inputName,
+            ...layouts["payloadId"](layout.selectionValue, layout.inputName),
+          };
+        }
+
+        if (layout.selected === "fixedLengthString") {
+          return { name: layout.inputName, ...layouts["fixedLengthString"](layout.selectionValue) };
+        }
+
+        if (layout.selected === "custom") {
+          return {
+            name: layout.inputName,
+            ...layouts["custom"](layout.selectionValue, layout.binarySelected, layout.endianness),
+          };
+        }
+
+        if (layout.selected === "bitsetItem") {
+          return { name: layout.inputName, ...layouts["bitsetItem"](layout.bitsetValues) };
+        }
+      }),
+    );
+  }, [layouts, userLayout]);
+
+  const baseLayouts: any = {
     "Clear All": () => [] as any,
-    "Portal Bridge": () => [
-      { name: "payloadId", ...layouts["payloadId"](3, "payloadId") },
-      { name: "amount", ...layouts["amount"]() },
-      { name: "tokenAddress", ...layouts["address"]() },
-      { name: "tokenChain", ...layouts["chain"]() },
-      { name: "toAddress", ...layouts["address"]() },
-      { name: "toChain", ...layouts["chain"]() },
-      { name: "fromAddress", ...layouts["address"]() },
-    ],
-    "NFT Bridge": () => [
-      { name: "payloadId", ...layouts["payloadId"](1, "payloadId") },
-      { name: "tokenAddress", ...layouts["address"]() },
-      { name: "tokenChain", ...layouts["chain"]() },
-      { name: "symbol", ...layouts["fixedLengthString"](32) },
-      { name: "name", ...layouts["fixedLengthString"](32) },
-      { name: "tokenId", ...layouts["amount"]() },
-      { name: "uri", ...layouts["variableLengthString"]() },
-      { name: "destAddress", ...layouts["address"]() },
-      { name: "destChain", ...layouts["chain"]() },
-    ],
-    "CCTP Wormhole Integration": () => [
-      { name: "", ...layouts["payloadId"](1, "payloadId") },
-      { name: "tokenAddress", ...layouts["address"]() },
-      { name: "amount", ...layouts["amount"]() },
-      { name: "sourceDomain", ...layouts["custom"](4, "uint", "default") },
-      { name: "targetDomain", ...layouts["custom"](4, "uint", "default") },
-      { name: "nonce", ...layouts["custom"](8, "uint", "default") },
-      { name: "caller", ...layouts["address"]() },
-      { name: "mintRecipient", ...layouts["address"]() },
-      { name: "_parsedPayloadNext", ...layouts["fixedLengthString"](2), omit: true },
-    ],
+    "Portal Bridge": () =>
+      [
+        { inputName: "payloadId", selected: "payloadId", selectionValue: "3" },
+        { inputName: "amount", selected: "amount" },
+        { inputName: "tokenAddress", selected: "address" },
+        { inputName: "tokenChain", selected: "chain" },
+        { inputName: "toAddress", selected: "address" },
+        { inputName: "toChain", selected: "chain" },
+        { inputName: "fromAddress", selected: "address" },
+      ] as UserLayout[],
+    "NFT Bridge": () =>
+      [
+        { inputName: "payloadId", selected: "payloadId", selectionValue: "1" },
+        { inputName: "tokenAddress", selected: "address" },
+        { inputName: "tokenChain", selected: "chain" },
+        { inputName: "symbol", selected: "fixedLengthString", selectionValue: "32" },
+        { inputName: "name", selected: "fixedLengthString", selectionValue: "32" },
+        { inputName: "tokenId", selected: "amount" },
+        { inputName: "uri", selected: "variableLengthString" },
+        { inputName: "destAddress", selected: "address" },
+        { inputName: "destChain", selected: "chain" },
+      ] as UserLayout[],
+    "CCTP Wormhole Integration": () =>
+      [
+        { inputName: "payloadId", selected: "payloadId", selectionValue: "1" },
+        { inputName: "tokenAddress", selected: "address" },
+        { inputName: "amount", selected: "amount" },
+        {
+          inputName: "sourceDomain",
+          selected: "custom",
+          selectionValue: "4",
+          binarySelected: "uint",
+          endianness: "default",
+        },
+        {
+          inputName: "targetDomain",
+          selected: "custom",
+          selectionValue: "4",
+          binarySelected: "uint",
+          endianness: "default",
+        },
+        {
+          inputName: "nonce",
+          selected: "custom",
+          selectionValue: "8",
+          binarySelected: "uint",
+          endianness: "default",
+        },
+        { inputName: "caller", selected: "address" },
+        { inputName: "mintRecipient", selected: "address" },
+        {
+          inputName: "length",
+          selected: "custom",
+          selectionValue: "2",
+          binarySelected: "uint",
+          endianness: "default",
+        },
+      ] as UserLayout[],
   };
 
-  const resultRawHex = resultRaw ? Buffer.from(resultRaw).toString("hex") : "";
+  const resultRawHex = resultRaw ? encoding.hex.encode(resultRaw) : "";
+  // const resultRawHex = resultRaw ? Buffer.from(resultRaw).toString("hex") : "";
   const resultParsed = resultRawHex.substring(0, resultLength);
   const resultUnparsed = resultRawHex.substring(resultLength);
 
   useEffect(() => {
     try {
-      const result = deserializeLayout(userLayout, resultRaw);
+      console.log({ parsingLayout });
+      const result = deserializeLayout(parsingLayout, resultRaw);
       console.log(processResult(result));
 
       setResultLength(resultRawHex.length);
@@ -119,7 +201,7 @@ export const Submit = ({ resultRaw }: any) => {
 
             const resultRawPartial = resultRaw.slice(0, current);
 
-            const resultPartial = deserializeLayout(userLayout, resultRawPartial);
+            const resultPartial = deserializeLayout(parsingLayout, resultRawPartial);
             console.log(processResult(resultPartial));
 
             Object.entries(resultPartial);
@@ -141,7 +223,7 @@ export const Submit = ({ resultRaw }: any) => {
         console.log({ err: e });
       }
     }
-  }, [resultRaw, resultRawHex.length, userLayout]);
+  }, [resultRaw, resultRawHex.length, parsingLayout]);
 
   const finishedParsing = resultLength && resultUnparsed.length === 0;
 
@@ -161,10 +243,10 @@ export const Submit = ({ resultRaw }: any) => {
       <br />
       <br />
       <div>
-        {Object.keys(submitLayouts).map(item => {
+        {Object.keys(baseLayouts).map(item => {
           return (
             <div
-              onClick={() => setUserLayout(submitLayouts[item]())}
+              onClick={() => setUserLayout(baseLayouts[item]())}
               className="submit-btn"
               key={item}
             >
@@ -186,7 +268,7 @@ export const Submit = ({ resultRaw }: any) => {
               {userLayout.length - 1 === i && (
                 <Cross2Icon
                   onClick={() => {
-                    setUserLayout(userLayout.filter(a => a.name !== item.name));
+                    setUserLayout(userLayout.filter(a => a.inputName !== item.inputName));
                   }}
                   className="submit-selectedLayouts-remove"
                 />
@@ -233,15 +315,29 @@ export const Submit = ({ resultRaw }: any) => {
               if (selected === "fixedLengthString" && !selectionValue) return;
               if (selected === "bitsetItem" && bitsetValues.length === 0) return;
               if (selected === "custom" && (!binarySelected || !selectionValue)) return;
-              if (userLayout.find(a => a.name === inputName)) return;
+              if (userLayout.find(a => a.inputName === inputName)) return;
 
-              setUserLayout([
-                ...userLayout,
-                { name: inputName, ...layouts[selected](selectionValue) },
-              ]);
+              const newUserLayout: UserLayout = { inputName, selected };
+              if (selected === "payloadId") {
+                newUserLayout.selectionValue = selectionValue;
+              }
+              if (selected === "custom") {
+                newUserLayout.selectionValue = selectionValue;
+                newUserLayout.binarySelected = binarySelected;
+                newUserLayout.endianness = endianness;
+              }
+              if (selected === "bitsetItem") {
+                newUserLayout.bitsetValues = bitsetValues;
+              }
+              if (selected === "fixedLengthString") {
+                newUserLayout.selectionValue = selectionValue;
+              }
+
+              setUserLayout([...userLayout, newUserLayout]);
 
               setSelectionValue("");
               setBitsetValues([]);
+              setInputName("");
             }
           }}
           className="submit-btn"
