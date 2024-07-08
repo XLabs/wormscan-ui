@@ -186,6 +186,7 @@ const Filters = () => {
         background="var(--color-white-10)"
         chainId={chainId}
         colorless
+        lazy={false}
         network={currentNetwork}
         size={24}
       />

@@ -56,6 +56,10 @@ const PrivacyPolicy = () => {
   return (
     <BaseLayout>
       <div className="terms-of-use">
+        {showContentsMobile && (
+          <div className="terms-of-use-bg" onClick={() => setShowContentsMobile(false)} />
+        )}
+
         <div className="terms-of-use-content">
           <div className="terms-of-use-content-top">
             <div className="terms-of-use-content-top-header">
@@ -503,17 +507,13 @@ const PrivacyPolicy = () => {
                   className={`terms-of-use-aside-container-item ${
                     activeSection === item.id ? "active" : ""
                   }`}
+                  onClick={() => {
+                    goToSection(item.id);
+                    setShowContentsMobile(false);
+                  }}
                 >
                   <div className="marker" />
-                  <p
-                    className="text"
-                    onClick={() => {
-                      goToSection(item.id);
-                      setShowContentsMobile(false);
-                    }}
-                  >
-                    {t(item.text)}
-                  </p>
+                  <p className="text">{t(item.text)}</p>
                 </li>
               ))}
             </ul>

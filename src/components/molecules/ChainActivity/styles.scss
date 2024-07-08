@@ -61,6 +61,14 @@
       min-height: 500px;
     }
 
+    & .apexcharts-svg {
+      overflow: visible;
+    }
+
+    & .apexcharts-xcrosshairs {
+      fill: var(--color-white-05);
+    }
+
     & .loader {
       margin-top: 64px;
 
@@ -369,7 +377,7 @@
           z-index: 55;
           display: none;
           margin-top: 12px;
-          width: calc(100vw - 40px);
+          width: calc(100% - 42px);
 
           @include desktop {
             border-radius: 8px;
