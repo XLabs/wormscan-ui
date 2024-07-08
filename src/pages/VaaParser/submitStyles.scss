@@ -55,4 +55,15 @@
       cursor: pointer;
     }
   }
+
+  &-btn {
+    cursor: pointer;
+    background-color: var(--color-white-10);
+    border-radius: 4px;
+    display: inline-block;
+    padding: 6px 8px;
+    margin-right: 8px;
+    min-width: 140px;
+    text-align: center;
+  }
 }

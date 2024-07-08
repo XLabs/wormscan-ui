@@ -8,7 +8,6 @@ import {
   range,
   UniversalAddress,
   chains,
-  bitsetItem as layoutBitsetItem,
   bitsetItem,
 } from "@wormhole-foundation/sdk";
 import { deepCloneWithBigInt } from "src/utils/object";
@@ -44,7 +43,7 @@ export const Submit = ({ resultRaw }: any) => {
   const [resultLength, setResultLength] = useState(0);
 
   const layouts: { [key in Layouts]: any } = {
-    payloadId: (id: string) => ({ ...layoutItems.payloadIdItem(+id), name: inputName }),
+    payloadId: (id: string, name = inputName) => ({ ...layoutItems.payloadIdItem(+id), name }),
     address: () => layoutItems.universalAddressItem,
     chain: () => layoutItems.chainItem(),
     amount: () => layoutItems.amountItem,
@@ -52,11 +51,46 @@ export const Submit = ({ resultRaw }: any) => {
     variableLengthString: () => variableLengthStringItem,
     booleanItem: () => booleanItem,
     bitsetItem: () => bitsetItem(bitsetValues),
-    custom: (size: string) => ({
-      binary: binarySelected,
+    custom: (size: string, binary = binarySelected, endian = endianness) => ({
+      binary: binary,
       size: +size,
-      endianness: endianness === "default" ? "big" : "little",
+      endianness: endian === "default" ? "big" : "little",
     }),
+  };
+
+  const submitLayouts: any = {
+    "Clear All": () => [] as any,
+    "Portal Bridge": () => [
+      { name: "payloadId", ...layouts["payloadId"](3, "payloadId") },
+      { name: "amount", ...layouts["amount"]() },
+      { name: "tokenAddress", ...layouts["address"]() },
+      { name: "tokenChain", ...layouts["chain"]() },
+      { name: "toAddress", ...layouts["address"]() },
+      { name: "toChain", ...layouts["chain"]() },
+      { name: "fromAddress", ...layouts["address"]() },
+    ],
+    "NFT Bridge": () => [
+      { name: "payloadId", ...layouts["payloadId"](1, "payloadId") },
+      { name: "tokenAddress", ...layouts["address"]() },
+      { name: "tokenChain", ...layouts["chain"]() },
+      { name: "symbol", ...layouts["fixedLengthString"](32) },
+      { name: "name", ...layouts["fixedLengthString"](32) },
+      { name: "tokenId", ...layouts["amount"]() },
+      { name: "uri", ...layouts["variableLengthString"]() },
+      { name: "destAddress", ...layouts["address"]() },
+      { name: "destChain", ...layouts["chain"]() },
+    ],
+    "CCTP Wormhole Integration": () => [
+      { name: "", ...layouts["payloadId"](1, "payloadId") },
+      { name: "tokenAddress", ...layouts["address"]() },
+      { name: "amount", ...layouts["amount"]() },
+      { name: "sourceDomain", ...layouts["custom"](4, "uint", "default") },
+      { name: "targetDomain", ...layouts["custom"](4, "uint", "default") },
+      { name: "nonce", ...layouts["custom"](8, "uint", "default") },
+      { name: "caller", ...layouts["address"]() },
+      { name: "mintRecipient", ...layouts["address"]() },
+      { name: "_parsedPayloadNext", ...layouts["fixedLengthString"](2), omit: true },
+    ],
   };
 
   const resultRawHex = resultRaw ? Buffer.from(resultRaw).toString("hex") : "";
@@ -109,6 +143,8 @@ export const Submit = ({ resultRaw }: any) => {
     }
   }, [resultRaw, resultRawHex.length, userLayout]);
 
+  const finishedParsing = resultLength && resultUnparsed.length === 0;
+
   return (
     <div className="submit">
       PAYLOAD:
@@ -116,9 +152,27 @@ export const Submit = ({ resultRaw }: any) => {
       <br />
       <span style={{ color: "green" }}>{resultParsed}</span>
       <span style={{ color: "grey" }}>{resultUnparsed}</span>
-      {resultLength && resultUnparsed.length === 0 && (
+      {finishedParsing && (
         <CheckCircledIcon style={{ marginLeft: 6 }} color="green" width={20} height={20} />
       )}
+      <br />
+      <br />
+      Select a layout as a base
+      <br />
+      <br />
+      <div>
+        {Object.keys(submitLayouts).map(item => {
+          return (
+            <div
+              onClick={() => setUserLayout(submitLayouts[item]())}
+              className="submit-btn"
+              key={item}
+            >
+              {item}
+            </div>
+          );
+        })}
+      </div>
       <br />
       <br />
       Create your layout
@@ -172,8 +226,7 @@ export const Submit = ({ resultRaw }: any) => {
         ))}
 
         <br />
-        <br />
-        <button
+        <div
           onClick={() => {
             if (selected && inputName) {
               if (selected === "payloadId" && !selectionValue) return;
@@ -191,13 +244,17 @@ export const Submit = ({ resultRaw }: any) => {
               setBitsetValues([]);
             }
           }}
+          className="submit-btn"
         >
           ADD
-        </button>
+        </div>
 
         <br />
         <br />
         <JsonText data={deepCloneWithBigInt(result)} />
+        <br />
+        <br />
+        {finishedParsing && <div className="submit-btn">SUBMIT</div>}
       </div>
     </div>
   );
@@ -349,6 +406,8 @@ const LayoutItemButton = ({
             value={selectionValue}
             onChange={e => setSelectionValue(e.target.value)}
           />
+          <br />
+          <br />
         </>
       )}
     </>
@@ -408,6 +467,18 @@ const processResult = (result: object) => {
 
     if (chains.includes(value)) {
       return [key, chainToChainId(value)];
+    }
+
+    if (Buffer.isBuffer(value)) {
+      let bufferHex: string;
+
+      if (value.every(byte => byte === 0)) {
+        bufferHex = "";
+      } else {
+        bufferHex = value.toString("hex");
+      }
+
+      return [key, bufferHex];
     }
 
     return [key, value];
