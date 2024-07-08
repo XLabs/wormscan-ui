@@ -17,7 +17,7 @@ const EnvironmentProviderContext = React.createContext<EnvironmentContext>({
 export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const networkParam = searchParams.get("network")?.toUpperCase();
+  const networkParam = searchParams.get("network");
   const [currentEnv, setCurrentEnv] = useState<Environment>(
     networkParam === "Testnet" ? testnetEnv : mainnetEnv,
   );
@@ -25,19 +25,14 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
 
   const setEnvironment = useCallback(
     (env: Network) => {
-      /* if (env === "DEVNET") {
+      if (env === "Testnet") {
         setSearchParams(prev => {
           prev.set("network", "Testnet");
-          return prev;
-        });
-      } else */ if (env === "Testnet") {
-        setSearchParams(prev => {
-          prev.set("network", "Mainnet");
           return prev;
         });
       } else if (env === "Mainnet") {
         setSearchParams(prev => {
-          prev.set("network", "Testnet");
+          prev.set("network", "Mainnet");
           return prev;
         });
       }
@@ -46,13 +41,7 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const changeEnvironment = useCallback((env: Network) => {
-    /* if (env === "DEVNET") {
-        setCurrentEnv(tiltEnv);
-        setChain(tiltEnv.chainInfos[0].chainId);
-
-
-        setClearChildren(true);
-      } else */ if (env === "Testnet") {
+    if (env === "Testnet") {
       changeClientNetwork("Testnet");
       setCurrentEnv(testnetEnv);
       setClearChildren(true);

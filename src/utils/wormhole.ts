@@ -86,21 +86,6 @@ export type ExplorerBaseURLInput = {
 };
 
 const WORMHOLE_CHAINS: any = {
-  // [0]: {
-  //   name: "Unset",
-  //   icon: NoColorlessIcon,
-  //   colorlessIcon: NoColorlessIcon,
-  //   explorer: {
-  //     Testnet: "",
-  //           Devnet: "",
-  //     Mainnet: "",
-  //   },
-  //   getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
-  //     if (base === "address") return "";
-  //     if (base === "token") return "";
-  //     return "";
-  //   },
-  // },
   [chainToChainId("Sui")]: {
     name: "Sui",
     icon: SuiIcon,
