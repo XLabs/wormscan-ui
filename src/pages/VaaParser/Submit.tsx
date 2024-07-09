@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   chainToChainId,
   deserializeLayout,
@@ -27,7 +27,7 @@ type Layouts =
   | "custom"
   | "bitsetItem";
 
-type Binaries = "uint" | "int" | "bytes";
+type Binaries = "uint" | "int" | "bytes" | "array";
 type Endianness = "default" | "little";
 
 type UserLayout = {
@@ -40,6 +40,7 @@ type UserLayout = {
   endianness?: Endianness;
   bitsetValues?: string[];
   omit?: boolean;
+  layout?: UserLayout[];
 };
 
 export const Submit = ({ resultRaw }: any) => {
@@ -55,6 +56,9 @@ export const Submit = ({ resultRaw }: any) => {
   const [bitsetValues, setBitsetValues] = useState<string[]>([]);
   const [isLengthSize, setIsLengthSize] = useState(false);
   const [shouldOmit, setShouldOmit] = useState(false);
+  const [isAboutToLayout, setIsAboutToLayout] = useState(false);
+  const [isLayouting, setIsLayouting] = useState(false);
+  const layoutingRef = useRef<UserLayout[]>(null);
 
   const [result, setResult] = useState({});
   const [resultLength, setResultLength] = useState(0);
@@ -73,7 +77,13 @@ export const Submit = ({ resultRaw }: any) => {
       variableLengthString: () => variableLengthStringItem,
       booleanItem: () => booleanItem,
       bitsetItem: (bitsets: string[]) => bitsetItem(bitsets),
-      custom: (size: string, lengthSize: string, binary: Binaries, endian: Endianness) => {
+      custom: (
+        size: string,
+        lengthSize: string,
+        binary: Binaries,
+        endian: Endianness,
+        layout: any,
+      ) => {
         const newLayout: any = {
           binary: binary,
           endianness: endian === "default" ? "big" : "little",
@@ -84,17 +94,18 @@ export const Submit = ({ resultRaw }: any) => {
         if (lengthSize) {
           newLayout.lengthSize = +lengthSize;
         }
+        if (layout) {
+          newLayout.layout = layout;
+        }
         return newLayout;
       },
     }),
     [],
   );
 
-  useEffect(() => {
-    console.log({ userLayout });
-
-    setParsingLayout(
-      userLayout.map(layout => {
+  const readableLayoutToLayout = useCallback(
+    (lay: UserLayout[]): any => {
+      return lay.map(layout => {
         let parsedLayout: any = {
           name: layout.inputName,
         };
@@ -128,6 +139,7 @@ export const Submit = ({ resultRaw }: any) => {
               layout.lengthSize,
               layout.binarySelected,
               layout.endianness,
+              layout.layout?.length ? readableLayoutToLayout(layout.layout) : null,
             ),
           };
         }
@@ -136,11 +148,17 @@ export const Submit = ({ resultRaw }: any) => {
           parsedLayout = { ...parsedLayout, ...layouts["bitsetItem"](layout.bitsetValues) };
         }
 
-        console.log("here", { parsedLayout });
+        console.log({ parsedLayout });
         return parsedLayout;
-      }),
-    );
-  }, [layouts, userLayout]);
+      });
+    },
+    [layouts],
+  );
+
+  useEffect(() => {
+    console.log({ userLayout });
+    setParsingLayout(readableLayoutToLayout(userLayout));
+  }, [layouts, readableLayoutToLayout, userLayout]);
 
   const baseLayouts: any = {
     "Clear All": () => [] as any,
@@ -256,9 +274,9 @@ export const Submit = ({ resultRaw }: any) => {
 
   useEffect(() => {
     try {
-      console.log({ parsingLayout });
+      // console.log({ parsingLayout });
       const result = deserializeLayout(parsingLayout, resultRaw);
-      console.log(processResult(result));
+      // console.log(processResult(result));
 
       setResultLength(resultRawHex.length);
       setResult(processResult(result));
@@ -345,6 +363,7 @@ export const Submit = ({ resultRaw }: any) => {
                 <Cross2Icon
                   onClick={() => {
                     setUserLayout(userLayout.filter(a => a.inputName !== item.inputName));
+                    if (isLayouting) setIsLayouting(false);
                   }}
                   className="submit-selectedLayouts-remove"
                 />
@@ -386,18 +405,23 @@ export const Submit = ({ resultRaw }: any) => {
         ))}
 
         <br />
-        <div className="submit-options">
-          <div onClick={() => setShouldOmit(!shouldOmit)} className="submit-options-checkbox">
-            {shouldOmit && <CheckIcon />}
+        {selected === "custom" && (binarySelected === "array" || binarySelected === "bytes") && (
+          <div className="submit-options">
+            <div
+              onClick={() => setIsAboutToLayout(!isAboutToLayout)}
+              className="submit-options-checkbox"
+            >
+              {isAboutToLayout && <CheckIcon />}
+            </div>
+            <div>create a layout for this item</div>
           </div>
-          <div>omit from payload parsing</div>
-        </div>
+        )}
 
         <div className="submit-options">
           <div onClick={() => setShouldOmit(!shouldOmit)} className="submit-options-checkbox">
             {shouldOmit && <CheckIcon />}
           </div>
-          <div>create a layout for this item</div>
+          <div>omit from payload parsing</div>
         </div>
 
         <div
@@ -406,22 +430,34 @@ export const Submit = ({ resultRaw }: any) => {
               if (selected === "payloadId" && !inputValue) return;
               if (selected === "fixedLengthString" && !inputValue) return;
               if (selected === "bitsetItem" && bitsetValues.length === 0) return;
-              if (selected === "custom" && (!binarySelected || !inputValue)) return;
               if (userLayout.find(a => a.inputName === inputName)) return;
+              if (selected === "custom" && !binarySelected) return;
+              if (selected === "custom" && !inputValue && !isAboutToLayout) return;
 
               const newUserLayout: UserLayout = { inputName, selected };
+
+              let newLayout = false;
+
               if (selected === "payloadId") {
                 newUserLayout.id = inputValue;
               }
               if (selected === "custom") {
-                if (isLengthSize) {
-                  newUserLayout.lengthSize = inputValue;
-                } else {
-                  newUserLayout.size = inputValue;
+                if (inputValue) {
+                  if (isLengthSize) {
+                    newUserLayout.lengthSize = inputValue;
+                  } else {
+                    newUserLayout.size = inputValue;
+                  }
                 }
 
                 newUserLayout.binarySelected = binarySelected;
                 newUserLayout.endianness = endianness;
+
+                if (isAboutToLayout) {
+                  newLayout = true;
+                  setIsLayouting(true);
+                  setIsAboutToLayout(false);
+                }
               }
               if (selected === "bitsetItem") {
                 newUserLayout.bitsetValues = bitsetValues;
@@ -432,7 +468,22 @@ export const Submit = ({ resultRaw }: any) => {
 
               if (shouldOmit) newUserLayout.omit = true;
 
-              setUserLayout([...userLayout, newUserLayout]);
+              if (newLayout) {
+                console.log("ref prev", { ...layoutingRef.current });
+                newUserLayout.layout = [];
+                layoutingRef.current = newUserLayout.layout;
+                console.log("ref post", layoutingRef.current);
+              }
+
+              if (isLayouting) {
+                console.log("isLayouting!!");
+                console.log("ref prev", { ...layoutingRef.current });
+                layoutingRef.current.push(newUserLayout);
+                setUserLayout([...userLayout]);
+                console.log("ref post", layoutingRef.current);
+              } else {
+                setUserLayout([...userLayout, newUserLayout]);
+              }
 
               setShouldOmit(false);
               setInputValue("");
@@ -445,6 +496,17 @@ export const Submit = ({ resultRaw }: any) => {
         >
           ADD
         </div>
+
+        {isLayouting && (
+          <div
+            onClick={() => {
+              setIsLayouting(false);
+            }}
+            className="submit-btn"
+          >
+            FINISH LAYOUT
+          </div>
+        )}
 
         <br />
         <br />
@@ -579,6 +641,15 @@ const LayoutItemButton = ({
           >
             bytes
           </button>
+          <button
+            className="submit-layout-button"
+            onClick={() => {
+              setBinarySelected("array");
+            }}
+            style={{ backgroundColor: binarySelected === "array" ? "green" : "grey" }}
+          >
+            array
+          </button>
 
           <div>endianness:</div>
           <button
@@ -662,6 +733,7 @@ export const booleanItem = {
 
 // parse UniversalAddress to address, chainNames to chainId, etc.
 const processResult = (result: object) => {
+  console.log("processResult", result);
   const entries = Object.entries(result);
 
   const entriesProcessed = entries.map(([key, value]) => {
@@ -685,6 +757,10 @@ const processResult = (result: object) => {
       return [key, bufferHex];
     }
 
+    if (typeof value === "object") {
+      return [key, processResult(value)];
+    }
+
     return [key, value];
   });
 
@@ -693,5 +769,6 @@ const processResult = (result: object) => {
     toObjectAgain[key] = value;
   });
 
+  console.log("processResult result", toObjectAgain);
   return toObjectAgain;
 };
