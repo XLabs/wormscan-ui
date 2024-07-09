@@ -51,7 +51,7 @@ const appIds = [
   CCTP_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
-  // USDT_TRANSFER_APP_ID, // disabled until it goes prod
+  USDT_TRANSFER_APP_ID, // disabled until it goes prod
   MAYAN_APP_ID,
   NTT_APP_ID,
   PORTAL_NFT_APP_ID,

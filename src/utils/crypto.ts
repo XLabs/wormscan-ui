@@ -1,5 +1,5 @@
 import { ChainId, isEVMChain, tryHexToNativeString } from "@certusone/wormhole-sdk";
-import { CCTP_MANUAL_APP_ID, GATEWAY_APP_ID, GR_APP_ID } from "src/consts";
+import { CCTP_MANUAL_APP_ID, GATEWAY_APP_ID, GR_APP_ID, USDT_TRANSFER_APP_ID } from "src/consts";
 
 export const formatUnits = (value: number, tokenDecimals = 8) => {
   if (!value) return 0;
@@ -77,6 +77,10 @@ export const formatAppId = (appId: string) => {
   }
   if (appId === "CCTP_WORMHOLE_INTEGRATION") {
     return "CCTP Wormhole Integration";
+  }
+
+  if (appId === USDT_TRANSFER_APP_ID) {
+    return "USDT Transfer";
   }
 
   return appId
