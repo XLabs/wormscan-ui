@@ -27,7 +27,7 @@ type Layouts =
   | "custom"
   | "bitsetItem";
 
-type Binaries = "uint" | "int" | "bytes" | "array";
+type Binaries = "uint" | "int" | "bytes" | "array" | "switch";
 type Endianness = "default" | "little";
 
 type UserLayout = {
@@ -41,16 +41,32 @@ type UserLayout = {
   bitsetValues?: string[];
   omit?: boolean;
   layout?: UserLayout[];
+  layouts?: ISwitchLayouts;
 };
 
-export const Submit = ({ resultRaw }: any) => {
+type SubmitProps = {
+  resultRaw: Uint8Array;
+  isInternal?: boolean;
+  internalLayoutName?: string;
+  setSwitchLayout?: (u: UserLayout[]) => void;
+};
+
+export const Submit = ({
+  resultRaw,
+  isInternal,
+  internalLayoutName,
+  setSwitchLayout,
+}: SubmitProps) => {
   const [userLayout, setUserLayout] = useState<UserLayout[]>([]);
   const [parsingLayout, setParsingLayout] = useState([]);
 
   const [selected, setSelected] = useState<Layouts>(null);
   const [inputName, setInputName] = useState("");
-
   const [inputValue, setInputValue] = useState("");
+  const [tagIdValue, setTagIdValue] = useState("");
+  const [tagNameValue, setTagNameValue] = useState("");
+  const [switchLayouts, setSwitchLayouts] = useState<ISwitchLayouts>([]);
+
   const [binarySelected, setBinarySelected] = useState<Binaries>(null);
   const [endianness, setEndianness] = useState<Endianness>("default");
   const [bitsetValues, setBitsetValues] = useState<string[]>([]);
@@ -89,11 +105,17 @@ export const Submit = ({ resultRaw }: any) => {
           endianness: endian === "default" ? "big" : "little",
         };
         if (size) {
-          newLayout.size = +size;
+          if (binary === "switch") {
+            newLayout.idSize = +size;
+          } else {
+            newLayout.size = +size;
+          }
         }
+
         if (lengthSize) {
           newLayout.lengthSize = +lengthSize;
         }
+
         if (layout) {
           newLayout.layout = layout;
         }
@@ -139,16 +161,24 @@ export const Submit = ({ resultRaw }: any) => {
               layout.lengthSize,
               layout.binarySelected,
               layout.endianness,
-              layout.layout?.length ? readableLayoutToLayout(layout.layout) : null,
+              layout.layout ? readableLayoutToLayout(layout.layout) : null,
             ),
           };
+
+          if (layout.binarySelected === "switch") {
+            parsedLayout.idTag = layout.inputName;
+            const parsedInternalLayouts = layout.layouts.map(a => {
+              return [[a[0][0], a[0][1]], readableLayoutToLayout(a[1])];
+            });
+
+            parsedLayout.layouts = parsedInternalLayouts;
+          }
         }
 
         if (layout.selected === "bitsetItem") {
           parsedLayout = { ...parsedLayout, ...layouts["bitsetItem"](layout.bitsetValues) };
         }
 
-        console.log({ parsedLayout });
         return parsedLayout;
       });
     },
@@ -235,48 +265,114 @@ export const Submit = ({ resultRaw }: any) => {
         { inputName: "requestedReceiverValue", selected: "amount" },
         { inputName: "extraReceiverValue", selected: "amount" },
         {
-          inputName: "size",
+          inputName: "executionInfo",
           selected: "custom",
-          size: "4",
-          binarySelected: "uint",
+          binarySelected: "bytes",
           endianness: "default",
-          omit: true,
+          layout: [
+            {
+              inputName: "size",
+              selected: "custom",
+              size: "4",
+              binarySelected: "uint",
+              endianness: "default",
+              omit: true,
+            },
+            {
+              inputName: "waste",
+              selected: "custom",
+              size: "31",
+              binarySelected: "uint",
+              endianness: "default",
+              omit: true,
+            },
+            {
+              inputName: "version",
+              selected: "custom",
+              size: "1",
+              binarySelected: "uint",
+              endianness: "default",
+              omit: true,
+            },
+            { inputName: "gasLimit", selected: "amount" },
+            { inputName: "targetChainRefundPerGasUnused", selected: "amount" },
+          ],
         },
-        {
-          inputName: "waste",
-          selected: "custom",
-          size: "31",
-          binarySelected: "uint",
-          endianness: "default",
-          omit: true,
-        },
-        {
-          inputName: "version",
-          selected: "custom",
-          size: "1",
-          binarySelected: "uint",
-          endianness: "default",
-          omit: true,
-        },
-        { inputName: "gasLimit", selected: "amount" },
-        { inputName: "targetChainRefundPerGasUnused", selected: "amount" },
         { inputName: "refundChain", selected: "chain" },
         { inputName: "refundAddress", selected: "address" },
         { inputName: "refundDeliveryProvider", selected: "address" },
         { inputName: "sourceDeliveryProvider", selected: "address" },
         { inputName: "senderAddress", selected: "address" },
+        {
+          inputName: "messageKeys",
+          selected: "custom",
+          lengthSize: "1",
+          binarySelected: "array",
+          endianness: "default",
+          layout: [
+            {
+              inputName: "keyType",
+              selected: "custom",
+              size: "1",
+              binarySelected: "switch",
+              endianness: "default",
+              layouts: [
+                [
+                  [1, "VAA"],
+                  [
+                    { inputName: "chain", selected: "chain" },
+                    { inputName: "emitter", selected: "address" },
+                    {
+                      inputName: "sequence",
+                      selected: "custom",
+                      size: "8",
+                      binarySelected: "uint",
+                      endianness: "default",
+                    },
+                  ],
+                ],
+                [
+                  [2, "CCTP"],
+                  [
+                    {
+                      inputName: "size",
+                      selected: "custom",
+                      size: "4",
+                      binarySelected: "uint",
+                      endianness: "default",
+                      omit: true,
+                    },
+                    {
+                      inputName: "domain",
+                      selected: "custom",
+                      size: "4",
+                      binarySelected: "uint",
+                      endianness: "default",
+                    },
+                    {
+                      inputName: "nonce",
+                      selected: "custom",
+                      size: "8",
+                      binarySelected: "uint",
+                      endianness: "default",
+                    },
+                  ],
+                ],
+              ],
+            },
+          ],
+        },
       ] as UserLayout[],
   };
 
   const resultRawHex = resultRaw ? encoding.hex.encode(resultRaw) : "";
   const resultParsed = resultRawHex.substring(0, resultLength);
   const resultUnparsed = resultRawHex.substring(resultLength);
+  const resultUnparsedArray = encoding.hex.decode(`0x${resultUnparsed}`);
 
   useEffect(() => {
     try {
-      // console.log({ parsingLayout });
       const result = deserializeLayout(parsingLayout, resultRaw);
-      // console.log(processResult(result));
 
       setResultLength(resultRawHex.length);
       setResult(processResult(result));
@@ -293,10 +389,9 @@ export const Submit = ({ resultRaw }: any) => {
 
             console.log({ expected, current });
 
-            const resultRawPartial = resultRaw.slice(0, current);
+            const resultRawPartial = resultRaw.slice(0, +current);
 
             const resultPartial = deserializeLayout(parsingLayout, resultRawPartial);
-            console.log(processResult(resultPartial));
 
             Object.entries(resultPartial);
 
@@ -333,24 +428,28 @@ export const Submit = ({ resultRaw }: any) => {
       )}
       <br />
       <br />
-      Select a layout as a base
-      <br />
-      <br />
-      <div>
-        {Object.keys(baseLayouts).map(item => {
-          return (
-            <div
-              onClick={() => setUserLayout(baseLayouts[item]())}
-              className="submit-btn"
-              key={item}
-            >
-              {item}
-            </div>
-          );
-        })}
-      </div>
-      <br />
-      <br />
+      {!isInternal && (
+        <>
+          Select a layout as a base
+          <br />
+          <br />
+          <div>
+            {Object.keys(baseLayouts).map(item => {
+              return (
+                <div
+                  onClick={() => setUserLayout(baseLayouts[item]())}
+                  className="submit-btn"
+                  key={item}
+                >
+                  {item}
+                </div>
+              );
+            })}
+          </div>
+          <br />
+          <br />
+        </>
+      )}
       Create your layout
       <br />
       <br />
@@ -400,15 +499,26 @@ export const Submit = ({ resultRaw }: any) => {
               setBitsetValues={setBitsetValues}
               isLengthSize={isLengthSize}
               setIsLengthSize={setIsLengthSize}
+              tagIdValue={tagIdValue}
+              setTagIdValue={setTagIdValue}
+              tagNameValue={tagNameValue}
+              setTagNameValue={setTagNameValue}
+              resultUnparsed={resultUnparsedArray}
+              inputName={inputName}
+              switchLayouts={switchLayouts}
+              setSwitchLayouts={setSwitchLayouts}
             />
           </div>
         ))}
 
         <br />
-        {selected === "custom" && (binarySelected === "array" || binarySelected === "bytes") && (
+        {selected === "custom" && (binarySelected === "bytes" || binarySelected === "array") && (
           <div className="submit-options">
             <div
-              onClick={() => setIsAboutToLayout(!isAboutToLayout)}
+              onClick={() => {
+                setShouldOmit(false);
+                setIsAboutToLayout(!isAboutToLayout);
+              }}
               className="submit-options-checkbox"
             >
               {isAboutToLayout && <CheckIcon />}
@@ -417,12 +527,14 @@ export const Submit = ({ resultRaw }: any) => {
           </div>
         )}
 
-        <div className="submit-options">
-          <div onClick={() => setShouldOmit(!shouldOmit)} className="submit-options-checkbox">
-            {shouldOmit && <CheckIcon />}
+        {!isAboutToLayout && binarySelected !== "switch" && (
+          <div className="submit-options">
+            <div onClick={() => setShouldOmit(!shouldOmit)} className="submit-options-checkbox">
+              {shouldOmit && <CheckIcon />}
+            </div>
+            <div>omit from payload parsing</div>
           </div>
-          <div>omit from payload parsing</div>
-        </div>
+        )}
 
         <div
           onClick={() => {
@@ -433,6 +545,8 @@ export const Submit = ({ resultRaw }: any) => {
               if (userLayout.find(a => a.inputName === inputName)) return;
               if (selected === "custom" && !binarySelected) return;
               if (selected === "custom" && !inputValue && !isAboutToLayout) return;
+              if (selected === "custom" && binarySelected === "switch" && !switchLayouts.length)
+                return;
 
               const newUserLayout: UserLayout = { inputName, selected };
 
@@ -453,6 +567,10 @@ export const Submit = ({ resultRaw }: any) => {
                 newUserLayout.binarySelected = binarySelected;
                 newUserLayout.endianness = endianness;
 
+                if (binarySelected === "switch") {
+                  newUserLayout.layouts = switchLayouts;
+                }
+
                 if (isAboutToLayout) {
                   newLayout = true;
                   setIsLayouting(true);
@@ -469,18 +587,13 @@ export const Submit = ({ resultRaw }: any) => {
               if (shouldOmit) newUserLayout.omit = true;
 
               if (newLayout) {
-                console.log("ref prev", { ...layoutingRef.current });
                 newUserLayout.layout = [];
                 layoutingRef.current = newUserLayout.layout;
-                console.log("ref post", layoutingRef.current);
               }
 
               if (isLayouting) {
-                console.log("isLayouting!!");
-                console.log("ref prev", { ...layoutingRef.current });
                 layoutingRef.current.push(newUserLayout);
                 setUserLayout([...userLayout]);
-                console.log("ref post", layoutingRef.current);
               } else {
                 setUserLayout([...userLayout, newUserLayout]);
               }
@@ -510,10 +623,24 @@ export const Submit = ({ resultRaw }: any) => {
 
         <br />
         <br />
+        {isInternal && internalLayoutName && (
+          <>
+            <div
+              onClick={() => {
+                setSwitchLayout(userLayout);
+              }}
+              className="submit-btn"
+            >
+              FINISH LAYOUT FOR {internalLayoutName}
+            </div>
+            <br />
+            <br />
+          </>
+        )}
         <JsonText data={deepCloneWithBigInt(result)} />
         <br />
         <br />
-        {finishedParsing && <div className="submit-btn">SUBMIT</div>}
+        {finishedParsing && !isInternal && <div className="submit-btn">SUBMIT</div>}
       </div>
     </div>
   );
@@ -533,6 +660,14 @@ interface ILayoutItemButtonProps {
   setBitsetValues: (a: string[]) => void;
   isLengthSize: boolean;
   setIsLengthSize: (b: boolean) => void;
+  tagIdValue: string;
+  setTagIdValue: (str: string) => void;
+  tagNameValue: string;
+  setTagNameValue: (str: string) => void;
+  inputName: string;
+  resultUnparsed: Uint8Array;
+  switchLayouts: ISwitchLayouts;
+  setSwitchLayouts: (a: ISwitchLayouts) => void;
 }
 
 const LayoutItemButton = ({
@@ -549,8 +684,38 @@ const LayoutItemButton = ({
   setBitsetValues,
   isLengthSize,
   setIsLengthSize,
+  tagIdValue,
+  setTagIdValue,
+  tagNameValue,
+  setTagNameValue,
+  inputName,
+  resultUnparsed,
+  switchLayouts,
+  setSwitchLayouts,
 }: ILayoutItemButtonProps) => {
   const isSelected = selected === id;
+
+  const toRemoveFromPayload = +inputValue;
+  const resultUnparsedProcessed = resultUnparsed.slice(toRemoveFromPayload);
+
+  const [newSwitchLayout, setNewSwitchLayout] = useState<UserLayout[]>([]);
+
+  useEffect(() => {
+    if (newSwitchLayout.length) {
+      setSwitchLayouts([...switchLayouts, [[+tagIdValue, tagNameValue], newSwitchLayout]]);
+      setTagIdValue("");
+      setTagNameValue("");
+      setNewSwitchLayout([]);
+    }
+  }, [
+    newSwitchLayout,
+    setSwitchLayouts,
+    setTagIdValue,
+    setTagNameValue,
+    switchLayouts,
+    tagIdValue,
+    tagNameValue,
+  ]);
 
   return (
     <>
@@ -650,6 +815,15 @@ const LayoutItemButton = ({
           >
             array
           </button>
+          <button
+            className="submit-layout-button"
+            onClick={() => {
+              setBinarySelected("switch");
+            }}
+            style={{ backgroundColor: binarySelected === "switch" ? "green" : "grey" }}
+          >
+            switch
+          </button>
 
           <div>endianness:</div>
           <button
@@ -678,16 +852,77 @@ const LayoutItemButton = ({
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
           />
-          <span onClick={() => setIsLengthSize(!isLengthSize)} className="submit-switch-size-text">
-            switch to {isLengthSize ? "size" : "lengthSize"}
-          </span>
+          {binarySelected !== "switch" && (
+            <span
+              onClick={() => setIsLengthSize(!isLengthSize)}
+              className="submit-switch-size-text"
+            >
+              switch to {isLengthSize ? "size" : "lengthSize"}
+            </span>
+          )}
           <br />
           <br />
+
+          {binarySelected === "switch" && inputValue && (
+            <div className="submit-layout-switch-menu">
+              <div>layouts:</div>
+              {switchLayouts.map((lay, i) => {
+                const [ID, NAME] = lay[0];
+                const LAYOUT = lay[1];
+
+                return (
+                  <div key={ID} className="submit-selectedLayouts">
+                    <div>
+                      {i === 0 && (
+                        <div>
+                          <br />
+                          ADDED SWITCHES:
+                          <br />
+                          <br />
+                        </div>
+                      )}
+                      <div>ID: {ID}</div>
+                      <div>NAME: {NAME}</div>
+                      <div>LAYOUT: {JSON.stringify(LAYOUT)}</div>
+                      <br />
+                    </div>
+                  </div>
+                );
+              })}
+
+              <br />
+              <div>ADD NEW SWITCH</div>
+              <input
+                className="submit-layout-input"
+                placeholder="layout id"
+                value={tagIdValue}
+                onChange={e => setTagIdValue(e.target.value)}
+              />
+              <input
+                className="submit-layout-input"
+                placeholder="layout id"
+                value={tagNameValue}
+                onChange={e => setTagNameValue(e.target.value)}
+              />
+              <br />
+              <br />
+              {tagIdValue && tagNameValue && (
+                <Submit
+                  setSwitchLayout={setNewSwitchLayout}
+                  isInternal
+                  internalLayoutName={inputName}
+                  resultRaw={resultUnparsedProcessed}
+                />
+              )}
+            </div>
+          )}
         </>
       )}
     </>
   );
 };
+
+type ISwitchLayouts = [[number, string], any][];
 
 // utils
 const toString = (val: Uint8Array) =>
@@ -733,7 +968,6 @@ export const booleanItem = {
 
 // parse UniversalAddress to address, chainNames to chainId, etc.
 const processResult = (result: object) => {
-  console.log("processResult", result);
   const entries = Object.entries(result);
 
   const entriesProcessed = entries.map(([key, value]) => {
@@ -758,7 +992,11 @@ const processResult = (result: object) => {
     }
 
     if (typeof value === "object") {
-      return [key, processResult(value)];
+      if (Array.isArray(value)) {
+        return [key, value.map(a => processResult(a))];
+      } else {
+        return [key, processResult(value)];
+      }
     }
 
     return [key, value];
@@ -769,6 +1007,5 @@ const processResult = (result: object) => {
     toObjectAgain[key] = value;
   });
 
-  console.log("processResult result", toObjectAgain);
   return toObjectAgain;
 };
