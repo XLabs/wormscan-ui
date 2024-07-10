@@ -26,14 +26,8 @@
     &-tab {
       @include button-secondary;
       cursor: default;
-
       max-width: max-content;
-      &:not(:disabled) {
-        &:hover,
-        &:active {
-          background: var(--color-gray-900);
-        }
-      }
+      display: none;
     }
 
     &-btn {
@@ -43,6 +37,7 @@
 
       @include desktop {
         width: auto;
+        margin-left: auto;
       }
 
       & > svg {

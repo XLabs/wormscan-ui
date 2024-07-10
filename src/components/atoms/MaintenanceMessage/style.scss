@@ -12,13 +12,14 @@
     left: 0;
     position: absolute;
     top: 0;
-    width: 100vw;
+    width: 100%;
   }
 
   &-content {
     @include centered-row;
     gap: 16px;
     margin: 16px 0 auto 0;
+    z-index: 1;
 
     @include desktop {
       margin-top: 16px;
