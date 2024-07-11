@@ -1,6 +1,6 @@
 import { test, expect, Response } from "@playwright/test";
 import { describe } from "node:test";
-import { WORMHOLE_DOCS_URL } from "../src/consts";
+import { WORMHOLE_DOCS_URL, WORMHOLESCAN_API_DOCS_URL } from "../src/consts";
 
 const internalLinks = [
   { name: "VAA Parser", href: "#/vaa-parser" },
@@ -10,8 +10,8 @@ const internalLinks = [
 ];
 
 const externalLinks = [
-  { name: "API Docs", href: WORMHOLE_DOCS_URL },
-  { name: "Wormhole Docs", href: "https://docs.wormhole.com/wormhole" },
+  { name: "API Doc", href: WORMHOLESCAN_API_DOCS_URL },
+  { name: "Wormhole Doc", href: WORMHOLE_DOCS_URL },
 ];
 
 describe("Header", () => {

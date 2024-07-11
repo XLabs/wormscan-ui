@@ -4,12 +4,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { TriangleDownIcon } from "@radix-ui/react-icons";
 import { Network } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { NavLink, Select, Tag } from "src/components/atoms";
+import { NavLink, Select } from "src/components/atoms";
 import { WormholeScanBrand } from "src/components/molecules";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Search from "./Search";
 import { AnalyticsIcon, HomeIcon, SearchIcon, MenuIcon, SwapVerticalIcon } from "src/icons/generic";
 import { useWindowSize } from "src/utils/hooks";
+import { WORMHOLE_DOCS_URL, WORMHOLESCAN_API_DOCS_URL } from "src/consts";
 import "./styles.scss";
 
 type NetworkSelectProps = { label: string; value: Network };
@@ -163,21 +164,21 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
                   </NavLink>
 
                   <a
-                    href="https://docs.wormholescan.io/"
+                    href={WORMHOLESCAN_API_DOCS_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="API Docs"
+                    aria-label="API Doc"
                   >
-                    API Docs
+                    API Doc
                   </a>
 
                   <a
-                    href="https://docs.wormhole.com/wormhole"
+                    href={WORMHOLE_DOCS_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="Wormhole Docs"
+                    aria-label="Wormhole Doc"
                   >
-                    Wormhole Docs
+                    Wormhole Doc
                   </a>
                 </NavigationMenu.Content>
               </NavigationMenu.Item>
@@ -249,21 +250,21 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
           </NavLink>
 
           <a
-            href="https://docs.wormholescan.io/"
+            href={WORMHOLESCAN_API_DOCS_URL}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="API Docs"
+            aria-label="API Doc"
           >
-            API docs
+            API doc
           </a>
 
           <a
-            href="https://docs.wormhole.com/wormhole"
+            href={WORMHOLE_DOCS_URL}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Wormhole Docs"
+            aria-label="Wormhole Doc"
           >
-            Wormhole docs
+            Wormhole doc
           </a>
         </div>
       </div>

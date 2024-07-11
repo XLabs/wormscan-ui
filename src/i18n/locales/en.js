@@ -17,7 +17,7 @@ export default {
         footer: {
           about: "About",
           aboutUs: "About Us",
-          apiDoc: "API Docs",
+          apiDoc: "API Doc",
           backToTop: "Back to top",
           blog: "Blog",
           bugBounty: "Bug Bounty",
@@ -25,6 +25,7 @@ export default {
           careers: "Careers",
           community: "Community",
           company: "Company",
+          developers: "Developers",
           contactUs: "Contact Us",
           faq: "FAQs",
           hiring: "We're hiring!",
