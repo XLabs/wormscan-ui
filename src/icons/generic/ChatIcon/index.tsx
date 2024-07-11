@@ -1,18 +1,14 @@
-const ChevronDownIcon = ({ style, width }: { style?: any; width: number }) => (
+const ChevronDownIcon = ({ style, width }: { style?: React.CSSProperties; width: number }) => (
   <svg
     fill="none"
-    height={width / 1.08333333333}
+    height={width}
     style={style}
-    viewBox="0 0 26 24"
+    viewBox="0 0 24 24"
     width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M5.09619 4.75H16.3616V13.25H8.04665L5.09619 16V4.75Z"
-      stroke="#666666"
-      strokeWidth="1.5"
-    />
-    <path d="M20.1167 8V19L17.7027 16.75H9.65599" stroke="#666666" strokeWidth="1.5" />
+    <path d="M4.75 4.75H15.25V13.25H7.5L4.75 16V4.75Z" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M18.75 8V19L16.5 16.75H9" stroke="currentColor" strokeWidth="1.5" />
   </svg>
 );
 
