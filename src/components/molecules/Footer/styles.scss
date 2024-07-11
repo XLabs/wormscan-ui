@@ -25,24 +25,6 @@
       align-items: flex-start;
     }
 
-    &:not(:first-child) {
-      &
-        a:not(.footer-container-logo):not(.footer-container-distextcord-links-ds-btn):not(
-          .footer-container-discord-links-x-btn
-        ) {
-        @include button-ghost;
-        @include text-roboto-body-400;
-        color: var(--color-gray-200);
-        max-width: max-content;
-        min-height: 25px;
-        text-decoration: none;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-
     &-discord {
       @include centered-column;
       border-bottom: 1px solid var(--color-gray-950);
@@ -145,6 +127,19 @@
             margin-right: 6px;
           }
         }
+
+        & > a {
+          @include button-ghost;
+          @include text-roboto-body-400;
+          color: var(--color-gray-200);
+          max-width: max-content;
+          min-height: 25px;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
       }
     }
 
@@ -178,6 +173,19 @@
           @include text-heading6;
           text-transform: uppercase;
           margin: 0 16px 0 6px;
+        }
+
+        & > a {
+          @include button-ghost;
+          @include text-roboto-body-400;
+          color: var(--color-gray-200);
+          max-width: max-content;
+          min-height: 25px;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
     }
