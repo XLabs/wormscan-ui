@@ -98,14 +98,16 @@
       height: 1px;
       left: -16px;
       position: absolute;
-      width: 100vw;
+      width: calc(100% + 32px);
 
       @include tablet {
         left: -60px;
+        width: calc(100% + 120px);
       }
 
       @include desktop {
         left: -120px;
+        width: calc(100% + 240px);
       }
     }
   }

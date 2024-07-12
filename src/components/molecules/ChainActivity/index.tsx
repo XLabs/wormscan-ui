@@ -21,6 +21,18 @@ import {
 } from "src/icons/generic";
 import { IChainActivity, IChainActivityInput } from "src/api/guardian-network/types";
 import { calculateDateDifferenceInDays, startOfDayUTC, startOfMonthUTC } from "src/utils/date";
+import {
+  colors,
+  DAY_IN_MILLISECONDS,
+  formatXaxisLabels,
+  grayColors,
+  IAccumulator,
+  IChainList,
+  ICompleteData,
+  MEDIUM_TIMESPAN_LIMIT,
+  SHORT_TIMESPAN_LIMIT,
+  TSelectedPeriod,
+} from "src/utils/chainActivityUtils";
 import { BREAKPOINTS } from "src/consts";
 import { Calendar } from "./Calendar";
 import "./styles.scss";
@@ -28,11 +40,8 @@ import "./styles.scss";
 const ChainActivity = () => {
   const { width } = useWindowSize();
   const isDesktop = width >= BREAKPOINTS.desktop;
-  const isOnlyMobile = width < BREAKPOINTS.tablet;
 
   const chainsContainerRef = useRef<HTMLDivElement>(null);
-  const dateContainerRef = useRef<HTMLDivElement>(null);
-  const [showCalendar, setShowCalendar] = useState(false);
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
 
   const yesterday = new Date();
@@ -141,14 +150,14 @@ const ChainActivity = () => {
     const dateList: string[] = [];
     const dateDifferenceInDays = calculateDateDifferenceInDays(start, end);
 
-    if (dateDifferenceInDays < 6) {
+    if (dateDifferenceInDays < SHORT_TIMESPAN_LIMIT) {
       start.setUTCHours(start.getUTCHours(), 0, 0, 0);
       end.setUTCHours(end.getUTCHours(), 0, 0, 0);
       while (start < end) {
         dateList.push(start.toISOString());
         start.setUTCHours(start.getUTCHours() + 1, 0, 0, 0);
       }
-    } else if (dateDifferenceInDays < 365) {
+    } else if (dateDifferenceInDays < MEDIUM_TIMESPAN_LIMIT) {
       start = startOfDayUTC(start);
       start.setUTCHours(0, 0, 0, 0);
       while (
@@ -183,12 +192,6 @@ const ChainActivity = () => {
 
     return dateList;
   }, [filters.from, filters.to, isUTC00, isUTCPositive]);
-
-  const handleOutsideClickDate = () => {
-    setStartDate(startDateDisplayed);
-    setEndDate(endDateDisplayed);
-    setShowCalendar(false);
-  };
 
   const handleChainSelection = (value: IChainList[]) => {
     if (
@@ -284,13 +287,16 @@ const ChainActivity = () => {
     }, {});
   };
 
-  useOutsideClick(dateContainerRef, handleOutsideClickDate);
-
   useEffect(() => {
     if (startDate && endDate) {
       const dateDifferenceInDays = calculateDateDifferenceInDays(startDate, endDate);
 
-      const timespan = dateDifferenceInDays < 6 ? "1h" : dateDifferenceInDays < 365 ? "1d" : "1mo";
+      const timespan =
+        dateDifferenceInDays < SHORT_TIMESPAN_LIMIT
+          ? "1h"
+          : dateDifferenceInDays < MEDIUM_TIMESPAN_LIMIT
+          ? "1d"
+          : "1mo";
 
       const newFrom = new Date(startDate);
 
@@ -539,9 +545,6 @@ const ChainActivity = () => {
               setStartDate={setStartDate}
               endDate={endDate}
               setEndDate={setEndDate}
-              showCalendar={showCalendar}
-              setShowCalendar={setShowCalendar}
-              dateContainerRef={dateContainerRef}
               lastBtnSelected={lastBtnSelected}
               setLastBtnSelected={setLastBtnSelected}
               startDateDisplayed={startDateDisplayed}
@@ -675,27 +678,20 @@ const ChainActivity = () => {
                   crosshairs: {
                     position: "front",
                   },
-                  max: new Date(series?.[0]?.data[series[0].data.length - 1].x).getTime() - 1,
                   labels: {
-                    datetimeFormatter: {
-                      hour: "\u00A0\u00A0HH:mm\u00A0\u00A0",
-                      day: "\u00A0\u00A0dd\u00A0MMM\u00A0\u00A0",
-                      month: "\u00A0\u00A0MMM\u00A0\u00A0",
-                      year: "\u00A0\u00A0yyyy\u00A0\u00A0",
-                    },
-                    datetimeUTC: false,
+                    formatter: (value: string) =>
+                      formatXaxisLabels(value, new Date(filters.from), new Date(filters.to)),
                     hideOverlappingLabels: true,
                     offsetX: 0,
+                    rotate: 0,
                     style: {
                       colors: "var(--color-gray-400)",
                       fontFamily: "Roboto Mono, Roboto, sans-serif",
                       fontSize: "12px",
                       fontWeight: 400,
                     },
-                    rotate: 0,
                     trim: false,
                   },
-                  type: "datetime",
                   tooltip: { enabled: false },
                 },
                 yaxis: {
@@ -712,8 +708,6 @@ const ChainActivity = () => {
                   opposite: true,
                 },
                 tooltip: {
-                  shared: chartSelected === "area",
-                  intersect: chartSelected === "bar",
                   custom: ({ series, seriesIndex, dataPointIndex, w }) => {
                     const data = w.config.series[seriesIndex].data[dataPointIndex];
 
@@ -723,21 +717,7 @@ const ChainActivity = () => {
 
                     const totalMessages = allChainsSerie[0].data[dataPointIndex]?.y || 0;
 
-                    const tooltipWidth = 200;
-                    const containerWidth = w.globals.svgWidth;
-                    const left = w.globals.seriesXvalues[0][dataPointIndex];
-                    let adjustedLeft = left;
-                    let style = "";
-
-                    if (chartSelected === "bar" && isOnlyMobile) {
-                      if (left + tooltipWidth > containerWidth) {
-                        adjustedLeft = left - tooltipWidth;
-                      }
-                      adjustedLeft = Math.max(0, adjustedLeft);
-                      style = `style="left: ${adjustedLeft}px; position:absolute;"`;
-                    }
-
-                    return `<div class="chain-activity-chart-tooltip" ${style}>
+                    return `<div class="chain-activity-chart-tooltip">
                       <p class="chain-activity-chart-tooltip-date">
                         ${new Date(data.x).toLocaleString("en-GB", {
                           hour: "2-digit",
@@ -845,26 +825,14 @@ const ChainActivity = () => {
                       </div>
                     </div>`;
                   },
-                  x: {
-                    format: "dd MMM yyyy",
-                  },
+                  intersect: false,
+                  shared: true,
                   y: {
                     formatter: (value, { seriesIndex, dataPointIndex, w }) => {
                       const data = w.config.series[seriesIndex].data[dataPointIndex];
                       return `Count: ${value}<br>Volume: ${data.volume}`;
                     },
                   },
-                  fixed:
-                    chartSelected === "bar" && isOnlyMobile
-                      ? {
-                          enabled: true,
-                          position: "topLeft",
-                          offsetX: width / series?.[0]?.data?.length,
-                          offsetY: -140,
-                        }
-                      : {
-                          enabled: false,
-                        },
                 },
               }}
             />
@@ -874,70 +842,5 @@ const ChainActivity = () => {
     </div>
   );
 };
-
-interface IDetails {
-  emitter_chain: string;
-  volume: number;
-  count: number;
-}
-
-interface IAccumulator {
-  [key: string]: IChainActivityDetails;
-}
-
-interface IChainActivityDetails extends IChainActivity {
-  details: IDetails[];
-}
-
-interface IChainList {
-  disabled: boolean;
-  icon: JSX.Element;
-  label: string;
-  showMinus: boolean;
-  value: string;
-}
-
-interface ICompleteData {
-  [key: string]: {
-    color: string;
-    count: number;
-    details: IDetails[];
-    emitter_chain: string;
-    volume: number;
-    x: string;
-    y: number;
-  };
-}
-
-export type TSelectedPeriod = "24h" | "week" | "month" | "6months" | "year" | "custom";
-
-const colors = [
-  "#B57AFF",
-  "#FF884D",
-  "#7BFFB0",
-  "#5F6FFF",
-  "#FF5B79",
-  "#5BB0FF",
-  "#5535D7",
-  "#F2FF5B",
-  "#FFA3AE",
-  "#11D400",
-];
-
-const grayColors = [
-  "#EEEEEE",
-  "#E0E0E0",
-  "#D3D3D3",
-  "#C6C6C6",
-  "#B9B9B9",
-  "#ACACAC",
-  "#9F9F9F",
-  "#929292",
-  "#858585",
-  "#787878",
-  "#444444",
-];
-
-const DAY_IN_MILLISECONDS = 86400000;
 
 export default ChainActivity;

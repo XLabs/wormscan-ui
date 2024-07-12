@@ -1,15 +1,14 @@
+import { useRef, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import { ChevronDownIcon } from "src/icons/generic";
-import { TSelectedPeriod } from "..";
+import { TSelectedPeriod } from "src/utils/chainActivityUtils";
+import { useOutsideClick } from "src/utils/hooks";
 
 interface ICalendarProps {
   startDate: Date;
   setStartDate: (date: Date) => void;
   endDate: Date;
   setEndDate: (date: Date) => void;
-  showCalendar: boolean;
-  setShowCalendar: (show: boolean) => void;
-  dateContainerRef: React.RefObject<HTMLDivElement>;
   lastBtnSelected: TSelectedPeriod;
   setLastBtnSelected: (btn: TSelectedPeriod) => void;
   startDateDisplayed: Date;
@@ -22,15 +21,15 @@ export const Calendar = ({
   setStartDate,
   endDate,
   setEndDate,
-  showCalendar,
-  setShowCalendar,
-  dateContainerRef,
   lastBtnSelected,
   setLastBtnSelected,
   startDateDisplayed,
   endDateDisplayed,
   isDesktop,
 }: ICalendarProps) => {
+  const [showCalendar, setShowCalendar] = useState(false);
+  const dateContainerRef = useRef<HTMLDivElement>(null);
+
   const setTimePeriod = (
     value: number,
     unit: "days" | "months" | "years",
@@ -63,6 +62,14 @@ export const Calendar = ({
   const handleLastMonthBtn = () => setTimePeriod(1, "months", true, "month");
   const handleLast6MonthsBtn = () => setTimePeriod(6, "months", true, "6months");
   const handleLastYearBtn = () => setTimePeriod(1, "years", true, "year");
+
+  const handleOutsideClickDate = () => {
+    setStartDate(startDateDisplayed);
+    setEndDate(endDateDisplayed);
+    setShowCalendar(false);
+  };
+
+  useOutsideClick(dateContainerRef, handleOutsideClickDate);
 
   return (
     <div className="chain-activity-chart-top-section" ref={dateContainerRef}>

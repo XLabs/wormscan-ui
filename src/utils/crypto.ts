@@ -5,7 +5,13 @@ import {
   toChainId,
   toNative,
 } from "@wormhole-foundation/sdk";
-import { CCTP_MANUAL_APP_ID, GATEWAY_APP_ID, GR_APP_ID } from "src/consts";
+import {
+  CCTP_APP_ID,
+  CCTP_MANUAL_APP_ID,
+  GATEWAY_APP_ID,
+  GR_APP_ID,
+  USDT_TRANSFER_APP_ID,
+} from "src/consts";
 
 export const formatUnits = (value: number, tokenDecimals = 8) => {
   if (!value) return 0;
@@ -91,8 +97,11 @@ export const formatAppId = (appId: string) => {
   if (appId === CCTP_MANUAL_APP_ID) {
     return "CCTP Manual";
   }
-  if (appId === "CCTP_WORMHOLE_INTEGRATION") {
+  if (appId === CCTP_APP_ID) {
     return "CCTP Wormhole Integration";
+  }
+  if (appId === USDT_TRANSFER_APP_ID) {
+    return "USDT Transfer";
   }
 
   return appId

@@ -3,36 +3,33 @@
 .footer {
   @include centered-column;
   gap: 32px;
-  margin: 0 auto 96px auto;
-  max-width: 488px;
-  width: 100%;
+  margin: 0 0 96px 0;
+
+  @include tablet {
+    margin: 0 64px 96px 64px;
+  }
 
   @include desktop {
-    gap: 64px;
-    margin: 0 auto 32px auto;
-    max-width: unset;
+    gap: 86px;
+    margin: 0 auto 58px auto;
+    width: 100%;
   }
 
   &-container {
-    align-items: start;
-    display: flex;
+    @include centered-row;
     gap: 32px;
     justify-content: space-between;
     width: 100%;
 
-    &:last-child {
-      align-items: center;
-      max-width: 370px;
-
-      @include tablet {
-        max-width: unset;
-      }
+    @include desktop {
+      align-items: flex-start;
     }
 
     &-discord {
       @include centered-column;
-      gap: 10px;
       border-bottom: 1px solid var(--color-gray-950);
+      color: var(--color-gray-600);
+      gap: 10px;
       padding-bottom: 32px;
       width: 100%;
 
@@ -46,6 +43,7 @@
 
       &-text {
         @include text-roboto-body-large-400;
+        color: var(--color-white);
         max-width: 240px;
 
         @include desktop {
@@ -81,50 +79,32 @@
     }
 
     &-button {
-      display: none;
+      @include button-secondary;
+      gap: 4px;
 
-      @include desktop {
-        @include button-secondary;
-
-        & > svg {
-          color: var(--color-white-60);
-        }
+      & > svg {
+        color: var(--color-white-60);
       }
     }
 
     &-links {
-      display: flex;
-      gap: 64px;
-      min-width: 264px;
-
-      @include tablet {
-        gap: 204px;
-      }
+      display: grid;
+      gap: 40px 0;
+      grid-template-columns: repeat(2, 1fr);
+      margin-bottom: 32px;
+      white-space: nowrap;
+      width: 100%;
 
       @include desktop {
-        gap: 32px;
+        grid-template-columns: repeat(3, auto);
         justify-content: space-between;
-        max-width: 352px;
-        width: 25%;
-        margin: 0 0 0 12%;
-      }
-
-      @include bigDesktop {
-        margin: 0 0 0 30%;
+        margin: 0;
+        width: 45%;
       }
 
       &-container {
         display: flex;
         flex-direction: column;
-        min-width: 100px;
-
-        @include desktop {
-          min-width: unset;
-
-          &:last-child {
-            min-width: 160px;
-          }
-        }
 
         & > div {
           @include centered-row;
@@ -135,17 +115,25 @@
           @include centered-row;
           @include text-heading6;
           color: var(--color-gray-400);
-          height: 32px;
-          margin-bottom: 8px;
+          margin-bottom: 24px;
           text-transform: uppercase;
+
+          &.dark {
+            color: var(--color-gray-600);
+          }
+
+          &-icon {
+            font-size: 16px;
+            margin-right: 6px;
+          }
         }
 
-        & a {
-          @include centered-row;
+        & > a {
+          @include button-ghost;
+          @include text-roboto-body-400;
           color: var(--color-gray-200);
-          font-size: 14px;
           max-width: max-content;
-          min-height: 32px;
+          min-height: 25px;
           text-decoration: none;
 
           &:hover {
@@ -175,11 +163,45 @@
     }
 
     &-copy {
-      color: var(--color-white-40);
-      font-size: 14px;
-      font-weight: 400;
-      text-align: center;
-      text-transform: uppercase;
+      display: none;
+
+      @include desktop {
+        @include centered-row;
+        color: var(--color-gray-600);
+
+        &-text {
+          @include text-heading6;
+          text-transform: uppercase;
+          margin: 0 16px 0 6px;
+        }
+
+        & > a {
+          @include button-ghost;
+          @include text-roboto-body-400;
+          color: var(--color-gray-200);
+          max-width: max-content;
+          min-height: 25px;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+
+  & .mobile {
+    @include desktop {
+      display: none;
+    }
+  }
+
+  & .desktop {
+    display: none;
+
+    @include desktop {
+      display: flex;
     }
   }
 }

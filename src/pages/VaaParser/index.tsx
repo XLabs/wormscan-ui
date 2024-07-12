@@ -27,9 +27,9 @@ import { waitForElement } from "./waitForElement";
 
 import VaaInput from "./Input";
 import CopyContent from "./CopyContent";
-import "./styles.scss";
 import { stringifyWithBigInt } from "src/utils/object";
 import { Submit } from "./Submit";
+import "./styles.scss";
 
 const VaaParser = () => {
   useEffect(() => {

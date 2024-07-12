@@ -45,6 +45,10 @@ const TermsOfUse = () => {
         }
       }
 
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 32) {
+        currentSection = tableOfContents[tableOfContents.length - 1].id;
+      }
+
       if (currentSection && currentSection !== activeSection) {
         setActiveSection(currentSection);
       }
@@ -59,6 +63,10 @@ const TermsOfUse = () => {
   return (
     <BaseLayout>
       <div className="terms-of-use">
+        {showContentsMobile && (
+          <div className="terms-of-use-bg" onClick={() => setShowContentsMobile(false)} />
+        )}
+
         <div className="terms-of-use-content">
           <div className="terms-of-use-content-top">
             <div className="terms-of-use-content-top-header">
@@ -633,17 +641,13 @@ const TermsOfUse = () => {
                   className={`terms-of-use-aside-container-item ${
                     activeSection === item.id ? "active" : ""
                   }`}
+                  onClick={() => {
+                    goToSection(item.id);
+                    setShowContentsMobile(false);
+                  }}
                 >
                   <div className="marker" />
-                  <p
-                    className="text"
-                    onClick={() => {
-                      goToSection(item.id);
-                      setShowContentsMobile(false);
-                    }}
-                  >
-                    {t(item.text)}
-                  </p>
+                  <p className="text">{t(item.text)}</p>
                 </li>
               ))}
             </ul>

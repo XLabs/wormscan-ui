@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { ArrowUpIcon, PinTopIcon } from "@radix-ui/react-icons";
-import { NavLink, Tag } from "src/components/atoms";
+import { NavLink } from "src/components/atoms";
 import { WormholeScanBrand } from "src/components/molecules";
 import {
   DISCORD_URL,
@@ -8,6 +7,8 @@ import {
   PROVIDE_FEEDBACK_URL,
   TWITTER_URL,
   WORMHOLE_BLOG,
+  WORMHOLE_DOCS_URL,
+  WORMHOLESCAN_API_DOCS_URL,
   XLABS_ABOUT_US_URL,
   XLABS_CAREERS_URL,
   XLABS_OUR_WORK_URL,
@@ -16,7 +17,7 @@ import {
 import DiscordIcon from "src/icons/DiscordIcon";
 import TwitterIcon from "src/icons/TwitterIcon";
 import XlabsIcon from "src/icons/XlabsIcon";
-import { ChatIcon } from "src/icons/generic";
+import { ArrowUpIcon, ChatIcon } from "src/icons/generic";
 import packageJson from "../../../../package.json";
 import "./styles.scss";
 
@@ -32,7 +33,7 @@ const Footer = () => {
     <footer className="footer" data-testid="footer">
       <div className="footer-container">
         <div className="footer-container-discord">
-          <ChatIcon width={25.75} />
+          <ChatIcon width={24} />
 
           <h4 className="footer-container-discord-text">
             Want to become part of the community? Join us.
@@ -58,7 +59,7 @@ const Footer = () => {
               aria-label="Twitter link"
             >
               <TwitterIcon width={17} />
-              <p>Join Twitter</p>
+              <p>Join X</p>
             </a>
           </div>
         </div>
@@ -72,6 +73,16 @@ const Footer = () => {
         <div className="footer-container-links">
           <div className="footer-container-links-container">
             <p className="footer-container-links-container-title">{t("home.footer.community")}</p>
+
+            <a
+              href={PROVIDE_FEEDBACK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Provide Feedback"
+            >
+              {t("home.footer.provideFeedback")}
+            </a>
+
             <a
               href={DISCORD_URL}
               target="_blank"
@@ -82,25 +93,21 @@ const Footer = () => {
             </a>
 
             <a
-              href={TWITTER_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Twitter link"
-            >
-              X (Twitter)
-            </a>
-
-            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub link">
-              GitHub
-            </a>
-
-            <a
               href={WORMHOLE_BLOG}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Wormhole blog link"
             >
               Blog
+            </a>
+
+            <a
+              href={TWITTER_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter link"
+            >
+              X
             </a>
           </div>
 
@@ -116,20 +123,6 @@ const Footer = () => {
               {t("home.footer.aboutUs")}
             </a>
 
-            <div>
-              <a
-                href={XLABS_CAREERS_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Careers link"
-              >
-                {t("home.footer.careers")}
-              </a>
-              <Tag type="chip" size="small">
-                {t("home.footer.hiring")}
-              </Tag>
-            </div>
-
             <a
               href={XLABS_OUR_WORK_URL}
               target="_blank"
@@ -140,19 +133,57 @@ const Footer = () => {
             </a>
 
             <a
-              href={PROVIDE_FEEDBACK_URL}
+              href={XLABS_CAREERS_URL}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Provide Feedback"
+              aria-label="Careers link"
             >
-              {t("home.footer.provideFeedback")}
+              {t("home.footer.careers")}
             </a>
+          </div>
+
+          <div className="footer-container-links-container">
+            <p className="footer-container-links-container-title">{t("home.footer.developers")}</p>
+
+            <NavLink to="/vaa-parser" aria-label="VAA Parser">
+              VAA Parser
+            </NavLink>
+
+            <a
+              href={WORMHOLESCAN_API_DOCS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="API Doc"
+            >
+              API Doc
+            </a>
+
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub link">
+              GitHub
+            </a>
+
+            <a
+              href={WORMHOLE_DOCS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Wormhole Doc"
+            >
+              Wormhole Doc
+            </a>
+          </div>
+
+          <div className="footer-container-links-container mobile">
+            <p className="footer-container-links-container-title dark">
+              <span className="footer-container-links-container-title-icon">&copy;</span>
+              {year} Wormholescan v{packageJson.version}
+            </p>
+
             <NavLink to="/terms-of-use">{t("home.footer.termsOfUse")}</NavLink>
           </div>
         </div>
 
-        <button className="footer-container-button" type="button" onClick={goTop}>
-          {t("home.footer.backToTop")} <ArrowUpIcon height={20} width={20} />
+        <button className="footer-container-button desktop" type="button" onClick={goTop}>
+          {t("home.footer.backToTop")} <ArrowUpIcon width={24} />
         </button>
       </div>
 
@@ -166,8 +197,16 @@ const Footer = () => {
         </div>
 
         <p className="footer-container-copy">
-          &copy; {year} Wormholescan v{packageJson.version}
+          <span>&copy;</span>
+          <span className="footer-container-copy-text">
+            {year} Wormholescan v{packageJson.version}
+          </span>
+          <NavLink to="/terms-of-use">{t("home.footer.termsOfUse")}</NavLink>
         </p>
+
+        <button className="footer-container-button mobile" type="button" onClick={goTop}>
+          {t("home.footer.backToTop")} <ArrowUpIcon width={24} />
+        </button>
       </div>
     </footer>
   );
