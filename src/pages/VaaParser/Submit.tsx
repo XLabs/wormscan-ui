@@ -15,6 +15,7 @@ import { deepCloneWithBigInt } from "src/utils/object";
 import { CheckCircledIcon, CheckIcon, Cross2Icon, PlusIcon } from "@radix-ui/react-icons";
 import { JsonText } from "src/components/atoms";
 import "./submitStyles.scss";
+import { useLocalStorage } from "src/utils/hooks";
 
 type Layouts =
   | "payloadId"
@@ -53,6 +54,13 @@ type SubmitProps = {
   setNestedResult?: (u: Uint8Array) => void;
 };
 
+const DEFINED_LAYOUTS = [
+  "Clear All",
+  "Portal Bridge",
+  "CCTP Wormhole Integration",
+  "Standard Relayer",
+];
+
 export const Submit = ({
   resultRaw,
   isInternal,
@@ -83,6 +91,12 @@ export const Submit = ({
 
   const [result, setResult] = useState<any>({});
   const [resultLength, setResultLength] = useState(0);
+
+  const [saveLayoutTitle, setSaveLayoutTitle] = useState("");
+  const [savedLayouts, setSavedLayouts] = useLocalStorage<[string, UserLayout[]][]>(
+    "savedLayouts",
+    null,
+  );
 
   const layouts: { [key in Layouts]: any } = useMemo(
     () => ({
@@ -201,292 +215,299 @@ export const Submit = ({
     }
   }, [isParsingNestedLayout, result, setNestedResult]);
 
-  const baseLayouts: any = {
-    "Clear All": () => [] as any,
-    "Portal Bridge": () =>
-      [
-        { inputName: "payloadId", selected: "payloadId", selectionValue: "3" },
-        { inputName: "amount", selected: "amount" },
-        { inputName: "tokenAddress", selected: "address" },
-        { inputName: "tokenChain", selected: "chain" },
-        { inputName: "toAddress", selected: "address" },
-        { inputName: "toChain", selected: "chain" },
-        { inputName: "fromAddress", selected: "address" },
-      ] as UserLayout[],
-    "NFT Bridge": () =>
-      [
-        { inputName: "payloadId", selected: "payloadId", selectionValue: "1" },
-        { inputName: "tokenAddress", selected: "address" },
-        { inputName: "tokenChain", selected: "chain" },
-        { inputName: "symbol", selected: "fixedLengthString", selectionValue: "32" },
-        { inputName: "name", selected: "fixedLengthString", selectionValue: "32" },
-        { inputName: "tokenId", selected: "amount" },
-        { inputName: "uri", selected: "variableLengthString" },
-        { inputName: "destAddress", selected: "address" },
-        { inputName: "destChain", selected: "chain" },
-      ] as UserLayout[],
-    "CCTP Wormhole Integration": () =>
-      [
-        { inputName: "payloadId", selected: "payloadId", selectionValue: "1" },
-        { inputName: "tokenAddress", selected: "address" },
-        { inputName: "amount", selected: "amount" },
-        {
-          inputName: "sourceDomain",
-          selected: "custom",
-          selectionValue: "4",
-          binarySelected: "uint",
-          endianness: "default",
-        },
-        {
-          inputName: "targetDomain",
-          selected: "custom",
-          selectionValue: "4",
-          binarySelected: "uint",
-          endianness: "default",
-        },
-        {
-          inputName: "nonce",
-          selected: "custom",
-          selectionValue: "8",
-          binarySelected: "uint",
-          endianness: "default",
-        },
-        { inputName: "caller", selected: "address" },
-        { inputName: "mintRecipient", selected: "address" },
-        {
-          inputName: "length",
-          selected: "custom",
-          selectionValue: "2",
-          binarySelected: "uint",
-          endianness: "default",
-        },
-      ] as UserLayout[],
-    "Standard Relayer": () => {
-      setIsParsingNestedLayout(true);
+  const baseLayouts: any = useMemo(() => {
+    const BASE_LAYOUTS: any = {
+      "Clear All": () => [] as any,
+      "Portal Bridge": () =>
+        [
+          { inputName: "payloadId", selected: "payloadId", id: "3" },
+          { inputName: "amount", selected: "amount" },
+          { inputName: "tokenAddress", selected: "address" },
+          { inputName: "tokenChain", selected: "chain" },
+          { inputName: "toAddress", selected: "address" },
+          { inputName: "toChain", selected: "chain" },
+          { inputName: "fromAddress", selected: "address" },
+        ] as UserLayout[],
+      // "NFT Bridge": () =>
+      //   [
+      //     { inputName: "payloadId", selected: "payloadId", id: "1" },
+      //     { inputName: "tokenAddress", selected: "address" },
+      //     { inputName: "tokenChain", selected: "chain" },
+      //     { inputName: "symbol", selected: "fixedLengthString", size: "32" },
+      //     { inputName: "name", selected: "fixedLengthString", size: "32" },
+      //     { inputName: "tokenId", selected: "amount" },
+      //     { inputName: "uri", selected: "variableLengthString" },
+      //     { inputName: "destAddress", selected: "address" },
+      //     { inputName: "destChain", selected: "chain" },
+      //   ] as UserLayout[],
+      "CCTP Wormhole Integration": () =>
+        [
+          { inputName: "payloadId", selected: "payloadId", id: "1" },
+          { inputName: "tokenAddress", selected: "address" },
+          { inputName: "amount", selected: "amount" },
+          {
+            inputName: "sourceDomain",
+            selected: "custom",
+            size: "4",
+            binarySelected: "uint",
+            endianness: "default",
+          },
+          {
+            inputName: "targetDomain",
+            selected: "custom",
+            size: "4",
+            binarySelected: "uint",
+            endianness: "default",
+          },
+          {
+            inputName: "nonce",
+            selected: "custom",
+            size: "8",
+            binarySelected: "uint",
+            endianness: "default",
+          },
+          { inputName: "caller", selected: "address" },
+          { inputName: "mintRecipient", selected: "address" },
+          {
+            inputName: "length",
+            selected: "custom",
+            size: "2",
+            binarySelected: "uint",
+            endianness: "default",
+          },
+        ] as UserLayout[],
+      "Standard Relayer": () => {
+        setIsParsingNestedLayout(true);
+        return [
+          { inputName: "payloadId", selected: "payloadId", id: "1", omit: true },
+          { inputName: "targetChainId", selected: "chain" },
+          { inputName: "targetAddress", selected: "address" },
+          {
+            inputName: "payload",
+            selected: "custom",
+            lengthSize: "4",
+            binarySelected: "bytes",
+            endianness: "default",
+          },
+          { inputName: "requestedReceiverValue", selected: "amount" },
+          { inputName: "extraReceiverValue", selected: "amount" },
+          {
+            inputName: "executionInfo",
+            selected: "custom",
+            binarySelected: "bytes",
+            endianness: "default",
+            layout: [
+              {
+                inputName: "size",
+                selected: "custom",
+                size: "4",
+                binarySelected: "uint",
+                endianness: "default",
+                omit: true,
+              },
+              {
+                inputName: "waste",
+                selected: "custom",
+                size: "31",
+                binarySelected: "uint",
+                endianness: "default",
+                omit: true,
+              },
+              {
+                inputName: "version",
+                selected: "custom",
+                size: "1",
+                binarySelected: "uint",
+                endianness: "default",
+                omit: true,
+              },
+              { inputName: "gasLimit", selected: "amount" },
+              { inputName: "targetChainRefundPerGasUnused", selected: "amount" },
+            ],
+          },
+          { inputName: "refundChain", selected: "chain" },
+          { inputName: "refundAddress", selected: "address" },
+          { inputName: "refundDeliveryProvider", selected: "address" },
+          { inputName: "sourceDeliveryProvider", selected: "address" },
+          { inputName: "senderAddress", selected: "address" },
+          {
+            inputName: "messageKeys",
+            selected: "custom",
+            lengthSize: "1",
+            binarySelected: "array",
+            endianness: "default",
+            layout: [
+              {
+                inputName: "keyType",
+                selected: "custom",
+                size: "1",
+                binarySelected: "switch",
+                endianness: "default",
+                layouts: [
+                  [
+                    [1, "VAA"],
+                    [
+                      { inputName: "chain", selected: "chain" },
+                      { inputName: "emitter", selected: "address" },
+                      {
+                        inputName: "sequence",
+                        selected: "custom",
+                        size: "8",
+                        binarySelected: "uint",
+                        endianness: "default",
+                      },
+                    ],
+                  ],
+                  [
+                    [2, "CCTP"],
+                    [
+                      {
+                        inputName: "size",
+                        selected: "custom",
+                        size: "4",
+                        binarySelected: "uint",
+                        endianness: "default",
+                        omit: true,
+                      },
+                      {
+                        inputName: "domain",
+                        selected: "custom",
+                        size: "4",
+                        binarySelected: "uint",
+                        endianness: "default",
+                      },
+                      {
+                        inputName: "nonce",
+                        selected: "custom",
+                        size: "8",
+                        binarySelected: "uint",
+                        endianness: "default",
+                      },
+                    ],
+                  ],
+                ],
+              },
+            ],
+          },
+        ] as UserLayout[];
+      },
+      // NTT: () =>
+      //   [
+      //     {
+      //       inputName: "prefix",
+      //       selected: "custom",
+      //       binarySelected: "bytes",
+      //       size: "4",
+      //     },
+      //     {
+      //       inputName: "sourceNttManager",
+      //       selected: "address",
+      //     },
+      //     {
+      //       inputName: "recipientNttManager",
+      //       selected: "address",
+      //     },
+      //     {
+      //       inputName: "waste1",
+      //       selected: "custom",
+      //       size: "2",
+      //       binarySelected: "bytes",
+      //       endianness: "default",
+      //       omit: true,
+      //     },
+      //     {
+      //       inputName: "nttManagerPayload",
+      //       selected: "custom",
+      //       binarySelected: "bytes",
+      //       endianness: "default",
+      //       layout: [
+      //         {
+      //           inputName: "id",
+      //           selected: "custom",
+      //           size: "32",
+      //           binarySelected: "bytes",
+      //           endianness: "default",
+      //         },
+      //         {
+      //           inputName: "sender",
+      //           selected: "address",
+      //         },
+      //         {
+      //           inputName: "waste2",
+      //           selected: "custom",
+      //           size: "2",
+      //           binarySelected: "bytes",
+      //           endianness: "default",
+      //           omit: true,
+      //         },
+      //         {
+      //           inputName: "payload",
+      //           selected: "custom",
+      //           binarySelected: "bytes",
+      //           endianness: "default",
+      //           layout: [
+      //             {
+      //               inputName: "prefix2",
+      //               selected: "custom",
+      //               size: "4",
+      //               binarySelected: "bytes",
+      //               endianness: "default",
+      //               omit: true,
+      //             },
+      //             {
+      //               inputName: "trimmedAmount",
+      //               selected: "custom",
+      //               binarySelected: "bytes",
+      //               endianness: "default",
+      //               layout: [
+      //                 {
+      //                   inputName: "decimals",
+      //                   selected: "custom",
+      //                   size: "1",
+      //                   binarySelected: "uint",
+      //                   endianness: "default",
+      //                 },
+      //                 {
+      //                   inputName: "amount",
+      //                   selected: "custom",
+      //                   size: "8",
+      //                   binarySelected: "uint",
+      //                   endianness: "default",
+      //                 },
+      //               ],
+      //             },
+      //             {
+      //               inputName: "sourceToken",
+      //               selected: "address",
+      //             },
+      //             {
+      //               inputName: "recipientAddress",
+      //               selected: "address",
+      //             },
+      //             {
+      //               inputName: "recipientChain",
+      //               selected: "chain",
+      //             },
+      //           ],
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       inputName: "transceiverPayload",
+      //       selected: "custom",
+      //       lengthSize: "2",
+      //       binarySelected: "bytes",
+      //       endianness: "default",
+      //     },
+      //   ] as UserLayout[],
+    };
 
-      return [
-        { inputName: "payloadId", selected: "payloadId", id: "1", omit: true },
-        { inputName: "targetChainId", selected: "chain" },
-        { inputName: "targetAddress", selected: "address" },
-        {
-          inputName: "payload",
-          selected: "custom",
-          lengthSize: "4",
-          binarySelected: "bytes",
-          endianness: "default",
-        },
-        { inputName: "requestedReceiverValue", selected: "amount" },
-        { inputName: "extraReceiverValue", selected: "amount" },
-        {
-          inputName: "executionInfo",
-          selected: "custom",
-          binarySelected: "bytes",
-          endianness: "default",
-          layout: [
-            {
-              inputName: "size",
-              selected: "custom",
-              size: "4",
-              binarySelected: "uint",
-              endianness: "default",
-              omit: true,
-            },
-            {
-              inputName: "waste",
-              selected: "custom",
-              size: "31",
-              binarySelected: "uint",
-              endianness: "default",
-              omit: true,
-            },
-            {
-              inputName: "version",
-              selected: "custom",
-              size: "1",
-              binarySelected: "uint",
-              endianness: "default",
-              omit: true,
-            },
-            { inputName: "gasLimit", selected: "amount" },
-            { inputName: "targetChainRefundPerGasUnused", selected: "amount" },
-          ],
-        },
-        { inputName: "refundChain", selected: "chain" },
-        { inputName: "refundAddress", selected: "address" },
-        { inputName: "refundDeliveryProvider", selected: "address" },
-        { inputName: "sourceDeliveryProvider", selected: "address" },
-        { inputName: "senderAddress", selected: "address" },
-        {
-          inputName: "messageKeys",
-          selected: "custom",
-          lengthSize: "1",
-          binarySelected: "array",
-          endianness: "default",
-          layout: [
-            {
-              inputName: "keyType",
-              selected: "custom",
-              size: "1",
-              binarySelected: "switch",
-              endianness: "default",
-              layouts: [
-                [
-                  [1, "VAA"],
-                  [
-                    { inputName: "chain", selected: "chain" },
-                    { inputName: "emitter", selected: "address" },
-                    {
-                      inputName: "sequence",
-                      selected: "custom",
-                      size: "8",
-                      binarySelected: "uint",
-                      endianness: "default",
-                    },
-                  ],
-                ],
-                [
-                  [2, "CCTP"],
-                  [
-                    {
-                      inputName: "size",
-                      selected: "custom",
-                      size: "4",
-                      binarySelected: "uint",
-                      endianness: "default",
-                      omit: true,
-                    },
-                    {
-                      inputName: "domain",
-                      selected: "custom",
-                      size: "4",
-                      binarySelected: "uint",
-                      endianness: "default",
-                    },
-                    {
-                      inputName: "nonce",
-                      selected: "custom",
-                      size: "8",
-                      binarySelected: "uint",
-                      endianness: "default",
-                    },
-                  ],
-                ],
-              ],
-            },
-          ],
-        },
-      ] as UserLayout[];
-    },
-    NTT: () =>
-      [
-        {
-          inputName: "prefix",
-          selected: "custom",
-          binarySelected: "bytes",
-          size: "4",
-        },
-        {
-          inputName: "sourceNttManager",
-          selected: "address",
-        },
-        {
-          inputName: "recipientNttManager",
-          selected: "address",
-        },
-        {
-          inputName: "waste1",
-          selected: "custom",
-          size: "2",
-          binarySelected: "bytes",
-          endianness: "default",
-          omit: true,
-        },
-        {
-          inputName: "nttManagerPayload",
-          selected: "custom",
-          binarySelected: "bytes",
-          endianness: "default",
-          layout: [
-            {
-              inputName: "id",
-              selected: "custom",
-              size: "32",
-              binarySelected: "bytes",
-              endianness: "default",
-            },
-            {
-              inputName: "sender",
-              selected: "address",
-            },
-            {
-              inputName: "waste2",
-              selected: "custom",
-              size: "2",
-              binarySelected: "bytes",
-              endianness: "default",
-              omit: true,
-            },
-            {
-              inputName: "payload",
-              selected: "custom",
-              binarySelected: "bytes",
-              endianness: "default",
-              layout: [
-                {
-                  inputName: "prefix2",
-                  selected: "custom",
-                  size: "4",
-                  binarySelected: "bytes",
-                  endianness: "default",
-                  omit: true,
-                },
-                {
-                  inputName: "trimmedAmount",
-                  selected: "custom",
-                  binarySelected: "bytes",
-                  endianness: "default",
-                  layout: [
-                    {
-                      inputName: "decimals",
-                      selected: "custom",
-                      size: "1",
-                      binarySelected: "uint",
-                      endianness: "default",
-                    },
-                    {
-                      inputName: "amount",
-                      selected: "custom",
-                      size: "8",
-                      binarySelected: "uint",
-                      endianness: "default",
-                    },
-                  ],
-                },
-                {
-                  inputName: "sourceToken",
-                  selected: "address",
-                },
-                {
-                  inputName: "recipientAddress",
-                  selected: "address",
-                },
-                {
-                  inputName: "recipientChain",
-                  selected: "chain",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          inputName: "transceiverPayload",
-          selected: "custom",
-          lengthSize: "2",
-          binarySelected: "bytes",
-          endianness: "default",
-        },
-      ] as UserLayout[],
-  };
+    savedLayouts?.forEach(LAY => {
+      BASE_LAYOUTS[LAY[0]] = () => LAY[1];
+    });
+
+    return BASE_LAYOUTS;
+  }, [savedLayouts]);
 
   const resultRawHex = resultRaw ? encoding.hex.encode(resultRaw) : "";
   const resultParsed = resultRawHex.substring(0, resultLength);
@@ -560,12 +581,20 @@ export const Submit = ({
           <div>
             {Object.keys(baseLayouts).map(item => {
               return (
-                <div
-                  onClick={() => setUserLayout(baseLayouts[item]())}
-                  className="submit-btn"
-                  key={item}
-                >
-                  {item}
+                <div key={item} className="submit-base-layouts">
+                  <div onClick={() => setUserLayout(baseLayouts[item]())} className="submit-btn">
+                    {item}
+                  </div>
+                  {!DEFINED_LAYOUTS.includes(item) && (
+                    <div
+                      onClick={() => {
+                        setSavedLayouts(savedLayouts.filter(a => a[0] !== item));
+                      }}
+                      className="submit-base-layouts-delete"
+                    >
+                      <Cross2Icon color="red" />
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -598,6 +627,7 @@ export const Submit = ({
         <br />
 
         <input
+          className="submit-input"
           placeholder="item name"
           value={inputName}
           onChange={ev => setInputName(ev.target.value)}
@@ -731,9 +761,9 @@ export const Submit = ({
           <>
             <div
               onClick={() => {
-                if (binarySelected === "switch") {
-                  setSwitchLayout(userLayout);
-                }
+                // if (binarySelected === "switch") {
+                setSwitchLayout(userLayout);
+                // }
               }}
               className="submit-btn"
             >
@@ -746,7 +776,31 @@ export const Submit = ({
         <JsonText data={deepCloneWithBigInt(result)} />
         <br />
         <br />
-        {finishedParsing && !isInternal && <div className="submit-btn">SUBMIT</div>}
+
+        {/* {finishedParsing && ( */}
+        <div>
+          <input
+            className="submit-input"
+            placeholder="layout name"
+            value={saveLayoutTitle}
+            onChange={e => setSaveLayoutTitle(e.target.value)}
+          />
+          <div
+            onClick={() => {
+              if (saveLayoutTitle) {
+                if (savedLayouts) {
+                  setSavedLayouts([...savedLayouts, [saveLayoutTitle, userLayout]]);
+                } else {
+                  setSavedLayouts([[saveLayoutTitle, userLayout]]);
+                }
+              }
+            }}
+            className="submit-btn"
+          >
+            SAVE
+          </div>
+        </div>
+        {/* )} */}
       </div>
     </div>
   );
