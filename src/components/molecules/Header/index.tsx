@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { TriangleDownIcon } from "@radix-ui/react-icons";
-import { Network } from "@certusone/wormhole-sdk";
+import { Network } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { NavLink, Select } from "src/components/atoms";
 import { WormholeScanBrand } from "src/components/molecules";
@@ -16,8 +16,8 @@ import "./styles.scss";
 type NetworkSelectProps = { label: string; value: Network };
 
 const NETWORK_LIST: NetworkSelectProps[] = [
-  { label: "Mainnet", value: "MAINNET" },
-  { label: "Testnet", value: "TESTNET" },
+  { label: "Mainnet", value: "Mainnet" },
+  { label: "Testnet", value: "Testnet" },
 ];
 
 const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
@@ -36,7 +36,7 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
   const navigate = useNavigate();
 
   const currentNetwork = environment.network;
-  const isMainnet = currentNetwork === "MAINNET";
+  const isMainnet = currentNetwork === "Mainnet";
 
   useEffect(() => {
     if (isDesktop) {

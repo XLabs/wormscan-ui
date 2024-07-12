@@ -8,7 +8,7 @@ import { ErrorPlaceholder } from "src/components/molecules";
 import { getClient } from "src/api/Client";
 import { CrossChainBy } from "src/api/guardian-network/types";
 import { Chart } from "./Chart";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { SwapSmallVerticalIcon, GlobeIcon } from "src/icons/generic";
 import { useWindowSize } from "src/utils/hooks";
 import "./styles.scss";
@@ -71,7 +71,7 @@ const CrossChainChart = () => {
   const isDesktop = width >= 1024;
 
   useEffect(() => {
-    if (currentNetwork === "MAINNET") {
+    if (currentNetwork === "Mainnet") {
       setTypeList(MAINNET_TYPE_LIST);
     } else {
       setSelectedType("tx");
@@ -210,7 +210,7 @@ const CrossChainChart = () => {
       </div>
 
       <div className="cross-chain-options">
-        {currentNetwork === "MAINNET" ? (
+        {currentNetwork === "Mainnet" ? (
           <ToggleGroup
             ariaLabel="Select type"
             className="cross-chain-options-items"

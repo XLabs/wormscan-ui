@@ -7,7 +7,7 @@ import { BlockchainIcon, Loader, Select } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { formatterYAxis } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
-import { ChainId } from "src/api";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { ChainFilterMainnet, ChainFilterTestnet } from "src/pages/Txs/Information/Filters";
 import { useWindowSize, useOutsideClick, useLockBodyScroll } from "src/utils/hooks";
@@ -73,7 +73,7 @@ const ChainActivity = () => {
 
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
-  const orderedChains = currentNetwork === "MAINNET" ? ChainFilterMainnet : ChainFilterTestnet;
+  const orderedChains = currentNetwork === "Mainnet" ? ChainFilterMainnet : ChainFilterTestnet;
   const ALL_CHAINS = {
     label: "All Chains",
     value: "All Chains",
@@ -440,7 +440,7 @@ const ChainActivity = () => {
         return {
           name: getChainName({
             network: currentNetwork,
-            chainId: +chain,
+            chainId: +chain as ChainId,
           }),
           data: dataByChain[chain],
           color: colors[chainIndices[chain]] || "#fff",
@@ -753,8 +753,8 @@ const ChainActivity = () => {
                                         <div class="chain-activity-chart-tooltip-container-each-msg-name">
                                           ${getChainName({
                                             network: currentNetwork,
-                                            chainId: +item?.emitter_chain,
-                                            acronym: +item?.emitter_chain === ChainId.BSC,
+                                            chainId: item?.emitter_chain,
+                                            acronym: item?.emitter_chain === chainToChainId("Bsc"),
                                           })}:
                                         </div>
                                         <div class="chain-activity-chart-tooltip-container-each-msg-number">
@@ -804,9 +804,9 @@ const ChainActivity = () => {
                                       </div>
                                       <div class="chain-activity-chart-tooltip-container-each-msg-name">
                                         ${getChainName({
-                                          acronym: +detail.emitter_chain === ChainId.BSC,
+                                          acronym: detail.emitter_chain === chainToChainId("Bsc"),
                                           network: currentNetwork,
-                                          chainId: +detail.emitter_chain,
+                                          chainId: detail.emitter_chain,
                                         })}:
                                       </div>
                                       <div class="chain-activity-chart-tooltip-container-each-msg-number">

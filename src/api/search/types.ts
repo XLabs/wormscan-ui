@@ -1,4 +1,4 @@
-import { BigNumber } from "ethers";
+import { ChainId } from "@wormhole-foundation/sdk";
 
 export type GetTokenInput = {
   chainId: number;
@@ -37,7 +37,7 @@ export type CctpRelayOutput = {
     amountSent: number;
     amountToSwap: number;
     chain: string;
-    chainId: number;
+    chainId: ChainId;
     estimatedNativeAssetAmount: number;
     senderAddress: string;
     symbol: string;
@@ -45,7 +45,7 @@ export type CctpRelayOutput = {
   };
   to: {
     chain: string;
-    chainId: number;
+    chainId: ChainId;
     gasUsed: number;
     recipientAddress: string;
     txHash: string;
@@ -88,8 +88,8 @@ export interface AutomaticRelayOutput {
       targetAddress: string;
       targetChainId: number;
       vaaKeys: any;
-      extraReceiverValue: BigNumber;
-      requestedReceiverValue: BigNumber;
+      extraReceiverValue: { _hex: string; _isBigNumber: boolean };
+      requestedReceiverValue: { _hex: string; _isBigNumber: boolean };
     };
   };
 }

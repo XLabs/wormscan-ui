@@ -1,13 +1,5 @@
 import { ethers } from "ethers";
-import { ChainId, Network, ParsedVaa, parseVaa } from "@certusone/wormhole-sdk";
-import {
-  DeliveryInstruction,
-  RedeliveryInstruction,
-  RelayerPayloadId,
-  parseWormholeRelayerPayloadType,
-  parseWormholeRelayerResend,
-  parseWormholeRelayerSend,
-} from "@certusone/wormhole-sdk/lib/cjs/relayer";
+import { ChainId, Network, toChainId } from "@wormhole-foundation/sdk";
 import { callWithTimeout, wait } from "src/utils/asyncUtils";
 import { getClient } from "src/api/Client";
 import { AutomaticRelayOutput } from "src/api/search/types";
@@ -25,14 +17,14 @@ export type RelayerOverviewProps = {
   currentNetwork: Network;
   decodeExecution: any;
   deliveryAttempt: string;
-  deliveryInstruction: DeliveryInstruction;
+  deliveryInstruction: any;
   deliveryParsedRefundAddress: string;
   deliveryParsedRefundProviderAddress: string;
   deliveryParsedSenderAddress: string;
   deliveryParsedSourceProviderAddress: string;
   deliveryParsedTargetAddress: string;
   deliveryStatus: AutomaticRelayOutput;
-  fromChain: number;
+  fromChain: ChainId;
   gasUsed: number;
   gasUsedText: () => string;
   guardianSignaturesCount: number;
@@ -54,45 +46,31 @@ export type RelayerOverviewProps = {
 
 export type DeliveryLifecycleRecord = {
   sourceTxHash?: string;
-  sourceTxReceipt?: ethers.providers.TransactionReceipt;
+  sourceTxReceipt?: ethers.TransactionReceipt;
   sourceChainId?: ChainId;
   sourceSequence?: number;
   vaa?: Uint8Array;
   DeliveryStatus?: AutomaticRelayOutput;
   targetTransaction?: {
     targetTxHash?: string;
-    targetTxReceipt?: ethers.providers.TransactionReceipt;
+    targetTxReceipt?: ethers.TransactionReceipt;
     targetChainId?: ChainId;
     targetTxTimestamp?: number;
   };
   props?: RelayerOverviewProps;
 };
 
-export async function populateDeliveryLifecycleRecordByVaa(
+export async function populateRelayerInfo(
   environment: Environment,
-  vaa: string,
+  data: GetOperationsOutput,
 ): Promise<DeliveryLifecycleRecord> {
+  if (!data) return;
+
   const output = {} as DeliveryLifecycleRecord;
-  const rawVaa = decodeVaaFromBase64orHex(vaa);
+  const rawVaa = decodeVaaFromBase64orHex(data.vaa?.raw);
   output.vaa = rawVaa;
-  const parsedVaa = parseVaa(rawVaa);
-  const genericRelayerVaa = parseGenericRelayerVaa(parsedVaa);
-  const targetChain = genericRelayerVaa.targetChainId;
 
-  vaa = Buffer.from(rawVaa).toString("hex");
-
-  let tx: GetOperationsOutput;
-  try {
-    tx = (
-      await getClient().guardianNetwork.getOperations({
-        vaaID: `${parsedVaa.emitterChain}/${parsedVaa.emitterAddress.toString("hex")}/${
-          parsedVaa.sequence
-        }`,
-      })
-    )[0];
-  } catch (e) {
-    console.error("err on getTransaction wormhole api", e);
-  }
+  const targetChain = data.targetChain?.chainId || data.content?.standarizedProperties?.toChain;
 
   let count = 0;
   let relayerEndpoint;
@@ -100,9 +78,9 @@ export async function populateDeliveryLifecycleRecordByVaa(
   while (count <= 4) {
     count++;
     relayerEndpoint = await getClient().search.getAutomaticRelay({
-      emitterChain: parsedVaa.emitterChain,
-      emitterAddress: parsedVaa.emitterAddress.toString("hex"),
-      sequence: Number(parsedVaa.sequence),
+      emitterChain: toChainId(data.emitterChain),
+      emitterAddress: data.emitterAddress.hex,
+      sequence: Number(data.sequence),
     });
 
     if (relayerEndpoint.data) {
@@ -117,13 +95,13 @@ export async function populateDeliveryLifecycleRecordByVaa(
     return;
   }
 
-  const sourceChainId = parsedVaa.emitterChain;
+  const sourceChainId = toChainId(data.emitterChain);
 
   const MAX_WAIT_TIME = 10000;
   const sourceTxHash = relayerEndpoint.data.fromTxHash;
 
   output.sourceTxHash = sourceTxHash || undefined;
-  output.sourceChainId = sourceChainId as ChainId;
+  output.sourceChainId = sourceChainId;
 
   // getting target receipt and timestamp
   const targetTxHash = relayerEndpoint.data.toTxHash;
@@ -135,7 +113,7 @@ export async function populateDeliveryLifecycleRecordByVaa(
     const defaultResponse = {
       targetChainId: targetChain as ChainId,
       targetTxHash: targetTxHash,
-      targetTxReceipt: null as ethers.providers.TransactionReceipt,
+      targetTxReceipt: null as ethers.TransactionReceipt,
       targetTxTimestamp: null as number,
     };
 
@@ -149,7 +127,7 @@ export async function populateDeliveryLifecycleRecordByVaa(
               targetChainId: targetChain as ChainId,
               targetTxHash: targetTxHash,
               targetTxReceipt: receipt,
-              targetTxTimestamp: ethers.BigNumber.from(block.timestamp).toNumber(),
+              targetTxTimestamp: Number(BigInt(block.timestamp)),
             });
           } catch (err) {
             console.log("failed to get timestamp for target tx", err);
@@ -178,11 +156,11 @@ export async function populateDeliveryLifecycleRecordByVaa(
   }
 
   const noSourceTxHash = !relayerEndpoint.data.fromTxHash;
-  if (noSourceTxHash && tx && !!tx.sourceChain?.transaction?.txHash) {
-    output.sourceTxHash = tx.sourceChain?.transaction?.txHash.startsWith("0x")
-      ? tx.sourceChain?.transaction?.txHash
-      : `0x${tx.sourceChain?.transaction?.txHash}`;
-    output.sourceSequence = Number(parsedVaa.sequence);
+  if (noSourceTxHash && data && !!data.sourceChain?.transaction?.txHash) {
+    output.sourceTxHash = data.sourceChain?.transaction?.txHash.startsWith("0x")
+      ? data.sourceChain?.transaction?.txHash
+      : `0x${data.sourceChain?.transaction?.txHash}`;
+    output.sourceSequence = Number(data.sequence);
   }
 
   // getting source receipt
@@ -228,31 +206,4 @@ function decodeVaaFromBase64orHex(vaaRaw: string): Uint8Array {
   const vaaBytes = new Uint8Array(trimmed.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
 
   return vaaBytes;
-}
-
-function parseGenericRelayerPayloads(
-  payloads: Buffer[],
-): (DeliveryInstruction | RedeliveryInstruction)[] {
-  const output = payloads.map(payload => {
-    const payloadId = parseWormholeRelayerPayloadType(payload);
-    return payloadId === RelayerPayloadId.Delivery
-      ? parseWormholeRelayerSend(payload)
-      : parseWormholeRelayerResend(payload);
-  });
-
-  return output;
-}
-
-export function parseGenericRelayerVaa(
-  vaa: ParsedVaa,
-): DeliveryInstruction | RedeliveryInstruction | null {
-  try {
-    return parseGenericRelayerPayloads([vaa.payload])[0];
-  } catch (e) {
-    return null;
-  }
-}
-
-export function isRedelivery(instruction: DeliveryInstruction | RedeliveryInstruction): boolean {
-  return "newSenderAddress" in instruction;
 }

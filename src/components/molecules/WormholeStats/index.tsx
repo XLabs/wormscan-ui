@@ -14,7 +14,7 @@ import "./styles.scss";
 const WormholeStats = () => {
   const { t } = useTranslation();
   const { environment } = useEnvironment();
-  const isMainnet = environment.network === "MAINNET";
+  const isMainnet = environment.network === "Mainnet";
 
   const {
     isLoading,

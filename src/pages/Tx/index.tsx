@@ -1,7 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { parseVaa, tryHexToNativeString } from "@certusone/wormhole-sdk";
+import {
+  deserialize,
+  encoding,
+  toNative,
+  ChainId,
+  chainToChainId,
+  toChainId,
+} from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
 import { SearchNotFound } from "src/components/organisms";
@@ -15,7 +22,7 @@ import {
   getUsdcAddress,
 } from "src/utils/fetchWithRPCsFallthrough";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
-import { ChainId, ChainLimit } from "src/api";
+import { ChainLimit } from "src/api";
 import { getClient } from "src/api/Client";
 import analytics from "src/analytics";
 import { GetOperationsOutput, Observation } from "src/api/guardian-network/types";
@@ -54,19 +61,10 @@ import {
   getGuardianSet,
 } from "src/consts";
 import { ETH_LIMIT } from "../Txs";
-import "./styles.scss";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
-import {
-  DeliveryLifecycleRecord,
-  isRedelivery,
-  parseGenericRelayerVaa,
-  populateDeliveryLifecycleRecordByVaa,
-} from "src/utils/genericRelayerVaaUtils";
-import {
-  DeliveryInstruction,
-  parseEVMExecutionInfoV1,
-} from "@certusone/wormhole-sdk/lib/cjs/relayer";
+import { DeliveryLifecycleRecord, populateRelayerInfo } from "src/utils/genericRelayerVaaUtils";
 import { BlockSection } from "./Information/AdvancedView";
+import "./styles.scss";
 
 const Tx = () => {
   useEffect(() => {
@@ -127,8 +125,8 @@ const Tx = () => {
 
         analytics.track("txDetail", {
           appIds: txData?.appIds?.join(", ") ? txData.appIds.join(", ") : "null",
-          chain: getChainName({ chainId: txData?.chain ?? 0, network }),
-          toChain: getChainName({ chainId: txData?.toChain ?? 0, network }),
+          chain: txData?.chain ? getChainName({ chainId: txData?.chain, network }) : 0,
+          toChain: txData?.toChain ? getChainName({ chainId: txData.toChain, network }) : 0,
         });
 
         const limitDataForChain = chainLimitsData
@@ -254,7 +252,7 @@ const Tx = () => {
   const { data: VAADataByTx } = useQuery(
     ["getVAAbyTxHash", txHash],
     async () => {
-      const otherNetwork = network === "MAINNET" ? "TESTNET" : "MAINNET";
+      const otherNetwork = network === "Mainnet" ? "Testnet" : "Mainnet";
 
       const currentNetworkResponse = await getClient()
         .guardianNetwork.getOperations({
@@ -421,9 +419,8 @@ const Tx = () => {
       if (isNaN(Number(chainId)) || isNaN(Number(seq))) {
         throw new Error("Request failed with status code 400");
       }
-      const otherNetwork = network === "MAINNET" ? "TESTNET" : "MAINNET";
+      const otherNetwork = network === "Mainnet" ? "Testnet" : "Mainnet";
 
-      console.log("FIRST TRY");
       try {
         const currentNetworkResponse = await getClient().guardianNetwork.getOperations({
           vaaID: `${chainId}/${emitter}/${seq}`,
@@ -433,7 +430,6 @@ const Tx = () => {
         // go to the next call
       }
 
-      console.log("SECOND TRY");
       try {
         const otherNetworkResponse = await getClient(otherNetwork).guardianNetwork.getOperations({
           vaaID: `${chainId}/${emitter}/${seq}`,
@@ -480,7 +476,7 @@ const Tx = () => {
     },
     {
       onError: (err: Error) => {
-        console.log("err", err);
+        console.log("error on get operation by vaa", err);
         showSearchNotFound(err);
       },
       enabled: isVAAIdSearch && !errorCode,
@@ -521,10 +517,15 @@ const Tx = () => {
           // Decode SignedVAA and get guardian signatures with name
           const guardianSetList = getGuardianSet(guardianSetIndex);
           const vaaBuffer = Buffer.from(vaa, "base64");
-          const parsedVaa = parseVaa(vaaBuffer);
+          const parsedVaa = deserialize("Uint8Array", vaaBuffer);
 
-          const { emitterAddress, guardianSignatures, hash, sequence } = parsedVaa || {};
-          const parsedEmitterAddress = Buffer.from(emitterAddress).toString("hex");
+          const guardianSignatures = parsedVaa.signatures.map(sig => ({
+            index: sig.guardianIndex,
+            signature: encoding.b64.encode(sig.signature.encode()),
+          }));
+
+          const { emitterAddress, hash, sequence, emitterChain } = parsedVaa || {};
+          const parsedEmitterAddress = emitterAddress.toNative(emitterChain).toString();
           const parsedHash = Buffer.from(hash).toString("hex");
           const parsedSequence = Number(sequence);
           const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
@@ -598,70 +599,22 @@ const Tx = () => {
           if (data.content?.standarizedProperties?.toChain) {
             data.content.standarizedProperties.wrappedTokenAddress = getUsdcAddress(
               network,
-              data.content?.standarizedProperties?.toChain,
+              data.content?.standarizedProperties?.toChain as ChainId,
             );
-          }
-
-          // if destinationTx is not there, we get it from relayer endpoint
-          // or if the real chainId is probably ArbitrumSepolia, BaseSepolia or OptimismSepolia
-          if (
-            !data.targetChain?.transaction?.txHash ||
-            (network === "TESTNET" &&
-              (data.content.standarizedProperties.fromChain === ChainId.Arbitrum ||
-                data.content.standarizedProperties.fromChain === ChainId.Base ||
-                data.content.standarizedProperties.fromChain === ChainId.Optimism ||
-                data.content.standarizedProperties.toChain === ChainId.Arbitrum ||
-                data.content.standarizedProperties.toChain === ChainId.Base ||
-                data.content.standarizedProperties.toChain === ChainId.Optimism))
-          ) {
-            // get CCTP relayer information
-            const relayResponse = await getClient().search.getCctpRelay({
-              txHash: parseTx({ value: data.sourceChain?.transaction?.txHash, chainId: 2 }),
-              network: network,
-            });
-
-            // add Redeem Txn information to the tx response
-            if (relayResponse?.to?.txHash) {
-              data.targetChain = {
-                chainId: relayResponse.to.chainId,
-                status: relayResponse.status,
-                timestamp: relayResponse.metrics?.completedAt,
-                transaction: {
-                  txHash: relayResponse.to.txHash,
-                },
-                from: relayResponse.to.txHash,
-                to: "",
-              };
-
-              setExtraRawInfo(relayResponse);
-            }
-
-            if (relayResponse?.to?.recipientAddress) {
-              data.content.standarizedProperties.toAddress = relayResponse?.to?.recipientAddress;
-            }
-            if (relayResponse?.fee?.amount) {
-              data.content.standarizedProperties.fee =
-                "" +
-                (relayResponse?.fee?.amount + (relayResponse?.from?.amountToSwap || 0)) * 100000000;
-            }
           }
         }
         // ----
 
         // Check Standard Relayer
         if (data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID)) {
-          // TODO: handle generic relayer non-vaa txns without rpcs
-          if (!data.vaa || !data.vaa?.raw) {
-            console.log("standard relayer tx without vaa yet");
-            return;
-          }
+          // TODO: handle generic relayer non-vaa txns without rpcs (shows no amount)
 
           try {
-            const result = await populateDeliveryLifecycleRecordByVaa(environment, data.vaa.raw);
+            const result = await populateRelayerInfo(environment, data);
             relayerInfo = result;
 
             const vaa = relayerInfo.vaa;
-            const parsedVaa = parseVaa(vaa);
+            const parsedVaa = deserialize("Uint8Array", vaa);
             const sourceTxHash = relayerInfo.sourceTxHash;
 
             const deliveryStatus = relayerInfo.DeliveryStatus;
@@ -673,31 +626,30 @@ const Tx = () => {
             const gasUsed = Number(deliveryStatus?.data?.delivery?.execution?.gasUsed);
             const targetTxTimestamp = relayerInfo?.targetTransaction?.targetTxTimestamp;
 
-            const { emitterAddress, emitterChain, guardianSignatures } = parsedVaa || {};
+            const guardianSignatures = parsedVaa.signatures.map(sig => ({
+              index: sig.guardianIndex,
+              signature: encoding.b64.encode(sig.signature.encode()),
+            }));
 
-            const bufferEmitterAddress = Buffer.from(emitterAddress).toString("hex");
-            const parsedEmitterAddress = parseAddress({
-              value: bufferEmitterAddress,
-              chainId: emitterChain as ChainId,
-            });
+            const { emitterAddress, emitterChain } = parsedVaa || {};
 
-            const totalGuardiansNeeded = network === "MAINNET" ? 13 : 1;
+            const parsedEmitterAddress = emitterAddress.toNative(emitterChain).toString();
+
+            const totalGuardiansNeeded = network === "Mainnet" ? 13 : 1;
             const guardianSignaturesCount = Array.isArray(guardianSignatures)
               ? guardianSignatures?.length || 0
               : 0;
 
-            const fromChain = emitterChain;
+            const fromChain = toChainId(emitterChain);
 
-            const instruction = parseGenericRelayerVaa(parsedVaa);
-            const deliveryInstruction = instruction as DeliveryInstruction | null;
-            const isDelivery = deliveryInstruction && !isRedelivery(deliveryInstruction);
+            const deliveryInstruction = data.content.payload;
+            const isDelivery = !("newSenderAddress" in deliveryInstruction);
 
-            const decodeExecution = deliveryInstruction.encodedExecutionInfo
-              ? parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0]
-              : null;
-            const gasLimit = decodeExecution ? decodeExecution.gasLimit : null;
+            const decodeExecution = deliveryInstruction.encodedExecutionInfo;
 
-            if (!deliveryInstruction?.targetAddress) {
+            const gasLimit = data.content?.payload?.encodedExecutionInfo?.gasLimit;
+
+            if (!data.content.standarizedProperties.toAddress) {
               return (
                 <div className="tx-information-errored-info">
                   This is either not an Standard Relayer VAA or something&apos;s wrong with it
@@ -714,7 +666,7 @@ const Tx = () => {
             const maxRefund = deliveryStatus?.data?.delivery?.maxRefund
               ? Number(
                   trunkStringsDecimal(
-                    ethers.utils.formatUnits(
+                    ethers.formatUnits(
                       deliveryStatus?.data?.delivery?.maxRefund,
                       deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
                     ),
@@ -724,27 +676,27 @@ const Tx = () => {
               : 0;
 
             const deliveryParsedTargetAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.targetAddress).toString("hex"),
+              value: deliveryInstruction?.targetAddress,
               chainId: deliveryInstruction?.targetChainId as ChainId,
             });
 
             const deliveryParsedRefundAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.refundAddress).toString("hex"),
+              value: deliveryInstruction?.refundAddress,
               chainId: deliveryInstruction?.refundChainId as ChainId,
             });
 
             const deliveryParsedRefundProviderAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.refundDeliveryProvider).toString("hex"),
+              value: deliveryInstruction?.refundDeliveryProvider,
               chainId: deliveryInstruction?.refundChainId as ChainId,
             });
 
             const deliveryParsedSenderAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.senderAddress).toString("hex"),
+              value: deliveryInstruction?.senderAddress,
               chainId: fromChain as ChainId,
             });
 
             const deliveryParsedSourceProviderAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.sourceDeliveryProvider).toString("hex"),
+              value: deliveryInstruction?.sourceDeliveryProvider,
               chainId: fromChain as ChainId,
             });
 
@@ -762,8 +714,8 @@ const Tx = () => {
 
             const receiverValueText = () => {
               const receiverValue = trunkStringsDecimal(
-                ethers.utils.formatUnits(
-                  deliveryStatus?.data?.instructions?.requestedReceiverValue,
+                ethers.formatUnits(
+                  BigInt(deliveryStatus?.data?.instructions?.requestedReceiverValue?._hex),
                   deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
                 ),
                 3,
@@ -779,7 +731,7 @@ const Tx = () => {
             const budgetText = () => {
               if (deliveryStatus?.data?.delivery?.budget) {
                 return `${trunkStringsDecimal(
-                  ethers.utils.formatUnits(
+                  ethers.formatUnits(
                     deliveryStatus?.data?.delivery?.budget,
                     deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
                   ),
@@ -902,15 +854,18 @@ const Tx = () => {
             };
 
             const nttInfo = await getNttInfo(environment, data, parsedPayload);
-            const targetTokenInfo = await getTokenInformation(
-              data.content?.standarizedProperties?.toChain,
-              environment,
-              nttInfo?.targetTokenAddress,
-            );
 
-            if (nttInfo?.targetTokenAddress) {
-              data.content.standarizedProperties.wrappedTokenAddress = nttInfo.targetTokenAddress;
-              data.content.standarizedProperties.wrappedTokenSymbol = targetTokenInfo.symbol;
+            if (nttInfo) {
+              const targetTokenInfo = await getTokenInformation(
+                data.content?.standarizedProperties?.toChain,
+                environment,
+                nttInfo?.targetTokenAddress,
+              );
+
+              if (nttInfo?.targetTokenAddress) {
+                data.content.standarizedProperties.wrappedTokenAddress = nttInfo.targetTokenAddress;
+                data.content.standarizedProperties.wrappedTokenSymbol = targetTokenInfo.symbol;
+              }
             }
           }
         }
@@ -1019,7 +974,7 @@ const Tx = () => {
 
         // get algorand extra informations needed
         if (
-          data?.content?.standarizedProperties?.tokenChain === ChainId.Algorand &&
+          data?.content?.standarizedProperties?.tokenChain === chainToChainId("Algorand") &&
           data?.content?.standarizedProperties?.tokenAddress
         ) {
           const tokenInfo = await getAlgorandTokenInfo(
@@ -1043,7 +998,7 @@ const Tx = () => {
           }
         }
 
-        if (wrappedTokenChain === ChainId.Algorand) {
+        if (wrappedTokenChain === chainToChainId("Algorand")) {
           const tokenInfo = await getAlgorandTokenInfo(
             network,
             data?.content?.standarizedProperties?.wrappedTokenAddress,
@@ -1183,11 +1138,15 @@ const Tx = () => {
 
           analytics.track("txDetail", {
             appIds: appIds?.join(", ") ? appIds.join(", ") : "null",
-            chain: getChainName({ chainId: data?.emitterChain ?? 0, network }),
-            toChain: getChainName({
-              chainId: data?.content?.standarizedProperties?.toChain ?? 0,
-              network,
-            }),
+            chain: data?.emitterChain
+              ? getChainName({ chainId: data?.emitterChain as ChainId, network })
+              : "Unset",
+            toChain: data?.content?.standarizedProperties?.toChain
+              ? getChainName({
+                  chainId: data?.content?.standarizedProperties?.toChain as ChainId,
+                  network,
+                })
+              : "Unset",
           });
         } else if (relayerInfo) {
           analytics.track("txDetail", {
@@ -1201,11 +1160,11 @@ const Tx = () => {
               network: network,
             }),
             toChain: getChainName({
-              chainId: relayerInfo?.targetTransaction?.targetChainId
+              chainId: (relayerInfo?.targetTransaction?.targetChainId
                 ? relayerInfo.targetTransaction?.targetChainId
                 : data.content?.standarizedProperties?.toChain
                 ? data.content?.standarizedProperties?.toChain
-                : 0,
+                : 0) as ChainId,
               network: network,
             }),
           });
@@ -1273,7 +1232,11 @@ const Tx = () => {
 
           // if fromChain is 5 (Polygon), wait 5 minutes before fetching block info
           if (fromChain !== 5 || differenceInMinutes >= 5) {
-            getEvmBlockInfo(environment, fromChain, data?.sourceChain?.transaction?.txHash)
+            getEvmBlockInfo(
+              environment,
+              fromChain as ChainId,
+              data?.sourceChain?.transaction?.txHash,
+            )
               .then(blockInfo => {
                 setBlockData(blockInfo);
               })
@@ -1314,7 +1277,7 @@ const Tx = () => {
         const emitterChain = data?.emitterChain as ChainId;
         const emitterAddress =
           data?.emitterAddress?.native ||
-          tryHexToNativeString(data?.emitterAddress?.hex, "ethereum"); // ethereum means evm here.
+          toNative("Ethereum", data?.emitterAddress?.hex)?.toString(); // ethereum means evm here.
         const emitterInfo =
           emitterAddress && ARKHAM_CHAIN_NAME[emitterChain]
             ? await tryGetAddressInfo(network, emitterAddress)

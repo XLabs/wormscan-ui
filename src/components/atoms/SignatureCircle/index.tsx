@@ -152,7 +152,7 @@ const GuardianInfo = ({
     >
       {/* Testnet has only one guardian and it's from Jump Crypto, name is not on vaa */}
       <span className="guardianInfo-signature-name">
-        {currentNetwork === "MAINNET" ? showGuardian.name : "Jump Crypto"}
+        {currentNetwork === "Mainnet" ? showGuardian.name : "Jump Crypto"}
       </span>
       <div className="guardianInfo-signature">
         <span className="guardianInfo-signature-text">Signature:</span>

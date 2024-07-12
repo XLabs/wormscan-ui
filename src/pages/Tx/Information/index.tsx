@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { ChainId, isEVMChain } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import {
   CCTP_MANUAL_APP_ID,
@@ -38,6 +37,9 @@ import RelayerOverview from "./Overview/RelayerOverview";
 import AdvancedView from "./AdvancedView";
 
 import "./styles.scss";
+import { ChainId, chainIdToChain } from "@wormhole-foundation/sdk";
+import { platformToChains } from "@wormhole-foundation/sdk";
+import { deepCloneWithBigInt } from "src/utils/object";
 
 interface Props {
   blockData: GetBlockData;
@@ -65,7 +67,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
 
-  const totalGuardiansNeeded = currentNetwork === "MAINNET" ? 13 : 1;
+  const totalGuardiansNeeded = currentNetwork === "Mainnet" ? 13 : 1;
   const vaa = data?.vaa;
   const { isDuplicated } = data?.vaa || {};
   const guardianSignaturesCount =
@@ -104,7 +106,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
 
   const { STATUS, isBigTransaction, isDailyLimitExceeded, transactionLimit } = data;
 
-  const fromChainOrig = emitterChain || stdFromChain;
+  const fromChainOrig: ChainId = emitterChain || stdFromChain;
   const fromAddress = data?.sourceChain?.from || stdFromAddress;
   const toAddress = stdToAddress || data?.targetChain?.to;
   const startDate = timestamp || data?.sourceChain?.timestamp;
@@ -132,18 +134,18 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   const isGatewaySource = data?.sourceChain?.attribute?.type === "wormchain-gateway";
 
   // Gateway Transfers
-  const fromChain = isGatewaySource
-    ? data?.sourceChain?.attribute?.value?.originChainId
-    : fromChainOrig;
-  const toChain = parsedPayload?.["gateway_transfer"]?.chain
+  const fromChain = (
+    isGatewaySource ? data?.sourceChain?.attribute?.value?.originChainId : fromChainOrig
+  ) as ChainId;
+  const toChain: ChainId = parsedPayload?.["gateway_transfer"]?.chain
     ? parsedPayload?.["gateway_transfer"].chain
-    : stdToChain || data?.targetChain?.chainId;
+    : stdToChain || data?.targetChain?.chainId || 0;
 
   const parsedOriginAddress = isGatewaySource
     ? data?.sourceChain?.attribute?.value?.originAddress
     : parseAddress({
         value: fromAddress,
-        chainId: fromChainOrig as ChainId,
+        chainId: fromChainOrig,
       });
   const parsedDestinationAddress = parsedPayload?.["gateway_transfer"]?.recipient
     ? parsedPayload?.["gateway_transfer"].recipient
@@ -170,8 +172,8 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   const destinationDateParsed = formatDate(endDate);
 
   // TODO - when the backend supports all chainIds, remove
-  const extraRawInfoFromChainId = extraRawInfo?.from?.chainId || null;
-  const extraRawInfoToChainId = extraRawInfo?.to?.chainId || null;
+  const extraRawInfoFromChainId: ChainId = extraRawInfo?.from?.chainId || null;
+  const extraRawInfoToChainId: ChainId = extraRawInfo?.to?.chainId || null;
   // ---
 
   let sourceTokenLink = showSourceTokenUrl
@@ -196,7 +198,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
 
   let sourceSymbol = symbol;
   let targetSymbol = symbol;
-  let targetTokenChain = tokenChain;
+  let targetTokenChain = tokenChain as ChainId;
   const wrappedSide = tokenChain !== toChain ? "target" : "source";
 
   if (wrappedTokenAddress && !standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID)) {
@@ -236,7 +238,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
     sourceSymbol = standarizedProperties?.overwriteSourceSymbol;
   }
   if (standarizedProperties?.overwriteTargetTokenChain) {
-    targetTokenChain = standarizedProperties?.overwriteTargetTokenChain;
+    targetTokenChain = standarizedProperties?.overwriteTargetTokenChain as ChainId;
   }
   if (standarizedProperties?.overwriteTargetSymbol) {
     targetSymbol = standarizedProperties?.overwriteTargetSymbol;
@@ -245,11 +247,10 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   // --- ⬇ Add to MetaMask ⬇ ---
   const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
   const tokenEffectiveAddress = wrappedSide === "target" ? wrappedTokenAddress : tokenAddress;
-  const showMetaMaskBtn =
-    isEVMChain(toChain) && tokenInfo?.tokenDecimals && toChain === targetTokenChain;
+  const showMetaMaskBtn = toChain && tokenInfo?.tokenDecimals && toChain === targetTokenChain;
 
   useEffect(() => {
-    if (isEVMChain(toChain)) {
+    if (platformToChains("Evm").includes(chainIdToChain(toChain) as any)) {
       getTokenInformation(targetTokenChain, environment, targetTokenAddress).then(data => {
         if (data) {
           getTokenLogo({ tokenAddress: targetTokenAddress }).then(tokenImage => {
@@ -318,7 +319,9 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
     (STATUS === "EXTERNAL_TX" ||
       STATUS === "VAA_EMITTED" ||
       (STATUS === "PENDING_REDEEM" && new Date(timestamp) < date_30_min_before)) &&
-    (isEVMChain(toChain) || toChain === 1 || toChain === 21) &&
+    (platformToChains("Evm").includes(chainIdToChain(toChain) as any) ||
+      toChain === 1 ||
+      toChain === 21) &&
     toChain === targetTokenChain &&
     !!toAddress &&
     !!(wrappedTokenAddress && tokenEffectiveAddress) &&
@@ -358,7 +361,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
         to: null,
       };
 
-      const newData: GetOperationsOutput = JSON.parse(JSON.stringify(data));
+      const newData: GetOperationsOutput = deepCloneWithBigInt(data);
 
       newData.STATUS = "COMPLETED";
       newData.targetChain = newDestinationTx;
@@ -428,7 +431,6 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
             <AdvancedView
               overviewAndDetailProps={overviewAndDetailProps}
               extraRawInfo={extraRawInfo}
-              lifecycleRecord={data.relayerInfo}
               data={data}
             />
           );
@@ -442,7 +444,6 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
           <AdvancedView
             genericRelayerProps={data.relayerInfo.props}
             extraRawInfo={extraRawInfo}
-            lifecycleRecord={data.relayerInfo}
             data={data}
           />
         );
@@ -457,7 +458,6 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
           <AdvancedView
             overviewAndDetailProps={overviewAndDetailProps}
             extraRawInfo={extraRawInfo}
-            lifecycleRecord={data.relayerInfo}
             data={data}
           />
         );
@@ -526,7 +526,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
                   </div>
                 )}
 
-                {isBigTransaction && currentNetwork === "MAINNET" ? (
+                {isBigTransaction && currentNetwork === "Mainnet" ? (
                   <p>
                     This transaction will take 24 hours to process, as it exceeds the Wormhole
                     network&apos;s temporary transaction limit of $
@@ -534,7 +534,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
                     {getChainName({ chainId: fromChain, network: currentNetwork })} for security
                     reasons. <LearnMoreLink /> about this temporary security measure.
                   </p>
-                ) : isDailyLimitExceeded && currentNetwork === "MAINNET" ? (
+                ) : isDailyLimitExceeded && currentNetwork === "Mainnet" ? (
                   <p>
                     This transaction will take up to 24 hours to process as Wormhole has reached the
                     daily limit for source Blockchain{" "}

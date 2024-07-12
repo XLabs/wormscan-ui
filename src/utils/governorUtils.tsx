@@ -1,10 +1,11 @@
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { Column, Row } from "react-table";
 import { Tooltip } from "src/components/atoms";
 
 export interface IDataDashboard {
   availableNotional: number;
-  chainId: number;
+  chainId: ChainId;
   maxTransactionSize: number;
   notionalLimit: number;
 }
@@ -12,7 +13,7 @@ export interface IDataDashboard {
 export interface IRowDashboard {
   availableNotional: number;
   chain: React.ReactNode;
-  chainId: number;
+  chainId: ChainId;
   chainName: string;
   dailyLimit: React.ReactNode;
   maxTransactionSize: number;
@@ -23,7 +24,7 @@ export interface IRowDashboard {
 
 export interface IDataTransaction {
   amount: number;
-  chainId: number;
+  chainId: ChainId;
   emmiterAddress: string;
   releaseTime: string;
   sequence: string;

@@ -1,34 +1,30 @@
 import {
-  CHAIN_ID_SUI,
-  CONTRACTS,
+  ChainId,
+  chainIdToChain,
+  chainToChainId,
+  circleConnectPayload,
+  contracts,
+  deserializeLayout,
+  deserializePayload,
   Network,
-  coalesceChainName,
-  isCosmWasmChain,
-  isEVMChain,
-  tryHexToNativeString,
-  tryUint8ArrayToNative,
-  uint8ArrayToHex,
-} from "@certusone/wormhole-sdk";
-import {
-  RelayerPayloadId,
-  parseWormholeRelayerPayloadType,
-  parseWormholeRelayerResend,
-  parseWormholeRelayerSend,
-} from "@certusone/wormhole-sdk/lib/cjs/relayer";
-import { Implementation__factory } from "@certusone/wormhole-sdk/lib/cjs/ethers-contracts";
-import { humanAddress } from "@certusone/wormhole-sdk/lib/cjs/cosmos";
-import { ethers } from "ethers";
+  payloadDiscriminator,
+  platformToChains,
+  toNative,
+  UniversalAddress,
+} from "@wormhole-foundation/sdk";
+import { ethers_contracts } from "@wormhole-foundation/sdk-evm-core";
+import { ethers_contracts as circle_contracts } from "@wormhole-foundation/sdk-evm-cctp";
+import { Contract, TransactionReceipt, formatUnits as ethersFormatUnits } from "ethers";
 import { CCTP_MANUAL_APP_ID, GR_APP_ID, IStatus, getGuardianSet } from "src/consts";
-import { ChainId, Order, WormholeTokenList } from "src/api";
+import { Order, WormholeTokenList } from "src/api";
 import { getClient } from "src/api/Client";
 import { Environment, SLOW_FINALITY_CHAINS, getChainInfo, getEthersProvider } from "./environment";
 import { formatUnits, parseAddress } from "./crypto";
 import { isConnect, parseConnectPayload } from "./wh-connect-rpc";
-import { TokenMessenger__factory } from "./TokenMessenger__factory";
 import { hexToBase58 } from "./string";
 
 type TxReceiptHolder = {
-  receipt: ethers.providers.TransactionReceipt;
+  receipt: TransactionReceipt;
   chainId: ChainId;
 };
 
@@ -69,7 +65,7 @@ async function hitAllSlowChains(
   searchValue: string,
 ): Promise<TxReceiptHolder | null> {
   //map of chainId to promises
-  const allPromises: Map<ChainId, Promise<ethers.providers.TransactionReceipt | null>> = new Map();
+  const allPromises: Map<ChainId, Promise<TransactionReceipt | null>> = new Map();
 
   for (const chain of SLOW_FINALITY_CHAINS) {
     const ethersProvider = getEthersProvider(getChainInfo(env, chain as ChainId));
@@ -77,9 +73,9 @@ async function hitAllSlowChains(
     if (ethersProvider) {
       const thisPromise = ethersProvider
         .getTransactionReceipt(searchValue)
-        .then(receipt => {
-          if (receipt.confirmations > 0) {
-            console.log(`tx is from chain ${chain}`);
+        .then(async receipt => {
+          if ((await receipt.confirmations()) > 0) {
+            console.log(`tx is from chain ${chain} (${chainIdToChain(chain)})`);
             return receipt;
           } else {
             console.log(`no confirmations for this tx on chain ${chain}`);
@@ -113,7 +109,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
   const result = await hitAllSlowChains(env, searchValue);
 
   if (result) {
-    const chainName = coalesceChainName(result.chainId);
+    const chainName = chainIdToChain(result.chainId);
 
     // This is the hash for topic[0] of the core contract event LogMessagePublished
     // https://github.com/wormhole-foundation/wormhole/blob/main/ethereum/contracts/Implementation.sol#L12
@@ -130,7 +126,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
     // getting block to read the timestamp
     const ethersProvider = getEthersProvider(getChainInfo(env, result.chainId as ChainId));
     const block = await ethersProvider.getBlock(result.receipt.blockNumber);
-    const timestamp = ethers.BigNumber.from(block.timestamp).toNumber() * 1000;
+    const timestamp = Number(BigInt(block.timestamp)) * 1000;
     const tokenList = await getClient()
       .governor.getTokenList()
       .catch(() => null);
@@ -144,11 +140,12 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
     const txsData: Promise<RPCResponse>[] = result.receipt?.logs
       .filter(
         l =>
-          l.address.toLowerCase() === CONTRACTS[env.network][chainName].core?.toLowerCase() &&
+          l.address.toLowerCase() ===
+            contracts.coreBridge.get(env.network, chainName)?.toLowerCase() &&
           l.topics[0] === LOG_MESSAGE_PUBLISHED_TOPIC,
       )
       .map(async l => {
-        const { args } = Implementation__factory.createInterface().parseLog(l);
+        const { args } = ethers_contracts.Implementation__factory.createInterface().parseLog(l);
         const { consistencyLevel, payload, sender, sequence } = args;
 
         const emitterAddress = l.topics[1].slice(2);
@@ -193,35 +190,32 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           lastFinalizedBlock = await ethersProvider.getBlockNumber();
         }
 
+        const TOKEN_BRIDGE_CONTRACT = contracts.tokenBridge.get(env.network, chainName);
+        const CCTP_CONTRACT = contracts.circleContracts.get(env.network, chainName)?.wormhole;
+
         // checking if we know how to read the payloads:
         //   token bridge
-        const TOKEN_BRIDGE_CONTRACT = CONTRACTS[env.network][chainName].token_bridge;
         if (emitterNattiveAddress.toUpperCase() === TOKEN_BRIDGE_CONTRACT.toUpperCase()) {
           const buff = Buffer.from(payload.slice(2), "hex");
           const payloadType = buff.subarray(0, 1)?.[0];
           const amount = BigInt(`0x${buff.subarray(1, 33).toString("hex")}`).toString();
 
-          const tokenChain = buff.readUInt16BE(65);
+          const tokenChain = buff.readUInt16BE(65) as ChainId;
           const tokenAddress = buff.subarray(33, 65)?.toString("hex");
 
-          const toChain = buff.readUInt16BE(99);
+          const toChain = buff.readUInt16BE(99) as ChainId;
           let toAddress = buff.subarray(67, 99)?.toString("hex");
 
-          if (isCosmWasmChain(toChain as ChainId)) {
-            const addressBytes = ethers.utils.arrayify("0x" + toAddress);
-            /* TODO ??
-             * backend should probably NOT use last20bytes and use all bytes here.
-             * but for now, to maintain the same info with or without VAA, we use last 20 bytes */
-            const addressLast20Bytes = new Uint8Array(addressBytes.buffer.slice(-20));
-            const chainName = coalesceChainName(toChain as ChainId);
-            const cosmAddr = humanAddress(chainName, addressLast20Bytes);
+          // gateway target
+          if (
+            platformToChains("Cosmwasm")
+              .map(a => chainToChainId(a))
+              .includes(toChain as any)
+          ) {
+            const cosmAddr = new UniversalAddress(toAddress)
+              ?.toNative(chainIdToChain(toChain))
+              ?.toString();
             toAddress = cosmAddr;
-          } else {
-            try {
-              toAddress = tryUint8ArrayToNative(buff.subarray(67, 99), toChain as ChainId);
-            } catch {
-              //
-            }
           }
 
           let fee =
@@ -246,10 +240,13 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               appIds = ["PORTAL_TOKEN_BRIDGE", "CONNECT"];
               const parsed = parseConnectPayload(buff.subarray(133));
 
-              if (toChain === CHAIN_ID_SUI) {
+              if (toChain === chainToChainId("Sui")) {
                 toAddress = `0x${parsed.recipientWallet}`;
               } else {
-                toAddress = tryHexToNativeString(parsed.recipientWallet, toChain as ChainId);
+                toAddress = toNative(
+                  chainIdToChain(toChain as ChainId),
+                  parsed.recipientWallet,
+                )?.toString();
               }
               fee = parsed.targetRelayerFee.toString();
             }
@@ -257,7 +254,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
 
           // other values
           const parsedTokenAddress = parseAddress({
-            chainId: tokenChain as ChainId,
+            chainId: tokenChain,
             value: tokenAddress,
             anyChain: true,
           });
@@ -271,8 +268,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           );
           const decimals = tokenDecimals ? Math.min(8, tokenDecimals) : 8;
 
-          const tokenAmount =
-            amount && decimals ? ethers.utils.formatUnits(amount, decimals) : null;
+          const tokenAmount = amount && decimals ? ethersFormatUnits(amount, decimals) : null;
 
           const usdAmount =
             "" +
@@ -283,11 +279,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
 
           return {
             amount:
-              amount && decimals
-                ? ethers.utils.formatUnits(amount, decimals)
-                : amount
-                ? amount
-                : null,
+              amount && decimals ? ethersFormatUnits(amount, decimals) : amount ? amount : null,
             appIds,
             blockNumber: result.receipt.blockNumber,
             chain: result.chainId,
@@ -295,7 +287,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             emitterAddress,
             emitterNattiveAddress,
             extraRawInfo,
-            fee: fee && decimals ? ethers.utils.formatUnits(fee, decimals) : fee ? fee : null,
+            fee: fee && decimals ? ethersFormatUnits(fee, decimals) : fee ? fee : null,
             fromAddress: parsedFromAddress,
             id: VAA_ID,
             lastFinalizedBlock,
@@ -303,7 +295,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             payloadType,
             sender,
             sequence: sequence.toString(),
-            STATUS: "IN_PROGRESS",
+            STATUS: "IN_PROGRESS" as IStatus,
             symbol,
             timestamp,
             toAddress,
@@ -316,106 +308,48 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           };
         }
         // CCTP USDC-BRIDGE
-        else if (
-          emitterNattiveAddress.toUpperCase() ===
-          getCctpEmitterAddress(env, result.chainId)?.toUpperCase()
-        ) {
-          const parseCCTPRelayerPayload = (payloadArray: Buffer): CircleRelayerPayload => {
-            // start vaa payload
-            let offset = 0;
-            const version = payloadArray.readUint8(offset);
-            offset += 1; // 1
-            const tokenAddress = parseAddress({
-              chainId: result.chainId,
-              value: payloadArray.subarray(offset, offset + 32)?.toString("hex"),
-            });
-            offset += 32; // 33
-            const amount = ethers.BigNumber.from(payloadArray.subarray(offset, offset + 32));
-            offset += 32; // 65
-            const fromDomain = payloadArray.readUInt32BE(offset);
-            offset += 4; // 69
-            const toDomain = payloadArray.readUInt32BE(offset);
-            offset += 4; // 73
+        else if (emitterNattiveAddress?.toUpperCase() === CCTP_CONTRACT?.toUpperCase()) {
+          const parsed = deserializePayload("AutomaticCircleBridge:DepositWithPayload", payload);
+          const parsed2 = deserializePayload("AutomaticCircleBridge:TransferWithRelay", payload);
+          const stable = deserializeLayout(circleConnectPayload, parsed.payload);
+          const isStable = !!stable?.targetRecipient;
 
-            function readBigUint64BE(arr: any, offset = 0) {
-              let result = BigInt(0);
-              for (let i = 0; i < 8; i++) {
-                result = (result << BigInt(8)) + BigInt(arr[offset + i]);
-              }
-              return result;
-            }
-            const nonce = readBigUint64BE(payloadArray, offset).toString();
-            offset += 8; // 81
-            const fromAddressBytes = payloadArray.subarray(offset, offset + 32);
-            offset += 32; // 113
-            const mintRecipientBuff = payloadArray.subarray(offset, offset + 32);
-            offset += 32; // 145
-            offset += 2; // 147 (2 bytes for payload length)
-            const payload = payloadArray.subarray(offset);
-            // end vaa payload
-
-            // different cctp payloads here:
-            // STABLE
-            let appIds = ["CCTP_WORMHOLE_INTEGRATION"];
-            let payloadId = null;
-            let feeAmount = null;
-            let toNativeAmount = null;
-            let toAddress = null;
-            if (STABLE_ADDRESSES[env.network].includes(fromAddressBytes.toString("hex"))) {
-              appIds = ["CCTP_WORMHOLE_INTEGRATION", "STABLE"];
-
-              // start payload of vaa payload reading
-              offset = 0;
-              payloadId = payload.readUint8(offset);
-              offset += 1; // 148
-              feeAmount = ethers.BigNumber.from(payload.subarray(offset, offset + 32));
-              offset += 32; // 180
-              toNativeAmount = ethers.BigNumber.from(
-                payload.subarray(offset, offset + 32),
-              ).toString();
-              offset += 32; // 212
-
-              const recipientWalletBytes = Uint8Array.from(payload.subarray(offset, offset + 32));
-              toAddress = uint8ArrayToHex(recipientWalletBytes);
-              // end payload
-            }
-
-            const circleInfo = {
-              amount,
-              appIds,
-              feeAmount,
-              fromAddressBytes,
-              fromDomain,
-              mintRecipientBuff,
-              nonce,
-              payload,
-              payloadId,
-              toAddress,
-              toDomain,
-              tokenAddress,
-              toNativeAmount,
-              version,
-            };
-            return circleInfo;
+          const circleInfo = {
+            amount: parsed.token?.amount?.toString(),
+            appIds: isStable
+              ? ["CCTP_WORMHOLE_INTEGRATION", "STABLE"]
+              : ["CCTP_WORMHOLE_INTEGRATION"],
+            feeAmount: isStable
+              ? stable.targetRelayerFee?.toString()
+              : parsed2.payload?.targetRelayerFee?.toString(),
+            fromDomain: parsed.sourceDomain,
+            toDomain: parsed.targetDomain,
+            nonce: parsed.nonce?.toString(),
+            tokenAddress: parsed.token?.address?.toNative("Ethereum")?.toString(),
+            toNativeAmount: isStable
+              ? stable.toNativeTokenAmount?.toString()
+              : parsed2.payload?.toNativeTokenAmount?.toString(),
+            toAddress: isStable
+              ? stable.targetRecipient?.toNative("Ethereum")?.toString()
+              : parsed2?.payload?.targetRecipient?.toNative("Ethereum")?.toString(),
           };
 
-          const cctpResult = parseCCTPRelayerPayload(Buffer.from(payload.slice(2), "hex"));
-          const amount = "" + 0.000001 * +cctpResult.amount; // 6 decimals for USDC
-          const fee = "" + 0.000001 * +cctpResult.feeAmount; // 6 decimals for USDC
-          const toNativeAmount = "" + 0.000001 * +cctpResult.toNativeAmount; // 6 decimals for USDC
+          const amount = "" + 0.000001 * +circleInfo.amount; // 6 decimals for USDC
+          const fee = "" + 0.000001 * +circleInfo.feeAmount; // 6 decimals for USDC
+          const toNativeAmount = "" + 0.000001 * +circleInfo.toNativeAmount; // 6 decimals for USDC
 
           const usdAmount =
             "" +
               tokenList?.find((t: WormholeTokenList) =>
                 t.originAddress
                   .toLowerCase()
-                  .includes(cctpResult.tokenAddress.slice(2).toLowerCase()),
+                  .includes(circleInfo.tokenAddress.slice(2).toLowerCase()),
               )?.price *
                 Number(amount) || amount;
 
           return {
             amount,
-            appIds: cctpResult.appIds,
+            appIds: circleInfo.appIds,
             chain: result.chainId,
             consistencyLevel,
             emitterAddress,
@@ -426,18 +360,18 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             id: VAA_ID,
             parsedFromAddress,
             sequence: sequence.toString(),
-            STATUS: "IN_PROGRESS",
+            STATUS: "IN_PROGRESS" as IStatus,
             symbol: "USDC",
             timestamp,
-            toAddress: cctpResult.toAddress,
-            toChain: getCctpDomain(cctpResult.toDomain),
-            tokenAddress: cctpResult.tokenAddress,
+            toAddress: circleInfo.toAddress,
+            toChain: getCctpDomain(circleInfo.toDomain),
+            tokenAddress: circleInfo.tokenAddress,
             tokenAmount: amount,
             tokenChain: result.chainId,
             toNativeAmount,
             txHash: searchValue,
             usdAmount,
-            wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(cctpResult.toDomain)),
+            wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(circleInfo.toDomain)),
           };
         }
         // GENERIC-RELAYER
@@ -445,26 +379,34 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           emitterNattiveAddress.toUpperCase() ===
           getRelayersEmitterAddress(env, result.chainId)?.toUpperCase()
         ) {
-          const parseGenericRelayerDelivery = async (
-            payloadArray: Buffer,
+          const buildDelivery = async (
+            deliveryInstructions: DeliveryPayload,
           ): Promise<RPCResponse> => {
-            const deliveryInstructions = parseWormholeRelayerSend(payloadArray);
+            const targetAddress = deliveryInstructions.target?.address
+              ?.toNative("Ethereum")
+              ?.toString();
+            const targetChainId = chainToChainId(deliveryInstructions.target?.chain);
 
             extraRawInfo = {
               ...extraRawInfo,
-              targetChainId: deliveryInstructions.targetChainId,
-              targetAddress: deliveryInstructions.targetAddress.toString("hex"),
-              payload: deliveryInstructions.payload.toString("hex"),
+              targetChainId,
+              targetAddress,
+              payload: deliveryInstructions.payload
+                ? Buffer.from(deliveryInstructions.payload).toString("hex")
+                : "",
               requestedReceiverValue: deliveryInstructions.requestedReceiverValue.toString(),
               extraReceiverValue: deliveryInstructions.extraReceiverValue.toString(),
-              encodedExecutionInfo: deliveryInstructions.encodedExecutionInfo.toString("hex"),
-              refundChainId: deliveryInstructions.refundChainId,
-              refundAddress: deliveryInstructions.refundAddress.toString("hex"),
-              refundDeliveryProvider: deliveryInstructions.refundDeliveryProvider.toString("hex"),
-              sourceDeliveryProvider: deliveryInstructions.sourceDeliveryProvider.toString("hex"),
-              senderAddress: deliveryInstructions.senderAddress.toString("hex"),
-              // deliveryInstructions.vaaKeys was deleted from wormholes sdk
-              //vaaKeys: serializeVaaKeys(deliveryInstructions.vaaKeys),
+              encodedExecutionInfo: deliveryInstructions.executionInfo,
+              refundChainId: chainToChainId(deliveryInstructions.refund?.chain),
+              refundAddress: deliveryInstructions.refund?.address?.toNative("Ethereum")?.toString(),
+              refundDeliveryProvider: deliveryInstructions.refundDeliveryProvider
+                ?.toNative("Ethereum")
+                ?.toString(),
+              sourceDeliveryProvider: deliveryInstructions.sourceDeliveryProvider
+                ?.toNative("Ethereum")
+                ?.toString(),
+              senderAddress: deliveryInstructions.senderAddress?.toNative("Ethereum")?.toString(),
+              vaaKeys: deliveryInstructions.messageKeys,
             };
 
             const deliveryResult = {
@@ -478,12 +420,12 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               fromAddress: parsedFromAddress,
               id: VAA_ID,
               lastFinalizedBlock,
-              payloadType: RelayerPayloadId.Delivery,
+              payloadType: 1,
               sequence: sequence.toString(),
               STATUS: "IN_PROGRESS" as IStatus,
               timestamp,
-              toAddress: deliveryInstructions.targetAddress.toString("hex"),
-              toChain: deliveryInstructions.targetChainId,
+              toAddress: targetAddress,
+              toChain: targetChainId,
               tokenAddress: wrappedTokenAddress,
               tokenChain: result.chainId,
               txHash: searchValue,
@@ -492,20 +434,24 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             return deliveryResult;
           };
 
-          const parseGenericRelayerRedelivery = async (payloadArray: Buffer): Promise<any> => {
-            const redeliveryInstructions = parseWormholeRelayerResend(payloadArray);
+          const buildRedelivery = async (
+            redeliveryInstructions: RedeliveryPayload,
+          ): Promise<any> => {
+            const targetChainId = chainToChainId(redeliveryInstructions.targetChain);
 
             extraRawInfo = {
               ...extraRawInfo,
-              payloadType: RelayerPayloadId.Redelivery,
-              targetChainId: redeliveryInstructions.targetChainId,
+              payloadType: 2,
+              targetChainId,
               newRequestedReceiverValue:
                 redeliveryInstructions.newRequestedReceiverValue.toString(),
-              newEncodedExecutionInfo:
-                redeliveryInstructions.newEncodedExecutionInfo.toString("hex"),
-              newSourceDeliveryProvider:
-                redeliveryInstructions.newSourceDeliveryProvider.toString("hex"),
-              newSenderAddress: redeliveryInstructions.newSenderAddress.toString("hex"),
+              newEncodedExecutionInfo: redeliveryInstructions.newEncodedExecutionInfo,
+              newSourceDeliveryProvider: redeliveryInstructions.newSourceDeliveryProvider
+                ?.toNative("Ethereum")
+                ?.toString(),
+              newSenderAddress: redeliveryInstructions.newSenderAddress
+                ?.toNative("Ethereum")
+                ?.toString(),
             };
 
             const redeliveryResult = {
@@ -519,11 +465,11 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               fromAddress: parsedFromAddress,
               id: VAA_ID,
               lastFinalizedBlock,
-              payloadType: RelayerPayloadId.Redelivery,
+              payloadType: 2,
               sequence: sequence.toString(),
               STATUS: "IN_PROGRESS" as IStatus,
               timestamp,
-              toChain: redeliveryInstructions.targetChainId,
+              toChain: targetChainId,
               tokenAddress: wrappedTokenAddress,
               tokenChain: result.chainId,
               txHash: searchValue,
@@ -531,16 +477,16 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             return redeliveryResult;
           };
 
-          const relayerVaa = Buffer.from(payload.slice(2), "hex");
-          const payloadType = parseWormholeRelayerPayloadType(relayerVaa);
+          const [name, parsed]: GrPayloads = deserializePayload(grDiscriminator, payload);
 
-          if (payloadType === RelayerPayloadId.Delivery) {
-            return parseGenericRelayerDelivery(relayerVaa);
+          switch (name) {
+            case "Relayer:DeliveryInstruction":
+              return buildDelivery(parsed);
+            case "Relayer:RedeliveryInstruction":
+              return buildRedelivery(parsed);
+            default:
+              throw new Error(`Unknown payload type: ${name}`);
           }
-          if (payloadType === RelayerPayloadId.Redelivery) {
-            return parseGenericRelayerRedelivery(relayerVaa);
-          }
-          throw new Error("Expected GR Delivery payload type");
         }
         // default, no token-bridge nor cctp ones
         // (can add other wormhole payload readers here)
@@ -557,7 +503,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
         l => l.topics[0]?.toLowerCase() === LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC.toLowerCase(),
       )
       .map(async l => {
-        const { args } = TokenMessenger__factory.createInterface().parseLog(l);
+        const { args } = circle_contracts.TokenMessenger__factory.createInterface().parseLog(l);
 
         const emitterAddress = l.address;
         const emitterNattiveAddress = parseAddress({
@@ -565,7 +511,8 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           value: emitterAddress,
         });
 
-        const { amount, burnToken, destinationDomain, mintRecipient } = args;
+        const { amount, burnToken, destinationDomain: domain, mintRecipient } = args;
+        const destinationDomain = Number(domain);
 
         const toChain = getCctpDomain(destinationDomain);
         const toAddress =
@@ -611,9 +558,9 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
 
 // CCTP UTILS -----
 interface CircleRelayerPayload {
-  amount: ethers.BigNumber;
+  amount: string;
   appIds: Array<string>;
-  feeAmount: ethers.BigNumber;
+  feeAmount: string;
   fromAddressBytes: Buffer;
   fromDomain: number;
   mintRecipientBuff: Buffer;
@@ -627,65 +574,34 @@ interface CircleRelayerPayload {
   version: number;
 }
 
-const STABLE_ADDRESSES: Record<Network, Array<string>> = {
-  MAINNET: [
-    "0000000000000000000000004cb69fae7e7af841e44e1a1c30af640739378bb2",
-    "00000000000000000000000032dec3f4a0723ce02232f87e8772024e0c86d834",
-    "0000000000000000000000004cb69fae7e7af841e44e1a1c30af640739378bb2",
-    "0000000000000000000000004cb69fae7e7af841e44e1a1c30af640739378bb2",
-    "0000000000000000000000004cb69fae7e7af841e44e1a1c30af640739378bb2",
-  ],
-  TESTNET: [
-    "00000000000000000000000017da1ff5386d044c63f00747b5b8ad1e3806448d",
-    "000000000000000000000000774a70bbd03327c21460b60f25b677d9e46ab458",
-    "000000000000000000000000bf683d541e11320418ca78ec13309938e6c5922f",
-    "0000000000000000000000004cb69fae7e7af841e44e1a1c30af640739378bb2",
-  ],
-  DEVNET: null,
-};
-
 export const getCctpDomain = (dom: number) => {
-  if (dom === 0) return ChainId.Ethereum;
-  if (dom === 1) return ChainId.Avalanche;
-  if (dom === 2) return ChainId.Optimism;
-  if (dom === 3) return ChainId.Arbitrum;
-  if (dom === 5) return ChainId.Solana;
-  if (dom === 6) return ChainId.Base;
-  return null;
-};
-
-const getCctpEmitterAddress = (env: Environment, chain: ChainId) => {
-  if (env.network === "MAINNET") {
-    if (chain === ChainId.Ethereum) return "0xaada05bd399372f0b0463744c09113c137636f6a";
-    if (chain === ChainId.Avalanche) return "0x09fb06a271faff70a651047395aaeb6265265f13";
-    if (chain === ChainId.Arbitrum) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
-    if (chain === ChainId.Optimism) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
-    if (chain === ChainId.Base) return "0x03fabb06fa052557143dc28efcfc63fc12843f1d";
-  } else {
-    if (chain === ChainId.Ethereum) return "0x0a69146716b3a21622287efa1607424c663069a4";
-    if (chain === ChainId.Avalanche) return "0x58f4c17449c90665891c42e14d34aae7a26a472e";
-    if (chain === ChainId.Arbitrum) return "0x2e8f5e00a9c5d450a72700546b89e2b70dfb00f2";
-    if (chain === ChainId.Optimism) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
-    if (chain === ChainId.Base) return "0x2703483B1a5a7c577e8680de9Df8Be03c6f30e3c";
-  }
+  if (dom === 0) return chainToChainId("Ethereum");
+  if (dom === 1) return chainToChainId("Avalanche");
+  if (dom === 2) return chainToChainId("Optimism");
+  if (dom === 3) return chainToChainId("Arbitrum");
+  if (dom === 5) return chainToChainId("Solana");
+  if (dom === 6) return chainToChainId("Base");
+  if (dom === 7) return chainToChainId("Polygon");
   return null;
 };
 
 export const getUsdcAddress = (network: Network, chain: ChainId) => {
-  if (network === "MAINNET") {
-    if (chain === ChainId.Ethereum) return "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
-    if (chain === ChainId.Avalanche) return "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E";
-    if (chain === ChainId.Arbitrum) return "0xaf88d065e77c8cc2239327c5edb3a432268e5831";
-    if (chain === ChainId.Optimism) return "0x0b2c639c533813f4aa9d7837caf62653d097ff85";
-    if (chain === ChainId.Solana) return "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
-    if (chain === ChainId.Base) return "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+  if (network === "Mainnet") {
+    if (chain === chainToChainId("Ethereum")) return "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
+    if (chain === chainToChainId("Avalanche")) return "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E";
+    if (chain === chainToChainId("Arbitrum")) return "0xaf88d065e77c8cc2239327c5edb3a432268e5831";
+    if (chain === chainToChainId("Optimism")) return "0x0b2c639c533813f4aa9d7837caf62653d097ff85";
+    if (chain === chainToChainId("Solana")) return "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+    if (chain === chainToChainId("Base")) return "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+    if (chain === chainToChainId("Polygon")) return "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359";
   } else {
-    if (chain === ChainId.Ethereum) return "0x07865c6e87b9f70255377e024ace6630c1eaa37f";
-    if (chain === ChainId.Avalanche) return "0x5425890298aed601595a70ab815c96711a31bc65";
-    if (chain === ChainId.Arbitrum) return "0xfd064a18f3bf249cf1f87fc203e90d8f650f2d63";
-    if (chain === ChainId.Optimism) return "0xe05606174bac4a6364b31bd0eca4bf4dd368f8c6";
-    if (chain === ChainId.Solana) return "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU";
-    if (chain === ChainId.Base) return "0xf175520c52418dfe19c8098071a252da48cd1c19";
+    if (chain === chainToChainId("Ethereum")) return "0x07865c6e87b9f70255377e024ace6630c1eaa37f";
+    if (chain === chainToChainId("Avalanche")) return "0x5425890298aed601595a70ab815c96711a31bc65";
+    if (chain === chainToChainId("Arbitrum")) return "0xfd064a18f3bf249cf1f87fc203e90d8f650f2d63";
+    if (chain === chainToChainId("Optimism")) return "0xe05606174bac4a6364b31bd0eca4bf4dd368f8c6";
+    if (chain === chainToChainId("Solana")) return "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU";
+    if (chain === chainToChainId("Base")) return "0xf175520c52418dfe19c8098071a252da48cd1c19";
+    if (chain === chainToChainId("Polygon")) return "0x9999f7fea5938fd3b1e26a12c3f2fb024e194f97";
   }
   return null;
 };
@@ -693,9 +609,7 @@ export const getUsdcAddress = (network: Network, chain: ChainId) => {
 
 // RPCs UTILS -----
 const getRelayersEmitterAddress = (env: Environment, chain: ChainId) => {
-  const relayeEmitterAddress = env.chainInfos?.find(
-    a => a.chainId === chain,
-  )?.relayerContractAddress;
+  const relayeEmitterAddress = contracts.relayer.get(env.network, chainIdToChain(chain));
 
   return relayeEmitterAddress ? relayeEmitterAddress : null;
 };
@@ -730,10 +644,11 @@ const getEvmTokenDetails = async (env: Environment, tokenChain: ChainId, tokenAd
   ];
 
   try {
-    const addr = tryHexToNativeString(tokenAddress, tokenChain);
+    const addr = toNative(chainIdToChain(tokenChain), tokenAddress)?.toString();
 
     const tokenEthersProvider = getEthersProvider(getChainInfo(env, tokenChain as ChainId));
-    const contract = new ethers.Contract(addr, tokenInterfaceAbi, tokenEthersProvider);
+    const evmContract = new Contract(addr, tokenInterfaceAbi, tokenEthersProvider);
+    const contract = evmContract;
 
     const [name, symbol, tokenDecimals] = await Promise.all([
       contract.name(),
@@ -748,11 +663,11 @@ const getEvmTokenDetails = async (env: Environment, tokenChain: ChainId, tokenAd
 };
 
 export const getTokenInformation = async (
-  tokenChain: number,
+  tokenChain: ChainId,
   env: Environment,
   parsedTokenAddress: string,
   wrappedTokenAddress?: string,
-  resultChain?: number,
+  resultChain?: ChainId,
 ) => {
   // get token information
   let name: string;
@@ -761,20 +676,24 @@ export const getTokenInformation = async (
 
   // --- try to get REAL token information
   // evm token
-  if (isEVMChain(tokenChain as ChainId)) {
+  if (
+    platformToChains("Evm")
+      .map(a => chainToChainId(a))
+      .includes(tokenChain as any)
+  ) {
     const tokenResult = await getEvmTokenDetails(env, tokenChain, parsedTokenAddress);
 
     name = tokenResult.name;
     symbol = tokenResult.symbol;
-    tokenDecimals = tokenResult.tokenDecimals;
+    tokenDecimals = Number(tokenResult.tokenDecimals);
   }
 
   // solana token
-  if (tokenChain === ChainId.Solana) {
+  if (tokenChain === chainToChainId("Solana")) {
     const tokenResult = await getSolanaTokenDetails(parsedTokenAddress);
     name = tokenResult?.name ? tokenResult.name : null;
     symbol = tokenResult?.symbol ? tokenResult.symbol : null;
-    tokenDecimals = tokenResult?.tokenDecimals ? tokenResult.tokenDecimals : null;
+    tokenDecimals = tokenResult?.tokenDecimals ? Number(tokenResult.tokenDecimals) : null;
   }
 
   if (name || !wrappedTokenAddress) {
@@ -784,20 +703,24 @@ export const getTokenInformation = async (
   // if wasn't possible and wrappedTokenAddress is there,
   //       try to get WRAPPED token information
   // evm wrapped token
-  if (isEVMChain(resultChain as ChainId)) {
+  if (
+    platformToChains("Evm")
+      .map(a => chainToChainId(a))
+      .includes(resultChain as any)
+  ) {
     const tokenResult = await getEvmTokenDetails(env, resultChain, wrappedTokenAddress);
 
     name = tokenResult.name;
     symbol = tokenResult.symbol;
-    tokenDecimals = tokenResult.tokenDecimals;
+    tokenDecimals = Number(tokenResult.tokenDecimals);
   }
 
   // solana wrapped token
-  if (resultChain === ChainId.Solana) {
+  if (resultChain === chainToChainId("Solana")) {
     const tokenResult = await getSolanaTokenDetails(wrappedTokenAddress);
     name = tokenResult?.name ? tokenResult.name : null;
     symbol = tokenResult?.symbol ? tokenResult.symbol : null;
-    tokenDecimals = tokenResult?.tokenDecimals ? tokenResult.tokenDecimals : null;
+    tokenDecimals = tokenResult?.tokenDecimals ? Number(tokenResult.tokenDecimals) : null;
   }
 
   return { name, symbol, tokenDecimals };
@@ -827,3 +750,12 @@ export async function getEvmBlockInfo(env: Environment, fromChain: ChainId, txHa
 
   return { lastFinalizedBlock, currentBlock };
 }
+
+const grDiscriminator = payloadDiscriminator([
+  "Relayer",
+  ["DeliveryInstruction", "RedeliveryInstruction"],
+]);
+
+type GrPayloads = ReturnType<typeof deserializePayload<typeof grDiscriminator>>;
+type DeliveryPayload = ReturnType<typeof deserializePayload<"Relayer:DeliveryInstruction">>;
+type RedeliveryPayload = ReturnType<typeof deserializePayload<"Relayer:RedeliveryInstruction">>;

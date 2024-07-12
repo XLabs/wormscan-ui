@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChainId, Network } from "@certusone/wormhole-sdk";
+import { ChainId, Network } from "@wormhole-foundation/sdk";
 import { CopyIcon, Cross2Icon } from "@radix-ui/react-icons";
 import MetaMaskIcon from "src/icons/MetaMaskIcon.svg";
 import { Tooltip } from "src/components/atoms";

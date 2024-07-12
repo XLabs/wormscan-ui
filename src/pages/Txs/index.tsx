@@ -11,7 +11,8 @@ import { timeAgo } from "src/utils/date";
 import { ArrowRightIcon, CopyIcon } from "src/icons/generic";
 import { allBridgeIcon, cctpIcon, mayanIcon, nttIcon, portalIcon } from "src/icons/Protocols";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import { ChainId, ChainLimit, Order } from "src/api";
+import { ChainLimit, Order } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { GetOperationsInput, GetOperationsOutput } from "src/api/guardian-network/types";
 import { Information } from "./Information";
@@ -68,8 +69,8 @@ const Txs = () => {
   const address = searchParams.get("address") || null;
   const appId = searchParams.get("appId") || null;
   const exclusiveAppId = searchParams.get("exclusiveAppId") || null;
-  const sourceChain = searchParams.get("sourceChain") || null;
-  const targetChain = searchParams.get("targetChain") || null;
+  const sourceChain = (+searchParams.get("sourceChain") as ChainId) || null;
+  const targetChain = (+searchParams.get("targetChain") as ChainId) || null;
 
   useEffect(() => {
     if (address) {

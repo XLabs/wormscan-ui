@@ -4,7 +4,7 @@ import { CopyIcon, SwapVerticalIcon } from "src/icons/generic";
 import { CopyToClipboard } from "src/components/molecules";
 import { Switch } from "src/components/atoms";
 import { getExplorerLink } from "src/utils/wormhole";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import "./styles.scss";
 
 interface Props {

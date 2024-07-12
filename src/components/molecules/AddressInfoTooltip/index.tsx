@@ -2,7 +2,7 @@ import { Cross2Icon, ExternalLinkIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import ArkhamIcon from "src/icons/arkham.svg";
 import { useState } from "react";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import TwitterIcon from "src/icons/TwitterIcon";
 import { ARKHAM_CHAIN_NAME, IArkhamInfoByChain, IArkhamResponse } from "src/utils/arkham";
 import "./styles.scss";
@@ -18,7 +18,7 @@ const ChainInfo = ({ data, chainId }: ChainInfoProps) => {
       {(data.arkhamEntity || data.arkhamLabel) && (
         <>
           <div className="address-chain-info">
-            <BlockchainIcon chainId={chainId} network="MAINNET" size={22} />
+            <BlockchainIcon chainId={chainId} network="Mainnet" size={22} />
             <span>{data.arkhamEntity?.name}</span>
 
             {(data.arkhamEntity?.website || data.arkhamEntity?.twitter) && (

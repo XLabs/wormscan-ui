@@ -1,13 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { CopyIcon } from "@radix-ui/react-icons";
-import { CHAIN_ID_WORMCHAIN } from "@certusone/wormhole-sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { txType } from "src/consts";
 import { Tag } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { parseTx } from "src/utils/crypto";
 import { getExplorerLink } from "src/utils/wormhole";
-import { ChainId } from "src/api";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import "./styles.scss";
 
 interface Props {
@@ -20,8 +19,6 @@ interface Props {
   emitterChainId: ChainId;
   payloadType: number;
 }
-
-const BIGDIPPER_TRANSACTIONS = "https://bigdipper.live/wormhole/transactions";
 
 const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
   const { environment } = useEnvironment();
@@ -44,7 +41,8 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
         <div>Tx Hash:</div>
         <div className="tx-top-txId-container">
           {/* delete conditional when WORMCHAIN gets an explorer */}
-          {(emitterChainId === CHAIN_ID_WORMCHAIN || emitterChainId === ChainId.Sei) &&
+          {(emitterChainId === chainToChainId("Wormchain") ||
+            emitterChainId === chainToChainId("Sei")) &&
           !gatewayInfo?.originTxHash ? (
             <div>
               <span>{parseTxHash}</span>
@@ -74,11 +72,14 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
           <div>Gateway Tx Hash:</div>
           <div className="tx-top-txId-container">
             <a
-              href={`${BIGDIPPER_TRANSACTIONS}/${
-                parseTxHashUpperCase.startsWith("0X")
+              href={getExplorerLink({
+                network: currentNetwork,
+                chainId: chainToChainId("Wormchain"),
+                value: parseTxHashUpperCase.startsWith("0X")
                   ? parseTxHashUpperCase.substring(2)
-                  : parseTxHashUpperCase
-              }`}
+                  : parseTxHashUpperCase,
+                isNativeAddress: true,
+              })}
               target="_blank"
               rel="noopener noreferrer"
             >

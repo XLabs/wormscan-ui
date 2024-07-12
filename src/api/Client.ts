@@ -1,20 +1,20 @@
-import { Network } from "@certusone/wormhole-sdk";
+import { Network } from "@wormhole-foundation/sdk";
 import { queryClient } from "src/App";
 import { createClient } from "src/api";
 
-let currentNetwork: Network = "MAINNET";
+let currentNetwork: Network = "Mainnet";
 let client = createClient(process.env.WORMSCAN_API_BASE_URL);
 
 const getBaseURL = (network: Network) => {
-  return network === "MAINNET"
+  return network === "Mainnet"
     ? process.env.WORMSCAN_API_BASE_URL
     : process.env.WORMSCAN_TESTNET_API_BASE_URL;
 };
 
 const clients = {
-  MAINNET: createClient(getBaseURL("MAINNET")),
-  TESTNET: createClient(getBaseURL("TESTNET")),
-  DEVNET: createClient(getBaseURL("TESTNET")),
+  Mainnet: createClient(getBaseURL("Mainnet")),
+  Testnet: createClient(getBaseURL("Testnet")),
+  Devnet: createClient(getBaseURL("Testnet")),
 };
 
 const resetQueries = async () => {
@@ -22,7 +22,7 @@ const resetQueries = async () => {
 };
 
 export const isOfTypeNetwork = (value: string): value is Network => {
-  return ["MAINNET", "TESTNET"].includes(value);
+  return ["Mainnet", "Testnet"].includes(value);
 };
 
 export const changeClientNetwork = (network: Network) => {

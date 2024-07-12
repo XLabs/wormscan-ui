@@ -1,6 +1,6 @@
-import { Network } from "@certusone/wormhole-sdk";
+import { Network } from "@wormhole-foundation/sdk";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
-import { ChainId } from "src/api";
+import { ChainId } from "@wormhole-foundation/sdk";
 import "./styles.scss";
 
 type Props = {

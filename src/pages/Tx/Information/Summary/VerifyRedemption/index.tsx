@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { ChainId } from "@certusone/wormhole-sdk";
 import { Tooltip } from "src/components/atoms";
 import "./styles.scss";
+import { ChainId } from "@wormhole-foundation/sdk";
 
 interface Props {
   canTryToGetRedeem: boolean;

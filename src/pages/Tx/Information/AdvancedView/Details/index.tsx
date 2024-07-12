@@ -1,6 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { CHAIN_ID_WORMCHAIN, ChainId } from "@certusone/wormhole-sdk";
 import { AddToMetaMaskBtn, BlockchainIcon, Tooltip } from "src/components/atoms";
 import { OverviewProps } from "src/pages/Tx/Information/Overview";
 import { CopyToClipboard } from "src/components/molecules";
@@ -10,6 +9,7 @@ import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import "./styles.scss";
 import { useRecoilState } from "recoil";
 import { addressesInfoState } from "src/utils/recoilStates";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 
 const Details = ({
   amountSent,
@@ -91,7 +91,7 @@ const Details = ({
             {parsedEmitterAddress ? (
               <>
                 {/* delete conditional when WORMCHAIN gets an explorer */}
-                {fromChainOrig === CHAIN_ID_WORMCHAIN ? (
+                {fromChainOrig === chainToChainId("Wormchain") ? (
                   <div>
                     <span>
                       <TruncateText

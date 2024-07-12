@@ -14,10 +14,9 @@ import { AutomaticRelayOutput } from "src/api/search/types";
 import { addressesInfoState } from "src/utils/recoilStates";
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
-import { ChainId } from "src/api";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { RelayerOverviewProps } from "src/utils/genericRelayerVaaUtils";
 import { useRecoilState } from "recoil";
-import { CHAIN_ID_GATEWAY } from "@certusone/wormhole-sdk";
 
 const RelayerOverview = ({
   budgetText,
@@ -252,7 +251,11 @@ const RelayerOverview = ({
           <div className="tx-overview-graph-step-iconWrapper">
             {fromChain && (
               <div className="tx-overview-graph-step-iconContainer">
-                <BlockchainIcon chainId={CHAIN_ID_GATEWAY} network={currentNetwork} size={32} />
+                <BlockchainIcon
+                  chainId={chainToChainId("Wormchain")}
+                  network={currentNetwork}
+                  size={32}
+                />
               </div>
             )}
           </div>

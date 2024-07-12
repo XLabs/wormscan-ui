@@ -1,8 +1,8 @@
 import React, { ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Network } from "@certusone/wormhole-sdk";
 import { Environment, testnetEnv, mainnetEnv } from "src/utils/environment";
 import { changeClientNetwork } from "src/api/Client";
+import { Network } from "@wormhole-foundation/sdk";
 
 interface EnvironmentContext {
   environment: Environment;
@@ -17,27 +17,22 @@ const EnvironmentProviderContext = React.createContext<EnvironmentContext>({
 export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const networkParam = searchParams.get("network")?.toUpperCase();
+  const networkParam = searchParams.get("network");
   const [currentEnv, setCurrentEnv] = useState<Environment>(
-    networkParam === "TESTNET" ? testnetEnv : mainnetEnv,
+    networkParam === "Testnet" ? testnetEnv : mainnetEnv,
   );
   const [clearChildren, setClearChildren] = useState<boolean>(true);
 
   const setEnvironment = useCallback(
     (env: Network) => {
-      /* if (env === "DEVNET") {
+      if (env === "Testnet") {
         setSearchParams(prev => {
-          prev.set("network", "testnet");
+          prev.set("network", "Testnet");
           return prev;
         });
-      } else */ if (env === "TESTNET") {
+      } else if (env === "Mainnet") {
         setSearchParams(prev => {
-          prev.set("network", "TESTNET");
-          return prev;
-        });
-      } else if (env === "MAINNET") {
-        setSearchParams(prev => {
-          prev.set("network", "MAINNET");
+          prev.set("network", "Mainnet");
           return prev;
         });
       }
@@ -46,18 +41,12 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const changeEnvironment = useCallback((env: Network) => {
-    /* if (env === "DEVNET") {
-        setCurrentEnv(tiltEnv);
-        setChain(tiltEnv.chainInfos[0].chainId);
-
-
-        setClearChildren(true);
-      } else */ if (env === "TESTNET") {
-      changeClientNetwork("TESTNET");
+    if (env === "Testnet") {
+      changeClientNetwork("Testnet");
       setCurrentEnv(testnetEnv);
       setClearChildren(true);
-    } else if (env === "MAINNET") {
-      changeClientNetwork("MAINNET");
+    } else if (env === "Mainnet") {
+      changeClientNetwork("Mainnet");
       setCurrentEnv(mainnetEnv);
       setClearChildren(true);
     }
@@ -66,7 +55,7 @@ export const EnvironmentProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    let selectedNetwork = "MAINNET";
+    let selectedNetwork = "Mainnet";
     if (networkParam) selectedNetwork = networkParam;
     changeEnvironment(selectedNetwork as Network);
   }, [changeEnvironment, networkParam]);

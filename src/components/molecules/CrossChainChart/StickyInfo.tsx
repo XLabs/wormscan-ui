@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Network } from "@certusone/wormhole-sdk";
+import { Network, chainIdToChain } from "@wormhole-foundation/sdk";
 import { BlockchainIcon } from "src/components/atoms";
 import { WormholeScanBrand } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
-import { ChainId } from "src/api";
 import { CrossChainBy } from "src/api/guardian-network/types";
 import { Info } from "./Chart";
 
@@ -104,7 +103,7 @@ export const StickyInfo = ({
                 />
               </span>
               <span className="cross-chain-sticky-info-destination">
-                {ChainId[destination.chain] ?? "Unset"}
+                {chainIdToChain(destination.chain) ?? "Unset"}
               </span>
               <span className="cross-chain-sticky-info-value">
                 {destination.percentage.toFixed(2)}% |{" "}

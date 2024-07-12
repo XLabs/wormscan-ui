@@ -231,7 +231,7 @@
         width: 25%;
       }
 
-      &[data-network="TESTNET"] {
+      &[data-network="Testnet"] {
         @include desktop {
           min-width: 270px;
         }
@@ -264,7 +264,7 @@
         }
         @include bigDesktop {
           grid-template-columns: 0.5fr 1.5fr 1fr 1fr;
-          &[data-network="TESTNET"] {
+          &[data-network="Testnet"] {
             grid-template-columns: 1fr 2fr 1fr 1fr;
           }
         }
@@ -515,7 +515,7 @@
         width: 50%;
       }
 
-      &[data-network="TESTNET"] {
+      &[data-network="Testnet"] {
         @include desktop {
           width: calc(100% - 540px);
         }

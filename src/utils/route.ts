@@ -1,4 +1,4 @@
-import { Network } from "@certusone/wormhole-sdk";
+import { Network } from "@wormhole-foundation/sdk";
 import { Path, To } from "react-router-dom";
 import { isOfTypeNetwork } from "src/api/Client";
 
@@ -7,7 +7,7 @@ export const parseTo = (to: string | Partial<Path>, network: Network): To => {
     const url = to.includes("?") ? to.split("?")[0] : to;
     const queryString = to.includes("?") ? to.split("?")[1] : "";
     const queryNetwork =
-      isOfTypeNetwork(network) && network !== "MAINNET" ? `network=${network}` : "";
+      isOfTypeNetwork(network) && network !== "Mainnet" ? `network=${network}` : "";
     const search = queryString
       ? `?${queryString}${queryNetwork && `&${queryNetwork}`}`
       : `?${queryNetwork}`;

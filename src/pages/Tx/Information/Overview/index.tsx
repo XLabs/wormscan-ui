@@ -1,5 +1,4 @@
 import { ArrowDownIcon, CheckboxIcon, CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { CHAIN_ID_WORMCHAIN, ChainId, Network } from "@certusone/wormhole-sdk";
 import { AddToMetaMaskBtn, BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import WormIcon from "src/icons/wormIcon.svg";
@@ -11,6 +10,7 @@ import { useRecoilState } from "recoil";
 import { addressesInfoState } from "src/utils/recoilStates";
 import { INFTInfo } from "src/api/guardian-network/types";
 import "./styles.scss";
+import { ChainId, Network, chainToChainId } from "@wormhole-foundation/sdk";
 
 export type OverviewProps = {
   amountSent?: string;
@@ -18,8 +18,8 @@ export type OverviewProps = {
   currentNetwork?: Network;
   destinationDateParsed?: string;
   fee?: string;
-  fromChain?: ChainId | number;
-  fromChainOrig?: ChainId | number;
+  fromChain?: ChainId;
+  fromChainOrig?: ChainId;
   guardianSignaturesCount?: number;
   isAttestation?: boolean;
   isDuplicated?: boolean;
@@ -45,7 +45,7 @@ export type OverviewProps = {
   sourceTokenLink?: string;
   targetSymbol?: string;
   targetTokenLink?: string;
-  toChain?: ChainId | number;
+  toChain?: ChainId;
   tokenAmount?: string;
   tokenInfo?: TokenInfo;
   totalGuardiansNeeded?: number;
@@ -220,7 +220,7 @@ const Overview = ({
                 <>
                   <div className="tx-overview-graph-step-description">
                     {/* delete conditional when WORMCHAIN gets an explorer */}
-                    {fromChainOrig === CHAIN_ID_WORMCHAIN ? (
+                    {fromChainOrig === chainToChainId("Wormchain") ? (
                       <div>
                         <Tooltip
                           maxWidth={false}

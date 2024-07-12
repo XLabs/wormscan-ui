@@ -1,4 +1,4 @@
-import { ChainId } from "./api";
+import { chainToChainId, ChainId } from "@wormhole-foundation/sdk";
 
 export const BREAKPOINTS = {
   mobile: 320,
@@ -146,22 +146,22 @@ export const XLABS_URL = "https://www.xlabs.xyz";
 
 // if toChain is on this list we should be able to get destinationTx.
 // (contract-watcher for token bridge & connect txs)
-export const canWeGetDestinationTx = (toChain: ChainId) =>
+export const canWeGetDestinationTx = (toChain: any) =>
   [
-    ChainId.Aptos,
-    ChainId.Avalanche,
-    ChainId.Base,
-    ChainId.BSC,
-    ChainId.Celo,
-    ChainId.Ethereum,
-    ChainId.Fantom,
-    ChainId.Moonbeam,
-    ChainId.Oasis,
-    ChainId.Polygon,
-    ChainId.Terra,
-    // ChainId.Arbitrum // should be supported, but BE having problems
-    // ChainId.Optimism // should be supported, but BE having problems
-    // ChainId.Solana,  // should be supported, but BE having problems
+    chainToChainId("Aptos"),
+    chainToChainId("Avalanche"),
+    chainToChainId("Base"),
+    chainToChainId("Bsc"),
+    chainToChainId("Celo"),
+    chainToChainId("Ethereum"),
+    chainToChainId("Fantom"),
+    chainToChainId("Moonbeam"),
+    chainToChainId("Oasis"),
+    chainToChainId("Polygon"),
+    chainToChainId("Terra"),
+    // chainToChainId("Arbitrum") // should be supported, but BE having problems
+    // chainToChainId("Optimism") // should be supported, but BE having problems
+    // chainToChainId("Solana"),  // should be supported, but BE having problems
   ].includes(toChain);
 
 export type IStatus =

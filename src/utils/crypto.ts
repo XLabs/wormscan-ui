@@ -1,4 +1,10 @@
-import { ChainId, isEVMChain, tryHexToNativeString } from "@certusone/wormhole-sdk";
+import {
+  ChainId,
+  chainIdToChain,
+  platformToChains,
+  toChainId,
+  toNative,
+} from "@wormhole-foundation/sdk";
 import {
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
@@ -42,8 +48,14 @@ export const parseAddress = ({
 
   let parsedValue = value;
   try {
-    if (anyChain ? true : isEVMChain(chainId)) {
-      parsedValue = tryHexToNativeString(value, chainId);
+    if (
+      anyChain
+        ? true
+        : platformToChains("Evm")
+            .map(a => toChainId(a))
+            .includes(chainId)
+    ) {
+      parsedValue = toNative(chainIdToChain(chainId), value).toString();
     }
   } catch (e: unknown) {
     // console.log(e);
@@ -58,7 +70,11 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
   let parsedValue = value;
 
   try {
-    if (isEVMChain(chainId)) {
+    if (
+      platformToChains("Evm")
+        .map(a => toChainId(a))
+        .includes(chainId)
+    ) {
       if (String(parsedValue).startsWith("0x")) {
         return parsedValue;
       }
