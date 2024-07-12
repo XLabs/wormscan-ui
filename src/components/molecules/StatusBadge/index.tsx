@@ -91,7 +91,7 @@ const StatusCompletedSmall = () => (
 const StatusInGovernors = () => (
   <Chip className="status-badge-status" color="progress">
     <ClockIcon width={24} />
-    <p>In governors</p>
+    <p>In governor</p>
   </Chip>
 );
 const StatusInProgress = () => (
