@@ -42,6 +42,8 @@ const VaaParser = () => {
   const vaaParam = params?.["*"];
   const navigate = useNavigateCustom();
 
+  const [nestedResult, setNestedResult] = useState(null);
+
   const inputTxRef = useRef(null);
 
   const [inputs, setInputs] = useState<Array<string>>(null);
@@ -592,7 +594,8 @@ const VaaParser = () => {
             </div>
           </div>
 
-          <Submit resultRaw={vaaSubmit} />
+          <Submit resultRaw={vaaSubmit} setNestedResult={setNestedResult} />
+          {nestedResult && <Submit resultRaw={nestedResult} />}
         </div>
       </div>
     </BaseLayout>

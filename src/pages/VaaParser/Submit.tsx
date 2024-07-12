@@ -49,6 +49,8 @@ type SubmitProps = {
   isInternal?: boolean;
   internalLayoutName?: string;
   setSwitchLayout?: (u: UserLayout[]) => void;
+  setInternalLayout?: (u: UserLayout[]) => void;
+  setNestedResult?: (u: Uint8Array) => void;
 };
 
 export const Submit = ({
@@ -56,9 +58,13 @@ export const Submit = ({
   isInternal,
   internalLayoutName,
   setSwitchLayout,
+  setInternalLayout,
+  setNestedResult,
 }: SubmitProps) => {
   const [userLayout, setUserLayout] = useState<UserLayout[]>([]);
   const [parsingLayout, setParsingLayout] = useState([]);
+
+  const [isParsingNestedLayout, setIsParsingNestedLayout] = useState(null);
 
   const [selected, setSelected] = useState<Layouts>(null);
   const [inputName, setInputName] = useState("");
@@ -66,6 +72,7 @@ export const Submit = ({
   const [tagIdValue, setTagIdValue] = useState("");
   const [tagNameValue, setTagNameValue] = useState("");
   const [switchLayouts, setSwitchLayouts] = useState<ISwitchLayouts>([]);
+  const [internalLayouts, setInternalLayouts] = useState<UserLayout[]>([]);
 
   const [binarySelected, setBinarySelected] = useState<Binaries>(null);
   const [endianness, setEndianness] = useState<Endianness>("default");
@@ -73,10 +80,8 @@ export const Submit = ({
   const [isLengthSize, setIsLengthSize] = useState(false);
   const [shouldOmit, setShouldOmit] = useState(false);
   const [isAboutToLayout, setIsAboutToLayout] = useState(false);
-  const [isLayouting, setIsLayouting] = useState(false);
-  const layoutingRef = useRef<UserLayout[]>(null);
 
-  const [result, setResult] = useState({});
+  const [result, setResult] = useState<any>({});
   const [resultLength, setResultLength] = useState(0);
 
   const layouts: { [key in Layouts]: any } = useMemo(
@@ -167,11 +172,11 @@ export const Submit = ({
 
           if (layout.binarySelected === "switch") {
             parsedLayout.idTag = layout.inputName;
-            const parsedInternalLayouts = layout.layouts.map(a => {
+            const parsedSwitchLayouts = layout.layouts.map(a => {
               return [[a[0][0], a[0][1]], readableLayoutToLayout(a[1])];
             });
 
-            parsedLayout.layouts = parsedInternalLayouts;
+            parsedLayout.layouts = parsedSwitchLayouts;
           }
         }
 
@@ -189,6 +194,12 @@ export const Submit = ({
     console.log({ userLayout });
     setParsingLayout(readableLayoutToLayout(userLayout));
   }, [layouts, readableLayoutToLayout, userLayout]);
+
+  useEffect(() => {
+    if (isParsingNestedLayout && result?.payload) {
+      setNestedResult(encoding.hex.decode(`0x${result.payload}`));
+    }
+  }, [isParsingNestedLayout, result, setNestedResult]);
 
   const baseLayouts: any = {
     "Clear All": () => [] as any,
@@ -250,8 +261,10 @@ export const Submit = ({
           endianness: "default",
         },
       ] as UserLayout[],
-    "Standard Relayer": () =>
-      [
+    "Standard Relayer": () => {
+      setIsParsingNestedLayout(true);
+
+      return [
         { inputName: "payloadId", selected: "payloadId", id: "1", omit: true },
         { inputName: "targetChainId", selected: "chain" },
         { inputName: "targetAddress", selected: "address" },
@@ -362,6 +375,116 @@ export const Submit = ({
             },
           ],
         },
+      ] as UserLayout[];
+    },
+    NTT: () =>
+      [
+        {
+          inputName: "prefix",
+          selected: "custom",
+          binarySelected: "bytes",
+          size: "4",
+        },
+        {
+          inputName: "sourceNttManager",
+          selected: "address",
+        },
+        {
+          inputName: "recipientNttManager",
+          selected: "address",
+        },
+        {
+          inputName: "waste1",
+          selected: "custom",
+          size: "2",
+          binarySelected: "bytes",
+          endianness: "default",
+          omit: true,
+        },
+        {
+          inputName: "nttManagerPayload",
+          selected: "custom",
+          binarySelected: "bytes",
+          endianness: "default",
+          layout: [
+            {
+              inputName: "id",
+              selected: "custom",
+              size: "32",
+              binarySelected: "bytes",
+              endianness: "default",
+            },
+            {
+              inputName: "sender",
+              selected: "address",
+            },
+            {
+              inputName: "waste2",
+              selected: "custom",
+              size: "2",
+              binarySelected: "bytes",
+              endianness: "default",
+              omit: true,
+            },
+            {
+              inputName: "payload",
+              selected: "custom",
+              binarySelected: "bytes",
+              endianness: "default",
+              layout: [
+                {
+                  inputName: "prefix2",
+                  selected: "custom",
+                  size: "4",
+                  binarySelected: "bytes",
+                  endianness: "default",
+                  omit: true,
+                },
+                {
+                  inputName: "trimmedAmount",
+                  selected: "custom",
+                  binarySelected: "bytes",
+                  endianness: "default",
+                  layout: [
+                    {
+                      inputName: "decimals",
+                      selected: "custom",
+                      size: "1",
+                      binarySelected: "uint",
+                      endianness: "default",
+                    },
+                    {
+                      inputName: "amount",
+                      selected: "custom",
+                      size: "8",
+                      binarySelected: "uint",
+                      endianness: "default",
+                    },
+                  ],
+                },
+                {
+                  inputName: "sourceToken",
+                  selected: "address",
+                },
+                {
+                  inputName: "recipientAddress",
+                  selected: "address",
+                },
+                {
+                  inputName: "recipientChain",
+                  selected: "chain",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          inputName: "transceiverPayload",
+          selected: "custom",
+          lengthSize: "2",
+          binarySelected: "bytes",
+          endianness: "default",
+        },
       ] as UserLayout[],
   };
 
@@ -372,6 +495,7 @@ export const Submit = ({
 
   useEffect(() => {
     try {
+      console.log({ parsingLayout });
       const result = deserializeLayout(parsingLayout, resultRaw);
 
       setResultLength(resultRawHex.length);
@@ -403,13 +527,13 @@ export const Submit = ({
       } catch (e2) {
         setResult({});
         console.log("error parsing partial payload");
-        console.log({ err: e2 });
+        console.log({ e2 });
       }
 
       if (!partialParsingWorked) {
         setResult({});
         console.log("error parsing full payload");
-        console.log({ err: e });
+        console.log({ e });
       }
     }
   }, [resultRaw, resultRawHex.length, parsingLayout]);
@@ -462,7 +586,6 @@ export const Submit = ({
                 <Cross2Icon
                   onClick={() => {
                     setUserLayout(userLayout.filter(a => a.inputName !== item.inputName));
-                    if (isLayouting) setIsLayouting(false);
                   }}
                   className="submit-selectedLayouts-remove"
                 />
@@ -507,6 +630,9 @@ export const Submit = ({
               inputName={inputName}
               switchLayouts={switchLayouts}
               setSwitchLayouts={setSwitchLayouts}
+              internalLayouts={internalLayouts}
+              setInternalLayouts={setInternalLayouts}
+              isAboutToLayout={isAboutToLayout}
             />
           </div>
         ))}
@@ -550,8 +676,6 @@ export const Submit = ({
 
               const newUserLayout: UserLayout = { inputName, selected };
 
-              let newLayout = false;
-
               if (selected === "payloadId") {
                 newUserLayout.id = inputValue;
               }
@@ -571,10 +695,8 @@ export const Submit = ({
                   newUserLayout.layouts = switchLayouts;
                 }
 
-                if (isAboutToLayout) {
-                  newLayout = true;
-                  setIsLayouting(true);
-                  setIsAboutToLayout(false);
+                if ((binarySelected === "array" || binarySelected === "bytes") && isAboutToLayout) {
+                  newUserLayout.layout = internalLayouts;
                 }
               }
               if (selected === "bitsetItem") {
@@ -586,23 +708,16 @@ export const Submit = ({
 
               if (shouldOmit) newUserLayout.omit = true;
 
-              if (newLayout) {
-                newUserLayout.layout = [];
-                layoutingRef.current = newUserLayout.layout;
-              }
-
-              if (isLayouting) {
-                layoutingRef.current.push(newUserLayout);
-                setUserLayout([...userLayout]);
-              } else {
-                setUserLayout([...userLayout, newUserLayout]);
-              }
+              if (isInternal && setInternalLayout)
+                setInternalLayout([...userLayout, newUserLayout]);
+              setUserLayout([...userLayout, newUserLayout]);
 
               setShouldOmit(false);
               setInputValue("");
               setBitsetValues([]);
               setInputName("");
               setIsLengthSize(false);
+              setIsAboutToLayout(false);
             }
           }}
           className="submit-btn"
@@ -610,24 +725,15 @@ export const Submit = ({
           ADD
         </div>
 
-        {isLayouting && (
-          <div
-            onClick={() => {
-              setIsLayouting(false);
-            }}
-            className="submit-btn"
-          >
-            FINISH LAYOUT
-          </div>
-        )}
-
         <br />
         <br />
-        {isInternal && internalLayoutName && (
+        {isInternal && internalLayoutName && setSwitchLayout && (
           <>
             <div
               onClick={() => {
-                setSwitchLayout(userLayout);
+                if (binarySelected === "switch") {
+                  setSwitchLayout(userLayout);
+                }
               }}
               className="submit-btn"
             >
@@ -668,6 +774,9 @@ interface ILayoutItemButtonProps {
   resultUnparsed: Uint8Array;
   switchLayouts: ISwitchLayouts;
   setSwitchLayouts: (a: ISwitchLayouts) => void;
+  internalLayouts: UserLayout[];
+  setInternalLayouts: (u: UserLayout[]) => void;
+  isAboutToLayout: boolean;
 }
 
 const LayoutItemButton = ({
@@ -692,6 +801,9 @@ const LayoutItemButton = ({
   resultUnparsed,
   switchLayouts,
   setSwitchLayouts,
+  internalLayouts,
+  setInternalLayouts,
+  isAboutToLayout,
 }: ILayoutItemButtonProps) => {
   const isSelected = selected === id;
 
@@ -699,6 +811,15 @@ const LayoutItemButton = ({
   const resultUnparsedProcessed = resultUnparsed.slice(toRemoveFromPayload);
 
   const [newSwitchLayout, setNewSwitchLayout] = useState<UserLayout[]>([]);
+  const [newInternalLayout, setNewInternalLayout] = useState<UserLayout[]>([]);
+
+  useEffect(() => {
+    if (newInternalLayout.length) {
+      console.log({ newInternalLayout, internalLayouts });
+      setInternalLayouts(newInternalLayout);
+      setNewInternalLayout([]);
+    }
+  }, [internalLayouts, newInternalLayout, setInternalLayouts]);
 
   useEffect(() => {
     if (newSwitchLayout.length) {
@@ -863,6 +984,21 @@ const LayoutItemButton = ({
           <br />
           <br />
 
+          {(binarySelected === "bytes" || binarySelected === "array") && isAboutToLayout && (
+            <div className="submit-layout-switch-menu">
+              <div>layout:</div>
+              {internalLayouts.map((lay, i) => (
+                <div key={i}>{JSON.stringify(lay)}</div>
+              ))}
+              <Submit
+                setInternalLayout={setNewInternalLayout}
+                isInternal
+                internalLayoutName={inputName}
+                resultRaw={resultUnparsedProcessed}
+              />
+            </div>
+          )}
+
           {binarySelected === "switch" && inputValue && (
             <div className="submit-layout-switch-menu">
               <div>layouts:</div>
@@ -973,6 +1109,10 @@ const processResult = (result: object) => {
   const entriesProcessed = entries.map(([key, value]) => {
     if (value instanceof UniversalAddress) {
       return [key, value.toString()];
+    }
+
+    if (value instanceof Uint8Array) {
+      return [key, encoding.hex.encode(value)];
     }
 
     if (chains.includes(value)) {
