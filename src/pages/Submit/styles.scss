@@ -1,0 +1,558 @@
+@import "src/styles/globals.scss";
+
+.submit {
+  margin-top: 16px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  word-wrap: break-word;
+
+  padding: 12px;
+
+  &-selectedLayouts {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+
+    &-remove {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      color: var(--color-secondary-700);
+    }
+  }
+
+  &-base-layouts {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+
+    &-delete {
+      width: 20px;
+      height: 20px;
+      border-radius: 2px;
+      background-color: var(--color-white-03);
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  &-layout {
+    &-input {
+      margin-left: 6px;
+      width: 140px;
+    }
+
+    &-button {
+      width: 140px;
+    }
+
+    &-bitset {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+
+      &-close {
+        cursor: pointer;
+        margin-left: 2px;
+        color: grey;
+      }
+    }
+
+    &-switch-menu {
+      border: 1px solid white;
+      padding: 6px 8px;
+    }
+
+    &-plus {
+      width: 22px;
+      height: 22px;
+      border-radius: 60%;
+      background-color: var(--color-white-10);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+  }
+
+  &-options {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+
+    &-checkbox {
+      width: 20px;
+      height: 20px;
+      background-color: var(--color-white-10);
+      border-radius: 2px;
+      cursor: pointer;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  &-btn {
+    cursor: pointer;
+    background-color: var(--color-white-10);
+    border-radius: 4px;
+    display: inline-block;
+    padding: 6px 8px;
+    margin-right: 8px;
+    min-width: 140px;
+    text-align: center;
+  }
+
+  &-input {
+    padding: 6px 8px;
+    margin-right: 8px;
+  }
+
+  &-switch-size-text {
+    background-color: var(--color-white-10);
+    margin-left: 12px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+}
+
+.input-highlight {
+  background-color: rgba(255, 255, 0, 0.5);
+  cursor: pointer;
+}
+
+.devtools-page {
+  flex: 1;
+  display: block;
+
+  &-container {
+    padding: 8px 0 52px 0;
+
+    @include desktop {
+      padding: 80px 0 52px 0;
+    }
+  }
+
+  &-title {
+    @include text-roboto-heading-500;
+    color: var(--color-white);
+    margin-bottom: 24px;
+  }
+
+  &-description {
+    @include text-roboto-body-400;
+    color: var(--color-gray-400);
+    margin-bottom: 24px;
+    max-width: 811px;
+    text-wrap: pretty;
+  }
+
+  &-body {
+    @include text-p1;
+    color: var(--color-primary-50);
+  }
+
+  .parse {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-between;
+    width: 100%;
+
+    @include desktop {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    &-txType {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 36px;
+      position: relative;
+      width: 100%;
+
+      & > svg {
+        bottom: 0;
+        color: var(--color-white-50);
+        left: 16px;
+        margin: auto;
+        position: absolute;
+        top: 0;
+      }
+
+      &-input {
+        @include text-roboto-body-large-400;
+        background-color: var(--color-gray-950);
+        border-radius: 20px;
+        border: none;
+        color: var(--color-white);
+        height: 68px;
+        outline: none;
+        padding: 0 16px 0 48px;
+        width: 100%;
+
+        &.error {
+          border: 1px solid var(--color-error-100);
+        }
+      }
+
+      &-error {
+        @include centered-row;
+        @include text-roboto-body-400;
+        gap: 8px;
+        width: 100%;
+        transform: translateY(-24px);
+
+        & > .icon {
+          color: var(--color-error-100);
+        }
+      }
+    }
+
+    &-links {
+      @include centered-column;
+      gap: 20px 16px;
+      margin-bottom: 36px;
+      width: 100%;
+
+      @include desktop {
+        @include centered-row;
+        justify-content: flex-start;
+        margin-bottom: 64px;
+      }
+
+      &-reset {
+        @include button-secondary;
+        justify-content: center;
+      }
+
+      &-navlink {
+        @include button-primary;
+        justify-content: center;
+      }
+    }
+
+    &-content {
+      @include centered-column;
+      justify-content: flex-start;
+      width: 100%;
+
+      @include desktop {
+        width: 38%;
+
+        + .parse-content {
+          width: 60%;
+        }
+      }
+
+      &-title {
+        @include centered-row;
+        @include text-roboto-body-500;
+        color: var(--color-white);
+        cursor: pointer;
+        gap: 8px;
+        margin-bottom: 20px;
+        width: max-content;
+
+        &:hover {
+          color: var(--color-white-70);
+        }
+
+        &.rotate > svg {
+          rotate: 180deg;
+        }
+      }
+    }
+
+    &-multiple {
+      @include text-roboto-body-400;
+      background-color: var(--color-gray-950);
+      color: var(--color-white);
+      display: flex;
+      justify-content: space-between;
+      border-radius: 20px;
+      margin-bottom: 32px;
+      padding: 8px;
+      width: 100%;
+
+      & svg {
+        color: var(--color-primary-100);
+      }
+
+      &-left {
+        @include centered-row;
+        gap: 6px;
+      }
+
+      &-right {
+        @include centered-row;
+        gap: 6px;
+        cursor: pointer;
+
+        &:hover {
+          filter: brightness(1.2);
+        }
+
+        & .triangle-icon {
+          rotate: -90deg;
+        }
+      }
+    }
+
+    &-input {
+      background-color: var(--color-black);
+      border-radius: 12px;
+      border: none;
+      color: var(--color-white-90);
+      display: flex;
+      flex-grow: 1;
+      font-size: 14px;
+      outline: none;
+      padding: 20px;
+      resize: none;
+
+      &-container {
+        background-color: var(--color-gray-950);
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        height: 466px;
+        margin-bottom: 24px;
+        overflow: hidden;
+        padding: 20px;
+        position: relative;
+        transition: height 0.3s ease-in-out;
+        width: 100%;
+
+        @include desktop {
+          height: 426px;
+          margin-bottom: 0;
+        }
+
+        &.with-data {
+          height: 808px;
+        }
+
+        &.hide {
+          height: 70px;
+        }
+
+        &-top {
+          @include centered-row;
+          gap: 6px;
+          height: 36px;
+          margin-bottom: 16px;
+
+          &-btn {
+            @include button-secondary;
+            background-color: transparent;
+
+            &.active {
+              @include button-secondary;
+            }
+          }
+
+          &-copy {
+            @include centered-row;
+            @include text-roboto-body-400;
+            color: var(--color-gray-500);
+            gap: 8px;
+            margin-left: auto;
+          }
+        }
+
+        &-format {
+          position: absolute;
+          left: 4px;
+          bottom: 4px;
+
+          display: flex;
+          gap: 2px;
+          padding: 2px;
+
+          font-size: 14px;
+          border-radius: 6px;
+
+          span {
+            padding-left: 4px;
+            padding-right: 4px;
+            cursor: pointer;
+            user-select: none;
+            background-color: var(--color-primary-700);
+
+            &.active {
+              background-color: var(--color-primary-500);
+            }
+
+            &:hover {
+              background-color: var(--color-primary-300);
+            }
+          }
+        }
+      }
+    }
+
+    &-result {
+      @include centered-column;
+      background-color: var(--color-gray-950);
+      border-radius: 20px;
+      display: flex;
+      height: 466px;
+      justify-content: start;
+      overflow: hidden;
+      padding: 20px;
+      position: relative;
+      transition: height 0.3s ease-in-out;
+      width: 100%;
+
+      @include desktop {
+        height: 426px;
+      }
+
+      &.with-data {
+        height: 808px;
+      }
+
+      &.hide {
+        height: 70px;
+      }
+
+      &-top {
+        @include centered-row;
+        gap: 6px;
+        height: 36px;
+        margin-bottom: 16px;
+
+        &-btn {
+          @include button-secondary;
+          background-color: transparent;
+
+          &.active {
+            @include button-secondary;
+          }
+        }
+
+        &-copy {
+          @include centered-row;
+          @include text-roboto-body-400;
+          color: var(--color-gray-500);
+          gap: 8px;
+          margin-left: auto;
+          white-space: nowrap;
+        }
+      }
+
+      &-not-found {
+        color: var(--color-error-100);
+      }
+
+      &-json {
+        @include text-roboto-body-400;
+        background-color: var(--color-black);
+        border-radius: 12px;
+        border: none;
+        color: var(--color-white);
+        cursor: not-allowed;
+        display: flex;
+        flex-grow: 1;
+        line-height: 1.5;
+        overflow: scroll;
+        padding: 20px;
+        position: relative;
+        resize: none;
+        width: 100%;
+
+        @include tablet {
+          overflow-x: auto;
+          overflow-y: scroll;
+        }
+
+        &-text {
+          cursor: text;
+        }
+      }
+    }
+  }
+
+  &-alert {
+    @include centered-column;
+    align-items: center;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    overflow: hidden;
+    padding: 20px;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    user-select: none;
+
+    &.encoded {
+      padding: 40px;
+      margin-top: 72px;
+    }
+
+    &-info {
+      @include centered-row;
+      gap: 8px;
+
+      & > svg {
+        align-self: flex-start;
+        color: var(--color-gray-600);
+        min-width: max-content;
+      }
+
+      & > p {
+        @include text-roboto-body-400;
+        color: var(--color-gray-500);
+        max-width: 170px;
+
+        @include desktop {
+          max-width: unset;
+        }
+      }
+    }
+  }
+
+  & .added-stuff {
+    user-select: none;
+  }
+
+  & .chain-icon {
+    display: inline;
+    margin-left: 8px;
+
+    & > img {
+      transform: scale(1.25) translateY(2px);
+      margin-right: 4px;
+    }
+  }
+
+  .copy-item {
+    color: var(--color-gray-600);
+    display: inline-block;
+    margin-left: 6px;
+    height: 16.5px;
+    line-height: 1;
+
+    & span {
+      display: inline-flex;
+    }
+
+    & svg {
+      cursor: pointer;
+      vertical-align: middle;
+    }
+  }
+}

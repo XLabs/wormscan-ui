@@ -14,8 +14,9 @@ import {
 import { deepCloneWithBigInt } from "src/utils/object";
 import { CheckCircledIcon, CheckIcon, Cross2Icon, PlusIcon } from "@radix-ui/react-icons";
 import { JsonText } from "src/components/atoms";
-import "./submitStyles.scss";
+import "./styles.scss";
 import { useLocalStorage } from "src/utils/hooks";
+import { toast } from "react-toastify";
 
 type Layouts =
   | "payloadId"
@@ -47,6 +48,7 @@ type UserLayout = {
 
 type SubmitProps = {
   resultRaw: Uint8Array;
+  setParsedPayload?: (a: any) => void;
   isInternal?: boolean;
   internalLayoutName?: string;
   setSwitchLayout?: (u: UserLayout[]) => void;
@@ -63,6 +65,7 @@ const DEFINED_LAYOUTS = [
 
 export const Submit = ({
   resultRaw,
+  setParsedPayload,
   isInternal,
   internalLayoutName,
   setSwitchLayout,
@@ -269,10 +272,10 @@ export const Submit = ({
           { inputName: "caller", selected: "address" },
           { inputName: "mintRecipient", selected: "address" },
           {
-            inputName: "length",
+            inputName: "parsedPayload",
             selected: "custom",
-            size: "2",
-            binarySelected: "uint",
+            lengthSize: "2",
+            binarySelected: "bytes",
             endianness: "default",
           },
         ] as UserLayout[],
@@ -777,7 +780,6 @@ export const Submit = ({
         <br />
         <br />
 
-        {/* {finishedParsing && ( */}
         <div>
           <input
             className="submit-input"
@@ -799,8 +801,25 @@ export const Submit = ({
           >
             SAVE
           </div>
+          {finishedParsing && (
+            <div
+              onClick={() => {
+                if (saveLayoutTitle) {
+                  setParsedPayload(deepCloneWithBigInt(result));
+                } else {
+                  toast("layout name missing", {
+                    type: "error",
+                    theme: "dark",
+                    position: "bottom-center",
+                  });
+                }
+              }}
+              className="submit-btn"
+            >
+              FINISH PARSING
+            </div>
+          )}
         </div>
-        {/* )} */}
       </div>
     </div>
   );

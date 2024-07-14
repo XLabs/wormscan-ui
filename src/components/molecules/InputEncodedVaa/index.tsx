@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 import { CopyToClipboard } from "src/components/molecules";
 import { useNavigateCustom } from "src/utils/hooks";
 import { base64ToHex } from "src/utils/string";
-import { processInputType, processInputValue } from ".";
 import { CopyIcon, InfoCircleIcon, TriangleDownIcon } from "src/icons/generic";
+import { processInputValue, processInputType } from "src/utils/parser";
 
 type Props = {
   inputType: "base64" | "hex";
@@ -13,6 +13,7 @@ type Props = {
   setTxSearch: (str: string) => void;
   setInputs: (a: any) => void;
   setInputsIndex: (a: number) => void;
+  page: "vaa-parser" | "submit";
 };
 
 const VaaInput = ({
@@ -23,6 +24,7 @@ const VaaInput = ({
   setTxSearch,
   setInputs,
   setInputsIndex,
+  page,
 }: Props) => {
   const [hideTextarea, setHideTextarea] = useState(false);
   const textareaRef = useRef(null);
@@ -95,7 +97,7 @@ const VaaInput = ({
 
             setTxSearch("");
 
-            navigate(`/vaa-parser/${newInput}`, { replace: true });
+            navigate(`/${page}/${newInput}`, { replace: true });
             textareaRef?.current?.blur();
           }}
           name="VAA-Input"

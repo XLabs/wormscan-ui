@@ -24,12 +24,13 @@ import { useParams } from "react-router-dom";
 import { useEnvironment } from "src/context/EnvironmentContext";
 
 import { stringifyWithBigInt } from "src/utils/object";
-import { processInputValue, processInputType, waitForElement } from "src/utils/parser";
+import { Submit } from "./Submit";
+import { processInputValue, processInputType, waitForElement, isHex } from "src/utils/parser";
 import "./styles.scss";
 
-const VaaParser = () => {
+const SubmitYourProtocol = () => {
   useEffect(() => {
-    analytics.page({ title: "VAA_PARSER" });
+    analytics.page({ title: "SUBMIT_PROTOCOL" });
   }, []);
 
   const { environment } = useEnvironment();
@@ -54,6 +55,8 @@ const VaaParser = () => {
   const [resultRaw, setResultRaw] = useState<any>(null);
   const [hideJson, setHideJson] = useState(false);
 
+  const [vaaSubmit, setVaaSubmit] = useState<any>(null);
+
   const resetResult = () => {
     setInputs(null);
     setInputsIndex(0);
@@ -61,7 +64,7 @@ const VaaParser = () => {
     setTxSearch("");
     setResult(null);
     setResultRaw(null);
-    navigate("/vaa-parser");
+    navigate("/submit");
   };
 
   const collapseGuardianSignatures = () => {
@@ -115,6 +118,8 @@ const VaaParser = () => {
 
         // Add texts to enhace information
         document.querySelectorAll(".json-view-key").forEach(a => {
+          const parentElement = a.parentElement;
+
           // Add chain names and icon to decoded VAA
           if (
             a.innerHTML?.includes("chain") ||
@@ -129,7 +134,6 @@ const VaaParser = () => {
             a.innerHTML?.includes("tokenChain") ||
             a.innerHTML?.includes("feeChain")
           ) {
-            const parentElement = a.parentElement;
             const chainId = +parentElement.children?.[1]?.innerHTML as ChainId;
 
             const chain = getChainName({
@@ -162,8 +166,6 @@ const VaaParser = () => {
 
           // Add payload types to decoded VAA
           if (a.innerHTML?.includes("payloadType")) {
-            const parentElement = a.parentElement;
-
             const type = txType[+parentElement.children?.[1]?.innerHTML] ?? false;
 
             if (type) {
@@ -176,10 +178,32 @@ const VaaParser = () => {
             }
           }
 
+          // Check possible payloads to read from
+          if (a.innerHTML?.includes("payload") || a.innerHTML?.includes("parsedPayload")) {
+            const containsString = parentElement?.children?.[1]?.innerHTML?.includes('"');
+
+            if (containsString) {
+              const possiblePayloadContent = parentElement?.children?.[1]?.innerHTML?.replaceAll(
+                '"',
+                "",
+              );
+              if (possiblePayloadContent ? isHex(possiblePayloadContent) : false) {
+                console.log({
+                  aParent: a.parentElement,
+                  aChildOne: possiblePayloadContent,
+                });
+
+                parentElement.children[1].classList.add("input-highlight");
+                (parentElement.children[1] as HTMLDivElement).addEventListener("click", () => {
+                  console.log("soy el q manda");
+                  setVaaSubmit(encoding.hex.decode(possiblePayloadContent));
+                });
+              }
+            }
+          }
+
           // Add timestamps as texts in decoded VAA
           if (a.innerHTML?.includes("timestamp")) {
-            const parentElement = a.parentElement;
-
             const timestamp = parentElement.children?.[1]?.innerHTML?.replaceAll('"', "");
 
             const time = new Date(isNaN(+timestamp) ? timestamp : +timestamp * 1000);
@@ -237,7 +261,7 @@ const VaaParser = () => {
           }
         });
 
-        // Add a copy to clipboard to objects and arrays (multiple value``s)
+        // Add a copy to clipboard to objects and arrays (multiple values)
         document.querySelectorAll(".json-view-collapseIcon").forEach(item => {
           const parentElement = item.parentElement;
 
@@ -262,6 +286,21 @@ const VaaParser = () => {
       })
       .catch(_err => {});
   }, [environment.network]);
+
+  const [parsedPayload, setParsedPayload] = useState(null);
+  const [nestedResult, setNestedResult] = useState(null);
+
+  useEffect(() => {
+    if (!!parsedPayload) {
+      setResultRaw({ ...resultRaw, payload: parsedPayload });
+
+      setVaaSubmit(null);
+
+      setParsedPayload(null);
+
+      renderExtras();
+    }
+  }, [parsedPayload, renderExtras, resultRaw]);
 
   const getGuardianName = (guardianSet: number, index: number) => {
     const guardianSetList = getGuardianSet(guardianSet);
@@ -309,6 +348,8 @@ const VaaParser = () => {
           hash: parsedHash,
           sequence: parsedSequence,
         });
+
+        setParsedRaw(true);
       } catch (e) {
         setResultRaw(null);
       }
@@ -362,7 +403,7 @@ const VaaParser = () => {
       );
 
       if (!!otherNetworkResponse?.length) {
-        navigate(`/vaa-parser/operation/${txSearch}?network=${otherNetwork}`);
+        navigate(`/submit/operation/${txSearch}?network=${otherNetwork}`);
       }
 
       return [];
@@ -384,7 +425,7 @@ const VaaParser = () => {
           }
 
           inputTxRef.current?.blur();
-          navigate(`/vaa-parser/operation/${txSearch}`, { replace: true });
+          navigate(`/submit/operation/${txSearch}`, { replace: true });
         }
       },
     },
@@ -403,11 +444,11 @@ const VaaParser = () => {
     <BaseLayout secondaryHeader>
       <div className="devtools-page">
         <div className="devtools-page-container">
-          <h1 className="devtools-page-title">VAA Parser</h1>
+          <h1 className="devtools-page-title">Submit Your Protocol</h1>
           <h2 className="devtools-page-description">
-            The VAA Parser tool is currently located within the Dev-Tools section. It allows
-            decoding a VAA using various input methods such as txHash, VAA ID (wormholeChainID,
-            EmitterAddress, Sequence), a VAA in hexadecimal format, or in base64 format.
+            The Submit your Protocol tool is currently located within the Dev-Tools section. It
+            allows Wormhole Integrators to parse a VAA of their own so WormholeScan can later parse
+            that kind of VAAs and show better information regarding those transactions or messages.
           </h2>
           <div className="devtools-page-body">
             <div className="parse">
@@ -419,7 +460,7 @@ const VaaParser = () => {
                     txSearch && !input && !isLoading ? "error" : ""
                   }`}
                   id="parse-txType-input"
-                  placeholder="TxHash/VaaID search"
+                  placeholder="txHash/vaaID of transaction created with your app"
                   ref={inputTxRef}
                   value={txSearch}
                   onChange={e => {
@@ -429,7 +470,7 @@ const VaaParser = () => {
 
                     setTxSearch(e.target.value);
                     inputTxRef?.current?.blur();
-                    navigate(`/vaa-parser/operation/${e.target.value}`, { replace: true });
+                    navigate(`/submit/operation/${e.target.value}`, { replace: true });
                   }}
                   name="txType-input"
                   aria-label="Transaction hash or VAA ID input"
@@ -496,7 +537,7 @@ const VaaParser = () => {
                 setTxSearch={setTxSearch}
                 setInputs={setInputs}
                 setInputsIndex={setInputsIndex}
-                page="vaa-parser"
+                page="submit"
               />
 
               <div className="parse-content">
@@ -513,7 +554,7 @@ const VaaParser = () => {
                   aria-label="Parsed result"
                 >
                   <div className="parse-result-top">
-                    <button
+                    {/* <button
                       className={`parse-result-top-btn ${parsedRaw ? "" : "active"}`}
                       onClick={() => {
                         renderExtras();
@@ -522,7 +563,7 @@ const VaaParser = () => {
                       }}
                     >
                       Parsed
-                    </button>
+                    </button> */}
                     <button
                       className={`parse-result-top-btn ${parsedRaw ? "active" : ""}`}
                       onClick={() => {
@@ -586,10 +627,19 @@ const VaaParser = () => {
               </div>
             </div>
           </div>
+
+          {vaaSubmit && (
+            <Submit
+              setParsedPayload={setParsedPayload}
+              resultRaw={vaaSubmit}
+              setNestedResult={setNestedResult}
+            />
+          )}
+          {nestedResult && <Submit resultRaw={nestedResult} />}
         </div>
       </div>
     </BaseLayout>
   );
 };
 
-export default VaaParser;
+export default SubmitYourProtocol;
