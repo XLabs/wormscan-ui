@@ -48,12 +48,12 @@ type UserLayout = {
 
 type SubmitProps = {
   resultRaw: Uint8Array;
-  setParsedPayload?: (a: any) => void;
+  renderExtras: () => void;
+  setParsedVAA?: (a: any) => void;
   isInternal?: boolean;
   internalLayoutName?: string;
   setSwitchLayout?: (u: UserLayout[]) => void;
   setInternalLayout?: (u: UserLayout[]) => void;
-  setNestedResult?: (u: Uint8Array) => void;
 };
 
 const DEFINED_LAYOUTS = [
@@ -65,17 +65,15 @@ const DEFINED_LAYOUTS = [
 
 export const Submit = ({
   resultRaw,
-  setParsedPayload,
+  renderExtras,
+  setParsedVAA,
   isInternal,
   internalLayoutName,
   setSwitchLayout,
   setInternalLayout,
-  setNestedResult,
 }: SubmitProps) => {
   const [userLayout, setUserLayout] = useState<UserLayout[]>([]);
   const [parsingLayout, setParsingLayout] = useState([]);
-
-  const [isParsingNestedLayout, setIsParsingNestedLayout] = useState(null);
 
   const [selected, setSelected] = useState<Layouts>(null);
   const [inputName, setInputName] = useState("");
@@ -91,6 +89,8 @@ export const Submit = ({
   const [isLengthSize, setIsLengthSize] = useState(false);
   const [shouldOmit, setShouldOmit] = useState(false);
   const [isAboutToLayout, setIsAboutToLayout] = useState(false);
+
+  const [selectedBaseLayout, setSelectedBaseLayout] = useState("");
 
   const [result, setResult] = useState<any>({});
   const [resultLength, setResultLength] = useState(0);
@@ -207,16 +207,29 @@ export const Submit = ({
     [layouts],
   );
 
+  const resultRawHex = resultRaw ? encoding.hex.encode(resultRaw) : "";
+  const resultParsed = resultRawHex.substring(0, resultLength);
+  const resultUnparsed = resultRawHex.substring(resultLength);
+  const resultUnparsedArray = encoding.hex.decode(`0x${resultUnparsed}`);
+
+  useEffect(() => {
+    if (selectedBaseLayout && result && !resultUnparsed) {
+      console.log({ selectedBaseLayout, result, userLayout });
+
+      const newParsedPayload = deepCloneWithBigInt(result);
+      newParsedPayload.callerAppId = selectedBaseLayout;
+
+      setParsedVAA({
+        parsedPayload: newParsedPayload,
+        userLayout: userLayout,
+      });
+    }
+  }, [selectedBaseLayout, result, userLayout, resultUnparsed, setParsedVAA]);
+
   useEffect(() => {
     console.log({ userLayout });
     setParsingLayout(readableLayoutToLayout(userLayout));
   }, [layouts, readableLayoutToLayout, userLayout]);
-
-  useEffect(() => {
-    if (isParsingNestedLayout && result?.payload) {
-      setNestedResult(encoding.hex.decode(`0x${result.payload}`));
-    }
-  }, [isParsingNestedLayout, result, setNestedResult]);
 
   const baseLayouts: any = useMemo(() => {
     const BASE_LAYOUTS: any = {
@@ -243,8 +256,9 @@ export const Submit = ({
       //     { inputName: "destAddress", selected: "address" },
       //     { inputName: "destChain", selected: "chain" },
       //   ] as UserLayout[],
-      "CCTP Wormhole Integration": () =>
-        [
+      "CCTP Wormhole Integration": () => {
+        setSelectedBaseLayout("CCTP_WORMHOLE_INTEGRATION");
+        return [
           { inputName: "payloadId", selected: "payloadId", id: "1" },
           { inputName: "tokenAddress", selected: "address" },
           { inputName: "amount", selected: "amount" },
@@ -278,9 +292,10 @@ export const Submit = ({
             binarySelected: "bytes",
             endianness: "default",
           },
-        ] as UserLayout[],
+        ] as UserLayout[];
+      },
       "Standard Relayer": () => {
-        setIsParsingNestedLayout(true);
+        setSelectedBaseLayout("GENERIC_RELAYER");
         return [
           { inputName: "payloadId", selected: "payloadId", id: "1", omit: true },
           { inputName: "targetChainId", selected: "chain" },
@@ -328,7 +343,7 @@ export const Submit = ({
               { inputName: "targetChainRefundPerGasUnused", selected: "amount" },
             ],
           },
-          { inputName: "refundChain", selected: "chain" },
+          { inputName: "refundChainId", selected: "chain" },
           { inputName: "refundAddress", selected: "address" },
           { inputName: "refundDeliveryProvider", selected: "address" },
           { inputName: "sourceDeliveryProvider", selected: "address" },
@@ -512,11 +527,6 @@ export const Submit = ({
     return BASE_LAYOUTS;
   }, [savedLayouts]);
 
-  const resultRawHex = resultRaw ? encoding.hex.encode(resultRaw) : "";
-  const resultParsed = resultRawHex.substring(0, resultLength);
-  const resultUnparsed = resultRawHex.substring(resultLength);
-  const resultUnparsedArray = encoding.hex.decode(`0x${resultUnparsed}`);
-
   useEffect(() => {
     try {
       console.log({ parsingLayout });
@@ -560,7 +570,9 @@ export const Submit = ({
         console.log({ e });
       }
     }
-  }, [resultRaw, resultRawHex.length, parsingLayout]);
+
+    renderExtras();
+  }, [resultRaw, resultRawHex.length, parsingLayout, renderExtras]);
 
   const finishedParsing = resultLength && resultUnparsed.length === 0;
 
@@ -666,6 +678,7 @@ export const Submit = ({
               internalLayouts={internalLayouts}
               setInternalLayouts={setInternalLayouts}
               isAboutToLayout={isAboutToLayout}
+              renderExtras={renderExtras}
             />
           </div>
         ))}
@@ -795,6 +808,12 @@ export const Submit = ({
                 } else {
                   setSavedLayouts([[saveLayoutTitle, userLayout]]);
                 }
+              } else {
+                toast("layout name missing", {
+                  type: "error",
+                  theme: "dark",
+                  position: "bottom-center",
+                });
               }
             }}
             className="submit-btn"
@@ -805,7 +824,18 @@ export const Submit = ({
             <div
               onClick={() => {
                 if (saveLayoutTitle) {
-                  setParsedPayload(deepCloneWithBigInt(result));
+                  if (savedLayouts) {
+                    setSavedLayouts([...savedLayouts, [saveLayoutTitle, userLayout]]);
+                  } else {
+                    setSavedLayouts([[saveLayoutTitle, userLayout]]);
+                  }
+
+                  const newParsedPayload = deepCloneWithBigInt(result);
+                  newParsedPayload.callerAppId = saveLayoutTitle;
+                  setParsedVAA({
+                    parsedPayload: newParsedPayload,
+                    userLayout: userLayout,
+                  });
                 } else {
                   toast("layout name missing", {
                     type: "error",
@@ -850,6 +880,7 @@ interface ILayoutItemButtonProps {
   internalLayouts: UserLayout[];
   setInternalLayouts: (u: UserLayout[]) => void;
   isAboutToLayout: boolean;
+  renderExtras: () => void;
 }
 
 const LayoutItemButton = ({
@@ -877,6 +908,7 @@ const LayoutItemButton = ({
   internalLayouts,
   setInternalLayouts,
   isAboutToLayout,
+  renderExtras,
 }: ILayoutItemButtonProps) => {
   const isSelected = selected === id;
 
@@ -1064,6 +1096,7 @@ const LayoutItemButton = ({
                 <div key={i}>{JSON.stringify(lay)}</div>
               ))}
               <Submit
+                renderExtras={renderExtras}
                 setInternalLayout={setNewInternalLayout}
                 isInternal
                 internalLayoutName={inputName}
@@ -1117,6 +1150,7 @@ const LayoutItemButton = ({
               <br />
               {tagIdValue && tagNameValue && (
                 <Submit
+                  renderExtras={renderExtras}
                   setSwitchLayout={setNewSwitchLayout}
                   isInternal
                   internalLayoutName={inputName}

@@ -8,6 +8,22 @@
 
   padding: 12px;
 
+  &-start-parsing {
+    display: flex;
+    margin-top: 12px;
+    justify-content: center;
+  }
+
+  &-finished-parsing {
+    display: flex;
+    background-color: var(--color-success-15);
+    margin-top: 12px;
+    justify-content: center;
+    align-items: center;
+    min-height: 40px;
+    border-radius: 4px;
+  }
+
   &-selectedLayouts {
     display: flex;
     flex-direction: row;
@@ -16,8 +32,8 @@
     margin-bottom: 4px;
 
     &-remove {
-      width: 20px;
-      height: 20px;
+      min-width: 18px;
+      min-height: 18px;
       cursor: pointer;
       color: var(--color-secondary-700);
     }

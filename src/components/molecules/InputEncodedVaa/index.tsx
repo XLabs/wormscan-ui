@@ -14,6 +14,7 @@ type Props = {
   setInputs: (a: any) => void;
   setInputsIndex: (a: number) => void;
   page: "vaa-parser" | "submit";
+  resetSubmitFields?: () => void;
 };
 
 const VaaInput = ({
@@ -24,6 +25,7 @@ const VaaInput = ({
   setTxSearch,
   setInputs,
   setInputsIndex,
+  resetSubmitFields,
   page,
 }: Props) => {
   const [hideTextarea, setHideTextarea] = useState(false);
@@ -94,6 +96,7 @@ const VaaInput = ({
 
             setInputs(null);
             setInputsIndex(0);
+            resetSubmitFields();
 
             setTxSearch("");
 

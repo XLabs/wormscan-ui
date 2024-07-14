@@ -55,8 +55,6 @@ const SubmitYourProtocol = () => {
   const [resultRaw, setResultRaw] = useState<any>(null);
   const [hideJson, setHideJson] = useState(false);
 
-  const [vaaSubmit, setVaaSubmit] = useState<any>(null);
-
   const resetResult = () => {
     setInputs(null);
     setInputsIndex(0);
@@ -178,30 +176,6 @@ const SubmitYourProtocol = () => {
             }
           }
 
-          // Check possible payloads to read from
-          if (a.innerHTML?.includes("payload") || a.innerHTML?.includes("parsedPayload")) {
-            const containsString = parentElement?.children?.[1]?.innerHTML?.includes('"');
-
-            if (containsString) {
-              const possiblePayloadContent = parentElement?.children?.[1]?.innerHTML?.replaceAll(
-                '"',
-                "",
-              );
-              if (possiblePayloadContent ? isHex(possiblePayloadContent) : false) {
-                console.log({
-                  aParent: a.parentElement,
-                  aChildOne: possiblePayloadContent,
-                });
-
-                parentElement.children[1].classList.add("input-highlight");
-                (parentElement.children[1] as HTMLDivElement).addEventListener("click", () => {
-                  console.log("soy el q manda");
-                  setVaaSubmit(encoding.hex.decode(possiblePayloadContent));
-                });
-              }
-            }
-          }
-
           // Add timestamps as texts in decoded VAA
           if (a.innerHTML?.includes("timestamp")) {
             const timestamp = parentElement.children?.[1]?.innerHTML?.replaceAll('"', "");
@@ -287,20 +261,55 @@ const SubmitYourProtocol = () => {
       .catch(_err => {});
   }, [environment.network]);
 
-  const [parsedPayload, setParsedPayload] = useState(null);
-  const [nestedResult, setNestedResult] = useState(null);
+  const [vaaSubmit, setVaaSubmit] = useState<any>(null);
+  const [propertyName, setPropertyName] = useState("");
+  const [finishedParsings, setFinishedParsing] = useState([]);
+  const [parsedVAA, setParsedVAA] = useState<{
+    parsedPayload: any;
+    userLayout: any;
+  }>(null);
+
+  const resetSubmitFields = () => {
+    setResultRaw({});
+    setFinishedParsing([]);
+    setParsedVAA(null);
+    setVaaSubmit(null);
+    setVaaSubmit(null);
+    setPropertyName(null);
+  };
 
   useEffect(() => {
-    if (!!parsedPayload) {
-      setResultRaw({ ...resultRaw, payload: parsedPayload });
+    if (!!parsedVAA) {
+      console.log({
+        finishedParsings,
+        resultRaw,
+        parsedVAA,
+      });
+      if (!!finishedParsings.length) {
+        setResultRaw({
+          ...resultRaw,
+          payload: {
+            ...resultRaw.payload,
+            [propertyName.replace("payload.", "")]: parsedVAA.parsedPayload,
+          },
+        });
+      } else {
+        setResultRaw({ ...resultRaw, payload: parsedVAA.parsedPayload });
+      }
 
+      setFinishedParsing([
+        ...finishedParsings,
+        {
+          payload: vaaSubmit,
+          userLayout: parsedVAA.userLayout,
+          parsedPayload: parsedVAA.parsedPayload,
+        },
+      ]);
       setVaaSubmit(null);
-
-      setParsedPayload(null);
-
+      setParsedVAA(null);
       renderExtras();
     }
-  }, [parsedPayload, renderExtras, resultRaw]);
+  }, [finishedParsings, parsedVAA, propertyName, renderExtras, resultRaw, vaaSubmit]);
 
   const getGuardianName = (guardianSet: number, index: number) => {
     const guardianSetList = getGuardianSet(guardianSet);
@@ -440,6 +449,37 @@ const SubmitYourProtocol = () => {
 
   const isLoading = isLoadingParse || isFetchingParse || isLoadingTx || isFetchingTx;
 
+  const whatToParse = useCallback(() => {
+    console.log("WHAT TO PARSE");
+    if (!resultRaw) return [];
+
+    const parsingInternalPayload = typeof resultRaw?.payload === "object";
+
+    const resultEntries = resultRaw
+      ? parsingInternalPayload
+        ? Object.entries(resultRaw?.payload)
+        : Object.entries(resultRaw)
+      : null;
+
+    console.log({ resultEntries });
+
+    if (!!resultEntries?.length) {
+      const parsables = resultEntries
+        .map(([key, value]) => {
+          if (value && typeof value === "string" && isHex(value.replaceAll('"', ""))) {
+            if (key === "hash") return null;
+            console.log([parsingInternalPayload ? "payload." + key : key, value]);
+            return [parsingInternalPayload ? "payload." + key : key, value];
+          }
+          return null;
+        })
+        .filter(a => a !== null);
+
+      return parsables;
+    }
+    return [];
+  }, [resultRaw]);
+
   return (
     <BaseLayout secondaryHeader>
       <div className="devtools-page">
@@ -467,6 +507,7 @@ const SubmitYourProtocol = () => {
                     setInput("");
                     setInputs(null);
                     setInputsIndex(0);
+                    resetSubmitFields();
 
                     setTxSearch(e.target.value);
                     inputTxRef?.current?.blur();
@@ -537,6 +578,7 @@ const SubmitYourProtocol = () => {
                 setTxSearch={setTxSearch}
                 setInputs={setInputs}
                 setInputsIndex={setInputsIndex}
+                resetSubmitFields={resetSubmitFields}
                 page="submit"
               />
 
@@ -628,14 +670,48 @@ const SubmitYourProtocol = () => {
             </div>
           </div>
 
-          {vaaSubmit && (
-            <Submit
-              setParsedPayload={setParsedPayload}
-              resultRaw={vaaSubmit}
-              setNestedResult={setNestedResult}
-            />
+          {finishedParsings.map(parsing => (
+            <div key={parsing.payload} className="submit-finished-parsing">
+              <div>Finished parsing {parsing.parsedPayload?.callerAppId}</div>
+              {/* <JsonText
+                data={{
+                  payload: encoding.hex.encode(parsing.payload),
+                  userLayout: parsing.userLayout,
+                  parsedPayload: parsing.parsedPayload,
+                }}
+              /> */}
+            </div>
+          ))}
+
+          {vaaSubmit ? (
+            <>
+              <Submit
+                renderExtras={renderExtras}
+                setParsedVAA={setParsedVAA}
+                resultRaw={vaaSubmit}
+              />
+              <div className="submit-start-parsing">
+                <div onClick={() => setVaaSubmit(null)} className="submit-btn">
+                  CANCEL PARSING
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="submit-start-parsing">
+              {whatToParse().map(([key, value]) => (
+                <div
+                  onClick={() => {
+                    setVaaSubmit(encoding.hex.decode(value));
+                    setPropertyName(key);
+                  }}
+                  className="submit-btn"
+                  key={value}
+                >
+                  START PARSING: {key}
+                </div>
+              ))}
+            </div>
           )}
-          {nestedResult && <Submit resultRaw={nestedResult} />}
         </div>
       </div>
     </BaseLayout>
