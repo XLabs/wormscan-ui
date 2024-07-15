@@ -124,6 +124,21 @@
     margin-right: 8px;
     min-width: 140px;
     text-align: center;
+
+    &.showoff {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      min-width: 300px;
+      height: 40px;
+
+      margin-top: 4px;
+      outline-width: 1px;
+      outline-offset: 0;
+      outline-style: solid;
+      animation: animateOutline 4s ease infinite;
+    }
   }
 
   &-input {
@@ -187,6 +202,94 @@
     @include desktop {
       flex-direction: row;
       flex-wrap: wrap;
+    }
+
+    &-submit {
+      display: flex;
+      flex-direction: column;
+
+      width: 100%;
+      min-height: 300px;
+
+      background-color: var(--color-white-10);
+      border-radius: 22px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+      gap: 12px;
+
+      align-items: center;
+
+      &-description {
+        @include text-roboto-body-400;
+        color: var(--color-gray-300);
+        font-size: 16px;
+        text-align: center;
+        margin-bottom: 4px;
+      }
+
+      &-chainAddress {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+
+        gap: 24px;
+
+        & > input {
+          width: 80%;
+          height: 34px;
+          font-size: 16px;
+        }
+
+        & > svg {
+          cursor: pointer;
+        }
+      }
+
+      &-identifiers {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        width: 100%;
+
+        color: var(--color-gray-200);
+
+        font-size: 16px;
+        border: 1px solid var(--color-white-10);
+        padding: 4px 0px;
+        margin-bottom: 4px;
+        position: relative;
+
+        &-chain {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 6px;
+        }
+
+        &-delete {
+          display: flex;
+          cursor: pointer;
+          color: #a53636;
+        }
+      }
+
+      &-btn {
+        display: flex;
+        width: 160px;
+        justify-content: center;
+        color: var(--color-gray-400);
+        background-color: var(--color-white-10);
+        padding: 2px 4px;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+
+        &.down {
+          margin-top: auto;
+        }
+      }
     }
 
     &-txType {
@@ -570,5 +673,29 @@
       cursor: pointer;
       vertical-align: middle;
     }
+  }
+}
+
+@keyframes animateOutline {
+  0% {
+    outline-width: 1px;
+    outline-offset: 0;
+    outline-color: rgba(0, 130, 206, 0);
+  }
+
+  10% {
+    outline-color: var(--color-information-30);
+  }
+
+  50% {
+    outline-width: 7px;
+    outline-offset: 4px;
+    outline-color: rgba(0, 130, 206, 0);
+  }
+
+  100% {
+    outline-width: 7px;
+    outline-offset: 4px;
+    outline-color: rgba(102, 102, 102, 0);
   }
 }

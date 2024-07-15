@@ -163,6 +163,10 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
                     VAA Parser
                   </NavLink>
 
+                  <NavLink to="/submit" aria-label="Submit Yout Protocol">
+                    Submit Your Protocol
+                  </NavLink>
+
                   <a
                     href={WORMHOLESCAN_API_DOCS_URL}
                     target="_blank"
@@ -247,6 +251,10 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
         <div className="header-container-mobile-other-menu-dev-tools">
           <NavLink to="/vaa-parser" aria-label="VAA Parser">
             VAA Parser
+          </NavLink>
+
+          <NavLink to="/submit" aria-label="Submit Yout Protocol">
+            Submit Your Protocol
           </NavLink>
 
           <a

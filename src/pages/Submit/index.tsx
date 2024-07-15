@@ -1,13 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { ChainId, chainToChainId, deserialize, encoding } from "@wormhole-foundation/sdk";
+import {
+  ChainId,
+  chainIdToChain,
+  chainToChainId,
+  deserialize,
+  encoding,
+  Network,
+} from "@wormhole-foundation/sdk";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { useNavigateCustom } from "src/utils/hooks";
 import analytics from "src/analytics";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
-import { GetParsedVaaOutput } from "src/api/guardian-network/types";
-import { JsonText, Loader, NavLink, Tooltip, CopyContent } from "src/components/atoms";
+import {
+  JsonText,
+  Loader,
+  NavLink,
+  Tooltip,
+  CopyContent,
+  BlockchainIcon,
+  Select,
+} from "src/components/atoms";
 import {
   AlertTriangle,
   CopyIcon,
@@ -26,6 +40,9 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import { stringifyWithBigInt } from "src/utils/object";
 import { Submit } from "./Submit";
 import { processInputValue, processInputType, waitForElement, isHex } from "src/utils/parser";
+import { ChainFilterMainnet, ChainFilterTestnet } from "../Txs/Information/Filters";
+import { Cross2Icon } from "@radix-ui/react-icons";
+import { toast } from "react-toastify";
 import "./styles.scss";
 
 const SubmitYourProtocol = () => {
@@ -44,24 +61,24 @@ const SubmitYourProtocol = () => {
   const [inputs, setInputs] = useState<Array<string>>(null);
   const [inputsIndex, setInputsIndex] = useState(0);
 
-  const paramTx = vaaParam?.includes("operation/");
-
-  const [input, setInput] = useState(paramTx ? "" : processInputValue(vaaParam));
-  const [inputType, setInputType] = useState(paramTx ? "base64" : processInputType(vaaParam));
-  const [txSearch, setTxSearch] = useState(paramTx ? vaaParam.replace("operation/", "") : "");
+  const [input, setInput] = useState(processInputValue(vaaParam));
+  const [inputType, setInputType] = useState(processInputType(vaaParam));
+  const [txSearch, setTxSearch] = useState("");
 
   const [parsedRaw, setParsedRaw] = useState(false);
-  const [result, setResult] = useState<GetParsedVaaOutput>(null);
   const [resultRaw, setResultRaw] = useState<any>(null);
   const [hideJson, setHideJson] = useState(false);
+
+  const [step, setStep] = useState(1);
 
   const resetResult = () => {
     setInputs(null);
     setInputsIndex(0);
     setInput("");
     setTxSearch("");
-    setResult(null);
     setResultRaw(null);
+
+    resetSubmitFields();
     navigate("/submit");
   };
 
@@ -261,6 +278,27 @@ const SubmitYourProtocol = () => {
       .catch(_err => {});
   }, [environment.network]);
 
+  const CHAIN_LIST = (network: Network) =>
+    orderedChains[network].map(chainId => ({
+      icon: (
+        <BlockchainIcon
+          background="var(--color-white-10)"
+          chainId={chainId}
+          colorless
+          lazy={false}
+          network={environment.network}
+          size={24}
+        />
+      ),
+      label: getChainName({ network: environment.network, chainId }),
+      value: String(chainId),
+    }));
+
+  const [selectedNetwork, setSelectedNetwork] = useState(null);
+  const [selectedChain, setSelectedChain] = useState(null);
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [selectedIdentifiers, setSelectedIdentifiers] = useState([]);
+
   const [vaaSubmit, setVaaSubmit] = useState<any>(null);
   const [propertyName, setPropertyName] = useState("");
   const [finishedParsings, setFinishedParsing] = useState([]);
@@ -316,79 +354,48 @@ const SubmitYourProtocol = () => {
     return guardianSetList?.[index]?.name;
   };
 
-  const {
-    isError,
-    isLoading: isLoadingParse,
-    isFetching: isFetchingParse,
-  } = useQuery(["getParsedVaa", input], () => getClient().guardianNetwork.getParsedVaa(input), {
-    enabled: !!input,
-    retry: 0,
-    onSettled: async _data => {
-      // success or fail, process RAW vaa (no API) and set it
-      try {
-        const vaaBuffer = Buffer.from(input, "base64");
-        const parsedVaa = deserialize("Uint8Array", vaaBuffer);
+  useEffect(() => {
+    try {
+      const vaaBuffer = Buffer.from(input, "base64");
+      const parsedVaa = deserialize("Uint8Array", vaaBuffer);
 
-        const guardianSignatures = parsedVaa.signatures.map(sig => ({
-          index: sig.guardianIndex,
-          signature: encoding.b64.encode(sig.signature.encode()),
-        }));
+      const guardianSignatures = parsedVaa.signatures.map(sig => ({
+        index: sig.guardianIndex,
+        signature: encoding.b64.encode(sig.signature.encode()),
+      }));
 
-        const { emitterAddress, hash, sequence, guardianSet, emitterChain } = parsedVaa || {};
+      const { emitterAddress, hash, sequence, guardianSet, emitterChain } = parsedVaa || {};
 
-        const parsedEmitterAddress = emitterAddress.toNative(emitterChain).toString();
-        const parsedHash = Buffer.from(hash).toString("hex");
-        const parsedSequence = Number(sequence);
-        const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
-          index,
-          signature: Buffer.from(signature).toString("hex"),
-          name: getGuardianName(guardianSet, index),
-        }));
+      const parsedEmitterAddress = emitterAddress.toNative(emitterChain).toString();
+      const parsedHash = Buffer.from(hash).toString("hex");
+      const parsedSequence = Number(sequence);
+      const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
+        index,
+        signature: Buffer.from(signature).toString("hex"),
+        name: getGuardianName(guardianSet, index),
+      }));
 
-        const parsedVaaAny = parsedVaa as any;
-        delete parsedVaaAny.signatures;
+      const parsedVaaAny = parsedVaa as any;
+      delete parsedVaaAny.signatures;
 
-        setResultRaw({
-          ...parsedVaaAny,
-          payload: parsedVaa.payload ? Buffer.from(parsedVaa.payload).toString("hex") : null,
-          emitterAddress: parsedEmitterAddress,
-          emitterChain: chainToChainId(parsedVaa.emitterChain),
-          guardianSignatures: parsedGuardianSignatures,
-          hash: parsedHash,
-          sequence: parsedSequence,
-        });
+      setResultRaw({
+        ...parsedVaaAny,
+        payload: parsedVaa.payload ? Buffer.from(parsedVaa.payload).toString("hex") : null,
+        emitterAddress: parsedEmitterAddress,
+        emitterChain: chainToChainId(parsedVaa.emitterChain),
+        guardianSignatures: parsedGuardianSignatures,
+        hash: parsedHash,
+        sequence: parsedSequence,
+      });
 
-        setParsedRaw(true);
-      } catch (e) {
-        setResultRaw(null);
-      }
-    },
-    onSuccess: data => {
-      // add guardian names to guardianSignatures
-      if (data?.vaa?.guardianSetIndex && data?.vaa?.guardianSignatures) {
-        data = {
-          ...data,
-          vaa: {
-            ...data.vaa,
-            guardianSignatures: data.vaa.guardianSignatures.map(({ index, signature }: any) => ({
-              index,
-              signature,
-              name: getGuardianName(data?.vaa?.guardianSetIndex, index),
-            })),
-          },
-        };
-      }
+      setParsedRaw(true);
 
-      setResult(data);
-
-      const vaaID = `${data?.vaa?.emitterChain}/${data?.vaa?.emitterAddress}/${data?.vaa?.sequence}`;
-      if (!txSearch) {
-        setTxSearch(vaaID);
-      }
       renderExtras();
       collapseGuardianSignatures();
-    },
-  });
+    } catch (e) {
+      setResultRaw(null);
+    }
+  }, [input, renderExtras]);
 
   const { isLoading: isLoadingTx, isFetching: isFetchingTx } = useQuery(
     ["getOperations", txSearch],
@@ -441,16 +448,13 @@ const SubmitYourProtocol = () => {
   );
 
   const VAA_ID =
-    result?.vaa?.sequence && result?.vaa?.emitterChain && result?.vaa?.emitterAddress
-      ? `${result?.vaa?.emitterChain}/${result?.vaa?.emitterAddress}/${result?.vaa?.sequence}`
-      : resultRaw?.sequence && resultRaw?.emitterChain && resultRaw?.emitterAddress
+    resultRaw?.sequence && resultRaw?.emitterChain && resultRaw?.emitterAddress
       ? `${resultRaw?.emitterChain}/${resultRaw?.emitterAddress}/${resultRaw?.sequence}`
       : "";
 
-  const isLoading = isLoadingParse || isFetchingParse || isLoadingTx || isFetchingTx;
+  const isLoading = isLoadingTx || isFetchingTx;
 
   const whatToParse = useCallback(() => {
-    console.log("WHAT TO PARSE");
     if (!resultRaw) return [];
 
     const parsingInternalPayload = typeof resultRaw?.payload === "object";
@@ -461,14 +465,12 @@ const SubmitYourProtocol = () => {
         : Object.entries(resultRaw)
       : null;
 
-    console.log({ resultEntries });
-
     if (!!resultEntries?.length) {
       const parsables = resultEntries
         .map(([key, value]) => {
           if (value && typeof value === "string" && isHex(value.replaceAll('"', ""))) {
             if (key === "hash") return null;
-            console.log([parsingInternalPayload ? "payload." + key : key, value]);
+            // console.log([parsingInternalPayload ? "payload." + key : key, value]);
             return [parsingInternalPayload ? "payload." + key : key, value];
           }
           return null;
@@ -490,227 +492,349 @@ const SubmitYourProtocol = () => {
             allows Wormhole Integrators to parse a VAA of their own so WormholeScan can later parse
             that kind of VAAs and show better information regarding those transactions or messages.
           </h2>
+
           <div className="devtools-page-body">
             <div className="parse">
-              <div className="parse-txType">
-                <SearchIcon width={24} />
-                <input
-                  type="text"
-                  className={`parse-txType-input ${
-                    txSearch && !input && !isLoading ? "error" : ""
-                  }`}
-                  id="parse-txType-input"
-                  placeholder="txHash/vaaID of transaction created with your app"
-                  ref={inputTxRef}
-                  value={txSearch}
-                  onChange={e => {
-                    setInput("");
-                    setInputs(null);
-                    setInputsIndex(0);
-                    resetSubmitFields();
-
-                    setTxSearch(e.target.value);
-                    inputTxRef?.current?.blur();
-                    navigate(`/submit/operation/${e.target.value}`, { replace: true });
-                  }}
-                  name="txType-input"
-                  aria-label="Transaction hash or VAA ID input"
-                  spellCheck={false}
-                />
-              </div>
-              {txSearch && !input && !isLoading && (
-                <div className="parse-txType-error">
-                  <AlertTriangle width={24} />
-                  VAA cannot be found. Please try again or search something different.
+              <h1 className="devtools-page-title">How can we identify your VAAs?</h1>
+              <div className="parse-submit">
+                <div className="parse-submit-description">
+                  Give us your emitter addresses or contract addresses that we can use to identify
+                  your VAAs
                 </div>
-              )}
 
-              {txSearch && (
-                <div className="parse-links">
-                  <button className="parse-links-reset" onClick={resetResult}>
-                    Reset search result
-                  </button>
+                {selectedIdentifiers.map((identifier, idx) => {
+                  console.log({ identifier, idx });
+                  return (
+                    <div key={idx} className="parse-submit-identifiers">
+                      <div>{identifier.network}</div>
 
-                  {(!!result || !!resultRaw) && input && VAA_ID && (
-                    <NavLink
-                      className="parse-links-navlink"
-                      target="_blank"
-                      to={`/tx/${txSearch ? txSearch : VAA_ID}`}
-                    >
-                      <span>View transaction details</span>
-                      <LinkIcon width={24} />
-                    </NavLink>
-                  )}
-                </div>
-              )}
+                      <div className="parse-submit-identifiers-chain">
+                        {chainIdToChain(identifier.chain)}
+                        <BlockchainIcon chainId={identifier.chain} network={identifier.network} />
+                      </div>
 
-              {!!inputs?.length && (
-                <div className="parse-multiple">
-                  <span className="parse-multiple-left">
-                    <InfoCircleIcon width={24} />
-                    This txHash has multiple VAAs.
-                  </span>
+                      <div>{identifier.address}</div>
 
-                  <div
-                    className="parse-multiple-right"
-                    onClick={() => {
-                      if (inputs[inputsIndex + 1]) {
-                        setInput(inputs[inputsIndex + 1]);
-                        setInputsIndex(inputsIndex + 1);
-                      } else {
-                        setInput(inputs[0]);
-                        setInputsIndex(0);
-                      }
-                    }}
-                  >
-                    <span className="vaa-pages">
-                      {inputsIndex + 1}/{inputs.length}
-                    </span>
-                    <TriangleDownIcon className="triangle-icon" width={18} />
-                  </div>
-                </div>
-              )}
-              <InputEncodedVaa
-                input={input}
-                inputType={inputType}
-                setInput={setInput}
-                setInputType={setInputType}
-                setTxSearch={setTxSearch}
-                setInputs={setInputs}
-                setInputsIndex={setInputsIndex}
-                resetSubmitFields={resetSubmitFields}
-                page="submit"
-              />
+                      {step === 1 && (
+                        <div
+                          onClick={() => {
+                            const newIdentifiers = [...selectedIdentifiers];
+                            newIdentifiers.splice(idx, 1);
 
-              <div className="parse-content">
-                <span
-                  className={`parse-content-title ${hideJson ? "" : "rotate"}`}
-                  onClick={() => setHideJson(!hideJson)}
-                >
-                  Decoded VAA <TriangleDownIcon width={10} />
-                </span>
+                            setSelectedIdentifiers(newIdentifiers);
+                          }}
+                          className="parse-submit-identifiers-delete"
+                        >
+                          <Cross2Icon width={20} height={20} />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
 
-                <div
-                  className={`parse-result ${input ? "with-data" : ""} ${hideJson ? "hide" : ""}`}
-                  id="parse-result"
-                  aria-label="Parsed result"
-                >
-                  <div className="parse-result-top">
-                    {/* <button
-                      className={`parse-result-top-btn ${parsedRaw ? "" : "active"}`}
-                      onClick={() => {
-                        renderExtras();
-                        collapseGuardianSignatures();
-                        setParsedRaw(false);
-                      }}
-                    >
-                      Parsed
-                    </button> */}
-                    <button
-                      className={`parse-result-top-btn ${parsedRaw ? "active" : ""}`}
-                      onClick={() => {
-                        renderExtras();
-                        collapseGuardianSignatures();
-                        setParsedRaw(true);
-                      }}
-                    >
-                      Raw
-                    </button>
-
-                    <div className="parse-result-top-copy">
-                      <CopyToClipboard
-                        toCopy={
-                          result && !parsedRaw
-                            ? stringifyWithBigInt(result, 4)
-                            : resultRaw && parsedRaw
-                            ? stringifyWithBigInt(resultRaw, 4)
-                            : "{}"
+                {step === 1 && (
+                  <>
+                    <div className="parse-submit-chainAddress">
+                      <Select
+                        ariaLabel="Select Network"
+                        items={NETWORK_LIST}
+                        isMulti={false}
+                        name="submitNetwork"
+                        onValueChange={value => {
+                          console.log(value);
+                          setSelectedChain(null);
+                          setSelectedNetwork(value);
+                        }}
+                        placeholder="Network"
+                        optionStyles={{ padding: 16 }}
+                        text={
+                          <div className="filters-container-select-text">
+                            {selectedNetwork?.label || "Network"}
+                          </div>
                         }
+                        value={selectedNetwork}
+                        closeOnSelect
+                      />
+
+                      {selectedNetwork && (
+                        <Select
+                          ariaLabel="Select Chain"
+                          items={CHAIN_LIST(selectedNetwork.value)}
+                          isMulti={false}
+                          name="submitEmitterOrTarget"
+                          onValueChange={(value: any) => {
+                            console.log(value);
+                            setSelectedChain(value);
+                          }}
+                          optionStyles={{ padding: 16 }}
+                          text={
+                            <div className="filters-container-select-text">
+                              {selectedChain && selectedChain?.icon}
+                              {selectedChain ? selectedChain?.label : "Chain"}
+                            </div>
+                          }
+                          type="searchable"
+                          value={selectedChain}
+                          closeOnSelect
+                        />
+                      )}
+
+                      <input
+                        placeholder="address"
+                        value={selectedAddress}
+                        onChange={e => setSelectedAddress(e.target.value)}
+                      />
+                    </div>
+
+                    <div
+                      onClick={() => {
+                        if (selectedAddress && selectedChain && selectedNetwork) {
+                          setSelectedIdentifiers([
+                            ...selectedIdentifiers,
+                            {
+                              network: selectedNetwork.value,
+                              chain: selectedChain.value,
+                              address: selectedAddress,
+                            },
+                          ]);
+
+                          setSelectedChain(null);
+                          setSelectedAddress("");
+                        } else {
+                          toast("Missing some info", {
+                            type: "error",
+                            theme: "dark",
+                          });
+                        }
+                      }}
+                      className="parse-submit-btn"
+                    >
+                      ADD
+                    </div>
+                    <div
+                      onClick={() => {
+                        if (!!selectedIdentifiers.length) {
+                          setStep(2);
+                        }
+                      }}
+                      className="parse-submit-btn down"
+                    >
+                      Next step
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {step > 1 && (
+                <>
+                  <h1 className="devtools-page-title">Lets parse and decode a VAA</h1>
+
+                  <div className="parse-txType">
+                    <SearchIcon width={24} />
+                    <input
+                      type="text"
+                      className={`parse-txType-input ${
+                        txSearch && !input && !isLoading ? "error" : ""
+                      }`}
+                      id="parse-txType-input"
+                      placeholder="txHash/vaaID of transaction created with your app"
+                      ref={inputTxRef}
+                      value={txSearch}
+                      onChange={e => {
+                        setInput("");
+                        setInputs(null);
+                        setInputsIndex(0);
+                        resetSubmitFields();
+
+                        setTxSearch(e.target.value);
+                        inputTxRef?.current?.blur();
+                        navigate(`/submit/operation/${e.target.value}`, { replace: true });
+                      }}
+                      name="txType-input"
+                      aria-label="Transaction hash or VAA ID input"
+                      spellCheck={false}
+                    />
+                  </div>
+
+                  {txSearch && !input && !isLoading && (
+                    <div className="parse-txType-error">
+                      <AlertTriangle width={24} />
+                      VAA cannot be found. Please try again or search something different.
+                    </div>
+                  )}
+
+                  {txSearch && (
+                    <div className="parse-links">
+                      <button className="parse-links-reset" onClick={resetResult}>
+                        Reset search result
+                      </button>
+
+                      {!!resultRaw && input && VAA_ID && (
+                        <NavLink
+                          className="parse-links-navlink"
+                          target="_blank"
+                          to={`/tx/${txSearch ? txSearch : VAA_ID}`}
+                        >
+                          <span>View transaction details</span>
+                          <LinkIcon width={24} />
+                        </NavLink>
+                      )}
+                    </div>
+                  )}
+
+                  {!!inputs?.length && (
+                    <div className="parse-multiple">
+                      <span className="parse-multiple-left">
+                        <InfoCircleIcon width={24} />
+                        This txHash has multiple VAAs.
+                      </span>
+
+                      <div
+                        className="parse-multiple-right"
+                        onClick={() => {
+                          if (inputs[inputsIndex + 1]) {
+                            setInput(inputs[inputsIndex + 1]);
+                            setInputsIndex(inputsIndex + 1);
+                          } else {
+                            setInput(inputs[0]);
+                            setInputsIndex(0);
+                          }
+                        }}
                       >
-                        Copy all
-                        <CopyIcon width={24} />
-                      </CopyToClipboard>
+                        <span className="vaa-pages">
+                          {inputsIndex + 1}/{inputs.length}
+                        </span>
+                        <TriangleDownIcon className="triangle-icon" width={18} />
+                      </div>
+                    </div>
+                  )}
+
+                  <InputEncodedVaa
+                    input={input}
+                    inputType={inputType}
+                    setInput={setInput}
+                    setInputType={setInputType}
+                    setTxSearch={setTxSearch}
+                    setInputs={setInputs}
+                    setInputsIndex={setInputsIndex}
+                    resetSubmitFields={resetSubmitFields}
+                    page="submit"
+                  />
+                  <div className="parse-content">
+                    <span
+                      className={`parse-content-title ${hideJson ? "" : "rotate"}`}
+                      onClick={() => setHideJson(!hideJson)}
+                    >
+                      Decoded VAA <TriangleDownIcon width={10} />
+                    </span>
+
+                    <div
+                      className={`parse-result ${input ? "with-data" : ""} ${
+                        hideJson ? "hide" : ""
+                      }`}
+                      id="parse-result"
+                      aria-label="Parsed result"
+                    >
+                      <div className="parse-result-top">
+                        <button
+                          className={`parse-result-top-btn ${parsedRaw ? "active" : ""}`}
+                          onClick={() => {
+                            renderExtras();
+                            collapseGuardianSignatures();
+                            setParsedRaw(true);
+                          }}
+                        >
+                          Raw
+                        </button>
+
+                        <div className="parse-result-top-copy">
+                          <CopyToClipboard
+                            toCopy={
+                              resultRaw && parsedRaw ? stringifyWithBigInt(resultRaw, 4) : "{}"
+                            }
+                          >
+                            Copy all
+                            <CopyIcon width={24} />
+                          </CopyToClipboard>
+                        </div>
+                      </div>
+
+                      <div className="parse-result-json">
+                        {!resultRaw && !!input ? (
+                          <span className="parse-result-not-found">Parsing failed</span>
+                        ) : isLoading ? (
+                          <Loader />
+                        ) : (
+                          <>
+                            {!resultRaw && (
+                              <div className="devtools-page-alert">
+                                <div className="devtools-page-alert-info">
+                                  <InfoCircleIcon width={24} />
+                                  <p>Decoded VAA data will be displayed here</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {!!resultRaw && input && VAA_ID && (
+                              <div className="parse-result-json-text">
+                                <JsonText data={resultRaw && parsedRaw ? resultRaw : {}} />
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
-
-                  <div className="parse-result-json">
-                    {isError && !resultRaw ? (
-                      <span className="parse-result-not-found">Parsing failed</span>
-                    ) : isLoading ? (
-                      <Loader />
-                    ) : (
-                      <>
-                        {(!result || !resultRaw) && (
-                          <div className="devtools-page-alert">
-                            <div className="devtools-page-alert-info">
-                              <InfoCircleIcon width={24} />
-                              <p>Decoded VAA data will be displayed here</p>
-                            </div>
-                          </div>
-                        )}
-
-                        {(!!result || !!resultRaw) && input && VAA_ID && (
-                          <div className="parse-result-json-text">
-                            <JsonText
-                              data={
-                                result && !parsedRaw
-                                  ? result
-                                  : resultRaw && parsedRaw
-                                  ? resultRaw
-                                  : {}
-                              }
-                            />
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
+                </>
+              )}
             </div>
           </div>
 
-          {finishedParsings.map(parsing => (
-            <div key={parsing.payload} className="submit-finished-parsing">
-              <div>Finished parsing {parsing.parsedPayload?.callerAppId}</div>
-              {/* <JsonText
-                data={{
-                  payload: encoding.hex.encode(parsing.payload),
-                  userLayout: parsing.userLayout,
-                  parsedPayload: parsing.parsedPayload,
-                }}
-              /> */}
-            </div>
-          ))}
-
-          {vaaSubmit ? (
+          {step > 1 && (
             <>
-              <Submit
-                renderExtras={renderExtras}
-                setParsedVAA={setParsedVAA}
-                resultRaw={vaaSubmit}
-              />
-              <div className="submit-start-parsing">
-                <div onClick={() => setVaaSubmit(null)} className="submit-btn">
-                  CANCEL PARSING
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="submit-start-parsing">
-              {whatToParse().map(([key, value]) => (
-                <div
-                  onClick={() => {
-                    setVaaSubmit(encoding.hex.decode(value));
-                    setPropertyName(key);
-                  }}
-                  className="submit-btn"
-                  key={value}
-                >
-                  START PARSING: {key}
+              {finishedParsings.map(parsing => (
+                <div key={parsing.payload} className="submit-finished-parsing">
+                  <div>Finished parsing {parsing.parsedPayload?.callerAppId}</div>
+                  {/* <JsonText
+                      data={{
+                        payload: encoding.hex.encode(parsing.payload),
+                        userLayout: parsing.userLayout,
+                        parsedPayload: parsing.parsedPayload,
+                      }}
+                    /> */}
                 </div>
               ))}
-            </div>
+
+              {vaaSubmit ? (
+                <>
+                  <Submit
+                    renderExtras={renderExtras}
+                    setParsedVAA={setParsedVAA}
+                    resultRaw={vaaSubmit}
+                  />
+                  <div className="submit-start-parsing">
+                    <div onClick={() => setVaaSubmit(null)} className="submit-btn">
+                      CANCEL PARSING
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="submit-start-parsing">
+                  {whatToParse().map(([key, value]) => (
+                    <div
+                      onClick={() => {
+                        setVaaSubmit(encoding.hex.decode(value));
+                        setPropertyName(key);
+                      }}
+                      className="submit-btn showoff"
+                      key={value}
+                    >
+                      START PARSING: {key}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -719,3 +843,20 @@ const SubmitYourProtocol = () => {
 };
 
 export default SubmitYourProtocol;
+
+const orderedChains = {
+  Mainnet: ChainFilterMainnet as ChainId[],
+  Testnet: ChainFilterTestnet as ChainId[],
+  Devnet: [] as ChainId[],
+};
+
+const NETWORK_LIST: { label: string; value: string }[] = [
+  {
+    label: "Mainnet",
+    value: "Mainnet",
+  },
+  {
+    label: "Testnet",
+    value: "Testnet",
+  },
+];

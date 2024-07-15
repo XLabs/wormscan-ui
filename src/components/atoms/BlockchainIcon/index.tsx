@@ -1,11 +1,12 @@
 import { Network } from "@wormhole-foundation/sdk";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
 import { ChainId } from "@wormhole-foundation/sdk";
+import NoColorlessIcon from "src/icons/blockchains/colorless/noIcon.svg";
 import "./styles.scss";
 
 type Props = {
   background?: string;
-  chainId: ChainId;
+  chainId: ChainId | 0;
   className?: string;
   colorless?: boolean;
   lazy?: boolean;
@@ -22,8 +23,8 @@ const BlockchainIcon = ({
   network,
   size = 24,
 }: Props) => {
-  const icon = getChainIcon({ chainId, colorless });
-  const name = getChainName({ chainId, network });
+  const icon = chainId === 0 ? NoColorlessIcon : getChainIcon({ chainId, colorless });
+  const name = chainId === 0 ? "Chain" : getChainName({ chainId, network });
 
   return (
     <img
