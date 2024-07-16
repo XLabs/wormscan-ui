@@ -7,6 +7,7 @@ import {
   deserialize,
   encoding,
   Network,
+  UniversalAddress,
 } from "@wormhole-foundation/sdk";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { useLocalStorage, useNavigateCustom } from "src/utils/hooks";
@@ -274,6 +275,8 @@ const SubmitYourProtocol = () => {
 
           root.render(<CopyContent text={textToCopy} />);
         });
+
+        collapseGuardianSignatures();
       })
       .catch(_err => {});
   }, [environment.network]);
@@ -315,7 +318,6 @@ const SubmitYourProtocol = () => {
     setResultRaw({});
     setFinishedParsing([]);
     setParsedVAA(null);
-    setVaaSubmit(null);
     setVaaSubmit(null);
     setPropertyName(null);
   };
@@ -407,7 +409,7 @@ const SubmitYourProtocol = () => {
       setParsedRaw(true);
 
       renderExtras();
-      collapseGuardianSignatures();
+      // collapseGuardianSignatures();
     } catch (e) {
       setResultRaw(null);
     }
@@ -498,7 +500,7 @@ const SubmitYourProtocol = () => {
     return [];
   }, [resultRaw]);
 
-  const [selectedProperty, setSelectedProperty] = useState("");
+  const [selectedPropertyName, setSelectedPropertyName] = useState("");
   const [stdProperties, setStdProperties] = useState({
     tokenChain: null,
     tokenAddress: null,
@@ -511,6 +513,58 @@ const SubmitYourProtocol = () => {
     toChain: null,
     toAddress: null,
   });
+
+  const [parsedStandardizedProperties, setParsedStandardizedProperties] = useState<any>({});
+
+  useEffect(() => {
+    setParsedStandardizedProperties((prevProperties: any) => {
+      const newParsedStandardizedProperties: any = {};
+
+      Object.entries(stdProperties).forEach(([key, valueName]) => {
+        console.log("1!!", { key, valueName });
+
+        const parsedPayload = `${valueName}`.includes(".")
+          ? finishedParsings?.[1]?.parsedPayload
+          : finishedParsings?.[0]?.parsedPayload;
+
+        console.log({ parsedPayload });
+
+        let value = finishedParsings?.[0]?.parsedPayload?.[valueName];
+
+        if (key === "tokenAddress" && valueName) {
+          value = new UniversalAddress(parsedPayload?.[valueName])
+            ?.toNative(chainIdToChain(prevProperties["tokenChain"]))
+            ?.toString();
+        }
+
+        if (key === "toAddress" && valueName) {
+          value = new UniversalAddress(parsedPayload?.[valueName])
+            ?.toNative(chainIdToChain(prevProperties["toChain"]))
+            ?.toString();
+        }
+
+        if (key === "feeAddress" && valueName) {
+          value = new UniversalAddress(parsedPayload?.[valueName])
+            ?.toNative(chainIdToChain(prevProperties["feeChain"]))
+            ?.toString();
+        }
+
+        if (key === "fromAddress" && valueName) {
+          const chainToUse = prevProperties["fromChain"]
+            ? prevProperties["fromChain"]
+            : resultRaw?.emitterChain;
+
+          value = new UniversalAddress(parsedPayload?.[valueName])
+            ?.toNative(chainIdToChain(chainToUse))
+            ?.toString();
+        }
+
+        newParsedStandardizedProperties[key] = value;
+      });
+
+      return newParsedStandardizedProperties;
+    });
+  }, [finishedParsings, resultRaw?.emitterChain, stdProperties]);
 
   return (
     <BaseLayout secondaryHeader>
@@ -525,7 +579,16 @@ const SubmitYourProtocol = () => {
 
           <div className="devtools-page-body">
             <div className="parse">
-              {step > 1 && <div onClick={() => setStep(step - 1)}>Prev Step</div>}
+              {step > 1 && (
+                <div
+                  onClick={() => {
+                    setStep(step - 1);
+                    window.scrollTo(0, 0);
+                  }}
+                >
+                  Prev Step
+                </div>
+              )}
 
               {step === 1 && (
                 <>
@@ -648,6 +711,7 @@ const SubmitYourProtocol = () => {
                       onClick={() => {
                         if (!!selectedIdentifiers.length) {
                           setStep(2);
+                          window.scrollTo(0, 0);
                         }
                       }}
                       className="parse-submit-btn down"
@@ -773,7 +837,7 @@ const SubmitYourProtocol = () => {
                           className={`parse-result-top-btn ${parsedRaw ? "active" : ""}`}
                           onClick={() => {
                             renderExtras();
-                            collapseGuardianSignatures();
+                            // collapseGuardianSignatures();
                             setParsedRaw(true);
                           }}
                         >
@@ -863,6 +927,7 @@ const SubmitYourProtocol = () => {
                     <div
                       onClick={() => {
                         setStep(3);
+                        window.scrollTo(0, 0);
                       }}
                       className="submit-btn showoff"
                     >
@@ -885,10 +950,10 @@ const SubmitYourProtocol = () => {
                       key={a}
                       className="submit-btn"
                       style={{
-                        outline: selectedProperty === a ? "green solid 2px" : "",
+                        outline: selectedPropertyName === a ? "green solid 2px" : "",
                       }}
                       onClick={() => {
-                        setSelectedProperty(a);
+                        setSelectedPropertyName(a);
                       }}
                     >
                       {a}
@@ -901,27 +966,18 @@ const SubmitYourProtocol = () => {
                         key={a}
                         className="submit-btn"
                         style={{
-                          outline: selectedProperty === a ? "green solid 2px" : "",
+                          outline:
+                            selectedPropertyName === `${propertyName}.${a}`
+                              ? "green solid 2px"
+                              : "",
                         }}
                         onClick={() => {
-                          setSelectedProperty(`${propertyName}.${a}`);
+                          setSelectedPropertyName(`${propertyName}.${a}`);
                         }}
                       >
                         {`${propertyName}.${a}`}
                       </div>
                     ))}
-
-                  {finishedParsings.map((parsing, idx) => (
-                    <div key={idx}>
-                      <JsonText
-                        data={{
-                          // payload: encoding.hex.encode(parsing.payload),
-                          // userLayout: parsing.userLayout,
-                          parsedPayload: parsing.parsedPayload,
-                        }}
-                      />
-                    </div>
-                  ))}
                 </div>
 
                 <div className="submit-standard-container">
@@ -936,12 +992,36 @@ const SubmitYourProtocol = () => {
                           <div
                             className="submit-btn"
                             onClick={() => {
-                              if (selectedProperty) {
+                              if (selectedPropertyName) {
+                                if (stdProp === "tokenAddress" && !stdProperties.tokenChain) {
+                                  toast("You need tokenChain first to modify tokenAddress", {
+                                    type: "error",
+                                    theme: "dark",
+                                  });
+                                  return;
+                                }
+
+                                if (stdProp === "feeAddress" && !stdProperties.feeChain) {
+                                  toast("You need feeChain first to modify feeAddress", {
+                                    type: "error",
+                                    theme: "dark",
+                                  });
+                                  return;
+                                }
+
+                                if (stdProp === "toAddress" && !stdProperties.toChain) {
+                                  toast("You need toChain first to modify toAddress", {
+                                    type: "error",
+                                    theme: "dark",
+                                  });
+                                  return;
+                                }
+
                                 setStdProperties({
                                   ...stdProperties,
-                                  [stdProp]: selectedProperty,
+                                  [stdProp]: selectedPropertyName,
                                 });
-                                setSelectedProperty("");
+                                setSelectedPropertyName("");
                               }
                             }}
                           >
@@ -950,15 +1030,39 @@ const SubmitYourProtocol = () => {
                         </Tooltip>
 
                         {stdValue && (
-                          <div>
-                            {"--> "}
-                            {stdValue}
+                          <div className="submit-standard-container-props-value">
+                            <div>{"--> "}</div>
+                            <div>{stdValue}</div>
+                            <Cross2Icon
+                              width={18}
+                              height={18}
+                              color="rgb(225, 50, 50)"
+                              onClick={() => {
+                                const newStdProperties: any = { ...stdProperties, [stdProp]: null };
+
+                                if (stdProp === "tokenChain") {
+                                  newStdProperties["tokenAddress"] = null;
+                                }
+                                if (stdProp === "toChain") {
+                                  newStdProperties["toAddress"] = null;
+                                }
+                                if (stdProp === "feeChain") {
+                                  newStdProperties["feeAddress"] = null;
+                                }
+
+                                setStdProperties(newStdProperties);
+                              }}
+                            />
                           </div>
                         )}
                       </div>
                     );
                   })}
+                </div>
+              </div>
 
+              <div className="submit-standard">
+                <div className="submit-standard-container">
                   {finishedParsings.map((parsing, idx) => (
                     <div key={idx}>
                       <JsonText
@@ -970,6 +1074,17 @@ const SubmitYourProtocol = () => {
                       />
                     </div>
                   ))}
+                </div>
+                <div className="submit-standard-container">
+                  <div>
+                    <JsonText
+                      data={{
+                        // payload: encoding.hex.encode(parsing.payload),
+                        // userLayout: parsing.userLayout,
+                        standardizedProperties: parsedStandardizedProperties,
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </>
@@ -1003,10 +1118,10 @@ const STANDARD_DESCRIPTIONS: any = {
   tokenChain: "Origin chain id of the token that's being sent.",
   tokenAddress: "Native address format for the address of the token being sent in its origin chain",
   amount:
-    "Number formatted as a string with the decimal zeros of the token; eg: if you're sending 1 USDC this should be 1000000",
+    "Number formatted as a string with the decimal zeros of the token; ex: if you're sending 1 USDC this should be 1000000",
   feeChain: "Origin chain id of the fee that's being charged",
   feeAddress: "Native address format for the address of the fee being sent in its origin chain",
-  fee: "Number formatted as a string with the decimal zeros of the token being used as fee; eg: if you're charging 1 USDC this should be 1000000",
+  fee: "Number formatted as a string with the decimal zeros of the token being used as fee; ex: if you're charging 1 USDC this should be 1000000",
   fromChain: "Wormhole chain id of source chain. Ex: 1 for Solana, 2 for Ethereum, etc",
   fromAddress: "Native address format for the origin chain",
   toChain: "Wormhole chain id of target chain. Ex: 1 for Solana, 2 for Ethereum, etc",

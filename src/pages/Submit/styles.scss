@@ -163,10 +163,23 @@
 
     &-container {
       @include centered-column;
+      align-items: center;
       gap: 6px;
+      width: 50%;
 
       &-props {
         @include centered-row;
+
+        &-value {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 4px;
+
+          & > svg {
+            cursor: pointer;
+          }
+        }
       }
     }
   }
