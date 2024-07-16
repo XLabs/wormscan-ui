@@ -10,8 +10,10 @@
 
   &-start-parsing {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
     margin-top: 12px;
-    justify-content: center;
   }
 
   &-finished-parsing {
@@ -177,6 +179,7 @@
     @include text-roboto-heading-500;
     color: var(--color-white);
     margin-bottom: 24px;
+    width: 100%;
   }
 
   &-description {
@@ -211,7 +214,7 @@
       width: 100%;
       min-height: 300px;
 
-      background-color: var(--color-white-10);
+      background-color: var(--color-white-05);
       border-radius: 22px;
       padding: 16px 18px;
       margin-bottom: 24px;
@@ -279,7 +282,7 @@
         display: flex;
         width: 160px;
         justify-content: center;
-        color: var(--color-gray-400);
+        color: var(--color-gray-200);
         background-color: var(--color-white-10);
         padding: 2px 4px;
         border-radius: 4px;
@@ -287,7 +290,11 @@
         cursor: pointer;
 
         &.down {
-          margin-top: auto;
+          margin-top: 12px;
+          outline-width: 1px;
+          outline-offset: 0;
+          outline-style: solid;
+          animation: animateOutline 4s ease infinite;
         }
       }
     }

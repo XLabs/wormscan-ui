@@ -9,7 +9,7 @@ import {
   Network,
 } from "@wormhole-foundation/sdk";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { useNavigateCustom } from "src/utils/hooks";
+import { useLocalStorage, useNavigateCustom } from "src/utils/hooks";
 import analytics from "src/analytics";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
@@ -294,10 +294,14 @@ const SubmitYourProtocol = () => {
       value: String(chainId),
     }));
 
+  const [selectedIdentifiers, setSelectedIdentifiers] = useLocalStorage<IIdentifier[]>(
+    "selectedIdentifiers",
+    [],
+  );
+
   const [selectedNetwork, setSelectedNetwork] = useState(null);
   const [selectedChain, setSelectedChain] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState("");
-  const [selectedIdentifiers, setSelectedIdentifiers] = useState([]);
 
   const [vaaSubmit, setVaaSubmit] = useState<any>(null);
   const [propertyName, setPropertyName] = useState("");
@@ -378,9 +382,21 @@ const SubmitYourProtocol = () => {
       const parsedVaaAny = parsedVaa as any;
       delete parsedVaaAny.signatures;
 
+      const payloadToShow =
+        finishedParsings.length === 2
+          ? {
+              ...finishedParsings[0].parsedPayload,
+              [propertyName.replace("payload.", "")]: finishedParsings[1].parsedPayload,
+            }
+          : finishedParsings.length === 1
+          ? finishedParsings[0].parsedPayload
+          : parsedVaa.payload
+          ? Buffer.from(parsedVaa.payload).toString("hex")
+          : null;
+
       setResultRaw({
         ...parsedVaaAny,
-        payload: parsedVaa.payload ? Buffer.from(parsedVaa.payload).toString("hex") : null,
+        payload: payloadToShow,
         emitterAddress: parsedEmitterAddress,
         emitterChain: chainToChainId(parsedVaa.emitterChain),
         guardianSignatures: parsedGuardianSignatures,
@@ -395,7 +411,7 @@ const SubmitYourProtocol = () => {
     } catch (e) {
       setResultRaw(null);
     }
-  }, [input, renderExtras]);
+  }, [finishedParsings, input, propertyName, renderExtras]);
 
   const { isLoading: isLoadingTx, isFetching: isFetchingTx } = useQuery(
     ["getOperations", txSearch],
@@ -419,7 +435,7 @@ const SubmitYourProtocol = () => {
       );
 
       if (!!otherNetworkResponse?.length) {
-        navigate(`/submit/operation/${txSearch}?network=${otherNetwork}`);
+        navigate(`/submit?network=${otherNetwork}`);
       }
 
       return [];
@@ -441,7 +457,7 @@ const SubmitYourProtocol = () => {
           }
 
           inputTxRef.current?.blur();
-          navigate(`/submit/operation/${txSearch}`, { replace: true });
+          // navigate(`/submit/operation/${txSearch}`, { replace: true });
         }
       },
     },
@@ -495,45 +511,48 @@ const SubmitYourProtocol = () => {
 
           <div className="devtools-page-body">
             <div className="parse">
-              <h1 className="devtools-page-title">How can we identify your VAAs?</h1>
-              <div className="parse-submit">
-                <div className="parse-submit-description">
-                  Give us your emitter addresses or contract addresses that we can use to identify
-                  your VAAs
-                </div>
+              {step > 1 && <div onClick={() => setStep(step - 1)}>Prev Step</div>}
 
-                {selectedIdentifiers.map((identifier, idx) => {
-                  console.log({ identifier, idx });
-                  return (
-                    <div key={idx} className="parse-submit-identifiers">
-                      <div>{identifier.network}</div>
-
-                      <div className="parse-submit-identifiers-chain">
-                        {chainIdToChain(identifier.chain)}
-                        <BlockchainIcon chainId={identifier.chain} network={identifier.network} />
-                      </div>
-
-                      <div>{identifier.address}</div>
-
-                      {step === 1 && (
-                        <div
-                          onClick={() => {
-                            const newIdentifiers = [...selectedIdentifiers];
-                            newIdentifiers.splice(idx, 1);
-
-                            setSelectedIdentifiers(newIdentifiers);
-                          }}
-                          className="parse-submit-identifiers-delete"
-                        >
-                          <Cross2Icon width={20} height={20} />
-                        </div>
-                      )}
+              {step === 1 && (
+                <>
+                  <h1 className="devtools-page-title">(1/4) How can we identify your VAAs?</h1>
+                  <div className="parse-submit">
+                    <div className="parse-submit-description">
+                      Give us your emitter addresses or contract addresses that we can use to
+                      identify your VAAs
                     </div>
-                  );
-                })}
 
-                {step === 1 && (
-                  <>
+                    {selectedIdentifiers.map((identifier, idx) => {
+                      console.log({ identifier, idx });
+                      return (
+                        <div key={idx} className="parse-submit-identifiers">
+                          <div>{identifier.network}</div>
+
+                          <div className="parse-submit-identifiers-chain">
+                            {chainIdToChain(identifier.chain)}
+                            <BlockchainIcon
+                              chainId={identifier.chain}
+                              network={identifier.network}
+                            />
+                          </div>
+
+                          <div>{identifier.address}</div>
+
+                          <div
+                            onClick={() => {
+                              const newIdentifiers = [...selectedIdentifiers];
+                              newIdentifiers.splice(idx, 1);
+
+                              setSelectedIdentifiers(newIdentifiers);
+                            }}
+                            className="parse-submit-identifiers-delete"
+                          >
+                            <Cross2Icon width={20} height={20} />
+                          </div>
+                        </div>
+                      );
+                    })}
+
                     <div className="parse-submit-chainAddress">
                       <Select
                         ariaLabel="Select Network"
@@ -621,13 +640,14 @@ const SubmitYourProtocol = () => {
                     >
                       Next step
                     </div>
-                  </>
-                )}
-              </div>
+                  </div>
+                </>
+              )}
 
-              {step > 1 && (
+              {step === 2 && (
                 <>
-                  <h1 className="devtools-page-title">Lets parse and decode a VAA</h1>
+                  <br />
+                  <h1 className="devtools-page-title">(2/4) Lets parse and decode a VAA</h1>
 
                   <div className="parse-txType">
                     <SearchIcon width={24} />
@@ -648,7 +668,6 @@ const SubmitYourProtocol = () => {
 
                         setTxSearch(e.target.value);
                         inputTxRef?.current?.blur();
-                        navigate(`/submit/operation/${e.target.value}`, { replace: true });
                       }}
                       name="txType-input"
                       aria-label="Transaction hash or VAA ID input"
@@ -790,18 +809,11 @@ const SubmitYourProtocol = () => {
             </div>
           </div>
 
-          {step > 1 && (
+          {step === 2 && (
             <>
               {finishedParsings.map(parsing => (
                 <div key={parsing.payload} className="submit-finished-parsing">
                   <div>Finished parsing {parsing.parsedPayload?.callerAppId}</div>
-                  {/* <JsonText
-                      data={{
-                        payload: encoding.hex.encode(parsing.payload),
-                        userLayout: parsing.userLayout,
-                        parsedPayload: parsing.parsedPayload,
-                      }}
-                    /> */}
                 </div>
               ))}
 
@@ -832,8 +844,37 @@ const SubmitYourProtocol = () => {
                       START PARSING: {key}
                     </div>
                   ))}
+
+                  {finishedParsings.length && !vaaSubmit && (
+                    <div
+                      onClick={() => {
+                        setStep(3);
+                      }}
+                      className="submit-btn showoff"
+                    >
+                      Next step
+                    </div>
+                  )}
                 </div>
               )}
+            </>
+          )}
+
+          {step === 3 && (
+            <>
+              <h1 className="devtools-page-title">(3/4) Standardized Properties</h1>
+
+              {finishedParsings.map((parsing, idx) => (
+                <div key={idx}>
+                  <JsonText
+                    data={{
+                      payload: encoding.hex.encode(parsing.payload),
+                      userLayout: parsing.userLayout,
+                      parsedPayload: parsing.parsedPayload,
+                    }}
+                  />
+                </div>
+              ))}
             </>
           )}
         </div>
@@ -860,3 +901,9 @@ const NETWORK_LIST: { label: string; value: string }[] = [
     value: "Testnet",
   },
 ];
+
+interface IIdentifier {
+  network: "Mainnet" | "Testnet";
+  chain: ChainId;
+  address: string;
+}

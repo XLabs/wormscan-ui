@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   chainToChainId,
   deserializeLayout,
@@ -14,9 +14,9 @@ import {
 import { deepCloneWithBigInt } from "src/utils/object";
 import { CheckCircledIcon, CheckIcon, Cross2Icon, PlusIcon } from "@radix-ui/react-icons";
 import { JsonText } from "src/components/atoms";
-import "./styles.scss";
 import { useLocalStorage } from "src/utils/hooks";
 import { toast } from "react-toastify";
+import "./styles.scss";
 
 type Layouts =
   | "payloadId"
@@ -629,6 +629,7 @@ export const Submit = ({
               {userLayout.length - 1 === i && (
                 <Cross2Icon
                   onClick={() => {
+                    setSelectedBaseLayout("");
                     setUserLayout(userLayout.filter(a => a.inputName !== item.inputName));
                   }}
                   className="submit-selectedLayouts-remove"
@@ -710,6 +711,8 @@ export const Submit = ({
 
         <div
           onClick={() => {
+            setSelectedBaseLayout("");
+
             if (selected && inputName) {
               if (selected === "payloadId" && !inputValue) return;
               if (selected === "fixedLengthString" && !inputValue) return;
