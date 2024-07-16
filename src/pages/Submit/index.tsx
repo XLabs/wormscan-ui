@@ -498,6 +498,20 @@ const SubmitYourProtocol = () => {
     return [];
   }, [resultRaw]);
 
+  const [selectedProperty, setSelectedProperty] = useState("");
+  const [stdProperties, setStdProperties] = useState({
+    tokenChain: null,
+    tokenAddress: null,
+    amount: null,
+    feeChain: null,
+    feeAddress: null,
+    fee: null,
+    fromChain: null,
+    fromAddress: null,
+    toChain: null,
+    toAddress: null,
+  });
+
   return (
     <BaseLayout secondaryHeader>
       <div className="devtools-page">
@@ -864,17 +878,100 @@ const SubmitYourProtocol = () => {
             <>
               <h1 className="devtools-page-title">(3/4) Standardized Properties</h1>
 
-              {finishedParsings.map((parsing, idx) => (
-                <div key={idx}>
-                  <JsonText
-                    data={{
-                      payload: encoding.hex.encode(parsing.payload),
-                      userLayout: parsing.userLayout,
-                      parsedPayload: parsing.parsedPayload,
-                    }}
-                  />
+              <div className="submit-standard">
+                <div className="submit-standard-container">
+                  {allFields(finishedParsings[0].parsedPayload).map(a => (
+                    <div
+                      key={a}
+                      className="submit-btn"
+                      style={{
+                        outline: selectedProperty === a ? "green solid 2px" : "",
+                      }}
+                      onClick={() => {
+                        setSelectedProperty(a);
+                      }}
+                    >
+                      {a}
+                    </div>
+                  ))}
+                  <br />
+                  {finishedParsings[1] &&
+                    allFields(finishedParsings[1].parsedPayload).map(a => (
+                      <div
+                        key={a}
+                        className="submit-btn"
+                        style={{
+                          outline: selectedProperty === a ? "green solid 2px" : "",
+                        }}
+                        onClick={() => {
+                          setSelectedProperty(`${propertyName}.${a}`);
+                        }}
+                      >
+                        {`${propertyName}.${a}`}
+                      </div>
+                    ))}
+
+                  {finishedParsings.map((parsing, idx) => (
+                    <div key={idx}>
+                      <JsonText
+                        data={{
+                          // payload: encoding.hex.encode(parsing.payload),
+                          // userLayout: parsing.userLayout,
+                          parsedPayload: parsing.parsedPayload,
+                        }}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
+
+                <div className="submit-standard-container">
+                  {Object.entries(stdProperties).map(([stdProp, stdValue]) => {
+                    return (
+                      <div className="submit-standard-container-props" key={stdProp}>
+                        <Tooltip
+                          tooltip={<div>{STANDARD_DESCRIPTIONS[stdProp]}</div>}
+                          maxWidth={false}
+                          type="info"
+                        >
+                          <div
+                            className="submit-btn"
+                            onClick={() => {
+                              if (selectedProperty) {
+                                setStdProperties({
+                                  ...stdProperties,
+                                  [stdProp]: selectedProperty,
+                                });
+                                setSelectedProperty("");
+                              }
+                            }}
+                          >
+                            {stdProp}
+                          </div>
+                        </Tooltip>
+
+                        {stdValue && (
+                          <div>
+                            {"--> "}
+                            {stdValue}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+
+                  {finishedParsings.map((parsing, idx) => (
+                    <div key={idx}>
+                      <JsonText
+                        data={{
+                          // payload: encoding.hex.encode(parsing.payload),
+                          // userLayout: parsing.userLayout,
+                          parsedPayload: parsing.parsedPayload,
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </>
           )}
         </div>
@@ -901,6 +998,34 @@ const NETWORK_LIST: { label: string; value: string }[] = [
     value: "Testnet",
   },
 ];
+
+const STANDARD_DESCRIPTIONS: any = {
+  tokenChain: "Origin chain id of the token that's being sent.",
+  tokenAddress: "Native address format for the address of the token being sent in its origin chain",
+  amount:
+    "Number formatted as a string with the decimal zeros of the token; eg: if you're sending 1 USDC this should be 1000000",
+  feeChain: "Origin chain id of the fee that's being charged",
+  feeAddress: "Native address format for the address of the fee being sent in its origin chain",
+  fee: "Number formatted as a string with the decimal zeros of the token being used as fee; eg: if you're charging 1 USDC this should be 1000000",
+  fromChain: "Wormhole chain id of source chain. Ex: 1 for Solana, 2 for Ethereum, etc",
+  fromAddress: "Native address format for the origin chain",
+  toChain: "Wormhole chain id of target chain. Ex: 1 for Solana, 2 for Ethereum, etc",
+  toAddress: "Native address format for the destination chain",
+};
+
+const allFields = (obj: any): Array<any> => {
+  const keys: any[] = [];
+
+  Object.entries(obj).forEach(([key, value]) => {
+    if (typeof value === "object") {
+      keys.push(allFields(value).map(a => `${key}.${a}`));
+    } else {
+      keys.push(key);
+    }
+  });
+
+  return keys.flat();
+};
 
 interface IIdentifier {
   network: "Mainnet" | "Testnet";

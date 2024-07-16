@@ -156,6 +156,20 @@
     font-size: 14px;
     cursor: pointer;
   }
+
+  &-standard {
+    @include centered-row;
+    justify-content: space-around;
+
+    &-container {
+      @include centered-column;
+      gap: 6px;
+
+      &-props {
+        @include centered-row;
+      }
+    }
+  }
 }
 
 .input-highlight {
