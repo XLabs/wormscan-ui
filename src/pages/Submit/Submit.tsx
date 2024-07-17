@@ -574,7 +574,7 @@ export const Submit = ({
     renderExtras();
   }, [resultRaw, resultRawHex.length, parsingLayout, renderExtras]);
 
-  const finishedParsing = resultLength && resultUnparsed.length === 0;
+  const finishedParsing = Boolean(resultLength && resultUnparsed.length === 0);
 
   return (
     <div className="submit">
@@ -582,7 +582,7 @@ export const Submit = ({
       <br />
       <br />
       <span style={{ color: "green" }}>{resultParsed}</span>
-      <span style={{ color: "grey" }}>{resultUnparsed}</span>
+      <span style={{ color: "#ffffff40" }}>{resultUnparsed}</span>
       {finishedParsing && (
         <CheckCircledIcon style={{ marginLeft: 6 }} color="green" width={20} height={20} />
       )}
@@ -597,7 +597,17 @@ export const Submit = ({
             {Object.keys(baseLayouts).map(item => {
               return (
                 <div key={item} className="submit-base-layouts">
-                  <div onClick={() => setUserLayout(baseLayouts[item]())} className="submit-btn">
+                  <div
+                    onClick={() => {
+                      setUserLayout(baseLayouts[item]());
+                      if (item !== "Portal Bridge" && item !== "Clear All") {
+                        setSaveLayoutTitle(item);
+                      } else {
+                        setSaveLayoutTitle("");
+                      }
+                    }}
+                    className="submit-btn"
+                  >
                     {item}
                   </div>
                   {!DEFINED_LAYOUTS.includes(item) && (
@@ -646,7 +656,9 @@ export const Submit = ({
           className="submit-input"
           placeholder="item name"
           value={inputName}
-          onChange={ev => setInputName(ev.target.value)}
+          onChange={ev => {
+            setInputName(ev.target.value.replaceAll(".", ""));
+          }}
         />
 
         <br />
@@ -796,34 +808,14 @@ export const Submit = ({
         <br />
         <br />
 
-        <div>
-          <input
-            className="submit-input"
-            placeholder="layout name"
-            value={saveLayoutTitle}
-            onChange={e => setSaveLayoutTitle(e.target.value)}
-          />
-          <div
-            onClick={() => {
-              if (saveLayoutTitle) {
-                if (savedLayouts) {
-                  setSavedLayouts([...savedLayouts, [saveLayoutTitle, userLayout]]);
-                } else {
-                  setSavedLayouts([[saveLayoutTitle, userLayout]]);
-                }
-              } else {
-                toast("layout name missing", {
-                  type: "error",
-                  theme: "dark",
-                  position: "bottom-center",
-                });
-              }
-            }}
-            className="submit-btn"
-          >
-            SAVE
-          </div>
-          {finishedParsing && (
+        {!isInternal && (
+          <div>
+            <input
+              className="submit-input"
+              placeholder="layout name"
+              value={saveLayoutTitle}
+              onChange={e => setSaveLayoutTitle(e.target.value)}
+            />
             <div
               onClick={() => {
                 if (saveLayoutTitle) {
@@ -832,13 +824,6 @@ export const Submit = ({
                   } else {
                     setSavedLayouts([[saveLayoutTitle, userLayout]]);
                   }
-
-                  const newParsedPayload = deepCloneWithBigInt(result);
-                  newParsedPayload.callerAppId = saveLayoutTitle;
-                  setParsedVAA({
-                    parsedPayload: newParsedPayload,
-                    userLayout: userLayout,
-                  });
                 } else {
                   toast("layout name missing", {
                     type: "error",
@@ -849,10 +834,40 @@ export const Submit = ({
               }}
               className="submit-btn"
             >
-              FINISH PARSING
+              SAVE
             </div>
-          )}
-        </div>
+
+            {finishedParsing && (
+              <div
+                onClick={() => {
+                  if (saveLayoutTitle) {
+                    if (savedLayouts) {
+                      setSavedLayouts([...savedLayouts, [saveLayoutTitle, userLayout]]);
+                    } else {
+                      setSavedLayouts([[saveLayoutTitle, userLayout]]);
+                    }
+
+                    const newParsedPayload = deepCloneWithBigInt(result);
+                    newParsedPayload.callerAppId = saveLayoutTitle;
+                    setParsedVAA({
+                      parsedPayload: newParsedPayload,
+                      userLayout: userLayout,
+                    });
+                  } else {
+                    toast("layout name missing", {
+                      type: "error",
+                      theme: "dark",
+                      position: "bottom-center",
+                    });
+                  }
+                }}
+                className="submit-btn"
+              >
+                FINISH PARSING
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -953,7 +968,7 @@ const LayoutItemButton = ({
         onClick={() => {
           setSelected(id);
         }}
-        style={{ backgroundColor: isSelected ? "green" : "grey" }}
+        style={{ backgroundColor: isSelected ? "green" : "#ffffff40" }}
       >
         {id}
       </button>
@@ -1013,7 +1028,7 @@ const LayoutItemButton = ({
             onClick={() => {
               setBinarySelected("uint");
             }}
-            style={{ backgroundColor: binarySelected === "uint" ? "green" : "grey" }}
+            style={{ backgroundColor: binarySelected === "uint" ? "green" : "#ffffff40" }}
           >
             uint
           </button>
@@ -1022,7 +1037,7 @@ const LayoutItemButton = ({
             onClick={() => {
               setBinarySelected("int");
             }}
-            style={{ backgroundColor: binarySelected === "int" ? "green" : "grey" }}
+            style={{ backgroundColor: binarySelected === "int" ? "green" : "#ffffff40" }}
           >
             int
           </button>
@@ -1031,7 +1046,7 @@ const LayoutItemButton = ({
             onClick={() => {
               setBinarySelected("bytes");
             }}
-            style={{ backgroundColor: binarySelected === "bytes" ? "green" : "grey" }}
+            style={{ backgroundColor: binarySelected === "bytes" ? "green" : "#ffffff40" }}
           >
             bytes
           </button>
@@ -1040,7 +1055,7 @@ const LayoutItemButton = ({
             onClick={() => {
               setBinarySelected("array");
             }}
-            style={{ backgroundColor: binarySelected === "array" ? "green" : "grey" }}
+            style={{ backgroundColor: binarySelected === "array" ? "green" : "#ffffff40" }}
           >
             array
           </button>
@@ -1049,7 +1064,7 @@ const LayoutItemButton = ({
             onClick={() => {
               setBinarySelected("switch");
             }}
-            style={{ backgroundColor: binarySelected === "switch" ? "green" : "grey" }}
+            style={{ backgroundColor: binarySelected === "switch" ? "green" : "#ffffff40" }}
           >
             switch
           </button>
@@ -1060,7 +1075,7 @@ const LayoutItemButton = ({
             onClick={() => {
               setEndianness("default");
             }}
-            style={{ backgroundColor: endianness === "default" ? "green" : "grey" }}
+            style={{ backgroundColor: endianness === "default" ? "green" : "#ffffff40" }}
           >
             default
           </button>
@@ -1069,7 +1084,7 @@ const LayoutItemButton = ({
             onClick={() => {
               setEndianness("little");
             }}
-            style={{ backgroundColor: endianness === "little" ? "green" : "grey" }}
+            style={{ backgroundColor: endianness === "little" ? "green" : "#ffffff40" }}
           >
             little
           </button>
@@ -1156,7 +1171,7 @@ const LayoutItemButton = ({
                   renderExtras={renderExtras}
                   setSwitchLayout={setNewSwitchLayout}
                   isInternal
-                  internalLayoutName={inputName}
+                  internalLayoutName={tagNameValue}
                   resultRaw={resultUnparsedProcessed}
                 />
               )}

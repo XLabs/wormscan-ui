@@ -38,13 +38,14 @@ import { formatDate } from "src/utils/date";
 import { useParams } from "react-router-dom";
 import { useEnvironment } from "src/context/EnvironmentContext";
 
-import { stringifyWithBigInt } from "src/utils/object";
+import { getNestedProperty, stringifyWithBigInt } from "src/utils/object";
 import { Submit } from "./Submit";
 import { processInputValue, processInputType, waitForElement, isHex } from "src/utils/parser";
 import { ChainFilterMainnet, ChainFilterTestnet } from "../Txs/Information/Filters";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { toast } from "react-toastify";
 import "./styles.scss";
+import { generateCode } from "./generateCode";
 
 const SubmitYourProtocol = () => {
   useEffect(() => {
@@ -324,11 +325,6 @@ const SubmitYourProtocol = () => {
 
   useEffect(() => {
     if (!!parsedVAA) {
-      console.log({
-        finishedParsings,
-        resultRaw,
-        parsedVAA,
-      });
       if (!!finishedParsings.length) {
         setResultRaw({
           ...resultRaw,
@@ -341,6 +337,18 @@ const SubmitYourProtocol = () => {
         setResultRaw({ ...resultRaw, payload: parsedVAA.parsedPayload });
       }
 
+      setStdProperties({
+        tokenChain: null,
+        tokenAddress: null,
+        amount: null,
+        feeChain: null,
+        feeAddress: null,
+        fee: null,
+        fromChain: null,
+        fromAddress: null,
+        toChain: null,
+        toAddress: null,
+      });
       setFinishedParsing([
         ...finishedParsings,
         {
@@ -517,54 +525,119 @@ const SubmitYourProtocol = () => {
   const [parsedStandardizedProperties, setParsedStandardizedProperties] = useState<any>({});
 
   useEffect(() => {
-    setParsedStandardizedProperties((prevProperties: any) => {
-      const newParsedStandardizedProperties: any = {};
+    const newParsedStandardizedProperties: any = {};
+    console.log({ finishedParsings });
 
-      Object.entries(stdProperties).forEach(([key, valueName]) => {
-        console.log("1!!", { key, valueName });
+    // parsing fields that don't depend on other fields
+    Object.entries(stdProperties).forEach(([key, valueName]) => {
+      const parsedPayload = `${valueName}`.startsWith(propertyName)
+        ? finishedParsings?.[1]?.parsedPayload
+        : finishedParsings?.[0]?.parsedPayload;
 
-        const parsedPayload = `${valueName}`.includes(".")
-          ? finishedParsings?.[1]?.parsedPayload
-          : finishedParsings?.[0]?.parsedPayload;
+      if (!parsedPayload) return;
 
-        console.log({ parsedPayload });
+      const object_access = valueName?.startsWith(propertyName)
+        ? valueName.replace(propertyName + ".", "")
+        : valueName;
 
-        let value = finishedParsings?.[0]?.parsedPayload?.[valueName];
+      const value = getNestedProperty(parsedPayload, object_access);
 
-        if (key === "tokenAddress" && valueName) {
-          value = new UniversalAddress(parsedPayload?.[valueName])
-            ?.toNative(chainIdToChain(prevProperties["tokenChain"]))
-            ?.toString();
-        }
+      if (
+        key === "tokenAddress" ||
+        key === "toAddress" ||
+        key === "feeAddress" ||
+        key === "fromAddress"
+      ) {
+        return;
+      }
 
-        if (key === "toAddress" && valueName) {
-          value = new UniversalAddress(parsedPayload?.[valueName])
-            ?.toNative(chainIdToChain(prevProperties["toChain"]))
-            ?.toString();
-        }
-
-        if (key === "feeAddress" && valueName) {
-          value = new UniversalAddress(parsedPayload?.[valueName])
-            ?.toNative(chainIdToChain(prevProperties["feeChain"]))
-            ?.toString();
-        }
-
-        if (key === "fromAddress" && valueName) {
-          const chainToUse = prevProperties["fromChain"]
-            ? prevProperties["fromChain"]
-            : resultRaw?.emitterChain;
-
-          value = new UniversalAddress(parsedPayload?.[valueName])
-            ?.toNative(chainIdToChain(chainToUse))
-            ?.toString();
-        }
-
+      if (value) {
         newParsedStandardizedProperties[key] = value;
-      });
-
-      return newParsedStandardizedProperties;
+      }
     });
-  }, [finishedParsings, resultRaw?.emitterChain, stdProperties]);
+
+    // parsing fields that depend on other fields (parsed above)
+    Object.entries(stdProperties).forEach(([key, valueName]) => {
+      const parsedPayload = `${valueName}`.startsWith(propertyName)
+        ? finishedParsings?.[1]?.parsedPayload
+        : finishedParsings?.[0]?.parsedPayload;
+
+      if (!parsedPayload) return;
+
+      const object_access = valueName?.startsWith(propertyName)
+        ? valueName.replace(propertyName + ".", "")
+        : valueName;
+
+      let value = getNestedProperty(parsedPayload, object_access);
+
+      if (
+        key !== "tokenAddress" &&
+        key !== "toAddress" &&
+        key !== "feeAddress" &&
+        key !== "fromAddress"
+      ) {
+        return;
+      }
+
+      if (key === "toAddress" && valueName) {
+        value = new UniversalAddress(value)
+          ?.toNative(chainIdToChain(newParsedStandardizedProperties["toChain"]))
+          ?.toString();
+      }
+
+      if (key === "tokenAddress" && valueName) {
+        const chainToUse = newParsedStandardizedProperties["tokenChain"]
+          ? newParsedStandardizedProperties["tokenChain"]
+          : resultRaw?.emitterChain;
+
+        if (!newParsedStandardizedProperties["tokenChain"]) {
+          newParsedStandardizedProperties.tokenChain = resultRaw?.emitterChain;
+        }
+        value = new UniversalAddress(value)?.toNative(chainIdToChain(chainToUse))?.toString();
+      }
+
+      if (key === "feeAddress" && valueName) {
+        const chainToUse = newParsedStandardizedProperties["feeChain"]
+          ? newParsedStandardizedProperties["feeChain"]
+          : resultRaw?.emitterChain;
+
+        if (!newParsedStandardizedProperties["feeChain"]) {
+          newParsedStandardizedProperties.feeChain = resultRaw?.emitterChain;
+        }
+        value = new UniversalAddress(value)?.toNative(chainIdToChain(chainToUse))?.toString();
+      }
+
+      if (key === "fromAddress" && valueName) {
+        const chainToUse = newParsedStandardizedProperties["fromChain"]
+          ? newParsedStandardizedProperties["fromChain"]
+          : resultRaw?.emitterChain;
+
+        if (!newParsedStandardizedProperties["fromChain"]) {
+          newParsedStandardizedProperties.fromChain = resultRaw?.emitterChain;
+        }
+        value = new UniversalAddress(value)?.toNative(chainIdToChain(chainToUse))?.toString();
+      }
+
+      if (value) {
+        newParsedStandardizedProperties[key] = value;
+      }
+    });
+
+    // add appIds
+    const appIds = [];
+    if (finishedParsings?.[0]?.parsedPayload?.callerAppId)
+      appIds.push(finishedParsings[0].parsedPayload.callerAppId);
+    if (finishedParsings?.[1]?.parsedPayload?.callerAppId)
+      appIds.push(finishedParsings[1].parsedPayload.callerAppId);
+    newParsedStandardizedProperties.appIds = appIds;
+
+    setParsedStandardizedProperties(newParsedStandardizedProperties);
+    if (step === 3) renderExtras();
+  }, [finishedParsings, propertyName, renderExtras, resultRaw?.emitterChain, stdProperties, step]);
+
+  const [addedVAAs, setAddedVAAs] = useState([]);
+  const [lastVaaInput, setLastVaaInput] = useState("");
+  const [lastMoreInfo, setLastMoreInfo] = useState("");
 
   return (
     <BaseLayout secondaryHeader>
@@ -572,15 +645,17 @@ const SubmitYourProtocol = () => {
         <div className="devtools-page-container">
           <h1 className="devtools-page-title">Submit Your Protocol</h1>
           <h2 className="devtools-page-description">
-            The Submit your Protocol tool is currently located within the Dev-Tools section. It
-            allows Wormhole Integrators to parse a VAA of their own so WormholeScan can later parse
-            that kind of VAAs and show better information regarding those transactions or messages.
+            The Submit your Protocol tool allows Wormhole Integrators to parse a VAA payload of
+            their own so WormholeScan can later parse that kind of VAAs and show better information
+            regarding those transactions or messages.
           </h2>
 
           <div className="devtools-page-body">
             <div className="parse">
               {step > 1 && (
                 <div
+                  className="parse-submit-btn"
+                  style={{ marginBottom: 16 }}
                   onClick={() => {
                     setStep(step - 1);
                     window.scrollTo(0, 0);
@@ -600,7 +675,6 @@ const SubmitYourProtocol = () => {
                     </div>
 
                     {selectedIdentifiers.map((identifier, idx) => {
-                      console.log({ identifier, idx });
                       return (
                         <div key={idx} className="parse-submit-identifiers">
                           <div>{identifier.network}</div>
@@ -659,7 +733,6 @@ const SubmitYourProtocol = () => {
                           isMulti={false}
                           name="submitEmitterOrTarget"
                           onValueChange={(value: any) => {
-                            console.log(value);
                             setSelectedChain(value);
                           }}
                           optionStyles={{ padding: 16 }}
@@ -676,6 +749,7 @@ const SubmitYourProtocol = () => {
                       )}
 
                       <input
+                        className="parse-submit-input"
                         placeholder="address"
                         value={selectedAddress}
                         onChange={e => setSelectedAddress(e.target.value)}
@@ -923,7 +997,7 @@ const SubmitYourProtocol = () => {
                     </div>
                   ))}
 
-                  {finishedParsings.length && !vaaSubmit && (
+                  {!!finishedParsings.length && !vaaSubmit && (
                     <div
                       onClick={() => {
                         setStep(3);
@@ -944,6 +1018,25 @@ const SubmitYourProtocol = () => {
               <h1 className="devtools-page-title">(3/4) Standardized Properties</h1>
 
               <div className="submit-standard">
+                <div className="submit-standard-description">
+                  <p>
+                    Standardized properties are properties that are usually displayed in the main
+                    view of WormholeScan.
+                  </p>
+                  <p>
+                    You can select a field of your payload and link it with one of the
+                    standardizedProperties if it makes sense.
+                  </p>
+                  <p>
+                    Example: If there{"'"}s a field in your VAA payload that represents a token that
+                    was sent, you can press it and select tokenAddress
+                  </p>
+                  <p>
+                    This step its optional but without selecting anything we are just going to be
+                    able to show your info as raw data in the details of the transaction
+                  </p>
+                </div>
+
                 <div className="submit-standard-container">
                   {allFields(finishedParsings[0].parsedPayload).map(a => (
                     <div
@@ -993,22 +1086,6 @@ const SubmitYourProtocol = () => {
                             className="submit-btn"
                             onClick={() => {
                               if (selectedPropertyName) {
-                                if (stdProp === "tokenAddress" && !stdProperties.tokenChain) {
-                                  toast("You need tokenChain first to modify tokenAddress", {
-                                    type: "error",
-                                    theme: "dark",
-                                  });
-                                  return;
-                                }
-
-                                if (stdProp === "feeAddress" && !stdProperties.feeChain) {
-                                  toast("You need feeChain first to modify feeAddress", {
-                                    type: "error",
-                                    theme: "dark",
-                                  });
-                                  return;
-                                }
-
                                 if (stdProp === "toAddress" && !stdProperties.toChain) {
                                   toast("You need toChain first to modify toAddress", {
                                     type: "error",
@@ -1040,14 +1117,8 @@ const SubmitYourProtocol = () => {
                               onClick={() => {
                                 const newStdProperties: any = { ...stdProperties, [stdProp]: null };
 
-                                if (stdProp === "tokenChain") {
-                                  newStdProperties["tokenAddress"] = null;
-                                }
                                 if (stdProp === "toChain") {
                                   newStdProperties["toAddress"] = null;
-                                }
-                                if (stdProp === "feeChain") {
-                                  newStdProperties["feeAddress"] = null;
                                 }
 
                                 setStdProperties(newStdProperties);
@@ -1067,8 +1138,6 @@ const SubmitYourProtocol = () => {
                     <div key={idx}>
                       <JsonText
                         data={{
-                          // payload: encoding.hex.encode(parsing.payload),
-                          // userLayout: parsing.userLayout,
                           parsedPayload: parsing.parsedPayload,
                         }}
                       />
@@ -1079,12 +1148,133 @@ const SubmitYourProtocol = () => {
                   <div>
                     <JsonText
                       data={{
-                        // payload: encoding.hex.encode(parsing.payload),
-                        // userLayout: parsing.userLayout,
                         standardizedProperties: parsedStandardizedProperties,
                       }}
                     />
                   </div>
+                </div>
+              </div>
+
+              <div
+                onClick={() => {
+                  setStep(4);
+                  window.scrollTo(0, 0);
+                }}
+                style={{ marginTop: 12 }}
+                className="submit-btn showoff"
+              >
+                Next step
+              </div>
+            </>
+          )}
+
+          {step === 4 && (
+            <>
+              <h1 className="devtools-page-title">(4/4) Tell us more</h1>
+
+              <div className="submit-last">
+                <div className="submit-last-title">
+                  Add more VAAs or txHashes that contain this payload so we can test them out:
+                </div>
+
+                {addedVAAs.map((addedVAA, idx) => (
+                  <div className="submit-last-inputContainer" key={addedVAA}>
+                    <input
+                      className="parse-submit-input"
+                      placeholder="VAA / txHash"
+                      value={addedVAA}
+                      disabled
+                    />
+                    <div
+                      className="submit-btn"
+                      onClick={() => {
+                        const newAddedVAAs = [...addedVAAs];
+                        newAddedVAAs.splice(idx, 1);
+
+                        setAddedVAAs(newAddedVAAs);
+                      }}
+                    >
+                      REMOVE
+                    </div>
+                  </div>
+                ))}
+
+                <div className="submit-last-inputContainer">
+                  <input
+                    className="parse-submit-input"
+                    placeholder="VAA / txHash"
+                    value={lastVaaInput}
+                    onChange={e => setLastVaaInput(e.target.value)}
+                  />
+                  <div
+                    className="submit-btn"
+                    onClick={() => {
+                      setAddedVAAs([...addedVAAs, lastVaaInput]);
+                      setLastVaaInput("");
+                    }}
+                  >
+                    ADD
+                  </div>
+                </div>
+
+                <br />
+                <br />
+                <div className="submit-last-title">
+                  <p>
+                    More information: Tell us everything you consider we need to know regarding this
+                    protocol for better understanding and better implementation.
+                  </p>
+
+                  <p>
+                    Ex. If there is some field in the payload that would be nice to show in the
+                    overview of the transaction, or if some fields should be grouped in a object for
+                    better understanding, etc.
+                  </p>
+                </div>
+
+                <div className="submit-last-info">
+                  <textarea
+                    className="submit-last-info-input"
+                    placeholder="info"
+                    onChange={ev => setLastMoreInfo(ev.target.value.substring(0, 5000))}
+                    value={lastMoreInfo}
+                    aria-label="More Information text area"
+                    draggable={false}
+                    spellCheck={false}
+                  />
+                  <div className="submit-last-info-length">{lastMoreInfo.length} / 5000</div>
+                </div>
+
+                <br />
+                <div
+                  onClick={() => {
+                    const codeGenerated = generateCode(
+                      finishedParsings,
+                      parsedStandardizedProperties,
+                      lastMoreInfo,
+                      addedVAAs,
+                      selectedIdentifiers,
+                      stdProperties,
+                      input,
+                    );
+
+                    console.log({
+                      input,
+                      resultRaw,
+                      finishedParsings,
+                      parsedStandardizedProperties,
+                      lastMoreInfo,
+                      addedVAAs,
+                      selectedIdentifiers,
+                      stdProperties: JSON.stringify(stdProperties),
+                      propertyName,
+                    });
+
+                    console.log("CODE", { codeGenerated });
+                  }}
+                  className="submit-btn showoff"
+                >
+                  SUBMIT
                 </div>
               </div>
             </>

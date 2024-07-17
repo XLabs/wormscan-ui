@@ -96,7 +96,7 @@ const VaaInput = ({
 
             setInputs(null);
             setInputsIndex(0);
-            resetSubmitFields();
+            if (resetSubmitFields) resetSubmitFields();
 
             setTxSearch("");
 
