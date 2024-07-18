@@ -44,8 +44,8 @@ import { processInputValue, processInputType, waitForElement, isHex } from "src/
 import { ChainFilterMainnet, ChainFilterTestnet } from "../Txs/Information/Filters";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { toast } from "react-toastify";
-import "./styles.scss";
 import { generateCode } from "./generateCode";
+import "./styles.scss";
 
 const SubmitYourProtocol = () => {
   useEffect(() => {
@@ -417,7 +417,6 @@ const SubmitYourProtocol = () => {
       setParsedRaw(true);
 
       renderExtras();
-      // collapseGuardianSignatures();
     } catch (e) {
       setResultRaw(null);
     }
@@ -911,7 +910,6 @@ const SubmitYourProtocol = () => {
                           className={`parse-result-top-btn ${parsedRaw ? "active" : ""}`}
                           onClick={() => {
                             renderExtras();
-                            // collapseGuardianSignatures();
                             setParsedRaw(true);
                           }}
                         >
