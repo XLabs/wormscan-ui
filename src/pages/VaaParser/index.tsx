@@ -405,11 +405,6 @@ const VaaParser = () => {
       <div className="devtools-page">
         <div className="devtools-page-container">
           <h1 className="devtools-page-title">VAA Parser</h1>
-          <h2 className="devtools-page-description">
-            The VAA Parser tool is currently located within the Dev-Tools section. It allows
-            decoding a VAA using various input methods such as txHash, VAA ID (wormholeChainID,
-            EmitterAddress, Sequence), a VAA in hexadecimal format, or in base64 format.
-          </h2>
           <div className="devtools-page-body">
             <div className="parse">
               <div className="parse-txType">
@@ -504,7 +499,7 @@ const VaaParser = () => {
                   className={`parse-content-title ${hideJson ? "" : "rotate"}`}
                   onClick={() => setHideJson(!hideJson)}
                 >
-                  Decoded VAA <TriangleDownIcon width={10} />
+                  Decoded VAA <TriangleDownIcon />
                 </span>
 
                 <div

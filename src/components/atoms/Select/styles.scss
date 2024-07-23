@@ -156,6 +156,7 @@
 
   &-dropdown {
     @include button-secondary;
+    padding-right: 8px;
 
     &.open {
       & > svg {

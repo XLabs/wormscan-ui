@@ -313,7 +313,7 @@ export const Chart = ({
   const renderDestinations = useCallback(
     (item: any, idx: number) => (
       <div
-        key={item.chain}
+        key={`${item.chain}${idx}`}
         className={`cross-chain-chart-side-item nonSelectable ${
           isSourcesSelected ? "right" : "left"
         } ${!isDesktop ? (showPercentage ? "showPercentageMobile" : "showMoneyMobile") : ""}`}
@@ -352,7 +352,7 @@ export const Chart = ({
   const renderChartData = useCallback(
     (item: CrossChainActivity[0], idx: number) => (
       <div
-        key={item.chain}
+        key={`${item.chain}${idx}`}
         className={`cross-chain-chart-side-item selectable ${
           isSourcesSelected ? "left" : "right"
         } ${!isDesktop ? (showPercentage ? "showPercentageMobile" : "showMoneyMobile") : ""}`}

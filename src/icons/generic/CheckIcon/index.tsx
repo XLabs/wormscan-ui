@@ -1,4 +1,4 @@
-const CheckIcon = ({ width }: { width: number }) => (
+const CheckIcon = ({ width = 24 }: { width?: number }) => (
   <svg
     width={width}
     height={width}

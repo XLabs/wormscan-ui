@@ -14,10 +14,8 @@ import {
   XLABS_OUR_WORK_URL,
   XLABS_URL,
 } from "src/consts";
-import DiscordIcon from "src/icons/DiscordIcon";
-import TwitterIcon from "src/icons/TwitterIcon";
 import XlabsIcon from "src/icons/XlabsIcon";
-import { ArrowUpIcon, ChatIcon } from "src/icons/generic";
+import { ArrowUpIcon, ChatIcon, DiscordIcon, TwitterIcon } from "src/icons/generic";
 import packageJson from "../../../../package.json";
 import "./styles.scss";
 
@@ -47,7 +45,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               aria-label="Discord link"
             >
-              <DiscordIcon width={19} />
+              <DiscordIcon />
               Join Discord
             </a>
 
@@ -58,7 +56,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               aria-label="Twitter link"
             >
-              <TwitterIcon width={17} />
+              <TwitterIcon />
               <p>Join X</p>
             </a>
           </div>

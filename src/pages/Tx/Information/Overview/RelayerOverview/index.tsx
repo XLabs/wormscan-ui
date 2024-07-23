@@ -1,4 +1,3 @@
-import { ArrowRightIcon, CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import RelayIcon from "src/icons/relayIcon.svg";
@@ -17,6 +16,7 @@ import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { RelayerOverviewProps } from "src/utils/genericRelayerVaaUtils";
 import { useRecoilState } from "recoil";
+import { ArrowRightIcon, CopyIcon, InfoCircleIcon } from "src/icons/generic";
 
 const RelayerOverview = ({
   budgetText,
@@ -116,7 +116,7 @@ const RelayerOverview = ({
                 </a>
               </Tooltip>
               <CopyToClipboard toCopy={deliveryStatus.data.toTxHash}>
-                <CopyIcon height={20} width={20} />
+                <CopyIcon />
               </CopyToClipboard>
             </div>
           </div>
@@ -168,7 +168,7 @@ const RelayerOverview = ({
                   </a>
                 </Tooltip>
                 <CopyToClipboard toCopy={sourceAddress}>
-                  <CopyIcon height={20} width={20} />
+                  <CopyIcon />
                 </CopyToClipboard>
                 {ARKHAM_CHAIN_NAME[fromChain as ChainId] &&
                   addressesInfo?.[sourceAddress.toLowerCase()] && (
@@ -229,7 +229,7 @@ const RelayerOverview = ({
                     </a>
                   </Tooltip>
                   <CopyToClipboard toCopy={deliveryParsedSenderAddress}>
-                    <CopyIcon height={20} width={20} />
+                    <CopyIcon />
                   </CopyToClipboard>
                   {ARKHAM_CHAIN_NAME[fromChain as ChainId] &&
                     addressesInfo?.[deliveryParsedSenderAddress.toLowerCase()] && (
@@ -284,7 +284,7 @@ const RelayerOverview = ({
                     </a>
                   </Tooltip>
                   <CopyToClipboard toCopy={parsedEmitterAddress}>
-                    <CopyIcon height={20} width={20} />
+                    <CopyIcon />
                   </CopyToClipboard>
                   {addressesInfo?.[parsedEmitterAddress.toLowerCase()] && (
                     <AddressInfoTooltip
@@ -300,7 +300,7 @@ const RelayerOverview = ({
                 VAA ID
                 {isDuplicated && (
                   <Tooltip tooltip={<div>VAA ID duplicated</div>} type="info">
-                    <InfoCircledIcon />
+                    <InfoCircleIcon />
                   </Tooltip>
                 )}
               </div>
@@ -321,7 +321,7 @@ const RelayerOverview = ({
                   <p style={{ cursor: "pointer" }}>{shortVaaId(VAAId)}</p>
                 </Tooltip>
                 <CopyToClipboard toCopy={VAAId}>
-                  <CopyIcon height={20} width={20} />
+                  <CopyIcon />
                 </CopyToClipboard>
               </div>
             </div>
@@ -380,7 +380,7 @@ const RelayerOverview = ({
                     </a>
                   </Tooltip>
                   <CopyToClipboard toCopy={deliveryParsedRefundAddress}>
-                    <CopyIcon height={20} width={20} />
+                    <CopyIcon />
                   </CopyToClipboard>
                   {addressesInfo?.[deliveryParsedRefundAddress.toLowerCase()] && (
                     <AddressInfoTooltip
@@ -417,7 +417,7 @@ const RelayerOverview = ({
                         </a>
                       </Tooltip>
                       <CopyToClipboard toCopy={deliveryParsedRefundProviderAddress}>
-                        <CopyIcon height={20} width={20} />
+                        <CopyIcon />
                       </CopyToClipboard>
                     </div>
                   </div>
@@ -478,7 +478,7 @@ const RelayerOverview = ({
                         </a>
                       </Tooltip>
                       <CopyToClipboard toCopy={deliveryParsedTargetAddress}>
-                        <CopyIcon height={20} width={20} />
+                        <CopyIcon />
                       </CopyToClipboard>
                       {ARKHAM_CHAIN_NAME[deliveryInstruction.targetChainId as ChainId] &&
                         addressesInfo?.[deliveryParsedTargetAddress.toLowerCase()] && (
@@ -518,7 +518,7 @@ const RelayerOverview = ({
                       </a>
                     </Tooltip>
                     <CopyToClipboard toCopy={deliveryParsedSourceProviderAddress}>
-                      <CopyIcon height={20} width={20} />
+                      <CopyIcon />
                     </CopyToClipboard>
                     {addressesInfo?.[deliveryParsedSourceProviderAddress.toLowerCase()] && (
                       <AddressInfoTooltip
@@ -538,7 +538,7 @@ const RelayerOverview = ({
                 </div>
                 <div className="tx-overview-graph-step-iconWrapper">
                   <div className="tx-overview-graph-step-iconContainer">
-                    <ArrowRightIcon height={24} width={24} />
+                    <ArrowRightIcon />
                   </div>
                 </div>
 

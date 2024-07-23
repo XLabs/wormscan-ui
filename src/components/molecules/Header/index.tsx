@@ -1,14 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-import { TriangleDownIcon } from "@radix-ui/react-icons";
 import { Network } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { NavLink, Select } from "src/components/atoms";
 import { WormholeScanBrand } from "src/components/molecules";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Search from "./Search";
-import { AnalyticsIcon, HomeIcon, SearchIcon, MenuIcon, SwapVerticalIcon } from "src/icons/generic";
+import {
+  AnalyticsIcon,
+  HomeIcon,
+  SearchIcon,
+  MenuIcon,
+  SwapVerticalIcon,
+  TriangleDownIcon,
+} from "src/icons/generic";
 import { useWindowSize } from "src/utils/hooks";
 import { WORMHOLE_DOCS_URL, WORMHOLESCAN_API_DOCS_URL } from "src/consts";
 import "./styles.scss";
@@ -155,7 +161,7 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
             <NavigationMenu.List className="dropdown-menu">
               <NavigationMenu.Item>
                 <NavigationMenu.Trigger className="dropdown-menu-trigger">
-                  Dev Tools <TriangleDownIcon className="icon" height={16} width={16} />
+                  Dev Tools <TriangleDownIcon className="icon" />
                 </NavigationMenu.Trigger>
 
                 <NavigationMenu.Content className="dropdown-menu-content">

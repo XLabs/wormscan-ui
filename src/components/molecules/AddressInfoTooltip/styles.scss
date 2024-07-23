@@ -1,62 +1,35 @@
 @import "src/styles/globals.scss";
 
 .address-tooltip {
-  color: var(--color-primary-30);
-
-  &-content {
-    width: 360px;
-    background-color: var(--color-primary-700);
-    padding: 6px;
-  }
-
-  &-closeIcon {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-
-    cursor: pointer;
-  }
+  @include centered-column;
+  gap: 28px;
 }
 
 .address-chain-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-
-  gap: 6px;
-  font-size: 16px;
+  @include centered-row;
+  @include text-roboto-body-400;
+  gap: 8px;
 
   .arkham-icons {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    &-twitter {
-      transform: scale(0.7);
-    }
+    @include centered-row;
   }
 
   a {
-    color: var(--color-secondary-800);
-    transform: translateY(2px);
-
-    &:hover path {
-      fill: var(--color-secondary-700);
-    }
+    @include centered-row;
+    color: var(--color-white);
 
     &:hover {
-      text-decoration: underline;
-      color: var(--color-primary-50);
+      color: var(--color-white-70);
     }
   }
 
   &-label {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    margin-top: 6px;
+    @include text-roboto-body-500;
+    background-color: var(--color-gray-800);
+    border-radius: 27px;
+    display: inline;
+    max-width: max-content;
+    padding: 6px 12px;
   }
 
   &-tags {
@@ -85,20 +58,13 @@
 }
 
 .address-chain-arkham {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include button-ghost;
+  @include centered-row;
+  color: var(--color-white);
+  gap: 8px;
 
-  font-size: 16px;
-  margin-top: 4px;
-  margin-bottom: 2px;
-  gap: 2px;
-  color: var(--color-primary-50);
-  text-decoration: none;
-
-  &:hover {
-    color: var(--color-primary-100);
-    text-decoration: underline;
+  & > svg {
+    color: var(--color-white-60);
   }
 }
 

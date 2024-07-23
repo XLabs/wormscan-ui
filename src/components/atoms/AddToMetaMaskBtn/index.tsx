@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { ChainId, Network } from "@wormhole-foundation/sdk";
-import { CopyIcon, Cross2Icon } from "@radix-ui/react-icons";
 import MetaMaskIcon from "src/icons/MetaMaskIcon.svg";
 import { Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import { shortAddress } from "src/utils/crypto";
 import { TokenInfo, addToken } from "src/utils/metaMaskUtils";
+import { CopyIcon, CrossIcon } from "src/icons/generic";
 import "./styles.scss";
 
 type Props = {
@@ -31,14 +31,14 @@ const AddToMetaMaskBtn = ({ className, currentNetwork, toChain, tokenInfo }: Pro
       tooltip={
         <div className="metamask-btn-tooltip">
           <div className="metamask-btn-tooltip-close" onClick={closeTooltip}>
-            <Cross2Icon height={20} width={20} />
+            <CrossIcon />
           </div>
           <span>You need to add it manually, the token doesn&apos;t have a symbol.</span>
           <span>Suggestion:</span>
           <span>
             <b>Token contract address:</b> {shortAddress(tokenInfo.tokenAddress).toUpperCase()}
             <CopyToClipboard toCopy={tokenInfo.tokenAddress}>
-              <CopyIcon height={20} width={20} />
+              <CopyIcon />
             </CopyToClipboard>
           </span>
           <span>

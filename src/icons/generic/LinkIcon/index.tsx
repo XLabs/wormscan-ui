@@ -1,4 +1,4 @@
-const LinkIcon = ({ style, width }: { style?: any; width: number }) => (
+const LinkIcon = ({ style, width = 24 }: { style?: React.CSSProperties; width?: number }) => (
   <svg
     fill="none"
     height={width}

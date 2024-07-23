@@ -63,9 +63,7 @@ export const VerifyRedemption = ({
         target="_blank"
         rel="noopener noreferrer"
       >
-        <p>
-          RESUME <span>TX</span> <span>TRANSACTION</span>
-        </p>
+        <p>Resume Transaction</p>
       </a>
     </Tooltip>
   );

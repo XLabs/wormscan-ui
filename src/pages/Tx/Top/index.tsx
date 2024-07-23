@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { CopyIcon } from "@radix-ui/react-icons";
+import { CopyIcon } from "src/icons/generic";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { txType } from "src/consts";
 import { Tag } from "src/components/atoms";
@@ -62,7 +62,7 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
             </a>
           )}
           <CopyToClipboard toCopy={gatewayInfo?.originTxHash || parseTxHash}>
-            <CopyIcon height={20} width={20} />
+            <CopyIcon />
           </CopyToClipboard>
         </div>
       </div>
@@ -86,7 +86,7 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
               {parseTxHashUpperCase}
             </a>
             <CopyToClipboard toCopy={parseTxHashUpperCase}>
-              <CopyIcon height={20} width={20} />
+              <CopyIcon />
             </CopyToClipboard>
           </div>
         </div>

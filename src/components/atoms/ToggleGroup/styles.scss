@@ -2,7 +2,10 @@
 
 .toggle-group {
   @include centered-row;
+  background-color: var(--color-gray-900);
   gap: 12px;
+  border-radius: 24px;
+  max-width: max-content;
 
   &-root {
     @include centered-row;
@@ -16,6 +19,7 @@
 
     &[data-state="on"] {
       @include button-secondary;
+      background-color: var(--color-gray-800);
     }
   }
 }

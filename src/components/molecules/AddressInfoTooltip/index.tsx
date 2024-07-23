@@ -1,9 +1,8 @@
-import { Cross2Icon, ExternalLinkIcon } from "@radix-ui/react-icons";
 import { BlockchainIcon, Tooltip } from "src/components/atoms";
 import ArkhamIcon from "src/icons/arkham.svg";
 import { useState } from "react";
 import { ChainId } from "@wormhole-foundation/sdk";
-import TwitterIcon from "src/icons/TwitterIcon";
+import { LinkIcon, TwitterIcon } from "src/icons/generic";
 import { ARKHAM_CHAIN_NAME, IArkhamInfoByChain, IArkhamResponse } from "src/utils/arkham";
 import "./styles.scss";
 
@@ -18,21 +17,19 @@ const ChainInfo = ({ data, chainId }: ChainInfoProps) => {
       {(data.arkhamEntity || data.arkhamLabel) && (
         <>
           <div className="address-chain-info">
-            <BlockchainIcon chainId={chainId} network="Mainnet" size={22} />
+            <BlockchainIcon chainId={chainId} network="Mainnet" size={24} />
             <span>{data.arkhamEntity?.name}</span>
 
             {(data.arkhamEntity?.website || data.arkhamEntity?.twitter) && (
               <div className="arkham-icons">
                 {data.arkhamEntity.website && (
                   <a target="_blank" rel="noopener noreferrer" href={data.arkhamEntity.website}>
-                    <ExternalLinkIcon width={16} height={16} />
+                    <LinkIcon />
                   </a>
                 )}
                 {data.arkhamEntity.twitter && (
                   <a target="_blank" rel="noopener noreferrer" href={data.arkhamEntity.twitter}>
-                    <div className="arkham-icons-twitter">
-                      <TwitterIcon />
-                    </div>
+                    <TwitterIcon />
                   </a>
                 )}
               </div>
@@ -61,8 +58,9 @@ const ChainInfo = ({ data, chainId }: ChainInfoProps) => {
         className="address-chain-arkham"
         href={`https://platform.arkhamintelligence.com/explorer/address/${data.address}`}
       >
-        <span>Open in Arkham</span>
         <img src={ArkhamIcon} width={24} height={24} />
+        <span>Open in Arkham</span>
+        <LinkIcon />
       </a>
     </>
   );
@@ -84,17 +82,12 @@ const AddressInfoTooltip = ({ info, chain }: AddressInfoTooltipProps) => {
         controlled
         side="bottom"
         maxWidth={false}
+        type="info"
         open={isOpen}
         onClickOutside={() => setIsOpen(false)}
         tooltip={
           <div className="address-tooltip">
-            <div className="address-tooltip-content">
-              <div className="address-tooltip-closeIcon">
-                <Cross2Icon onClick={() => setIsOpen(false)} width={22} height={22} />
-              </div>
-
-              <ChainInfo data={info[ARKHAM_CHAIN_NAME[chain]]} chainId={chain} />
-            </div>
+            <ChainInfo data={info[ARKHAM_CHAIN_NAME[chain]]} chainId={chain} />
           </div>
         }
       >

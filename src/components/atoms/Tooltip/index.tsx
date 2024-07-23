@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import { useWindowSize } from "src/utils/hooks";
 import { BREAKPOINTS } from "src/consts";
 import "./styles.scss";
 
@@ -24,14 +25,15 @@ const Tooltip = ({
   maxWidth = true,
   onClickOutside,
   open = false,
-  side = "right",
+  side = "top",
   tooltip,
   type = "default",
 }: Props) => {
   const [isOpen, setIsOpen] = useState(controlled ? open : undefined);
   const triggerRef = useRef(null);
   const tooltipRef = useRef(null);
-  const selectSide = type === "info" ? "top" : side;
+  const { width } = useWindowSize();
+  const isDesktop = width >= BREAKPOINTS.desktop;
 
   useEffect(() => {
     controlled && setIsOpen(open);
@@ -79,16 +81,16 @@ const Tooltip = ({
   }
 
   return (
-    <TooltipPrimitive.Provider>
-      <TooltipPrimitive.Root open={isOpen}>
+    <TooltipPrimitive.Provider delayDuration={0}>
+      <TooltipPrimitive.Root open={isDesktop && !controlled ? undefined : isOpen}>
         <TooltipPrimitive.Trigger
           asChild
           ref={triggerRef}
-          onMouseEnter={() => handleSetIsOpen(true)}
-          onMouseLeave={() => handleSetIsOpen(false)}
-          onFocus={() => handleSetIsOpen(true)}
-          onClick={() => handleSetIsOpen(true)}
-          onBlur={() => handleSetIsOpen(false)}
+          onMouseEnter={isDesktop ? undefined : () => handleSetIsOpen(true)}
+          onMouseLeave={isDesktop ? undefined : () => handleSetIsOpen(false)}
+          onFocus={isDesktop ? undefined : () => handleSetIsOpen(true)}
+          onClick={isDesktop ? undefined : () => handleSetIsOpen(true)}
+          onBlur={isDesktop ? undefined : () => handleSetIsOpen(false)}
         >
           {children}
         </TooltipPrimitive.Trigger>
@@ -96,8 +98,8 @@ const Tooltip = ({
           <TooltipPrimitive.Content
             ref={tooltipRef}
             className={`tooltip-container ${type} ${maxWidth ? "max-width" : ""} ${className}`}
-            sideOffset={5}
-            side={selectSide}
+            sideOffset={8}
+            side={side}
           >
             {tooltip}
             <TooltipPrimitive.Arrow className="tooltip-arrow" />

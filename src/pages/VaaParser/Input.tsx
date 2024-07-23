@@ -34,7 +34,7 @@ const VaaInput = ({
         className={`parse-content-title ${hideTextarea ? "" : "rotate"}`}
         onClick={() => setHideTextarea(!hideTextarea)}
       >
-        Encoded VAA <TriangleDownIcon width={10} />
+        Encoded VAA <TriangleDownIcon />
       </span>
 
       <div
