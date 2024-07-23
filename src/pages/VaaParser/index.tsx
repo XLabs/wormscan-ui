@@ -198,7 +198,7 @@ const VaaParser = () => {
                   type="info"
                 >
                   <div className="copy-item">
-                    <InfoCircleIcon width={24} />
+                    <InfoCircleIcon />
                   </div>
                 </Tooltip>
               );
@@ -461,7 +461,7 @@ const VaaParser = () => {
               {!!inputs?.length && (
                 <div className="parse-multiple">
                   <span className="parse-multiple-left">
-                    <InfoCircleIcon width={24} />
+                    <InfoCircleIcon />
                     This txHash has multiple VAAs.
                   </span>
 
@@ -555,7 +555,7 @@ const VaaParser = () => {
                         {(!result || !resultRaw) && (
                           <div className="devtools-page-alert">
                             <div className="devtools-page-alert-info">
-                              <InfoCircleIcon width={24} />
+                              <InfoCircleIcon />
                               <p>Decoded VAA data will be displayed here</p>
                             </div>
                           </div>

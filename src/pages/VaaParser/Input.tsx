@@ -71,7 +71,7 @@ const VaaInput = ({
         {!input && (
           <div className="devtools-page-alert encoded">
             <div className="devtools-page-alert-info">
-              <InfoCircleIcon width={24} />
+              <InfoCircleIcon />
               <p>Encoded VAA data will be displayed here</p>
             </div>
           </div>

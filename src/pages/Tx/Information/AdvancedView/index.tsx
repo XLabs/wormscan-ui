@@ -6,9 +6,10 @@ import "./styles.scss";
 type Props = {
   data: GetOperationsOutput;
   extraRawInfo: any;
+  txIndex: number;
 };
 
-const AdvancedView = ({ data, extraRawInfo }: Props) => {
+const AdvancedView = ({ data, extraRawInfo, txIndex }: Props) => {
   const payload = data?.content?.payload;
 
   const lifecycleRecord = data.relayerInfo;
@@ -41,7 +42,7 @@ const AdvancedView = ({ data, extraRawInfo }: Props) => {
 
       {!!extraRawInfo && (
         <BlockSection
-          id="signatures2"
+          id={`signatures2${txIndex}`}
           code={stringifyWithBigInt(extraRawInfo, 4)}
           title="Extra info"
         />
@@ -143,7 +144,7 @@ const AdvancedView = ({ data, extraRawInfo }: Props) => {
       )}
 
       <BlockSection
-        id="signatures"
+        id={`signatures${txIndex}`}
         title="Signed VAA"
         code={signedVAA && stringifyWithBigInt(signedVAA, 4)}
       />

@@ -5,13 +5,9 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import {
   CCTP_MANUAL_APP_ID,
   CONNECT_APP_ID,
-  DISCORD_URL,
   ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
-  GR_APP_ID,
   MAYAN_APP_ID,
-  MORE_INFO_GOVERNOR_URL,
-  NTT_APP_ID,
   PORTAL_APP_ID,
   txType,
   UNKNOWN_APP_ID,
@@ -30,7 +26,6 @@ import { getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
 import { TokenInfo, getTokenLogo } from "src/utils/metaMaskUtils";
 
 import Overview from "./Overview";
-import RelayerOverview from "./Overview/RelayerOverview";
 import AdvancedView from "./AdvancedView";
 
 import "./styles.scss";
@@ -43,12 +38,21 @@ interface Props {
   blockData: GetBlockData;
   data: GetOperationsOutput;
   extraRawInfo: any;
-  hasMultipleTx: boolean;
+  hasMultipleTxs: boolean;
   isRPC: boolean;
   setTxData: (x: any) => void;
+  txIndex: number;
 }
 
-const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData, hasMultipleTx }: Props) => {
+const Information = ({
+  blockData,
+  data,
+  extraRawInfo,
+  hasMultipleTxs,
+  isRPC,
+  setTxData,
+  txIndex,
+}: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [showSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
@@ -64,11 +68,11 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData, hasMulti
   };
 
   useEffect(() => {
-    if (!hasMultipleTx) {
+    if (!hasMultipleTxs) {
       const view = searchParams.get("view");
       setShowOverviewState(view !== "advanced");
     }
-  }, [hasMultipleTx, searchParams]);
+  }, [hasMultipleTxs, searchParams]);
 
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
@@ -439,6 +443,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData, hasMulti
     totalGuardiansNeeded,
     transactionLimit,
     txHash: data?.sourceChain?.transaction?.txHash,
+    txIndex,
     VAAId,
   };
 
@@ -464,7 +469,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData, hasMulti
         {showOverview ? (
           <Overview {...overviewAndDetailProps} {...data?.relayerInfo?.props} />
         ) : (
-          <AdvancedView data={data} extraRawInfo={extraRawInfo} />
+          <AdvancedView data={data} extraRawInfo={extraRawInfo} txIndex={txIndex} />
         )}
       </div>
     </section>
@@ -472,25 +477,3 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData, hasMulti
 };
 
 export { Information };
-
-const DiscordSupportLink = () => (
-  <a
-    className="tx-information-alerts-unknown-payload-type-link"
-    href={DISCORD_URL}
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Discord
-  </a>
-);
-
-const LearnMoreLink = () => (
-  <a
-    className="tx-information-alerts-unknown-payload-type-link"
-    href={MORE_INFO_GOVERNOR_URL}
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Learn more
-  </a>
-);

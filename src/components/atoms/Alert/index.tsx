@@ -12,7 +12,7 @@ const Alert = ({ children, type = "info", className }: Props) => {
   return (
     <div className={`alert ${type} ${className}`}>
       <div>
-        <InfoCircleIcon width={24} />
+        <InfoCircleIcon />
       </div>
       <div className="alert-text">{children}</div>
     </div>

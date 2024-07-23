@@ -40,7 +40,7 @@ import "./styles.scss";
 
 const BIGDIPPER_TRANSACTIONS = "https://bigdipper.live/wormhole/transactions";
 
-export type OverviewProps = {
+type OverviewProps = {
   amountSent?: string;
   amountSentUSD?: string;
   appIds?: string[];
@@ -121,6 +121,7 @@ export type OverviewProps = {
   totalGuardiansNeeded?: number;
   transactionLimit?: number;
   txHash?: string;
+  txIndex?: number;
   VAAId?: string;
 };
 
@@ -181,12 +182,14 @@ const Overview = ({
   showMetaMaskBtn,
   showSignatures,
   sourceAddress,
+  sourceFee,
   sourceFeeUSD,
   sourceGasTokenNotional,
   sourceSymbol,
   sourceTokenLink,
   sourceTxHash,
   STATUS,
+  targetFee,
   targetFeeUSD,
   targetGasTokenNotional,
   targetSymbol,
@@ -198,9 +201,8 @@ const Overview = ({
   totalGuardiansNeeded,
   transactionLimit,
   txHash,
+  txIndex,
   VAAId,
-  targetFee,
-  sourceFee,
 }: OverviewProps) => {
   const [addressesInfo] = useRecoilState(addressesInfoState);
   const extraWidthGatewaySource = isGatewaySource ? 125 : 30;
@@ -1294,11 +1296,11 @@ const Overview = ({
                 onClick={() => {
                   setShowOverview(false);
                   setTimeout(() => {
-                    const signedVaaElem = document.getElementById("signatures");
+                    const signedVaaElem = document.getElementById(`signatures${txIndex}`);
                     if (signedVaaElem) {
                       signedVaaElem.scrollIntoView({ behavior: "smooth", block: "start" });
                     } else {
-                      const extraRawElem = document.getElementById("signatures2");
+                      const extraRawElem = document.getElementById(`signatures2${txIndex}`);
                       if (extraRawElem) {
                         extraRawElem.scrollIntoView({ behavior: "smooth", block: "start" });
                       }

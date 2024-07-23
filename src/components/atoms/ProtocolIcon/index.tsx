@@ -9,7 +9,6 @@ import {
   PORTAL_APP_ID,
   PORTAL_NFT_APP_ID,
 } from "src/consts";
-import "./styles.scss";
 
 const ProtocolIcon = ({ protocolName, width = 28 }: { protocolName: string; width?: number }) => {
   const IconComponent = iconMap[protocolName];

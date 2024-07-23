@@ -467,7 +467,7 @@ export const Chart = ({
         />
 
         <div className="cross-chain-relative-pagination-message">
-          <InfoCircleIcon width={24} />
+          <InfoCircleIcon />
 
           {selectedDestination === "destinations" && (
             <div>{t("home.crossChain.bottomMessageDestinations")}</div>
