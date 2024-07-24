@@ -921,7 +921,7 @@ const Overview = ({
             </div>
           )}
 
-          {showMetaMaskBtn && (
+          {!!showMetaMaskBtn && (
             <div className="tx-overview-section-info-container span2 metamask-mobile">
               <AddToMetaMaskBtn
                 className="add-to-metamask-btn"
@@ -992,7 +992,7 @@ const Overview = ({
             </div>
           </div>
 
-          {showMetaMaskBtn && (
+          {!!showMetaMaskBtn && (
             <div className="tx-overview-section-info-container span2 metamask-desktop">
               <AddToMetaMaskBtn
                 className="add-to-metamask-btn"
