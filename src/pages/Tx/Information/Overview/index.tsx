@@ -2,19 +2,10 @@ import { AddToMetaMaskBtn, BlockchainIcon, ProtocolIcon, Tooltip } from "src/com
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { filterAppIds, formatAppId, formatUnits, parseTx, shortAddress } from "src/utils/crypto";
-import { TokenInfo } from "src/utils/metaMaskUtils";
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import { useRecoilState } from "recoil";
 import { addressesInfoState } from "src/utils/recoilStates";
-import { INFTInfo } from "src/api/guardian-network/types";
-import {
-  BREAKPOINTS,
-  CCTP_MANUAL_APP_ID,
-  DISCORD_URL,
-  IStatus,
-  MORE_INFO_GOVERNOR_URL,
-  txType,
-} from "src/consts";
+import { BREAKPOINTS, CCTP_MANUAL_APP_ID, txType } from "src/consts";
 import {
   ArrowDownIcon,
   ArrowRightIcon,
@@ -26,8 +17,7 @@ import {
 } from "src/icons/generic";
 import { useLayoutEffect, useRef, useState } from "react";
 import { TruncateText } from "src/utils/string";
-import { ChainId, Network, chainToChainId } from "@wormhole-foundation/sdk";
-import { AutomaticRelayOutput } from "src/api/search/types";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { formatDate } from "src/utils/date";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 import {
@@ -38,92 +28,14 @@ import {
 import { formatNumber } from "src/utils/number";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { useWindowSize } from "src/utils/hooks";
+import {
+  BIGDIPPER_TRANSACTIONS,
+  DiscordSupportLink,
+  LearnMoreLink,
+  OverviewProps,
+  extractPageName,
+} from "src/utils/txPageUtils";
 import "./styles.scss";
-
-const BIGDIPPER_TRANSACTIONS = "https://bigdipper.live/wormhole/transactions";
-
-type OverviewProps = {
-  amountSent?: string;
-  amountSentUSD?: string;
-  appIds?: string[];
-  budgetText?: () => string;
-  copyBudgetText?: () => string;
-  currentBlock?: number;
-  currentNetwork?: Network;
-  decodeExecution?: any;
-  deliveryAttempt?: string;
-  deliveryInstruction?: any;
-  deliveryParsedRefundAddress?: string;
-  deliveryParsedRefundProviderAddress?: string;
-  deliveryParsedSenderAddress?: string;
-  deliveryParsedSourceProviderAddress?: string;
-  deliveryParsedTargetAddress?: string;
-  deliveryStatus?: AutomaticRelayOutput;
-  destinationDateParsed?: string;
-  emitterChainId?: ChainId;
-  fee?: string;
-  fromChain?: ChainId;
-  fromChainOrig?: ChainId;
-  gasUsed?: number;
-  gasUsedText?: () => string;
-  gatewayInfo?: {
-    originAddress?: string;
-    originChainId?: ChainId;
-    originTxHash?: string;
-  };
-  guardianSignaturesCount?: number;
-  hasVAA?: boolean;
-  isAttestation?: boolean;
-  isBigTransaction?: boolean;
-  isDailyLimitExceeded?: boolean;
-  isDelivery?: boolean;
-  isDuplicated?: boolean;
-  isGatewaySource?: boolean;
-  isJustGenericRelayer?: boolean;
-  isLatestBlockHigherThanVaaEmitBlock?: boolean;
-  isMayanOnly?: boolean;
-  isUnknownApp?: boolean;
-  isUnknownPayloadType?: boolean;
-  lastFinalizedBlock?: number;
-  maxRefundText?: () => string;
-  nftInfo?: INFTInfo;
-  originDateParsed?: string;
-  parsedDestinationAddress?: string;
-  parsedEmitterAddress?: string;
-  parsedOriginAddress?: string;
-  parsedPayload?: any;
-  parsedRedeemTx?: string;
-  parsedVaa?: any;
-  payloadType?: number;
-  receiverValueText?: () => string;
-  redeemedAmount?: string;
-  refundStatus?: string;
-  refundText?: () => string;
-  resultLog?: string;
-  setShowOverview?: (bool: boolean) => void;
-  showMetaMaskBtn?: boolean;
-  showSignatures?: boolean;
-  sourceAddress?: string;
-  sourceFee?: string;
-  sourceFeeUSD?: string;
-  sourceSymbol?: string;
-  sourceTokenLink?: string;
-  sourceTxHash?: string;
-  STATUS?: IStatus;
-  targetFee?: string;
-  targetFeeUSD?: string;
-  targetSymbol?: string;
-  targetTokenLink?: string;
-  targetTxTimestamp?: number;
-  toChain?: ChainId;
-  tokenAmount?: string;
-  tokenInfo?: TokenInfo;
-  totalGuardiansNeeded?: number;
-  transactionLimit?: number;
-  txHash?: string;
-  txIndex?: number;
-  VAAId?: string;
-};
 
 const Overview = ({
   amountSent,
@@ -186,7 +98,6 @@ const Overview = ({
   sourceFeeUSD,
   sourceSymbol,
   sourceTokenLink,
-  sourceTxHash,
   STATUS,
   targetFee,
   targetFeeUSD,
@@ -203,6 +114,7 @@ const Overview = ({
   VAAId,
 }: OverviewProps) => {
   const [addressesInfo] = useRecoilState(addressesInfoState);
+  const progressRef = useRef<HTMLDivElement>(null);
   const lineValueRef = useRef<HTMLDivElement>(null);
   const [lineValueWidth, setLineValueWidth] = useState<number>(0);
 
@@ -218,8 +130,6 @@ const Overview = ({
     chainId: emitterChainId,
   });
   const parseTxHashUpperCase = parseTxHash.toUpperCase();
-
-  const progressRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const updateWidth = () => {
@@ -1011,7 +921,7 @@ const Overview = ({
             </div>
           )}
 
-          {tokenAmount && targetSymbol && toChain && tokenInfo && (
+          {showMetaMaskBtn && (
             <div className="tx-overview-section-info-container span2 metamask-mobile">
               <AddToMetaMaskBtn
                 className="add-to-metamask-btn"
@@ -1082,7 +992,7 @@ const Overview = ({
             </div>
           </div>
 
-          {tokenAmount && targetSymbol && toChain && tokenInfo && (
+          {showMetaMaskBtn && (
             <div className="tx-overview-section-info-container span2 metamask-desktop">
               <AddToMetaMaskBtn
                 className="add-to-metamask-btn"
@@ -1108,40 +1018,76 @@ const Overview = ({
           )}
 
           {isDelivery && deliveryParsedRefundAddress !== deliveryParsedTargetAddress && (
-            <div className="tx-overview-section-info-container span2">
-              <div className="tx-overview-section-info-container-key">REFUND ADDRESS</div>
+            <>
+              <div className="tx-overview-section-info-container span2">
+                <div className="tx-overview-section-info-container-key">REFUND ADDRESS</div>
 
-              <div className="tx-overview-section-info-container-value">
-                <div className="text">
-                  <a
-                    href={getExplorerLink({
-                      network: currentNetwork,
-                      chainId: deliveryInstruction.refundChainId,
-                      value: deliveryParsedRefundAddress,
-                      base: "address",
-                      isNativeAddress: true,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <TruncateText
-                      containerWidth={lineValueWidth}
-                      extraWidth={180}
-                      text={deliveryParsedRefundAddress.toUpperCase()}
-                    />
-                  </a>
-                  <CopyToClipboard toCopy={deliveryParsedRefundAddress}>
-                    <CopyIcon />
-                  </CopyToClipboard>
-                  {addressesInfo?.[deliveryParsedRefundAddress.toLowerCase()] && (
-                    <AddressInfoTooltip
-                      info={addressesInfo[deliveryParsedRefundAddress.toLowerCase()]}
-                      chain={deliveryInstruction.refundChainId}
-                    />
-                  )}
+                <div className="tx-overview-section-info-container-value">
+                  <div className="text">
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: deliveryInstruction.refundChainId,
+                        value: deliveryParsedRefundAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <TruncateText
+                        containerWidth={lineValueWidth}
+                        extraWidth={180}
+                        text={deliveryParsedRefundAddress.toUpperCase()}
+                      />
+                    </a>
+                    <CopyToClipboard toCopy={deliveryParsedRefundAddress}>
+                      <CopyIcon />
+                    </CopyToClipboard>
+                    {addressesInfo?.[deliveryParsedRefundAddress.toLowerCase()] && (
+                      <AddressInfoTooltip
+                        info={addressesInfo[deliveryParsedRefundAddress.toLowerCase()]}
+                        chain={deliveryInstruction.refundChainId}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+              {deliveryParsedRefundProviderAddress.toLowerCase() !==
+                testnetDefaultDeliveryProviderContractAddress.toLowerCase() &&
+                deliveryParsedRefundProviderAddress.toLowerCase() !==
+                  mainnetDefaultDeliveryProviderContractAddress.toLowerCase() && (
+                  <div className="tx-overview-section-info-container span2">
+                    <div className="tx-overview-section-info-container-key">REFUND PROVIDER</div>
+
+                    <div className="tx-overview-section-info-container-value">
+                      <div className="text">
+                        <a
+                          href={getExplorerLink({
+                            network: currentNetwork,
+                            chainId: deliveryInstruction.refundChainId,
+                            value: deliveryParsedRefundProviderAddress,
+                            base: "address",
+                            isNativeAddress: true,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <TruncateText
+                            containerWidth={lineValueWidth}
+                            extraWidth={180}
+                            text={deliveryParsedRefundProviderAddress.toUpperCase()}
+                          />
+                        </a>
+
+                        <CopyToClipboard toCopy={deliveryParsedRefundProviderAddress}>
+                          <CopyIcon />
+                        </CopyToClipboard>
+                      </div>
+                    </div>
+                  </div>
+                )}
+            </>
           )}
 
           {isDelivery && (
@@ -1435,25 +1381,3 @@ const Overview = ({
 };
 
 export default Overview;
-
-const extractPageName = (url: string) => {
-  const domain = url.split("//")[1].split("/")[0];
-  const parts = domain.split(".");
-  if (parts.length > 2) {
-    return parts.slice(1, -1).join(".");
-  } else {
-    return parts[0];
-  }
-};
-
-const DiscordSupportLink = () => (
-  <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer">
-    Discord
-  </a>
-);
-
-const LearnMoreLink = () => (
-  <a href={MORE_INFO_GOVERNOR_URL} target="_blank" rel="noopener noreferrer">
-    Learn more
-  </a>
-);
