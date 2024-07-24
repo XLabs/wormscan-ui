@@ -8,6 +8,7 @@ import { useRecoilState } from "recoil";
 import { addressesInfoState } from "src/utils/recoilStates";
 import { INFTInfo } from "src/api/guardian-network/types";
 import {
+  BREAKPOINTS,
   CCTP_MANUAL_APP_ID,
   DISCORD_URL,
   IStatus,
@@ -36,6 +37,7 @@ import {
 } from "src/utils/environment";
 import { formatNumber } from "src/utils/number";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { useWindowSize } from "src/utils/hooks";
 import "./styles.scss";
 
 const BIGDIPPER_TRANSACTIONS = "https://bigdipper.live/wormhole/transactions";
@@ -208,6 +210,8 @@ const Overview = ({
   const [showProgress, setShowProgress] = useState(false);
 
   const { environment } = useEnvironment();
+  const { width } = useWindowSize();
+  const isDekstop = width >= BREAKPOINTS.desktop;
 
   const parseTxHash = parseTx({
     value: txHash,
@@ -385,116 +389,128 @@ const Overview = ({
                         : "The VAA for this transaction has not been issued yet"
                       : "VAA comes from another multiverse, we don’t have more details about it"}
                   </div>
-                  <Tooltip
-                    type="info"
-                    tooltip={
-                      <div className="tx-overview-section-info-alert-tooltip-content">
-                        {!hasVAA ? (
-                          appIds && appIds.includes(CCTP_MANUAL_APP_ID) ? (
-                            <p>
-                              This transaction is processed by Circle&apos;s CCTP and therefore
-                              information might be incomplete.
-                            </p>
-                          ) : (
-                            <>
-                              <p className="mobile">
-                                The VAA for this transaction has not been issued yet.
+                  {!(isDekstop && hasVAA) && (
+                    <Tooltip
+                      type="info"
+                      tooltip={
+                        <div className="tx-overview-section-info-alert-tooltip-content">
+                          {!hasVAA ? (
+                            appIds && appIds.includes(CCTP_MANUAL_APP_ID) ? (
+                              <p>
+                                This transaction is processed by Circle&apos;s CCTP and therefore
+                                information might be incomplete.
                               </p>
-                              {!isLatestBlockHigherThanVaaEmitBlock &&
-                                !isBigTransaction &&
-                                !isDailyLimitExceeded && (
-                                  <p>
-                                    Waiting for finality on{" "}
-                                    {getChainName({ chainId: fromChain, network: currentNetwork })}{" "}
-                                    which may take up to 15 minutes.
-                                  </p>
-                                )}
-                              {lastFinalizedBlock && currentBlock && (
-                                <>
-                                  <div>
-                                    <h5>LAST FINALIZED BLOCK NUMBER</h5>
-                                    <span>
+                            ) : (
+                              <>
+                                <p className="mobile">
+                                  The VAA for this transaction has not been issued yet.
+                                </p>
+                                {!isLatestBlockHigherThanVaaEmitBlock &&
+                                  !isBigTransaction &&
+                                  !isDailyLimitExceeded && (
+                                    <p>
+                                      Waiting for finality on{" "}
+                                      {getChainName({
+                                        chainId: fromChain,
+                                        network: currentNetwork,
+                                      })}{" "}
+                                      which may take up to 15 minutes.
+                                    </p>
+                                  )}
+                                {lastFinalizedBlock && currentBlock && (
+                                  <>
+                                    <div>
+                                      <h5>LAST FINALIZED BLOCK NUMBER</h5>
+                                      <span>
+                                        <a
+                                          className="tx-information-alerts-unknown-payload-type-link"
+                                          href={getExplorerLink({
+                                            network: currentNetwork,
+                                            chainId: fromChain,
+                                            value: lastFinalizedBlock.toString(),
+                                            base: "block",
+                                          })}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          {lastFinalizedBlock}
+                                        </a>
+                                      </span>
+                                    </div>
+
+                                    <div>
+                                      <h5>THIS BLOCK NUMBER</h5>
                                       <a
                                         className="tx-information-alerts-unknown-payload-type-link"
                                         href={getExplorerLink({
                                           network: currentNetwork,
                                           chainId: fromChain,
-                                          value: lastFinalizedBlock.toString(),
+                                          value: currentBlock.toString(),
                                           base: "block",
                                         })}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                       >
-                                        {lastFinalizedBlock}
+                                        {currentBlock}
                                       </a>
-                                    </span>
-                                  </div>
+                                    </div>
+                                  </>
+                                )}
 
+                                {isBigTransaction && currentNetwork === "Mainnet" ? (
                                   <div>
-                                    <h5>THIS BLOCK NUMBER</h5>
-                                    <a
-                                      className="tx-information-alerts-unknown-payload-type-link"
-                                      href={getExplorerLink({
-                                        network: currentNetwork,
+                                    <h5>BIG TRANSACTION</h5>
+                                    <div>
+                                      This transaction will take 24 hours to process, as it exceeds
+                                      the Wormhole network&apos;s temporary transaction limit of $
+                                      {formatNumber(transactionLimit, 0)} on{" "}
+                                      {getChainName({
                                         chainId: fromChain,
-                                        value: currentBlock.toString(),
-                                        base: "block",
+                                        network: currentNetwork,
+                                      })}{" "}
+                                      for security reasons. <LearnMoreLink /> about this temporary
+                                      security measure.
+                                    </div>
+                                  </div>
+                                ) : isDailyLimitExceeded && currentNetwork === "Mainnet" ? (
+                                  <div>
+                                    <h5>DAILY LIMIT EXCEEDED</h5>
+                                    <div>
+                                      This transaction will take up to 24 hours to process as
+                                      Wormhole has reached the daily limit for source Blockchain{" "}
+                                      {getChainName({
+                                        chainId: fromChain,
+                                        network: currentNetwork,
                                       })}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                    >
-                                      {currentBlock}
-                                    </a>
+                                      . This is a normal and temporary security feature by the
+                                      Wormhole network. <LearnMoreLink /> about this security
+                                      measure.
+                                    </div>
                                   </div>
-                                </>
-                              )}
-
-                              {isBigTransaction && currentNetwork === "Mainnet" ? (
-                                <div>
-                                  <h5>BIG TRANSACTION</h5>
-                                  <div>
-                                    This transaction will take 24 hours to process, as it exceeds
-                                    the Wormhole network&apos;s temporary transaction limit of $
-                                    {formatNumber(transactionLimit, 0)} on{" "}
-                                    {getChainName({ chainId: fromChain, network: currentNetwork })}{" "}
-                                    for security reasons. <LearnMoreLink /> about this temporary
-                                    security measure.
-                                  </div>
-                                </div>
-                              ) : isDailyLimitExceeded && currentNetwork === "Mainnet" ? (
-                                <div>
-                                  <h5>DAILY LIMIT EXCEEDED</h5>
-                                  <div>
-                                    This transaction will take up to 24 hours to process as Wormhole
-                                    has reached the daily limit for source Blockchain{" "}
-                                    {getChainName({ chainId: fromChain, network: currentNetwork })}.
-                                    This is a normal and temporary security feature by the Wormhole
-                                    network. <LearnMoreLink /> about this security measure.
-                                  </div>
-                                </div>
-                              ) : (
-                                isLatestBlockHigherThanVaaEmitBlock && (
-                                  <div>
-                                    Since the latest block number is higher than this
-                                    transaction&apos;s, there might be an extra delay. You can
-                                    contact support on <DiscordSupportLink />.
-                                  </div>
-                                )
-                              )}
-                            </>
-                          )
-                        ) : (
-                          "This VAA comes from another multiverse, we don't have more details about it."
-                        )}
+                                ) : (
+                                  isLatestBlockHigherThanVaaEmitBlock && (
+                                    <div>
+                                      Since the latest block number is higher than this
+                                      transaction&apos;s, there might be an extra delay. You can
+                                      contact support on <DiscordSupportLink />.
+                                    </div>
+                                  )
+                                )}
+                              </>
+                            )
+                          ) : (
+                            "This VAA comes from another multiverse, we don't have more details about it."
+                          )}
+                        </div>
+                      }
+                      className="tx-overview-section-info-alert-tooltip"
+                      side="bottom"
+                    >
+                      <div className="tx-overview-section-info-alert-tooltip-icon">
+                        <InfoCircleIcon />
                       </div>
-                    }
-                    className="tx-overview-section-info-alert-tooltip"
-                    side="bottom"
-                  >
-                    <div className="tx-overview-section-info-alert-tooltip-icon">
-                      <InfoCircleIcon />
-                    </div>
-                  </Tooltip>
+                    </Tooltip>
+                  )}
                 </div>
               )}
             </div>
@@ -505,11 +521,11 @@ const Overview = ({
       <div className="tx-overview-section">
         <h4 className="tx-overview-section-title">Source Tx Hash</h4>
 
-        <div className="tx-overview-section-info">
+        <div className="tx-overview-section-info" ref={lineValueRef}>
           <div className="tx-overview-section-info-container">
             <div className="text">
               {emitterChainId === chainToChainId("Wormchain") && !gatewayInfo?.originTxHash ? (
-                <TruncateText containerWidth={lineValueWidth} extraWidth={100} text={parseTxHash} />
+                <TruncateText containerWidth={lineValueWidth} text={parseTxHash} />
               ) : (
                 <a
                   href={getExplorerLink({
@@ -523,7 +539,6 @@ const Overview = ({
                 >
                   <TruncateText
                     containerWidth={lineValueWidth}
-                    extraWidth={100}
                     text={gatewayInfo?.originTxHash || parseTxHash}
                   />
                 </a>
@@ -552,7 +567,7 @@ const Overview = ({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {parseTxHashUpperCase}
+                  <TruncateText containerWidth={lineValueWidth} text={parseTxHashUpperCase} />
                 </a>
                 <CopyToClipboard toCopy={parseTxHashUpperCase}>
                   <CopyIcon width={24} />
@@ -599,7 +614,6 @@ const Overview = ({
                   >
                     <TruncateText
                       containerWidth={lineValueWidth}
-                      extraWidth={100}
                       text={deliveryParsedSenderAddress.toUpperCase()}
                     />
                   </a>
@@ -631,7 +645,6 @@ const Overview = ({
                       <span>
                         <TruncateText
                           containerWidth={lineValueWidth}
-                          extraWidth={100}
                           text={parsedEmitterAddress.toUpperCase()}
                         />
                       </span>
@@ -650,7 +663,7 @@ const Overview = ({
                     >
                       <TruncateText
                         containerWidth={lineValueWidth}
-                        extraWidth={100}
+                        extraWidth={isGatewaySource ? 120 : 80}
                         text={parsedEmitterAddress.toUpperCase()}
                       />
                     </a>
@@ -674,15 +687,17 @@ const Overview = ({
         </div>
       </div>
 
-      <div className="tx-overview-section">
-        <h4 className="tx-overview-section-title">Type</h4>
+      {txType[payloadType] && (
+        <div className="tx-overview-section">
+          <h4 className="tx-overview-section-title">Type</h4>
 
-        <div className="tx-overview-section-info">
-          <div className="tx-overview-section-info-container">
-            <div className="text">{txType[payloadType] ? txType[payloadType] : "N/A"}</div>
+          <div className="tx-overview-section-info">
+            <div className="tx-overview-section-info-container">
+              <div className="text">{txType[payloadType]}</div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {nftInfo && (
         <div className="tx-overview-section start nft-section">
@@ -897,7 +912,15 @@ const Overview = ({
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {shortAddress(parsedOriginAddress.toUpperCase())}
+                      <div className="desktop">
+                        {shortAddress(parsedOriginAddress.toUpperCase())}
+                      </div>
+                      <div className="mobile">
+                        <TruncateText
+                          containerWidth={lineValueWidth}
+                          text={parsedOriginAddress.toUpperCase()}
+                        />
+                      </div>
                     </a>
                     <CopyToClipboard toCopy={parsedOriginAddress}>
                       <CopyIcon width={24} />
@@ -1017,7 +1040,15 @@ const Overview = ({
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {shortAddress(parsedDestinationAddress.toLocaleUpperCase())}
+                      <div className="desktop">
+                        {shortAddress(parsedDestinationAddress.toLocaleUpperCase())}
+                      </div>
+                      <div className="mobile">
+                        <TruncateText
+                          containerWidth={lineValueWidth}
+                          text={parsedDestinationAddress.toLocaleUpperCase()}
+                        />
+                      </div>
                     </a>
                     <CopyToClipboard toCopy={parsedDestinationAddress}>
                       <CopyIcon width={24} />
@@ -1166,7 +1197,7 @@ const Overview = ({
           <div className="tx-overview-section-info">
             <div className="tx-overview-section-info-container">
               <div className="text">
-                {formatUnits(+fee)} {sourceSymbol}
+                {formatNumber(formatUnits(+fee))} {sourceSymbol}
               </div>
             </div>
           </div>
@@ -1300,7 +1331,7 @@ const Overview = ({
 
       <div className="tx-overview-section">
         <h4 className="tx-overview-section-title">Time</h4>
-        <div className="tx-overview-section-info" ref={lineValueRef}>
+        <div className="tx-overview-section-info">
           <div className="tx-overview-section-info-container">
             <div className="text">{originDateParsed ? originDateParsed : "N/A"}</div>
           </div>
@@ -1339,7 +1370,7 @@ const Overview = ({
             <div className="text">
               {VAAId ? (
                 <>
-                  <TruncateText containerWidth={lineValueWidth} extraWidth={50} text={VAAId} />
+                  <TruncateText containerWidth={lineValueWidth} text={VAAId} />
                   <CopyToClipboard toCopy={VAAId}>
                     <CopyIcon width={24} />
                   </CopyToClipboard>
