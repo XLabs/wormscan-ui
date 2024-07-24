@@ -618,6 +618,10 @@
     position: relative;
     text-align: end;
 
+    @include desktop {
+      justify-content: flex-start;
+    }
+
     & > span {
       color: var(--color-gray-600);
     }
