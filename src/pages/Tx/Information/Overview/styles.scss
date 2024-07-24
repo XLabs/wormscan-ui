@@ -282,9 +282,27 @@
         gap: 12px;
         grid-template-columns: 1fr;
 
+        & .metamask-mobile {
+          justify-content: end;
+
+          @include desktop {
+            display: none;
+          }
+        }
+
+        & .metamask-desktop {
+          display: none;
+
+          @include desktop {
+            display: block;
+            margin-left: 64px;
+            transform: translateY(-8px);
+          }
+        }
+
         @include desktop {
-          grid-template-columns: 280px auto;
-          gap: 20px;
+          grid-template-columns: max-content auto;
+          gap: 20px 32px;
 
           & .span2 {
             grid-column: span 2;
@@ -523,7 +541,6 @@
 
       &-container {
         @include centered-row;
-        flex-wrap: wrap;
         gap: 12px 24px;
         justify-content: space-between;
         width: 100%;
@@ -562,10 +579,22 @@
         }
 
         &.protocols {
+          flex-wrap: wrap;
           justify-content: end;
 
           & .text {
             margin-left: 0;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 40vw;
+            display: inline-block;
+
+            & > svg {
+              vertical-align: middle;
+              margin-right: 4px;
+            }
           }
         }
       }
@@ -585,6 +614,7 @@
     gap: 4px;
     margin-left: auto;
     min-height: 24px;
+    position: relative;
     text-align: end;
 
     & > span {

@@ -7,6 +7,7 @@ import {
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
+  GR_APP_ID,
   MAYAN_APP_ID,
   PORTAL_APP_ID,
   txType,
@@ -140,6 +141,9 @@ const Information = ({
   const isJustPortalUnknown =
     (appIds?.includes(PORTAL_APP_ID) && appIds.length === 1) ||
     (appIds?.includes(PORTAL_APP_ID) && appIds?.includes(UNKNOWN_APP_ID) && appIds.length === 2);
+  const isJustGenericRelayer =
+    (appIds?.includes(GR_APP_ID) && appIds.length === 1) ||
+    (appIds?.includes(GR_APP_ID) && appIds?.includes(UNKNOWN_APP_ID) && appIds.length === 2);
 
   const isAttestation = txType[payloadType] === "Attestation";
   const isUnknownPayloadType =
@@ -371,7 +375,6 @@ const Information = ({
       setFoundRedeem(true);
 
       setTimeout(() => {
-        // setIsGenericRelayerTx(false);
         setTxData(newData);
       }, 2000);
     } else {
@@ -386,8 +389,6 @@ const Information = ({
   };
 
   const isLatestBlockHigherThanVaaEmitBlock = lastFinalizedBlock > currentBlock;
-
-  const isGenericRelayerTx = !!data?.relayerInfo;
 
   const overviewAndDetailProps = {
     amountSent,
@@ -408,7 +409,7 @@ const Information = ({
     isDailyLimitExceeded,
     isDuplicated,
     isGatewaySource,
-    isGenericRelayerTx,
+    isJustGenericRelayer,
     isLatestBlockHigherThanVaaEmitBlock,
     isMayanOnly: appIds?.length === 1 && appIds.includes(MAYAN_APP_ID),
     isUnknownApp,
@@ -428,13 +429,11 @@ const Information = ({
     showSignatures: !(appIds && appIds.includes(CCTP_MANUAL_APP_ID)),
     sourceFee,
     sourceFeeUSD,
-    sourceGasTokenNotional,
     sourceSymbol,
     sourceTokenLink,
     STATUS,
     targetFee,
     targetFeeUSD,
-    targetGasTokenNotional,
     targetSymbol,
     targetTokenLink,
     toChain: extraRawInfoToChainId || toChain,

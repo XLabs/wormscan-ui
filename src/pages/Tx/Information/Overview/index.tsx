@@ -77,7 +77,7 @@ type OverviewProps = {
   isDelivery?: boolean;
   isDuplicated?: boolean;
   isGatewaySource?: boolean;
-  isGenericRelayerTx?: boolean;
+  isJustGenericRelayer?: boolean;
   isLatestBlockHigherThanVaaEmitBlock?: boolean;
   isMayanOnly?: boolean;
   isUnknownApp?: boolean;
@@ -104,14 +104,12 @@ type OverviewProps = {
   sourceAddress?: string;
   sourceFee?: string;
   sourceFeeUSD?: string;
-  sourceGasTokenNotional?: string;
   sourceSymbol?: string;
   sourceTokenLink?: string;
   sourceTxHash?: string;
   STATUS?: IStatus;
   targetFee?: string;
   targetFeeUSD?: string;
-  targetGasTokenNotional?: string;
   targetSymbol?: string;
   targetTokenLink?: string;
   targetTxTimestamp?: number;
@@ -158,7 +156,7 @@ const Overview = ({
   isDelivery,
   isDuplicated,
   isGatewaySource,
-  isGenericRelayerTx,
+  isJustGenericRelayer,
   isLatestBlockHigherThanVaaEmitBlock,
   isMayanOnly,
   isUnknownApp,
@@ -184,14 +182,12 @@ const Overview = ({
   sourceAddress,
   sourceFee,
   sourceFeeUSD,
-  sourceGasTokenNotional,
   sourceSymbol,
   sourceTokenLink,
   sourceTxHash,
   STATUS,
   targetFee,
   targetFeeUSD,
-  targetGasTokenNotional,
   targetSymbol,
   targetTokenLink,
   targetTxTimestamp,
@@ -205,8 +201,6 @@ const Overview = ({
   VAAId,
 }: OverviewProps) => {
   const [addressesInfo] = useRecoilState(addressesInfoState);
-  const extraWidthGatewaySource = isGatewaySource ? 125 : 30;
-  const extraWidthDuplicated = isDuplicated ? 53 : 30;
   const lineValueRef = useRef<HTMLDivElement>(null);
   const [lineValueWidth, setLineValueWidth] = useState<number>(0);
 
@@ -259,7 +253,7 @@ const Overview = ({
 
               <div className="progress-text">
                 <p>
-                  {!isGenericRelayerTx && !isMayanOnly && !nftInfo && (
+                  {!isJustGenericRelayer && !isMayanOnly && !nftInfo && (
                     <>
                       Transfer{" "}
                       {tokenAmount && (
@@ -274,7 +268,7 @@ const Overview = ({
                       )}
                     </>
                   )}{" "}
-                  {!isGenericRelayerTx && !isMayanOnly && !nftInfo ? "from" : "From"}{" "}
+                  {!isJustGenericRelayer && !isMayanOnly && !nftInfo ? "from" : "From"}{" "}
                   {getChainName({ chainId: fromChain, network: currentNetwork })}{" "}
                   {!!toChain &&
                     ` to ${getChainName({ chainId: toChain, network: currentNetwork })}`}
@@ -284,7 +278,7 @@ const Overview = ({
               </div>
             </div>
 
-            {!isGenericRelayerTx && STATUS === "IN_GOVERNORS" && (
+            {!isJustGenericRelayer && STATUS === "IN_GOVERNORS" && (
               <div className="progress-item">
                 <div className="progress-icon">
                   <CheckCircle2 />
@@ -310,7 +304,7 @@ const Overview = ({
               </div>
             </div>
 
-            {!isGenericRelayerTx && (
+            {!isJustGenericRelayer && (
               <div
                 className={`progress-item ${
                   STATUS === "IN_PROGRESS" || STATUS === "IN_GOVERNORS" || STATUS === "VAA_EMITTED"
@@ -374,11 +368,11 @@ const Overview = ({
                   : STATUS === "PENDING_REDEEM"
                   ? "3"
                   : STATUS === "COMPLETED"
-                  ? isGenericRelayerTx
+                  ? isJustGenericRelayer
                     ? "3"
                     : "4"
                   : "5"}
-                /{STATUS === "IN_GOVERNORS" ? "5" : isGenericRelayerTx ? "3" : "4"}
+                /{STATUS === "IN_GOVERNORS" ? "5" : isJustGenericRelayer ? "3" : "4"}
                 <p className="desktop">Steps Complete</p> <ArrowDownIcon width={24} />
               </button>
 
@@ -841,7 +835,7 @@ const Overview = ({
         <h4 className="tx-overview-section-title">Details</h4>
 
         <div className="tx-overview-section-info details-info">
-          {!isGenericRelayerTx && !isMayanOnly && !nftInfo && (
+          {!isJustGenericRelayer && !isMayanOnly && !nftInfo && (
             <div className="tx-overview-section-info-container">
               <div className="tx-overview-section-info-container-key">
                 {isAttestation ? "Token" : "SENT"}
@@ -874,7 +868,7 @@ const Overview = ({
               </div>
             </div>
           )}
-          {!isGenericRelayerTx && nftInfo && (
+          {!isJustGenericRelayer && nftInfo && (
             <div className="tx-overview-section-info-container">
               <div className="tx-overview-section-info-container-key">SENT</div>
 
@@ -922,20 +916,21 @@ const Overview = ({
             </div>
           </div>
 
-          {!isGenericRelayerTx && !nftInfo && sourceGasTokenNotional && (
+          {!isJustGenericRelayer && !nftInfo && sourceFee && (
             <div className="tx-overview-section-info-container span2">
-              <div className="tx-overview-section-info-container-key">GAS FEE</div>
+              <div className="tx-overview-section-info-container-key">SOURCE GAS FEE</div>
 
               <div className="tx-overview-section-info-container-value">
                 <div className="text">
-                  {sourceFee} {getChainInfo(environment, fromChain)?.nativeCurrencyName}
+                  {formatNumber(+sourceFee)}{" "}
+                  {getChainInfo(environment, fromChain)?.nativeCurrencyName}
                   {sourceFeeUSD && <span>(${formatNumber(+sourceFeeUSD)})</span>}
                 </div>
               </div>
             </div>
           )}
 
-          {!isGenericRelayerTx && !isMayanOnly && !nftInfo && (
+          {!isJustGenericRelayer && !isMayanOnly && !nftInfo && (
             <div className="tx-overview-section-info-container">
               <div className="tx-overview-section-info-container-key">RECEIVED</div>
 
@@ -978,7 +973,7 @@ const Overview = ({
               </div>
             </div>
           )}
-          {!isGenericRelayerTx && nftInfo && (
+          {!isJustGenericRelayer && nftInfo && (
             <div className="tx-overview-section-info-container">
               <div className="tx-overview-section-info-container-key">RECEIVED</div>
 
@@ -990,6 +985,17 @@ const Overview = ({
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+
+          {tokenAmount && targetSymbol && toChain && tokenInfo && (
+            <div className="tx-overview-section-info-container span2 metamask-mobile">
+              <AddToMetaMaskBtn
+                className="add-to-metamask-btn"
+                currentNetwork={currentNetwork}
+                toChain={toChain as ChainId}
+                tokenInfo={tokenInfo}
+              />
             </div>
           )}
 
@@ -1045,13 +1051,25 @@ const Overview = ({
             </div>
           </div>
 
-          {!isGenericRelayerTx && !nftInfo && targetGasTokenNotional && (
+          {tokenAmount && targetSymbol && toChain && tokenInfo && (
+            <div className="tx-overview-section-info-container span2 metamask-desktop">
+              <AddToMetaMaskBtn
+                className="add-to-metamask-btn"
+                currentNetwork={currentNetwork}
+                toChain={toChain as ChainId}
+                tokenInfo={tokenInfo}
+              />
+            </div>
+          )}
+
+          {!isJustGenericRelayer && !nftInfo && targetFee && (
             <div className="tx-overview-section-info-container span2">
-              <div className="tx-overview-section-info-container-key">GAS FEE</div>
+              <div className="tx-overview-section-info-container-key">TARGET GAS FEE</div>
 
               <div className="tx-overview-section-info-container-value">
                 <div className="text">
-                  {targetFee}
+                  {formatNumber(+targetFee)}{" "}
+                  {getChainInfo(environment, toChain)?.nativeCurrencyName}
                   {targetFeeUSD && <span>(${formatNumber(+targetFeeUSD)})</span>}
                 </div>
               </div>
@@ -1321,11 +1339,7 @@ const Overview = ({
             <div className="text">
               {VAAId ? (
                 <>
-                  <TruncateText
-                    containerWidth={lineValueWidth}
-                    extraWidth={extraWidthDuplicated}
-                    text={VAAId}
-                  />
+                  <TruncateText containerWidth={lineValueWidth} extraWidth={50} text={VAAId} />
                   <CopyToClipboard toCopy={VAAId}>
                     <CopyIcon width={24} />
                   </CopyToClipboard>
