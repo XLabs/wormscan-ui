@@ -257,15 +257,6 @@ export const mainnetEnv: Environment = {
   network: "Mainnet",
   chainInfos: [
     {
-      chainId: 1 as ChainId,
-      chainName: "Solana",
-      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
-      evmNetworkId: 1,
-      nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "SOL",
-      rpcUrl: MAINNET_RPCS.solana || "",
-    },
-    {
       chainId: 2 as ChainId,
       chainName: "Ethereum",
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
