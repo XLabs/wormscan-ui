@@ -2363,15 +2363,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-icons@npm:1.1.1":
-  version: 1.1.1
-  resolution: "@radix-ui/react-icons@npm:1.1.1"
-  peerDependencies:
-    react: ^16.x || ^17.x || ^18.x
-  checksum: fc64cd763994e035fe7a4898c0710793aebc2689d56dcc8a2fd76c334a424c48a1aa2fbcccc2bd1c0990d731f27090fc0ddf6859af32c5aa217bd75a10cb3e34
-  languageName: node
-  linkType: hard
-
 "@radix-ui/react-id@npm:1.0.0":
   version: 1.0.0
   resolution: "@radix-ui/react-id@npm:1.0.0"
@@ -10459,7 +10450,6 @@ __metadata:
     "@metamask/detect-provider": ^2.0.0
     "@parcel/transformer-sass": ^2.8.3
     "@playwright/test": ^1.38.1
-    "@radix-ui/react-icons": 1.1.1
     "@radix-ui/react-navigation-menu": ^1.1.4
     "@radix-ui/react-switch": ^1.0.3
     "@radix-ui/react-toggle-group": 1.0.2

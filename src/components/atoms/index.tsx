@@ -9,6 +9,7 @@ export { default as Loader } from "./Loader";
 export { default as MaintenanceMessage } from "./MaintenanceMessage";
 export { default as NavLink } from "./NavLink";
 export { default as Pagination } from "./Pagination";
+export { default as ProtocolIcon } from "./ProtocolIcon";
 export { default as Select } from "./Select";
 export { default as SignatureCircle } from "./SignatureCircle";
 export { default as Switch } from "./Switch";

@@ -62,10 +62,20 @@
 
         &-ds-btn {
           @include button-primary;
+          padding: 0 12px 0 8px;
+
+          & > svg {
+            color: var(--color-black-60);
+          }
         }
 
         &-x-btn {
           @include button-secondary;
+          padding: 0 12px 0 8px;
+
+          & > svg {
+            color: var(--color-white-60);
+          }
         }
       }
     }
@@ -80,7 +90,7 @@
 
     &-button {
       @include button-secondary;
-      gap: 4px;
+      padding-right: 8px;
 
       & > svg {
         color: var(--color-white-60);

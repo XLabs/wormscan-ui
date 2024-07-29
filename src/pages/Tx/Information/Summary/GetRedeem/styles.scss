@@ -1,23 +1,16 @@
 @import "src/styles/globals.scss";
 
 .getRedeem {
-  @include button-secondary;
-  display: flex;
-  flex-direction: row;
-  gap: 8px !important;
+  @include button-primary;
+  cursor: default;
 
-  &-find-txt {
-    display: block;
-    text-wrap: nowrap;
-    @media only screen and (min-width: 1024px) and (max-width: 1180px) {
-      display: none;
-    }
+  &.cross {
+    background-color: #bdbed7;
   }
 
-  height: 44px;
-  color: var(--color-white);
-  font-weight: 500;
-  font-size: 16px;
+  &.tooltip {
+    @include button-primary;
+  }
 
   &.dissapearing {
     animation: dissapearing 4s forwards linear;

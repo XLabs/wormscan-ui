@@ -22,7 +22,7 @@ const getWidthOfText = (text: string): number => {
 
 export const TruncateText = ({
   containerWidth, // container width for text and extraWidth
-  extraWidth = 30, // width for gap and copy icon for example
+  extraWidth = 80, // width for gap and copy icon for example
   text,
 }: {
   containerWidth: number;

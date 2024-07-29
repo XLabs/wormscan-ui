@@ -1,125 +1,77 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-  width="51mm"
-  height="51mm"
-  viewBox="0 0 51 51"
-  version="1.1"
-  id="svg1"
-  xml:space="preserve"
-  xmlns="http://www.w3.org/2000/svg"
-  xmlns:svg="http://www.w3.org/2000/svg"
->
+<svg width="51mm" height="51mm" viewBox="0 0 51 51" version="1.1" id="svg1" xml:space="preserve"
+  xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
   <defs id="defs1" />
   <g id="layer1">
-    <path
-      style="
-        fill: #bdbed7;
+    <path style="
+        fill: #CCCCCC;
         fill-opacity: 1;
-        stroke: #bdbed7;
+        stroke: #CCCCCC;
         stroke-width: 0.264583;
         stroke-opacity: 1;
-      "
-      d="m 12.541493,6.8896061 17.79889,0.0893 1.89244,5.7719409 H 10.848252 Z"
-      id="path1"
-    />
-    <path
-      style="
-        fill: #bdbed7;
+      " d="m 12.541493,6.8896061 17.79889,0.0893 1.89244,5.7719409 H 10.848252 Z" id="path1" />
+    <path style="
+        fill: #CCCCCC;
         fill-opacity: 1;
-        stroke: #bdbed7;
+        stroke: #CCCCCC;
         stroke-width: 0.264583;
         stroke-opacity: 1;
-      "
-      d="m 38.146703,7.0262561 5.44076,16.8427109 -4.87303,3.54833 -6.52892,-20.5329809 z"
-      id="path2"
-    />
-    <path
-      style="
-        fill: #bdbed7;
+      " d="m 38.146703,7.0262561 5.44076,16.8427109 -4.87303,3.54833 -6.52892,-20.5329809 z" id="path2" />
+    <path style="
+        fill: #CCCCCC;
         fill-opacity: 1;
-        stroke: #bdbed7;
+        stroke: #CCCCCC;
         stroke-width: 0.264583;
         stroke-opacity: 1;
-      "
-      d="m 46.000323,31.060247 -1.89244,-5.63001 -17.2212,12.58472 4.77841,3.54833 z"
-      id="path3"
-    />
-    <path
-      style="
-        fill: #bdbed7;
+      " d="m 46.000323,31.060247 -1.89244,-5.63001 -17.2212,12.58472 4.77841,3.54833 z" id="path3" />
+    <path style="
+        fill: #CCCCCC;
         fill-opacity: 1;
-        stroke: #bdbed7;
+        stroke: #CCCCCC;
         stroke-width: 0.264583;
         stroke-opacity: 1;
-      "
-      d="m 26.792063,14.264837 6.00849,0.0946 2.22362,6.62354 -4.82572,3.73757 z"
-      id="path4"
-    />
-    <path
-      style="
-        fill: #bdbed7;
+      " d="m 26.792063,14.264837 6.00849,0.0946 2.22362,6.62354 -4.82572,3.73757 z" id="path4" />
+    <path style="
+        fill: #CCCCCC;
         fill-opacity: 1;
-        stroke: #bdbed7;
+        stroke: #CCCCCC;
         stroke-width: 0.264583;
         stroke-opacity: 1;
-      "
-      d="m 18.039524,14.359457 7.002029,0.0473 1.98706,5.58269 H 16.241707 Z"
-      id="path5"
-    />
-    <path
-      style="
-        fill: #bdbed7;
+      " d="m 18.039524,14.359457 7.002029,0.0473 1.98706,5.58269 H 16.241707 Z" id="path5" />
+    <path style="
+        fill: #CCCCCC;
         fill-opacity: 1;
-        stroke: #bdbed7;
+        stroke: #CCCCCC;
         stroke-width: 0.264583;
         stroke-opacity: 1;
-      "
-      d="m 10.280523,14.359457 6.150427,0.0473 -6.6235394,20.29641 -4.920343,-3.54832 z"
-      id="path6"
-    />
-    <path
-      style="
-        fill: #bdbed7;
+      " d="m 10.280523,14.359457 6.150427,0.0473 -6.6235394,20.29641 -4.920343,-3.54832 z" id="path6" />
+    <path style="
+        fill: #CCCCCC;
         fill-opacity: 1;
-        stroke: #bdbed7;
+        stroke: #CCCCCC;
         stroke-width: 0.264583;
         stroke-opacity: 1;
-      "
-      d="m 21.635163,21.550727 -3.311773,10.3138 -4.825722,-3.35908 2.36555,-7.09665 z"
-      id="path7"
-    />
-    <path
-      style="
-        fill: #bdbed7;
+      " d="m 21.635163,21.550727 -3.311773,10.3138 -4.825722,-3.35908 2.36555,-7.09665 z" id="path7" />
+    <path style="
+        fill: #CCCCCC;
         fill-opacity: 1;
-        stroke: #bdbed7;
+        stroke: #CCCCCC;
         stroke-width: 0.264583;
         stroke-opacity: 1;
-      "
-      d="m 30.293073,33.378477 -8.56329,-6.24505 -1.987062,5.81926 5.724632,4.02143 z"
-      id="path8"
-    />
-    <path
-      style="
-        fill: #bdbed7;
+      " d="m 30.293073,33.378477 -8.56329,-6.24505 -1.987062,5.81926 5.724632,4.02143 z" id="path8" />
+    <path style="
+        fill: #CCCCCC;
         fill-opacity: 1;
-        stroke: #bdbed7;
+        stroke: #CCCCCC;
         stroke-width: 0.264583;
         stroke-opacity: 1;
-      "
-      d="m 35.497283,22.686197 -8.6106,6.4816 4.68379,3.35909 5.86656,-4.21068 z"
-      id="path9"
-    />
-    <path
-      style="
-        fill: #bdbed7;
+      " d="m 35.497283,22.686197 -8.6106,6.4816 4.68379,3.35909 5.86656,-4.21068 z" id="path9" />
+    <path style="
+        fill: #CCCCCC;
         fill-opacity: 1;
-        stroke: #bdbed7;
+        stroke: #CCCCCC;
         stroke-width: 0.264583;
         stroke-opacity: 1;
-      "
-      d="m 13.024559,29.972087 17.079274,12.58473 -4.68379,3.50101 -14.287924,-10.36111 z"
-      id="path10"
-    />
+      " d="m 13.024559,29.972087 17.079274,12.58473 -4.68379,3.50101 -14.287924,-10.36111 z" id="path10" />
   </g>
 </svg>

@@ -1,0 +1,67 @@
+@import "src/styles/globals.scss";
+
+.block-section {
+  &-btn {
+    @include centered-row;
+    @include text-roboto-body-500;
+    background-color: transparent;
+    border: none;
+    color: var(--color-white);
+    cursor: pointer;
+    gap: 8px;
+    margin-bottom: 24px;
+
+    &:hover {
+      color: var(--color-white-70);
+    }
+
+    &.show {
+      & > svg {
+        rotate: 180deg;
+      }
+    }
+  }
+
+  &-block {
+    @include centered-column;
+    background-color: var(--color-gray-950);
+    border-radius: 20px;
+    gap: 18px;
+    margin-bottom: 32px;
+    padding: 16px;
+
+    &-top {
+      @include centered-row;
+      justify-content: space-between;
+    }
+
+    &-title {
+      @include text-roboto-body-400;
+      color: var(--color-gray-500);
+    }
+
+    &-copy {
+      @include text-roboto-body-400;
+      color: var(--color-gray-500);
+
+      & > .copy-to-clipboard {
+        @include centered-row;
+        gap: 8px;
+      }
+    }
+
+    &-body {
+      @include text-roboto-body-400;
+      background-color: var(--color-black);
+      border-radius: 12px;
+      color: var(--color-white);
+      line-height: 1.5;
+      overflow: auto;
+      padding: 16px;
+
+      &.hide {
+        display: none;
+      }
+    }
+  }
+}

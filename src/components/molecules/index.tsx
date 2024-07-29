@@ -1,4 +1,5 @@
 export { default as Banner } from "./Banner";
+export { default as BlockSection } from "./BlockSection";
 export { default as ChainActivity } from "./ChainActivity";
 export { default as CopyToClipboard } from "./CopyToClipboard";
 export { default as CrossChainChart } from "./CrossChainChart";

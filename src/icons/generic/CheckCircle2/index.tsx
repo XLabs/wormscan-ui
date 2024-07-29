@@ -1,4 +1,4 @@
-const CheckCircle2 = ({ style, width }: { style?: any; width: number }) => (
+const CheckCircle2 = ({ style, width = 24 }: { style?: any; width?: number }) => (
   <svg
     fill="none"
     height={width}

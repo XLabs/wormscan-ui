@@ -172,11 +172,7 @@ const Select = ({
         IndicatorSeparator: () => null,
         DropdownIndicator: props => (
           <components.DropdownIndicator {...props}>
-            {type === "secondary" ? (
-              <TriangleDownIcon width={10} />
-            ) : (
-              <ChevronDownIcon width={24} />
-            )}
+            {type === "secondary" ? <TriangleDownIcon /> : <ChevronDownIcon width={24} />}
           </components.DropdownIndicator>
         ),
         SingleValue:

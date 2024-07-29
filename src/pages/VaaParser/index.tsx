@@ -198,7 +198,7 @@ const VaaParser = () => {
                   type="info"
                 >
                   <div className="copy-item">
-                    <InfoCircleIcon width={24} />
+                    <InfoCircleIcon />
                   </div>
                 </Tooltip>
               );
@@ -405,11 +405,6 @@ const VaaParser = () => {
       <div className="devtools-page">
         <div className="devtools-page-container">
           <h1 className="devtools-page-title">VAA Parser</h1>
-          <h2 className="devtools-page-description">
-            The VAA Parser tool is currently located within the Dev-Tools section. It allows
-            decoding a VAA using various input methods such as txHash, VAA ID (wormholeChainID,
-            EmitterAddress, Sequence), a VAA in hexadecimal format, or in base64 format.
-          </h2>
           <div className="devtools-page-body">
             <div className="parse">
               <div className="parse-txType">
@@ -466,7 +461,7 @@ const VaaParser = () => {
               {!!inputs?.length && (
                 <div className="parse-multiple">
                   <span className="parse-multiple-left">
-                    <InfoCircleIcon width={24} />
+                    <InfoCircleIcon />
                     This txHash has multiple VAAs.
                   </span>
 
@@ -504,7 +499,7 @@ const VaaParser = () => {
                   className={`parse-content-title ${hideJson ? "" : "rotate"}`}
                   onClick={() => setHideJson(!hideJson)}
                 >
-                  Decoded VAA <TriangleDownIcon width={10} />
+                  Decoded VAA <TriangleDownIcon />
                 </span>
 
                 <div
@@ -560,7 +555,7 @@ const VaaParser = () => {
                         {(!result || !resultRaw) && (
                           <div className="devtools-page-alert">
                             <div className="devtools-page-alert-info">
-                              <InfoCircleIcon width={24} />
+                              <InfoCircleIcon />
                               <p>Decoded VAA data will be displayed here</p>
                             </div>
                           </div>

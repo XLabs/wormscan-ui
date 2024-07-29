@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { CheckIcon, Cross2Icon, CubeIcon } from "@radix-ui/react-icons";
+import { CheckIcon, CrossIcon, Cube3DIcon } from "src/icons/generic";
 import { Tooltip } from "src/components/atoms";
 import "./styles.scss";
 
@@ -38,8 +38,8 @@ export const GetRedeem = ({ canTryToGetRedeem, foundRedeem, loadingRedeem, getRe
         type: "error",
         theme: "dark",
         style: {
-          background: "var(--color-primary-500)",
-          color: "var(--color-primary-10)",
+          background: "var(--color-gray-950)",
+          color: "var(--color-white-70)",
         },
         autoClose: 4300,
       });
@@ -56,12 +56,12 @@ export const GetRedeem = ({ canTryToGetRedeem, foundRedeem, loadingRedeem, getRe
           type="info"
         >
           <div
-            className={`getRedeem ${showCross || showCheck ? "dissapearing" : ""}`}
+            className={`getRedeem ${showCross || showCheck ? "dissapearing" : ""} ${
+              showCross ? "cross" : ""
+            } ${showTooltip ? "tooltip" : ""}`}
             onClick={() => !loadingRedeem && !(showCross || showCheck) && getRedeem()}
             style={{
-              backgroundColor: showCross ? "#bdbed7" : "#ff2a57",
               cursor: !showTooltip ? "default" : "pointer",
-              // opacity: showCross ? 0 : 1,
             }}
           >
             <div className={`getRedeem-button ${loadingRedeem ? "loading" : ""}`}>
@@ -71,7 +71,7 @@ export const GetRedeem = ({ canTryToGetRedeem, foundRedeem, loadingRedeem, getRe
                   opacity: showCheck ? 100 : 0,
                 }}
               >
-                <CheckIcon width={22} height={22} />
+                <CheckIcon />
               </div>
 
               <div
@@ -80,7 +80,7 @@ export const GetRedeem = ({ canTryToGetRedeem, foundRedeem, loadingRedeem, getRe
                   opacity: showCross ? 100 : 0,
                 }}
               >
-                <Cross2Icon width={22} height={22} />
+                <CrossIcon />
               </div>
 
               <div
@@ -90,10 +90,10 @@ export const GetRedeem = ({ canTryToGetRedeem, foundRedeem, loadingRedeem, getRe
                   transition: "none",
                 }}
               >
-                <CubeIcon width={22} height={22} />
+                <Cube3DIcon width={24} />
               </div>
             </div>
-            <div className="getRedeem-find-txt">FIND REDEEM</div>
+            <div className="getRedeem-find-txt">Find Redeem</div>
           </div>
         </Tooltip>
       )}

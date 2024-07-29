@@ -1,13 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { WORMHOLE_PAGE_URL } from "src/consts";
 import { Loader, Tooltip } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getClient } from "src/api/Client";
-import { LinkIcon } from "src/icons/generic";
+import { InfoCircleIcon, LinkIcon } from "src/icons/generic";
 import WormholeLogo from "src/assets/wormhole-stats.svg";
 import "./styles.scss";
 
@@ -48,7 +47,9 @@ const WormholeStats = () => {
                 tooltip={<div>Total messages sent since the creation of the network.</div>}
                 type="info"
               >
-                <InfoCircledIcon height={18} width={18} />
+                <div className="wormhole-stats-container-item-title-icon">
+                  <InfoCircleIcon />
+                </div>
               </Tooltip>
             </div>
             <div className="wormhole-stats-container-item-value">
@@ -66,7 +67,9 @@ const WormholeStats = () => {
                 tooltip={<div>Number of messages sent in the last 24 hours.</div>}
                 type="info"
               >
-                <InfoCircledIcon height={18} width={18} />
+                <div className="wormhole-stats-container-item-title-icon">
+                  <InfoCircleIcon />
+                </div>
               </Tooltip>
             </div>
             <div className="wormhole-stats-container-item-value">
@@ -83,7 +86,9 @@ const WormholeStats = () => {
                 }
                 type="info"
               >
-                <InfoCircledIcon height={18} width={18} />
+                <div className="wormhole-stats-container-item-title-icon">
+                  <InfoCircleIcon />
+                </div>
               </Tooltip>
             </div>
             <div className="wormhole-stats-container-item-value">
@@ -101,7 +106,9 @@ const WormholeStats = () => {
                 tooltip={<div>This metric calculates the last 24h USD value of VAA transfers.</div>}
                 type="info"
               >
-                <InfoCircledIcon height={18} width={18} />
+                <div className="wormhole-stats-container-item-title-icon">
+                  <InfoCircleIcon />
+                </div>
               </Tooltip>
             </div>
             <div className="wormhole-stats-container-item-value">
