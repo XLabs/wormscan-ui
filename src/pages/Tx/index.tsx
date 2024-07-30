@@ -1425,7 +1425,10 @@ const Tx = () => {
               seconds
             </div>
             <br />
-            <div>Signatures: {observationsOnlyData.signatures?.length} / 13</div>
+            <div>
+              Signatures: {observationsOnlyData.signatures?.length} /{" "}
+              {environment.network === "Mainnet" ? "13" : "1"}
+            </div>
             <br />
             <div>
               VAA ID: {observationsOnlyData.observations[0].emitterChain}/

@@ -201,6 +201,11 @@
       }
     }
 
+    &-sub {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
     &-container {
       @include centered-column;
       align-items: center;

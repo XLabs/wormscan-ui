@@ -604,6 +604,7 @@ export const Submit = ({
                         setSaveLayoutTitle(item);
                       } else {
                         setSaveLayoutTitle("");
+                        setSelectedBaseLayout("");
                       }
                     }}
                     className="submit-btn"

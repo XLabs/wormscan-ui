@@ -43,3 +43,18 @@ const bigintStringReplacer = (key: string, value: any): any => {
 export const stringifyWithStringBigInt = (obj: object, space?: number): string => {
   return JSON.stringify(obj, bigintStringReplacer, space);
 };
+
+// return all the keys of an object (deep)
+export const allKeys = (obj: any): Array<any> => {
+  const keys: any[] = [];
+
+  Object.entries(obj).forEach(([key, value]) => {
+    if (typeof value === "object") {
+      keys.push(allKeys(value).map(a => `${key}.${a}`));
+    } else {
+      keys.push(key);
+    }
+  });
+
+  return keys.flat();
+};

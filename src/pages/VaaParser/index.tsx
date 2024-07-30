@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { ChainId, chainToChainId, deserialize, encoding } from "@wormhole-foundation/sdk";
+import { ChainId, chainToChainId, deserialize, encoding, network } from "@wormhole-foundation/sdk";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { useNavigateCustom } from "src/utils/hooks";
 import analytics from "src/analytics";
@@ -384,7 +384,9 @@ const VaaParser = () => {
           }
 
           inputTxRef.current?.blur();
-          navigate(`/vaa-parser/operation/${txSearch}`, { replace: true });
+          navigate(`/vaa-parser/operation/${txSearch}?network=${environment.network}`, {
+            replace: true,
+          });
         }
       },
     },
@@ -429,7 +431,10 @@ const VaaParser = () => {
 
                     setTxSearch(e.target.value);
                     inputTxRef?.current?.blur();
-                    navigate(`/vaa-parser/operation/${e.target.value}`, { replace: true });
+                    navigate(
+                      `/vaa-parser/operation/${e.target.value}?network=${environment.network}`,
+                      { replace: true },
+                    );
                   }}
                   name="txType-input"
                   aria-label="Transaction hash or VAA ID input"

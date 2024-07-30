@@ -38,7 +38,12 @@ import { formatDate } from "src/utils/date";
 import { useParams } from "react-router-dom";
 import { useEnvironment } from "src/context/EnvironmentContext";
 
-import { getNestedProperty, stringifyWithBigInt } from "src/utils/object";
+import {
+  allKeys,
+  deepCloneWithBigInt,
+  getNestedProperty,
+  stringifyWithBigInt,
+} from "src/utils/object";
 import { Submit } from "./Submit";
 import { processInputValue, processInputType, waitForElement, isHex } from "src/utils/parser";
 import { ChainFilterMainnet, ChainFilterTestnet } from "../Txs/Information/Filters";
@@ -48,9 +53,9 @@ import { generateCode } from "./generateCode";
 import "./styles.scss";
 
 const SubmitYourProtocol = () => {
-  useEffect(() => {
-    analytics.page({ title: "SUBMIT_PROTOCOL" });
-  }, []);
+  // useEffect(() => {
+  //   analytics.page({ title: "SUBMIT_PROTOCOL" });
+  // }, []);
 
   const { environment } = useEnvironment();
 
@@ -638,6 +643,24 @@ const SubmitYourProtocol = () => {
   const [lastVaaInput, setLastVaaInput] = useState("");
   const [lastMoreInfo, setLastMoreInfo] = useState("");
 
+  const isPortal =
+    finishedParsings[0] &&
+    JSON.stringify(finishedParsings[0].userLayout).startsWith(
+      `[{"inputName":"payloadId","selected":"payloadId","id":"3"},{"inputName":"amount","selected":"amount"},{"inputName":"tokenAddress","selected":"address"},{"inputName":"tokenChain","selected":"chain"},{"inputName":"toAddress","selected":"address"},{"inputName":"toChain","selected":"chain"},{"inputName":"fromAddress","selected":"address"},`,
+    );
+
+  let payloadOptionsStd = finishedParsings[0] ? finishedParsings[0].parsedPayload : null;
+  if (isPortal) {
+    payloadOptionsStd = deepCloneWithBigInt(finishedParsings[0].parsedPayload);
+    delete payloadOptionsStd.payloadId;
+    delete payloadOptionsStd.amount;
+    delete payloadOptionsStd.tokenAddress;
+    delete payloadOptionsStd.tokenChain;
+    delete payloadOptionsStd.toAddress;
+    delete payloadOptionsStd.toChain;
+    delete payloadOptionsStd.fromAddress;
+  }
+
   return (
     <BaseLayout secondaryHeader>
       <div className="devtools-page">
@@ -1036,7 +1059,7 @@ const SubmitYourProtocol = () => {
                 </div>
 
                 <div className="submit-standard-container">
-                  {allFields(finishedParsings[0].parsedPayload).map(a => (
+                  {allKeys(payloadOptionsStd).map(a => (
                     <div
                       key={a}
                       className="submit-btn"
@@ -1051,24 +1074,29 @@ const SubmitYourProtocol = () => {
                     </div>
                   ))}
                   <br />
-                  {finishedParsings[1] &&
-                    allFields(finishedParsings[1].parsedPayload).map(a => (
-                      <div
-                        key={a}
-                        className="submit-btn"
-                        style={{
-                          outline:
-                            selectedPropertyName === `${propertyName}.${a}`
-                              ? "green solid 2px"
-                              : "",
-                        }}
-                        onClick={() => {
-                          setSelectedPropertyName(`${propertyName}.${a}`);
-                        }}
-                      >
-                        {`${propertyName}.${a}`}
-                      </div>
-                    ))}
+                  {finishedParsings[1] && (
+                    <>
+                      <div className="submit-standard-sub">{propertyName}:</div>
+
+                      {allKeys(finishedParsings[1].parsedPayload).map(a => (
+                        <div
+                          key={a}
+                          className="submit-btn"
+                          style={{
+                            outline:
+                              selectedPropertyName === `${propertyName}.${a}`
+                                ? "green solid 2px"
+                                : "",
+                          }}
+                          onClick={() => {
+                            setSelectedPropertyName(`${propertyName}.${a}`);
+                          }}
+                        >
+                          {a}
+                        </div>
+                      ))}
+                    </>
+                  )}
                 </div>
 
                 <div className="submit-standard-container">
@@ -1254,6 +1282,7 @@ const SubmitYourProtocol = () => {
                       selectedIdentifiers,
                       stdProperties,
                       input,
+                      propertyName,
                     );
 
                     console.log({
@@ -1314,20 +1343,6 @@ const STANDARD_DESCRIPTIONS: any = {
   fromAddress: "Native address format for the origin chain",
   toChain: "Wormhole chain id of target chain. Ex: 1 for Solana, 2 for Ethereum, etc",
   toAddress: "Native address format for the destination chain",
-};
-
-const allFields = (obj: any): Array<any> => {
-  const keys: any[] = [];
-
-  Object.entries(obj).forEach(([key, value]) => {
-    if (typeof value === "object") {
-      keys.push(allFields(value).map(a => `${key}.${a}`));
-    } else {
-      keys.push(key);
-    }
-  });
-
-  return keys.flat();
 };
 
 interface IIdentifier {
