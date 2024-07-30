@@ -1,4 +1,4 @@
-const MoneyIcon = ({ width, style }: { width: number; style?: any }) => (
+const MoneyIcon = ({ width = 24, style }: { width?: number; style?: any }) => (
   <svg
     fill="none"
     height={width}

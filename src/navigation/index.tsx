@@ -15,6 +15,7 @@ const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 const VaaParser = lazy(() => import("../pages/VaaParser"));
 const Governor = lazy(() => import("../pages/Governor"));
+const Analytics = lazy(() => import("../pages/Analytics"));
 
 const Navigation = () => {
   return (
@@ -22,7 +23,6 @@ const Navigation = () => {
       <AnalyticsLinkTracker>
         <EnvironmentProvider>
           <ErrorBoundary>
-            <TermsOfUseBanner />
             <Suspense
               fallback={
                 <BaseLayout>
@@ -37,8 +37,9 @@ const Navigation = () => {
                 <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
                 <Route path="/terms-of-use" element={<TermsOfUse />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/vaa-parser" element={<VaaParser />} />
-                <Route path="/vaa-parser/*" element={<VaaParser />} />
+                <Route path="/developers/vaa-parser" element={<VaaParser />} />
+                <Route path="/developers/vaa-parser/*" element={<VaaParser />} />
+                <Route path="/analytics/:analyticsId" element={<Analytics />} />
                 <Route path="/governor" element={<Governor />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -34,7 +34,7 @@ const Footer = () => {
           <ChatIcon width={24} />
 
           <h4 className="footer-container-discord-text">
-            Want to become part of the community? Join us.
+            Want to join the Wormhole community? Join us!
           </h4>
 
           <div className="footer-container-discord-links">
@@ -50,7 +50,7 @@ const Footer = () => {
             </a>
 
             <a
-              className="footer-container-discord-links-x-btn"
+              className="footer-container-discord-links-x-btn desktop"
               href={TWITTER_URL}
               target="_blank"
               rel="noopener noreferrer"
@@ -169,31 +169,14 @@ const Footer = () => {
               Wormhole Doc
             </a>
           </div>
-
-          <div className="footer-container-links-container mobile">
-            <p className="footer-container-links-container-title dark">
-              <span className="footer-container-links-container-title-icon">&copy;</span>
-              {year} Wormholescan v{packageJson.version}
-            </p>
-
-            <NavLink to="/terms-of-use">{t("home.footer.termsOfUse")}</NavLink>
-          </div>
         </div>
 
-        <button className="footer-container-button desktop" type="button" onClick={goTop}>
+        <button className="footer-container-button" type="button" onClick={goTop}>
           {t("home.footer.backToTop")} <ArrowUpIcon width={24} />
         </button>
       </div>
 
       <div className="footer-container">
-        <div className="footer-container-build">
-          <p className="footer-container-build-text">{t("home.footer.builtBy")}</p>
-
-          <a href={XLABS_URL} target="_blank" rel="noopener noreferrer" aria-label="xLabs link">
-            <XlabsIcon width={24} />
-          </a>
-        </div>
-
         <p className="footer-container-copy">
           <span>&copy;</span>
           <span className="footer-container-copy-text">
@@ -202,9 +185,13 @@ const Footer = () => {
           <NavLink to="/terms-of-use">{t("home.footer.termsOfUse")}</NavLink>
         </p>
 
-        <button className="footer-container-button mobile" type="button" onClick={goTop}>
-          {t("home.footer.backToTop")} <ArrowUpIcon width={24} />
-        </button>
+        <div className="footer-container-build">
+          <p className="footer-container-build-text">{t("home.footer.builtBy")}</p>
+
+          <a href={XLABS_URL} target="_blank" rel="noopener noreferrer" aria-label="xLabs link">
+            <XlabsIcon width={24} />
+          </a>
+        </div>
       </div>
     </footer>
   );

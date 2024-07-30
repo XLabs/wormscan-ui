@@ -214,7 +214,7 @@
       right: 0;
       top: 0;
       user-select: none;
-      width: 180px;
+      width: 217px;
       z-index: 1;
     }
 
@@ -278,13 +278,14 @@
             @include centered-row;
             background-color: var(--color-gray-900);
             border-radius: 12px;
+            box-shadow: 0px 4px 4px 0px var(--color-black-25);
             color: var(--color-white);
             height: 24px;
             padding: 0 8px;
           }
         }
 
-        .chain-infoTxt {
+        .volume {
           @include text-heading6;
           justify-self: end;
 
@@ -321,12 +322,25 @@
           }
         }
 
+        &.left {
+          border-left: 2px solid var(--color-white-10);
+
+          @include desktop {
+            border: none;
+          }
+        }
+
         &.right {
+          border-right: 2px solid var(--color-white-10);
           justify-content: end;
+
+          @include desktop {
+            border: none;
+          }
         }
 
         &.showPercentageMobile {
-          .chain-infoTxt {
+          .volume {
             display: none;
 
             @include desktop {
@@ -341,10 +355,6 @@
           }
 
           &.right {
-            .chain-icon {
-              grid-column: 2;
-            }
-
             .chain-name {
               display: none;
             }
@@ -360,7 +370,11 @@
             }
           }
 
-          .chain-infoTxt {
+          .mobile-separator {
+            color: var(--color-gray-600);
+          }
+
+          .volume {
             color: var(--color-gray-400);
           }
 
@@ -406,6 +420,7 @@
           .percentage {
             @include desktop {
               background-color: var(--color-primary-10);
+              box-shadow: unset;
               color: var(--color-primary-100);
             }
           }
@@ -413,14 +428,6 @@
           &.right {
             @include desktop {
               background: transparent;
-            }
-
-            .percentage {
-              grid-column: 1;
-
-              @include desktop {
-                grid-column: unset;
-              }
             }
 
             .volume-info {
@@ -445,6 +452,8 @@
         }
 
         &[data-selected="true"] {
+          border-color: var(--color-primary-100);
+
           .chain-name {
             opacity: 1;
           }
@@ -452,11 +461,16 @@
           .percentage {
             @include desktop {
               background-color: var(--color-primary-100);
+              box-shadow: unset;
               color: var(--color-black);
             }
           }
 
-          .chain-infoTxt {
+          .mobile-separator {
+            color: var(--color-white);
+          }
+
+          .volume {
             color: var(--color-white);
           }
 
@@ -526,111 +540,7 @@
     }
   }
 
-  &-sticky {
-    bottom: -12px;
-    cursor: pointer;
-    display: block;
-    margin-bottom: -10px;
-    margin-left: -32px;
-    margin-top: 10px;
-    overflow: hidden;
-    position: sticky;
-    width: calc(100% + 64px);
-    z-index: 2;
-
-    @include tablet {
-      width: calc(100% + 32px);
-      margin-left: -16px;
-    }
-
-    @include desktop {
-      display: none;
-    }
-
-    &-container {
-      border-radius: 16px;
-      cursor: pointer;
-
-      background-color: #1a1a2c;
-      padding-left: 24px;
-      padding-right: 24px;
-      transition: all 0.4s ease-out;
-    }
-
-    &-line {
-      display: flex;
-      height: 20px;
-      justify-content: center;
-      width: 100%;
-
-      &-draw {
-        color: var(--color-white-20);
-        transform: translateY(-6px) rotate(180deg);
-
-        &-open {
-          transform: translateY(-6px);
-        }
-      }
-    }
-
-    &-subtitle {
-      color: var(--color-primary-100);
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 6px;
-    }
-
-    &-info {
-      @include centered-row;
-
-      &.spaced {
-        margin-top: 12px;
-        margin-bottom: 12px;
-      }
-
-      .chain-icon {
-        transform: translateY(2px);
-      }
-
-      &-source {
-        &-small {
-          align-items: center;
-          display: flex;
-          height: 32px;
-
-          @include tablet {
-            height: auto;
-          }
-        }
-      }
-
-      &-destination {
-        margin-left: 12px;
-      }
-
-      &-value {
-        margin-left: auto;
-      }
-    }
-
-    &-destinations {
-      transition: all 0.4s ease-out;
-
-      & .wormholescan-brand {
-        height: 34px;
-        margin: auto;
-        opacity: 0.2;
-        padding: 16px 0;
-        pointer-events: none;
-        user-select: none;
-        width: 180px;
-        z-index: 1;
-      }
-    }
-  }
-
   &-header-container {
-    @include text-p3;
     display: flex;
     justify-content: space-between;
     margin-bottom: 16px;

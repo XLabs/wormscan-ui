@@ -1,4 +1,5 @@
 import {
+  ALL_BRIDGE_APP_ID,
   CCTP_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
@@ -46,6 +47,35 @@ const PortalIcon = ({ width = 28 }: { width?: number }) => (
         <feGaussianBlur stdDeviation={2} result="effect1_foregroundBlur_3556_27158" />
       </filter>
     </defs>
+  </svg>
+);
+
+const AllbridgeIcon = ({ width = 28 }: { width?: number }) => (
+  <svg
+    fill="none"
+    height={width}
+    viewBox="-6 -6 44 44"
+    width={width}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M7.76378 16.1729C7.76378 11.6006 11.4508 7.89398 15.9991 7.89398C20.5473 7.89398 24.2344 11.6006 24.2344 16.1729M7.76378 16.1729C7.76378 20.7453 11.4508 24.4519 15.9991 24.4519C20.5473 24.4519 24.2344 20.7453 24.2344 16.1729M7.76378 16.1729L7.76378 2.20539M24.2344 16.1729L24.2344 29.9995"
+      stroke="#5B978E"
+      strokeWidth="3.2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M15.5885 29.9998L14.8003 29.9998C7.73101 29.9998 2.00025 24.269 2.00025 17.1998L2.00024 6.11743"
+      stroke="#5B978E"
+      strokeWidth="3.2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M16.412 2.00011L17.2002 2.00011C24.2695 2.00011 30.0002 7.73087 30.0002 14.8001L30.0002 25.4707"
+      stroke="#5B978E"
+      strokeWidth="3.2"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
@@ -285,6 +315,13 @@ const iconMap: Record<string, React.FC<{ width?: number }>> = {
   [NTT_APP_ID]: NTTIcon,
   [PORTAL_NFT_APP_ID]: PortalNFTIcon,
   [GATEWAY_APP_ID]: WormholeGatewayIcon,
+  [ALL_BRIDGE_APP_ID]: AllbridgeIcon,
+
+  ["Portal"]: PortalIcon,
+  ["CCTP"]: CCTPIcon,
+  ["Mayan"]: MayanIcon,
+  ["NTT"]: NTTIcon,
+  ["Allbridge"]: AllbridgeIcon,
 };
 
 export default ProtocolIcon;

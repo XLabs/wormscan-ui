@@ -1,24 +1,16 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { allBridgeIcon, cctpIcon, mayanIcon, nttIcon, portalIcon } from "src/icons/Protocols";
 import { ALLBRIDGE_URL, CCTP_URL, MAYAN_URL, NTT_URL, PORTAL_BRIDGE_URL } from "src/consts";
-import { BlockchainIcon, Loader } from "src/components/atoms";
+import { BlockchainIcon, Loader, ProtocolIcon, Tooltip } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getClient } from "src/api/Client";
 import { ProtocolName, ProtocolsStatsOutput } from "src/api/guardian-network/types";
 import { Cube3DIcon, LinkIcon } from "src/icons/generic";
 import { chainToChainId } from "@wormhole-foundation/sdk";
+import { getChainName } from "src/utils/wormhole";
 import "./styles.scss";
-
-const protocolIcons: Record<ProtocolName, string> = {
-  allbridge: allBridgeIcon,
-  cctp: cctpIcon,
-  mayan: mayanIcon,
-  portal_token_bridge: portalIcon,
-  native_token_transfer: nttIcon,
-};
 
 const protocolNames: Record<ProtocolName, string> = {
   allbridge: "Allbridge",
@@ -126,7 +118,7 @@ const ProtocolsStats = () => {
     <div className={`protocols-stats ${currentNetwork}`}>
       <h3 className="protocols-stats-title">
         <Cube3DIcon width={24} />
-        Featured Applications
+        Featured Protocols
       </h3>
       {isLoading ? (
         <div className="protocols-stats-loader">
@@ -139,7 +131,7 @@ const ProtocolsStats = () => {
       ) : (
         <div className="protocols-stats-container">
           <div className="protocols-stats-container-header">
-            <h4 className="protocols-stats-container-header-title">APPLICATION</h4>
+            <h4 className="protocols-stats-container-header-title">PROTOCOL</h4>
             <h4 className="protocols-stats-container-header-title">
               Total <span>value </span>
               transferred
@@ -160,12 +152,7 @@ const ProtocolsStats = () => {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <img
-                    src={protocolIcons[item.protocol]}
-                    alt={item.protocol}
-                    height={24}
-                    width={24}
-                  />
+                  <ProtocolIcon protocolName={protocolNames[item.protocol]} />
 
                   <p className="protocols-stats-container-element-item-protocol">
                     {protocolNames[item.protocol]}
@@ -221,34 +208,60 @@ const ProtocolsStats = () => {
                 <div className="protocols-stats-container-element-item">
                   <h4 className="protocols-stats-container-element-item-title">CHAINS</h4>
                   <div className="protocols-stats-container-element-item-value">
-                    <div className="protocols-stats-container-element-item-value-chains">
-                      {chainsSupported?.[item.protocol]?.map((chainId, i) => {
-                        if (i > 7) return null;
+                    <Tooltip
+                      type="info"
+                      maxWidth={false}
+                      tooltip={
+                        <div className="protocols-stats-container-element-item-value-tooltip">
+                          {chainsSupported?.[item.protocol]?.map(chainId => {
+                            return (
+                              <div
+                                className="protocols-stats-container-element-item-value-tooltip-content"
+                                key={chainId}
+                              >
+                                <BlockchainIcon
+                                  background="#1F1F1F"
+                                  chainId={chainId}
+                                  network={currentNetwork}
+                                  size={20}
+                                />
 
-                        if (i === 7 && chainsSupported[item.protocol].length > 8) {
+                                {getChainName({ chainId, network: currentNetwork })}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      }
+                    >
+                      <div className="protocols-stats-container-element-item-value-chains">
+                        {chainsSupported?.[item.protocol]?.map((chainId, i) => {
+                          if (i > 7) return null;
+
+                          if (i === 7 && chainsSupported[item.protocol].length > 8) {
+                            return (
+                              <div
+                                key={chainId}
+                                className="protocols-stats-container-element-item-value-chains-chain protocols-stats-container-element-item-value-chains-chain-more"
+                              >
+                                {chainsSupported[item.protocol].length - 7}
+                              </div>
+                            );
+                          }
+
                           return (
-                            <div
+                            <BlockchainIcon
+                              background="#1F1F1F"
+                              chainId={chainId}
+                              className="protocols-stats-container-element-item-value-chains-chain"
+                              colorless={true}
                               key={chainId}
-                              className="protocols-stats-container-element-item-value-chains-chain protocols-stats-container-element-item-value-chains-chain-more"
-                            >
-                              {chainsSupported[item.protocol].length - 7}
-                            </div>
+                              network={currentNetwork}
+                              size={28}
+                            />
                           );
-                        }
-
-                        return (
-                          <BlockchainIcon
-                            background="#1F1F1F"
-                            chainId={chainId}
-                            className="protocols-stats-container-element-item-value-chains-chain"
-                            colorless={true}
-                            key={chainId}
-                            network="Mainnet"
-                            size={24}
-                          />
-                        );
-                      })}
-                    </div>
+                        })}
+                      </div>
+                    </Tooltip>
                   </div>
                 </div>
               </div>

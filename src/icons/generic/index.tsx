@@ -9,6 +9,7 @@ export { default as CheckCircle2 } from "./CheckCircle2";
 export { default as CheckIcon } from "./CheckIcon";
 export { default as ChevronDownIcon } from "./ChevronDownIcon";
 export { default as ClockIcon } from "./ClockIcon";
+export { default as Code2Icon } from "./Code2Icon";
 export { default as CopyIcon } from "./CopyIcon";
 export { default as CrossIcon } from "./CrossIcon";
 export { default as Cube3DIcon } from "./Cube3DIcon";

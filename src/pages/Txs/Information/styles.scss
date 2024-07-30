@@ -179,8 +179,19 @@
       }
 
       .tx-protocols-icons {
-        & img:not(:first-child) {
-          margin-left: -4px;
+        &-content {
+          @include centered-row;
+
+          & svg {
+            background-color: var(--color-black);
+            border-radius: 50%;
+            padding: 2px;
+          }
+
+          & svg:not(:last-child) {
+            margin-left: -8px;
+            transform: translateX(8px);
+          }
         }
       }
 
