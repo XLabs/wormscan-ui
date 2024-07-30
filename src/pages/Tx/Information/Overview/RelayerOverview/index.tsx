@@ -660,12 +660,12 @@ const RelayerOverview = ({
       {!isDelivery && originalVAA && (
         <div className="redelivery-info">
           <div className="redelivery-info-container">
-            <div>This VAA its a REDELIVERY of the following transaction:</div>
+            <div>This VAA its a Redelivery for the following transaction:</div>
             <NavLink target="_blank" to={`/tx/${originalVAA}`} className="redelivery-info-btn">
               <div>View Original Delivery</div>
               <ExternalLinkIcon height={15} width={15} />
             </NavLink>
-            <div>It should contain all the information regarding this delivery.</div>
+            <div>It should contain all the information regarding this Delivery.</div>
           </div>
         </div>
       )}
