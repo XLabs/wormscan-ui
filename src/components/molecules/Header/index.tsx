@@ -18,6 +18,7 @@ import {
   Cube3DIcon,
   LinkIcon,
   Code2Icon,
+  AnalyticsIcon,
 } from "src/icons/generic";
 import { useOutsideClick, useWindowSize } from "src/utils/hooks";
 import { BREAKPOINTS, GITHUB_URL, WORMHOLE_DOCS_URL, WORMHOLESCAN_API_DOCS_URL } from "src/consts";
@@ -167,7 +168,7 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
 
         <nav className="header-container-links">
           <NavLink to="/" aria-label="Home">
-            <HomeIcon width={24} />
+            <HomeIcon />
           </NavLink>
 
           <NavLink to="/txs" aria-label={t("home.header.txs")}>
@@ -274,7 +275,7 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
       >
         <div className="header-container-mobile-items">
           <NavLink to="/" aria-label="Home">
-            <HomeIcon width={24} />
+            <HomeIcon />
             HOME
           </NavLink>
 
@@ -282,12 +283,12 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
             className={`navlink ${isActive ? "active" : ""}`}
             onClick={() => inputRef.current.focus()}
           >
-            <SearchIcon width={24} />
+            <SearchIcon />
             SEARCH
           </div>
 
           <NavLink to="/txs" aria-label="Swap">
-            <SwapVerticalIcon width={24} />
+            <SwapVerticalIcon />
             TXS
           </NavLink>
 
@@ -298,7 +299,7 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
               setShowMobileAnalytics(!showMobileAnalytics);
             }}
           >
-            <MenuIcon width={24} />
+            <AnalyticsIcon />
             ANALYTICS
           </div>
 
@@ -309,7 +310,7 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
               setShowMobileOtherMenu(!showMobileOtherMenu);
             }}
           >
-            <MenuIcon width={24} />
+            <MenuIcon />
             OTHER
           </div>
         </div>

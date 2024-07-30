@@ -1,4 +1,4 @@
-const HomeIcon = ({ style, width }: { style?: any; width: number }) => (
+const HomeIcon = ({ style, width = 24 }: { style?: any; width?: number }) => (
   <svg
     fill="none"
     height={width}
