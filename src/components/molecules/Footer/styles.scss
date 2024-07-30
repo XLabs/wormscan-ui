@@ -176,8 +176,9 @@
       max-width: 220px;
 
       @include desktop {
-        max-width: unset;
         margin: auto 0;
+        max-width: unset;
+        order: 2;
       }
 
       &-text {
