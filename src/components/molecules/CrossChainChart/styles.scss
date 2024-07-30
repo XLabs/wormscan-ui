@@ -264,6 +264,16 @@
           line-height: normal !important;
         }
 
+        &.showMoneyMobile {
+          & .chain-name {
+            display: none;
+
+            @media (min-width: 420px) {
+              display: block;
+            }
+          }
+        }
+
         @include desktop {
           grid-template-columns: 1.5fr 5fr 1fr;
         }
