@@ -249,3 +249,32 @@
     }
   }
 }
+
+.redelivery-info {
+  display: flex;
+  justify-content: center;
+
+  &-container {
+    @include centered-column;
+    gap: 6px;
+
+    padding: 12px 24px;
+    border-radius: 10px;
+    background-color: var(--color-white-05);
+    flex-direction: column;
+    margin-left: -25%;
+    margin-bottom: 16px;
+  }
+
+  &-btn {
+    @include button-secondary;
+    color: var(--color-white-90);
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    text-decoration: none;
+  }
+}

@@ -1,5 +1,5 @@
-import { ArrowRightIcon, CopyIcon, InfoCircledIcon } from "@radix-ui/react-icons";
-import { BlockchainIcon, Tooltip } from "src/components/atoms";
+import { ArrowRightIcon, CopyIcon, ExternalLinkIcon, InfoCircledIcon } from "@radix-ui/react-icons";
+import { BlockchainIcon, NavLink, Tooltip } from "src/components/atoms";
 import { CopyToClipboard } from "src/components/molecules";
 import RelayIcon from "src/icons/relayIcon.svg";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
@@ -18,6 +18,7 @@ import { ChainId } from "src/api";
 import { RelayerOverviewProps } from "src/utils/genericRelayerVaaUtils";
 import { useRecoilState } from "recoil";
 import { CHAIN_ID_GATEWAY } from "@certusone/wormhole-sdk";
+import { RedeliveryInstruction } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 
 const RelayerOverview = ({
   budgetText,
@@ -125,6 +126,15 @@ const RelayerOverview = ({
       </div>
     );
   };
+
+  const redeliveryInstruction = deliveryInstruction as unknown as RedeliveryInstruction;
+
+  let originalVAA = "";
+  if (!isDelivery && redeliveryInstruction?.deliveryVaaKey?.chainId) {
+    originalVAA = `${redeliveryInstruction.deliveryVaaKey.chainId}/${Buffer.from(
+      redeliveryInstruction.deliveryVaaKey.emitterAddress,
+    ).toString("hex")}/${Number(redeliveryInstruction.deliveryVaaKey.sequence).toString()}`;
+  }
 
   return (
     <div className="tx-overview">
@@ -423,6 +433,53 @@ const RelayerOverview = ({
           </div>
         )}
 
+        {!isDelivery && deliveryStatus && (
+          <div className={`tx-overview-graph-step green source`}>
+            <div className="tx-overview-graph-step-name">
+              <div>RELAY STATUS</div>
+            </div>
+            <div className="tx-overview-graph-step-iconWrapper">
+              <div className="tx-overview-graph-step-iconContainer">
+                <ArrowRightIcon height={24} width={24} />
+              </div>
+            </div>
+
+            {deliveryStatus.status === "failed" && (
+              <div className={`tx-overview-graph-step-data-container`}>
+                <div>
+                  <div className="tx-overview-graph-step-title">STATUS</div>
+                  <div className="tx-overview-graph-step-description red">FAILED</div>
+                </div>
+                <div>
+                  <div className="tx-overview-graph-step-title">Failed at</div>
+                  <div className="tx-overview-graph-step-description">
+                    {formatDate(deliveryStatus.failedAt)}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {deliveryStatus?.status === "waiting" && (
+              <div className={`tx-overview-graph-step-data-container`}>
+                <div>
+                  <div className="tx-overview-graph-step-title">STATUS</div>
+                  <div className="tx-overview-graph-step-description">WAITING..</div>
+                </div>
+                <div>
+                  <div className="tx-overview-graph-step-title">Attempts</div>
+                  <div className="tx-overview-graph-step-description">
+                    {`${deliveryAttempt}/${deliveryStatus?.data?.maxAttempts}`}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {deliveryStatus.status !== "failed" &&
+              deliveryStatus.status !== "waiting" &&
+              renderDeliveryStatus(deliveryStatus)}
+          </div>
+        )}
+
         {isDelivery && (
           <>
             <div className="tx-overview-graph-step green">
@@ -599,6 +656,19 @@ const RelayerOverview = ({
           </>
         )}
       </div>
+
+      {!isDelivery && originalVAA && (
+        <div className="redelivery-info">
+          <div className="redelivery-info-container">
+            <div>This VAA its a REDELIVERY of the following transaction:</div>
+            <NavLink target="_blank" to={`/tx/${originalVAA}`} className="redelivery-info-btn">
+              <div>View Original Delivery</div>
+              <ExternalLinkIcon height={15} width={15} />
+            </NavLink>
+            <div>It should contain all the information regarding this delivery.</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
