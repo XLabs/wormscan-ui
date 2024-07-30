@@ -64,6 +64,7 @@ import {
 import {
   DeliveryInstruction,
   parseEVMExecutionInfoV1,
+  RedeliveryInstruction,
 } from "@certusone/wormhole-sdk/lib/cjs/relayer";
 
 const Tx = () => {
@@ -578,20 +579,16 @@ const Tx = () => {
 
             const instruction = parseGenericRelayerVaa(parsedVaa);
             const deliveryInstruction = instruction as DeliveryInstruction | null;
+            const redeliveryInstruction = instruction as RedeliveryInstruction | null;
+
             const isDelivery = deliveryInstruction && !isRedelivery(deliveryInstruction);
 
             const decodeExecution = deliveryInstruction.encodedExecutionInfo
               ? parseEVMExecutionInfoV1(deliveryInstruction.encodedExecutionInfo, 0)[0]
+              : redeliveryInstruction.newEncodedExecutionInfo
+              ? parseEVMExecutionInfoV1(redeliveryInstruction.newEncodedExecutionInfo, 0)[0]
               : null;
             const gasLimit = decodeExecution ? decodeExecution.gasLimit : null;
-
-            if (!deliveryInstruction?.targetAddress) {
-              return (
-                <div className="tx-information-errored-info">
-                  This is either not an Standard Relayer VAA or something&apos;s wrong with it
-                </div>
-              );
-            }
 
             const trunkStringsDecimal = (num: string, decimals: number) => {
               const [whole, fraction] = num.split(".");
@@ -611,30 +608,45 @@ const Tx = () => {
                 )
               : 0;
 
-            const deliveryParsedTargetAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.targetAddress).toString("hex"),
-              chainId: deliveryInstruction?.targetChainId as ChainId,
-            });
+            const deliveryParsedTargetAddress = deliveryInstruction?.targetAddress
+              ? parseAddress({
+                  value: Buffer.from(deliveryInstruction?.targetAddress).toString("hex"),
+                  chainId: deliveryInstruction?.targetChainId as ChainId,
+                })
+              : "";
 
-            const deliveryParsedRefundAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.refundAddress).toString("hex"),
-              chainId: deliveryInstruction?.refundChainId as ChainId,
-            });
+            const deliveryParsedRefundAddress = deliveryInstruction?.refundAddress
+              ? parseAddress({
+                  value: Buffer.from(deliveryInstruction?.refundAddress).toString("hex"),
+                  chainId: deliveryInstruction?.refundChainId as ChainId,
+                })
+              : "";
 
-            const deliveryParsedRefundProviderAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.refundDeliveryProvider).toString("hex"),
-              chainId: deliveryInstruction?.refundChainId as ChainId,
-            });
+            const deliveryParsedRefundProviderAddress = deliveryInstruction?.refundDeliveryProvider
+              ? parseAddress({
+                  value: Buffer.from(deliveryInstruction?.refundDeliveryProvider).toString("hex"),
+                  chainId: deliveryInstruction?.refundChainId as ChainId,
+                })
+              : "";
 
-            const deliveryParsedSenderAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.senderAddress).toString("hex"),
-              chainId: fromChain as ChainId,
-            });
+            const deliveryParsedSenderAddress = deliveryInstruction?.senderAddress
+              ? parseAddress({
+                  value: Buffer.from(deliveryInstruction?.senderAddress).toString("hex"),
+                  chainId: fromChain as ChainId,
+                })
+              : redeliveryInstruction?.newSenderAddress
+              ? parseAddress({
+                  value: Buffer.from(redeliveryInstruction?.newSenderAddress).toString("hex"),
+                  chainId: fromChain as ChainId,
+                })
+              : "";
 
-            const deliveryParsedSourceProviderAddress = parseAddress({
-              value: Buffer.from(deliveryInstruction?.sourceDeliveryProvider).toString("hex"),
-              chainId: fromChain as ChainId,
-            });
+            const deliveryParsedSourceProviderAddress = deliveryInstruction?.sourceDeliveryProvider
+              ? parseAddress({
+                  value: Buffer.from(deliveryInstruction?.sourceDeliveryProvider).toString("hex"),
+                  chainId: fromChain as ChainId,
+                })
+              : "";
 
             const maxRefundText = () => {
               return `${maxRefund} ${
@@ -649,13 +661,16 @@ const Tx = () => {
             };
 
             const receiverValueText = () => {
-              const receiverValue = trunkStringsDecimal(
-                ethers.utils.formatUnits(
-                  deliveryStatus?.data?.instructions?.requestedReceiverValue,
-                  deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
-                ),
-                3,
-              );
+              const receiverValue = deliveryStatus?.data?.instructions?.requestedReceiverValue
+                ?._isBigNumber
+                ? trunkStringsDecimal(
+                    ethers.utils.formatUnits(
+                      deliveryStatus?.data?.instructions?.requestedReceiverValue,
+                      deliveryStatus?.data?.delivery?.targetChainDecimals || 18,
+                    ),
+                    3,
+                  )
+                : "";
 
               return `${receiverValue} ${
                 environment.chainInfos.find(
