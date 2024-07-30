@@ -94,7 +94,7 @@ export const Chart = ({
   const isDesktop = width >= BREAKPOINTS.desktop;
   const isBigDesktop = width >= BREAKPOINTS.bigDesktop;
 
-  const MARGIN_SIZE_ELEMENTS = isDesktop ? 0 : 4;
+  const MARGIN_SIZE_ELEMENTS = isDesktop ? 0 : 2;
   const devicePixelRatio = window.devicePixelRatio * 2;
 
   const isSourcesSelected = selectedDestination === "sources";

@@ -253,11 +253,15 @@
         grid-auto-flow: column;
         grid-template-columns: auto auto auto;
         justify-content: flex-start;
-        min-height: 32px;
+        min-height: 28px;
         padding: 0 4px;
         position: relative;
         user-select: none;
         width: 100%;
+
+        @include desktop {
+          min-height: 32px;
+        }
 
         & > * {
           margin: 0 4px;
