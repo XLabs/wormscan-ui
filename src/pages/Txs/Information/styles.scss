@@ -183,9 +183,13 @@
           @include centered-row;
 
           & svg {
-            background-color: var(--color-black);
+            background-color: var(--color-gray-950);
             border-radius: 50%;
             padding: 2px;
+
+            @include desktop {
+              background-color: var(--color-black);
+            }
           }
 
           & svg:not(:last-child) {
