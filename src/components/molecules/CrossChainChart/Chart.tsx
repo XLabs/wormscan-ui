@@ -90,8 +90,9 @@ export const Chart = ({
   const destinyChainsRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
 
-  const size = useWindowSize();
-  const [isDesktop, setIsDesktop] = useState(size.width >= BREAKPOINTS.desktop);
+  const { width } = useWindowSize();
+  const isDesktop = width >= BREAKPOINTS.desktop;
+  const isBigDesktop = width >= BREAKPOINTS.bigDesktop;
 
   const MARGIN_SIZE_ELEMENTS = isDesktop ? 0 : 4;
   const devicePixelRatio = window.devicePixelRatio * 2;
@@ -183,7 +184,11 @@ export const Chart = ({
           );
 
           const opacity = 1 - i * 0.08;
-          const blendedColor = blendColors("#7abfff", "#121212", opacity);
+          const blendedColor = blendColors(
+            isBigDesktop ? "#7abfff" : "#4f789e",
+            "#121212",
+            opacity,
+          );
 
           grad.addColorStop(0, isDesktop ? blendedColor : "#182633");
           grad.addColorStop(1, isDesktop ? "#121212" : "#182633");
@@ -254,7 +259,11 @@ export const Chart = ({
           );
 
           const opacity = 1 - i * 0.08;
-          const blendedColor = blendColors("#7abfff", "#121212", opacity);
+          const blendedColor = blendColors(
+            isBigDesktop ? "#7abfff" : "#4f789e",
+            "#121212",
+            opacity,
+          );
 
           grad.addColorStop(0, isDesktop ? "#121212" : "#182633");
           grad.addColorStop(1, isDesktop ? blendedColor : "#182633");
@@ -267,7 +276,14 @@ export const Chart = ({
         }
       }
     },
-    [MARGIN_SIZE_ELEMENTS, destinyChainsHeight, isDesktop, isSourcesSelected, originChainsHeight],
+    [
+      MARGIN_SIZE_ELEMENTS,
+      destinyChainsHeight,
+      isDesktop,
+      isBigDesktop,
+      isSourcesSelected,
+      originChainsHeight,
+    ],
   );
 
   // update arrays containing height of items on both sides of the graphics
@@ -325,11 +341,6 @@ export const Chart = ({
 
     setDestinations(newDestinationChains);
   }, [chartData, prevChain, selectedChain]);
-
-  useEffect(() => {
-    if (size.width >= BREAKPOINTS.desktop && !isDesktop) setIsDesktop(true);
-    else if (size.width < BREAKPOINTS.desktop && isDesktop) setIsDesktop(false);
-  }, [isDesktop, size]);
 
   // re-render canvas when destinations or isDesktop changes.
   useEffect(updateChainsHeight, [destinations, isDesktop, selectedDestination]);

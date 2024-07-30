@@ -203,6 +203,7 @@
 
     & .wormholescan-brand {
       bottom: 0;
+      display: none;
       filter: grayscale(1);
       height: 34px;
       left: 0;
@@ -216,6 +217,10 @@
       user-select: none;
       width: 217px;
       z-index: 1;
+
+      @include tablet {
+        display: block;
+      }
     }
 
     &-side {
@@ -494,6 +499,7 @@
         }
 
         .volume-info {
+          color: var(--color-white);
           display: none;
           height: 20px;
           padding-left: 8px;
