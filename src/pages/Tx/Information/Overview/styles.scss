@@ -256,6 +256,7 @@
 
   &-container {
     @include centered-column;
+    align-items: center;
     gap: 6px;
 
     padding: 12px 24px;
@@ -272,6 +273,7 @@
     cursor: pointer;
 
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 4px;
 
