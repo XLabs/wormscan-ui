@@ -4,19 +4,24 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Network } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { NavLink, Select } from "src/components/atoms";
-import { WormholeScanBrand } from "src/components/molecules";
+import { TermsOfUseBanner, WormholeScanBrand } from "src/components/molecules";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Search from "./Search";
 import {
-  AnalyticsIcon,
   HomeIcon,
   SearchIcon,
   MenuIcon,
   SwapVerticalIcon,
   TriangleDownIcon,
+  LayersIcon,
+  GlobeIcon,
+  Cube3DIcon,
+  LinkIcon,
+  Code2Icon,
+  AnalyticsIcon,
 } from "src/icons/generic";
-import { useWindowSize } from "src/utils/hooks";
-import { WORMHOLE_DOCS_URL, WORMHOLESCAN_API_DOCS_URL } from "src/consts";
+import { useOutsideClick, useWindowSize } from "src/utils/hooks";
+import { BREAKPOINTS, GITHUB_URL, WORMHOLE_DOCS_URL, WORMHOLESCAN_API_DOCS_URL } from "src/consts";
 import "./styles.scss";
 
 type NetworkSelectProps = { label: string; value: Network };
@@ -30,12 +35,14 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
   const [showDesktopFixedNav, setShowDesktopFixedNav] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const [showMobileNav, setShowMobileNav] = useState(true);
+  const [showMobileAnalytics, setShowMobileAnalytics] = useState(false);
   const [showMobileOtherMenu, setShowMobileOtherMenu] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const headerRef = useRef(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const mobileNavRef = useRef(null);
   const { width } = useWindowSize();
-  const isDesktop = width >= 1024;
+  const isDesktop = width >= BREAKPOINTS.desktop;
   const { environment, setEnvironment } = useEnvironment();
   const { pathname, search } = useLocation();
   const { t } = useTranslation();
@@ -77,10 +84,15 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
 
   useEffect(() => {
     if (!isDesktop) {
+      const scrollThreshold = 20;
+
       const handleScroll = () => {
         const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        setShowMobileNav(lastScrollTop > currentScrollTop || currentScrollTop < 50);
-        setLastScrollTop(currentScrollTop <= 0 ? 0 : currentScrollTop);
+
+        if (Math.abs(lastScrollTop - currentScrollTop) > scrollThreshold) {
+          setShowMobileNav(lastScrollTop > currentScrollTop || currentScrollTop < scrollThreshold);
+          setLastScrollTop(currentScrollTop <= 0 ? 0 : currentScrollTop);
+        }
       };
 
       window.addEventListener("scroll", handleScroll);
@@ -90,6 +102,7 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
 
   useEffect(() => {
     if (!showMobileNav) {
+      setShowMobileAnalytics(false);
       setShowMobileOtherMenu(false);
     }
   }, [showMobileNav]);
@@ -119,12 +132,27 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
     setIsActive(false);
   };
 
+  const closeAllMobileMenus = () => {
+    setShowMobileAnalytics(false);
+    setShowMobileOtherMenu(false);
+  };
+
+  useOutsideClick(mobileNavRef, closeAllMobileMenus);
+
   return (
     <header
       className={`header ${secondaryHeader ? "header-secondary" : ""}`}
       data-testid="header"
       ref={headerRef}
     >
+      <div
+        className={`header-banner ${!isDesktop && showMobileNav ? "show-mobile-nav" : ""} ${
+          !isDesktop && showMobileNav && showMobileAnalytics ? "show-mobile-analytics" : ""
+        } ${!isDesktop && showMobileNav && showMobileOtherMenu ? "show-mobile-other" : ""}`}
+      >
+        <TermsOfUseBanner />
+      </div>
+
       <div
         className={`header-container ${secondaryHeader ? "header-container-secondary" : ""} ${
           showDesktopFixedNav ? "header-container-fixed" : ""
@@ -140,7 +168,7 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
 
         <nav className="header-container-links">
           <NavLink to="/" aria-label="Home">
-            <HomeIcon width={24} />
+            <HomeIcon />
           </NavLink>
 
           <NavLink to="/txs" aria-label={t("home.header.txs")}>
@@ -153,20 +181,48 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
             </NavLink>
           )}
 
-          <NavLink to="/analytics" aria-label="Analytics">
-            Analytics
-          </NavLink>
+          <NavigationMenu.Root delayDuration={0}>
+            <NavigationMenu.List className="dropdown-menu">
+              <NavigationMenu.Item>
+                <NavigationMenu.Trigger
+                  className={`dropdown-menu-trigger ${
+                    pathname.includes("/analytics") ? "active" : ""
+                  }`}
+                >
+                  Analytics <TriangleDownIcon className="icon" />
+                </NavigationMenu.Trigger>
+
+                <NavigationMenu.Content className="dropdown-menu-content">
+                  <NavLink to="/analytics/tokens" aria-label="analytics tokens">
+                    <LayersIcon /> Tokens
+                  </NavLink>
+
+                  <NavLink to="/analytics/chains" aria-label="analytics chains">
+                    <GlobeIcon /> Chains
+                  </NavLink>
+
+                  <NavLink to="/analytics/protocols" aria-label="analytics protocols">
+                    <Cube3DIcon /> Protocols
+                  </NavLink>
+                </NavigationMenu.Content>
+              </NavigationMenu.Item>
+            </NavigationMenu.List>
+          </NavigationMenu.Root>
 
           <NavigationMenu.Root delayDuration={0}>
             <NavigationMenu.List className="dropdown-menu">
               <NavigationMenu.Item>
-                <NavigationMenu.Trigger className="dropdown-menu-trigger">
-                  Dev Tools <TriangleDownIcon className="icon" />
+                <NavigationMenu.Trigger
+                  className={`dropdown-menu-trigger ${
+                    pathname.includes("/developers/vaa-parser") ? "active" : ""
+                  }`}
+                >
+                  Developers <TriangleDownIcon className="icon" />
                 </NavigationMenu.Trigger>
 
                 <NavigationMenu.Content className="dropdown-menu-content">
-                  <NavLink to="/vaa-parser" aria-label="VAA Parser">
-                    VAA Parser
+                  <NavLink to="/developers/vaa-parser" aria-label="VAA Parser">
+                    <Code2Icon /> VAA Parser
                   </NavLink>
 
                   <a
@@ -175,7 +231,7 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
                     rel="noopener noreferrer"
                     aria-label="API Doc"
                   >
-                    API Doc
+                    <LinkIcon /> API Doc
                   </a>
 
                   <a
@@ -184,7 +240,16 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
                     rel="noopener noreferrer"
                     aria-label="Wormhole Doc"
                   >
-                    Wormhole Doc
+                    <LinkIcon /> Wormhole Doc
+                  </a>
+
+                  <a
+                    href={GITHUB_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Github"
+                  >
+                    <LinkIcon /> Github
                   </a>
                 </NavigationMenu.Content>
               </NavigationMenu.Item>
@@ -204,74 +269,118 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
         </nav>
       </div>
 
-      <div className={`header-container-mobile ${showMobileNav ? "" : "hidden"}`}>
-        <NavLink to="/" aria-label="Home">
-          <HomeIcon width={24} />
-          HOME
-        </NavLink>
-
-        <div
-          className={`navlink ${isActive ? "active" : ""}`}
-          onClick={() => inputRef.current.focus()}
-        >
-          <SearchIcon width={24} />
-          SEARCH
-        </div>
-
-        <NavLink to="/txs" aria-label="Swap">
-          <SwapVerticalIcon width={24} />
-          TXS
-        </NavLink>
-
-        <NavLink to="/analytics" aria-label="Analytics">
-          <AnalyticsIcon width={24} />
-          ANALYTICS
-        </NavLink>
-
-        <div
-          className={`navlink ${showMobileOtherMenu ? "active" : ""}`}
-          onClick={() => setShowMobileOtherMenu(!showMobileOtherMenu)}
-        >
-          <MenuIcon width={24} />
-          OTHER
-        </div>
-      </div>
-
       <div
-        className={`header-container-mobile-other-menu ${
-          showMobileNav && showMobileOtherMenu ? "open" : ""
-        }`}
+        className={`header-container-mobile ${showMobileNav ? "" : "hidden"}`}
+        ref={mobileNavRef}
       >
-        {isMainnet && (
-          <NavLink to="/governor" aria-label="Governor">
-            Governor
-          </NavLink>
-        )}
-
-        <div className="header-container-mobile-other-menu-dev-tools-title">Dev tools</div>
-
-        <div className="header-container-mobile-other-menu-dev-tools">
-          <NavLink to="/vaa-parser" aria-label="VAA Parser">
-            VAA Parser
+        <div className="header-container-mobile-items">
+          <NavLink to="/" aria-label="Home">
+            <HomeIcon />
+            HOME
           </NavLink>
 
-          <a
-            href={WORMHOLESCAN_API_DOCS_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="API Doc"
+          <div
+            className={`navlink ${isActive ? "active" : ""}`}
+            onClick={() => inputRef.current.focus()}
           >
-            API doc
-          </a>
+            <SearchIcon />
+            SEARCH
+          </div>
 
-          <a
-            href={WORMHOLE_DOCS_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Wormhole Doc"
+          <NavLink to="/txs" aria-label="Swap">
+            <SwapVerticalIcon />
+            TXS
+          </NavLink>
+
+          <div
+            className={`navlink  ${showMobileAnalytics ? "active" : ""}`}
+            onClick={() => {
+              setShowMobileOtherMenu(false);
+              setShowMobileAnalytics(!showMobileAnalytics);
+            }}
           >
-            Wormhole doc
-          </a>
+            <AnalyticsIcon />
+            ANALYTICS
+          </div>
+
+          <div
+            className={`navlink ${showMobileOtherMenu ? "active" : ""}`}
+            onClick={() => {
+              setShowMobileAnalytics(false);
+              setShowMobileOtherMenu(!showMobileOtherMenu);
+            }}
+          >
+            <MenuIcon />
+            OTHER
+          </div>
+        </div>
+
+        <div
+          className={`header-container-mobile-menu ${
+            showMobileNav && showMobileAnalytics ? "open" : ""
+          }`}
+        >
+          <NavLink to="/analytics/tokens" aria-label="analytics tokens">
+            <LayersIcon /> Tokens
+          </NavLink>
+
+          <NavLink to="/analytics/chains" aria-label="analytics chains">
+            <GlobeIcon /> Chains
+          </NavLink>
+
+          <NavLink to="/analytics/protocols" aria-label="analytics protocols">
+            <Cube3DIcon /> Protocols
+          </NavLink>
+        </div>
+
+        <div
+          className={`header-container-mobile-menu ${
+            showMobileNav && showMobileOtherMenu ? "open" : ""
+          }`}
+        >
+          {isMainnet && (
+            <NavLink to="/governor" aria-label="Governor">
+              Governor
+            </NavLink>
+          )}
+
+          <div className="header-container-mobile-menu-dev-tools-title">Developers</div>
+
+          <div className="header-container-mobile-menu-dev-tools">
+            <NavLink to="/developers/vaa-parser" aria-label="VAA Parser">
+              <Code2Icon /> VAA Parser
+            </NavLink>
+
+            <a
+              className="navlink"
+              href={WORMHOLESCAN_API_DOCS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="API Doc"
+            >
+              <LinkIcon /> API Doc
+            </a>
+
+            <a
+              className="navlink"
+              href={WORMHOLE_DOCS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Wormhole Doc"
+            >
+              <LinkIcon /> Wormhole Doc
+            </a>
+
+            <a
+              className="navlink"
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Github"
+            >
+              <LinkIcon /> Github
+            </a>
+          </div>
         </div>
       </div>
     </header>

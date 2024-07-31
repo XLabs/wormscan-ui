@@ -1,4 +1,5 @@
 import {
+  ALL_BRIDGE_APP_ID,
   CCTP_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
@@ -23,7 +24,16 @@ const PortalIcon = ({ width = 28 }: { width?: number }) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect x={1} y={1} width={26} height={26} rx={13} fill="black" stroke="black" strokeWidth={2} />
+    <rect
+      fill="transparent"
+      height={width}
+      rx={13}
+      stroke="transparent"
+      strokeWidth={2}
+      width={width}
+      x={1}
+      y={1}
+    />
     <g filter="url(#filter0_f_3556_27158)">
       <circle cx={14} cy={14} r={9} stroke="#C5A0ED" strokeWidth={2} />
       <circle cx={14} cy={14} r={7} stroke="#8D64BA" strokeWidth={2} />
@@ -49,15 +59,53 @@ const PortalIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
-const CCTPIcon = ({ width = 28 }: { width?: number }) => (
+const AllbridgeIcon = ({ width = 28 }: { width?: number }) => (
   <svg
-    width={width}
-    height={width}
-    viewBox="0 0 28 28"
     fill="none"
+    height={width}
+    viewBox="-6 -6 44 44"
+    width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect x={1} y={1} width={26} height={26} rx={13} fill="#000" stroke="#000" strokeWidth={2} />
+    <path
+      d="M7.76378 16.1729C7.76378 11.6006 11.4508 7.89398 15.9991 7.89398C20.5473 7.89398 24.2344 11.6006 24.2344 16.1729M7.76378 16.1729C7.76378 20.7453 11.4508 24.4519 15.9991 24.4519C20.5473 24.4519 24.2344 20.7453 24.2344 16.1729M7.76378 16.1729L7.76378 2.20539M24.2344 16.1729L24.2344 29.9995"
+      stroke="#5B978E"
+      strokeWidth="3.2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M15.5885 29.9998L14.8003 29.9998C7.73101 29.9998 2.00025 24.269 2.00025 17.1998L2.00024 6.11743"
+      stroke="#5B978E"
+      strokeWidth="3.2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M16.412 2.00011L17.2002 2.00011C24.2695 2.00011 30.0002 7.73087 30.0002 14.8001L30.0002 25.4707"
+      stroke="#5B978E"
+      strokeWidth="3.2"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+const CCTPIcon = ({ width = 28 }: { width?: number }) => (
+  <svg
+    fill="none"
+    height={width}
+    viewBox="0 0 28 28"
+    width={width}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      x={1}
+      y={1}
+      width={26}
+      height={26}
+      rx={13}
+      fill="transparent"
+      stroke="transparent"
+      strokeWidth={2}
+    />
     <path
       d="M23.124 8.812l-.453-.796a.466.466 0 00-.735-.097l-1.042 1.04a.469.469 0 00-.058.59 8.173 8.173 0 01-10.665 11.697l1.762-1.763a5.836 5.836 0 007.318-8 .468.468 0 00-.75-.128l-1.056 1.048a.467.467 0 00-.124.436l.091.379a3.5 3.5 0 01-5.142 3.84l-.465-.266a.465.465 0 00-.561.076L6.939 21.17a.467.467 0 00.046.7l.634.487a10.407 10.407 0 006.384 2.164 10.51 10.51 0 009.12-15.71z"
       fill="#9C9DF7"
@@ -71,13 +119,22 @@ const CCTPIcon = ({ width = 28 }: { width?: number }) => (
 
 const ConnectIcon = ({ width = 28 }: { width?: number }) => (
   <svg
-    width={width}
+    fill="none"
     height={width}
     viewBox="0 0 28 28"
-    fill="none"
+    width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect x={1} y={1} width={26} height={26} rx={13} fill="#000" stroke="#000" strokeWidth={2} />
+    <rect
+      x={1}
+      y={1}
+      width={26}
+      height={26}
+      rx={13}
+      fill="transparent"
+      stroke="transparent"
+      strokeWidth={2}
+    />
     <path
       d="M21.954 6.577l-1.06 1.06A9.003 9.003 0 1014.53 23v1.5a10.5 10.5 0 117.425-17.925v.002z"
       fill="#78E1FF"
@@ -99,13 +156,22 @@ const ConnectIcon = ({ width = 28 }: { width?: number }) => (
 
 const EthBridgeIcon = ({ width = 28 }: { width?: number }) => (
   <svg
-    width={width}
+    fill="none"
     height={width}
     viewBox="0 0 28 28"
-    fill="none"
+    width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect x={1} y={1} width={26} height={26} rx={13} fill="black" stroke="black" strokeWidth={2} />
+    <rect
+      x={1}
+      y={1}
+      width={26}
+      height={26}
+      rx={13}
+      fill="transparent"
+      stroke="transparent"
+      strokeWidth={2}
+    />
     <g clipPath="url(#clip0_3556_27161)">
       <path
         d="M13.9984 4.40625L13.8696 4.84385V17.5391L13.9984 17.6678L19.8912 14.1846L13.9984 4.40625Z"
@@ -130,13 +196,22 @@ const EthBridgeIcon = ({ width = 28 }: { width?: number }) => (
 
 const MayanIcon = ({ width = 28 }: { width?: number }) => (
   <svg
-    width={width}
+    fill="none"
     height={width}
     viewBox="0 0 28 28"
-    fill="none"
+    width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect x={1} y={1} width={26} height={26} rx={13} fill="black" stroke="black" strokeWidth={2} />
+    <rect
+      x={1}
+      y={1}
+      width={26}
+      height={26}
+      rx={13}
+      fill="transparent"
+      stroke="transparent"
+      strokeWidth={2}
+    />
     <path
       d="M6.88184 17.8782V9.69638L11.7909 13.5146L20.5182 8.60547V20.6055"
       stroke="white"
@@ -149,13 +224,22 @@ const MayanIcon = ({ width = 28 }: { width?: number }) => (
 
 const StandardRelayerIcon = ({ width = 28 }: { width?: number }) => (
   <svg
-    width={width}
+    fill="none"
     height={width}
     viewBox="0 0 28 28"
-    fill="none"
+    width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect x={1} y={1} width={26} height={26} rx={13} fill="black" stroke="black" strokeWidth={2} />
+    <rect
+      x={1}
+      y={1}
+      width={26}
+      height={26}
+      rx={13}
+      fill="transparent"
+      stroke="transparent"
+      strokeWidth={2}
+    />
     <path
       d="M21 13.5703V18.6387L14 22.4037L7 18.6387V13.5703"
       stroke="#4D4D4D"
@@ -177,13 +261,22 @@ const StandardRelayerIcon = ({ width = 28 }: { width?: number }) => (
 
 const NTTIcon = ({ width = 28 }: { width?: number }) => (
   <svg
-    width={width}
+    fill="none"
     height={width}
     viewBox="0 0 28 28"
-    fill="none"
+    width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect x={1} y={1} width={26} height={26} rx={13} fill="black" stroke="black" strokeWidth={2} />
+    <rect
+      x={1}
+      y={1}
+      width={26}
+      height={26}
+      rx={13}
+      fill="transparent"
+      stroke="transparent"
+      strokeWidth={2}
+    />
     <ellipse
       cx="13.9999"
       cy="14.0087"
@@ -194,7 +287,7 @@ const NTTIcon = ({ width = 28 }: { width?: number }) => (
     />
     <path
       d="M3 14.0156H25"
-      stroke="black"
+      stroke="transparent"
       strokeWidth="5.5"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -212,13 +305,22 @@ const NTTIcon = ({ width = 28 }: { width?: number }) => (
 
 const PortalNFTIcon = ({ width = 28 }: { width?: number }) => (
   <svg
-    width={width}
+    fill="none"
     height={width}
     viewBox="0 0 28 28"
-    fill="none"
+    width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect x={1} y={1} width={26} height={26} rx={13} fill="black" stroke="black" strokeWidth={2} />
+    <rect
+      x={1}
+      y={1}
+      width={26}
+      height={26}
+      rx={13}
+      fill="transparent"
+      stroke="transparent"
+      strokeWidth={2}
+    />
     <g filter="url(#filter0_f_3556_27165)">
       <circle cx={14} cy={14} r={9} stroke="#FF9744" strokeWidth={2} />
       <circle cx={14} cy={14} r={7} stroke="#FE801B" strokeWidth={2} />
@@ -246,10 +348,10 @@ const PortalNFTIcon = ({ width = 28 }: { width?: number }) => (
 
 const WormholeGatewayIcon = ({ width = 28 }: { width?: number }) => (
   <svg
-    width={width}
+    fill="none"
     height={width}
     viewBox="0 0 28 28"
-    fill="none"
+    width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
     <rect
@@ -259,12 +361,12 @@ const WormholeGatewayIcon = ({ width = 28 }: { width?: number }) => (
       height={26}
       rx={13}
       fill="#121212"
-      stroke="black"
+      stroke="transparent"
       strokeWidth={2}
     />
     <path
       d="M21.5426 6.46013C25.7082 10.6257 25.7082 17.3795 21.5426 21.5451C17.377 25.7107 10.6233 25.7107 6.45769 21.5451C2.2921 17.3795 2.2921 10.6257 6.45769 6.46013C10.6233 2.29454 17.377 2.29454 21.5426 6.46013Z"
-      fill="black"
+      fill="transparent"
       stroke="#C1BBF7"
       strokeWidth="1.33333"
     />
@@ -285,6 +387,13 @@ const iconMap: Record<string, React.FC<{ width?: number }>> = {
   [NTT_APP_ID]: NTTIcon,
   [PORTAL_NFT_APP_ID]: PortalNFTIcon,
   [GATEWAY_APP_ID]: WormholeGatewayIcon,
+  [ALL_BRIDGE_APP_ID]: AllbridgeIcon,
+
+  ["Portal"]: PortalIcon,
+  ["CCTP"]: CCTPIcon,
+  ["Mayan"]: MayanIcon,
+  ["NTT"]: NTTIcon,
+  ["Allbridge"]: AllbridgeIcon,
 };
 
 export default ProtocolIcon;

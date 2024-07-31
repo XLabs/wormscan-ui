@@ -55,3 +55,17 @@ export const formatterYAxis = (() => {
     return result;
   };
 })();
+
+export const changePathColors = ({
+  ref,
+  color,
+}: {
+  ref: React.RefObject<HTMLDivElement>;
+  color: string;
+}) => {
+  const paths = ref.current.querySelectorAll("path[val]");
+
+  paths.forEach((path: any) => {
+    path.style.fill = color;
+  });
+};

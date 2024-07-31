@@ -119,7 +119,7 @@ export interface AssetsByVolumeInput {
 export interface AssetsByVolumeOutput {
   symbol: string;
   tokens: {
-    emitter_chain: number;
+    emitter_chain: ChainId;
     token_address: string;
     token_chain: number;
     txs: string;
@@ -132,7 +132,7 @@ export interface AssetsByVolumeOutput {
 export interface Tokens {
   chainImageSrc: string;
   chainName: string;
-  emitter_chain: number;
+  emitter_chain: ChainId;
   txs: number;
   txsFormatted: string;
   volume: number;

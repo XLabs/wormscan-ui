@@ -3,7 +3,6 @@ import analytics from "src/analytics";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import {
   CrossChainChart,
-  ChainActivity,
   ProtocolsStats,
   WormholeStats,
   TopAssets,
@@ -18,7 +17,6 @@ const Home = () => {
     <BaseLayout>
       <WormholeStats />
       <CrossChainChart />
-      <ChainActivity />
       <ProtocolsStats />
       <TopAssets />
     </BaseLayout>

@@ -25,6 +25,10 @@
     @include text-roboto-subheading-500;
     color: var(--color-white);
     gap: 8px;
+
+    & > svg {
+      color: var(--color-gray-600);
+    }
   }
 
   &-container {
@@ -166,6 +170,19 @@
             }
           }
 
+          &-tooltip {
+            display: grid;
+            gap: 10px 24px;
+            grid-template-columns: 1fr 1fr;
+
+            &-content {
+              @include centered-row;
+              @include text-roboto-body-400;
+              gap: 10px;
+              white-space: nowrap;
+            }
+          }
+
           &-chains {
             @include centered-row;
 
@@ -176,7 +193,12 @@
             &-chain {
               background-color: var(--color-gray-900);
               filter: grayscale(1);
-              margin-right: -4px;
+              margin-right: -7px;
+              border: 2px solid var(--color-gray-950);
+
+              @include desktop {
+                border: 2px solid var(--color-black);
+              }
 
               &-more {
                 @include centered-row;
@@ -184,9 +206,9 @@
                 background-color: var(--color-gray-800);
                 border-radius: 50%;
                 color: var(--color-white);
-                height: 24px;
+                height: 28px;
                 justify-content: center;
-                width: 24px;
+                width: 28px;
               }
             }
           }

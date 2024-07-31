@@ -2,14 +2,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { BlockchainIcon, NavLink, Tooltip } from "src/components/atoms";
+import { BlockchainIcon, NavLink, ProtocolIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { filterAppIds, formatAppIds, parseAddress, parseTx, shortAddress } from "src/utils/crypto";
 import { timeAgo } from "src/utils/date";
 import { ArrowRightIcon, CopyIcon } from "src/icons/generic";
-import { allBridgeIcon, cctpIcon, mayanIcon, nttIcon, portalIcon } from "src/icons/Protocols";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { ChainLimit, Order } from "src/api";
 import { ChainId } from "@wormhole-foundation/sdk";
@@ -52,13 +51,6 @@ export const PAGE_SIZE = 50;
 export const ETH_LIMIT = {
   maxTransactionSize: 5000000,
   availableNotional: 50000000,
-};
-
-const protocolIcons: Record<string, string> = {
-  [ALL_BRIDGE_APP_ID]: allBridgeIcon,
-  [CCTP_APP_ID]: cctpIcon,
-  [MAYAN_APP_ID]: mayanIcon,
-  [NTT_APP_ID]: nttIcon,
 };
 
 const Txs = () => {
@@ -324,22 +316,6 @@ const Txs = () => {
                 }
               }
 
-              let portalDisplayed = false;
-
-              const appIdsToDisplay =
-                appIds?.length > 0
-                  ? filterAppIds(appIds)
-                      .map(appId => {
-                        const iconSrc = protocolIcons[appId] || portalIcon;
-                        if (iconSrc === portalIcon && portalDisplayed) {
-                          return null;
-                        }
-                        portalDisplayed = iconSrc === portalIcon;
-                        return iconSrc;
-                      })
-                      .filter(Boolean)
-                  : [];
-
               const timestampDate = new Date(timestamp);
               const row = {
                 VAAId: VAAId,
@@ -490,15 +466,9 @@ const Txs = () => {
                           tooltip={<div>{formatAppIds(appIds)}</div>}
                           type="info"
                         >
-                          <div>
-                            {appIdsToDisplay.map(icon => (
-                              <img
-                                key={`${tx.sequence} ${icon}`}
-                                src={icon}
-                                alt="protocol icon"
-                                height={24}
-                                width={24}
-                              />
+                          <div className="tx-protocols-icons-content">
+                            {appIds.map(icon => (
+                              <ProtocolIcon key={icon} protocolName={icon} />
                             ))}
                           </div>
                         </Tooltip>

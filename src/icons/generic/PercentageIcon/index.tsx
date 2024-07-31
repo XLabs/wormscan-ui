@@ -1,4 +1,4 @@
-const PercentageIcon = ({ width, style }: { width: number; style?: any }) => (
+const PercentageIcon = ({ width = 24, style }: { width?: number; style?: any }) => (
   <svg
     fill="none"
     height={width}

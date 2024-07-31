@@ -9,7 +9,7 @@ import { getChainName } from "src/utils/wormhole";
 import { useWindowSize } from "src/utils/hooks";
 import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { CrossChainActivity, CrossChainBy } from "src/api/guardian-network/types";
-import { processData } from "./chartUtils";
+import { blendColors, processData } from "./chartUtils";
 import analytics from "src/analytics";
 import { InfoCircleIcon, MoneyIcon, PercentageIcon, SwapVerticalIcon } from "src/icons/generic";
 
@@ -90,9 +90,11 @@ export const Chart = ({
   const destinyChainsRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
 
-  const size = useWindowSize();
-  const [isDesktop, setIsDesktop] = useState(size.width >= BREAKPOINTS.desktop);
+  const { width } = useWindowSize();
+  const isDesktop = width >= BREAKPOINTS.desktop;
+  const isBigDesktop = width >= BREAKPOINTS.bigDesktop;
 
+  const MARGIN_SIZE_ELEMENTS = isDesktop ? 0 : 2;
   const devicePixelRatio = window.devicePixelRatio * 2;
 
   const isSourcesSelected = selectedDestination === "sources";
@@ -126,7 +128,7 @@ export const Chart = ({
         // start point: the Y position from where to start the graphs (count previous items heights)
         const START_POINT = originChainsHeight.slice(0, selectedIdx).reduce(
           (prev, curr) => ({
-            itemHeight: prev.itemHeight + curr.itemHeight,
+            itemHeight: prev.itemHeight + curr.itemHeight + MARGIN_SIZE_ELEMENTS * 2,
           }),
           { itemHeight: 0 },
         ).itemHeight;
@@ -150,7 +152,7 @@ export const Chart = ({
 
           // drawing graph
           const START = START_POINT + counter || 0;
-          const END = END_POINTS[i] + 2;
+          const END = END_POINTS[i] + (isDesktop ? 2 : i * MARGIN_SIZE_ELEMENTS * 2);
 
           ctx.moveTo(0, START);
           ctx.bezierCurveTo(CHART_SIZE / 2, START, CHART_SIZE / 2, END, CHART_SIZE, END);
@@ -160,16 +162,35 @@ export const Chart = ({
           counter += excess;
 
           const DESTINY_CHAIN_HEIGHT = destinyChainsHeight[i].itemHeight;
-          const END2 = END + DESTINY_CHAIN_HEIGHT - 4;
+          const END2 = END + DESTINY_CHAIN_HEIGHT - (isDesktop ? 4 : 0);
 
           ctx.lineTo(CHART_SIZE, END2);
-          ctx.bezierCurveTo(CHART_SIZE / 2, END2, CHART_SIZE / 2, START2, 0, START2);
+          ctx.bezierCurveTo(
+            CHART_SIZE / 2,
+            END2,
+            CHART_SIZE / 2,
+            START2,
+            0,
+            START2 - START < 0 ? START : START2,
+          );
           ctx.lineTo(0, START);
 
           // painting graph
-          const grad = ctx.createLinearGradient(0, 0, CHART_SIZE, 0);
+          const grad = ctx.createLinearGradient(
+            0,
+            isDesktop ? 0 : START,
+            CHART_SIZE,
+            isDesktop ? 0 : END,
+          );
 
-          grad.addColorStop(0, isDesktop ? "#7abfff" : "#182633");
+          const opacity = 1 - i * 0.08;
+          const blendedColor = blendColors(
+            isBigDesktop ? "#7abfff" : "#4f789e",
+            "#121212",
+            opacity,
+          );
+
+          grad.addColorStop(0, isDesktop ? blendedColor : "#182633");
           grad.addColorStop(1, isDesktop ? "#121212" : "#182633");
 
           ctx.strokeStyle = grad;
@@ -182,7 +203,7 @@ export const Chart = ({
         // start point: the Y position from where to start the graphs (count previous items heights)
         const START_POINT = destinyChainsHeight.slice(0, selectedIdx).reduce(
           (prev, curr) => ({
-            itemHeight: prev.itemHeight + curr.itemHeight,
+            itemHeight: prev.itemHeight + curr.itemHeight + MARGIN_SIZE_ELEMENTS * 2,
           }),
           { itemHeight: 0 },
         ).itemHeight;
@@ -206,7 +227,7 @@ export const Chart = ({
 
           // drawing graph
           const START = START_POINT + counter || 0;
-          const END = END_POINTS[i] + 2;
+          const END = END_POINTS[i] + (isDesktop ? 2 : i * MARGIN_SIZE_ELEMENTS * 2);
 
           ctx.moveTo(CHART_SIZE, START);
           ctx.bezierCurveTo(CHART_SIZE / 2, START, CHART_SIZE / 2, END, 0, END);
@@ -216,17 +237,36 @@ export const Chart = ({
           counter += excess;
 
           const DESTINY_CHAIN_HEIGHT = originChainsHeight[i].itemHeight;
-          const END2 = END + DESTINY_CHAIN_HEIGHT - 4;
+          const END2 = END + DESTINY_CHAIN_HEIGHT - (isDesktop ? 4 : 0);
 
           ctx.lineTo(0, END2);
-          ctx.bezierCurveTo(CHART_SIZE / 2, END2, CHART_SIZE / 2, START2, CHART_SIZE, START2);
+          ctx.bezierCurveTo(
+            CHART_SIZE / 2,
+            END2,
+            CHART_SIZE / 2,
+            START2,
+            CHART_SIZE,
+            START2 - START < 0 ? START : START2,
+          );
           ctx.lineTo(CHART_SIZE, START);
 
           // painting graph
-          const grad = ctx.createLinearGradient(0, 0, CHART_SIZE, 0);
+          const grad = ctx.createLinearGradient(
+            0,
+            isDesktop ? 0 : START,
+            CHART_SIZE,
+            isDesktop ? 0 : END,
+          );
+
+          const opacity = 1 - i * 0.08;
+          const blendedColor = blendColors(
+            isBigDesktop ? "#7abfff" : "#4f789e",
+            "#121212",
+            opacity,
+          );
 
           grad.addColorStop(0, isDesktop ? "#121212" : "#182633");
-          grad.addColorStop(1, isDesktop ? "#7abfff" : "#182633");
+          grad.addColorStop(1, isDesktop ? blendedColor : "#182633");
 
           ctx.strokeStyle = grad;
           ctx.fillStyle = grad;
@@ -236,7 +276,14 @@ export const Chart = ({
         }
       }
     },
-    [destinyChainsHeight, isDesktop, isSourcesSelected, originChainsHeight],
+    [
+      MARGIN_SIZE_ELEMENTS,
+      destinyChainsHeight,
+      isDesktop,
+      isBigDesktop,
+      isSourcesSelected,
+      originChainsHeight,
+    ],
   );
 
   // update arrays containing height of items on both sides of the graphics
@@ -292,15 +339,8 @@ export const Chart = ({
       .reduce((prev, curr) => prev + curr, 0);
     scalingFactor.current = 100 / sumOfFirstTen;
 
-    const selected = chartData.find(a => a.chain === selectedChain);
-
     setDestinations(newDestinationChains);
   }, [chartData, prevChain, selectedChain]);
-
-  useEffect(() => {
-    if (size.width >= BREAKPOINTS.desktop && !isDesktop) setIsDesktop(true);
-    else if (size.width < BREAKPOINTS.desktop && isDesktop) setIsDesktop(false);
-  }, [isDesktop, size]);
 
   // re-render canvas when destinations or isDesktop changes.
   useEffect(updateChainsHeight, [destinations, isDesktop, selectedDestination]);
@@ -319,7 +359,11 @@ export const Chart = ({
         } ${!isDesktop ? (showPercentage ? "showPercentageMobile" : "showMoneyMobile") : ""}`}
         data-network={currentNetwork}
         data-percentage={item.percentage * scalingFactor.current}
-        style={{ height: (item.percentage * CHART_SIZE) / 100 + 50 }}
+        style={{
+          height: (item.percentage * CHART_SIZE) / 100 + 50,
+          marginTop: idx === 0 ? 0 : MARGIN_SIZE_ELEMENTS,
+          marginBottom: MARGIN_SIZE_ELEMENTS,
+        }}
       >
         <div className="volume-info" data-selected={true}>
           {getAmount(item.volume)}
@@ -342,11 +386,12 @@ export const Chart = ({
             }),
           })}
         </span>
-        <span className="chain-infoTxt">{getAmount(item.volume)}</span>
+        {!isDesktop && <span className="mobile-separator">|</span>}
+        <span className="volume">{getAmount(item.volume)}</span>
         <span className="percentage">{item.percentage.toFixed(2).replace("00.00", "00.0")}%</span>
       </div>
     ),
-    [currentNetwork, getAmount, isDesktop, isSourcesSelected, showPercentage],
+    [MARGIN_SIZE_ELEMENTS, currentNetwork, getAmount, isDesktop, isSourcesSelected, showPercentage],
   );
 
   const renderChartData = useCallback(
@@ -370,7 +415,11 @@ export const Chart = ({
         data-network={currentNetwork}
         data-percentage={item.percentage}
         data-selected={selectedChain === item.chain}
-        style={{ height: (item.percentage * CHART_SIZE) / 100 }}
+        style={{
+          height: (item.percentage * CHART_SIZE) / 100,
+          marginTop: idx === 0 ? 0 : MARGIN_SIZE_ELEMENTS,
+          marginBottom: MARGIN_SIZE_ELEMENTS,
+        }}
       >
         <div className="volume-info" data-selected={selectedChain === item.chain}>
           {getAmount(item.volume)}
@@ -394,11 +443,13 @@ export const Chart = ({
           })}
         </span>
 
-        <span className="chain-infoTxt">{getAmount(item.volume)}</span>
+        {!isDesktop && <span className="mobile-separator">|</span>}
+        <span className="volume">{getAmount(item.volume)}</span>
         <span className="percentage">{item.percentage.toFixed(2)}%</span>
       </div>
     ),
     [
+      MARGIN_SIZE_ELEMENTS,
       currentNetwork,
       getAmount,
       isDesktop,
@@ -487,7 +538,7 @@ export const Chart = ({
               setShowPercentage(true);
             }}
           >
-            <PercentageIcon width={24} />
+            <PercentageIcon />
           </button>
 
           <button
@@ -498,7 +549,7 @@ export const Chart = ({
               setShowPercentage(false);
             }}
           >
-            {selectedType === "tx" ? <SwapVerticalIcon width={24} /> : <MoneyIcon width={24} />}
+            {selectedType === "tx" ? <SwapVerticalIcon /> : <MoneyIcon />}
           </button>
         </div>
       </div>

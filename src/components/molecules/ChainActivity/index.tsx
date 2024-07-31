@@ -3,14 +3,14 @@ import ReactApexChart from "react-apexcharts";
 import { useQuery } from "react-query";
 import "react-datepicker/dist/react-datepicker.css";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { BlockchainIcon, Loader, Select } from "src/components/atoms";
+import { BlockchainIcon, Loader, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { formatterYAxis } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
 import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { ChainFilterMainnet, ChainFilterTestnet } from "src/pages/Txs/Information/Filters";
-import { useWindowSize, useOutsideClick, useLockBodyScroll } from "src/utils/hooks";
+import { useWindowSize, useLockBodyScroll } from "src/utils/hooks";
 import { formatNumber } from "src/utils/number";
 import {
   ActivityIcon,
@@ -36,6 +36,11 @@ import {
 import { BREAKPOINTS } from "src/consts";
 import { Calendar } from "./Calendar";
 import "./styles.scss";
+
+const TYPE_CHART_LIST = [
+  { label: <ActivityIcon width={24} />, value: "area", ariaLabel: "Area" },
+  { label: <AnalyticsIcon width={24} />, value: "bar", ariaLabel: "Bar" },
+];
 
 const ChainActivity = () => {
   const { width } = useWindowSize();
@@ -484,23 +489,13 @@ const ChainActivity = () => {
           </div>
 
           <div className="chain-activity-chart-top-design">
-            <button
-              className={`"chain-activity-chart-top-design-area ${
-                chartSelected === "area" && "active"
-              }`}
-              onClick={() => setChartSelected("area")}
-            >
-              <ActivityIcon width={24} />
-            </button>
-
-            <button
-              className={`"chain-activity-chart-top-design-bar ${
-                chartSelected === "bar" && "active"
-              }`}
-              onClick={() => setChartSelected("bar")}
-            >
-              <AnalyticsIcon width={24} />
-            </button>
+            <ToggleGroup
+              ariaLabel="Select type"
+              className="chain-activity-chart-top-design-toggle"
+              items={TYPE_CHART_LIST}
+              onValueChange={value => setChartSelected(value)}
+              value={chartSelected}
+            />
           </div>
 
           <div className={`chain-activity-chart-top-mobile ${openFilters ? "open" : ""}`}>

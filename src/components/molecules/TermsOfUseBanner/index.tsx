@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks";
+import { CrossIcon, InfoCircleIcon } from "src/icons/generic";
 import "./styles.scss";
 
 const TermsOfUseBanner = () => {
@@ -34,6 +35,8 @@ const TermsOfUseBanner = () => {
 
   return (
     <div className="terms-banner">
+      <InfoCircleIcon />
+
       <div className="terms-banner-content">
         <p className="terms-banner-content-text">
           {t("termsOfUse.banner.title")}{" "}
@@ -44,7 +47,7 @@ const TermsOfUseBanner = () => {
       </div>
 
       <button className="terms-banner-button" type="button" onClick={closeBanner}>
-        Close
+        <CrossIcon />
       </button>
     </div>
   );

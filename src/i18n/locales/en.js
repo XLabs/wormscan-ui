@@ -10,7 +10,7 @@ export default {
           goBridge: "Portal Bridge",
           goWormhole: "Wormhole",
           search: {
-            placeholder: "Search by transaction, address or ID",
+            placeholder: "Search by Tx Hash, Address or VAA ID",
             ariaLabel: "search",
           },
         },
