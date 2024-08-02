@@ -172,17 +172,19 @@ export type IStatus =
   | "IN_PROGRESS"
   | "IN_GOVERNORS";
 
-export const UNKNOWN_APP_ID = "UNKNOWN";
+export const ALL_BRIDGE_APP_ID = "ALL_BRIDGE";
+export const C3_APP_ID = "C3";
 export const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
 export const CCTP_MANUAL_APP_ID = "CCTP_MANUAL";
 export const CONNECT_APP_ID = "CONNECT";
-export const GATEWAY_APP_ID = "WORMCHAIN_GATEWAY_TRANSFER";
-export const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
-export const PORTAL_NFT_APP_ID = "PORTAL_NFT_BRIDGE";
 export const ETH_BRIDGE_APP_ID = "ETH_BRIDGE";
-export const USDT_TRANSFER_APP_ID = "USDT_TRANSFER";
-export const NTT_APP_ID = "NATIVE_TOKEN_TRANSFER";
+export const GATEWAY_APP_ID = "WORMCHAIN_GATEWAY_TRANSFER";
 export const GR_APP_ID = "GENERIC_RELAYER";
 export const MAYAN_APP_ID = "MAYAN";
+export const NTT_APP_ID = "NATIVE_TOKEN_TRANSFER";
+export const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
+export const PORTAL_NFT_APP_ID = "PORTAL_NFT_BRIDGE";
 export const TBTC_APP_ID = "TBTC";
-export const ALL_BRIDGE_APP_ID = "ALL_BRIDGE";
+export const USDT_TRANSFER_APP_ID = "USDT_TRANSFER";
+
+export const UNKNOWN_APP_ID = "UNKNOWN";
