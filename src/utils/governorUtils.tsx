@@ -1,7 +1,7 @@
-import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { ChainId } from "@wormhole-foundation/sdk";
 import { Column, Row } from "react-table";
 import { Tooltip } from "src/components/atoms";
+import { InfoCircleIcon } from "src/icons/generic";
 
 export interface IDataDashboard {
   availableNotional: number;
@@ -68,7 +68,9 @@ export const SingleTxLimitTooltip = () => (
     }
     type="info"
   >
-    <InfoCircledIcon height={18} width={18} />
+    <div>
+      <InfoCircleIcon />
+    </div>
   </Tooltip>
 );
 
@@ -85,7 +87,9 @@ export const DailyLimitTooltip = () => (
     }
     type="info"
   >
-    <InfoCircledIcon height={18} width={18} />
+    <div>
+      <InfoCircleIcon />
+    </div>
   </Tooltip>
 );
 
@@ -101,7 +105,9 @@ export const RemainingTxLimitTooltip = () => (
     }
     type="info"
   >
-    <InfoCircledIcon height={18} width={18} />
+    <div>
+      <InfoCircleIcon />
+    </div>
   </Tooltip>
 );
 

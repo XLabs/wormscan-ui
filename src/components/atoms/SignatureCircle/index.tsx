@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { shortAddress } from "src/utils/crypto";
 import { CopyToClipboard } from "src/components/molecules";
-import { CopyIcon } from "@radix-ui/react-icons";
+import { CopyIcon } from "src/icons/generic";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import "./styles.scss";
 
@@ -159,7 +159,7 @@ const GuardianInfo = ({
         <span>{shortAddress(showGuardian.signature)}</span>
         <span>
           <CopyToClipboard toCopy={showGuardian.signature}>
-            <CopyIcon height={20} width={20} />
+            <CopyIcon />
           </CopyToClipboard>
         </span>
       </div>

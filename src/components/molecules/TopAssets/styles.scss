@@ -32,12 +32,20 @@
       @include centered-row;
       @include text-roboto-subheading-500;
       gap: 8px;
+
+      & > svg {
+        color: var(--color-gray-600);
+      }
     }
 
     &-select-container {
       align-items: center;
       display: flex;
       gap: 16px;
+
+      & .select__control {
+        justify-content: center;
+      }
     }
   }
 

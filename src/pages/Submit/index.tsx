@@ -86,7 +86,7 @@ const SubmitYourProtocol = () => {
     setResultRaw(null);
 
     resetSubmitFields();
-    navigate("/submit");
+    navigate("/developers/submit");
   };
 
   const collapseGuardianSignatures = () => {
@@ -449,7 +449,7 @@ const SubmitYourProtocol = () => {
       );
 
       if (!!otherNetworkResponse?.length) {
-        navigate(`/submit?network=${otherNetwork}`);
+        navigate(`/developers/submit?network=${otherNetwork}`);
       }
 
       return [];
@@ -471,7 +471,7 @@ const SubmitYourProtocol = () => {
           }
 
           inputTxRef.current?.blur();
-          // navigate(`/submit/operation/${txSearch}`, { replace: true });
+          // navigate(`/developers/submit/operation/${txSearch}`, { replace: true });
         }
       },
     },

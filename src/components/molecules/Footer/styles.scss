@@ -16,29 +16,30 @@
   }
 
   &-container {
-    @include centered-row;
-    gap: 32px;
+    display: grid;
+    gap: 40px 0;
+    grid-template-columns: auto auto;
     justify-content: space-between;
     width: 100%;
 
     @include desktop {
+      @include centered-row;
       align-items: flex-start;
     }
 
     &-discord {
       @include centered-column;
-      border-bottom: 1px solid var(--color-gray-950);
+      background-color: var(--color-gray-950);
+      border-radius: 16px;
       color: var(--color-gray-600);
       gap: 10px;
-      padding-bottom: 32px;
+      grid-column: span 2;
+      padding: 16px;
       width: 100%;
 
       @include desktop {
         @include centered-row;
-        border: none;
-        background-color: var(--color-gray-950);
         border-radius: 20px;
-        padding: 16px;
       }
 
       &-text {
@@ -53,8 +54,8 @@
 
       &-links {
         @include centered-row;
-        margin-top: 14px;
         gap: 20px;
+        margin-top: 14px;
 
         @include desktop {
           margin: 0 0 0 auto;
@@ -62,25 +63,35 @@
 
         &-ds-btn {
           @include button-primary;
+          padding: 0 12px 0 8px;
+
+          & > svg {
+            color: var(--color-black-60);
+          }
         }
 
         &-x-btn {
           @include button-secondary;
+          padding: 0 12px 0 8px;
+
+          & > svg {
+            color: var(--color-white-60);
+          }
         }
-      }
-    }
-
-    &-logo {
-      display: none;
-
-      @include desktop {
-        display: block;
       }
     }
 
     &-button {
       @include button-secondary;
-      gap: 4px;
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+      margin-left: auto;
+      max-width: max-content;
+      padding-right: 8px;
+
+      @include desktop {
+        margin-left: 0;
+      }
 
       & > svg {
         color: var(--color-white-60);
@@ -88,17 +99,20 @@
     }
 
     &-links {
+      border-bottom: 1px solid var(--color-gray-950);
       display: grid;
       gap: 40px 0;
+      grid-column: span 2;
       grid-template-columns: repeat(2, 1fr);
-      margin-bottom: 32px;
+      padding-bottom: 32px;
       white-space: nowrap;
       width: 100%;
 
       @include desktop {
+        border: none;
         grid-template-columns: repeat(3, auto);
         justify-content: space-between;
-        margin: 0;
+        padding-bottom: 0;
         width: 45%;
       }
 
@@ -117,10 +131,6 @@
           color: var(--color-gray-400);
           margin-bottom: 24px;
           text-transform: uppercase;
-
-          &.dark {
-            color: var(--color-gray-600);
-          }
 
           &-icon {
             font-size: 16px;
@@ -147,11 +157,8 @@
       @include centered-row;
       @include text-heading6;
       gap: 16px;
+      justify-content: flex-end;
       text-transform: uppercase;
-
-      @include desktop {
-        justify-content: flex-end;
-      }
 
       &-text {
         color: var(--color-white-40);
@@ -163,37 +170,35 @@
     }
 
     &-copy {
-      display: none;
+      @include centered-row;
+      color: var(--color-gray-600);
+      flex-wrap: wrap;
+      max-width: 220px;
 
       @include desktop {
-        @include centered-row;
-        color: var(--color-gray-600);
+        margin: auto 0;
+        max-width: unset;
+        order: 2;
+      }
 
-        &-text {
-          @include text-heading6;
-          text-transform: uppercase;
-          margin: 0 16px 0 6px;
-        }
+      &-text {
+        @include text-heading6;
+        text-transform: uppercase;
+        margin: 0 16px 0 6px;
+      }
 
-        & > a {
-          @include button-ghost;
-          @include text-roboto-body-400;
-          color: var(--color-gray-200);
-          max-width: max-content;
-          min-height: 25px;
-          text-decoration: none;
+      & > a {
+        @include button-ghost;
+        @include text-roboto-body-400;
+        color: var(--color-gray-200);
+        max-width: max-content;
+        min-height: 25px;
+        text-decoration: none;
 
-          &:hover {
-            text-decoration: underline;
-          }
+        &:hover {
+          text-decoration: underline;
         }
       }
-    }
-  }
-
-  & .mobile {
-    @include desktop {
-      display: none;
     }
   }
 

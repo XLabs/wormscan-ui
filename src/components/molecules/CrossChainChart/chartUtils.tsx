@@ -78,3 +78,24 @@ export const processData = (
     return (showOthers ? newData.slice(10) : newData.slice(0, 10)) as CrossChainActivity;
   }
 };
+
+export const blendColors = (color1: string, color2: string, percentage: number) => {
+  const f = parseInt(color1.slice(1), 16);
+  const t = parseInt(color2.slice(1), 16);
+  const R1 = f >> 16;
+  const G1 = (f >> 8) & 0x00ff;
+  const B1 = f & 0x0000ff;
+  const R2 = t >> 16;
+  const G2 = (t >> 8) & 0x00ff;
+  const B2 = t & 0x0000ff;
+  const R = Math.round(R2 + (R1 - R2) * percentage)
+    .toString(16)
+    .padStart(2, "0");
+  const G = Math.round(G2 + (G1 - G2) * percentage)
+    .toString(16)
+    .padStart(2, "0");
+  const B = Math.round(B2 + (B1 - B2) * percentage)
+    .toString(16)
+    .padStart(2, "0");
+  return `#${R}${G}${B}`;
+};

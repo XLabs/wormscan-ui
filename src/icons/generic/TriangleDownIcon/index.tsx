@@ -1,4 +1,10 @@
-const TriangleDownIcon = ({ className = "", width }: { className?: string; width: number }) => (
+const TriangleDownIcon = ({
+  className = "",
+  width = 10,
+}: {
+  className?: string;
+  width?: number;
+}) => (
   <svg
     fill="none"
     className={className}

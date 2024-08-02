@@ -3,7 +3,7 @@ import "./styles.scss";
 
 type Props = {
   items: {
-    label: string;
+    label: string | JSX.Element;
     value: string;
     ariaLabel?: string;
   }[];

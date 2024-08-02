@@ -334,21 +334,12 @@
         top: 0;
         z-index: 9;
 
-        & > button {
-          @include button-secondary;
-          background-color: transparent;
-          border-radius: 12px;
-          color: var(--color-white-60);
-          height: 36px;
-          justify-content: center;
-          padding: 0;
-          width: 36px;
+        &-toggle {
+          border-radius: 12px !important;
 
-          &.active {
-            @include button-secondary;
-            border-radius: 12px;
-            color: var(--color-white);
-            padding: 0;
+          & button {
+            border-radius: 12px !important;
+            padding: 6px !important;
           }
         }
       }
@@ -359,8 +350,8 @@
         &-btn {
           @include button-secondary;
           color: var(--color-white);
-          padding-right: 12px;
           height: 48px;
+          padding-right: 8px;
 
           @include desktop {
             height: 36px;

@@ -63,7 +63,7 @@ import {
 import { ETH_LIMIT } from "../Txs";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 import { DeliveryLifecycleRecord, populateRelayerInfo } from "src/utils/genericRelayerVaaUtils";
-import { BlockSection } from "./Information/AdvancedView";
+import { BlockSection } from "src/components/molecules";
 import "./styles.scss";
 
 const Tx = () => {
@@ -1447,27 +1447,21 @@ const Tx = () => {
             />
           </>
         ) : (
-          <>
-            <Top
-              txHash={VAADataTxHash ?? txData?.[0]?.sourceChain?.transaction?.txHash}
-              emitterChainId={txData?.[0]?.emitterChain || txData?.[0]?.sourceChain?.chainId}
-              gatewayInfo={txData?.[0]?.sourceChain?.attribute?.value}
-              payloadType={txData?.[0]?.content?.payload?.payloadType}
-            />
-            {txData?.map(
-              (data, i) =>
-                txData && (
-                  <Information
-                    key={data.id || `vaa-${i}`}
-                    extraRawInfo={extraRawInfo}
-                    data={data}
-                    isRPC={isRPC}
-                    blockData={blockData}
-                    setTxData={newData => updateTxData(newData, i)}
-                  />
-                ),
-            )}
-          </>
+          txData?.map(
+            (data, i) =>
+              txData && (
+                <Information
+                  key={data.id || `vaa-${i}`}
+                  blockData={blockData}
+                  data={data}
+                  extraRawInfo={extraRawInfo}
+                  hasMultipleTxs={txData.length > 1}
+                  isRPC={isRPC}
+                  setTxData={newData => updateTxData(newData, i)}
+                  txIndex={i}
+                />
+              ),
+          )
         )}
       </div>
     </BaseLayout>

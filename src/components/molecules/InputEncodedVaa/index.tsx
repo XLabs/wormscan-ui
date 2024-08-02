@@ -38,7 +38,7 @@ const VaaInput = ({
         className={`parse-content-title ${hideTextarea ? "" : "rotate"}`}
         onClick={() => setHideTextarea(!hideTextarea)}
       >
-        Encoded VAA <TriangleDownIcon width={10} />
+        Encoded VAA <TriangleDownIcon />
       </span>
 
       <div
@@ -75,7 +75,7 @@ const VaaInput = ({
         {!input && (
           <div className="devtools-page-alert encoded">
             <div className="devtools-page-alert-info">
-              <InfoCircleIcon width={24} />
+              <InfoCircleIcon />
               <p>Encoded VAA data will be displayed here</p>
             </div>
           </div>

@@ -1,52 +1,41 @@
 @import "src/styles/globals.scss";
 
 .terms-banner {
-  @include centered-column;
-  align-items: center;
+  @include centered-row;
+  align-items: start;
   background-color: var(--color-gray-900);
-  bottom: 0;
-  gap: 24px;
+  border-radius: 16px;
+  bottom: 100%;
+  gap: 8px;
+  justify-content: space-between;
   left: 0;
-  margin: 0 auto;
-  padding: 24px 16px;
-  position: fixed;
+  margin: 0 auto 8px auto;
+  padding: 16px;
+  position: absolute;
   right: 0;
-  width: 100%;
+  width: calc(100% - 16px);
   z-index: 999;
-
-  @include tablet {
-    @include centered-row;
-    padding: 24px;
-  }
 
   @include desktop {
     align-items: center;
-    gap: 32px;
+    bottom: 8px;
     justify-content: center;
-    width: 100%;
+    max-width: max-content;
   }
 
-  @include bigDesktop {
-    gap: 56px;
+  & > svg {
+    color: var(--color-gray-600);
+    min-width: 24px;
   }
 
   &-content {
     @include centered-row;
-    justify-content: center;
-    max-width: 320px;
-
-    @include tablet {
-      max-width: 500px;
-    }
-
-    @include desktop {
-      max-width: unset;
-    }
+    margin: auto 0;
 
     &-text {
-      @include text-p2;
+      @include text-roboto-body-400;
       color: var(--color-gray-400);
-      text-align: center;
+      text-wrap: pretty;
     }
 
     &-link {
@@ -58,7 +47,9 @@
   &-button {
     @include button-secondary;
     background-color: var(--color-gray-800);
+    height: auto;
     justify-content: center;
-    min-width: 100px;
+    margin-left: 8px;
+    padding: 0;
   }
 }

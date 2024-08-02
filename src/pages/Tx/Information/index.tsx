@@ -5,18 +5,14 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import {
   CCTP_MANUAL_APP_ID,
   CONNECT_APP_ID,
-  DISCORD_URL,
   ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
   MAYAN_APP_ID,
-  MORE_INFO_GOVERNOR_URL,
-  NTT_APP_ID,
   PORTAL_APP_ID,
   txType,
   UNKNOWN_APP_ID,
 } from "src/consts";
-import { Alert } from "src/components/atoms";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
 import { formatNumber } from "src/utils/number";
@@ -30,26 +26,34 @@ import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
 import { TokenInfo, getTokenLogo } from "src/utils/metaMaskUtils";
 
-import Summary from "./Summary";
-import Tabs from "./Tabs";
-import Overview from "./Overview/index";
-import RelayerOverview from "./Overview/RelayerOverview";
+import Overview from "./Overview";
 import AdvancedView from "./AdvancedView";
 
 import "./styles.scss";
 import { ChainId, chainIdToChain } from "@wormhole-foundation/sdk";
 import { platformToChains } from "@wormhole-foundation/sdk";
 import { deepCloneWithBigInt } from "src/utils/object";
+import Summary from "./Summary";
 
 interface Props {
   blockData: GetBlockData;
   data: GetOperationsOutput;
   extraRawInfo: any;
+  hasMultipleTxs: boolean;
   isRPC: boolean;
   setTxData: (x: any) => void;
+  txIndex: number;
 }
 
-const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props) => {
+const Information = ({
+  blockData,
+  data,
+  extraRawInfo,
+  hasMultipleTxs,
+  isRPC,
+  setTxData,
+  txIndex,
+}: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [showSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
@@ -63,6 +67,13 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
       return prev;
     });
   };
+
+  useEffect(() => {
+    if (!hasMultipleTxs) {
+      const view = searchParams.get("view");
+      setShowOverviewState(view !== "advanced");
+    }
+  }, [hasMultipleTxs, searchParams]);
 
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
@@ -81,7 +92,12 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   const { hex: emitterAddress, native: emitterNativeAddress } = data?.emitterAddress || {};
   const emitterChain = data?.emitterChain;
   const VAAId = data?.id;
-  const { timestamp } = data?.sourceChain || {};
+  const {
+    timestamp,
+    fee: sourceFee,
+    gasTokenNotional: sourceGasTokenNotional,
+    feeUSD: sourceFeeUSD,
+  } = data?.sourceChain || {};
 
   const {
     parsedPayload,
@@ -105,6 +121,11 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   } = standarizedProperties || {};
 
   const { STATUS, isBigTransaction, isDailyLimitExceeded, transactionLimit } = data;
+  const {
+    fee: targetFee,
+    gasTokenNotional: targetGasTokenNotional,
+    feeUSD: targetFeeUSD,
+  } = data?.targetChain || {};
 
   const fromChainOrig: ChainId = emitterChain || stdFromChain;
   const fromAddress = data?.sourceChain?.from || stdFromAddress;
@@ -120,8 +141,9 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   const isJustPortalUnknown =
     (appIds?.includes(PORTAL_APP_ID) && appIds.length === 1) ||
     (appIds?.includes(PORTAL_APP_ID) && appIds?.includes(UNKNOWN_APP_ID) && appIds.length === 2);
-
-  const isRelayerNTT = appIds?.includes(NTT_APP_ID) && appIds?.includes(GR_APP_ID);
+  const isJustGenericRelayer =
+    (appIds?.includes(GR_APP_ID) && appIds.length === 1) ||
+    (appIds?.includes(GR_APP_ID) && appIds?.includes(UNKNOWN_APP_ID) && appIds.length === 2);
 
   const isAttestation = txType[payloadType] === "Attestation";
   const isUnknownPayloadType =
@@ -134,15 +156,15 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   const isGatewaySource = data?.sourceChain?.attribute?.type === "wormchain-gateway";
 
   // Gateway Transfers
-  const fromChain = (
-    isGatewaySource ? data?.sourceChain?.attribute?.value?.originChainId : fromChainOrig
-  ) as ChainId;
+  const gatewayInfo = data?.sourceChain?.attribute?.value;
+
+  const fromChain = (isGatewaySource ? gatewayInfo?.originChainId : fromChainOrig) as ChainId;
   const toChain: ChainId = parsedPayload?.["gateway_transfer"]?.chain
     ? parsedPayload?.["gateway_transfer"].chain
     : stdToChain || data?.targetChain?.chainId || 0;
 
   const parsedOriginAddress = isGatewaySource
-    ? data?.sourceChain?.attribute?.value?.originAddress
+    ? gatewayInfo?.originAddress
     : parseAddress({
         value: fromAddress,
         chainId: fromChainOrig,
@@ -275,42 +297,6 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   ]);
   // --- ⬆ Add to MetaMask ⬆ ---
 
-  const overviewAndDetailProps = {
-    amountSent,
-    amountSentUSD,
-    currentNetwork,
-    destinationDateParsed,
-    fee,
-    fromChain: extraRawInfoFromChainId || fromChain,
-    fromChainOrig,
-    guardianSignaturesCount,
-    isAttestation,
-    isDuplicated,
-    isGatewaySource,
-    isMayanOnly: appIds?.length === 1 && appIds.includes(MAYAN_APP_ID),
-    isUnknownApp,
-    nftInfo: payload?.nftInfo || null,
-    originDateParsed,
-    parsedDestinationAddress,
-    parsedEmitterAddress,
-    parsedOriginAddress,
-    parsedPayload,
-    parsedRedeemTx,
-    redeemedAmount,
-    setShowOverview,
-    showMetaMaskBtn,
-    showSignatures: !(appIds && appIds.includes(CCTP_MANUAL_APP_ID)),
-    sourceSymbol,
-    sourceTokenLink,
-    targetSymbol,
-    targetTokenLink,
-    toChain: extraRawInfoToChainId || toChain,
-    tokenAmount,
-    tokenInfo,
-    totalGuardiansNeeded,
-    VAAId,
-  };
-
   const [loadingRedeem, setLoadingRedeem] = useState(false);
   const [foundRedeem, setFoundRedeem] = useState<null | boolean>(null);
 
@@ -389,7 +375,6 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
       setFoundRedeem(true);
 
       setTimeout(() => {
-        // setIsGenericRelayerTx(false);
         setTxData(newData);
       }, 2000);
     } else {
@@ -405,213 +390,89 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
 
   const isLatestBlockHigherThanVaaEmitBlock = lastFinalizedBlock > currentBlock;
 
-  const isGenericRelayerTx = data.relayerInfo !== null;
-
-  const Content = () => {
-    if (isGenericRelayerTx || isRelayerNTT) {
-      const deliveryStatus = data.relayerInfo?.DeliveryStatus;
-
-      if (isRelayerNTT && showOverview) {
-        return (
-          <Overview
-            {...overviewAndDetailProps}
-            relayerNTTStatus={{
-              status: deliveryStatus?.data?.delivery?.execution?.status,
-              refundStatus: deliveryStatus?.data?.delivery?.execution?.refundStatus,
-            }}
-          />
-        );
-      }
-
-      if (!data.relayerInfo?.vaa) {
-        if (showOverview) {
-          return <Overview {...overviewAndDetailProps} />;
-        } else {
-          return (
-            <AdvancedView
-              overviewAndDetailProps={overviewAndDetailProps}
-              extraRawInfo={extraRawInfo}
-              data={data}
-            />
-          );
-        }
-      }
-
-      if (showOverview) {
-        return <RelayerOverview {...data.relayerInfo.props} />;
-      } else {
-        return (
-          <AdvancedView
-            genericRelayerProps={data.relayerInfo.props}
-            extraRawInfo={extraRawInfo}
-            data={data}
-          />
-        );
-      }
-    }
-
-    if (!isGenericRelayerTx) {
-      if (showOverview) {
-        return <Overview {...overviewAndDetailProps} />;
-      } else {
-        return (
-          <AdvancedView
-            overviewAndDetailProps={overviewAndDetailProps}
-            extraRawInfo={extraRawInfo}
-            data={data}
-          />
-        );
-      }
-    }
-  };
-
-  const AlertsContent = () => {
-    if (hasVAA && !isUnknownPayloadType) return null;
-    return (
-      <div className="tx-information-alerts">
-        <Alert type="info" className="tx-information-alerts-unknown-payload-type">
-          {!hasVAA ? (
-            appIds && appIds.includes(CCTP_MANUAL_APP_ID) ? (
-              <p>
-                This transaction is processed by Circle&apos;s CCTP and therefore information might
-                be incomplete.
-              </p>
-            ) : (
-              <>
-                <p>The VAA for this transaction has not been issued yet.</p>
-                {!isLatestBlockHigherThanVaaEmitBlock &&
-                  !isBigTransaction &&
-                  !isDailyLimitExceeded && (
-                    <p>
-                      Waiting for finality on{" "}
-                      {getChainName({ chainId: fromChain, network: currentNetwork })} which may take
-                      up to 15 minutes.
-                    </p>
-                  )}
-                {lastFinalizedBlock && currentBlock && (
-                  <div>
-                    <p>
-                      Last finalized block number{" "}
-                      <a
-                        className="tx-information-alerts-unknown-payload-type-link"
-                        href={getExplorerLink({
-                          network: currentNetwork,
-                          chainId: fromChain,
-                          value: lastFinalizedBlock.toString(),
-                          base: "block",
-                        })}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {lastFinalizedBlock}
-                      </a>{" "}
-                    </p>
-
-                    <p>
-                      This block number{" "}
-                      <a
-                        className="tx-information-alerts-unknown-payload-type-link"
-                        href={getExplorerLink({
-                          network: currentNetwork,
-                          chainId: fromChain,
-                          value: currentBlock.toString(),
-                          base: "block",
-                        })}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {currentBlock}
-                      </a>
-                    </p>
-                  </div>
-                )}
-
-                {isBigTransaction && currentNetwork === "Mainnet" ? (
-                  <p>
-                    This transaction will take 24 hours to process, as it exceeds the Wormhole
-                    network&apos;s temporary transaction limit of $
-                    {formatNumber(transactionLimit, 0)} on{" "}
-                    {getChainName({ chainId: fromChain, network: currentNetwork })} for security
-                    reasons. <LearnMoreLink /> about this temporary security measure.
-                  </p>
-                ) : isDailyLimitExceeded && currentNetwork === "Mainnet" ? (
-                  <p>
-                    This transaction will take up to 24 hours to process as Wormhole has reached the
-                    daily limit for source Blockchain{" "}
-                    {getChainName({ chainId: fromChain, network: currentNetwork })}. This is a
-                    normal and temporary security feature by the Wormhole network. <LearnMoreLink />{" "}
-                    about this security measure.
-                  </p>
-                ) : (
-                  isLatestBlockHigherThanVaaEmitBlock && (
-                    <p>
-                      Since the latest block number is higher than this transaction&apos;s, there
-                      might be an extra delay. You can contact support on <DiscordSupportLink />.
-                    </p>
-                  )
-                )}
-              </>
-            )
-          ) : (
-            "This VAA comes from another multiverse, we don't have more details about it."
-          )}
-        </Alert>
-      </div>
-    );
+  const overviewAndDetailProps = {
+    amountSent,
+    amountSentUSD,
+    appIds,
+    currentBlock,
+    currentNetwork,
+    destinationDateParsed,
+    emitterChainId: emitterChain,
+    fee,
+    fromChain: extraRawInfoFromChainId || fromChain,
+    fromChainOrig,
+    gatewayInfo,
+    guardianSignaturesCount,
+    hasVAA,
+    isAttestation,
+    isBigTransaction,
+    isDailyLimitExceeded,
+    isDuplicated,
+    isGatewaySource,
+    isJustGenericRelayer,
+    isLatestBlockHigherThanVaaEmitBlock,
+    isMayanOnly: appIds?.length === 1 && appIds.includes(MAYAN_APP_ID),
+    isUnknownApp,
+    isUnknownPayloadType,
+    lastFinalizedBlock,
+    nftInfo: payload?.nftInfo || null,
+    originDateParsed,
+    parsedDestinationAddress,
+    parsedEmitterAddress,
+    parsedOriginAddress,
+    parsedPayload,
+    parsedRedeemTx,
+    payloadType,
+    redeemedAmount,
+    setShowOverview,
+    showMetaMaskBtn,
+    showSignatures: !(appIds && appIds.includes(CCTP_MANUAL_APP_ID)),
+    sourceFee,
+    sourceFeeUSD,
+    sourceSymbol,
+    sourceTokenLink,
+    STATUS,
+    targetFee,
+    targetFeeUSD,
+    targetSymbol,
+    targetTokenLink,
+    toChain: extraRawInfoToChainId || toChain,
+    tokenAmount,
+    tokenInfo,
+    totalGuardiansNeeded,
+    transactionLimit,
+    txHash: data?.sourceChain?.transaction?.txHash,
+    txIndex,
+    VAAId,
   };
 
   return (
     <section className="tx-information">
       <Summary
-        appIds={appIds}
-        isAttestation={isAttestation}
-        currentNetwork={currentNetwork}
-        isUnknownApp={isUnknownApp}
-        parsedDestinationAddress={parsedDestinationAddress}
-        STATUS={STATUS}
-        toChain={toChain}
         canTryToGetRedeem={canTryToGetRedeem}
         foundRedeem={foundRedeem}
-        getRedeem={getRedeem}
-        loadingRedeem={loadingRedeem}
         fromChain={fromChain}
-        isJustPortalUnknown={isJustPortalUnknown}
+        getRedeem={getRedeem}
         isConnect={isConnect}
         isGateway={isGateway}
+        isJustPortalUnknown={isJustPortalUnknown}
+        loadingRedeem={loadingRedeem}
+        setShowOverview={setShowOverview}
+        showOverview={showOverview}
+        STATUS={STATUS}
         txHash={data?.sourceChain?.transaction?.txHash}
         vaa={vaa?.raw}
       />
 
-      <Tabs setShowOverview={setShowOverview} showOverview={showOverview} />
-
       <div className="tx-information-content">
-        <Content />
-        {showOverview && <AlertsContent />}
+        {showOverview ? (
+          <Overview {...overviewAndDetailProps} {...data?.relayerInfo?.props} />
+        ) : (
+          <AdvancedView data={data} extraRawInfo={extraRawInfo} txIndex={txIndex} />
+        )}
       </div>
     </section>
   );
 };
 
 export { Information };
-
-const DiscordSupportLink = () => (
-  <a
-    className="tx-information-alerts-unknown-payload-type-link"
-    href={DISCORD_URL}
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Discord
-  </a>
-);
-
-const LearnMoreLink = () => (
-  <a
-    className="tx-information-alerts-unknown-payload-type-link"
-    href={MORE_INFO_GOVERNOR_URL}
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Learn more
-  </a>
-);

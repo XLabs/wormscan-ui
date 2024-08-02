@@ -119,7 +119,7 @@ export interface AssetsByVolumeInput {
 export interface AssetsByVolumeOutput {
   symbol: string;
   tokens: {
-    emitter_chain: number;
+    emitter_chain: ChainId;
     token_address: string;
     token_chain: number;
     txs: string;
@@ -132,7 +132,7 @@ export interface AssetsByVolumeOutput {
 export interface Tokens {
   chainImageSrc: string;
   chainName: string;
-  emitter_chain: number;
+  emitter_chain: ChainId;
   txs: number;
   txsFormatted: string;
   volume: number;
@@ -180,6 +180,7 @@ export interface INFTInfo {
   name?: string;
   uri?: string;
   tokenId?: number;
+  attributes?: Array<{ trait_type: string; value: string }>;
 }
 
 export interface GetOperationsOutput {
@@ -291,6 +292,9 @@ export interface GetOperationsOutput {
         originTxHash: string;
       };
     };
+    fee?: string;
+    gasTokenNotional?: string;
+    feeUSD?: string;
   };
   targetChain: {
     chainId: ChainId;
@@ -301,6 +305,9 @@ export interface GetOperationsOutput {
     status: string;
     from: string;
     to: string;
+    fee?: string;
+    gasTokenNotional?: string;
+    feeUSD?: string;
   };
   data: {
     symbol: string;

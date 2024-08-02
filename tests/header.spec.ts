@@ -3,7 +3,8 @@ import { describe } from "node:test";
 import { WORMHOLE_DOCS_URL, WORMHOLESCAN_API_DOCS_URL } from "../src/consts";
 
 const internalLinks = [
-  { name: "VAA Parser", href: "#/vaa-parser" },
+  { name: "VAA Parser", href: "#/developers/vaa-parser" },
+  { name: "Submit your Protocol", href: "#/developers/submit" },
   { name: "Wormhole Scan logo", href: "#/" },
   { name: "Transactions", href: "#/txs" },
   { name: "Governor", href: "#/governor" },

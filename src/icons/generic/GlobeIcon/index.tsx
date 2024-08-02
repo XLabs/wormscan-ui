@@ -1,4 +1,4 @@
-const GlobeIcon = ({ style, width }: { style?: any; width: number }) => (
+const GlobeIcon = ({ style, width = 24 }: { style?: any; width?: number }) => (
   <svg
     fill="none"
     height={width}

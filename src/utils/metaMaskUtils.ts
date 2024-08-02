@@ -419,8 +419,8 @@ export const addToken = async ({ currentNetwork, toChain, tokenInfo }: AddToken)
         type: "error",
         theme: "dark",
         style: {
-          background: "var(--color-primary-500)",
-          color: "var(--color-primary-10)",
+          background: "var(--color-gray-950)",
+          color: "var(--color-white-70)",
         },
       });
       return;
@@ -446,8 +446,8 @@ export const addToken = async ({ currentNetwork, toChain, tokenInfo }: AddToken)
             type: "success",
             theme: "dark",
             style: {
-              background: "var(--color-primary-500)",
-              color: "var(--color-primary-10)",
+              background: "var(--color-gray-950)",
+              color: "var(--color-white-70)",
             },
           })
         : console.log(`${targetSymbol} has not been added to MetaMask`);

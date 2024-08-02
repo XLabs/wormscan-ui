@@ -1,11 +1,11 @@
 const ArrowRightIcon = ({
   className = "",
   style,
-  width,
+  width = 24,
 }: {
   className?: string;
   style?: any;
-  width: number;
+  width?: number;
 }) => (
   <svg
     className={`icon ${className}`}

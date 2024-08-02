@@ -7,9 +7,13 @@
 }
 
 .tx-information {
+  background-color: var(--color-white-05);
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 32px;
+  gap: 36px;
+  margin-bottom: 64px;
+  padding: 16px;
 
   &-alerts {
     padding: 0 16px 64px 16px;
@@ -46,11 +50,6 @@
         }
       }
     }
-  }
-
-  &-content {
-    background-color: var(--color-white-05);
-    border-radius: 0 0 10px 10px;
   }
 
   &-errored-info {

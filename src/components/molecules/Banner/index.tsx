@@ -1,11 +1,8 @@
-import { ExclamationTriangleIcon, MinusCircledIcon, CheckCircledIcon } from "@radix-ui/react-icons";
 import "./styles.scss";
 
 const BannerWarning = () => (
   <div className="banner banner-warning">
-    <div className="banner-icon">
-      <ExclamationTriangleIcon color="var(--color-alert-100)" width={24} height={24} />
-    </div>
+    <div className="banner-icon"></div>
     <div className="banner-content">
       <h2 className="banner-content-title">
         <span className="banner-content-title-text">Wormhole Upgrade Approaching</span>{" "}
@@ -47,9 +44,7 @@ const BannerWarning = () => (
 
 const BannerError = () => (
   <div className="banner banner-error">
-    <div className="banner-icon">
-      <MinusCircledIcon color="var(--color-error-100)" width={24} height={24} />
-    </div>
+    <div className="banner-icon"></div>
     <div className="banner-content">
       <h2 className="banner-content-title">
         <span className="banner-content-title-text">Whormhole Upgrade In Progress</span>{" "}
@@ -92,9 +87,7 @@ const BannerError = () => (
 
 const BannerSuccess = () => (
   <div className="banner banner-success">
-    <div className="banner-icon">
-      <CheckCircledIcon color="var(--color-success-100)" width={24} height={24} />
-    </div>
+    <div className="banner-icon"></div>
     <div className="banner-content">
       <h2 className="banner-content-title">
         Wormhole Upgrade Completed <span className="banner-content-title-hyphen">-</span>{" "}
@@ -113,9 +106,7 @@ const BannerSuccess = () => (
 
 const EthBridgeBanner = () => (
   <div className="banner banner-success">
-    <div className="banner-icon">
-      <ExclamationTriangleIcon color="var(--color-success-100)" width={24} height={24} />
-    </div>
+    <div className="banner-icon"></div>
     <div className="banner-content">
       <h2 className="banner-content-title">
         Native ETH transfers now live

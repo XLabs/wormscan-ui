@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { ChainId, Network } from "@wormhole-foundation/sdk";
-import { CopyIcon, Cross2Icon } from "@radix-ui/react-icons";
-import MetaMaskIcon from "src/icons/MetaMaskIcon.svg";
 import { Tooltip } from "src/components/atoms";
-import { CopyToClipboard } from "src/components/molecules";
 import { shortAddress } from "src/utils/crypto";
 import { TokenInfo, addToken } from "src/utils/metaMaskUtils";
+import { CheckIcon, CopyIcon, MetaMaskIcon } from "src/icons/generic";
 import "./styles.scss";
 
 type Props = {
@@ -16,45 +14,51 @@ type Props = {
 };
 
 const AddToMetaMaskBtn = ({ className, currentNetwork, toChain, tokenInfo }: Props) => {
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+  const [showCheck, setShowCheck] = useState(false);
 
-  const openTooltip = () => {
-    setIsTooltipOpen(true);
-  };
+  if (!tokenInfo) return null;
 
-  const closeTooltip = () => {
-    setIsTooltipOpen(false);
+  const copyAddress = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    await navigator.clipboard.writeText(tokenInfo.tokenAddress);
+    setShowCheck(true);
+
+    setTimeout(() => {
+      setShowCheck(false);
+    }, 1500);
   };
 
   return (
     <Tooltip
       tooltip={
         <div className="metamask-btn-tooltip">
-          <div className="metamask-btn-tooltip-close" onClick={closeTooltip}>
-            <Cross2Icon height={20} width={20} />
-          </div>
           <span>You need to add it manually, the token doesn&apos;t have a symbol.</span>
           <span>Suggestion:</span>
           <span>
-            <b>Token contract address:</b> {shortAddress(tokenInfo.tokenAddress).toUpperCase()}
-            <CopyToClipboard toCopy={tokenInfo.tokenAddress}>
-              <CopyIcon height={20} width={20} />
-            </CopyToClipboard>
+            Token contract address: <b>{shortAddress(tokenInfo.tokenAddress).toUpperCase()}</b>
+            {showCheck ? (
+              <div className="icon">
+                <CheckIcon />
+              </div>
+            ) : (
+              <div className="icon copy" onClick={copyAddress}>
+                <CopyIcon />
+              </div>
+            )}
           </span>
           <span>
-            <b>Token symbol:</b> {tokenInfo.targetSymbol}
+            Token symbol: <b>{tokenInfo.targetSymbol}</b>
           </span>
           <span>
-            <b>Decimal token:</b> {tokenInfo.tokenDecimals}
+            Decimal token: <b>{tokenInfo.tokenDecimals}</b>
           </span>
         </div>
       }
-      controlled={true}
       maxWidth={false}
-      open={!tokenInfo.tokenSymbol && isTooltipOpen}
+      enableTooltip={!tokenInfo.tokenSymbol}
       type="info"
     >
-      <div className={`metamask-btn ${className}`} onMouseEnter={openTooltip}>
+      <div className={`metamask-btn ${className}`}>
         <button
           disabled={!tokenInfo.tokenSymbol}
           onClick={async () => {
@@ -69,7 +73,7 @@ const AddToMetaMaskBtn = ({ className, currentNetwork, toChain, tokenInfo }: Pro
             }
           }}
         >
-          <img src={MetaMaskIcon} alt="MetaMask" height={24} width={24} />
+          <MetaMaskIcon />
           Add to MetaMask
         </button>
       </div>

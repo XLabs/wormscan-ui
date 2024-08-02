@@ -2,31 +2,4 @@
 
 .verify-redemption {
   @include button-secondary;
-  color: var(--color-white);
-  display: flex;
-  flex-direction: row;
-  text-decoration: none;
-  white-space: nowrap;
-
-  @include desktop {
-    max-width: max-content;
-  }
-
-  & > p > span {
-    &:first-child {
-      display: none;
-
-      @media only screen and (min-width: 1024px) and (max-width: 1279px) {
-        display: inline;
-      }
-    }
-
-    &:last-child {
-      display: inline;
-
-      @media only screen and (min-width: 1024px) and (max-width: 1279px) {
-        display: none;
-      }
-    }
-  }
 }

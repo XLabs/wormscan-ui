@@ -5,9 +5,9 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import { BREAKPOINTS } from "src/consts";
 import { BlockchainIcon } from "src/components/atoms";
 import { WormholeScanBrand } from "src/components/molecules";
-import { formatterYAxis } from "src/utils/apexChartUtils";
+import { changePathColors, formatterYAxis } from "src/utils/apexChartUtils";
 import { AssetsByVolumeTransformed } from "src/api/guardian-network/types";
-import NoColorlessIcon from "src/icons/blockchains/colorless/noIcon.svg";
+import { getChainIcon } from "src/utils/wormhole";
 import "./styles.scss";
 
 type Props = {
@@ -114,11 +114,11 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
             align: "left",
             margin: isTabletOrMobile ? 49 : 0,
             offsetX: 0,
-            offsetY: isTabletOrMobile ? 0 : 19,
+            offsetY: isTabletOrMobile ? 0 : 24.6,
             style: {
               color: "var(--color-gray-400)",
-              fontFamily: "Roboto",
-              fontSize: "14px",
+              fontFamily: "Roboto Mono",
+              fontSize: "12px",
               fontWeight: 400,
             },
           },
@@ -140,6 +140,16 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
           },
           labels: assetsDataForChart.map(({ chainName }) => chainName),
           chart: {
+            events: {
+              mouseLeave: () => {
+                changePathColors({ ref: chartDomRef, color: "var(--color-primary-100)" });
+              },
+              mouseMove(e, chart, options) {
+                if (options.dataPointIndex < 0) {
+                  changePathColors({ ref: chartDomRef, color: "var(--color-primary-100)" });
+                }
+              },
+            },
             animations: {
               enabled: !isTabletOrMobile,
               dynamicAnimation: {
@@ -187,15 +197,25 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
               const chainName = assetsDataForChart?.[dataPointIndex]?.chainName;
               const txsFormatted = assetsDataForChart?.[dataPointIndex]?.txsFormatted;
               const volumeFormatted = assetsDataForChart?.[dataPointIndex]?.volumeFormatted;
-              const chainImageSrc = assetsDataForChart?.[dataPointIndex]?.chainImageSrc;
+              const chainImageSrc = getChainIcon({
+                chainId: assetsDataForChart?.[dataPointIndex]?.emitter_chain,
+              });
+
+              const volume = assetsDataForChart?.[dataPointIndex]?.volume;
+              const pathWithThisVolume = chartDomRef.current.querySelector(`path[val="${volume}"]`);
+              const restOfPaths = chartDomRef.current.querySelectorAll(
+                `path[val]:not([val="${volume}"])`,
+              );
+              pathWithThisVolume.style.fill = "var(--color-primary-100)";
+              restOfPaths.forEach((path: any) => {
+                path.style.fill = "var(--color-primary-40)";
+              });
 
               return (
                 "<div class='chart-container-tooltip'>" +
                 `
                       <div>
-                        <img class='chart-container-tooltip-img'' src=${
-                          chainImageSrc || NoColorlessIcon
-                        } alt="${chainName} icon" />
+                        <img class='chart-container-tooltip-img' src=${chainImageSrc} alt='${chainName} icon' width="100px" />
                         <span class='chart-container-tooltip-chain'>${chainName}</span>
                       </div>
                       ` +
