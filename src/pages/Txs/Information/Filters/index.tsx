@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
-import { BlockchainIcon, Select, Tooltip } from "src/components/atoms";
+import { chainToChainId } from "@wormhole-foundation/sdk";
+import { BlockchainIcon, Select } from "src/components/atoms";
 import {
   CCTP_APP_ID,
   // CCTP_MANUAL_APP_ID_STRING, we are putting them from the front in the tx detail
@@ -17,6 +17,7 @@ import {
   USDT_TRANSFER_APP_ID,
   TBTC_APP_ID,
   BREAKPOINTS,
+  C3_APP_ID,
 } from "src/consts";
 import { formatAppId } from "src/utils/crypto";
 import { getChainName } from "src/utils/wormhole";
@@ -46,18 +47,19 @@ enum FilterKeys {
 }
 
 const appIds = [
+  C3_APP_ID,
   CCTP_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
-  USDT_TRANSFER_APP_ID, // disabled until it goes prod
+  GATEWAY_APP_ID,
+  GR_APP_ID,
   MAYAN_APP_ID,
   NTT_APP_ID,
-  PORTAL_NFT_APP_ID,
   PORTAL_APP_ID,
-  GR_APP_ID,
+  PORTAL_NFT_APP_ID,
   TBTC_APP_ID,
+  USDT_TRANSFER_APP_ID,
   // UNKNOWN_APP_ID, // disabled until the backend is ready
-  GATEWAY_APP_ID,
 ];
 
 export const ChainFilterMainnet = [
