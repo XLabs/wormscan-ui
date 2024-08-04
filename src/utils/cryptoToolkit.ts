@@ -30,6 +30,27 @@ interface ISolanaCctpResponse {
 
 const BFF_URL = process.env.WORMSCAN_BFF_URL;
 
+export const sendProtocolSubmission = async (body: any): Promise<string> => {
+  try {
+    const sendProtocolResp = await fetch(`${BFF_URL}/submitProtocol`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!sendProtocolResp.ok) {
+      return null;
+    }
+
+    const protocolResponse = await sendProtocolResp.text();
+    return protocolResponse ? protocolResponse : null;
+  } catch (e) {
+    return null;
+  }
+};
+
 export const tryGetAddressInfo = async (
   network: Network,
   address: string,

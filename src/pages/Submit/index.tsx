@@ -25,6 +25,7 @@ import {
 } from "src/components/atoms";
 import {
   AlertTriangle,
+  CheckIcon,
   CopyIcon,
   InfoCircleIcon,
   LinkIcon,
@@ -43,14 +44,15 @@ import {
   deepCloneWithBigInt,
   getNestedProperty,
   stringifyWithBigInt,
+  stringifyWithStringBigInt,
 } from "src/utils/object";
 import { Submit } from "./Submit";
 import { processInputValue, processInputType, waitForElement, isHex } from "src/utils/parser";
 import { ChainFilterMainnet, ChainFilterTestnet } from "../Txs/Information/Filters";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { toast } from "react-toastify";
-import { generateCode } from "./generateCode";
 import "./styles.scss";
+import { sendProtocolSubmission } from "src/utils/cryptoToolkit";
 
 const SubmitYourProtocol = () => {
   // useEffect(() => {
@@ -661,6 +663,26 @@ const SubmitYourProtocol = () => {
     delete payloadOptionsStd.fromAddress;
   }
 
+  const sendProtocol = async () => {
+    const submitResponse = await sendProtocolSubmission({
+      input,
+      resultRaw: stringifyWithStringBigInt(resultRaw),
+      finishedParsings: stringifyWithStringBigInt(finishedParsings),
+      parsedStandardizedProperties: stringifyWithStringBigInt(parsedStandardizedProperties),
+      lastMoreInfo,
+      addedVAAs: stringifyWithStringBigInt(addedVAAs),
+      selectedIdentifiers: stringifyWithStringBigInt(selectedIdentifiers),
+      stdProperties: JSON.stringify(stdProperties),
+      propertyName,
+    });
+
+    if (submitResponse === "OK") {
+      setStep(5);
+    } else {
+      toast("Something went wrong submitting your protocol");
+    }
+  };
+
   return (
     <BaseLayout secondaryHeader>
       <div className="devtools-page">
@@ -674,7 +696,7 @@ const SubmitYourProtocol = () => {
 
           <div className="devtools-page-body">
             <div className="parse">
-              {step > 1 && (
+              {step > 1 && step < 5 && (
                 <div
                   className="parse-submit-btn"
                   style={{ marginBottom: 16 }}
@@ -1272,38 +1294,17 @@ const SubmitYourProtocol = () => {
                 </div>
 
                 <br />
-                <div
-                  onClick={() => {
-                    const codeGenerated = generateCode(
-                      finishedParsings,
-                      parsedStandardizedProperties,
-                      lastMoreInfo,
-                      addedVAAs,
-                      selectedIdentifiers,
-                      stdProperties,
-                      input,
-                      propertyName,
-                    );
-
-                    console.log({
-                      input,
-                      resultRaw,
-                      finishedParsings,
-                      parsedStandardizedProperties,
-                      lastMoreInfo,
-                      addedVAAs,
-                      selectedIdentifiers,
-                      stdProperties: JSON.stringify(stdProperties),
-                      propertyName,
-                    });
-
-                    console.log("CODE", { codeGenerated });
-                  }}
-                  className="submit-btn showoff"
-                >
+                <div onClick={sendProtocol} className="submit-btn showoff">
                   SUBMIT
                 </div>
               </div>
+            </>
+          )}
+
+          {step === 5 && (
+            <>
+              <h1 className="devtools-page-title">Your protocol was submitted successfully!</h1>
+              <CheckIcon width={40} />
             </>
           )}
         </div>

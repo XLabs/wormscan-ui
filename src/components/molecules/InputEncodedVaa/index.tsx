@@ -100,7 +100,7 @@ const VaaInput = ({
 
             setTxSearch("");
 
-            navigate(`/${page}/${newInput}`, { replace: true });
+            navigate(`/developers/${page}/${newInput}`, { replace: true });
             textareaRef?.current?.blur();
           }}
           name="VAA-Input"
