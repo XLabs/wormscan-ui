@@ -214,8 +214,6 @@ export const Submit = ({
 
   useEffect(() => {
     if (selectedBaseLayout && result && !resultUnparsed) {
-      console.log({ selectedBaseLayout, result, userLayout });
-
       const newParsedPayload = deepCloneWithBigInt(result);
       newParsedPayload.callerAppId = selectedBaseLayout;
 
@@ -227,7 +225,6 @@ export const Submit = ({
   }, [selectedBaseLayout, result, userLayout, resultUnparsed, setParsedVAA]);
 
   useEffect(() => {
-    console.log({ userLayout });
     setParsingLayout(readableLayoutToLayout(userLayout));
   }, [layouts, readableLayoutToLayout, userLayout]);
 
@@ -244,18 +241,6 @@ export const Submit = ({
           { inputName: "toChain", selected: "chain" },
           { inputName: "fromAddress", selected: "address" },
         ] as UserLayout[],
-      // "NFT Bridge": () =>
-      //   [
-      //     { inputName: "payloadId", selected: "payloadId", id: "1" },
-      //     { inputName: "tokenAddress", selected: "address" },
-      //     { inputName: "tokenChain", selected: "chain" },
-      //     { inputName: "symbol", selected: "fixedLengthString", size: "32" },
-      //     { inputName: "name", selected: "fixedLengthString", size: "32" },
-      //     { inputName: "tokenId", selected: "amount" },
-      //     { inputName: "uri", selected: "variableLengthString" },
-      //     { inputName: "destAddress", selected: "address" },
-      //     { inputName: "destChain", selected: "chain" },
-      //   ] as UserLayout[],
       "CCTP Wormhole Integration": () => {
         setSelectedBaseLayout("CCTP_WORMHOLE_INTEGRATION");
         return [
@@ -409,115 +394,6 @@ export const Submit = ({
           },
         ] as UserLayout[];
       },
-      // NTT: () =>
-      //   [
-      //     {
-      //       inputName: "prefix",
-      //       selected: "custom",
-      //       binarySelected: "bytes",
-      //       size: "4",
-      //     },
-      //     {
-      //       inputName: "sourceNttManager",
-      //       selected: "address",
-      //     },
-      //     {
-      //       inputName: "recipientNttManager",
-      //       selected: "address",
-      //     },
-      //     {
-      //       inputName: "waste1",
-      //       selected: "custom",
-      //       size: "2",
-      //       binarySelected: "bytes",
-      //       endianness: "default",
-      //       omit: true,
-      //     },
-      //     {
-      //       inputName: "nttManagerPayload",
-      //       selected: "custom",
-      //       binarySelected: "bytes",
-      //       endianness: "default",
-      //       layout: [
-      //         {
-      //           inputName: "id",
-      //           selected: "custom",
-      //           size: "32",
-      //           binarySelected: "bytes",
-      //           endianness: "default",
-      //         },
-      //         {
-      //           inputName: "sender",
-      //           selected: "address",
-      //         },
-      //         {
-      //           inputName: "waste2",
-      //           selected: "custom",
-      //           size: "2",
-      //           binarySelected: "bytes",
-      //           endianness: "default",
-      //           omit: true,
-      //         },
-      //         {
-      //           inputName: "payload",
-      //           selected: "custom",
-      //           binarySelected: "bytes",
-      //           endianness: "default",
-      //           layout: [
-      //             {
-      //               inputName: "prefix2",
-      //               selected: "custom",
-      //               size: "4",
-      //               binarySelected: "bytes",
-      //               endianness: "default",
-      //               omit: true,
-      //             },
-      //             {
-      //               inputName: "trimmedAmount",
-      //               selected: "custom",
-      //               binarySelected: "bytes",
-      //               endianness: "default",
-      //               layout: [
-      //                 {
-      //                   inputName: "decimals",
-      //                   selected: "custom",
-      //                   size: "1",
-      //                   binarySelected: "uint",
-      //                   endianness: "default",
-      //                 },
-      //                 {
-      //                   inputName: "amount",
-      //                   selected: "custom",
-      //                   size: "8",
-      //                   binarySelected: "uint",
-      //                   endianness: "default",
-      //                 },
-      //               ],
-      //             },
-      //             {
-      //               inputName: "sourceToken",
-      //               selected: "address",
-      //             },
-      //             {
-      //               inputName: "recipientAddress",
-      //               selected: "address",
-      //             },
-      //             {
-      //               inputName: "recipientChain",
-      //               selected: "chain",
-      //             },
-      //           ],
-      //         },
-      //       ],
-      //     },
-      //     {
-      //       inputName: "transceiverPayload",
-      //       selected: "custom",
-      //       lengthSize: "2",
-      //       binarySelected: "bytes",
-      //       endianness: "default",
-      //     },
-      //   ] as UserLayout[],
     };
 
     savedLayouts?.forEach(LAY => {
@@ -529,7 +405,6 @@ export const Submit = ({
 
   useEffect(() => {
     try {
-      console.log({ parsingLayout });
       const result = deserializeLayout(parsingLayout, resultRaw);
 
       setResultLength(resultRawHex.length);
@@ -544,8 +419,6 @@ export const Submit = ({
           if (errStr?.[1]) {
             const expectedAndCurrent = errStr[1];
             const [expected, current] = expectedAndCurrent.split(" > ");
-
-            console.log({ expected, current });
 
             const resultRawPartial = resultRaw.slice(0, +current);
 
@@ -939,7 +812,6 @@ const LayoutItemButton = ({
 
   useEffect(() => {
     if (newInternalLayout.length) {
-      console.log({ newInternalLayout, internalLayouts });
       setInternalLayouts(newInternalLayout);
       setNewInternalLayout([]);
     }
@@ -1206,20 +1078,20 @@ const stringConversion = (n?: number) =>
     from: fromString(n),
   } satisfies CustomConversion<Uint8Array, string>);
 
-export const fixedLengthStringItem = (size: number) =>
+const fixedLengthStringItem = (size: number) =>
   ({
     binary: "bytes",
     size,
     custom: stringConversion(size),
   } as const satisfies LayoutItem);
 
-export const variableLengthStringItem = {
+const variableLengthStringItem = {
   binary: "bytes",
   lengthSize: 1,
   custom: stringConversion(),
 } as const satisfies LayoutItem;
 
-export const booleanItem = {
+const booleanItem = {
   binary: "uint",
   size: 1,
   custom: {

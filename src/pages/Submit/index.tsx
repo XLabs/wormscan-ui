@@ -502,7 +502,6 @@ const SubmitYourProtocol = () => {
         .map(([key, value]) => {
           if (value && typeof value === "string" && isHex(value.replaceAll('"', ""))) {
             if (key === "hash") return null;
-            // console.log([parsingInternalPayload ? "payload." + key : key, value]);
             return [parsingInternalPayload ? "payload." + key : key, value];
           }
           return null;
@@ -532,7 +531,6 @@ const SubmitYourProtocol = () => {
 
   useEffect(() => {
     const newParsedStandardizedProperties: any = {};
-    console.log({ finishedParsings });
 
     // parsing fields that don't depend on other fields
     Object.entries(stdProperties).forEach(([key, valueName]) => {
@@ -755,7 +753,6 @@ const SubmitYourProtocol = () => {
                         isMulti={false}
                         name="submitNetwork"
                         onValueChange={value => {
-                          console.log(value);
                           setSelectedChain(null);
                           setSelectedNetwork(value);
                         }}
