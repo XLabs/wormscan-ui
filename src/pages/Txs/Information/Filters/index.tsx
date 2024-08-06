@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { chainToChainId } from "@wormhole-foundation/sdk";
-import { BlockchainIcon, Select } from "src/components/atoms";
+import { BlockchainIcon, ProtocolIcon, Select, ToggleGroup } from "src/components/atoms";
 import {
   CCTP_APP_ID,
   // CCTP_MANUAL_APP_ID_STRING, we are putting them from the front in the tx detail
@@ -26,7 +26,7 @@ import {
   useWindowSize,
   useNavigateCustom,
   useLockBodyScroll,
-  useLocalStorage,
+  useOutsideClick,
 } from "src/utils/hooks";
 import { CrossIcon, FilterListIcon } from "src/icons/generic";
 import "./styles.scss";
@@ -37,13 +37,13 @@ interface ICheckedState {
   sourceChain: Array<{ value: string }>;
   targetChain: Array<{ value: string }>;
 }
-type TCheckedStateKey = keyof ICheckedState;
 
 enum FilterKeys {
   AppId = "appId",
   ExclusiveAppId = "exclusiveAppId",
   SourceChain = "sourceChain",
   TargetChain = "targetChain",
+  PayloadType = "payloadType",
 }
 
 const appIds = [
@@ -51,15 +51,15 @@ const appIds = [
   CCTP_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
-  GATEWAY_APP_ID,
-  GR_APP_ID,
   MAYAN_APP_ID,
   NTT_APP_ID,
-  PORTAL_APP_ID,
   PORTAL_NFT_APP_ID,
+  PORTAL_APP_ID,
+  GR_APP_ID,
   TBTC_APP_ID,
-  USDT_TRANSFER_APP_ID,
   // UNKNOWN_APP_ID, // disabled until the backend is ready
+  USDT_TRANSFER_APP_ID,
+  GATEWAY_APP_ID,
 ];
 
 export const ChainFilterMainnet = [
@@ -143,7 +143,8 @@ const parseParams = (params: string | null) => {
 
 const Filters = () => {
   const navigate = useNavigateCustom();
-  const [showFilters, setShowFilters] = useLocalStorage<boolean>("showTxsFilters", false);
+  const [showFilters, setShowFilters] = useState(false);
+  const filterContainerRef = useRef<HTMLDivElement>(null);
 
   const { width } = useWindowSize();
   const isDesktop = width >= BREAKPOINTS.desktop;
@@ -153,6 +154,7 @@ const Filters = () => {
   const exclusiveAppIdParams = searchParams.get(FilterKeys.ExclusiveAppId) || "";
   const sourceChainParams = searchParams.get(FilterKeys.SourceChain) || "";
   const targetChainParams = searchParams.get(FilterKeys.TargetChain) || "";
+  const payloadTypeParams = searchParams.get(FilterKeys.PayloadType) || "";
 
   const [checkedState, setCheckedState] = useState<ICheckedState>({
     appId: parseParams(appIdParams),
@@ -178,6 +180,7 @@ const Filters = () => {
   const orderedChains = currentNetwork === "Mainnet" ? ChainFilterMainnet : ChainFilterTestnet;
 
   const PROTOCOL_LIST: { label: string; value: string }[] = appIds.map(appId => ({
+    icon: <ProtocolIcon protocol={appId} />,
     label: formatAppId(appId),
     value: String(appId),
   }));
@@ -212,21 +215,25 @@ const Filters = () => {
     setShowFilters(false);
   };
 
-  const applyFilters = () => {
-    let url = "/txs?page=1";
-
-    for (const key in checkedState) {
-      const checkedStateKey = key as TCheckedStateKey;
-      if (checkedState[checkedStateKey].length > 0) {
-        const stateValue = checkedState[checkedStateKey];
-        const values = stateValue.map(item => item.value).join(",");
-        url += `&${key}=${values}`;
+  const applyFilters = useCallback(() => {
+    const appendFilter = (key: string, values: { value: string }[]) => {
+      if (values.length > 0) {
+        const joinedValues = values.map(item => item.value).join(",");
+        searchParams.append(key, joinedValues);
       }
-    }
+    };
 
-    navigate(url);
-    !isDesktop && setShowFilters(false);
-  };
+    Object.values(FilterKeys).forEach(key => searchParams.delete(key));
+
+    appendFilter(FilterKeys.AppId, checkedState.appId);
+    appendFilter(FilterKeys.ExclusiveAppId, checkedState.exclusiveAppId);
+    appendFilter(FilterKeys.SourceChain, checkedState.sourceChain);
+    appendFilter(FilterKeys.TargetChain, checkedState.targetChain);
+
+    searchParams.set("page", "1");
+    setSearchParams(searchParams);
+    setShowFilters(false);
+  }, [checkedState, searchParams, setSearchParams, setShowFilters]);
 
   useEffect(() => {
     setCheckedState({
@@ -248,12 +255,47 @@ const Filters = () => {
     ],
   });
 
+  const handleOutsideClick = () => {
+    setCheckedState({
+      appId: parseParams(appIdParams),
+      exclusiveAppId: parseParams(exclusiveAppIdParams),
+      sourceChain: parseParams(sourceChainParams),
+      targetChain: parseParams(targetChainParams),
+    });
+
+    setShowFilters(false);
+  };
+
+  useOutsideClick(filterContainerRef, handleOutsideClick);
+
   return (
     <div className="filters">
       {showFilters && !isDesktop && <div className="filters-bg" onClick={handleShowFilters} />}
 
       <div className="filters-top">
-        <button className="filters-top-tab">All</button>
+        <ToggleGroup
+          ariaLabel="Select type"
+          className="filters-top-toggle"
+          items={[
+            { label: "All", value: "0", ariaLabel: "All" },
+            { label: "Transfers", value: "1,3", ariaLabel: "Transfers" },
+            { label: "Tra", value: "1", ariaLabel: "Tra" },
+            { label: "Attestation", value: "2", ariaLabel: "Attestation" },
+            { label: "Twithpayload", value: "3", ariaLabel: "Twithpayload" },
+          ]}
+          onValueChange={value => {
+            if (value === "0") {
+              searchParams.delete(FilterKeys.PayloadType);
+            } else {
+              searchParams.set(FilterKeys.PayloadType, value);
+              searchParams.set("page", "1");
+            }
+
+            setSearchParams(searchParams);
+            navigate(`?${searchParams.toString()}`);
+          }}
+          value={payloadTypeParams || "0"}
+        />
 
         <button
           className={`filters-top-btn ${showFilters ? "active" : ""}`}
@@ -265,105 +307,110 @@ const Filters = () => {
         </button>
       </div>
 
-      <div className={`filters-container ${showFilters ? "show" : ""}`}>
-        <h4 className="filters-container-title">Filters</h4>
+      {((isDesktop && showFilters) || !isDesktop) && (
+        <div className={`filters-container ${showFilters ? "show" : ""}`} ref={filterContainerRef}>
+          <h4 className="filters-container-title">Filters</h4>
 
-        <button className="filters-container-close-btn" onClick={() => setShowFilters(false)}>
-          <CrossIcon width={24} />
-        </button>
+          <button className="filters-container-close-btn" onClick={() => setShowFilters(false)}>
+            <CrossIcon width={24} />
+          </button>
 
-        <Select
-          ariaLabel="Select Protocol"
-          controlStyles={{ minWidth: 272 }}
-          isMulti={false}
-          items={PROTOCOL_LIST}
-          menuFixed={!isDesktop}
-          menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-          menuPortalStyles={{ zIndex: 100 }}
-          name="topAssetTimeRange"
-          onValueChange={(value: any) =>
-            setCheckedState({
-              ...checkedState,
-              appId: value?.value === checkedState.appId?.[0]?.value ? [] : [value],
-            })
-          }
-          optionStyles={{ padding: 16 }}
-          text={
-            <div className="filters-container-select-text">
-              {checkedState.appId.length > 0 && (
-                <span className="counter">{checkedState.appId.length}</span>
-              )}
-              Protocol
-            </div>
-          }
-          type="searchable"
-          value={checkedState.appId}
-        />
+          <Select
+            keepOpen={isDesktop}
+            ariaLabel="Select Protocol"
+            controlStyles={{ minWidth: 256 }}
+            isMulti={false}
+            items={PROTOCOL_LIST}
+            menuFixed={!isDesktop}
+            menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
+            menuPortalStyles={{ zIndex: 100 }}
+            name="topAssetTimeRange"
+            onValueChange={(value: any) =>
+              setCheckedState({
+                ...checkedState,
+                appId: value?.value === checkedState.appId?.[0]?.value ? [] : [value],
+              })
+            }
+            optionStyles={{ padding: 16 }}
+            text={
+              <div className="filters-container-select-text">
+                {checkedState.appId.length > 0 && (
+                  <span className="counter">{checkedState.appId.length}</span>
+                )}
+                Protocol
+              </div>
+            }
+            type="searchable"
+            value={checkedState.appId}
+          />
 
-        <Select
-          ariaLabel="Select Source Chain"
-          items={CHAIN_LIST}
-          menuFixed={!isDesktop}
-          menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-          menuPortalStyles={{ zIndex: 100 }}
-          name="topAssetTimeRange"
-          onValueChange={(value: any) => setCheckedState({ ...checkedState, sourceChain: value })}
-          optionStyles={{ padding: 16 }}
-          text={
-            <div className="filters-container-select-text">
-              {checkedState.sourceChain.length > 0 && (
-                <span className="counter">{checkedState.sourceChain.length}</span>
-              )}
-              Source chain
-            </div>
-          }
-          type="searchable"
-          value={checkedState.sourceChain}
-        />
+          <Select
+            keepOpen={isDesktop}
+            ariaLabel="Select Source Chain"
+            items={CHAIN_LIST}
+            menuFixed={!isDesktop}
+            menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
+            menuPortalStyles={{ zIndex: 100 }}
+            name="topAssetTimeRange"
+            onValueChange={(value: any) => setCheckedState({ ...checkedState, sourceChain: value })}
+            optionStyles={{ padding: 16 }}
+            text={
+              <div className="filters-container-select-text">
+                {checkedState.sourceChain.length > 0 && (
+                  <span className="counter">{checkedState.sourceChain.length}</span>
+                )}
+                Source chain
+              </div>
+            }
+            type="searchable"
+            value={checkedState.sourceChain}
+          />
 
-        <Select
-          ariaLabel="Select Target Chain"
-          items={CHAIN_LIST}
-          menuFixed={!isDesktop}
-          menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-          menuPortalStyles={{ zIndex: 100 }}
-          name="topAssetTimeRange"
-          onValueChange={(value: any) => setCheckedState({ ...checkedState, targetChain: value })}
-          optionStyles={{ padding: 16 }}
-          text={
-            <div className="filters-container-select-text">
-              {checkedState.targetChain.length > 0 && (
-                <span className="counter">{checkedState.targetChain.length}</span>
-              )}
-              Target chain
-            </div>
-          }
-          type="searchable"
-          value={checkedState.targetChain}
-        />
+          <Select
+            keepOpen={isDesktop}
+            ariaLabel="Select Target Chain"
+            items={CHAIN_LIST}
+            menuFixed={!isDesktop}
+            menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
+            menuPortalStyles={{ zIndex: 100 }}
+            name="topAssetTimeRange"
+            onValueChange={(value: any) => setCheckedState({ ...checkedState, targetChain: value })}
+            optionStyles={{ padding: 16 }}
+            text={
+              <div className="filters-container-select-text">
+                {checkedState.targetChain.length > 0 && (
+                  <span className="counter">{checkedState.targetChain.length}</span>
+                )}
+                Target chain
+              </div>
+            }
+            type="searchable"
+            value={checkedState.targetChain}
+          />
 
-        <button
-          className="filters-container-apply-btn"
-          disabled={disableApplyButton}
-          onClick={applyFilters}
-        >
-          Apply Filters
-        </button>
+          <button
+            className="filters-container-apply-btn"
+            disabled={disableApplyButton}
+            onClick={applyFilters}
+          >
+            Apply Filters
+          </button>
 
-        <button
-          className={`filters-container-reset-btn ${
-            checkedState.exclusiveAppId.length === 0 &&
-            checkedState.appId.length === 0 &&
-            checkedState.sourceChain.length === 0 &&
-            checkedState.targetChain.length === 0
-              ? "hidden"
-              : ""
-          }`}
-          onClick={resetFilters}
-        >
-          Reset Filters
-        </button>
-      </div>
+          <button
+            className={`filters-container-reset-btn ${
+              checkedState.exclusiveAppId.length === 0 &&
+              checkedState.appId.length === 0 &&
+              checkedState.sourceChain.length === 0 &&
+              checkedState.targetChain.length === 0
+                ? "hidden"
+                : ""
+            }`}
+            onClick={resetFilters}
+          >
+            Reset Filters
+          </button>
+        </div>
+      )}
     </div>
   );
 };

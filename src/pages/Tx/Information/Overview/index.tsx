@@ -495,7 +495,7 @@ const Overview = ({
             {appIds?.length > 0 ? (
               filterAppIds(appIds).map((appId, i) => (
                 <div className="text" key={i}>
-                  <ProtocolIcon protocolName={appId} width={24} />
+                  <ProtocolIcon protocol={appId} width={24} />
                   {formatAppId(appId)}
                 </div>
               ))
@@ -763,7 +763,7 @@ const Overview = ({
           {!isJustGenericRelayer && !isMayanOnly && !nftInfo && (
             <div className="tx-overview-section-info-container">
               <div className="tx-overview-section-info-container-key">
-                {isAttestation ? "Token" : "SENT"}
+                {isAttestation ? "TOKEN" : "SENT"}
               </div>
 
               <div className="tx-overview-section-info-container-value">

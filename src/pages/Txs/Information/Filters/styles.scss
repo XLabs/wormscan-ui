@@ -14,20 +14,27 @@
 
   &-top {
     @include centered-column;
-    gap: 17px;
+    gap: 17px 32px;
     margin-bottom: 32px;
 
     @include desktop {
       @include centered-row;
-      justify-content: space-between;
-      margin-bottom: 20px;
+      justify-content: flex-start;
+      margin-bottom: 0;
     }
 
-    &-tab {
-      @include button-secondary;
-      cursor: default;
-      max-width: max-content;
-      display: none;
+    &-toggle {
+      max-width: 100% !important;
+
+      & .toggle-group-root {
+        justify-content: space-between;
+        width: 100%;
+
+        & .toggle-group-item {
+          justify-content: center;
+          width: 100%;
+        }
+      }
     }
 
     &-btn {
@@ -37,11 +44,14 @@
 
       @include desktop {
         width: auto;
-        margin-left: auto;
       }
 
       & > svg {
         color: var(--color-white-60);
+      }
+
+      & .counter {
+        margin-left: 8px;
       }
     }
   }
@@ -81,7 +91,40 @@
 
       @include desktop {
         @include centered-row;
+        align-items: start;
+        background-color: var(--color-gray-950);
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0px 4px 6px 0px var(--color-black-20);
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 288px 248px 248px;
+        height: 464px;
         inset: unset;
+        left: 0;
+        padding: 20px;
+        position: absolute;
+        top: 44px;
+        width: max-content;
+        z-index: 99;
+
+        & .select-searchable .select-searchable-dropdown {
+          background-color: transparent;
+          cursor: default;
+          height: auto;
+
+          & svg {
+            display: none;
+          }
+        }
+
+        & .select-searchable:nth-child(3) {
+          margin-right: 52px;
+        }
+      }
+
+      @include bigDesktop {
+        left: 268px;
       }
     }
 
@@ -123,6 +166,11 @@
       @include text-roboto-body-500;
       color: var(--color-white);
       gap: 8px;
+
+      @include desktop {
+        @include text-roboto-body-400;
+        color: var(--color-gray-400);
+      }
     }
 
     &-apply-btn {
@@ -132,9 +180,10 @@
       margin-top: auto;
 
       @include desktop {
+        grid-column: 3;
+        grid-row: 3;
         height: 36px;
         margin-left: auto;
-        order: 2;
       }
     }
 
@@ -144,9 +193,12 @@
       justify-content: center;
 
       @include desktop {
+        grid-column: 3;
+        grid-row: 3;
         height: 36px;
-        margin-left: 12px;
-        order: 1;
+        margin-left: 29px;
+        margin-top: auto;
+        margin-right: auto;
 
         &.hidden {
           display: none;
@@ -171,7 +223,6 @@
 
   &.inverted {
     background-color: var(--color-white);
-    color: var(--color-secondary-800);
     font-weight: 500;
   }
 

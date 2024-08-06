@@ -61,8 +61,6 @@
   }
 
   > tbody {
-    @include text-p3;
-    color: var(--color-primary-50);
     text-align: left;
 
     > tr {

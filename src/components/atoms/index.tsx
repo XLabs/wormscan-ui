@@ -1,5 +1,4 @@
 export { default as AddToMetaMaskBtn } from "./AddToMetaMaskBtn";
-export { default as Alert } from "./Alert";
 export { default as BlockchainIcon } from "./BlockchainIcon";
 export { default as Checkbox } from "./Checkbox";
 export { default as Chip } from "./Chip";
@@ -12,7 +11,6 @@ export { default as NavLink } from "./NavLink";
 export { default as Pagination } from "./Pagination";
 export { default as ProtocolIcon } from "./ProtocolIcon";
 export { default as Select } from "./Select";
-export { default as SignatureCircle } from "./SignatureCircle";
 export { default as Switch } from "./Switch";
 export { default as Tag } from "./Tag";
 export { default as ToggleGroup } from "./ToggleGroup";

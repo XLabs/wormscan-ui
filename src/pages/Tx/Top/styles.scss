@@ -13,7 +13,7 @@
     width: 100%;
 
     &-title {
-      @include text-h5;
+      @include text-heading5;
     }
 
     &-search-bar {
@@ -22,7 +22,7 @@
   }
 
   &-txId {
-    @include text-p3;
+    @include text-roboto-body-400;
     @include centered-column;
 
     @include desktop {

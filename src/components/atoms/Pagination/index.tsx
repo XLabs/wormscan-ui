@@ -1,3 +1,4 @@
+import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon } from "src/icons/generic";
 import "./styles.scss";
 
 interface IProps {
@@ -36,12 +37,12 @@ const Pagination = ({
     <div className={`pagination ${className}`} style={style}>
       {goFirstPage && (
         <button onClick={goFirstPage} disabled={disabled || isFirstPage}>
-          &lt;&lt;
+          <ChevronsLeftIcon />
         </button>
       )}
 
       <button onClick={goPrevPage} disabled={disabled || isFirstPage}>
-        &lt;
+        <ChevronLeftIcon />
       </button>
 
       <div className="pagination-pages">
@@ -60,7 +61,7 @@ const Pagination = ({
       </div>
 
       <button onClick={goNextPage} disabled={disabled || disableNextButton || isLastPage}>
-        &gt;
+        <ChevronRightIcon />
       </button>
 
       {goLastPage && (

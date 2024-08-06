@@ -10,10 +10,12 @@ import {
   NTT_APP_ID,
   PORTAL_APP_ID,
   PORTAL_NFT_APP_ID,
+  TBTC_APP_ID,
+  USDT_TRANSFER_APP_ID,
 } from "src/consts";
 
-const ProtocolIcon = ({ protocolName, width = 28 }: { protocolName: string; width?: number }) => {
-  const IconComponent = iconMap[protocolName];
+const ProtocolIcon = ({ protocol, width = 28 }: { protocol: string; width?: number }) => {
+  const IconComponent = iconMap[protocol];
   return IconComponent ? <IconComponent width={width} /> : null;
 };
 
@@ -396,24 +398,73 @@ const WormholeGatewayIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
+const USDTTransferIcon = ({ width = 28 }: { width?: number }) => (
+  <svg
+    width={width}
+    height={width}
+    viewBox="-20 0 270 200"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g clipPath="url(#clip0_313_9792)">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M42.0972 0.982283L0.176253 89.0373C0.0167314 89.3648 -0.0338199 89.7348 0.0319915 90.0931C0.0978028 90.4514 0.276524 90.7792 0.54202 91.0287L113.76 199.519C114.082 199.828 114.51 200 114.956 200C115.402 200 115.83 199.828 116.151 199.519L229.37 91.0355C229.635 90.786 229.814 90.4582 229.88 90.0998C229.946 89.7415 229.895 89.3716 229.736 89.0441L187.815 0.989056C187.679 0.69333 187.462 0.442813 187.188 0.267445C186.914 0.0920761 186.596 -0.00072543 186.27 0.000131083H43.6551C43.3283 -0.00393409 43.0074 0.086632 42.731 0.260904C42.4545 0.435177 42.2344 0.68571 42.0972 0.982283Z"
+        fill="#50AF95"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M129.502 98.0801C128.689 98.1411 124.49 98.3917 115.122 98.3917C107.671 98.3917 102.381 98.1682 100.525 98.0801C71.7311 96.8135 50.2389 91.8011 50.2389 85.7998C50.2389 79.7985 71.7311 74.7929 100.525 73.506V93.0881C102.408 93.2235 107.8 93.5419 115.251 93.5419C124.192 93.5419 128.669 93.1693 129.475 93.0948V73.5195C158.208 74.7997 179.653 79.8121 179.653 85.7998C179.653 91.7876 158.215 96.7999 129.475 98.0733L129.502 98.0801ZM129.502 71.4943V53.9713H169.601V27.25H60.4262V53.9713H100.518V71.4875C67.9312 72.9844 43.4248 79.4395 43.4248 87.1748C43.4248 94.9101 67.9312 101.358 100.518 102.862V159.014H129.495V102.842C162.008 101.345 186.474 94.8966 186.474 87.1681C186.474 79.4395 162.028 72.9912 129.495 71.4875L129.502 71.4943Z"
+        fill="white"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_313_9792">
+        <rect width="229.912" height={200} fill="white" />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+const TbtcIcon = ({ width = 28 }: { width?: number }) => (
+  <svg
+    fill="none"
+    height={width}
+    viewBox="0 0 144 144"
+    width={width}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M59.5621 65.1122H47.531V77.1433H59.5621V65.1122Z" fill="white" />
+    <path d="M47.5309 53.081H35.4997V65.1121L47.531 65.1122L47.5309 53.081Z" fill="white" />
+    <path d="M35.4978 65.1122H23.4667V77.1433H35.4978V65.1122Z" fill="white" />
+    <path d="M47.531 77.1433L35.4997 77.1427V89.1738H47.5309L47.531 77.1433Z" fill="white" />
+    <path
+      d="M115.922 55.6723C115.074 46.824 107.437 43.8538 97.791 43.0056V37.3377H90.3225V42.6822C88.3601 42.6822 86.3535 42.7198 84.3579 42.7575V37.3333H76.8938V42.9989C75.2769 43.0299 65.3433 43.0211 65.3433 43.0211L65.3211 49.6058L71.5538 49.6413V92.7977H65.3233L65.268 99.2895C67.0775 99.2895 75.1308 99.3249 76.8761 99.336V104.931H84.3401V99.4689C86.3867 99.5132 88.3712 99.5309 90.307 99.5287V104.933H97.7777V99.3626C110.338 98.6472 119.133 95.4866 120.225 83.6947C121.111 74.1974 116.646 69.9626 109.516 68.2394C113.849 66.0246 116.558 62.1463 115.926 55.6701L115.922 55.6723ZM105.457 82.2129C105.457 91.491 89.5739 90.4301 84.5063 90.4323V73.9847C89.5716 73.9847 105.448 72.5384 105.45 82.2129H105.457ZM101.99 59.0057C101.99 67.4465 88.7366 66.4565 84.5173 66.4565V51.5372C88.7433 51.5394 101.995 50.2016 101.99 59.0057Z"
+      fill="white"
+    />
+  </svg>
+);
+
 const iconMap: Record<string, React.FC<{ width?: number }>> = {
-  [PORTAL_APP_ID]: PortalIcon,
+  [ALL_BRIDGE_APP_ID]: AllbridgeIcon,
   [C3_APP_ID]: C3Icon,
   [CCTP_APP_ID]: CCTPIcon,
   [CONNECT_APP_ID]: ConnectIcon,
   [ETH_BRIDGE_APP_ID]: EthBridgeIcon,
-  [MAYAN_APP_ID]: MayanIcon,
-  [GR_APP_ID]: StandardRelayerIcon,
-  [NTT_APP_ID]: NTTIcon,
-  [PORTAL_NFT_APP_ID]: PortalNFTIcon,
   [GATEWAY_APP_ID]: WormholeGatewayIcon,
-  [ALL_BRIDGE_APP_ID]: AllbridgeIcon,
+  [GR_APP_ID]: StandardRelayerIcon,
+  [MAYAN_APP_ID]: MayanIcon,
+  [NTT_APP_ID]: NTTIcon,
+  [PORTAL_APP_ID]: PortalIcon,
+  [PORTAL_NFT_APP_ID]: PortalNFTIcon,
+  [TBTC_APP_ID]: TbtcIcon,
+  [USDT_TRANSFER_APP_ID]: USDTTransferIcon,
 
-  ["Portal"]: PortalIcon,
+  // In Featured Protocols it returns other names instead of the appId
   ["CCTP"]: CCTPIcon,
-  ["Mayan"]: MayanIcon,
-  ["NTT"]: NTTIcon,
-  ["Allbridge"]: AllbridgeIcon,
+  ["ALLBRIDGE"]: AllbridgeIcon,
 };
 
 export default ProtocolIcon;

@@ -8,7 +8,7 @@ import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { formatAppIds, parseAddress, parseTx, shortAddress } from "src/utils/crypto";
 import { timeAgo } from "src/utils/date";
-import { ArrowRightIcon, CopyIcon } from "src/icons/generic";
+import { ArrowRightIcon, CopyIcon, TxFlowSelfH } from "src/icons/generic";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { ChainLimit, Order } from "src/api";
 import { ChainId } from "@wormhole-foundation/sdk";
@@ -30,6 +30,9 @@ import {
 } from "src/consts";
 import { useLocalStorage } from "src/utils/hooks";
 import { Top } from "./Top";
+import { formatNumber } from "src/utils/number";
+import { useRecoilState } from "recoil";
+import { showTargetTokenUrlState } from "src/utils/recoilStates";
 
 export interface TransactionOutput {
   VAAId: string;
@@ -58,10 +61,12 @@ const Txs = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const address = searchParams.get("address") || null;
-  const appId = searchParams.get("appId") || null;
-  const exclusiveAppId = searchParams.get("exclusiveAppId") || null;
-  const sourceChain = (+searchParams.get("sourceChain") as ChainId) || null;
-  const targetChain = (+searchParams.get("targetChain") as ChainId) || null;
+  const appIdParams = searchParams.get("appId") || null;
+  const exclusiveAppIdParams = searchParams.get("exclusiveAppId") || null;
+  const sourceChainParams = searchParams.get("sourceChain") || null;
+  const targetChainParams = searchParams.get("targetChain") || null;
+  const payloadTypeParams = searchParams.get("payloadType") || null;
+  const [showTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
 
   useEffect(() => {
     if (address) {
@@ -123,10 +128,11 @@ const Txs = () => {
       pageSize: PAGE_SIZE,
       sortOrder: Order.DESC,
     },
-    appId,
-    exclusiveAppId,
-    sourceChain,
-    targetChain,
+    appId: appIdParams,
+    exclusiveAppId: exclusiveAppIdParams,
+    sourceChain: sourceChainParams,
+    targetChain: targetChainParams,
+    payloadType: payloadTypeParams,
   };
 
   const { refetch, isLoading: isLoadingOperations } = useQuery(
@@ -176,7 +182,19 @@ const Txs = () => {
                 fromChain: stdFromChain,
                 toAddress: stdToAddress,
                 toChain: stdToChain,
+                tokenChain: stdTokenChain,
+                tokenAddress: stdTokenAddress,
+                fee: stdFee,
+                amount: stdAmount,
               } = standarizedProperties || {};
+
+              const { symbol: tokenName } = payload || {};
+              const sourceTokenLink = getExplorerLink({
+                network: currentNetwork,
+                chainId: stdTokenChain,
+                value: stdTokenAddress,
+                base: "token",
+              });
 
               const globalFrom = tx.sourceChain?.from;
               const globalToChainId = tx.targetChain?.chainId;
@@ -370,7 +388,7 @@ const Txs = () => {
                 ),
                 chains: (
                   <div className="tx-chains">
-                    <h4>CHAINS</h4>
+                    <h4>{isAttestation ? "SOURCE CHAIN" : "CHAINS"}</h4>
 
                     <div className="tx-chains-container">
                       <div className="tx-chains-container-item">
@@ -386,45 +404,57 @@ const Txs = () => {
                             />
                           </div>
                         </Tooltip>
-                        {sourceAddress && (
-                          <>
-                            <a
-                              href={getExplorerLink({
-                                network: currentNetwork,
-                                chainId: fromChain,
-                                value: sourceAddress,
-                                base: "address",
-                                isNativeAddress: true,
-                              })}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={stopPropagation}
-                            >
-                              {shortAddress(sourceAddress).toUpperCase()}
-                            </a>
 
-                            <CopyToClipboard toCopy={sourceAddress}>
-                              <CopyIcon width={24} />
-                            </CopyToClipboard>
-                          </>
-                        )}
+                        <div className="tx-chains-container-item-box">
+                          {sourceAddress && (
+                            <>
+                              <div className="tx-chains-container-item-box-address">
+                                <a
+                                  href={getExplorerLink({
+                                    network: currentNetwork,
+                                    chainId: fromChain,
+                                    value: sourceAddress,
+                                    base: "address",
+                                    isNativeAddress: true,
+                                  })}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={stopPropagation}
+                                >
+                                  {shortAddress(sourceAddress).toUpperCase()}
+                                </a>
+
+                                <CopyToClipboard toCopy={sourceAddress}>
+                                  <CopyIcon width={24} />
+                                </CopyToClipboard>
+                              </div>
+
+                              {tokenAmount && (
+                                <div className="tx-chains-container-item-box-amount">
+                                  {formatNumber(Number(tokenAmount)) +
+                                    " " +
+                                    (symbol ? symbol : "N/A")}
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
                       </div>
 
-                      {toChain && (
+                      {!isAttestation && toChain && (
                         <>
                           <div className="tx-chains-container-arrow">
-                            <ArrowRightIcon
-                              className={`arrow-icon ${address ? "is-address" : ""}`}
-                              width={24}
-                            />
+                            {(!address || !isInOut) && (
+                              <ArrowRightIcon className={address ? "is-address" : ""} />
+                            )}
 
-                            {address && !isAttestation && (isInOut || isOutflow || isInflow) && (
+                            {address && (isInOut || isOutflow || isInflow) && (
                               <div
                                 className={`tx-chains-container-arrow-flow tx-chains-container-arrow-flow-${
                                   isInOut ? "self" : isOutflow ? "out" : "in"
                                 }`}
                               >
-                                {isInOut ? "SELF" : isOutflow ? "OUT" : "IN"}
+                                {isInOut ? <TxFlowSelfH /> : isOutflow ? "OUT" : "IN"}
                               </div>
                             )}
                           </div>
@@ -442,26 +472,87 @@ const Txs = () => {
                                 />
                               </div>
                             </Tooltip>
+
+                            <div className="tx-chains-container-item-box">
+                              <div className="tx-chains-container-item-box-address">
+                                <a
+                                  href={getExplorerLink({
+                                    network: currentNetwork,
+                                    chainId: toChain,
+                                    value: targetAddress,
+                                    base: "address",
+                                    isNativeAddress: true,
+                                  })}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={stopPropagation}
+                                >
+                                  {shortAddress(targetAddress).toUpperCase()}
+                                </a>
+
+                                <CopyToClipboard toCopy={targetAddress}>
+                                  <CopyIcon width={24} />
+                                </CopyToClipboard>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ),
+                tokenName: (
+                  <div className="tx-chains">
+                    <h4>TOKEN NAME</h4>
+
+                    <div className="tx-chains-container">
+                      <div className="tx-chains-container-item">
+                        {tokenName &&
+                          (sourceTokenLink ? (
                             <a
-                              href={getExplorerLink({
-                                network: currentNetwork,
-                                chainId: toChain,
-                                value: targetAddress,
-                                base: "address",
-                                isNativeAddress: true,
-                              })}
+                              href={sourceTokenLink}
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={stopPropagation}
                             >
-                              {shortAddress(targetAddress).toUpperCase()}
+                              {tokenName}
                             </a>
+                          ) : (
+                            <span>{tokenName}</span>
+                          ))}
+                      </div>
+                    </div>
+                  </div>
+                ),
+                tokenAddress: (
+                  <div className="tx-chains">
+                    <h4>TOKEN ADDRESS</h4>
 
-                            <CopyToClipboard toCopy={targetAddress}>
-                              <CopyIcon width={24} />
-                            </CopyToClipboard>
+                    <div className="tx-chains-container">
+                      {stdTokenAddress && (
+                        <div className="tx-chains-container-item">
+                          <div className="tx-chains-container-item-box">
+                            <div className="tx-chains-container-item-box-address">
+                              <a
+                                href={getExplorerLink({
+                                  network: currentNetwork,
+                                  chainId: stdTokenChain,
+                                  value: stdTokenAddress,
+                                  base: "token",
+                                })}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={stopPropagation}
+                              >
+                                {shortAddress(stdTokenAddress).toUpperCase()}
+                              </a>
+
+                              <CopyToClipboard toCopy={stdTokenAddress}>
+                                <CopyIcon width={24} />
+                              </CopyToClipboard>
+                            </div>
                           </div>
-                        </>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -479,7 +570,7 @@ const Txs = () => {
                         >
                           <div className="tx-protocols-icons-content">
                             {appIds.map(icon => (
-                              <ProtocolIcon key={icon} protocolName={icon} />
+                              <ProtocolIcon key={icon} protocol={icon} />
                             ))}
                           </div>
                         </Tooltip>
@@ -546,6 +637,7 @@ const Txs = () => {
               isPaginationLoading={isPaginationLoading || isLoadingOperations}
               setIsPaginationLoading={setIsPaginationLoading}
               isTxsFiltered={isTxsFiltered}
+              payloadTypeParams={payloadTypeParams}
             />
           </>
         )}

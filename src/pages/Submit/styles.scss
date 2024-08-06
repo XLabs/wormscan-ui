@@ -320,11 +320,6 @@
     text-wrap: pretty;
   }
 
-  &-body {
-    @include text-p1;
-    color: var(--color-primary-50);
-  }
-
   .parse {
     display: flex;
     flex-direction: column;
