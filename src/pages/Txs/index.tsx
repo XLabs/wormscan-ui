@@ -366,7 +366,7 @@ const Txs = () => {
                           {shortAddress(parseTxHash).toUpperCase()}
                         </NavLink>
                         <CopyToClipboard toCopy={parseTxHash}>
-                          <CopyIcon width={24} />
+                          <CopyIcon />
                         </CopyToClipboard>
                       </>
                     ) : (
@@ -422,7 +422,7 @@ const Txs = () => {
                                 </a>
 
                                 <CopyToClipboard toCopy={sourceAddress}>
-                                  <CopyIcon width={24} />
+                                  <CopyIcon />
                                 </CopyToClipboard>
                               </div>
 
@@ -488,7 +488,7 @@ const Txs = () => {
                                 </a>
 
                                 <CopyToClipboard toCopy={targetAddress}>
-                                  <CopyIcon width={24} />
+                                  <CopyIcon />
                                 </CopyToClipboard>
                               </div>
                             </div>
@@ -526,26 +526,27 @@ const Txs = () => {
                     <h4>TOKEN ADDRESS</h4>
 
                     <div className="tx-chains-container">
-                      {stdTokenAddress && (
+                      {sourceAddress && (
                         <div className="tx-chains-container-item">
                           <div className="tx-chains-container-item-box">
                             <div className="tx-chains-container-item-box-address">
                               <a
                                 href={getExplorerLink({
                                   network: currentNetwork,
-                                  chainId: stdTokenChain,
-                                  value: stdTokenAddress,
-                                  base: "token",
+                                  chainId: fromChain,
+                                  value: sourceAddress,
+                                  base: "address",
+                                  isNativeAddress: true,
                                 })}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={stopPropagation}
                               >
-                                {shortAddress(stdTokenAddress).toUpperCase()}
+                                {shortAddress(sourceAddress).toUpperCase()}
                               </a>
 
-                              <CopyToClipboard toCopy={stdTokenAddress}>
-                                <CopyIcon width={24} />
+                              <CopyToClipboard toCopy={sourceAddress}>
+                                <CopyIcon />
                               </CopyToClipboard>
                             </div>
                           </div>
