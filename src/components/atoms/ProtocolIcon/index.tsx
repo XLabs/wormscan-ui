@@ -19,7 +19,7 @@ const ProtocolIcon = ({ protocol, width = 28 }: { protocol: string; width?: numb
   return IconComponent ? <IconComponent width={width} /> : null;
 };
 
-const PortalIcon = ({ width = 28 }: { width?: number }) => (
+const PortalIcon = ({ width }: { width: number }) => (
   <svg
     width={width}
     height={width}
@@ -62,7 +62,7 @@ const PortalIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
-const AllbridgeIcon = ({ width = 28 }: { width?: number }) => (
+const AllbridgeIcon = ({ width }: { width: number }) => (
   <svg
     fill="none"
     height={width}
@@ -91,11 +91,11 @@ const AllbridgeIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
-const C3Icon = ({ width = 40 }: { width?: number }) => (
+const C3Icon = ({ width }: { width: number }) => (
   <svg
     width={width}
     height={width}
-    viewBox="0 0 183 183"
+    viewBox="-20 -20 223 223"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -109,7 +109,7 @@ const C3Icon = ({ width = 40 }: { width?: number }) => (
   </svg>
 );
 
-const CCTPIcon = ({ width = 28 }: { width?: number }) => (
+const CCTPIcon = ({ width }: { width: number }) => (
   <svg
     fill="none"
     height={width}
@@ -138,7 +138,7 @@ const CCTPIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
-const ConnectIcon = ({ width = 28 }: { width?: number }) => (
+const ConnectIcon = ({ width }: { width: number }) => (
   <svg
     fill="none"
     height={width}
@@ -175,7 +175,7 @@ const ConnectIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
-const EthBridgeIcon = ({ width = 28 }: { width?: number }) => (
+const EthBridgeIcon = ({ width }: { width: number }) => (
   <svg
     fill="none"
     height={width}
@@ -215,7 +215,7 @@ const EthBridgeIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
-const MayanIcon = ({ width = 28 }: { width?: number }) => (
+const MayanIcon = ({ width }: { width: number }) => (
   <svg
     fill="none"
     height={width}
@@ -243,7 +243,7 @@ const MayanIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
-const StandardRelayerIcon = ({ width = 28 }: { width?: number }) => (
+const StandardRelayerIcon = ({ width }: { width: number }) => (
   <svg
     fill="none"
     height={width}
@@ -280,7 +280,7 @@ const StandardRelayerIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
-const NTTIcon = ({ width = 28 }: { width?: number }) => (
+const NTTIcon = ({ width }: { width: number }) => (
   <svg
     fill="none"
     height={width}
@@ -324,7 +324,7 @@ const NTTIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
-const PortalNFTIcon = ({ width = 28 }: { width?: number }) => (
+const PortalNFTIcon = ({ width }: { width: number }) => (
   <svg
     fill="none"
     height={width}
@@ -367,7 +367,7 @@ const PortalNFTIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
-const WormholeGatewayIcon = ({ width = 28 }: { width?: number }) => (
+const WormholeGatewayIcon = ({ width }: { width: number }) => (
   <svg
     fill="none"
     height={width}
@@ -398,7 +398,7 @@ const WormholeGatewayIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
-const USDTTransferIcon = ({ width = 28 }: { width?: number }) => (
+const USDTTransferIcon = ({ width }: { width: number }) => (
   <svg
     width={width}
     height={width}
@@ -428,7 +428,7 @@ const USDTTransferIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
-const TbtcIcon = ({ width = 28 }: { width?: number }) => (
+const TbtcIcon = ({ width }: { width: number }) => (
   <svg
     fill="none"
     height={width}
@@ -447,7 +447,7 @@ const TbtcIcon = ({ width = 28 }: { width?: number }) => (
   </svg>
 );
 
-const iconMap: Record<string, React.FC<{ width?: number }>> = {
+const iconMap: Record<string, React.FC<{ width: number }>> = {
   [ALL_BRIDGE_APP_ID]: AllbridgeIcon,
   [C3_APP_ID]: C3Icon,
   [CCTP_APP_ID]: CCTPIcon,
