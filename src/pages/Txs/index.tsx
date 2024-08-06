@@ -29,10 +29,8 @@ import {
   txType,
 } from "src/consts";
 import { useLocalStorage } from "src/utils/hooks";
-import { Top } from "./Top";
 import { formatNumber } from "src/utils/number";
-import { useRecoilState } from "recoil";
-import { showTargetTokenUrlState } from "src/utils/recoilStates";
+import { Top } from "./Top";
 
 export interface TransactionOutput {
   VAAId: string;
@@ -66,7 +64,6 @@ const Txs = () => {
   const sourceChainParams = searchParams.get("sourceChain") || null;
   const targetChainParams = searchParams.get("targetChain") || null;
   const payloadTypeParams = searchParams.get("payloadType") || null;
-  const [showTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
 
   useEffect(() => {
     if (address) {
