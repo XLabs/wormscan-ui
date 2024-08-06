@@ -43,8 +43,9 @@ enum FilterKeys {
   ExclusiveAppId = "exclusiveAppId",
   SourceChain = "sourceChain",
   TargetChain = "targetChain",
-  PayloadType = "payloadType",
 }
+
+const PAYLOAD_TYPE = "payloadType";
 
 const appIds = [
   C3_APP_ID,
@@ -154,7 +155,7 @@ const Filters = () => {
   const exclusiveAppIdParams = searchParams.get(FilterKeys.ExclusiveAppId) || "";
   const sourceChainParams = searchParams.get(FilterKeys.SourceChain) || "";
   const targetChainParams = searchParams.get(FilterKeys.TargetChain) || "";
-  const payloadTypeParams = searchParams.get(FilterKeys.PayloadType) || "";
+  const payloadTypeParams = searchParams.get(PAYLOAD_TYPE) || "";
 
   const [checkedState, setCheckedState] = useState<ICheckedState>({
     appId: parseParams(appIdParams),
@@ -205,13 +206,8 @@ const Filters = () => {
   };
 
   const resetFilters = () => {
-    setCheckedState({
-      appId: [],
-      exclusiveAppId: [],
-      sourceChain: [],
-      targetChain: [],
-    });
-    navigate("/txs?page=1");
+    Object.values(FilterKeys).forEach(key => searchParams.delete(key));
+    setSearchParams(searchParams);
     setShowFilters(false);
   };
 
@@ -255,7 +251,7 @@ const Filters = () => {
     ],
   });
 
-  const handleOutsideClick = () => {
+  const handleCloseFilters = () => {
     setCheckedState({
       appId: parseParams(appIdParams),
       exclusiveAppId: parseParams(exclusiveAppIdParams),
@@ -266,7 +262,7 @@ const Filters = () => {
     setShowFilters(false);
   };
 
-  useOutsideClick(filterContainerRef, handleOutsideClick);
+  useOutsideClick(filterContainerRef, handleCloseFilters);
 
   return (
     <div className="filters">
@@ -279,15 +275,13 @@ const Filters = () => {
           items={[
             { label: "All", value: "0", ariaLabel: "All" },
             { label: "Transfers", value: "1,3", ariaLabel: "Transfers" },
-            { label: "Tra", value: "1", ariaLabel: "Tra" },
             { label: "Attestation", value: "2", ariaLabel: "Attestation" },
-            { label: "Twithpayload", value: "3", ariaLabel: "Twithpayload" },
           ]}
           onValueChange={value => {
             if (value === "0") {
-              searchParams.delete(FilterKeys.PayloadType);
+              searchParams.delete(PAYLOAD_TYPE);
             } else {
-              searchParams.set(FilterKeys.PayloadType, value);
+              searchParams.set(PAYLOAD_TYPE, value);
               searchParams.set("page", "1");
             }
 
@@ -311,7 +305,7 @@ const Filters = () => {
         <div className={`filters-container ${showFilters ? "show" : ""}`} ref={filterContainerRef}>
           <h4 className="filters-container-title">Filters</h4>
 
-          <button className="filters-container-close-btn" onClick={() => setShowFilters(false)}>
+          <button className="filters-container-close-btn" onClick={handleCloseFilters}>
             <CrossIcon width={24} />
           </button>
 
@@ -334,10 +328,10 @@ const Filters = () => {
             optionStyles={{ padding: 16 }}
             text={
               <div className="filters-container-select-text">
+                Protocol
                 {checkedState.appId.length > 0 && (
                   <span className="counter">{checkedState.appId.length}</span>
                 )}
-                Protocol
               </div>
             }
             type="searchable"
@@ -356,10 +350,10 @@ const Filters = () => {
             optionStyles={{ padding: 16 }}
             text={
               <div className="filters-container-select-text">
+                Source chain
                 {checkedState.sourceChain.length > 0 && (
                   <span className="counter">{checkedState.sourceChain.length}</span>
                 )}
-                Source chain
               </div>
             }
             type="searchable"
@@ -378,10 +372,10 @@ const Filters = () => {
             optionStyles={{ padding: 16 }}
             text={
               <div className="filters-container-select-text">
+                Target chain
                 {checkedState.targetChain.length > 0 && (
                   <span className="counter">{checkedState.targetChain.length}</span>
                 )}
-                Target chain
               </div>
             }
             type="searchable"
