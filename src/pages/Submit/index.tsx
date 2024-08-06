@@ -55,9 +55,9 @@ import "./styles.scss";
 import { sendProtocolSubmission } from "src/utils/cryptoToolkit";
 
 const SubmitYourProtocol = () => {
-  // useEffect(() => {
-  //   analytics.page({ title: "SUBMIT_PROTOCOL" });
-  // }, []);
+  useEffect(() => {
+    analytics.page({ title: "SUBMIT_PROTOCOL" });
+  }, []);
 
   const { environment } = useEnvironment();
 
@@ -473,7 +473,6 @@ const SubmitYourProtocol = () => {
           }
 
           inputTxRef.current?.blur();
-          // navigate(`/developers/submit/operation/${txSearch}`, { replace: true });
         }
       },
     },

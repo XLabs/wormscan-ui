@@ -666,9 +666,7 @@ export const Submit = ({
           <>
             <div
               onClick={() => {
-                // if (binarySelected === "switch") {
                 setSwitchLayout(userLayout);
-                // }
               }}
               className="submit-btn"
             >
