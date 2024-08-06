@@ -4,6 +4,7 @@ import { useNavigateCustom } from "src/utils/hooks";
 import { base64ToHex } from "src/utils/string";
 import { CopyIcon, InfoCircleIcon, TriangleDownIcon } from "src/icons/generic";
 import { processInputValue, processInputType } from "src/utils/parser";
+import { Network } from "@wormhole-foundation/sdk";
 
 type Props = {
   inputType: "base64" | "hex";
@@ -15,6 +16,7 @@ type Props = {
   setInputsIndex: (a: number) => void;
   page: "vaa-parser" | "submit";
   resetSubmitFields?: () => void;
+  network: Network;
 };
 
 const VaaInput = ({
@@ -27,6 +29,7 @@ const VaaInput = ({
   setInputsIndex,
   resetSubmitFields,
   page,
+  network,
 }: Props) => {
   const [hideTextarea, setHideTextarea] = useState(false);
   const textareaRef = useRef(null);
@@ -100,7 +103,7 @@ const VaaInput = ({
 
             setTxSearch("");
 
-            navigate(`/developers/${page}/${newInput}`, { replace: true });
+            navigate(`/developers/${page}/${newInput}?network=${network}`, { replace: true });
             textareaRef?.current?.blur();
           }}
           name="VAA-Input"

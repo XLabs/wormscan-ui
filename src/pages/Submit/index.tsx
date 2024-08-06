@@ -931,6 +931,7 @@ const SubmitYourProtocol = () => {
                     setInputsIndex={setInputsIndex}
                     resetSubmitFields={resetSubmitFields}
                     page="submit"
+                    network={environment.network}
                   />
                   <div className="parse-content">
                     <span

@@ -61,7 +61,7 @@ const VaaParser = () => {
     setTxSearch("");
     setResult(null);
     setResultRaw(null);
-    navigate("/developers/vaa-parser");
+    navigate(`/developers/vaa-parser?network=${environment.network}`);
   };
 
   const collapseGuardianSignatures = () => {
@@ -497,6 +497,7 @@ const VaaParser = () => {
                 setInputs={setInputs}
                 setInputsIndex={setInputsIndex}
                 page="vaa-parser"
+                network={environment.network}
               />
 
               <div className="parse-content">
