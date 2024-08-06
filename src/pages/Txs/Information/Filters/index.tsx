@@ -146,6 +146,7 @@ const Filters = () => {
   const navigate = useNavigateCustom();
   const [showFilters, setShowFilters] = useState(false);
   const filterContainerRef = useRef<HTMLDivElement>(null);
+  const showFiltersButtonRef = useRef<HTMLButtonElement>(null);
 
   const { width } = useWindowSize();
   const isDesktop = width >= BREAKPOINTS.desktop;
@@ -262,11 +263,15 @@ const Filters = () => {
     setShowFilters(false);
   };
 
-  useOutsideClick(filterContainerRef, handleCloseFilters);
+  useOutsideClick({
+    ref: filterContainerRef,
+    secondRef: showFiltersButtonRef,
+    callback: handleCloseFilters,
+  });
 
   return (
     <div className="filters">
-      {showFilters && !isDesktop && <div className="filters-bg" onClick={handleShowFilters} />}
+      {showFilters && !isDesktop && <div className="filters-bg" />}
 
       <div className="filters-top">
         <ToggleGroup
@@ -294,6 +299,7 @@ const Filters = () => {
         <button
           className={`filters-top-btn ${showFilters ? "active" : ""}`}
           onClick={handleShowFilters}
+          ref={showFiltersButtonRef}
         >
           <FilterListIcon width={24} />
           <span>Filters</span>

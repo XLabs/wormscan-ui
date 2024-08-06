@@ -64,7 +64,7 @@ const Select = ({
     setIsOpen(false);
   };
 
-  useOutsideClick(ref, handleOutsideClick);
+  useOutsideClick({ ref, callback: handleOutsideClick });
 
   if (type === "searchable") {
     return (

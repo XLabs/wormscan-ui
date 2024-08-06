@@ -2,14 +2,25 @@ import { RefObject, useCallback, useEffect } from "react";
 
 type CallbackType = (event?: MouseEvent | TouchEvent) => void;
 
-const useOutsideClick = (ref: RefObject<HTMLElement>, callback: CallbackType): void => {
+interface UseOutsideClickProps {
+  ref: RefObject<HTMLElement>;
+  callback: CallbackType;
+  secondRef?: RefObject<HTMLElement>;
+}
+
+const useOutsideClick = ({ ref, callback, secondRef }: UseOutsideClickProps): void => {
   const handleClick = useCallback(
     (event: MouseEvent | TouchEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      if (
+        ref.current &&
+        !ref.current.contains(target) &&
+        (!secondRef || (secondRef.current && !secondRef.current.contains(target)))
+      ) {
         callback(event);
       }
     },
-    [callback, ref],
+    [callback, ref, secondRef],
   );
 
   useEffect(() => {
