@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { ChainId, VAA, chainToChainId, deserialize, encoding } from "@wormhole-foundation/sdk";
+import { ChainId, chainToChainId, deserialize, encoding, network } from "@wormhole-foundation/sdk";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { useNavigateCustom } from "src/utils/hooks";
 import analytics from "src/analytics";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
 import { GetParsedVaaOutput } from "src/api/guardian-network/types";
-import { JsonText, Loader, NavLink, Tooltip } from "src/components/atoms";
+import { JsonText, Loader, NavLink, Tooltip, CopyContent } from "src/components/atoms";
 import {
   AlertTriangle,
   CopyIcon,
@@ -16,19 +16,16 @@ import {
   SearchIcon,
   TriangleDownIcon,
 } from "src/icons/generic";
-import { CopyToClipboard } from "src/components/molecules";
+import { InputEncodedVaa, CopyToClipboard } from "src/components/molecules";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
 import { getGuardianSet, txType } from "src/consts";
 import { formatDate } from "src/utils/date";
 import { useParams } from "react-router-dom";
-import { hexToBase64 } from "src/utils/string";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { waitForElement } from "./waitForElement";
 
-import VaaInput from "./Input";
-import CopyContent from "./CopyContent";
+import { stringifyWithBigInt } from "src/utils/object";
+import { processInputValue, processInputType, waitForElement } from "src/utils/parser";
 import "./styles.scss";
-import { deepCloneWithBigInt, stringifyWithBigInt } from "src/utils/object";
 
 const VaaParser = () => {
   useEffect(() => {
@@ -64,7 +61,7 @@ const VaaParser = () => {
     setTxSearch("");
     setResult(null);
     setResultRaw(null);
-    navigate("/vaa-parser");
+    navigate(`/developers/vaa-parser?network=${environment.network}`);
   };
 
   const collapseGuardianSignatures = () => {
@@ -126,6 +123,8 @@ const VaaParser = () => {
             a.innerHTML?.includes("recipientChain") ||
             a.innerHTML?.includes("refundChainId") ||
             a.innerHTML?.includes("targetChainId") ||
+            a.innerHTML?.includes("sourceChainId") ||
+            a.innerHTML?.includes("destChainId") ||
             a.innerHTML?.includes("toChain") ||
             a.innerHTML?.includes("tokenChain") ||
             a.innerHTML?.includes("feeChain")
@@ -363,7 +362,7 @@ const VaaParser = () => {
       );
 
       if (!!otherNetworkResponse?.length) {
-        navigate(`/vaa-parser/operation/${txSearch}?network=${otherNetwork}`);
+        navigate(`/developers/vaa-parser/operation/${txSearch}?network=${otherNetwork}`);
       }
 
       return [];
@@ -385,7 +384,9 @@ const VaaParser = () => {
           }
 
           inputTxRef.current?.blur();
-          navigate(`/vaa-parser/operation/${txSearch}`, { replace: true });
+          navigate(`/developers/vaa-parser/operation/${txSearch}?network=${environment.network}`, {
+            replace: true,
+          });
         }
       },
     },
@@ -425,7 +426,10 @@ const VaaParser = () => {
 
                     setTxSearch(e.target.value);
                     inputTxRef?.current?.blur();
-                    navigate(`/vaa-parser/operation/${e.target.value}`, { replace: true });
+                    navigate(
+                      `/developers/vaa-parser/operation/${e.target.value}?network=${environment.network}`,
+                      { replace: true },
+                    );
                   }}
                   name="txType-input"
                   aria-label="Transaction hash or VAA ID input"
@@ -484,7 +488,7 @@ const VaaParser = () => {
                   </div>
                 </div>
               )}
-              <VaaInput
+              <InputEncodedVaa
                 input={input}
                 inputType={inputType}
                 setInput={setInput}
@@ -492,6 +496,8 @@ const VaaParser = () => {
                 setTxSearch={setTxSearch}
                 setInputs={setInputs}
                 setInputsIndex={setInputsIndex}
+                page="vaa-parser"
+                network={environment.network}
               />
 
               <div className="parse-content">
@@ -588,24 +594,3 @@ const VaaParser = () => {
 };
 
 export default VaaParser;
-
-export const processInputValue = (str: string) => {
-  const input = str?.startsWith("0x") ? str.replace("0x", "") : str;
-  const hexRegExp = /^[0-9a-fA-F]+$/;
-  const isHex = hexRegExp.test(input);
-
-  if (isHex) {
-    return hexToBase64(input);
-  }
-
-  return input || "";
-};
-
-export const processInputType = (str: string): "base64" | "hex" => {
-  const input = str?.startsWith("0x") ? str.replace("0x", "") : str;
-  const hexRegExp = /^[0-9a-fA-F]+$/;
-  const isHex = hexRegExp.test(input);
-
-  if (isHex) return "hex";
-  return "base64";
-};

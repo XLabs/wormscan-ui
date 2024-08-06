@@ -6,7 +6,7 @@ import { BlockchainIcon, NavLink, ProtocolIcon, Tooltip } from "src/components/a
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import { SearchNotFound } from "src/components/organisms";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { filterAppIds, formatAppIds, parseAddress, parseTx, shortAddress } from "src/utils/crypto";
+import { formatAppIds, parseAddress, parseTx, shortAddress } from "src/utils/crypto";
 import { timeAgo } from "src/utils/date";
 import { ArrowRightIcon, CopyIcon } from "src/icons/generic";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
@@ -17,12 +17,11 @@ import { GetOperationsInput, GetOperationsOutput } from "src/api/guardian-networ
 import { Information } from "./Information";
 import analytics from "src/analytics";
 import {
-  ALL_BRIDGE_APP_ID,
+  C3_APP_ID,
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
   CONNECT_APP_ID,
   IStatus,
-  MAYAN_APP_ID,
   NTT_APP_ID,
   PORTAL_APP_ID,
   UNKNOWN_APP_ID,
@@ -190,6 +189,18 @@ const Txs = () => {
 
               const attributeType = tx.sourceChain?.attribute?.type;
               const attributeValue = tx.sourceChain?.attribute?.value;
+
+              // --- Check C3
+              if (
+                tx?.content?.standarizedProperties?.appIds?.includes(PORTAL_APP_ID) &&
+                (tx?.sourceChain?.from ===
+                  "BM26KC3NHYQ7BCDWVMP2OM6AWEZZ6ZGYQWKAQFC7XECOUBLP44VOYNBQTA" ||
+                  tx?.sourceChain?.from ===
+                    "W7MQDZ6ZCBODX63NRIS6FMU5G7YYHDIK32TAAIJAWGPWDAO44GPQS6S3LU") &&
+                !tx?.content?.standarizedProperties?.appIds?.includes(C3_APP_ID)
+              ) {
+                tx.content.standarizedProperties.appIds.push(C3_APP_ID);
+              }
 
               // --- NTT Transfer
               if (appIds?.includes(NTT_APP_ID)) {

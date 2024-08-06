@@ -30,6 +30,7 @@ interface Props {
   text?: string | JSX.Element;
   type?: "primary" | "searchable" | "secondary";
   value: any;
+  closeOnSelect?: boolean;
 }
 
 const Select = ({
@@ -50,6 +51,7 @@ const Select = ({
   placeholder = "Select...",
   text = "",
   type = "primary",
+  closeOnSelect,
   value,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -106,7 +108,10 @@ const Select = ({
               menuPortalTarget={document.body}
               name={name}
               noOptionsMessage={() => noOptionsMessage}
-              onChange={onValueChange}
+              onChange={v => {
+                onValueChange(v);
+                if (closeOnSelect) setIsOpen(false);
+              }}
               options={items}
               placeholder="Search..."
               styles={{

@@ -40,10 +40,15 @@ const getAbbreviatedName = ({
   abbreviateIf: boolean;
   chainName: string;
 }) => {
+  if (abbreviateIf && chainName === "WH Gateway") {
+    return "Gateway";
+  }
+
   if (abbreviateIf) {
     const nameParts = chainName.split(" ");
     return nameParts.length > 1 ? nameParts[0] : chainName;
   }
+
   return chainName;
 };
 

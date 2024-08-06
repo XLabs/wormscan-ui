@@ -26,3 +26,35 @@ export const stringifyWithBigInt = (obj: object, space?: number): string => {
 export const parseWithBigInt = (str: string) => {
   return JSON.parse(str, bigintReviver);
 };
+
+export const getNestedProperty = (obj: any, key: string) => {
+  if (!key) return;
+  return key.split(".").reduce((o, x) => (o == null ? o : o[x]), obj);
+};
+
+// Replacer function to convert BigInt to strings
+const bigintStringReplacer = (key: string, value: any): any => {
+  if (typeof value === "bigint") {
+    return value.toString();
+  }
+  return value;
+};
+
+export const stringifyWithStringBigInt = (obj: object, space?: number): string => {
+  return JSON.stringify(obj, bigintStringReplacer, space);
+};
+
+// return all the keys of an object (deep)
+export const allKeys = (obj: any): Array<any> => {
+  const keys: any[] = [];
+
+  Object.entries(obj).forEach(([key, value]) => {
+    if (typeof value === "object") {
+      keys.push(allKeys(value).map(a => `${key}.${a}`));
+    } else {
+      keys.push(key);
+    }
+  });
+
+  return keys.flat();
+};

@@ -1,3 +1,20 @@
+import { hexToBase64 } from "./string";
+
+const hexRegExp = /^[0-9a-fA-F]+$/;
+export const isHex = (input: string) => hexRegExp.test(input);
+
+export const processInputValue = (str: string) => {
+  const input = str?.startsWith("0x") ? str.replace("0x", "") : str;
+  if (isHex(input)) return hexToBase64(input);
+  return input || "";
+};
+
+export const processInputType = (str: string): "base64" | "hex" => {
+  const input = str?.startsWith("0x") ? str.replace("0x", "") : str;
+  if (isHex(input)) return "hex";
+  return "base64";
+};
+
 // Waits for element in DOM
 export function waitForElement(selector: string): Promise<Element> {
   return new Promise((resolve, reject) => {
