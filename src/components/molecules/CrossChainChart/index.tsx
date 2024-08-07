@@ -13,12 +13,10 @@ import { ChainId } from "src/api";
 
 const MAINNET_TYPE_LIST = [
   { label: i18n.t("home.crossChain.volume"), value: "notional", ariaLabel: "Volume" },
-  { label: i18n.t("home.crossChain.count"), value: "tx", ariaLabel: "Transactions" },
+  { label: "Transfers", value: "tx", ariaLabel: "Transfers" },
 ];
 
-const TESTNET_TYPE_LIST = [
-  { label: i18n.t("home.crossChain.count"), value: "tx", ariaLabel: "Transactions" },
-];
+const TESTNET_TYPE_LIST = [{ label: "Transfers", value: "tx", ariaLabel: "Transfers" }];
 
 const RANGE_LIST = [
   { label: "Last 7 days", value: "7d" },
@@ -75,7 +73,7 @@ const CrossChainChart = () => {
             className="cross-chain-options-items"
           />
         ) : (
-          <div className="cross-chain-options-txsText">Transactions</div>
+          <div className="cross-chain-options-txsText">Transfers</div>
         )}
 
         <div className="cross-chain-destination" aria-label="Select graphic type">

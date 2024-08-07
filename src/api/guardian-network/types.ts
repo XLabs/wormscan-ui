@@ -92,6 +92,7 @@ export interface ProtocolsStatsOutput {
   total_messages: number;
   last_day_messages: number;
   last_day_diff_percentage: string;
+  last_day_volume: number;
 }
 
 export interface AssetsByVolumeInput {

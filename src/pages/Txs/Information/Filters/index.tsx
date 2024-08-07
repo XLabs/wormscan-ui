@@ -16,6 +16,7 @@ import {
   // UNKNOWN_APP_ID, disabled until the backend is ready
   GATEWAY_APP_ID,
   USDT_TRANSFER_APP_ID,
+  C3_APP_ID,
 } from "src/consts";
 import { formatAppId } from "src/utils/crypto";
 import { getChainName } from "src/utils/wormhole";
@@ -48,17 +49,18 @@ enum FilterKeys {
 }
 
 const appIds = [
+  C3_APP_ID,
   CCTP_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
-  USDT_TRANSFER_APP_ID, // disabled until it goes prod
+  GATEWAY_APP_ID,
+  GR_APP_ID,
   MAYAN_APP_ID,
   NTT_APP_ID,
-  PORTAL_NFT_APP_ID,
   PORTAL_APP_ID,
-  GR_APP_ID,
+  PORTAL_NFT_APP_ID,
+  USDT_TRANSFER_APP_ID,
   // UNKNOWN_APP_ID, // disabled until the backend is ready
-  GATEWAY_APP_ID,
 ];
 
 const ChainFilterMainnet = [

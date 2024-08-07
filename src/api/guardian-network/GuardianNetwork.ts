@@ -28,7 +28,129 @@ export class GuardianNetwork {
   }
 
   async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
-    return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
+    // TODO: THIS IS THE ONLY LINE THAT SHOULD BE CALLED HERE:
+    // return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
+
+    const dateNow = new Date();
+    const date24hsAgo = new Date(dateNow.getTime() - 24 * 60 * 60 * 1000);
+
+    const formattedNow = dateNow.toISOString();
+    const formatted24hsAgo = date24hsAgo.toISOString();
+
+    const getMayan = async () => {
+      const mayanResp = await fetch(
+        `https://explorer-api.mayan.finance/v3/stats/wh/activity?from=${formatted24hsAgo}&to=${formattedNow}`,
+      );
+
+      if (mayanResp.ok) {
+        const mayanResponse = await mayanResp.json();
+        return mayanResponse;
+      }
+      return null;
+    };
+
+    const getAllBridge = async () => {
+      const allBridgeResp = await fetch(
+        `https://analytics.api.allbridgecoreapi.net/wormhole/activity?from=${formatted24hsAgo}&to=${formattedNow}`,
+      );
+
+      if (allBridgeResp.ok) {
+        const allBridgeResponse = await allBridgeResp.json();
+        return allBridgeResponse;
+      }
+      return null;
+    };
+
+    const getPortal = async () => {
+      try {
+        const portalResp = await this._client.doGet<any>(
+          `/x-chain-activity/tops?from=${formatted24hsAgo}&to=${formattedNow}&timespan=1h&appId=PORTAL_TOKEN_BRIDGE`,
+        );
+
+        let totalVolume = 0;
+        let totalCount = 0;
+
+        portalResp.forEach((a: any) => {
+          totalVolume += a.volume / 10 ** 8;
+          totalCount += a.count;
+        });
+
+        return { totalVolume };
+      } catch {
+        return null;
+      }
+    };
+
+    const getCCTP = async () => {
+      try {
+        const cctpResp = await this._client.doGet<any>(
+          `/x-chain-activity/tops?from=${formatted24hsAgo}&to=${formattedNow}&timespan=1h&appId=CCTP_WORMHOLE_INTEGRATION`,
+        );
+
+        let totalVolume = 0;
+        let totalCount = 0;
+
+        cctpResp.forEach((a: any) => {
+          totalVolume += a.volume / 10 ** 8;
+          totalCount += a.count;
+        });
+
+        return { totalVolume };
+      } catch {
+        return null;
+      }
+    };
+
+    const getNTT = async () => {
+      try {
+        const nttResp = await this._client.doGet<any>(
+          `/x-chain-activity/tops?from=${formatted24hsAgo}&to=${formattedNow}&timespan=1h&appId=NATIVE_TOKEN_TRANSFER`,
+        );
+
+        let totalVolume = 0;
+        let totalCount = 0;
+
+        nttResp.forEach((a: any) => {
+          totalVolume += a.volume / 10 ** 8;
+          totalCount += a.count;
+        });
+
+        return { totalVolume };
+      } catch {
+        return null;
+      }
+    };
+
+    const protocolStats = await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
+    const mayanStats = await getMayan();
+    const allBridgeStats = await getAllBridge();
+    const portalStats = await getPortal();
+    const cctpStats = await getCCTP();
+    const nttStats = await getNTT();
+
+    for (const protocol of protocolStats) {
+      if (protocol.protocol === "mayan" && mayanStats) {
+        protocol.last_day_volume = mayanStats.volume;
+      }
+
+      if (protocol.protocol === "allbridge" && allBridgeStats) {
+        protocol.last_day_volume = +allBridgeStats.total_value_transferred;
+      }
+
+      if (protocol.protocol === "portal_token_bridge" && portalStats) {
+        protocol.last_day_volume = portalStats.totalVolume;
+      }
+
+      if (protocol.protocol === "cctp" && cctpStats) {
+        protocol.last_day_volume = null; // cctpStats.totalVolume;
+      }
+
+      if (protocol.protocol === "native_token_transfer" && nttStats) {
+        protocol.last_day_volume = nttStats.totalVolume;
+      }
+    }
+
+    return protocolStats;
   }
 
   async getOperations({

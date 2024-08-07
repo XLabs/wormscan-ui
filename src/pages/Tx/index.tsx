@@ -38,6 +38,7 @@ import {
 } from "src/utils/recoilStates";
 import { getNttInfo } from "src/utils/wh-ntt-rpc";
 import {
+  C3_APP_ID,
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
   CONNECT_APP_ID,
@@ -1059,6 +1060,18 @@ const Tx = () => {
           });
         }
         // ----
+
+        // Check C3
+        if (
+          data?.content?.standarizedProperties?.appIds?.includes(PORTAL_APP_ID) &&
+          (data?.sourceChain?.from ===
+            "BM26KC3NHYQ7BCDWVMP2OM6AWEZZ6ZGYQWKAQFC7XECOUBLP44VOYNBQTA" ||
+            data?.sourceChain?.from ===
+              "W7MQDZ6ZCBODX63NRIS6FMU5G7YYHDIK32TAAIJAWGPWDAO44GPQS6S3LU") &&
+          !data?.content?.standarizedProperties?.appIds?.includes(C3_APP_ID)
+        ) {
+          data.content.standarizedProperties.appIds.push(C3_APP_ID);
+        }
 
         // Add STATUS logic
         const { fromChain, appIds } = data?.content?.standarizedProperties || {};
