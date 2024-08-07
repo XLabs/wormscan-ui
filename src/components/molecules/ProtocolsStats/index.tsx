@@ -73,7 +73,7 @@ const ProtocolsStats = () => {
 
   return (
     <div className="protocols-stats">
-      <h3 className="protocols-stats-title">Featured Protocols Stats</h3>
+      <h3 className="protocols-stats-title">Top 5 Protocols by Volume</h3>
       {isLoading ? (
         <div className="protocols-stats-loader">
           <Loader />
@@ -131,16 +131,27 @@ const ProtocolsStats = () => {
                   : " -"}
               </p>
             </div>
+
             <div className="protocols-stats-container-info-item">
+              <h4 className="protocols-stats-container-info-item-title">24H VOLUME</h4>
+              <p className="protocols-stats-container-info-item-value">
+                $
+                {protocolSelected?.last_day_volume
+                  ? formatNumber(protocolSelected?.last_day_volume, 0)
+                  : "-"}
+              </p>
+            </div>
+
+            {/* <div className="protocols-stats-container-info-item">
               <h4 className="protocols-stats-container-info-item-title">TOTAL MESSAGES</h4>
               <p className="protocols-stats-container-info-item-value">
                 {protocolSelected?.total_messages
                   ? formatNumber(protocolSelected?.total_messages, 0)
                   : "-"}
               </p>
-            </div>
+            </div> */}
             <div className="protocols-stats-container-info-item">
-              <h4 className="protocols-stats-container-info-item-title">24H MESSAGES</h4>
+              <h4 className="protocols-stats-container-info-item-title">24H NUMBER OF TRANSFERS</h4>
               <p className="protocols-stats-container-info-item-value">
                 {protocolSelected?.last_day_messages &&
                 protocolSelected?.last_day_diff_percentage ? (

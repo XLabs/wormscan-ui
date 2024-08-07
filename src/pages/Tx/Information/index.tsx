@@ -462,7 +462,6 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
   };
 
   const AlertsContent = () => {
-    console.log({ hasVAA, isUnknownPayloadType });
     if (hasVAA && !isUnknownPayloadType) return null;
     return (
       <div className="tx-information-alerts">

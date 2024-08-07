@@ -43,18 +43,14 @@ export async function getPorticoInfo(
       sourceSymbol = getChainInfo(env, sourceChain as ChainId).nativeCurrencyName;
     }
 
-    const redeemTokenAddress = parsedPayload.finalTokenAddress;
+    const redeemTokenAddress = parseAddress(parsedPayload.finalTokenAddress);
 
     if (shouldUnwrapNative) {
       shouldShowTargetTokenUrl = false;
       targetSymbol = getChainInfo(env, targetChain as ChainId).nativeCurrencyName;
       decimals = getChainInfo(env, targetChain as ChainId).nativeCurrencyDecimals;
     } else {
-      const tokenDetails = await getTokenInformation(
-        targetChain,
-        env,
-        parsedPayload.finalTokenAddress,
-      );
+      const tokenDetails = await getTokenInformation(targetChain, env, redeemTokenAddress);
       if (tokenDetails?.tokenDecimals) {
         decimals = tokenDetails.tokenDecimals;
       }
