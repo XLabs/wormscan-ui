@@ -135,9 +135,8 @@ const ProtocolsStats = () => {
             <div className="protocols-stats-container-info-item">
               <h4 className="protocols-stats-container-info-item-title">24H VOLUME</h4>
               <p className="protocols-stats-container-info-item-value">
-                $
                 {protocolSelected?.last_day_volume
-                  ? formatNumber(protocolSelected?.last_day_volume, 0)
+                  ? "$" + formatNumber(protocolSelected?.last_day_volume, 0)
                   : "-"}
               </p>
             </div>

@@ -37,8 +37,6 @@ export class GuardianNetwork {
     const formattedNow = dateNow.toISOString();
     const formatted24hsAgo = date24hsAgo.toISOString();
 
-    console.log({ formatted24hsAgo, formattedNow });
-
     const getMayan = async () => {
       const mayanResp = await fetch(
         `https://explorer-api.mayan.finance/v3/stats/wh/activity?from=${formatted24hsAgo}&to=${formattedNow}`,
@@ -144,15 +142,13 @@ export class GuardianNetwork {
       }
 
       if (protocol.protocol === "cctp" && cctpStats) {
-        protocol.last_day_volume = cctpStats.totalVolume;
+        protocol.last_day_volume = null; // cctpStats.totalVolume;
       }
 
       if (protocol.protocol === "native_token_transfer" && nttStats) {
         protocol.last_day_volume = nttStats.totalVolume;
       }
     }
-
-    console.log({ protocolStats, mayanStats, allBridgeStats, portalStats, cctpStats, nttStats });
 
     return protocolStats;
   }
