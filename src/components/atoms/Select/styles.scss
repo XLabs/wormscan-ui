@@ -196,7 +196,7 @@
       }
 
       &::after {
-        background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15.25 10.25C15.25 13.0114 13.0114 15.25 10.25 15.25C7.48858 15.25 5.25 13.0114 5.25 10.25C5.25 7.48858 7.48858 5.25 10.25 5.25C13.0114 5.25 15.25 7.48858 15.25 10.25Z' stroke='rgb(153, 153, 153)' stroke-width='1.5'/%3E%3Cpath d='M13.7855 13.7855L19.5 19.5' stroke='rgb(153, 153, 153)' stroke-width='1.5'/%3E%3C/svg%3E");
+        background-image: url("/src/assets/selectSearchIcon.svg");
         background-size: cover;
         border-radius: 50%;
         content: "";
