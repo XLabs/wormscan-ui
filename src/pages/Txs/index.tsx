@@ -132,7 +132,7 @@ const Txs = () => {
     payloadType: payloadTypeParams,
   };
 
-  const { refetch, isLoading: isLoadingOperations } = useQuery(
+  const { refetch, isFetching: isLoadingOperations } = useQuery(
     ["getTxs", getOperationsInput],
     () => getClient().guardianNetwork.getOperations(getOperationsInput),
     {
