@@ -714,7 +714,7 @@ const ChainActivity = () => {
                     rotate: 0,
                     style: {
                       colors: "var(--color-gray-400)",
-                      fontFamily: "Roboto, sans-serif",
+                      fontFamily: "Roboto Mono, Roboto, sans-serif",
                       fontSize: "12px",
                       fontWeight: 400,
                     },
