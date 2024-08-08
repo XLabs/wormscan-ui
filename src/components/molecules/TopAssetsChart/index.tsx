@@ -5,7 +5,7 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import { BREAKPOINTS } from "src/consts";
 import { BlockchainIcon } from "src/components/atoms";
 import { WormholeScanBrand } from "src/components/molecules";
-import { changePathColors, formatterYAxis } from "src/utils/apexChartUtils";
+import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { AssetsByVolumeTransformed } from "src/api/guardian-network/types";
 import { getChainIcon } from "src/utils/wormhole";
 import "./styles.scss";
@@ -20,7 +20,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
   const { t } = useTranslation();
   const [XPositionLabels, setXPositionLabels] = useState([]);
   const { environment } = useEnvironment();
-  const chartDomRef = useRef(null);
+  const chartRef = useRef(null);
   const currentNetwork = environment.network;
   const assetsDataForChart = top7AssetsData?.[rowSelected]?.tokens;
   const isMobile = width < BREAKPOINTS.tablet;
@@ -29,7 +29,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
 
   useEffect(() => {
     const getLabelsPos = () => {
-      const labels = chartDomRef?.current?.querySelectorAll(".apexcharts-xaxis-label");
+      const labels = chartRef?.current?.querySelectorAll(".apexcharts-xaxis-label");
 
       const itemsPosition: { x: number; y: number }[] = [];
 
@@ -59,7 +59,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
   }
 
   return (
-    <div className="chart-container" ref={chartDomRef}>
+    <div className="chart-container" ref={chartRef}>
       <WormholeScanBrand />
 
       <div>
@@ -142,11 +142,11 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
           chart: {
             events: {
               mouseLeave: () => {
-                changePathColors({ ref: chartDomRef, color: "var(--color-primary-100)" });
+                changePathOpacity({ ref: chartRef, opacity: 1 });
               },
               mouseMove(e, chart, options) {
                 if (options.dataPointIndex < 0) {
-                  changePathColors({ ref: chartDomRef, color: "var(--color-primary-100)" });
+                  changePathOpacity({ ref: chartRef, opacity: 1 });
                 }
               },
             },
@@ -201,15 +201,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
                 chainId: assetsDataForChart?.[dataPointIndex]?.emitter_chain,
               });
 
-              const volume = assetsDataForChart?.[dataPointIndex]?.volume;
-              const pathWithThisVolume = chartDomRef.current.querySelector(`path[val="${volume}"]`);
-              const restOfPaths = chartDomRef.current.querySelectorAll(
-                `path[val]:not([val="${volume}"])`,
-              );
-              pathWithThisVolume.style.fill = "var(--color-primary-100)";
-              restOfPaths.forEach((path: any) => {
-                path.style.fill = "var(--color-primary-40)";
-              });
+              updatePathStyles({ chartRef, dataPointIndex });
 
               return (
                 "<div class='chart-container-tooltip'>" +

@@ -35,9 +35,11 @@ export const Calendar = ({
     unit: "days" | "months" | "years",
     resetHours: boolean = true,
     btnSelected: TSelectedPeriod = "custom",
+    startDate?: Date,
+    endDate?: Date,
   ) => {
-    const start = new Date();
-    const end = new Date();
+    const start = startDate || new Date();
+    const end = endDate || new Date();
     setLastBtnSelected(btnSelected);
 
     if (resetHours) {
@@ -45,13 +47,15 @@ export const Calendar = ({
       end.setHours(0, 0, 0, 0);
     }
 
-    const timeSetters = {
-      days: (date: Date, value: number) => date.setDate(date.getDate() - value),
-      months: (date: Date, value: number) => date.setMonth(date.getMonth() - value),
-      years: (date: Date, value: number) => date.setFullYear(date.getFullYear() - value),
-    };
+    if (!startDate) {
+      const timeSetters = {
+        days: (date: Date, value: number) => date.setDate(date.getDate() - value),
+        months: (date: Date, value: number) => date.setMonth(date.getMonth() - value),
+        years: (date: Date, value: number) => date.setFullYear(date.getFullYear() - value),
+      };
 
-    timeSetters[unit](start, value);
+      timeSetters[unit](start, value);
+    }
 
     setStartDate(start);
     setEndDate(end);
@@ -60,8 +64,13 @@ export const Calendar = ({
   const handleLast24Hours = () => setTimePeriod(1, "days", false, "24h");
   const handleLastWeekBtn = () => setTimePeriod(7, "days", true, "week");
   const handleLastMonthBtn = () => setTimePeriod(1, "months", true, "month");
-  const handleLast6MonthsBtn = () => setTimePeriod(6, "months", true, "6months");
+  const handleLast6MonthsBtn = () => setTimePeriod(6, "months", true, "custom");
   const handleLastYearBtn = () => setTimePeriod(1, "years", true, "year");
+  const handleAllTime = () => {
+    const start = new Date(2021, 7, 1);
+    const end = new Date();
+    setTimePeriod(0, "days", true, "all", start, end);
+  };
 
   const handleOutsideClickDate = () => {
     setStartDate(startDateDisplayed);
@@ -72,7 +81,7 @@ export const Calendar = ({
   useOutsideClick(dateContainerRef, handleOutsideClickDate);
 
   return (
-    <div className="chain-activity-chart-top-section" ref={dateContainerRef}>
+    <div className="chain-activity-chart-top-section calendar-section" ref={dateContainerRef}>
       <button
         className="chain-activity-chart-top-section-btn"
         onClick={() => setShowCalendar(!showCalendar)}
@@ -100,10 +109,10 @@ export const Calendar = ({
             "Last week"
           ) : lastBtnSelected === "month" ? (
             "Last month"
-          ) : lastBtnSelected === "6months" ? (
-            "Last 6 months"
           ) : lastBtnSelected === "year" ? (
             "Last year"
+          ) : lastBtnSelected === "all" ? (
+            "All time"
           ) : (
             ""
           )}
@@ -185,18 +194,21 @@ export const Calendar = ({
               Last month
             </button>
             <button
-              className={`btn ${lastBtnSelected === "6months" ? "active" : ""}`}
-              onClick={handleLast6MonthsBtn}
-            >
-              Last 6 months
-            </button>
-            <button
               className={`btn ${lastBtnSelected === "year" ? "active" : ""}`}
               onClick={handleLastYearBtn}
             >
               Last year
             </button>
-            <button className={`btn ${lastBtnSelected === "custom" ? "active" : ""}`}>
+            <button
+              className={`btn ${lastBtnSelected === "all" ? "active" : ""}`}
+              onClick={handleAllTime}
+            >
+              All time
+            </button>
+            <button
+              className={`btn ${lastBtnSelected === "custom" ? "active" : ""}`}
+              onClick={handleLast6MonthsBtn}
+            >
               Custom
             </button>
           </div>

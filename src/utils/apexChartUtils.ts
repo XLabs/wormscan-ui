@@ -56,16 +56,34 @@ export const formatterYAxis = (() => {
   };
 })();
 
-export const changePathColors = ({
+export const changePathOpacity = ({
+  opacity,
   ref,
-  color,
 }: {
+  opacity: number;
   ref: React.RefObject<HTMLDivElement>;
-  color: string;
 }) => {
   const paths = ref.current.querySelectorAll("path[val]");
 
   paths.forEach((path: any) => {
-    path.style.fill = color;
+    path.style.opacity = opacity;
+  });
+};
+
+export const updatePathStyles = ({
+  chartRef,
+  dataPointIndex,
+}: {
+  chartRef: any;
+  dataPointIndex: number;
+}) => {
+  const pathsWithThisJ = chartRef.current.querySelectorAll(`path[j="${dataPointIndex}"]`);
+  const restOfPaths = chartRef.current.querySelectorAll(`path[val]:not([j="${dataPointIndex}"])`);
+
+  pathsWithThisJ.forEach((path: any) => {
+    path.style.opacity = 1;
+  });
+  restOfPaths.forEach((path: any) => {
+    path.style.opacity = 0.3;
   });
 };

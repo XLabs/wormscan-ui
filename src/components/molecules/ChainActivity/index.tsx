@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BlockchainIcon, Loader, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
-import { formatterYAxis } from "src/utils/apexChartUtils";
+import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
 import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
@@ -44,16 +44,19 @@ const TYPE_CHART_LIST = [
 
 const ChainActivity = () => {
   const { width } = useWindowSize();
+  const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
+  const isBigDesktop = width >= BREAKPOINTS.bigDesktop;
 
   const chainsContainerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef(null);
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
 
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const [startDate, setStartDate] = useState(yesterday);
+  const initialDataDate = new Date(2021, 7, 1);
+
+  const [startDate, setStartDate] = useState(initialDataDate);
   const [endDate, setEndDate] = useState(new Date());
-  const [startDateDisplayed, setStartDateDisplayed] = useState(yesterday);
+  const [startDateDisplayed, setStartDateDisplayed] = useState(initialDataDate);
   const [endDateDisplayed, setEndDateDisplayed] = useState(new Date());
 
   const [showAllChains, setShowAllChains] = useState(true);
@@ -62,7 +65,7 @@ const ChainActivity = () => {
   const [messagesNumber, setMessagesNumber] = useState(0);
   const [allMessagesNumber, setAllMessagesNumber] = useState(0);
 
-  const [lastBtnSelected, setLastBtnSelected] = useState<TSelectedPeriod>("24h");
+  const [lastBtnSelected, setLastBtnSelected] = useState<TSelectedPeriod>("all");
   const [openFilters, setOpenFilters] = useState(false);
 
   useLockBodyScroll({
@@ -73,6 +76,10 @@ const ChainActivity = () => {
       "select__option",
       "select-custom-option-container",
       "select-custom-option",
+      "btn",
+      "show-date",
+      "chain-activity-chart-top-section-box-date-calendar",
+      "react-datepicker",
     ],
   });
 
@@ -116,12 +123,21 @@ const ChainActivity = () => {
   const [filters, setFilters] = useState<IChainActivityInput>({
     from: startDate?.toISOString(),
     to: endDate?.toISOString(),
-    timespan: "1h",
+    timespan: "1mo",
     sourceChain: [],
   });
 
   const isUTC00 = new Date().getTimezoneOffset() === 0;
   const isUTCPositive = new Date().getTimezoneOffset() < 0;
+
+  const tickAmount =
+    allChainsSerie?.[0]?.data?.length > 0
+      ? isBigDesktop
+        ? Math.min(allChainsSerie[0].data.length, 19)
+        : isTablet
+        ? Math.min(allChainsSerie[0].data.length, 10)
+        : 4
+      : null;
 
   const {
     data: dataAllChains,
@@ -243,17 +259,17 @@ const ChainActivity = () => {
   };
 
   const resetFilters = () => {
-    setStartDate(yesterday);
+    setStartDate(initialDataDate);
     setEndDate(new Date());
-    setStartDateDisplayed(yesterday);
+    setStartDateDisplayed(initialDataDate);
     setEndDateDisplayed(new Date());
-    setLastBtnSelected("24h");
+    setLastBtnSelected("all");
     setShowAllChains(true);
     setChainListSelected([ALL_CHAINS]);
     setFilters({
-      from: yesterday?.toISOString(),
+      from: initialDataDate?.toISOString(),
       to: new Date()?.toISOString(),
-      timespan: "1h",
+      timespan: "1mo",
       sourceChain: [],
     });
     setOpenFilters(false);
@@ -479,12 +495,12 @@ const ChainActivity = () => {
         <AnalyticsIcon width={24} /> Chains Activity
       </h2>
 
-      <div className="chain-activity-chart">
+      <div className="chain-activity-chart" ref={chartRef}>
         <div className="chain-activity-chart-top">
           <div className="chain-activity-chart-top-filters">
             <button onClick={handleFiltersOpened}>
               <FilterListIcon width={24} />
-              Filters
+              Filters {filters.sourceChain.length > 0 && `(${filters.sourceChain.length})`}
             </button>
           </div>
 
@@ -599,6 +615,22 @@ const ChainActivity = () => {
               height={isDesktop ? 400 : 300}
               options={{
                 chart: {
+                  events:
+                    chartSelected === "bar"
+                      ? {
+                          mouseLeave: () => {
+                            changePathOpacity({ ref: chartRef, opacity: 1 });
+                          },
+                          mouseMove(e, chart, options) {
+                            if (options.dataPointIndex < 0) {
+                              changePathOpacity({
+                                ref: chartRef,
+                                opacity: 1,
+                              });
+                            }
+                          },
+                        }
+                      : {},
                   toolbar: { show: false },
                   zoom: { enabled: false },
                   stacked: chartSelected === "bar",
@@ -614,7 +646,7 @@ const ChainActivity = () => {
                     lines: { show: false },
                   },
                   padding: {
-                    top: isDesktop ? 50 : 0,
+                    top: isDesktop ? 80 : 0,
                   },
                 },
                 states: {
@@ -673,6 +705,7 @@ const ChainActivity = () => {
                   crosshairs: {
                     position: "front",
                   },
+                  tickAmount,
                   labels: {
                     formatter: (value: string) =>
                       formatXaxisLabels(value, new Date(filters.from), new Date(filters.to)),
@@ -681,7 +714,7 @@ const ChainActivity = () => {
                     rotate: 0,
                     style: {
                       colors: "var(--color-gray-400)",
-                      fontFamily: "Roboto Mono, Roboto, sans-serif",
+                      fontFamily: "Roboto, sans-serif",
                       fontSize: "12px",
                       fontWeight: 400,
                     },
@@ -711,6 +744,10 @@ const ChainActivity = () => {
                       .sort((a: any, b: any) => b.y - a.y);
 
                     const totalMessages = allChainsSerie[0].data[dataPointIndex]?.y || 0;
+
+                    if (chartSelected === "bar") {
+                      updatePathStyles({ chartRef, dataPointIndex });
+                    }
 
                     return `<div class="chain-activity-chart-tooltip">
                       <p class="chain-activity-chart-tooltip-date">
@@ -749,7 +786,7 @@ const ChainActivity = () => {
                                           ${getChainName({
                                             network: currentNetwork,
                                             chainId: item?.emitter_chain,
-                                            acronym: item?.emitter_chain === chainToChainId("Bsc"),
+                                            acronym: +item?.emitter_chain === chainToChainId("Bsc"),
                                           })}:
                                         </div>
                                         <div class="chain-activity-chart-tooltip-container-each-msg-number">
@@ -799,7 +836,7 @@ const ChainActivity = () => {
                                       </div>
                                       <div class="chain-activity-chart-tooltip-container-each-msg-name">
                                         ${getChainName({
-                                          acronym: detail.emitter_chain === chainToChainId("Bsc"),
+                                          acronym: +detail.emitter_chain === chainToChainId("Bsc"),
                                           network: currentNetwork,
                                           chainId: detail.emitter_chain,
                                         })}:

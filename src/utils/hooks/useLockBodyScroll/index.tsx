@@ -29,7 +29,7 @@ const useLockBodyScroll = ({
 
     const preventScroll = (e: TouchEvent) => {
       const isScrollable = scrollableClasses.some(className =>
-        (e.target as HTMLElement).classList.contains(className),
+        (e.target as HTMLElement).className.includes(className),
       );
 
       if (isLocked && !isScrollable) {
