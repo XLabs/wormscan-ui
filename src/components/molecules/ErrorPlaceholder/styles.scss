@@ -20,7 +20,6 @@
 
   &-text {
     @include text-roboto-body-500;
-    color: var(--color-primary-50);
     max-width: 165px;
     text-align: center;
   }

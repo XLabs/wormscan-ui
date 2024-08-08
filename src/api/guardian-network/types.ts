@@ -167,8 +167,9 @@ export interface GetOperationsInput {
   appId?: string;
   exclusiveAppId?: string;
   pagination?: PageRequest;
-  sourceChain?: ChainId;
-  targetChain?: ChainId;
+  payloadType?: string;
+  sourceChain?: string;
+  targetChain?: string;
   txHash?: string;
   vaaID?: string;
 }

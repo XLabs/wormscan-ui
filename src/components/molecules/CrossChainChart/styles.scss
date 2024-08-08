@@ -85,8 +85,10 @@
       }
 
       & > .pagination {
+        max-width: max-content;
+
         @include desktop {
-          justify-content: space-between !important;
+          max-width: unset;
           width: calc(25% - 32px);
         }
       }

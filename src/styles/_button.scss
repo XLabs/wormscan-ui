@@ -91,13 +91,3 @@
     opacity: 0.5;
   }
 }
-
-@mixin dropdown {
-  @include button-secondary;
-  padding-right: 8px;
-  cursor: pointer !important;
-
-  &:active {
-    background: var(--color-gray-800);
-  }
-}

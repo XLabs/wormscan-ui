@@ -78,7 +78,6 @@
 
       & > .image {
         align-items: center;
-        background-color: var(--color-primary-800);
         border-radius: 50%;
         display: flex;
         justify-content: center;
@@ -93,8 +92,6 @@
   }
 
   &.active {
-    color: var(--color-primary-30);
-
     @include desktop {
       background: linear-gradient(270deg, var(--color-primary-12) 65%, transparent 100%);
       background-attachment: fixed;

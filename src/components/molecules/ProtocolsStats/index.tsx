@@ -152,7 +152,7 @@ const ProtocolsStats = () => {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <ProtocolIcon protocolName={protocolNames[item.protocol]} />
+                  <ProtocolIcon protocol={item.protocol.toUpperCase()} />
 
                   <p className="protocols-stats-container-element-item-protocol">
                     {protocolNames[item.protocol]}

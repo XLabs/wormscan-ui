@@ -177,6 +177,14 @@ const Footer = () => {
       </div>
 
       <div className="footer-container">
+        <div className="footer-container-build">
+          <p className="footer-container-build-text">{t("home.footer.builtBy")}</p>
+
+          <a href={XLABS_URL} target="_blank" rel="noopener noreferrer" aria-label="xLabs link">
+            <XlabsIcon width={28} />
+          </a>
+        </div>
+
         <p className="footer-container-copy">
           <span>&copy;</span>
           <span className="footer-container-copy-text">
@@ -184,14 +192,6 @@ const Footer = () => {
           </span>
           <NavLink to="/terms-of-use">{t("home.footer.termsOfUse")}</NavLink>
         </p>
-
-        <div className="footer-container-build">
-          <p className="footer-container-build-text">{t("home.footer.builtBy")}</p>
-
-          <a href={XLABS_URL} target="_blank" rel="noopener noreferrer" aria-label="xLabs link">
-            <XlabsIcon width={24} />
-          </a>
-        </div>
       </div>
     </footer>
   );

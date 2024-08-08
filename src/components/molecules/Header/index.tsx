@@ -137,7 +137,7 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
     setShowMobileOtherMenu(false);
   };
 
-  useOutsideClick(mobileNavRef, closeAllMobileMenus);
+  useOutsideClick({ ref: mobileNavRef, callback: closeAllMobileMenus });
 
   return (
     <header

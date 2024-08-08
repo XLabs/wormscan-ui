@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import SelectPrimitive, { components } from "react-select";
 import { Checkbox } from "src/components/atoms";
-import { OverviewIcon, ChevronDownIcon, TriangleDownIcon, MinusIcon } from "src/icons/generic";
+import { OverviewIcon, ChevronDownIcon, TriangleDownIcon, SearchIcon } from "src/icons/generic";
 import { useOutsideClick } from "src/utils/hooks";
 import "./styles.scss";
 
@@ -18,6 +18,7 @@ interface Props {
     showMinus?: boolean;
     value: string | boolean;
   }[];
+  keepOpen?: boolean;
   menuFixed?: boolean;
   menuListStyles?: React.CSSProperties;
   menuPlacement?: "auto" | "bottom" | "top";
@@ -40,6 +41,7 @@ const Select = ({
   isClearable = false,
   isMulti = true,
   items,
+  keepOpen = false,
   menuFixed = false,
   menuListStyles,
   menuPlacement = "auto",
@@ -54,21 +56,25 @@ const Select = ({
   closeOnSelect,
   value,
 }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(keepOpen);
   const ref = useRef<HTMLDivElement>(null);
 
   const handleOutsideClick = () => {
+    if (keepOpen) return;
     setIsOpen(false);
   };
 
-  useOutsideClick(ref, handleOutsideClick);
+  useOutsideClick({ ref, callback: handleOutsideClick });
 
   if (type === "searchable") {
     return (
       <div className="select-searchable" ref={ref}>
         <button
           className={`select-searchable-dropdown ${isOpen ? "open" : ""}`}
-          onClick={() => setIsOpen(prev => !prev)}
+          onClick={() => {
+            if (keepOpen) return;
+            return setIsOpen(prev => !prev);
+          }}
         >
           {text}
           <ChevronDownIcon width={24} />
@@ -113,7 +119,7 @@ const Select = ({
                 if (closeOnSelect) setIsOpen(false);
               }}
               options={items}
-              placeholder="Search..."
+              placeholder="Search"
               styles={{
                 menuPortal: base => ({
                   ...base,
@@ -138,6 +144,12 @@ const Select = ({
                   ...base,
                   borderRadius: "0 0 24px 24px",
                   ...menuListStyles,
+                }),
+                placeholder: base => ({
+                  ...base,
+                  alignItems: "center",
+                  display: "flex",
+                  gap: 4,
                 }),
                 option: base => ({
                   ...base,
@@ -202,6 +214,13 @@ const Select = ({
       options={items}
       placeholder={placeholder}
       styles={{
+        control(base, props) {
+          return {
+            ...base,
+            cursor: "pointer",
+            ...controlStyles,
+          };
+        },
         menuPortal: base => ({
           ...base,
           position: menuFixed ? "fixed" : "absolute",

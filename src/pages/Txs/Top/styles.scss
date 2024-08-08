@@ -2,44 +2,44 @@
 
 .txs-top {
   @include centered-column;
-  gap: 16px;
+  gap: 32px;
   margin-bottom: 20px;
 
   @include desktop {
+    gap: 40px;
+    margin-bottom: 28px;
     margin-top: 55px;
-  }
-
-  &-header {
-    @include centered-row;
-    flex-wrap: wrap;
-    gap: 24px;
-    justify-content: space-between;
-    width: 100%;
-
-    &-title {
-      @include centered-row;
-      @include text-roboto-subheading-500;
-      gap: 8px;
-    }
-
-    &-live-mode {
-      @include text-heading6;
-      color: var(--color-white);
-      gap: 32px;
-      width: 145px;
-    }
   }
 
   &-txId {
     @include text-roboto-body-400;
-    @include centered-column;
+    background-color: var(--color-gray-950);
+    border-radius: 20px;
     color: var(--color-gray-400);
-    word-break: break-all;
+    display: grid;
+    gap: 0 16px;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    padding: 16px;
 
     @include desktop {
-      @include centered-row;
-      justify-content: start;
-      gap: 8px;
+      gap: 0 20px;
+      max-width: max-content;
+      padding: 20px 24px 20px 20px;
+    }
+
+    & > svg {
+      grid-row: 1/3;
+
+      @include desktop {
+        height: 48px;
+        width: 48px;
+      }
+    }
+
+    &-text {
+      @include text-roboto-body-500;
+      color: var(--color-gray-400);
     }
 
     &-container {
@@ -61,6 +61,27 @@
 
     & .copy-to-clipboard {
       display: flex;
+    }
+  }
+
+  &-header {
+    @include centered-row;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: space-between;
+    width: 100%;
+
+    &-title {
+      @include centered-row;
+      @include text-roboto-subheading-500;
+      gap: 8px;
+    }
+
+    &-live-mode {
+      @include text-heading6;
+      color: var(--color-white);
+      gap: 32px;
+      width: 145px;
     }
   }
 }
