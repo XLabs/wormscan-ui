@@ -4,25 +4,31 @@
   @include centered-row;
   gap: 4px;
   min-height: 36px;
+  width: 100%;
+
+  @include desktop {
+    width: max-content;
+  }
 
   &-pages {
     @include centered-row;
     gap: 4px;
+    margin: 0 auto;
   }
 
   & > button,
   & > span,
   & > .pagination-pages > button,
   & > .pagination-pages > span {
+    @include centered-row;
     @include text-roboto-body-500;
     background-color: transparent;
     border-radius: 50%;
     border: 1px solid var(--color-gray-900);
     color: var(--color-gray-400);
     cursor: pointer;
-    display: inline-block;
     height: 36px;
-    padding: 10px;
+    justify-content: center;
     text-align: center;
     width: 36px;
 

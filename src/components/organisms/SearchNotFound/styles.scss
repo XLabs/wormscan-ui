@@ -56,20 +56,14 @@
     }
 
     &-title {
-      @include text-h4;
-      color: var(--color-primary-30);
       text-align: center;
 
       @include desktop {
-        font-family: Chakra Petch;
         text-align: left;
         font-size: 40px;
       }
 
       &-400 {
-        @include text-h4;
-        color: var(--color-primary-30);
-
         @include desktop {
           font-weight: 600;
         }
@@ -77,10 +71,6 @@
 
       & span {
         display: block;
-
-        @include desktop {
-          font-family: Chakra Petch;
-        }
       }
     }
 
@@ -94,9 +84,7 @@
       }
 
       &-text {
-        @include text-h5;
         align-items: center;
-        color: var(--color-primary-90);
         display: flex;
         flex-direction: column;
         height: 100%;
@@ -112,9 +100,8 @@
         }
 
         & span {
-          color: var(--color-primary-30);
           display: block;
-          font-family: Chakra Petch;
+
           font-size: 40px;
         }
       }
@@ -190,8 +177,6 @@
       }
 
       &-description {
-        @include text-p2;
-        color: var(--color-primary-50);
         max-width: 324px;
 
         @include desktop {
@@ -235,7 +220,6 @@
         }
 
         & a {
-          color: var(--color-secondary-800);
           text-decoration: none;
 
           &:hover {

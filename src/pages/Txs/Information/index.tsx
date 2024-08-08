@@ -9,39 +9,13 @@ import Filters from "./Filters";
 import { BREAKPOINTS } from "src/consts";
 import "./styles.scss";
 
-const columns: Column[] | any = [
-  {
-    Header: "STATUS",
-    accessor: "status",
-  },
-  {
-    Header: "SOURCE TX HASH",
-    accessor: "txHash",
-  },
-  {
-    Header: "TYPE",
-    accessor: "type",
-  },
-  {
-    Header: "CHAINS",
-    accessor: "chains",
-  },
-  {
-    Header: "PROTOCOL",
-    accessor: "protocol",
-  },
-  {
-    Header: "TIME",
-    accessor: "time",
-  },
-];
-
 interface Props {
   currentPage: number;
   isPaginationLoading: boolean;
   isTxsFiltered: boolean;
   onChangePagination: (pageNumber: number) => void;
   parsedTxsData: TransactionOutput[] | undefined;
+  payloadTypeParams: string;
   setIsPaginationLoading: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -51,6 +25,7 @@ const Information = ({
   isTxsFiltered = false,
   onChangePagination,
   parsedTxsData,
+  payloadTypeParams,
   setIsPaginationLoading,
 }: Props) => {
   const navigate = useNavigateCustom();
@@ -58,6 +33,44 @@ const Information = ({
   const currentUrlPage = +new URLSearchParams(location.search).get("page") || 1;
   const { width } = useWindowSize();
   const isDesktop = width >= BREAKPOINTS.desktop;
+
+  //att status txhash sourcechain token name token address time
+  //trans status txhash from to protocol time
+
+  const columns: Column[] | any = [
+    {
+      Header: "STATUS",
+      accessor: "status",
+    },
+    {
+      Header: "SOURCE TX HASH",
+      accessor: "txHash",
+    },
+    !payloadTypeParams && {
+      Header: "TYPE",
+      accessor: "type",
+    },
+    {
+      Header: payloadTypeParams === "2" ? "SOURCE CHAIN" : "CHAINS",
+      accessor: "chains",
+    },
+    payloadTypeParams === "2" && {
+      Header: "TOKEN NAME",
+      accessor: "tokenName",
+    },
+    payloadTypeParams === "2" && {
+      Header: "TOKEN ADDRESS",
+      accessor: "tokenAddress",
+    },
+    {
+      Header: "PROTOCOL",
+      accessor: "protocol",
+    },
+    {
+      Header: "TIME",
+      accessor: "time",
+    },
+  ].filter(Boolean);
 
   const onRowClick = (row: TransactionOutput) => {
     if (isDesktop) {
@@ -107,7 +120,13 @@ const Information = ({
 
   return (
     <section className="txs-information">
-      <div className="txs-information-top">{!isTxsFiltered && <Filters />}</div>
+      <div className="txs-information-top">
+        {!isTxsFiltered && <Filters />}
+
+        <div className="txs-pagination">
+          <PaginationComponent />
+        </div>
+      </div>
 
       <div className="table-container">
         <Table
@@ -131,7 +150,7 @@ const Information = ({
         />
       </div>
 
-      <div className="txs-pagination">
+      <div className="txs-pagination txs-pagination-bottom">
         <PaginationComponent />
       </div>
     </section>

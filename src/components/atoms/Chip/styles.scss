@@ -1,7 +1,7 @@
 @import "src/styles/globals.scss";
 
 .chip {
-  @include text-p3;
+  @include text-roboto-body-400;
   display: flex;
   gap: 8px;
   justify-content: center;

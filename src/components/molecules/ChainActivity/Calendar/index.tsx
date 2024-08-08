@@ -78,7 +78,7 @@ export const Calendar = ({
     setShowCalendar(false);
   };
 
-  useOutsideClick(dateContainerRef, handleOutsideClickDate);
+  useOutsideClick({ ref: dateContainerRef, callback: handleOutsideClickDate });
 
   return (
     <div className="chain-activity-chart-top-section calendar-section" ref={dateContainerRef}>

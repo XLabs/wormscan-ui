@@ -21,17 +21,11 @@
   }
 
   &-title {
-    @include text-h2;
-
-    color: var(--color-primary-30);
     margin-bottom: 8px;
   }
 
   &-body {
-    @include text-p1;
-
     margin-bottom: 48px;
-    color: var(--color-primary-50);
 
     > p + p {
       margin-top: 48px;

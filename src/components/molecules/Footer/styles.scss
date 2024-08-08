@@ -155,17 +155,20 @@
 
     &-build {
       @include centered-row;
-      @include text-heading6;
+      @include text-roboto-body-large-400;
       gap: 16px;
       justify-content: flex-end;
-      text-transform: uppercase;
 
       &-text {
-        color: var(--color-white-40);
+        color: var(--color-gray-400);
       }
 
-      & > a:hover {
-        opacity: 0.6;
+      & > a {
+        @include centered-row;
+
+        &:hover {
+          opacity: 0.6;
+        }
       }
     }
 
@@ -178,7 +181,6 @@
       @include desktop {
         margin: auto 0;
         max-width: unset;
-        order: 2;
       }
 
       &-text {
