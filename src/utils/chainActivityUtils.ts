@@ -35,7 +35,7 @@ export interface ICompleteData {
   };
 }
 
-export type TSelectedPeriod = "24h" | "week" | "month" | "6months" | "year" | "custom";
+export type TSelectedPeriod = "24h" | "week" | "month" | "year" | "all" | "custom";
 
 export const DAY_IN_MILLISECONDS = 86400000;
 export const SHORT_TIMESPAN_LIMIT = 6;
@@ -85,8 +85,9 @@ export const formatXaxisLabels = (value: string, from: Date, to: Date): string =
   } else {
     date = new Date(value).toLocaleString("en-GB", {
       month: "short",
+      year: "2-digit",
     });
   }
 
-  return `\u00A0\u00A0 ${date} \u00A0\u00A0`;
+  return date;
 };

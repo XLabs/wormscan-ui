@@ -47,6 +47,10 @@
     user-select: none;
     width: 180px;
     z-index: 1;
+
+    @include desktop {
+      padding-top: 72px;
+    }
   }
 
   &-chart {
@@ -385,6 +389,8 @@
           &.show-date {
             display: flex;
             flex-direction: column-reverse;
+            overflow: scroll;
+            max-height: calc(100svh - 200px);
 
             @include desktop {
               border-radius: 16px;
@@ -534,8 +540,6 @@
 
             &-calendar {
               margin: 0 auto auto auto;
-              min-height: 369px;
-              overflow-y: auto;
               padding: 16px 16px 72px 16px;
               width: 100%;
 
