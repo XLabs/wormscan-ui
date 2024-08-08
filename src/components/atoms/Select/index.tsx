@@ -214,6 +214,13 @@ const Select = ({
       options={items}
       placeholder={placeholder}
       styles={{
+        control(base, props) {
+          return {
+            ...base,
+            cursor: "pointer",
+            ...controlStyles,
+          };
+        },
         menuPortal: base => ({
           ...base,
           position: menuFixed ? "fixed" : "absolute",
