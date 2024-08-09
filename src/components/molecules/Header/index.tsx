@@ -31,7 +31,13 @@ const NETWORK_LIST: NetworkSelectProps[] = [
   { label: "Testnet", value: "Testnet" },
 ];
 
-const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
+const Header = ({
+  secondaryHeader = false,
+  showTopHeader = true,
+}: {
+  secondaryHeader?: boolean;
+  showTopHeader?: boolean;
+}) => {
   const [showDesktopFixedNav, setShowDesktopFixedNav] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const [showMobileNav, setShowMobileNav] = useState(true);
@@ -153,125 +159,127 @@ const Header = ({ secondaryHeader = false }: { secondaryHeader?: boolean }) => {
         <TermsOfUseBanner />
       </div>
 
-      <div
-        className={`header-container ${secondaryHeader ? "header-container-secondary" : ""} ${
-          showDesktopFixedNav ? "header-container-fixed" : ""
-        }`}
-      >
-        <div className="header-container-logo">
-          <NavLink to="/" data-testid="header-logo-link">
-            <WormholeScanBrand pos={showDesktopFixedNav ? "horizontal" : "vertical"} />
-          </NavLink>
-        </div>
-
-        <Search ref={inputRef} onFocus={handleFocus} onBlur={handleBlur} />
-
-        <nav className="header-container-links">
-          <NavLink to="/" aria-label="Home">
-            <HomeIcon />
-          </NavLink>
-
-          <NavLink to="/txs" aria-label={t("home.header.txs")}>
-            {t("home.header.txs")}
-          </NavLink>
-
-          {isMainnet && (
-            <NavLink to="/governor" aria-label="Governor">
-              Governor
+      {showTopHeader && (
+        <div
+          className={`header-container ${secondaryHeader ? "header-container-secondary" : ""} ${
+            showDesktopFixedNav ? "header-container-fixed" : ""
+          }`}
+        >
+          <div className="header-container-logo">
+            <NavLink to="/" data-testid="header-logo-link">
+              <WormholeScanBrand pos={showDesktopFixedNav ? "horizontal" : "vertical"} />
             </NavLink>
-          )}
+          </div>
 
-          <NavigationMenu.Root delayDuration={0}>
-            <NavigationMenu.List className="dropdown-menu">
-              <NavigationMenu.Item>
-                <NavigationMenu.Trigger
-                  className={`dropdown-menu-trigger ${
-                    pathname.includes("/analytics") ? "active" : ""
-                  }`}
-                >
-                  Analytics <TriangleDownIcon className="icon" />
-                </NavigationMenu.Trigger>
+          <Search ref={inputRef} onFocus={handleFocus} onBlur={handleBlur} />
 
-                <NavigationMenu.Content className="dropdown-menu-content">
-                  <NavLink to="/analytics/tokens" aria-label="analytics tokens">
-                    <LayersIcon /> Tokens
-                  </NavLink>
+          <nav className="header-container-links">
+            <NavLink to="/" aria-label="Home">
+              <HomeIcon />
+            </NavLink>
 
-                  <NavLink to="/analytics/chains" aria-label="analytics chains">
-                    <GlobeIcon /> Chains
-                  </NavLink>
+            <NavLink to="/txs" aria-label={t("home.header.txs")}>
+              {t("home.header.txs")}
+            </NavLink>
 
-                  <NavLink to="/analytics/protocols" aria-label="analytics protocols">
-                    <Cube3DIcon /> Protocols
-                  </NavLink>
-                </NavigationMenu.Content>
-              </NavigationMenu.Item>
-            </NavigationMenu.List>
-          </NavigationMenu.Root>
+            {isMainnet && (
+              <NavLink to="/governor" aria-label="Governor">
+                Governor
+              </NavLink>
+            )}
 
-          <NavigationMenu.Root delayDuration={0}>
-            <NavigationMenu.List className="dropdown-menu">
-              <NavigationMenu.Item>
-                <NavigationMenu.Trigger
-                  className={`dropdown-menu-trigger ${
-                    pathname.includes("/developers/vaa-parser") ? "active" : ""
-                  }`}
-                >
-                  Developers <TriangleDownIcon className="icon" />
-                </NavigationMenu.Trigger>
-
-                <NavigationMenu.Content className="dropdown-menu-content">
-                  <NavLink to="/developers/vaa-parser" aria-label="VAA Parser">
-                    <Code2Icon /> VAA Parser
-                  </NavLink>
-
-                  <NavLink to="/developers/submit" aria-label="Submit Your Protocol">
-                    <Code2Icon /> Submit Your Protocol
-                  </NavLink>
-
-                  <a
-                    href={WORMHOLESCAN_API_DOCS_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="API Doc"
+            <NavigationMenu.Root delayDuration={0}>
+              <NavigationMenu.List className="dropdown-menu">
+                <NavigationMenu.Item>
+                  <NavigationMenu.Trigger
+                    className={`dropdown-menu-trigger ${
+                      pathname.includes("/analytics") ? "active" : ""
+                    }`}
                   >
-                    <LinkIcon /> API Doc
-                  </a>
+                    Analytics <TriangleDownIcon className="icon" />
+                  </NavigationMenu.Trigger>
 
-                  <a
-                    href={WORMHOLE_DOCS_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Wormhole Doc"
+                  <NavigationMenu.Content className="dropdown-menu-content">
+                    <NavLink to="/analytics/tokens" aria-label="analytics tokens">
+                      <LayersIcon /> Tokens
+                    </NavLink>
+
+                    <NavLink to="/analytics/chains" aria-label="analytics chains">
+                      <GlobeIcon /> Chains
+                    </NavLink>
+
+                    <NavLink to="/analytics/protocols" aria-label="analytics protocols">
+                      <Cube3DIcon /> Protocols
+                    </NavLink>
+                  </NavigationMenu.Content>
+                </NavigationMenu.Item>
+              </NavigationMenu.List>
+            </NavigationMenu.Root>
+
+            <NavigationMenu.Root delayDuration={0}>
+              <NavigationMenu.List className="dropdown-menu">
+                <NavigationMenu.Item>
+                  <NavigationMenu.Trigger
+                    className={`dropdown-menu-trigger ${
+                      pathname.includes("/developers/vaa-parser") ? "active" : ""
+                    }`}
                   >
-                    <LinkIcon /> Wormhole Doc
-                  </a>
+                    Developers <TriangleDownIcon className="icon" />
+                  </NavigationMenu.Trigger>
 
-                  <a
-                    href={GITHUB_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Github"
-                  >
-                    <LinkIcon /> Github
-                  </a>
-                </NavigationMenu.Content>
-              </NavigationMenu.Item>
-            </NavigationMenu.List>
-          </NavigationMenu.Root>
+                  <NavigationMenu.Content className="dropdown-menu-content">
+                    <NavLink to="/developers/vaa-parser" aria-label="VAA Parser">
+                      <Code2Icon /> VAA Parser
+                    </NavLink>
 
-          <Select
-            ariaLabel="Select Network"
-            className="header-select-network"
-            items={NETWORK_LIST}
-            name="networkSelect"
-            onValueChange={(env: NetworkSelectProps) => onClickChangeNetwork(env.value)}
-            type="secondary"
-            menuPortalStyles={{ zIndex: 99 }}
-            value={NETWORK_LIST.find(a => a.value === currentNetwork)}
-          />
-        </nav>
-      </div>
+                    <NavLink to="/developers/submit" aria-label="Submit Your Protocol">
+                      <Code2Icon /> Submit Your Protocol
+                    </NavLink>
+
+                    <a
+                      href={WORMHOLESCAN_API_DOCS_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="API Doc"
+                    >
+                      <LinkIcon /> API Doc
+                    </a>
+
+                    <a
+                      href={WORMHOLE_DOCS_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Wormhole Doc"
+                    >
+                      <LinkIcon /> Wormhole Doc
+                    </a>
+
+                    <a
+                      href={GITHUB_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Github"
+                    >
+                      <LinkIcon /> Github
+                    </a>
+                  </NavigationMenu.Content>
+                </NavigationMenu.Item>
+              </NavigationMenu.List>
+            </NavigationMenu.Root>
+
+            <Select
+              ariaLabel="Select Network"
+              className="header-select-network"
+              items={NETWORK_LIST}
+              name="networkSelect"
+              onValueChange={(env: NetworkSelectProps) => onClickChangeNetwork(env.value)}
+              type="secondary"
+              menuPortalStyles={{ zIndex: 99 }}
+              value={NETWORK_LIST.find(a => a.value === currentNetwork)}
+            />
+          </nav>
+        </div>
+      )}
 
       <div
         className={`header-container-mobile ${showMobileNav ? "" : "hidden"}`}

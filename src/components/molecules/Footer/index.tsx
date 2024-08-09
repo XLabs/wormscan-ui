@@ -138,6 +138,8 @@ const Footer = () => {
             >
               {t("home.footer.careers")}
             </a>
+
+            <NavLink to="/terms-of-use">{t("home.footer.termsOfUse")}</NavLink>
           </div>
 
           <div className="footer-container-links-container">
@@ -190,7 +192,6 @@ const Footer = () => {
           <span className="footer-container-copy-text">
             {year} Wormholescan v{packageJson.version}
           </span>
-          <NavLink to="/terms-of-use">{t("home.footer.termsOfUse")}</NavLink>
         </p>
       </div>
     </footer>

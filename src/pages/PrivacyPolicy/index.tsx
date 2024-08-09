@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { ChevronDownIcon } from "src/icons/generic";
+import { TriangleDownIcon } from "src/icons/generic";
+import { useWindowSize } from "src/utils/hooks";
+import { BREAKPOINTS } from "src/consts";
 import { goToSection } from "../TermsOfUse";
 import "../TermsOfUse/styles.scss";
 
@@ -25,6 +27,8 @@ const PrivacyPolicy = () => {
   const { t } = useTranslation();
   const [activeSection, setActiveSection] = useState("");
   const [showContentsMobile, setShowContentsMobile] = useState(false);
+  const { width } = useWindowSize();
+  const isDesktop = width >= BREAKPOINTS.desktop;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,7 +58,7 @@ const PrivacyPolicy = () => {
   }, [activeSection]);
 
   return (
-    <BaseLayout>
+    <BaseLayout showTopHeader={isDesktop}>
       <div className="terms-of-use">
         {showContentsMobile && (
           <div className="terms-of-use-bg" onClick={() => setShowContentsMobile(false)} />
@@ -495,9 +499,14 @@ const PrivacyPolicy = () => {
               className="terms-of-use-aside-container-title"
               onClick={() => setShowContentsMobile(!showContentsMobile)}
             >
-              {t("privacyPolicy.header.list.title")}
-              <ChevronDownIcon width={24} />
-              <span>:</span>
+              <span className="terms-of-use-aside-container-title-mobile">
+                {t(tableOfContents.find(item => item.id === activeSection)?.text) ||
+                  t("privacyPolicy.header.list.title")}
+              </span>
+              <TriangleDownIcon />
+              <span className="terms-of-use-aside-container-title-desktop">
+                {t("privacyPolicy.header.list.title")}:
+              </span>
             </h3>
 
             <ul>
