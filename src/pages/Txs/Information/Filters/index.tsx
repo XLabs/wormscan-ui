@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { chainToChainId } from "@wormhole-foundation/sdk";
 import { BlockchainIcon, ProtocolIcon, Select, ToggleGroup } from "src/components/atoms";
@@ -30,6 +30,10 @@ import {
 } from "src/utils/hooks";
 import { CrossIcon, FilterListIcon } from "src/icons/generic";
 import "./styles.scss";
+
+interface Props {
+  setIsPaginationLoading: Dispatch<SetStateAction<boolean>>;
+}
 
 interface ICheckedState {
   appId: Array<{ value: string }>;
@@ -142,7 +146,7 @@ const parseParams = (params: string | null) => {
   return params.split(",").map(value => ({ value }));
 };
 
-const Filters = () => {
+const Filters = ({ setIsPaginationLoading }: Props) => {
   const navigate = useNavigateCustom();
   const [showFilters, setShowFilters] = useState(false);
   const filterContainerRef = useRef<HTMLDivElement>(null);
@@ -209,6 +213,7 @@ const Filters = () => {
   const resetFilters = () => {
     Object.values(FilterKeys).forEach(key => searchParams.delete(key));
     setSearchParams(searchParams);
+    setIsPaginationLoading(true);
     setShowFilters(false);
   };
 
@@ -229,8 +234,9 @@ const Filters = () => {
 
     searchParams.set("page", "1");
     setSearchParams(searchParams);
+    setIsPaginationLoading(true);
     setShowFilters(false);
-  }, [checkedState, searchParams, setSearchParams, setShowFilters]);
+  }, [checkedState, searchParams, setSearchParams, setShowFilters, setIsPaginationLoading]);
 
   useEffect(() => {
     setCheckedState({
@@ -290,6 +296,7 @@ const Filters = () => {
               searchParams.set("page", "1");
             }
 
+            setIsPaginationLoading(true);
             setSearchParams(searchParams);
             navigate(`?${searchParams.toString()}`);
           }}
