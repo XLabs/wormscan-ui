@@ -125,7 +125,7 @@ export const MORE_INFO_GOVERNOR_URL =
   "https://github.com/wormhole-foundation/wormhole/blob/main/whitepapers/0007_governor.md";
 export const PORTAL_BRIDGE_URL = "https://www.portalbridge.com";
 export const NTT_URL = "https://wormhole.com/products/native-token-transfers";
-export const TWITTER_URL = "https://twitter.com/wormholecrypto";
+export const TWITTER_URL = "https://twitter.com/wormhole";
 export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";
 export const PROVIDE_FEEDBACK_URL =
   "https://docs.google.com/forms/d/1LBeJJHF7dG94q9kdFTFpXtYrDvjb2KXLyte5nl5f26Y/viewform?edit_requested=true";
