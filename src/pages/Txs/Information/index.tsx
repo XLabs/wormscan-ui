@@ -121,7 +121,7 @@ const Information = ({
   return (
     <section className="txs-information">
       <div className="txs-information-top">
-        {!isTxsFiltered && <Filters />}
+        {!isTxsFiltered && <Filters setIsPaginationLoading={setIsPaginationLoading} />}
 
         <div className="txs-pagination">
           <PaginationComponent />

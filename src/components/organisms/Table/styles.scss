@@ -89,6 +89,10 @@
         &:first-child {
           border: none;
           padding-bottom: 8px;
+
+          @include desktop {
+            padding-bottom: 0;
+          }
         }
 
         &:last-child {
@@ -219,7 +223,7 @@
             cursor: pointer;
 
             & > td {
-              background-color: var(--color-white-05);
+              background-color: var(--color-gray-975);
             }
           }
         }

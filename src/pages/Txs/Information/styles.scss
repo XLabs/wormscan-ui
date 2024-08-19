@@ -18,6 +18,14 @@
   }
 
   .table {
+    @include desktop {
+      tr:hover {
+        .tx-protocols-icons-content svg {
+          background-color: var(--color-gray-975);
+        }
+      }
+    }
+
     td {
       @include text-roboto-body-500;
       color: var(--color-white);
