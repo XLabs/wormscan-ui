@@ -156,7 +156,7 @@ export const Calendar = ({
             <button
               className="clear-btn"
               onClick={() => {
-                handleLast24Hours();
+                handleAllTime();
                 setShowCalendar(false);
               }}
             >
