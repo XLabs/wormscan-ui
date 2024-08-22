@@ -121,7 +121,7 @@ const Information = ({ blockData, data, extraRawInfo, isRPC, setTxData }: Props)
 
   const isAttestation = txType[payloadType] === "Attestation";
   const isUnknownPayloadType =
-    !txType[payloadType] && (appIds.includes(UNKNOWN_APP_ID) || appIds.length === 0);
+    !txType[payloadType] && (appIds?.includes(UNKNOWN_APP_ID) || appIds?.length === 0);
 
   const parsedEmitterAddress = parseAddress({
     value: emitterNativeAddress ? emitterNativeAddress : emitterAddress,
