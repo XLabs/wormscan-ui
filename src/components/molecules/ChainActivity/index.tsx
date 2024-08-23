@@ -9,11 +9,6 @@ import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/a
 import { getChainName } from "src/utils/wormhole";
 import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
-import {
-  ChainFilterMainnet,
-  ChainFilterTestnet,
-  PROTOCOL_LIST,
-} from "src/pages/Txs/Information/Filters";
 import { useWindowSize, useLockBodyScroll } from "src/utils/hooks";
 import { formatNumber, numberToSuffix } from "src/utils/number";
 import {
@@ -25,6 +20,7 @@ import {
 } from "src/icons/generic";
 import { IChainActivity, IChainActivityInput } from "src/api/guardian-network/types";
 import { calculateDateDifferenceInDays, startOfDayUTC, startOfMonthUTC } from "src/utils/date";
+import { ChainFilterMainnet, ChainFilterTestnet, PROTOCOL_LIST } from "src/utils/filterUtils";
 import {
   colors,
   DAY_IN_MILLISECONDS,

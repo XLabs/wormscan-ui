@@ -1,27 +1,10 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { chainToChainId } from "@wormhole-foundation/sdk";
-import { BlockchainIcon, ProtocolIcon, Select, ToggleGroup } from "src/components/atoms";
-import {
-  CCTP_APP_ID,
-  // CCTP_MANUAL_APP_ID_STRING, we are putting them from the front in the tx detail
-  CONNECT_APP_ID,
-  ETH_BRIDGE_APP_ID,
-  MAYAN_APP_ID,
-  NTT_APP_ID,
-  PORTAL_NFT_APP_ID,
-  PORTAL_APP_ID,
-  GR_APP_ID,
-  // UNKNOWN_APP_ID, disabled until the backend is ready
-  GATEWAY_APP_ID,
-  USDT_TRANSFER_APP_ID,
-  TBTC_APP_ID,
-  BREAKPOINTS,
-  C3_APP_ID,
-} from "src/consts";
-import { formatAppId } from "src/utils/crypto";
+import { BlockchainIcon, Select, ToggleGroup } from "src/components/atoms";
+import { BREAKPOINTS } from "src/consts";
 import { getChainName } from "src/utils/wormhole";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { ChainFilterMainnet, ChainFilterTestnet, PROTOCOL_LIST } from "src/utils/filterUtils";
 import {
   useWindowSize,
   useNavigateCustom,
@@ -50,102 +33,6 @@ enum FilterKeys {
 }
 
 const PAYLOAD_TYPE = "payloadType";
-
-const appIds = [
-  C3_APP_ID,
-  CCTP_APP_ID,
-  CONNECT_APP_ID,
-  ETH_BRIDGE_APP_ID,
-  MAYAN_APP_ID,
-  NTT_APP_ID,
-  PORTAL_NFT_APP_ID,
-  PORTAL_APP_ID,
-  GR_APP_ID,
-  TBTC_APP_ID,
-  // UNKNOWN_APP_ID, // disabled until the backend is ready
-  USDT_TRANSFER_APP_ID,
-  GATEWAY_APP_ID,
-];
-
-export const PROTOCOL_LIST: { label: string; value: string }[] = appIds.map(appId => ({
-  icon: <ProtocolIcon protocol={appId} />,
-  label: formatAppId(appId),
-  value: String(appId),
-}));
-
-export const ChainFilterMainnet = [
-  chainToChainId("Acala"),
-  chainToChainId("Algorand"),
-  chainToChainId("Aptos"),
-  chainToChainId("Arbitrum"),
-  chainToChainId("Aurora"),
-  chainToChainId("Avalanche"),
-  chainToChainId("Base"),
-  chainToChainId("Blast"),
-  chainToChainId("Bsc"),
-  chainToChainId("Celo"),
-  chainToChainId("Ethereum"),
-  chainToChainId("Fantom"),
-  chainToChainId("Injective"),
-  chainToChainId("Karura"),
-  chainToChainId("Klaytn"),
-  chainToChainId("Mantle"),
-  chainToChainId("Moonbeam"),
-  chainToChainId("Near"),
-  chainToChainId("Neon"),
-  chainToChainId("Oasis"),
-  chainToChainId("Optimism"),
-  chainToChainId("Polygon"),
-  chainToChainId("Scroll"),
-  chainToChainId("Sei"),
-  chainToChainId("Solana"),
-  chainToChainId("Sui"),
-  chainToChainId("Terra"),
-  chainToChainId("Terra2"),
-  chainToChainId("Wormchain"),
-  chainToChainId("Xlayer"),
-  chainToChainId("Xpla"),
-];
-
-export const ChainFilterTestnet = [
-  chainToChainId("Acala"),
-  chainToChainId("Celo"),
-  chainToChainId("Algorand"),
-  chainToChainId("PolygonSepolia"),
-  chainToChainId("Aptos"),
-  // chainToChainId("Arbitrum"),
-  chainToChainId("ArbitrumSepolia"),
-  chainToChainId("Aurora"),
-  // chainToChainId("Base"),
-  chainToChainId("BaseSepolia"),
-  chainToChainId("Blast"),
-  chainToChainId("Bsc"),
-  chainToChainId("Fantom"),
-  chainToChainId("Avalanche"),
-  chainToChainId("Ethereum"),
-  chainToChainId("Holesky"),
-  chainToChainId("Injective"),
-  chainToChainId("Karura"),
-  chainToChainId("Klaytn"),
-  chainToChainId("Mantle"),
-  chainToChainId("Moonbeam"),
-  // chainToChainId("Polygon"),
-  chainToChainId("Near"),
-  chainToChainId("Neon"),
-  chainToChainId("Oasis"),
-  // chainToChainId("Optimism"),
-  chainToChainId("OptimismSepolia"),
-  chainToChainId("Scroll"),
-  chainToChainId("Sei"),
-  chainToChainId("Sepolia"),
-  chainToChainId("Solana"),
-  chainToChainId("Sui"),
-  chainToChainId("Terra"),
-  chainToChainId("Terra2"),
-  chainToChainId("Wormchain"),
-  chainToChainId("Xlayer"),
-  chainToChainId("Xpla"),
-];
 
 const parseParams = (params: string | null) => {
   if (!params) return [];
