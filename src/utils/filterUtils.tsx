@@ -14,7 +14,6 @@ import {
   GATEWAY_APP_ID,
   USDT_TRANSFER_APP_ID,
   TBTC_APP_ID,
-  BREAKPOINTS,
   C3_APP_ID,
 } from "src/consts";
 import { formatAppId } from "src/utils/crypto";
