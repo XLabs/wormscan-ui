@@ -30,7 +30,7 @@ export const formatNumber = (value: number, decimals?: number) => {
   });
 };
 
-export const numberToSuffix = (val: number): string => {
+export const numberToSuffix = (val: number, maxDecimals?: number): string => {
   if (val >= 1000000000000) {
     return (val / 1000000000000).toFixed(1) + "T";
   } else if (val >= 1000000000) {
@@ -40,6 +40,10 @@ export const numberToSuffix = (val: number): string => {
   } else if (val >= 1000) {
     return (val / 1000).toFixed(1) + "K";
   } else {
-    return `${val}`;
+    if (maxDecimals !== undefined) {
+      return `${val.toFixed(maxDecimals)}`;
+    } else {
+      return `${val}`;
+    }
   }
 };

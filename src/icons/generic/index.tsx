@@ -30,6 +30,7 @@ export { default as MoneyIcon } from "./MoneyIcon";
 export { default as OverviewIcon } from "./OverviewIcon";
 export { default as PercentageIcon } from "./PercentageIcon";
 export { default as PieChartIcon } from "./PieChartIcon";
+export { default as Rectangle3DIcon } from "./Rectangle3DIcon";
 export { default as SearchIcon } from "./SearchIcon";
 export { default as StaticsIncreaseIcon } from "./StaticsIncreaseIcon";
 export { default as SwapSmallVerticalIcon } from "./SwapSmallVerticalIcon";

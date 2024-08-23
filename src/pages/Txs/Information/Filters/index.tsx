@@ -67,6 +67,12 @@ const appIds = [
   GATEWAY_APP_ID,
 ];
 
+export const PROTOCOL_LIST: { label: string; value: string }[] = appIds.map(appId => ({
+  icon: <ProtocolIcon protocol={appId} />,
+  label: formatAppId(appId),
+  value: String(appId),
+}));
+
 export const ChainFilterMainnet = [
   chainToChainId("Acala"),
   chainToChainId("Algorand"),
@@ -184,12 +190,6 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const orderedChains = currentNetwork === "Mainnet" ? ChainFilterMainnet : ChainFilterTestnet;
-
-  const PROTOCOL_LIST: { label: string; value: string }[] = appIds.map(appId => ({
-    icon: <ProtocolIcon protocol={appId} />,
-    label: formatAppId(appId),
-    value: String(appId),
-  }));
 
   const CHAIN_LIST: { label: string; value: string }[] = orderedChains.map(chainId => ({
     icon: (
@@ -331,7 +331,7 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
             menuFixed={!isDesktop}
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
             menuPortalStyles={{ zIndex: 100 }}
-            name="topAssetTimeRange"
+            name="protocol"
             onValueChange={(value: any) =>
               setCheckedState({
                 ...checkedState,

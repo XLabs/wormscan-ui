@@ -117,17 +117,35 @@ export class GuardianNetwork {
   }
 
   async getChainActivity({
-    // appId,
-    // targetChain,
     from,
-    sourceChain,
-    timespan,
     to,
+    timespan,
+    sourceChain,
+    targetChain,
+    appId,
   }: IChainActivityInput): Promise<IChainActivity[]> {
-    const sourceChainString = sourceChain.join(",");
+    const params: Record<string, string> = {
+      from: from.toString(),
+      to: to.toString(),
+      timespan: timespan.toString(),
+    };
+
+    if (sourceChain && sourceChain.length > 0) {
+      params.sourceChain = sourceChain.join(",");
+    }
+
+    if (targetChain && targetChain.length > 0) {
+      params.targetChain = targetChain.join(",");
+    }
+
+    if (appId) {
+      params.appId = appId;
+    }
+
+    const queryString = new URLSearchParams(params).toString();
 
     const response = await this._client.doGet<IChainActivity[]>(
-      `/x-chain-activity/tops?from=${from}&to=${to}&timespan=${timespan}&sourceChain=${sourceChainString}`,
+      `/x-chain-activity/tops?${queryString}`,
     );
 
     return response || [];

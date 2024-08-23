@@ -68,7 +68,7 @@ const Select = ({
 
   if (type === "searchable") {
     return (
-      <div className="select-searchable" ref={ref}>
+      <div className={`select-searchable ${className}`} ref={ref}>
         <button
           className={`select-searchable-dropdown ${isOpen ? "open" : ""}`}
           onClick={() => {
@@ -86,7 +86,7 @@ const Select = ({
               aria-label={ariaLabel}
               autoFocus
               backspaceRemovesValue={false}
-              className={`select ${className}`}
+              className="select"
               classNamePrefix="select"
               components={{
                 IndicatorSeparator: null,

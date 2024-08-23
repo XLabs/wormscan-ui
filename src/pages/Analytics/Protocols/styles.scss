@@ -1,0 +1,59 @@
+@import "src/styles/globals.scss";
+
+.protocols-page {
+  &-tool {
+    background-color: var(--color-gray-950);
+    border-radius: 16px;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: auto 1fr;
+    margin-bottom: 48px;
+    padding: 20px;
+
+    @include desktop {
+      grid-template-columns: auto auto 1fr;
+      margin-bottom: 80px;
+      padding: 24px;
+    }
+
+    & > svg {
+      color: var(--color-gray-600);
+      grid-area: 1 / 1 / 4 / 2;
+
+      @include desktop {
+        grid-area: 1 / 1 / 3 / 2;
+      }
+    }
+
+    &-title {
+      @include text-roboto-subheading-500;
+      color: var(--color-white);
+    }
+
+    &-description {
+      @include text-roboto-body-400;
+      color: var(--color-gray-400);
+      margin-bottom: 24px;
+      text-wrap: pretty;
+
+      @include desktop {
+        margin-bottom: 0;
+      }
+    }
+
+    &-btn {
+      @include button-primary;
+      max-width: max-content;
+
+      @include desktop {
+        align-self: center;
+        grid-area: 1 / 3 / 3 / 4;
+        justify-self: end;
+      }
+
+      & > svg {
+        color: var(--color-black-60);
+      }
+    }
+  }
+}

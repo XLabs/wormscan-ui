@@ -332,15 +332,27 @@ const Header = ({
             showMobileNav && showMobileAnalytics ? "open" : ""
           }`}
         >
-          <NavLink to="/analytics/tokens" aria-label="analytics tokens">
+          <NavLink
+            to="/analytics/tokens"
+            aria-label="analytics tokens"
+            onClick={closeAllMobileMenus}
+          >
             <LayersIcon /> Tokens
           </NavLink>
 
-          <NavLink to="/analytics/chains" aria-label="analytics chains">
+          <NavLink
+            to="/analytics/chains"
+            aria-label="analytics chains"
+            onClick={closeAllMobileMenus}
+          >
             <GlobeIcon /> Chains
           </NavLink>
 
-          <NavLink to="/analytics/protocols" aria-label="analytics protocols">
+          <NavLink
+            to="/analytics/protocols"
+            aria-label="analytics protocols"
+            onClick={closeAllMobileMenus}
+          >
             <Cube3DIcon /> Protocols
           </NavLink>
         </div>
@@ -359,11 +371,19 @@ const Header = ({
           <div className="header-container-mobile-menu-dev-tools-title">Developers</div>
 
           <div className="header-container-mobile-menu-dev-tools">
-            <NavLink to="/developers/vaa-parser" aria-label="VAA Parser">
+            <NavLink
+              to="/developers/vaa-parser"
+              aria-label="VAA Parser"
+              onClick={closeAllMobileMenus}
+            >
               <Code2Icon /> VAA Parser
             </NavLink>
 
-            <NavLink to="/developers/submit" aria-label="Submit Yout Protocol">
+            <NavLink
+              to="/developers/submit"
+              aria-label="Submit Yout Protocol"
+              onClick={closeAllMobileMenus}
+            >
               <Code2Icon /> Submit Your Protocol
             </NavLink>
 
@@ -373,6 +393,7 @@ const Header = ({
               target="_blank"
               rel="noopener noreferrer"
               aria-label="API Doc"
+              onClick={closeAllMobileMenus}
             >
               <LinkIcon /> API Doc
             </a>
@@ -383,6 +404,7 @@ const Header = ({
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Wormhole Doc"
+              onClick={closeAllMobileMenus}
             >
               <LinkIcon /> Wormhole Doc
             </a>
@@ -393,6 +415,7 @@ const Header = ({
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Github"
+              onClick={closeAllMobileMenus}
             >
               <LinkIcon /> Github
             </a>
