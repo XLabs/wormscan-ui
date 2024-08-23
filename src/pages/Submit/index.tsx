@@ -48,7 +48,7 @@ import {
 } from "src/utils/object";
 import { Submit } from "./Submit";
 import { processInputValue, processInputType, waitForElement, isHex } from "src/utils/parser";
-import { ChainFilterMainnet, ChainFilterTestnet } from "../Txs/Information/Filters";
+import { ChainFilterMainnet, ChainFilterTestnet } from "src/utils/filterUtils";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { toast } from "react-toastify";
 import "./styles.scss";

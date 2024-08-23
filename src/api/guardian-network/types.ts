@@ -72,7 +72,7 @@ export interface IChainActivityInput {
   timespan: "1h" | "1d" | "1mo";
   sourceChain: Array<number | string>;
   targetChain?: Array<number | string>;
-  appId?: Array<string>;
+  appId?: string;
 }
 
 export interface IChainActivity {

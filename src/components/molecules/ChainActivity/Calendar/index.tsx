@@ -81,9 +81,12 @@ export const Calendar = ({
   useOutsideClick({ ref: dateContainerRef, callback: handleOutsideClickDate });
 
   return (
-    <div className="chain-activity-chart-top-section calendar-section" ref={dateContainerRef}>
+    <div
+      className="chain-activity-chart-top-filters-section calendar-section"
+      ref={dateContainerRef}
+    >
       <button
-        className="chain-activity-chart-top-section-btn"
+        className="chain-activity-chart-top-filters-section-btn"
         onClick={() => setShowCalendar(!showCalendar)}
       >
         <span>
@@ -121,11 +124,15 @@ export const Calendar = ({
         <ChevronDownIcon style={{ transform: showCalendar ? "rotate(-180deg)" : "" }} width={24} />
       </button>
 
-      <div className={`chain-activity-chart-top-section-box ${showCalendar ? "show-date" : ""}`}>
+      <div
+        className={`chain-activity-chart-top-filters-section-box ${
+          showCalendar ? "show-date" : ""
+        }`}
+      >
         <div
-          className={`chain-activity-chart-top-section-box-date-calendar ${
+          className={`chain-activity-chart-top-filters-section-box-date-calendar ${
             startDate === endDate
-              ? "chain-activity-chart-top-section-box-date-calendar-one-day-selected"
+              ? "chain-activity-chart-top-filters-section-box-date-calendar-one-day-selected"
               : ""
           }`}
         >
@@ -152,7 +159,7 @@ export const Calendar = ({
             showMonthDropdown
           />
 
-          <div className="chain-activity-chart-top-section-box-date-calendar-btns">
+          <div className="chain-activity-chart-top-filters-section-box-date-calendar-btns">
             <button
               className="clear-btn"
               onClick={() => {
@@ -173,7 +180,7 @@ export const Calendar = ({
           </div>
         </div>
 
-        <div className="chain-activity-chart-top-section-box-date-selector">
+        <div className="chain-activity-chart-top-filters-section-box-date-selector">
           <div>
             <button
               className={`btn ${lastBtnSelected === "24h" ? "active" : ""}`}
