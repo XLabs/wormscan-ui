@@ -4,6 +4,7 @@ export { default as AnalyticsIcon } from "./AnalyticsIcon";
 export { default as ArrowDownIcon } from "./ArrowDownIcon";
 export { default as ArrowRightIcon } from "./ArrowRightIcon";
 export { default as ArrowUpIcon } from "./ArrowUpIcon";
+export { default as ArrowUpRightIcon } from "./ArrowUpRightIcon";
 export { default as ChatIcon } from "./ChatIcon";
 export { default as CheckCircle2 } from "./CheckCircle2";
 export { default as CheckIcon } from "./CheckIcon";

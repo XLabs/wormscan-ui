@@ -1,7 +1,6 @@
 import { NavLink } from "src/components/atoms";
 import { ProtocolsStats } from "src/components/molecules";
-import { Rectangle3DIcon } from "src/icons/generic";
-import ArrowUpRightIcon from "src/icons/generic/ArrowUpRightIcon";
+import { ArrowUpRightIcon, Rectangle3DIcon } from "src/icons/generic";
 import "./styles.scss";
 
 const Protocols = () => {
