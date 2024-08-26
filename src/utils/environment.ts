@@ -54,6 +54,7 @@ const MAINNET_RPCS: { [key in ChainName]?: string } = {
   terra2: "https://lcd-terra.tfl.foundation",
   xpla: "https://dimension-lcd.xpla.dev",
   xlayer: "https://xlayerrpc.okx.com",
+  snaxchain: "https://mainnet.snaxchain.io/",
 };
 
 const TESTNET_RPCS: { [key in ChainName]?: string } = {
@@ -74,6 +75,7 @@ const TESTNET_RPCS: { [key in ChainName]?: string } = {
   polygon: "https://rpc.ankr.com/polygon_mumbai",
   scroll: "https://rpc.ankr.com/scroll_sepolia_testnet",
   blast: "https://sepolia.blast.io",
+  snaxchain: "https://testnet.snaxchain.io/",
   xlayer: "https://xlayertestrpc.okx.com",
 };
 
@@ -108,6 +110,16 @@ export const testnetEnv: Environment = {
       nativeCurrencyName: "ETH",
       relayerContractAddress: "0x28d8f1be96f97c1387e94a53e00eccfb4e75175a",
       rpcUrl: TESTNET_RPCS.ethereum || "",
+    },
+    {
+      chainId: 43 as ChainId,
+      chainName: "SnaxChain",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 666, // TODO: ADD CORRECT ONE https://chainlist.org/chain/5
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      relayerContractAddress: "0x28d8f1be96f97c1387e94a53e00eccfb4e75175a", // TODO: CHECK !
+      rpcUrl: TESTNET_RPCS.snaxchain || "",
     },
     {
       chainId: 10002 as ChainId,
@@ -297,6 +309,16 @@ export const mainnetEnv: Environment = {
       nativeCurrencyName: "ETH",
       relayerContractAddress: "0x27428DD2d3DD32A4D7f7C497eAaa23130d894911",
       rpcUrl: MAINNET_RPCS.ethereum || "",
+    },
+    {
+      chainId: 43 as ChainId,
+      chainName: "SnaxChain",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 666, // TODO: CORRECT ONE
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      relayerContractAddress: "0x27428DD2d3DD32A4D7f7C497eAaa23130d894911", // TODO: CHECK!
+      rpcUrl: MAINNET_RPCS.snaxchain || "",
     },
     {
       chainId: 4 as ChainId,

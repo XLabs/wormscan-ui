@@ -33,6 +33,7 @@ export enum ChainId {
   Mantle = 35,
   Blast = 36,
   XLayer = 37,
+  SnaxChain = 43,
   Wormchain = 3104,
   Evmos = 4001,
   Kujira = 4002,
