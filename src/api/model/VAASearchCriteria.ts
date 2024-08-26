@@ -1,11 +1,11 @@
 type SpecificVAACriteria =
   | {
-      sequence: number;
+      sequence: number | string;
       signer?: string;
       hash?: string;
     }
   | {
-      sequence: number;
+      sequence: number | string;
       signer: string;
       hash: string;
     };

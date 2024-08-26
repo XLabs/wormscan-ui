@@ -7,4 +7,13 @@
     height: 100%;
     min-height: 220px;
   }
+
+  &-observation-only {
+    background-color: var(--color-gray-950);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    padding-top: 6px;
+    padding-bottom: 36px;
+    padding-left: 12px;
+  }
 }
