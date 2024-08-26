@@ -339,38 +339,149 @@
       width: 100%;
       min-height: 300px;
 
-      background-color: var(--color-white-05);
+      background-color: var(--color-gray-950);
       border-radius: 22px;
-      padding: 16px 18px;
+      padding: 18px 24px;
       margin-bottom: 24px;
       gap: 12px;
 
-      align-items: center;
+      &-progress {
+        @include centered-row;
+        width: 100%;
+        height: 6px;
+        margin-top: 12px;
 
-      &-description {
-        @include text-roboto-body-400;
-        color: var(--color-gray-300);
+        &-line {
+          width: calc(25% - 8px);
+          margin-left: 4px;
+          margin-right: 4px;
+          border-radius: 6px;
+          height: 6px;
+          background-color: var(--color-gray-900);
+
+          &.active {
+            background-color: var(--color-gray-500);
+          }
+        }
+      }
+
+      &-step {
+        margin-top: 6px;
+        color: var(--color-gray-400);
+      }
+
+      &-title {
         font-size: 16px;
-        text-align: center;
+        line-height: 22px;
+        color: var(--color-white);
+        font-weight: 500;
+        margin-bottom: 24px;
+      }
+
+      &-label {
+        color: var(--color-gray-400);
+        margin-bottom: 6px;
+        font-size: 14px;
+      }
+
+      &-line {
+        width: 100%;
+        height: 2px;
+        background-color: var(--color-gray-900);
+
+        &.margin {
+          margin-top: 20px;
+          margin-bottom: 8px;
+        }
+      }
+
+      &-next {
+        @include centered-row;
+        justify-content: flex-end;
         margin-bottom: 4px;
       }
 
-      &-chainAddress {
+      &-protocols {
+        margin-top: 24px;
+        margin-bottom: 12px;
+        font-size: 14px;
+        color: var(--color-gray-400);
+      }
+
+      &-step1 {
         display: flex;
         justify-content: center;
         align-items: center;
         width: 100%;
-
-        gap: 24px;
-
-        & > input {
-          width: 80%;
-          height: 34px;
-          font-size: 16px;
-        }
+        gap: 12px;
 
         & > svg {
           cursor: pointer;
+        }
+
+        &-editing {
+          @include centered-row;
+          justify-content: flex-end;
+          gap: 8px;
+        }
+
+        &-option1 {
+          width: 15%;
+
+          .select {
+            width: 100%;
+          }
+        }
+
+        &-option2 {
+          width: 17%;
+
+          .select {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+          }
+
+          .filters-container-select-text {
+            @include centered-row;
+            width: 90%;
+            gap: 4px;
+          }
+        }
+
+        &-option3 {
+          width: 60%;
+
+          input {
+            width: 100%;
+            background-color: var(--color-gray-900);
+
+            border-radius: 12px;
+            height: 36px;
+            border: 0px;
+
+            color: var(--color-white);
+            font-size: 14px;
+          }
+        }
+
+        &-option4 {
+          width: 8%;
+
+          &-btn {
+            @include centered-row;
+            justify-content: center;
+            height: 36px;
+            margin-top: 20px;
+
+            width: 100%;
+            border-radius: 18px;
+            background-color: var(--color-gray-900);
+            cursor: pointer;
+
+            color: var(--color-white);
+          }
         }
       }
 
@@ -381,45 +492,74 @@
         justify-content: space-around;
         width: 100%;
 
-        color: var(--color-gray-200);
+        color: var(--color-white);
 
-        font-size: 16px;
-        border: 1px solid var(--color-white-10);
-        padding: 4px 0px;
+        font-size: 14px;
         margin-bottom: 4px;
         position: relative;
 
-        &-chain {
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--color-gray-900);
+
+        &-1 {
+          width: 16%;
+        }
+
+        &-2 {
+          width: 18%;
           display: flex;
           flex-direction: row;
           align-items: center;
-          gap: 6px;
+          gap: 8px;
+          font-weight: 500;
         }
 
-        &-delete {
+        &-3 {
+          color: var(--color-gray-200);
+          width: 58%;
+        }
+
+        &-4 {
+          width: 8%;
           display: flex;
-          cursor: pointer;
-          color: #a53636;
+          justify-content: flex-end;
+          gap: 8px;
+
+          &-icon {
+            @include centered-row;
+            justify-content: center;
+            cursor: pointer;
+
+            width: 30px;
+            height: 30px;
+            background-color: var(--color-gray-900);
+            border-radius: 6px;
+
+            &.red {
+              color: var(--color-error-100);
+              background-color: var(--color-error-15);
+            }
+
+            &.green {
+              color: var(--color-success-100);
+              background-color: var(--color-success-15);
+            }
+          }
         }
       }
 
       &-btn {
+        @include button-primary;
         display: flex;
-        width: 160px;
         justify-content: center;
-        color: var(--color-gray-200);
-        background-color: var(--color-white-10);
-        padding: 2px 4px;
-        border-radius: 4px;
-        font-size: 16px;
-        cursor: pointer;
+        align-items: center;
 
-        &.down {
-          margin-top: 12px;
-          outline-width: 1px;
-          outline-offset: 0;
-          outline-style: solid;
-          animation: animateOutline 4s ease infinite;
+        &.disabled {
+          background: var(--color-primary-40);
+
+          &:hover {
+            background: var(--color-primary-40);
+          }
         }
       }
 
@@ -455,7 +595,7 @@
 
       &-input {
         @include text-roboto-body-large-400;
-        background-color: var(--color-gray-950);
+        background-color: var(--color-gray-900);
         border-radius: 20px;
         border: none;
         color: var(--color-white);

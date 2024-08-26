@@ -14,15 +14,7 @@ import { useLocalStorage, useNavigateCustom } from "src/utils/hooks";
 import analytics from "src/analytics";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
-import {
-  JsonText,
-  Loader,
-  NavLink,
-  Tooltip,
-  CopyContent,
-  BlockchainIcon,
-  Select,
-} from "src/components/atoms";
+import { JsonText, Loader, NavLink, Tooltip, CopyContent } from "src/components/atoms";
 import {
   AlertTriangle,
   CheckIcon,
@@ -30,6 +22,7 @@ import {
   InfoCircleIcon,
   LinkIcon,
   SearchIcon,
+  TrashIcon,
   TriangleDownIcon,
 } from "src/icons/generic";
 import { InputEncodedVaa, CopyToClipboard } from "src/components/molecules";
@@ -38,7 +31,6 @@ import { getGuardianSet, txType } from "src/consts";
 import { formatDate } from "src/utils/date";
 import { useParams } from "react-router-dom";
 import { useEnvironment } from "src/context/EnvironmentContext";
-
 import {
   allKeys,
   deepCloneWithBigInt,
@@ -48,11 +40,11 @@ import {
 } from "src/utils/object";
 import { Submit } from "./Submit";
 import { processInputValue, processInputType, waitForElement, isHex } from "src/utils/parser";
-import { ChainFilterMainnet, ChainFilterTestnet } from "src/utils/filterUtils";
-import { Cross2Icon } from "@radix-ui/react-icons";
 import { toast } from "react-toastify";
-import "./styles.scss";
 import { sendProtocolSubmission } from "src/utils/cryptoToolkit";
+import { Step1 } from "./Step1";
+import "./styles.scss";
+import { Step2 } from "./Step2";
 
 const SubmitYourProtocol = () => {
   useEffect(() => {
@@ -289,28 +281,12 @@ const SubmitYourProtocol = () => {
       .catch(_err => {});
   }, [environment.network]);
 
-  const CHAIN_LIST = (network: Network) =>
-    orderedChains[network].map(chainId => ({
-      icon: (
-        <BlockchainIcon
-          background="var(--color-white-10)"
-          chainId={chainId}
-          colorless
-          lazy={false}
-          network={environment.network}
-          size={24}
-        />
-      ),
-      label: getChainName({ network: environment.network, chainId }),
-      value: String(chainId),
-    }));
-
   const [selectedIdentifiers, setSelectedIdentifiers] = useLocalStorage<IIdentifier[]>(
     "selectedIdentifiers",
     [],
   );
 
-  const [selectedNetwork, setSelectedNetwork] = useState(null);
+  const [selectedNetwork, setSelectedNetwork] = useState(NETWORK_LIST[0]);
   const [selectedChain, setSelectedChain] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState("");
 
@@ -707,296 +683,45 @@ const SubmitYourProtocol = () => {
               )}
 
               {step === 1 && (
-                <>
-                  <h1 className="devtools-page-title">(1/4) How can we identify your VAAs?</h1>
-                  <div className="parse-submit">
-                    <div className="parse-submit-description">
-                      Give us your emitter addresses or contract addresses that we can use to
-                      identify your VAAs
-                    </div>
-
-                    {selectedIdentifiers.map((identifier, idx) => {
-                      return (
-                        <div key={idx} className="parse-submit-identifiers">
-                          <div>{identifier.network}</div>
-
-                          <div className="parse-submit-identifiers-chain">
-                            {chainIdToChain(identifier.chain)}
-                            <BlockchainIcon
-                              chainId={identifier.chain}
-                              network={identifier.network}
-                            />
-                          </div>
-
-                          <div>{identifier.address}</div>
-
-                          <div
-                            onClick={() => {
-                              const newIdentifiers = [...selectedIdentifiers];
-                              newIdentifiers.splice(idx, 1);
-
-                              setSelectedIdentifiers(newIdentifiers);
-                            }}
-                            className="parse-submit-identifiers-delete"
-                          >
-                            <Cross2Icon width={20} height={20} />
-                          </div>
-                        </div>
-                      );
-                    })}
-
-                    <div className="parse-submit-chainAddress">
-                      <Select
-                        ariaLabel="Select Network"
-                        items={NETWORK_LIST}
-                        isMulti={false}
-                        name="submitNetwork"
-                        onValueChange={value => {
-                          setSelectedChain(null);
-                          setSelectedNetwork(value);
-                        }}
-                        placeholder="Network"
-                        optionStyles={{ padding: 16 }}
-                        text={
-                          <div className="filters-container-select-text">
-                            {selectedNetwork?.label || "Network"}
-                          </div>
-                        }
-                        value={selectedNetwork}
-                        closeOnSelect
-                      />
-
-                      {selectedNetwork && (
-                        <Select
-                          ariaLabel="Select Chain"
-                          items={CHAIN_LIST(selectedNetwork.value)}
-                          isMulti={false}
-                          name="submitEmitterOrTarget"
-                          onValueChange={(value: any) => {
-                            setSelectedChain(value);
-                          }}
-                          optionStyles={{ padding: 16 }}
-                          text={
-                            <div className="filters-container-select-text">
-                              {selectedChain && selectedChain?.icon}
-                              {selectedChain ? selectedChain?.label : "Chain"}
-                            </div>
-                          }
-                          type="searchable"
-                          value={selectedChain}
-                          closeOnSelect
-                        />
-                      )}
-
-                      <input
-                        className="parse-submit-input"
-                        placeholder="address"
-                        value={selectedAddress}
-                        onChange={e => setSelectedAddress(e.target.value)}
-                      />
-                    </div>
-
-                    <div
-                      onClick={() => {
-                        if (selectedAddress && selectedChain && selectedNetwork) {
-                          setSelectedIdentifiers([
-                            ...selectedIdentifiers,
-                            {
-                              network: selectedNetwork.value,
-                              chain: selectedChain.value,
-                              address: selectedAddress,
-                            },
-                          ]);
-
-                          setSelectedChain(null);
-                          setSelectedAddress("");
-                        } else {
-                          toast("Missing some info", {
-                            type: "error",
-                            theme: "dark",
-                          });
-                        }
-                      }}
-                      className="parse-submit-btn"
-                    >
-                      ADD
-                    </div>
-                    <div
-                      onClick={() => {
-                        if (!!selectedIdentifiers.length) {
-                          setStep(2);
-                          window.scrollTo(0, 0);
-                        }
-                      }}
-                      className="parse-submit-btn down"
-                    >
-                      Next step
-                    </div>
-                  </div>
-                </>
+                <Step1
+                  selectedNetwork={selectedNetwork}
+                  selectedChain={selectedChain}
+                  setSelectedChain={setSelectedChain}
+                  setSelectedNetwork={setSelectedNetwork}
+                  selectedAddress={selectedAddress}
+                  setSelectedAddress={setSelectedAddress}
+                  step={step}
+                  setStep={setStep}
+                  selectedIdentifiers={selectedIdentifiers}
+                  setSelectedIdentifiers={setSelectedIdentifiers}
+                />
               )}
 
               {step === 2 && (
-                <>
-                  <br />
-                  <h1 className="devtools-page-title">(2/4) Lets parse and decode a VAA</h1>
-
-                  <div className="parse-txType">
-                    <SearchIcon width={24} />
-                    <input
-                      type="text"
-                      className={`parse-txType-input ${
-                        txSearch && !input && !isLoading ? "error" : ""
-                      }`}
-                      id="parse-txType-input"
-                      placeholder="txHash/vaaID of transaction created with your app"
-                      ref={inputTxRef}
-                      value={txSearch}
-                      onChange={e => {
-                        setInput("");
-                        setInputs(null);
-                        setInputsIndex(0);
-                        resetSubmitFields();
-
-                        setTxSearch(e.target.value);
-                        inputTxRef?.current?.blur();
-                      }}
-                      name="txType-input"
-                      aria-label="Transaction hash or VAA ID input"
-                      spellCheck={false}
-                    />
-                  </div>
-
-                  {txSearch && !input && !isLoading && (
-                    <div className="parse-txType-error">
-                      <AlertTriangle width={24} />
-                      VAA cannot be found. Please try again or search something different.
-                    </div>
-                  )}
-
-                  {txSearch && (
-                    <div className="parse-links">
-                      <button className="parse-links-reset" onClick={resetResult}>
-                        Reset search result
-                      </button>
-
-                      {!!resultRaw && input && VAA_ID && (
-                        <NavLink
-                          className="parse-links-navlink"
-                          target="_blank"
-                          to={`/tx/${txSearch ? txSearch : VAA_ID}`}
-                        >
-                          <span>View transaction details</span>
-                          <LinkIcon width={24} />
-                        </NavLink>
-                      )}
-                    </div>
-                  )}
-
-                  {!!inputs?.length && (
-                    <div className="parse-multiple">
-                      <span className="parse-multiple-left">
-                        <InfoCircleIcon width={24} />
-                        This txHash has multiple VAAs.
-                      </span>
-
-                      <div
-                        className="parse-multiple-right"
-                        onClick={() => {
-                          if (inputs[inputsIndex + 1]) {
-                            setInput(inputs[inputsIndex + 1]);
-                            setInputsIndex(inputsIndex + 1);
-                          } else {
-                            setInput(inputs[0]);
-                            setInputsIndex(0);
-                          }
-                        }}
-                      >
-                        <span className="vaa-pages">
-                          {inputsIndex + 1}/{inputs.length}
-                        </span>
-                        <TriangleDownIcon className="triangle-icon" width={18} />
-                      </div>
-                    </div>
-                  )}
-
-                  <InputEncodedVaa
-                    input={input}
-                    inputType={inputType}
-                    setInput={setInput}
-                    setInputType={setInputType}
-                    setTxSearch={setTxSearch}
-                    setInputs={setInputs}
-                    setInputsIndex={setInputsIndex}
-                    resetSubmitFields={resetSubmitFields}
-                    page="submit"
-                    network={environment.network}
-                  />
-                  <div className="parse-content">
-                    <span
-                      className={`parse-content-title ${hideJson ? "" : "rotate"}`}
-                      onClick={() => setHideJson(!hideJson)}
-                    >
-                      Decoded VAA <TriangleDownIcon width={10} />
-                    </span>
-
-                    <div
-                      className={`parse-result ${input ? "with-data" : ""} ${
-                        hideJson ? "hide" : ""
-                      }`}
-                      id="parse-result"
-                      aria-label="Parsed result"
-                    >
-                      <div className="parse-result-top">
-                        <button
-                          className={`parse-result-top-btn ${parsedRaw ? "active" : ""}`}
-                          onClick={() => {
-                            renderExtras();
-                            setParsedRaw(true);
-                          }}
-                        >
-                          Raw
-                        </button>
-
-                        <div className="parse-result-top-copy">
-                          <CopyToClipboard
-                            toCopy={
-                              resultRaw && parsedRaw ? stringifyWithBigInt(resultRaw, 4) : "{}"
-                            }
-                          >
-                            Copy all
-                            <CopyIcon width={24} />
-                          </CopyToClipboard>
-                        </div>
-                      </div>
-
-                      <div className="parse-result-json">
-                        {!resultRaw && !!input ? (
-                          <span className="parse-result-not-found">Parsing failed</span>
-                        ) : isLoading ? (
-                          <Loader />
-                        ) : (
-                          <>
-                            {!resultRaw && (
-                              <div className="devtools-page-alert">
-                                <div className="devtools-page-alert-info">
-                                  <InfoCircleIcon width={24} />
-                                  <p>Decoded VAA data will be displayed here</p>
-                                </div>
-                              </div>
-                            )}
-
-                            {!!resultRaw && input && VAA_ID && (
-                              <div className="parse-result-json-text">
-                                <JsonText data={resultRaw && parsedRaw ? resultRaw : {}} />
-                              </div>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </>
+                <Step2
+                  hideJson={hideJson}
+                  input={input}
+                  inputs={inputs}
+                  inputsIndex={inputsIndex}
+                  inputTxRef={inputTxRef}
+                  inputType={inputType}
+                  isLoading={isLoading}
+                  parsedRaw={parsedRaw}
+                  renderExtras={renderExtras}
+                  resetResult={resetResult}
+                  resetSubmitFields={resetSubmitFields}
+                  resultRaw={resultRaw}
+                  setHideJson={setHideJson}
+                  setInput={setInput}
+                  setInputs={setInputs}
+                  setInputsIndex={setInputsIndex}
+                  setInputType={setInputType}
+                  setParsedRaw={setParsedRaw}
+                  setTxSearch={setTxSearch}
+                  step={step}
+                  txSearch={txSearch}
+                  VAA_ID={VAA_ID}
+                />
               )}
             </div>
           </div>
@@ -1155,10 +880,11 @@ const SubmitYourProtocol = () => {
                           <div className="submit-standard-container-props-value">
                             <div>{"--> "}</div>
                             <div>{stdValue}</div>
-                            <Cross2Icon
+                            <TrashIcon
                               width={18}
-                              height={18}
-                              color="rgb(225, 50, 50)"
+                              style={{
+                                color: "rgb(225, 50, 50)",
+                              }}
                               onClick={() => {
                                 const newStdProperties: any = { ...stdProperties, [stdProp]: null };
 
@@ -1258,7 +984,7 @@ const SubmitYourProtocol = () => {
                       setLastVaaInput("");
                     }}
                   >
-                    ADD
+                    Add
                   </div>
                 </div>
 
@@ -1312,13 +1038,7 @@ const SubmitYourProtocol = () => {
 
 export default SubmitYourProtocol;
 
-const orderedChains = {
-  Mainnet: ChainFilterMainnet as ChainId[],
-  Testnet: ChainFilterTestnet as ChainId[],
-  Devnet: [] as ChainId[],
-};
-
-const NETWORK_LIST: { label: string; value: string }[] = [
+export const NETWORK_LIST: { label: Network; value: Network }[] = [
   {
     label: "Mainnet",
     value: "Mainnet",
@@ -1343,7 +1063,7 @@ const STANDARD_DESCRIPTIONS: any = {
   toAddress: "Native address format for the destination chain",
 };
 
-interface IIdentifier {
+export interface IIdentifier {
   network: "Mainnet" | "Testnet";
   chain: ChainId;
   address: string;
