@@ -447,10 +447,11 @@ const Tx = () => {
           chainId: +a,
           emmiter: b,
           specific: {
-            sequence: +c,
+            sequence: c,
           },
         })
         .then(observations => {
+          console.log({ observations, a, b, c, cnum: +c, VAAId });
           if (!!observations?.length) {
             const guardianSetList = getGuardianSet(4);
 
