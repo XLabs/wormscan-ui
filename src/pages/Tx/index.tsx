@@ -22,7 +22,7 @@ import {
   getUsdcAddress,
 } from "src/utils/fetchWithRPCsFallthrough";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
-import { ChainLimit } from "src/api";
+import { ChainLimit, Order } from "src/api";
 import { getClient } from "src/api/Client";
 import analytics from "src/analytics";
 import { GetOperationsOutput, Observation } from "src/api/guardian-network/types";
@@ -443,13 +443,16 @@ const Tx = () => {
       // no vaa, check observations for vaa ID
       const [a, b, c] = VAAId.split("/");
       await getClient()
-        .guardianNetwork.getObservation({
-          chainId: +a,
-          emmiter: b,
-          specific: {
-            sequence: c,
+        .guardianNetwork.getObservation(
+          {
+            chainId: +a,
+            emmiter: b,
+            specific: {
+              sequence: c,
+            },
           },
-        })
+          { page: 0, pageSize: 20, sortOrder: Order.ASC },
+        )
         .then(observations => {
           console.log({ observations, a, b, c, cnum: +c, VAAId });
           if (!!observations?.length) {
@@ -1428,26 +1431,29 @@ const Tx = () => {
           </>
         ) : observationsOnlyData ? (
           <>
-            <Top
-              txHash={observationsOnlyData.txHash}
-              emitterChainId={observationsOnlyData.emitterChain}
-              gatewayInfo={null}
-              payloadType={null}
-            />
-            <div>
-              There is no VAA for this transaction yet. This page will refresh automatically in 30
-              seconds
-            </div>
-            <br />
-            <div>
-              Signatures: {observationsOnlyData.signatures?.length} /{" "}
-              {environment.network === "Mainnet" ? "13" : "1"}
-            </div>
-            <br />
-            <div>
-              VAA ID: {observationsOnlyData.observations[0].emitterChain}/
+            <div className="tx-page-observation-only">
+              <Top
+                txHash={observationsOnlyData.txHash}
+                emitterChainId={observationsOnlyData.emitterChain}
+                gatewayInfo={null}
+                payloadType={null}
+              />
+              <div>
+                There is no VAA for this transaction yet. This page will refresh automatically in 30
+                seconds
+              </div>
+              <br />
+              <div>
+                Signatures: {observationsOnlyData.signatures?.length} /{" "}
+                {environment.network === "Mainnet" ? "13" : "1"}
+              </div>
+              <br />
+              <div>
+                VAA ID: {observationsOnlyData.observations[0].id.split("/").slice(0, -2).join("/")}
+                {/* VAA ID: {observationsOnlyData.observations[0].emitterChain}/
               {observationsOnlyData.observations[0].emitterAddr}/
-              {observationsOnlyData.observations[0].sequence}
+              {`${observationsOnlyData.observations[0].sequence}`} */}
+              </div>
             </div>
             <br />
 
