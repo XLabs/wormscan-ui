@@ -1,19 +1,33 @@
 @import "src/styles/globals.scss";
 
 .submit {
-  margin-top: 16px;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--color-gray-950);
+  border-radius: 22px;
   word-wrap: break-word;
 
-  padding: 12px;
+  padding: 24px;
+
+  &-title {
+    font-weight: 500;
+  }
+
+  &-subtitle {
+    color: var(--color-gray-400);
+    margin-bottom: 8px;
+  }
+
+  &-parsed {
+    color: green;
+  }
+
+  &-unparsed {
+    color: var(--color-gray-400);
+  }
 
   &-start-parsing {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    margin-top: 12px;
+    display: inline-flex;
+    margin-left: auto;
   }
 
   &-finished-parsing {
@@ -56,6 +70,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
+
+      &:hover {
+        background-color: var(--color-error-100);
+        border-radius: 8px;
+      }
     }
   }
 
@@ -74,9 +93,23 @@
       }
     }
 
+    &-types {
+      @include centered-row;
+      flex-wrap: wrap;
+      width: 49%;
+      background-color: red;
+    }
+
     &-button {
-      width: 140px;
-      height: 24px;
+      width: 168px;
+      height: 36px;
+      background-color: var(--color-gray-950);
+      border: 1px solid var(--color-gray-800);
+      border-radius: 12px;
+      padding: 4px 12px;
+      color: var(--color-white);
+
+      cursor: pointer;
     }
 
     &-bitset {
@@ -128,36 +161,43 @@
   }
 
   &-btn {
-    cursor: pointer;
-    background-color: var(--color-white-10);
-    border-radius: 4px;
-    display: inline-block;
-    padding: 6px 8px;
-    margin-right: 8px;
-    min-width: 140px;
-    text-align: center;
+    @include button-secondary;
 
-    &.showoff {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      min-width: 300px;
-      height: 40px;
-
-      margin-top: 4px;
-      outline-width: 1px;
-      outline-offset: 0;
-      outline-style: solid;
-      animation: animateOutline 4s ease infinite;
+    &.primary {
+      @include button-primary;
     }
+
+    // cursor: pointer;
+    // background-color: var(--color-white-10);
+    // border-radius: 4px;
+    // display: inline-block;
+    // padding: 6px 8px;
+    // margin-right: 8px;
+    // min-width: 140px;
+    // text-align: center;
+
+    // &.showoff {
+    //   display: flex;
+    //   align-items: center;
+    //   justify-content: center;
+
+    //   min-width: 300px;
+    //   height: 40px;
+
+    //   margin-top: 4px;
+    //   outline-width: 1px;
+    //   outline-offset: 0;
+    //   outline-style: solid;
+    //   animation: animateOutline 4s ease infinite;
+    // }
   }
 
   &-input {
-    border-radius: 4px;
     padding: 8px 8px;
-    background-color: var(--color-gray-950);
-    border: 1px solid var(--color-gray-800);
+    width: 400px;
+    background-color: var(--color-gray-900);
+    border: 0px;
+    border-radius: 12px;
     margin-right: 4px;
     color: var(--color-white-90);
 
@@ -342,7 +382,7 @@
       background-color: var(--color-gray-950);
       border-radius: 22px;
       padding: 18px 24px;
-      margin-bottom: 24px;
+      margin-bottom: 12px;
       gap: 12px;
 
       &-progress {
@@ -548,6 +588,16 @@
         }
       }
 
+      &-encodings {
+        @include centered-row;
+
+        .parse-content {
+          &:last-child {
+            margin-left: 20px;
+          }
+        }
+      }
+
       &-btn {
         @include button-primary;
         display: flex;
@@ -623,16 +673,12 @@
     }
 
     &-links {
-      @include centered-column;
+      @include centered-row;
       gap: 20px 16px;
-      margin-bottom: 36px;
       width: 100%;
 
-      @include desktop {
-        @include centered-row;
-        justify-content: flex-start;
-        margin-bottom: 64px;
-      }
+      justify-content: flex-start;
+      margin-bottom: 36px;
 
       &-reset {
         @include button-secondary;
@@ -640,7 +686,7 @@
       }
 
       &-navlink {
-        @include button-primary;
+        @include button-ghost;
         justify-content: center;
       }
     }
@@ -679,7 +725,7 @@
 
     &-multiple {
       @include text-roboto-body-400;
-      background-color: var(--color-gray-950);
+      background-color: var(--color-gray-900);
       color: var(--color-white);
       display: flex;
       justify-content: space-between;
@@ -726,6 +772,7 @@
 
       &-container {
         background-color: var(--color-gray-950);
+        border: 1px solid var(--color-gray-900);
         border-radius: 20px;
         display: flex;
         flex-direction: column;
@@ -808,6 +855,7 @@
     &-result {
       @include centered-column;
       background-color: var(--color-gray-950);
+      border: 1px solid var(--color-gray-900);
       border-radius: 20px;
       display: flex;
       height: 466px;

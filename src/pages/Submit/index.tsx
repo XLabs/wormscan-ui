@@ -461,33 +461,6 @@ const SubmitYourProtocol = () => {
 
   const isLoading = isLoadingTx || isFetchingTx;
 
-  const whatToParse = useCallback(() => {
-    if (!resultRaw) return [];
-
-    const parsingInternalPayload = typeof resultRaw?.payload === "object";
-
-    const resultEntries = resultRaw
-      ? parsingInternalPayload
-        ? Object.entries(resultRaw?.payload)
-        : Object.entries(resultRaw)
-      : null;
-
-    if (!!resultEntries?.length) {
-      const parsables = resultEntries
-        .map(([key, value]) => {
-          if (value && typeof value === "string" && isHex(value.replaceAll('"', ""))) {
-            if (key === "hash") return null;
-            return [parsingInternalPayload ? "payload." + key : key, value];
-          }
-          return null;
-        })
-        .filter(a => a !== null);
-
-      return parsables;
-    }
-    return [];
-  }, [resultRaw]);
-
   const [selectedPropertyName, setSelectedPropertyName] = useState("");
   const [stdProperties, setStdProperties] = useState({
     tokenChain: null,
@@ -721,62 +694,16 @@ const SubmitYourProtocol = () => {
                   step={step}
                   txSearch={txSearch}
                   VAA_ID={VAA_ID}
+                  finishedParsings={finishedParsings}
+                  vaaSubmit={vaaSubmit}
+                  setParsedVAA={setParsedVAA}
+                  setVaaSubmit={setVaaSubmit}
+                  setStep={setStep}
+                  setPropertyName={setPropertyName}
                 />
               )}
             </div>
           </div>
-
-          {step === 2 && (
-            <>
-              {finishedParsings.map(parsing => (
-                <div key={parsing.payload} className="submit-finished-parsing">
-                  <div>Finished parsing {parsing.parsedPayload?.callerAppId}</div>
-                </div>
-              ))}
-
-              {vaaSubmit ? (
-                <>
-                  <Submit
-                    renderExtras={renderExtras}
-                    setParsedVAA={setParsedVAA}
-                    resultRaw={vaaSubmit}
-                  />
-                  <div className="submit-start-parsing">
-                    <div onClick={() => setVaaSubmit(null)} className="submit-btn">
-                      CANCEL PARSING
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="submit-start-parsing">
-                  {whatToParse().map(([key, value]) => (
-                    <div
-                      onClick={() => {
-                        setVaaSubmit(encoding.hex.decode(value));
-                        setPropertyName(key);
-                      }}
-                      className="submit-btn showoff"
-                      key={value}
-                    >
-                      START PARSING: {key}
-                    </div>
-                  ))}
-
-                  {!!finishedParsings.length && !vaaSubmit && (
-                    <div
-                      onClick={() => {
-                        setStep(3);
-                        window.scrollTo(0, 0);
-                      }}
-                      className="submit-btn showoff"
-                    >
-                      Next step
-                    </div>
-                  )}
-                </div>
-              )}
-            </>
-          )}
 
           {step === 3 && (
             <>

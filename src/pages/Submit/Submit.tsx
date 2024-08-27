@@ -17,6 +17,7 @@ import { JsonText } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks";
 import { toast } from "react-toastify";
 import "./styles.scss";
+import { TrashIcon } from "src/icons/generic";
 
 type Layouts =
   | "payloadId"
@@ -451,11 +452,11 @@ export const Submit = ({
 
   return (
     <div className="submit">
-      PAYLOAD:
+      <span className="submit-title">Payload</span>
       <br />
       <br />
-      <span style={{ color: "green" }}>{resultParsed}</span>
-      <span style={{ color: "#ffffff40" }}>{resultUnparsed}</span>
+      <span className="submit-parsed">{resultParsed}</span>
+      <span className="submit-unparsed">{resultUnparsed}</span>
       {finishedParsing && (
         <CheckCircledIcon style={{ marginLeft: 6 }} color="green" width={20} height={20} />
       )}
@@ -463,6 +464,7 @@ export const Submit = ({
       <br />
       {!isInternal && (
         <>
+          <br />
           Select a layout as a base
           <br />
           <br />
@@ -482,18 +484,19 @@ export const Submit = ({
                     }}
                     className="submit-btn"
                   >
-                    {item}
+                    <span>{item}</span>
+
+                    {!DEFINED_LAYOUTS.includes(item) && (
+                      <div
+                        onClick={() => {
+                          setSavedLayouts(savedLayouts.filter(a => a[0] !== item));
+                        }}
+                        className="submit-base-layouts-delete"
+                      >
+                        <TrashIcon />
+                      </div>
+                    )}
                   </div>
-                  {!DEFINED_LAYOUTS.includes(item) && (
-                    <div
-                      onClick={() => {
-                        setSavedLayouts(savedLayouts.filter(a => a[0] !== item));
-                      }}
-                      className="submit-base-layouts-delete"
-                    >
-                      <Cross2Icon color="red" />
-                    </div>
-                  )}
                 </div>
               );
             })}
@@ -502,9 +505,10 @@ export const Submit = ({
           <br />
         </>
       )}
-      Create your layout
+      <div className="parse-submit-line" />
       <br />
       <br />
+      <span className="submit-title">Create your layout</span>
       <div>
         {userLayout.map((item, i) => {
           return (
@@ -524,7 +528,6 @@ export const Submit = ({
         })}
 
         <br />
-        <br />
 
         <input
           className="submit-input"
@@ -538,9 +541,11 @@ export const Submit = ({
         <br />
         <br />
 
-        {(Object.keys(layouts) as Layouts[]).map(item => (
-          <div key={item}>
+        <div className="submit-subtitle">Type:</div>
+        <div className="submit-layout-types">
+          {(Object.keys(layouts) as Layouts[]).map(item => (
             <LayoutItemButton
+              key={item}
               binarySelected={binarySelected}
               setBinarySelected={setBinarySelected}
               inputValue={inputValue}
@@ -567,8 +572,8 @@ export const Submit = ({
               isAboutToLayout={isAboutToLayout}
               renderExtras={renderExtras}
             />
-          </div>
-        ))}
+          ))}
+        </div>
 
         <br />
         {selected === "custom" && (binarySelected === "bytes" || binarySelected === "array") && (
@@ -839,7 +844,7 @@ const LayoutItemButton = ({
         onClick={() => {
           setSelected(id);
         }}
-        style={{ backgroundColor: isSelected ? "green" : "#ffffff40" }}
+        style={{ backgroundColor: isSelected ? "#4d4d4d" : "#121212" }}
       >
         {id}
       </button>
@@ -857,7 +862,6 @@ const LayoutItemButton = ({
               />
             </div>
           ))}
-
           <input
             className="submit-layout-input"
             placeholder={`bitset item #${bitsetValues.length + 1}`}
