@@ -8920,12 +8920,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-json-view-lite@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "react-json-view-lite@npm:1.1.0"
+"react-json-view-lite@npm:1.4.0":
+  version: 1.4.0
+  resolution: "react-json-view-lite@npm:1.4.0"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
-  checksum: 6cea282a40b91177e6d5daa5a98ada51f56d226c9368dd2a9c6f3ecfc3a47c168b11de43241ebeb79d0b6570b1158ef2e043db7c08b1f71dc7b215417331e598
+  checksum: 420921258478da46a54887b6e4740e6cf21c7264eba95c33d6264fdf71c482f0746c1345eb187a4a52b31d2a3a951f88c7af338b9fccbced2a918751dd98c844
   languageName: node
   linkType: hard
 
@@ -10498,7 +10498,7 @@ __metadata:
     react-dom: 18.2.0
     react-draggable: 4.4.5
     react-i18next: 12.1.5
-    react-json-view-lite: ^1.1.0
+    react-json-view-lite: 1.4.0
     react-query: 3.39.3
     react-router-dom: 6.22.0
     react-select: 5.7.2

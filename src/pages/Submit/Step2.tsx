@@ -2,6 +2,7 @@ import { JsonText, Loader, NavLink } from "src/components/atoms";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import {
   AlertTriangle,
+  ChevronLeftIcon,
   CopyIcon,
   InfoCircleIcon,
   LinkIcon,
@@ -175,6 +176,13 @@ export const Step2 = ({
                     onClick={() => {
                       setVaaSubmit(encoding.hex.decode(value));
                       setPropertyName(key);
+
+                      setTimeout(() => {
+                        document.querySelector(".submit-input")?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "center",
+                        });
+                      }, 50);
                     }}
                     className="submit-btn primary"
                     key={value}
@@ -183,7 +191,7 @@ export const Step2 = ({
                   </div>
                 ))}
 
-                {!!finishedParsings.length && !vaaSubmit && (
+                {/* {!!finishedParsings.length && !vaaSubmit && (
                   <div
                     onClick={() => {
                       setStep(3);
@@ -193,7 +201,7 @@ export const Step2 = ({
                   >
                     Next step
                   </div>
-                )}
+                )} */}
               </div>
             )}
           </div>
@@ -300,26 +308,53 @@ export const Step2 = ({
             </div>
           </div>
         </div>
-      </div>
-
-      <>
-        {finishedParsings.map(parsing => (
-          <div key={parsing.payload} className="submit-finished-parsing">
-            <div>Finished parsing {parsing.parsedPayload?.callerAppId}</div>
-          </div>
-        ))}
-      </>
-
-      {vaaSubmit && (
         <>
-          <Submit renderExtras={renderExtras} setParsedVAA={setParsedVAA} resultRaw={vaaSubmit} />
-          <div className="submit-start-parsing">
-            <div onClick={() => setVaaSubmit(null)} className="submit-btn">
-              CANCEL PARSING
+          {finishedParsings.map(parsing => (
+            <div key={parsing.payload} className="submit-finished-parsing">
+              <div>Finished parsing {parsing.parsedPayload?.callerAppId}</div>
             </div>
-          </div>
+          ))}
         </>
-      )}
+
+        {vaaSubmit && (
+          <>
+            <Submit
+              renderExtras={renderExtras}
+              setParsedVAA={setParsedVAA}
+              resultRaw={vaaSubmit}
+              setVaaSubmit={setVaaSubmit}
+            />
+            <div className="parse-submit-line" />
+          </>
+        )}
+
+        <div className="submit-steps">
+          <div
+            className="submit-steps-btn-prev"
+            onClick={() => {
+              setStep(step - 1);
+              window.scrollTo(0, 0);
+            }}
+          >
+            <ChevronLeftIcon />
+            Previous Step
+          </div>
+          <div
+            /* onClick={() => setVaaSubmit(null)} */
+            onClick={() => {
+              if (!!finishedParsings.length && !vaaSubmit) {
+                setStep(3);
+                window.scrollTo(0, 0);
+              }
+            }}
+            className={`submit-steps-btn-next ${
+              !!finishedParsings.length && !vaaSubmit ? "" : "disabled"
+            }`}
+          >
+            Next Step
+          </div>
+        </div>
+      </div>
     </>
   );
 };

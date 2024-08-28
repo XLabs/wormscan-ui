@@ -19,6 +19,7 @@ export { default as CrossIcon } from "./CrossIcon";
 export { default as Cube3DIcon } from "./Cube3DIcon";
 export { default as DiscordIcon } from "./DiscordIcon";
 export { default as EditIcon } from "./EditIcon";
+export { default as EnterIcon } from "./EnterIcon";
 export { default as FilterListIcon } from "./FilterListIcon";
 export { default as GlobeIcon } from "./GlobeIcon";
 export { default as HomeIcon } from "./HomeIcon";

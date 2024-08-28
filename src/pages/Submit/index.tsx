@@ -642,19 +642,6 @@ const SubmitYourProtocol = () => {
 
           <div className="devtools-page-body">
             <div className="parse">
-              {step > 1 && step < 5 && (
-                <div
-                  className="parse-submit-btn"
-                  style={{ marginBottom: 16 }}
-                  onClick={() => {
-                    setStep(step - 1);
-                    window.scrollTo(0, 0);
-                  }}
-                >
-                  Prev Step
-                </div>
-              )}
-
               {step === 1 && (
                 <Step1
                   selectedNetwork={selectedNetwork}

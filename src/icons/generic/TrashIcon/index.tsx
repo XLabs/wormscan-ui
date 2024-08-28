@@ -2,12 +2,15 @@ const TrashIcon = ({
   style,
   width = 24,
   onClick,
+  className,
 }: {
   style?: any;
   width?: number;
   onClick?: () => void;
+  className?: string;
 }) => (
   <svg
+    className={className}
     height={width}
     style={style}
     width={width}

@@ -12,11 +12,6 @@
     font-weight: 500;
   }
 
-  &-subtitle {
-    color: var(--color-gray-400);
-    margin-bottom: 8px;
-  }
-
   &-parsed {
     color: green;
   }
@@ -32,26 +27,82 @@
 
   &-finished-parsing {
     display: flex;
-    background-color: var(--color-success-15);
+    // background-color: var(--color-success-15);
     margin-top: 12px;
     justify-content: center;
     align-items: center;
+
     min-height: 40px;
     border-radius: 4px;
+
+    font-weight: 500;
+  }
+
+  &-steps {
+    @include centered-row;
+    margin-top: 16px;
+
+    &-btn-prev {
+      @include button-secondary;
+    }
+    &-btn-next {
+      margin-left: auto;
+      @include button-primary;
+
+      &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .add-btn {
+    @include button-primary;
+    display: flex;
+    justify-content: center;
+    width: 168px;
+    margin-top: 36px;
+  }
+
+  &-save-finish {
+    @include centered-row;
+  }
+
+  &-json-texts {
+    @include centered-row;
+
+    &-item {
+      width: 48%;
+      background-color: var(--color-black);
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 100px;
+
+      &:last-child {
+        margin-left: 1%;
+        width: 51%;
+      }
+
+      &-key {
+        color: var(--color-gray-500);
+      }
+
+      &-value {
+        color: var(--color-white);
+      }
+    }
   }
 
   &-selectedLayouts {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     gap: 6px;
     margin-bottom: 4px;
+    position: relative;
 
     &-remove {
-      min-width: 18px;
-      min-height: 18px;
+      position: absolute;
+      margin-left: 4px;
       cursor: pointer;
-      color: var(--color-secondary-700);
+      color: red;
     }
   }
 
@@ -80,28 +131,52 @@
 
   &-layout {
     &-input {
-      margin-left: 6px;
-      width: 140px;
-      height: 30px;
-      border-radius: 4px;
-      padding: 8px 8px;
-      background-color: var(--color-gray-800);
-      border: 1px solid var(--color-gray-700);
+      width: 400px;
+      height: 36px;
+      border-radius: 6px;
+      padding: 8px;
+      background-color: var(--color-gray-900);
+      border: 0px;
       color: var(--color-white-90);
       &:focus {
         outline: transparent;
       }
     }
 
-    &-types {
-      @include centered-row;
-      flex-wrap: wrap;
-      width: 49%;
-      background-color: red;
+    &-container {
+      display: flex;
+      width: 100%;
+
+      &-box {
+        display: flex;
+        width: 49%;
+        flex-direction: column;
+      }
+
+      &-subtitle {
+        color: var(--color-gray-400);
+        margin-bottom: 8px;
+
+        &.mtop {
+          margin-top: 12px;
+        }
+      }
+
+      &-types {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      &-options {
+        display: flex;
+        flex-direction: column;
+        // justify-content: center;
+      }
     }
 
     &-button {
-      width: 168px;
+      width: 148px;
       height: 36px;
       background-color: var(--color-gray-950);
       border: 1px solid var(--color-gray-800);
@@ -112,10 +187,16 @@
       cursor: pointer;
     }
 
+    &-custom {
+      @include centered-row;
+      gap: 8px;
+    }
+
     &-bitset {
-      display: inline-flex;
-      justify-content: center;
+      position: relative;
+      display: flex;
       align-items: center;
+      width: 400px;
       gap: 6px;
 
       &-close {
@@ -123,40 +204,66 @@
         margin-left: 2px;
         color: grey;
       }
+
+      &-options {
+        @include centered-row;
+        margin-top: 6px;
+        width: 100%;
+
+        gap: 6px;
+        flex-wrap: wrap;
+      }
     }
 
     &-switch-menu {
       border: 1px solid white;
       padding: 6px 8px;
+
+      &-title {
+        @include centered-row;
+        gap: 6px;
+        color: var(--color-white);
+        font-weight: 500;
+        margin-top: 12px;
+        margin-left: 6px;
+      }
     }
 
     &-plus {
-      width: 22px;
-      height: 22px;
-      border-radius: 60%;
-      background-color: var(--color-white-10);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
+      position: absolute;
+      right: 12px;
+      font-size: 14px;
+      color: var(--color-gray-500);
     }
   }
 
   &-options {
     display: flex;
     gap: 6px;
+    margin-top: 6px;
     margin-bottom: 12px;
+
+    &-omit {
+      color: var(--color-gray-400);
+    }
 
     &-checkbox {
       width: 20px;
       height: 20px;
-      background-color: var(--color-white-10);
-      border-radius: 2px;
+      background-color: var(--color-gray-950);
+      border: 1px solid var(--color-gray-800);
+      border-radius: 4px;
       cursor: pointer;
 
       display: flex;
       justify-content: center;
       align-items: center;
+      margin-right: 6px;
+
+      &.checked {
+        background-color: var(--color-primary-100);
+        color: var(--color-black);
+      }
     }
   }
 
@@ -167,29 +274,13 @@
       @include button-primary;
     }
 
-    // cursor: pointer;
-    // background-color: var(--color-white-10);
-    // border-radius: 4px;
-    // display: inline-block;
-    // padding: 6px 8px;
-    // margin-right: 8px;
-    // min-width: 140px;
-    // text-align: center;
-
-    // &.showoff {
-    //   display: flex;
-    //   align-items: center;
-    //   justify-content: center;
-
-    //   min-width: 300px;
-    //   height: 40px;
-
-    //   margin-top: 4px;
-    //   outline-width: 1px;
-    //   outline-offset: 0;
-    //   outline-style: solid;
-    //   animation: animateOutline 4s ease infinite;
-    // }
+    &.save {
+      @include centered-row;
+      justify-content: center;
+      width: 110px;
+      margin-left: 12px;
+      margin-right: 12px;
+    }
   }
 
   &-input {
@@ -207,11 +298,13 @@
   }
 
   &-switch-size-text {
-    background-color: var(--color-white-10);
+    // background-color: var(--color-white-10);
     margin-left: 12px;
-    padding: 4px 6px;
-    border-radius: 6px;
+    padding: 4px 2px;
+
     font-size: 14px;
+    border-bottom: 1px solid var(--color-gray-700);
+
     cursor: pointer;
   }
 

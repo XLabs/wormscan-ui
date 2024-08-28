@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import {
   chainToChainId,
   deserializeLayout,
@@ -12,12 +12,11 @@ import {
   encoding,
 } from "@wormhole-foundation/sdk";
 import { deepCloneWithBigInt } from "src/utils/object";
-import { CheckCircledIcon, CheckIcon, Cross2Icon, PlusIcon } from "@radix-ui/react-icons";
 import { JsonText } from "src/components/atoms";
 import { useLocalStorage } from "src/utils/hooks";
 import { toast } from "react-toastify";
+import { TrashIcon, CheckIcon, CheckCircle2, EnterIcon } from "src/icons/generic";
 import "./styles.scss";
-import { TrashIcon } from "src/icons/generic";
 
 type Layouts =
   | "payloadId"
@@ -50,6 +49,7 @@ type UserLayout = {
 type SubmitProps = {
   resultRaw: Uint8Array;
   renderExtras: () => void;
+  setVaaSubmit?: (a: any) => void;
   setParsedVAA?: (a: any) => void;
   isInternal?: boolean;
   internalLayoutName?: string;
@@ -72,6 +72,7 @@ export const Submit = ({
   internalLayoutName,
   setSwitchLayout,
   setInternalLayout,
+  setVaaSubmit,
 }: SubmitProps) => {
   const [userLayout, setUserLayout] = useState<UserLayout[]>([]);
   const [parsingLayout, setParsingLayout] = useState([]);
@@ -450,6 +451,36 @@ export const Submit = ({
 
   const finishedParsing = Boolean(resultLength && resultUnparsed.length === 0);
 
+  const toRemoveFromPayload = +inputValue;
+  const resultUnparsedProcessed = resultUnparsedArray.slice(toRemoveFromPayload);
+
+  const [newSwitchLayout, setNewSwitchLayout] = useState<UserLayout[]>([]);
+  const [newInternalLayout, setNewInternalLayout] = useState<UserLayout[]>([]);
+
+  useEffect(() => {
+    if (newInternalLayout.length) {
+      setInternalLayouts(newInternalLayout);
+      setNewInternalLayout([]);
+    }
+  }, [internalLayouts, newInternalLayout, setInternalLayouts]);
+
+  useEffect(() => {
+    if (newSwitchLayout.length) {
+      setSwitchLayouts([...switchLayouts, [[+tagIdValue, tagNameValue], newSwitchLayout]]);
+      setTagIdValue("");
+      setTagNameValue("");
+      setNewSwitchLayout([]);
+    }
+  }, [
+    newSwitchLayout,
+    setSwitchLayouts,
+    setTagIdValue,
+    setTagNameValue,
+    switchLayouts,
+    tagIdValue,
+    tagNameValue,
+  ]);
+
   return (
     <div className="submit">
       <span className="submit-title">Payload</span>
@@ -457,9 +488,7 @@ export const Submit = ({
       <br />
       <span className="submit-parsed">{resultParsed}</span>
       <span className="submit-unparsed">{resultUnparsed}</span>
-      {finishedParsing && (
-        <CheckCircledIcon style={{ marginLeft: 6 }} color="green" width={20} height={20} />
-      )}
+      {finishedParsing && <CheckCircle2 style={{ marginLeft: 6, color: "green" }} width={20} />}
       <br />
       <br />
       {!isInternal && (
@@ -510,23 +539,6 @@ export const Submit = ({
       <br />
       <span className="submit-title">Create your layout</span>
       <div>
-        {userLayout.map((item, i) => {
-          return (
-            <div key={i} className="submit-selectedLayouts">
-              {JSON.stringify(item)}
-              {userLayout.length - 1 === i && (
-                <Cross2Icon
-                  onClick={() => {
-                    setSelectedBaseLayout("");
-                    setUserLayout(userLayout.filter(a => a.inputName !== item.inputName));
-                  }}
-                  className="submit-selectedLayouts-remove"
-                />
-              )}
-            </div>
-          );
-        })}
-
         <br />
 
         <input
@@ -541,62 +553,295 @@ export const Submit = ({
         <br />
         <br />
 
-        <div className="submit-subtitle">Type:</div>
-        <div className="submit-layout-types">
-          {(Object.keys(layouts) as Layouts[]).map(item => (
-            <LayoutItemButton
-              key={item}
-              binarySelected={binarySelected}
-              setBinarySelected={setBinarySelected}
-              inputValue={inputValue}
-              setInputValue={setInputValue}
-              id={item}
-              selected={selected}
-              setSelected={setSelected}
-              endianness={endianness}
-              setEndianness={setEndianness}
-              bitsetValues={bitsetValues}
-              setBitsetValues={setBitsetValues}
-              isLengthSize={isLengthSize}
-              setIsLengthSize={setIsLengthSize}
-              tagIdValue={tagIdValue}
-              setTagIdValue={setTagIdValue}
-              tagNameValue={tagNameValue}
-              setTagNameValue={setTagNameValue}
-              resultUnparsed={resultUnparsedArray}
-              inputName={inputName}
-              switchLayouts={switchLayouts}
-              setSwitchLayouts={setSwitchLayouts}
-              internalLayouts={internalLayouts}
-              setInternalLayouts={setInternalLayouts}
-              isAboutToLayout={isAboutToLayout}
-              renderExtras={renderExtras}
-            />
-          ))}
+        <div className="submit-layout-container">
+          <div className="submit-layout-container-box">
+            <div className="submit-layout-container-subtitle">Type:</div>
+
+            <div className="submit-layout-container-types">
+              {(Object.keys(layouts) as Layouts[]).map(item => (
+                <button
+                  key={item}
+                  className="submit-layout-button"
+                  onClick={() => {
+                    setSelected(item);
+                  }}
+                  style={{ backgroundColor: selected === item ? "#333" : "#121212" }}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="submit-layout-container-box">
+            <div className="submit-layout-container-subtitle">
+              {selected === "custom" && "binary"}
+              {selected === "payloadId" ||
+              selected === "fixedLengthString" ||
+              selected === "bitsetItem"
+                ? selected
+                : ""}
+            </div>
+
+            <div className="submit-layout-container-options">
+              {selected === "bitsetItem" && (
+                <>
+                  <div className="submit-layout-bitset">
+                    <input
+                      className="submit-layout-input"
+                      placeholder={`bitset item #${bitsetValues.length + 1}`}
+                      value={inputValue}
+                      onChange={e => setInputValue(e.target.value)}
+                      onKeyDown={event => {
+                        if (event.key === "Enter" || event.keyCode === 13) {
+                          setBitsetValues([...bitsetValues, inputValue]);
+                          setInputValue("");
+                        }
+                      }}
+                    />
+                    <div className="submit-layout-plus">press ↵ to add</div>
+                  </div>
+
+                  <div className="submit-layout-bitset-options">
+                    {bitsetValues.map((bit, i) => (
+                      <div key={i} className="submit-btn">
+                        <span>{bit}</span>
+                        <div
+                          onClick={() => {
+                            setBitsetValues(bitsetValues.filter((_val, idx) => i !== idx));
+                          }}
+                          className="submit-base-layouts-delete"
+                        >
+                          <TrashIcon />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {selected === "payloadId" && (
+                <input
+                  className="submit-layout-input"
+                  placeholder="id"
+                  value={inputValue}
+                  onChange={e => setInputValue(e.target.value)}
+                />
+              )}
+
+              {selected === "fixedLengthString" && (
+                <input
+                  className="submit-layout-input"
+                  placeholder="length"
+                  value={inputValue}
+                  onChange={e => setInputValue(e.target.value)}
+                />
+              )}
+
+              {selected === "custom" && (
+                <>
+                  <div className="submit-layout-custom">
+                    <button
+                      className="submit-layout-button"
+                      onClick={() => {
+                        setBinarySelected("uint");
+                      }}
+                      style={{ backgroundColor: binarySelected === "uint" ? "#333" : "#121212" }}
+                    >
+                      uint
+                    </button>
+                    <button
+                      className="submit-layout-button"
+                      onClick={() => {
+                        setBinarySelected("int");
+                      }}
+                      style={{ backgroundColor: binarySelected === "int" ? "#333" : "#121212" }}
+                    >
+                      int
+                    </button>
+                    <button
+                      className="submit-layout-button"
+                      onClick={() => {
+                        setBinarySelected("bytes");
+                      }}
+                      style={{
+                        backgroundColor: binarySelected === "bytes" ? "#333" : "#121212",
+                      }}
+                    >
+                      bytes
+                    </button>
+                    <button
+                      className="submit-layout-button"
+                      onClick={() => {
+                        setBinarySelected("array");
+                      }}
+                      style={{
+                        backgroundColor: binarySelected === "array" ? "#333" : "#121212",
+                      }}
+                    >
+                      array
+                    </button>
+                    <button
+                      className="submit-layout-button"
+                      onClick={() => {
+                        setBinarySelected("switch");
+                      }}
+                      style={{
+                        backgroundColor: binarySelected === "switch" ? "#333" : "#121212",
+                      }}
+                    >
+                      switch
+                    </button>
+                  </div>
+
+                  <div className="submit-layout-container-subtitle mtop">endianness:</div>
+                  <div className="submit-layout-custom">
+                    <button
+                      className="submit-layout-button"
+                      onClick={() => {
+                        setEndianness("default");
+                      }}
+                      style={{ backgroundColor: endianness === "default" ? "#333" : "#121212" }}
+                    >
+                      default
+                    </button>
+                    <button
+                      className="submit-layout-button"
+                      onClick={() => {
+                        setEndianness("little");
+                      }}
+                      style={{ backgroundColor: endianness === "little" ? "#333" : "#121212" }}
+                    >
+                      little
+                    </button>
+                  </div>
+
+                  <div className="submit-layout-container-subtitle mtop">
+                    {isLengthSize ? "lengthSize" : "size"}:
+                  </div>
+                  <div>
+                    <input
+                      className="submit-layout-input"
+                      style={{ width: 140 }}
+                      placeholder="size"
+                      value={inputValue}
+                      onChange={e => setInputValue(e.target.value)}
+                    />
+                    {binarySelected !== "switch" && (
+                      <span
+                        onClick={() => setIsLengthSize(!isLengthSize)}
+                        className="submit-switch-size-text"
+                      >
+                        Switch to {isLengthSize ? "size" : "lengthSize"}
+                      </span>
+                    )}
+                  </div>
+
+                  <br />
+                  <br />
+
+                  {binarySelected === "switch" && inputValue && (
+                    <div className="submit-layout-switch-menu">
+                      <div>layouts:</div>
+                      {switchLayouts.map((lay, i) => {
+                        const [ID, NAME] = lay[0];
+                        const LAYOUT = lay[1];
+
+                        return (
+                          <div key={ID} className="submit-selectedLayouts">
+                            <div>
+                              {i === 0 && (
+                                <div>
+                                  <br />
+                                  ADDED SWITCHES:
+                                  <br />
+                                  <br />
+                                </div>
+                              )}
+                              <div>ID: {ID}</div>
+                              <div>NAME: {NAME}</div>
+                              <div>LAYOUT: {JSON.stringify(LAYOUT)}</div>
+                              <br />
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      <br />
+                      <div>ADD NEW SWITCH</div>
+                      <input
+                        className="submit-layout-input"
+                        placeholder="layout id"
+                        value={tagIdValue}
+                        onChange={e => setTagIdValue(e.target.value)}
+                      />
+                      <input
+                        className="submit-layout-input"
+                        placeholder="layout id"
+                        value={tagNameValue}
+                        onChange={e => setTagNameValue(e.target.value)}
+                      />
+                      <br />
+                      <br />
+                      {tagIdValue && tagNameValue && (
+                        <Submit
+                          renderExtras={renderExtras}
+                          setSwitchLayout={setNewSwitchLayout}
+                          isInternal
+                          internalLayoutName={tagNameValue}
+                          resultRaw={resultUnparsedProcessed}
+                        />
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {selected === "custom" &&
+              (binarySelected === "bytes" || binarySelected === "array") && (
+                <div className="submit-options">
+                  <div
+                    onClick={() => {
+                      setShouldOmit(false);
+                      setIsAboutToLayout(!isAboutToLayout);
+                    }}
+                    className={`submit-options-checkbox ${isAboutToLayout ? "checked" : ""}`}
+                  >
+                    {isAboutToLayout && <CheckIcon />}
+                  </div>
+                  <div>Create a layout for this item</div>
+                </div>
+              )}
+          </div>
         </div>
 
         <br />
-        {selected === "custom" && (binarySelected === "bytes" || binarySelected === "array") && (
+        {!isAboutToLayout && binarySelected !== "switch" && (
           <div className="submit-options">
             <div
-              onClick={() => {
-                setShouldOmit(false);
-                setIsAboutToLayout(!isAboutToLayout);
-              }}
-              className="submit-options-checkbox"
+              className={`submit-options-checkbox ${shouldOmit ? "checked" : ""}`}
+              onClick={() => setShouldOmit(!shouldOmit)}
             >
-              {isAboutToLayout && <CheckIcon />}
+              {shouldOmit && <CheckIcon />}
             </div>
-            <div>create a layout for this item</div>
+            <div className="submit-options-omit">omit from payload parsing</div>
           </div>
         )}
 
-        {!isAboutToLayout && binarySelected !== "switch" && (
-          <div className="submit-options">
-            <div onClick={() => setShouldOmit(!shouldOmit)} className="submit-options-checkbox">
-              {shouldOmit && <CheckIcon />}
+        {(binarySelected === "bytes" || binarySelected === "array") && isAboutToLayout && (
+          <div className="submit-layout-switch-menu">
+            <div className="submit-layout-switch-menu-title">
+              <EnterIcon />
+              <span>Create your layout</span>
             </div>
-            <div>omit from payload parsing</div>
+            <Submit
+              renderExtras={renderExtras}
+              setInternalLayout={setNewInternalLayout}
+              isInternal
+              internalLayoutName={inputName}
+              resultRaw={resultUnparsedProcessed}
+            />
           </div>
         )}
 
@@ -660,9 +905,9 @@ export const Submit = ({
               setIsAboutToLayout(false);
             }
           }}
-          className="submit-btn"
+          className="add-btn"
         >
-          ADD
+          Add
         </div>
 
         <br />
@@ -681,12 +926,57 @@ export const Submit = ({
             <br />
           </>
         )}
-        <JsonText data={deepCloneWithBigInt(result)} />
+
+        <div className="submit-json-texts">
+          <div className="submit-json-texts-item">
+            {/* <JsonText data={userLayout} /> */}
+            {userLayout.map((item, i) => {
+              const entries = Object.entries(item);
+
+              return (
+                <div key={i} className="submit-selectedLayouts">
+                  {entries.map((entry, idx) => {
+                    return (
+                      <Fragment key={entry[0]}>
+                        {idx === 0 && <span>{"{ "}</span>}
+
+                        <span className="submit-json-texts-item-key">{'"' + entry[0] + '"'}: </span>
+                        <span className="submit-json-texts-item-value">
+                          {'"' + String(entry[1]) + '"'}
+                        </span>
+                        {idx + 1 !== entries.length && <span>, </span>}
+                        {idx + 1 === entries.length && <span>{" }"}</span>}
+                      </Fragment>
+                    );
+                  })}
+                  {/* {JSON.stringify(item)
+                    .replaceAll('","', '", "')
+                    .replaceAll('{"', `{ "`)
+                    .replaceAll('"}', '" }')} */}
+                  {userLayout.length - 1 === i && (
+                    <TrashIcon
+                      width={22}
+                      onClick={() => {
+                        setSelectedBaseLayout("");
+                        setUserLayout(userLayout.filter(a => a.inputName !== item.inputName));
+                      }}
+                      className="submit-selectedLayouts-remove"
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <div className="submit-json-texts-item">
+            <JsonText data={deepCloneWithBigInt(result)} />
+          </div>
+        </div>
+
         <br />
         <br />
 
         {!isInternal && (
-          <div>
+          <div className="submit-save-finish">
             <input
               className="submit-input"
               placeholder="layout name"
@@ -709,9 +999,9 @@ export const Submit = ({
                   });
                 }
               }}
-              className="submit-btn"
+              className="submit-btn save"
             >
-              SAVE
+              Save
             </div>
 
             {finishedParsing && (
@@ -738,10 +1028,25 @@ export const Submit = ({
                     });
                   }
                 }}
-                className="submit-btn"
+                className="submit-btn primary"
               >
-                FINISH PARSING
+                Finish Parsing
               </div>
+            )}
+
+            {resultRaw && (
+              <>
+                {/* <Submit
+                  renderExtras={renderExtras}
+                  setParsedVAA={setParsedVAA}
+                  resultRaw={resultRaw}
+                /> */}
+                <div className="submit-start-parsing">
+                  <div onClick={() => setVaaSubmit(null)} className="submit-btn">
+                    Cancel Parsing
+                  </div>
+                </div>
+              </>
             )}
           </div>
         )}
@@ -777,286 +1082,6 @@ interface ILayoutItemButtonProps {
   isAboutToLayout: boolean;
   renderExtras: () => void;
 }
-
-const LayoutItemButton = ({
-  id,
-  setSelected,
-  selected,
-  inputValue,
-  setInputValue,
-  binarySelected,
-  setBinarySelected,
-  endianness,
-  setEndianness,
-  bitsetValues,
-  setBitsetValues,
-  isLengthSize,
-  setIsLengthSize,
-  tagIdValue,
-  setTagIdValue,
-  tagNameValue,
-  setTagNameValue,
-  inputName,
-  resultUnparsed,
-  switchLayouts,
-  setSwitchLayouts,
-  internalLayouts,
-  setInternalLayouts,
-  isAboutToLayout,
-  renderExtras,
-}: ILayoutItemButtonProps) => {
-  const isSelected = selected === id;
-
-  const toRemoveFromPayload = +inputValue;
-  const resultUnparsedProcessed = resultUnparsed.slice(toRemoveFromPayload);
-
-  const [newSwitchLayout, setNewSwitchLayout] = useState<UserLayout[]>([]);
-  const [newInternalLayout, setNewInternalLayout] = useState<UserLayout[]>([]);
-
-  useEffect(() => {
-    if (newInternalLayout.length) {
-      setInternalLayouts(newInternalLayout);
-      setNewInternalLayout([]);
-    }
-  }, [internalLayouts, newInternalLayout, setInternalLayouts]);
-
-  useEffect(() => {
-    if (newSwitchLayout.length) {
-      setSwitchLayouts([...switchLayouts, [[+tagIdValue, tagNameValue], newSwitchLayout]]);
-      setTagIdValue("");
-      setTagNameValue("");
-      setNewSwitchLayout([]);
-    }
-  }, [
-    newSwitchLayout,
-    setSwitchLayouts,
-    setTagIdValue,
-    setTagNameValue,
-    switchLayouts,
-    tagIdValue,
-    tagNameValue,
-  ]);
-
-  return (
-    <>
-      <button
-        className="submit-layout-button"
-        onClick={() => {
-          setSelected(id);
-        }}
-        style={{ backgroundColor: isSelected ? "#4d4d4d" : "#121212" }}
-      >
-        {id}
-      </button>
-
-      {id === "bitsetItem" && isSelected && (
-        <div className="submit-layout-bitset">
-          {bitsetValues.map((bit, i) => (
-            <div key={i}>
-              <span>{bit}</span>
-              <Cross2Icon
-                className="submit-layout-bitset-close"
-                onClick={() => {
-                  setBitsetValues(bitsetValues.filter((_val, idx) => i !== idx));
-                }}
-              />
-            </div>
-          ))}
-          <input
-            className="submit-layout-input"
-            placeholder={`bitset item #${bitsetValues.length + 1}`}
-            value={inputValue}
-            onChange={e => setInputValue(e.target.value)}
-          />
-          <div
-            onClick={() => {
-              setBitsetValues([...bitsetValues, inputValue]);
-              setInputValue("");
-            }}
-            className="submit-layout-plus"
-          >
-            <PlusIcon />
-          </div>
-        </div>
-      )}
-      {id === "payloadId" && isSelected && (
-        <input
-          className="submit-layout-input"
-          placeholder="id"
-          value={inputValue}
-          onChange={e => setInputValue(e.target.value)}
-        />
-      )}
-      {id === "fixedLengthString" && isSelected && (
-        <input
-          className="submit-layout-input"
-          placeholder="length"
-          value={inputValue}
-          onChange={e => setInputValue(e.target.value)}
-        />
-      )}
-      {id === "custom" && isSelected && (
-        <>
-          <div style={{ marginTop: 16 }}>binary:</div>
-          <button
-            className="submit-layout-button"
-            onClick={() => {
-              setBinarySelected("uint");
-            }}
-            style={{ backgroundColor: binarySelected === "uint" ? "green" : "#ffffff40" }}
-          >
-            uint
-          </button>
-          <button
-            className="submit-layout-button"
-            onClick={() => {
-              setBinarySelected("int");
-            }}
-            style={{ backgroundColor: binarySelected === "int" ? "green" : "#ffffff40" }}
-          >
-            int
-          </button>
-          <button
-            className="submit-layout-button"
-            onClick={() => {
-              setBinarySelected("bytes");
-            }}
-            style={{ backgroundColor: binarySelected === "bytes" ? "green" : "#ffffff40" }}
-          >
-            bytes
-          </button>
-          <button
-            className="submit-layout-button"
-            onClick={() => {
-              setBinarySelected("array");
-            }}
-            style={{ backgroundColor: binarySelected === "array" ? "green" : "#ffffff40" }}
-          >
-            array
-          </button>
-          <button
-            className="submit-layout-button"
-            onClick={() => {
-              setBinarySelected("switch");
-            }}
-            style={{ backgroundColor: binarySelected === "switch" ? "green" : "#ffffff40" }}
-          >
-            switch
-          </button>
-
-          <div>endianness:</div>
-          <button
-            className="submit-layout-button"
-            onClick={() => {
-              setEndianness("default");
-            }}
-            style={{ backgroundColor: endianness === "default" ? "green" : "#ffffff40" }}
-          >
-            default
-          </button>
-          <button
-            className="submit-layout-button"
-            onClick={() => {
-              setEndianness("little");
-            }}
-            style={{ backgroundColor: endianness === "little" ? "green" : "#ffffff40" }}
-          >
-            little
-          </button>
-
-          <div>{isLengthSize ? "lengthSize" : "size"}:</div>
-          <input
-            className="submit-layout-input"
-            placeholder="size"
-            value={inputValue}
-            onChange={e => setInputValue(e.target.value)}
-          />
-          {binarySelected !== "switch" && (
-            <span
-              onClick={() => setIsLengthSize(!isLengthSize)}
-              className="submit-switch-size-text"
-            >
-              switch to {isLengthSize ? "size" : "lengthSize"}
-            </span>
-          )}
-          <br />
-          <br />
-
-          {(binarySelected === "bytes" || binarySelected === "array") && isAboutToLayout && (
-            <div className="submit-layout-switch-menu">
-              <div>layout:</div>
-              {internalLayouts.map((lay, i) => (
-                <div key={i}>{JSON.stringify(lay)}</div>
-              ))}
-              <Submit
-                renderExtras={renderExtras}
-                setInternalLayout={setNewInternalLayout}
-                isInternal
-                internalLayoutName={inputName}
-                resultRaw={resultUnparsedProcessed}
-              />
-            </div>
-          )}
-
-          {binarySelected === "switch" && inputValue && (
-            <div className="submit-layout-switch-menu">
-              <div>layouts:</div>
-              {switchLayouts.map((lay, i) => {
-                const [ID, NAME] = lay[0];
-                const LAYOUT = lay[1];
-
-                return (
-                  <div key={ID} className="submit-selectedLayouts">
-                    <div>
-                      {i === 0 && (
-                        <div>
-                          <br />
-                          ADDED SWITCHES:
-                          <br />
-                          <br />
-                        </div>
-                      )}
-                      <div>ID: {ID}</div>
-                      <div>NAME: {NAME}</div>
-                      <div>LAYOUT: {JSON.stringify(LAYOUT)}</div>
-                      <br />
-                    </div>
-                  </div>
-                );
-              })}
-
-              <br />
-              <div>ADD NEW SWITCH</div>
-              <input
-                className="submit-layout-input"
-                placeholder="layout id"
-                value={tagIdValue}
-                onChange={e => setTagIdValue(e.target.value)}
-              />
-              <input
-                className="submit-layout-input"
-                placeholder="layout id"
-                value={tagNameValue}
-                onChange={e => setTagNameValue(e.target.value)}
-              />
-              <br />
-              <br />
-              {tagIdValue && tagNameValue && (
-                <Submit
-                  renderExtras={renderExtras}
-                  setSwitchLayout={setNewSwitchLayout}
-                  isInternal
-                  internalLayoutName={tagNameValue}
-                  resultRaw={resultUnparsedProcessed}
-                />
-              )}
-            </div>
-          )}
-        </>
-      )}
-    </>
-  );
-};
 
 type ISwitchLayouts = [[number, string], any][];
 

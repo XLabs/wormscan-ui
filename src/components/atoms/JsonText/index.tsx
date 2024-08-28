@@ -25,6 +25,8 @@ const JsonText = ({ data }: Props) => {
           punctuation: "",
           stringValue: "json-view-string",
           undefinedValue: "json-view-info",
+          clickableLabel: "",
+          noQuotesForStringValues: false,
         }}
       />
     </div>
