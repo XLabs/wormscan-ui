@@ -2363,15 +2363,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-icons@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@radix-ui/react-icons@npm:1.3.0"
-  peerDependencies:
-    react: ^16.x || ^17.x || ^18.x
-  checksum: 982f3ee2271eaaa12b944506ef7701d20fad847082592d99b393b66a2ebbd4cc89e3a0ba48146ed8801418a7bfd76cd55901dc5cb7c6ef404001e7e4c73d05f6
-  languageName: node
-  linkType: hard
-
 "@radix-ui/react-id@npm:1.0.0":
   version: 1.0.0
   resolution: "@radix-ui/react-id@npm:1.0.0"
@@ -3348,6 +3339,15 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: e02ea908289a7ad26053308248d2b87f6aeafd73d0e2de2a3d435947bcea0422599016ffd1c3e38ff36c42f5e1c87c7417f05b0a157e48649e4a02f21727d54f
+  languageName: node
+  linkType: hard
+
+"@types/react-dropzone@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@types/react-dropzone@npm:5.1.0"
+  dependencies:
+    react-dropzone: "*"
+  checksum: 2b68fcf0153fb00e17088907490b823b6d81a29a02e615f820e347df2546f9318c5f025eeb33d575c648d01a14e55a19e528c32907608b5a7f727ff0e96b3923
   languageName: node
   linkType: hard
 
@@ -4351,6 +4351,13 @@ __metadata:
   version: 0.4.0
   resolution: "asynckit@npm:0.4.0"
   checksum: 7b78c451df768adba04e2d02e63e2d0bf3b07adcd6e42b4cf665cb7ce899bedd344c69a1dcbce355b5f972d597b25aaa1c1742b52cffd9caccb22f348114f6be
+  languageName: node
+  linkType: hard
+
+"attr-accept@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "attr-accept@npm:2.2.2"
+  checksum: 496f7249354ab53e522510c1dc8f67a1887382187adde4dc205507d2f014836a247073b05e9d9ea51e2e9c7f71b0d2aa21730af80efa9af2d68303e5f0565c4d
   languageName: node
   linkType: hard
 
@@ -6037,6 +6044,15 @@ __metadata:
   dependencies:
     flat-cache: ^3.0.4
   checksum: f49701feaa6314c8127c3c2f6173cfefff17612f5ed2daaafc6da13b5c91fd43e3b2a58fd0d63f9f94478a501b167615931e7200e31485e320f74a33885a9c74
+  languageName: node
+  linkType: hard
+
+"file-selector@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "file-selector@npm:0.6.0"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: 7d051b6e5d793f3c6e2ab287ba5e7c2c6a0971bccc9d56e044c8047ba483e18f60fc0b5771c951dc707c0d15f4f36ccb4f1f1aaf385d21ec8f7700dadf8325ba
   languageName: node
   linkType: hard
 
@@ -8888,6 +8904,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dropzone@npm:*, react-dropzone@npm:^14.2.3":
+  version: 14.2.3
+  resolution: "react-dropzone@npm:14.2.3"
+  dependencies:
+    attr-accept: ^2.2.2
+    file-selector: ^0.6.0
+    prop-types: ^15.8.1
+  peerDependencies:
+    react: ">= 16.8 || 18.0.0"
+  checksum: 174b744d5ca898cf3d84ec1aeb6cef5211c446697e45dc8ece8287a03d291f8d07253206d5a1247ef156fd385d65e7de666d4d5c2986020b8543b8f2434e8b40
+  languageName: node
+  linkType: hard
+
 "react-error-overlay@npm:6.0.9":
   version: 6.0.9
   resolution: "react-error-overlay@npm:6.0.9"
@@ -8920,12 +8949,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-json-view-lite@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "react-json-view-lite@npm:1.1.0"
+"react-json-view-lite@npm:1.4.0":
+  version: 1.4.0
+  resolution: "react-json-view-lite@npm:1.4.0"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
-  checksum: 6cea282a40b91177e6d5daa5a98ada51f56d226c9368dd2a9c6f3ecfc3a47c168b11de43241ebeb79d0b6570b1158ef2e043db7c08b1f71dc7b215417331e598
+  checksum: 420921258478da46a54887b6e4740e6cf21c7264eba95c33d6264fdf71c482f0746c1345eb187a4a52b31d2a3a951f88c7af338b9fccbced2a918751dd98c844
   languageName: node
   linkType: hard
 
@@ -10459,7 +10488,6 @@ __metadata:
     "@metamask/detect-provider": ^2.0.0
     "@parcel/transformer-sass": ^2.8.3
     "@playwright/test": ^1.38.1
-    "@radix-ui/react-icons": ^1.3.0
     "@radix-ui/react-navigation-menu": ^1.1.4
     "@radix-ui/react-switch": ^1.0.3
     "@radix-ui/react-toggle-group": 1.0.2
@@ -10468,6 +10496,7 @@ __metadata:
     "@types/react": ^18.0.27
     "@types/react-datepicker": ^6.2.0
     "@types/react-dom": ^18.0.10
+    "@types/react-dropzone": ^5.1.0
     "@types/react-table": ^7.7.20
     "@typescript-eslint/eslint-plugin": latest
     "@typescript-eslint/parser": latest
@@ -10497,8 +10526,9 @@ __metadata:
     react-datepicker: ^6.9.0
     react-dom: 18.2.0
     react-draggable: 4.4.5
+    react-dropzone: ^14.2.3
     react-i18next: 12.1.5
-    react-json-view-lite: ^1.1.0
+    react-json-view-lite: 1.4.0
     react-query: 3.39.3
     react-router-dom: 6.22.0
     react-select: 5.7.2
