@@ -787,7 +787,8 @@
       }
 
       &-encodings {
-        @include centered-row;
+        display: flex;
+        flex-direction: row;
 
         .parse-content {
           &:last-child {
