@@ -416,6 +416,7 @@
 
     &-inputContainer {
       @include centered-row;
+      position: relative;
 
       width: 800px;
       gap: 8px;
@@ -426,7 +427,8 @@
         // text-align: center;
 
         &:disabled {
-          background-color: var(--color-white-10);
+          margin-top: 4px;
+          background-color: var(--color-gray-950);
           color: var(--color-white-50);
         }
       }
@@ -807,6 +809,16 @@
             background: var(--color-primary-40);
           }
         }
+      }
+
+      &-trash {
+        position: absolute;
+        cursor: pointer;
+        right: 6px;
+        color: var(--color-error-100);
+        background-color: var(--color-error-15);
+        border-radius: 8px;
+        padding: 2px;
       }
 
       &-input {

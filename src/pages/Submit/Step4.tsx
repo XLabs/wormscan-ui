@@ -85,28 +85,6 @@ export const Step4 = ({
           <div className="submit-last-container">
             <div className="submit-last-title">Add more VAAs or txHashes (optional)</div>
 
-            {addedVAAs.map((addedVAA, idx) => (
-              <div className="submit-last-inputContainer" key={addedVAA}>
-                <input
-                  className="parse-submit-input"
-                  placeholder="VAA / txHash"
-                  value={addedVAA}
-                  disabled
-                />
-                <div
-                  className="submit-btn"
-                  onClick={() => {
-                    const newAddedVAAs = [...addedVAAs];
-                    newAddedVAAs.splice(idx, 1);
-
-                    setAddedVAAs(newAddedVAAs);
-                  }}
-                >
-                  REMOVE
-                </div>
-              </div>
-            ))}
-
             <div className="submit-last-inputContainer">
               <input
                 className="parse-submit-input"
@@ -124,6 +102,27 @@ export const Step4 = ({
                 Add
               </div>
             </div>
+
+            {addedVAAs.map((addedVAA, idx) => (
+              <div className="submit-last-inputContainer" key={addedVAA}>
+                <input
+                  className="parse-submit-input"
+                  placeholder="VAA / txHash"
+                  value={addedVAA}
+                  disabled
+                />
+                <TrashIcon
+                  width={26}
+                  className="parse-submit-trash"
+                  onClick={() => {
+                    const newAddedVAAs = [...addedVAAs];
+                    newAddedVAAs.splice(idx, 1);
+
+                    setAddedVAAs(newAddedVAAs);
+                  }}
+                />
+              </div>
+            ))}
 
             <br />
             <br />

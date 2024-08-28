@@ -929,7 +929,6 @@ export const Submit = ({
 
         <div className="submit-json-texts">
           <div className="submit-json-texts-item">
-            {/* <JsonText data={userLayout} /> */}
             {userLayout.map((item, i) => {
               const entries = Object.entries(item);
 
@@ -942,17 +941,17 @@ export const Submit = ({
 
                         <span className="submit-json-texts-item-key">{'"' + entry[0] + '"'}: </span>
                         <span className="submit-json-texts-item-value">
-                          {'"' + String(entry[1]) + '"'}
+                          {'"' +
+                            (typeof entry[1] === "object"
+                              ? JSON.stringify(entry[1])
+                              : String(entry[1])) +
+                            '"'}
                         </span>
                         {idx + 1 !== entries.length && <span>, </span>}
                         {idx + 1 === entries.length && <span>{" }"}</span>}
                       </Fragment>
                     );
                   })}
-                  {/* {JSON.stringify(item)
-                    .replaceAll('","', '", "')
-                    .replaceAll('{"', `{ "`)
-                    .replaceAll('"}', '" }')} */}
                   {userLayout.length - 1 === i && (
                     <TrashIcon
                       width={22}
@@ -1036,11 +1035,6 @@ export const Submit = ({
 
             {resultRaw && (
               <>
-                {/* <Submit
-                  renderExtras={renderExtras}
-                  setParsedVAA={setParsedVAA}
-                  resultRaw={resultRaw}
-                /> */}
                 <div className="submit-start-parsing">
                   <div onClick={() => setVaaSubmit(null)} className="submit-btn">
                     Cancel Parsing
@@ -1054,34 +1048,6 @@ export const Submit = ({
     </div>
   );
 };
-
-interface ILayoutItemButtonProps {
-  id: Layouts;
-  selected: Layouts;
-  setSelected: (a: Layouts) => void;
-  inputValue: string;
-  setInputValue: (str: string) => void;
-  binarySelected: Binaries;
-  setBinarySelected: (binary: Binaries) => void;
-  endianness: Endianness;
-  setEndianness: (end: Endianness) => void;
-  bitsetValues: string[];
-  setBitsetValues: (a: string[]) => void;
-  isLengthSize: boolean;
-  setIsLengthSize: (b: boolean) => void;
-  tagIdValue: string;
-  setTagIdValue: (str: string) => void;
-  tagNameValue: string;
-  setTagNameValue: (str: string) => void;
-  inputName: string;
-  resultUnparsed: Uint8Array;
-  switchLayouts: ISwitchLayouts;
-  setSwitchLayouts: (a: ISwitchLayouts) => void;
-  internalLayouts: UserLayout[];
-  setInternalLayouts: (u: UserLayout[]) => void;
-  isAboutToLayout: boolean;
-  renderExtras: () => void;
-}
 
 type ISwitchLayouts = [[number, string], any][];
 
