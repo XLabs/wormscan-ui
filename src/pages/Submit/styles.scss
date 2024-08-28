@@ -41,6 +41,7 @@
   &-steps {
     @include centered-row;
     margin-top: 16px;
+    width: 100%;
 
     &-btn-prev {
       @include button-secondary;
@@ -312,9 +313,9 @@
     @include centered-row;
     justify-content: space-around;
 
-    background-color: var(--color-white-05);
     border-radius: 16px;
     padding: 24px 12px;
+    padding-bottom: 0px;
 
     flex-wrap: wrap;
 
@@ -323,7 +324,7 @@
       margin-left: 12px;
       margin-bottom: 12px;
       text-align: center;
-      color: var(--color-white-70);
+      color: var(--color-gray-500);
 
       & > p {
         margin-bottom: 10px;
@@ -334,16 +335,51 @@
       }
     }
 
+    &-stdProps {
+      @include centered-row;
+    }
+
+    &-btn {
+      @include button-secondary;
+      display: flex;
+      justify-content: center;
+
+      background-color: var(--color-gray-950);
+      border: 1px solid var(--color-gray-800);
+      border-radius: 12px;
+      width: 300px;
+      margin-right: 12px;
+
+      &.disabled {
+        background-color: var(--color-gray-900);
+        color: var(--color-gray-500);
+        cursor: default;
+
+        &:hover {
+          background-color: var(--color-gray-900);
+        }
+      }
+
+      &.active {
+        background-color: var(--color-gray-900);
+      }
+    }
+
+    &-value {
+      margin-left: 8px;
+    }
+
     &-sub {
       font-weight: bold;
       margin-bottom: 6px;
+      margin-left: 70px;
     }
 
     &-container {
       @include centered-column;
-      align-items: center;
+      // align-items: center;
       gap: 6px;
-      width: 50%;
+      width: 100%;
 
       &-props {
         @include centered-row;
@@ -365,25 +401,29 @@
   &-last {
     @include centered-column;
     align-items: center;
+    justify-content: center;
     padding: 12px;
-
-    background-color: var(--color-white-03);
 
     &-title {
       margin: 12px 0px;
-      text-align: center;
+      color: var(--color-gray-400);
+      // text-align: center;
+    }
+
+    &-container {
+      width: 800px;
     }
 
     &-inputContainer {
       @include centered-row;
-      width: 100%;
+
+      width: 800px;
       gap: 8px;
       margin-top: 8px;
 
       & > input {
         height: 30px;
-        flex-grow: 1;
-        text-align: center;
+        // text-align: center;
 
         &:disabled {
           background-color: var(--color-white-10);
@@ -392,24 +432,87 @@
       }
     }
 
+    &-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      max-width: 800px;
+      max-height: 800px;
+
+      border-bottom: 1px solid var(--color-gray-800);
+      margin-top: 16px;
+      padding-bottom: 16px;
+
+      img {
+        max-width: 54px;
+        max-height: 54px;
+        aspect-ratio: 1;
+        margin-left: 8px;
+      }
+
+      span {
+        color: var(--color-gray-400);
+      }
+
+      svg {
+        &:last-child {
+          cursor: pointer;
+
+          margin-left: auto;
+          color: var(--color-error-100);
+          background-color: var(--color-error-30);
+          border-radius: 8px;
+          padding: 2px;
+        }
+      }
+    }
+
     &-info {
       display: flex;
       width: 100%;
       position: relative;
+      height: 300px;
+
+      &[role="presentation"] {
+        cursor: pointer;
+        background-image: linear-gradient(to right, var(--color-gray-800) 50%, transparent 50%),
+          linear-gradient(to right, var(--color-gray-800) 50%, transparent 50%),
+          linear-gradient(to bottom, var(--color-gray-800) 50%, transparent 50%),
+          linear-gradient(to bottom, var(--color-gray-800) 50%, transparent 50%);
+        background-position: left top, left bottom, left top, right top;
+        background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+        background-size: 15px 3px, 15px 3px, 3px 15px, 3px 15px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      &-drag {
+        @include centered-row;
+
+        gap: 4px;
+        color: var(--color-gray-400);
+
+        &-browse {
+          color: var(--color-white);
+          text-decoration: underline;
+        }
+      }
 
       &-input {
         width: 100%;
-        height: 300px;
         padding: 12px;
-        font-size: 16px;
+        font-size: 14px;
 
-        border: 1px solid var(--color-white-10);
+        border: 0px;
         border-radius: 6px;
         outline: none;
         resize: none;
 
-        background-color: var(--color-white-05);
-        color: var(--color-white-80);
+        background-color: var(--color-gray-900);
+        color: var(--color-white);
       }
 
       &-length {
@@ -709,8 +812,13 @@
       &-input {
         border-radius: 6px;
         padding: 4px 8px;
-        background-color: var(--color-gray-950);
-        border: 1px solid var(--color-gray-800);
+        height: 36px;
+
+        display: flex;
+        width: 800px;
+
+        background-color: var(--color-gray-900);
+        border: 0px;
         color: var(--color-white-80);
 
         &:focus {

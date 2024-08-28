@@ -18,7 +18,6 @@ interface Step1Props {
   setSelectedIdentifiers: any;
   setSelectedNetwork: any;
   setStep: (n: number) => void;
-  step: number;
 }
 
 const orderedChains = {
@@ -37,7 +36,6 @@ export const Step1 = ({
   setSelectedIdentifiers,
   setSelectedNetwork,
   setStep,
-  step,
 }: Step1Props) => {
   const { environment } = useEnvironment();
 
@@ -274,13 +272,13 @@ export const Step1 = ({
     <>
       <div className="parse-submit">
         <div className="parse-submit-progress">
-          <div className={`parse-submit-progress-line ${step > 0 ? "active" : ""}`} />
-          <div className={`parse-submit-progress-line ${step > 1 ? "active" : ""}`} />
-          <div className={`parse-submit-progress-line ${step > 2 ? "active" : ""}`} />
-          <div className={`parse-submit-progress-line ${step > 3 ? "active" : ""}`} />
+          <div className={"parse-submit-progress-line active"} />
+          <div className={"parse-submit-progress-line"} />
+          <div className={"parse-submit-progress-line"} />
+          <div className={"parse-submit-progress-line"} />
         </div>
 
-        <div className="parse-submit-step">STEP 0{step}</div>
+        <div className="parse-submit-step">STEP 01</div>
         <div className="parse-submit-title">How can we identify your protocol?</div>
 
         <Adding />

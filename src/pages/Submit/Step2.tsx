@@ -41,7 +41,6 @@ interface Step2Props {
   setStep: (step: number) => void;
   setTxSearch: (a: string) => void;
   setVaaSubmit: (a: any) => void;
-  step: number;
   txSearch: string;
   VAA_ID: string;
   vaaSubmit: any;
@@ -72,7 +71,6 @@ export const Step2 = ({
   setStep,
   setTxSearch,
   setVaaSubmit,
-  step,
   txSearch,
   VAA_ID,
   vaaSubmit,
@@ -110,13 +108,13 @@ export const Step2 = ({
     <>
       <div className="parse-submit">
         <div className="parse-submit-progress">
-          <div className={`parse-submit-progress-line ${step > 0 ? "active" : ""}`} />
-          <div className={`parse-submit-progress-line ${step > 1 ? "active" : ""}`} />
-          <div className={`parse-submit-progress-line ${step > 2 ? "active" : ""}`} />
-          <div className={`parse-submit-progress-line ${step > 3 ? "active" : ""}`} />
+          <div className={"parse-submit-progress-line active"} />
+          <div className={"parse-submit-progress-line active"} />
+          <div className={"parse-submit-progress-line"} />
+          <div className={"parse-submit-progress-line"} />
         </div>
 
-        <div className="parse-submit-step">STEP 0{step}</div>
+        <div className="parse-submit-step">STEP 02</div>
         <div className="parse-submit-title">Let&apos;s parse and decode a VAA</div>
 
         <>
@@ -332,7 +330,7 @@ export const Step2 = ({
           <div
             className="submit-steps-btn-prev"
             onClick={() => {
-              setStep(step - 1);
+              setStep(1);
               window.scrollTo(0, 0);
             }}
           >

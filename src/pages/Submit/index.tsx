@@ -14,18 +14,8 @@ import { useLocalStorage, useNavigateCustom } from "src/utils/hooks";
 import analytics from "src/analytics";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
-import { JsonText, Loader, NavLink, Tooltip, CopyContent } from "src/components/atoms";
-import {
-  AlertTriangle,
-  CheckIcon,
-  CopyIcon,
-  InfoCircleIcon,
-  LinkIcon,
-  SearchIcon,
-  TrashIcon,
-  TriangleDownIcon,
-} from "src/icons/generic";
-import { InputEncodedVaa, CopyToClipboard } from "src/components/molecules";
+import { Tooltip, CopyContent } from "src/components/atoms";
+import { CheckIcon, InfoCircleIcon } from "src/icons/generic";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
 import { getGuardianSet, txType } from "src/consts";
 import { formatDate } from "src/utils/date";
@@ -35,16 +25,16 @@ import {
   allKeys,
   deepCloneWithBigInt,
   getNestedProperty,
-  stringifyWithBigInt,
   stringifyWithStringBigInt,
 } from "src/utils/object";
-import { Submit } from "./Submit";
-import { processInputValue, processInputType, waitForElement, isHex } from "src/utils/parser";
+import { processInputValue, processInputType, waitForElement } from "src/utils/parser";
 import { toast } from "react-toastify";
 import { sendProtocolSubmission } from "src/utils/cryptoToolkit";
 import { Step1 } from "./Step1";
-import "./styles.scss";
 import { Step2 } from "./Step2";
+import { Step3 } from "./Step3";
+import "./styles.scss";
+import { Step4 } from "./Step4";
 
 const SubmitYourProtocol = () => {
   useEffect(() => {
@@ -461,7 +451,6 @@ const SubmitYourProtocol = () => {
 
   const isLoading = isLoadingTx || isFetchingTx;
 
-  const [selectedPropertyName, setSelectedPropertyName] = useState("");
   const [stdProperties, setStdProperties] = useState({
     tokenChain: null,
     tokenAddress: null,
@@ -503,8 +492,8 @@ const SubmitYourProtocol = () => {
         return;
       }
 
-      if (value) {
-        newParsedStandardizedProperties[key] = value;
+      if (value || value === 0n) {
+        newParsedStandardizedProperties[key] = value === 0n ? "0" : value;
       }
     });
 
@@ -609,6 +598,9 @@ const SubmitYourProtocol = () => {
     delete payloadOptionsStd.fromAddress;
   }
 
+  const [contactInfo, setContactInfo] = useState("");
+  const [logos, setLogos] = useState<string[]>([]);
+
   const sendProtocol = async () => {
     const submitResponse = await sendProtocolSubmission({
       input,
@@ -620,6 +612,8 @@ const SubmitYourProtocol = () => {
       selectedIdentifiers: stringifyWithStringBigInt(selectedIdentifiers),
       stdProperties: JSON.stringify(stdProperties),
       propertyName,
+      logos,
+      contactInfo,
     });
 
     if (submitResponse === "OK") {
@@ -650,7 +644,6 @@ const SubmitYourProtocol = () => {
                   setSelectedNetwork={setSelectedNetwork}
                   selectedAddress={selectedAddress}
                   setSelectedAddress={setSelectedAddress}
-                  step={step}
                   setStep={setStep}
                   selectedIdentifiers={selectedIdentifiers}
                   setSelectedIdentifiers={setSelectedIdentifiers}
@@ -678,7 +671,6 @@ const SubmitYourProtocol = () => {
                   setInputType={setInputType}
                   setParsedRaw={setParsedRaw}
                   setTxSearch={setTxSearch}
-                  step={step}
                   txSearch={txSearch}
                   VAA_ID={VAA_ID}
                   finishedParsings={finishedParsings}
@@ -693,249 +685,33 @@ const SubmitYourProtocol = () => {
           </div>
 
           {step === 3 && (
-            <>
-              <h1 className="devtools-page-title">(3/4) Standardized Properties</h1>
-
-              <div className="submit-standard">
-                <div className="submit-standard-description">
-                  <p>
-                    Standardized properties are properties that are usually displayed in the main
-                    view of WormholeScan.
-                  </p>
-                  <p>
-                    You can select a field of your payload and link it with one of the
-                    standardizedProperties if it makes sense.
-                  </p>
-                  <p>
-                    Example: If there{"'"}s a field in your VAA payload that represents a token that
-                    was sent, you can press it and select tokenAddress
-                  </p>
-                  <p>
-                    This step its optional but without selecting anything we are just going to be
-                    able to show your info as raw data in the details of the transaction
-                  </p>
-                </div>
-
-                <div className="submit-standard-container">
-                  {allKeys(payloadOptionsStd).map(a => (
-                    <div
-                      key={a}
-                      className="submit-btn"
-                      style={{
-                        outline: selectedPropertyName === a ? "green solid 2px" : "",
-                      }}
-                      onClick={() => {
-                        setSelectedPropertyName(a);
-                      }}
-                    >
-                      {a}
-                    </div>
-                  ))}
-                  <br />
-                  {finishedParsings[1] && (
-                    <>
-                      <div className="submit-standard-sub">{propertyName}:</div>
-
-                      {allKeys(finishedParsings[1].parsedPayload).map(a => (
-                        <div
-                          key={a}
-                          className="submit-btn"
-                          style={{
-                            outline:
-                              selectedPropertyName === `${propertyName}.${a}`
-                                ? "green solid 2px"
-                                : "",
-                          }}
-                          onClick={() => {
-                            setSelectedPropertyName(`${propertyName}.${a}`);
-                          }}
-                        >
-                          {a}
-                        </div>
-                      ))}
-                    </>
-                  )}
-                </div>
-
-                <div className="submit-standard-container">
-                  {Object.entries(stdProperties).map(([stdProp, stdValue]) => {
-                    return (
-                      <div className="submit-standard-container-props" key={stdProp}>
-                        <Tooltip
-                          tooltip={<div>{STANDARD_DESCRIPTIONS[stdProp]}</div>}
-                          maxWidth={false}
-                          type="info"
-                        >
-                          <div
-                            className="submit-btn"
-                            onClick={() => {
-                              if (selectedPropertyName) {
-                                if (stdProp === "toAddress" && !stdProperties.toChain) {
-                                  toast("You need toChain first to modify toAddress", {
-                                    type: "error",
-                                    theme: "dark",
-                                  });
-                                  return;
-                                }
-
-                                setStdProperties({
-                                  ...stdProperties,
-                                  [stdProp]: selectedPropertyName,
-                                });
-                                setSelectedPropertyName("");
-                              }
-                            }}
-                          >
-                            {stdProp}
-                          </div>
-                        </Tooltip>
-
-                        {stdValue && (
-                          <div className="submit-standard-container-props-value">
-                            <div>{"--> "}</div>
-                            <div>{stdValue}</div>
-                            <TrashIcon
-                              width={18}
-                              style={{
-                                color: "rgb(225, 50, 50)",
-                              }}
-                              onClick={() => {
-                                const newStdProperties: any = { ...stdProperties, [stdProp]: null };
-
-                                if (stdProp === "toChain") {
-                                  newStdProperties["toAddress"] = null;
-                                }
-
-                                setStdProperties(newStdProperties);
-                              }}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="submit-standard">
-                <div className="submit-standard-container">
-                  {finishedParsings.map((parsing, idx) => (
-                    <div key={idx}>
-                      <JsonText
-                        data={{
-                          parsedPayload: parsing.parsedPayload,
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div className="submit-standard-container">
-                  <div>
-                    <JsonText
-                      data={{
-                        standardizedProperties: parsedStandardizedProperties,
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div
-                onClick={() => {
-                  setStep(4);
-                  window.scrollTo(0, 0);
-                }}
-                style={{ marginTop: 12 }}
-                className="submit-btn showoff"
-              >
-                Next step
-              </div>
-            </>
+            <Step3
+              allKeys={allKeys}
+              payloadOptionsStd={payloadOptionsStd}
+              finishedParsings={finishedParsings}
+              stdProperties={stdProperties}
+              setStdProperties={setStdProperties}
+              setStep={setStep}
+              parsedStandardizedProperties={parsedStandardizedProperties}
+              propertyName={propertyName}
+            />
           )}
 
           {step === 4 && (
-            <>
-              <h1 className="devtools-page-title">(4/4) Tell us more</h1>
-
-              <div className="submit-last">
-                <div className="submit-last-title">
-                  Add more VAAs or txHashes that contain this payload so we can test them out:
-                </div>
-
-                {addedVAAs.map((addedVAA, idx) => (
-                  <div className="submit-last-inputContainer" key={addedVAA}>
-                    <input
-                      className="parse-submit-input"
-                      placeholder="VAA / txHash"
-                      value={addedVAA}
-                      disabled
-                    />
-                    <div
-                      className="submit-btn"
-                      onClick={() => {
-                        const newAddedVAAs = [...addedVAAs];
-                        newAddedVAAs.splice(idx, 1);
-
-                        setAddedVAAs(newAddedVAAs);
-                      }}
-                    >
-                      REMOVE
-                    </div>
-                  </div>
-                ))}
-
-                <div className="submit-last-inputContainer">
-                  <input
-                    className="parse-submit-input"
-                    placeholder="VAA / txHash"
-                    value={lastVaaInput}
-                    onChange={e => setLastVaaInput(e.target.value)}
-                  />
-                  <div
-                    className="submit-btn"
-                    onClick={() => {
-                      setAddedVAAs([...addedVAAs, lastVaaInput]);
-                      setLastVaaInput("");
-                    }}
-                  >
-                    Add
-                  </div>
-                </div>
-
-                <br />
-                <br />
-                <div className="submit-last-title">
-                  <p>
-                    More information: Tell us everything you consider we need to know regarding this
-                    protocol for better understanding and better implementation.
-                  </p>
-
-                  <p>
-                    Ex. If there is some field in the payload that would be nice to show in the
-                    overview of the transaction, or if some fields should be grouped in a object for
-                    better understanding, etc.
-                  </p>
-                </div>
-
-                <div className="submit-last-info">
-                  <textarea
-                    className="submit-last-info-input"
-                    placeholder="info"
-                    onChange={ev => setLastMoreInfo(ev.target.value.substring(0, 5000))}
-                    value={lastMoreInfo}
-                    aria-label="More Information text area"
-                    draggable={false}
-                    spellCheck={false}
-                  />
-                  <div className="submit-last-info-length">{lastMoreInfo.length} / 5000</div>
-                </div>
-
-                <br />
-                <div onClick={sendProtocol} className="submit-btn showoff">
-                  SUBMIT
-                </div>
-              </div>
-            </>
+            <Step4
+              addedVAAs={addedVAAs}
+              lastMoreInfo={lastMoreInfo}
+              lastVaaInput={lastVaaInput}
+              sendProtocol={sendProtocol}
+              setAddedVAAs={setAddedVAAs}
+              setLastMoreInfo={setLastMoreInfo}
+              setLastVaaInput={setLastVaaInput}
+              setStep={setStep}
+              contactInfo={contactInfo}
+              setContactInfo={setContactInfo}
+              logos={logos}
+              setLogos={setLogos}
+            />
           )}
 
           {step === 5 && (
@@ -962,20 +738,6 @@ export const NETWORK_LIST: { label: Network; value: Network }[] = [
     value: "Testnet",
   },
 ];
-
-const STANDARD_DESCRIPTIONS: any = {
-  tokenChain: "Origin chain id of the token that's being sent.",
-  tokenAddress: "Native address format for the address of the token being sent in its origin chain",
-  amount:
-    "Number formatted as a string with the decimal zeros of the token; ex: if you're sending 1 USDC this should be 1000000",
-  feeChain: "Origin chain id of the fee that's being charged",
-  feeAddress: "Native address format for the address of the fee being sent in its origin chain",
-  fee: "Number formatted as a string with the decimal zeros of the token being used as fee; ex: if you're charging 1 USDC this should be 1000000",
-  fromChain: "Wormhole chain id of source chain. Ex: 1 for Solana, 2 for Ethereum, etc",
-  fromAddress: "Native address format for the origin chain",
-  toChain: "Wormhole chain id of target chain. Ex: 1 for Solana, 2 for Ethereum, etc",
-  toAddress: "Native address format for the destination chain",
-};
 
 export interface IIdentifier {
   network: "Mainnet" | "Testnet";
