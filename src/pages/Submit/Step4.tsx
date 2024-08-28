@@ -1,15 +1,6 @@
-import {
-  ArrowRightIcon,
-  ArrowUpRightIcon,
-  ChevronLeftIcon,
-  FileIcon,
-  MenuIcon,
-  TrashIcon,
-  UploadIcon,
-  WalletIcon,
-} from "src/icons/generic";
-import { useDropzone, Accept } from "react-dropzone";
-import { useCallback, useState } from "react";
+import { ChevronLeftIcon, FileIcon, TrashIcon, UploadIcon } from "src/icons/generic";
+import { useDropzone } from "react-dropzone";
+import { useCallback } from "react";
 import { toast } from "react-toastify";
 
 interface Step4Props {
@@ -67,7 +58,7 @@ export const Step4 = ({
         reader.readAsDataURL(file);
       }
     },
-    [logos],
+    [logos, setLogos],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
