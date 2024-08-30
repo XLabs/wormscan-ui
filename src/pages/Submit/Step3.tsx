@@ -90,8 +90,6 @@ export const Step3 = ({
                   value: stdValue || "Select",
                 }}
                 onValueChange={val => {
-                  console.log({ val, stdProp, stdValue });
-
                   if (stdProp === "toAddress" && !stdProperties.toChain) {
                     toast("You need toChain first to modify toAddress", {
                       type: "error",
@@ -130,6 +128,7 @@ export const Step3 = ({
                     color: "gray",
                     marginLeft: 8,
                     cursor: "pointer",
+                    minWidth: 22,
                   }}
                   onClick={() => {
                     const newStdProperties: any = { ...stdProperties, [stdProp]: null };
@@ -169,7 +168,10 @@ export const Step3 = ({
         </div>
 
         <div className="parse-submit-step">STEP 03</div>
-        <div className="parse-submit-title">Standardized Properties</div>
+        <div className="parse-submit-title">
+          <span>Standardized Properties</span>
+          <span className="parse-submit-optional">(Optional)</span>
+        </div>
 
         <div className="submit-standard">
           <div className="submit-standard-description">
@@ -178,17 +180,10 @@ export const Step3 = ({
               WormholeScan.
             </p>
             <p>
-              You can select a field of your payload and link it with one of the
-              standardizedProperties if it makes sense.
+              You can select a property and link it with one of the fields of your payload where it
+              makes sense.
             </p>
-            <p>
-              Example: If there{"'"}s a field in your VAA payload that represents a token that was
-              sent, you can press it and select tokenAddress
-            </p>
-            <p>
-              This step its optional but without selecting anything we are just going to be able to
-              show your info as raw data in the details of the transaction
-            </p>
+            <p>You can leave this empty and explain us your protocol in the next step.</p>
           </div>
 
           <div className="submit-standard-container">{getOptions}</div>

@@ -10,14 +10,20 @@ import {
   UniversalAddress,
 } from "@wormhole-foundation/sdk";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { useLocalStorage, useNavigateCustom } from "src/utils/hooks";
+import { useLocalStorage, useNavigateCustom, useWindowSize } from "src/utils/hooks";
 import analytics from "src/analytics";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
-import { Tooltip, CopyContent } from "src/components/atoms";
-import { CheckIcon, InfoCircleIcon } from "src/icons/generic";
+import { Tooltip, CopyContent, Loader } from "src/components/atoms";
+import {
+  CheckCircle2,
+  CrossIcon,
+  DesktopIcon,
+  DownloadIcon,
+  InfoCircleIcon,
+} from "src/icons/generic";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
-import { getGuardianSet, txType } from "src/consts";
+import { BREAKPOINTS, getGuardianSet, txType } from "src/consts";
 import { formatDate } from "src/utils/date";
 import { useParams } from "react-router-dom";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -42,6 +48,8 @@ const SubmitYourProtocol = () => {
   }, []);
 
   const { environment } = useEnvironment();
+  const { width } = useWindowSize();
+  const isDesktop = width >= BREAKPOINTS.desktop;
 
   const params = useParams();
   const vaaParam = params?.["*"];
@@ -600,8 +608,30 @@ const SubmitYourProtocol = () => {
 
   const [contactInfo, setContactInfo] = useState("");
   const [logos, setLogos] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<"success" | "fail">(null);
+  const [retried, setRetried] = useState(false);
 
   const sendProtocol = async () => {
+    if (!logos.length) {
+      toast("Upload at least one logo for your protocol", {
+        type: "error",
+        theme: "dark",
+      });
+      return;
+    }
+
+    if (!contactInfo) {
+      toast("Contact information is needed", {
+        type: "error",
+        theme: "dark",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setStep(5);
+
     const submitResponse = await sendProtocolSubmission({
       input,
       resultRaw: stringifyWithStringBigInt(resultRaw),
@@ -617,11 +647,58 @@ const SubmitYourProtocol = () => {
     });
 
     if (submitResponse === "OK") {
-      setStep(5);
+      setSubmitStatus("success");
+      setIsSubmitting(false);
     } else {
-      toast("Something went wrong submitting your protocol");
+      setSubmitStatus("fail");
+      setIsSubmitting(false);
     }
   };
+
+  const downloadJson = () => {
+    const jsonString = stringifyWithStringBigInt({
+      input,
+      resultRaw: stringifyWithStringBigInt(resultRaw),
+      finishedParsings: stringifyWithStringBigInt(finishedParsings),
+      parsedStandardizedProperties: stringifyWithStringBigInt(parsedStandardizedProperties),
+      lastMoreInfo,
+      addedVAAs: stringifyWithStringBigInt(addedVAAs),
+      selectedIdentifiers: stringifyWithStringBigInt(selectedIdentifiers),
+      stdProperties: JSON.stringify(stdProperties),
+      propertyName,
+      contactInfo,
+    });
+
+    const blob = new Blob([jsonString], { type: "application/json" });
+
+    const link = document.createElement("a");
+
+    link.download = "data.json";
+    link.href = URL.createObjectURL(blob);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  if (!isDesktop) {
+    return (
+      <BaseLayout secondaryHeader>
+        <div className="devtools-page">
+          <div className="devtools-page-container">
+            <div className="only-desktop">
+              <DesktopIcon width={30} />
+              <div className="only-desktop-title">Tool available for Desktop</div>
+              <div className="only-desktop-description">
+                The &apos;Submit Your Protocol&apos; tool enables Wormhole integrators to parse
+                their own VAA payloads, allowing WormholeScan to recognize and display enhanced
+                information for those specific transactions or messages in the future.
+              </div>
+            </div>
+          </div>
+        </div>
+      </BaseLayout>
+    );
+  }
 
   return (
     <BaseLayout secondaryHeader>
@@ -629,9 +706,9 @@ const SubmitYourProtocol = () => {
         <div className="devtools-page-container">
           <h1 className="devtools-page-title">Submit Your Protocol</h1>
           <h2 className="devtools-page-description">
-            The Submit your Protocol tool allows Wormhole Integrators to parse a VAA payload of
-            their own so WormholeScan can later parse that kind of VAAs and show better information
-            regarding those transactions or messages.
+            The &apos;Submit Your Protocol&apos; tool enables Wormhole integrators to parse their
+            own VAA payloads, allowing WormholeScan to recognize and display enhanced information
+            for those specific transactions or messages in the future.
           </h2>
 
           <div className="devtools-page-body">
@@ -716,8 +793,81 @@ const SubmitYourProtocol = () => {
 
           {step === 5 && (
             <>
-              <h1 className="devtools-page-title">Your protocol was submitted successfully!</h1>
-              <CheckIcon width={40} />
+              {isSubmitting ? (
+                <Loader />
+              ) : (
+                <>
+                  {submitStatus === "success" && (
+                    <div className="lastStep">
+                      <div className="lastStep-icon check">
+                        <CheckCircle2 width={40} />
+                      </div>
+
+                      <h1>Your request was submitted successfully!</h1>
+
+                      <div className="lastStep-description">
+                        We have all the information we need. Your request has been submitted, and
+                        you will soon see your protocol on Wormholescan.
+                      </div>
+
+                      <div className="lastStep-buttons">
+                        <div
+                          onClick={() => {
+                            navigate("/");
+                          }}
+                          className="primary"
+                        >
+                          Done
+                        </div>
+                        <div className="download" onClick={downloadJson}>
+                          <DownloadIcon width={26} />
+                          Download JSON
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {submitStatus === "fail" && (
+                    <div className="lastStep">
+                      <div className="lastStep-icon cross">
+                        <CrossIcon width={40} />
+                      </div>
+
+                      <h1>Something went wrong</h1>
+
+                      <div className="lastStep-description">
+                        A mistake or unforeseen issue has arisen, causing confusion and potentially
+                        requiring immediate attention to rectify the situation.
+                      </div>
+
+                      <div className="lastStep-buttons">
+                        {!retried && (
+                          <div
+                            className="primary"
+                            onClick={() => {
+                              setRetried(true);
+                              sendProtocol();
+                            }}
+                          >
+                            Try Again
+                          </div>
+                        )}
+                        <div className="download" onClick={downloadJson}>
+                          <DownloadIcon width={26} />
+                          Download JSON
+                        </div>
+                      </div>
+
+                      {retried && (
+                        <div className="lastStep-sendManual">
+                          <p>You can download your JSON and send it to us so we can process it.</p>
+                          <p>Sorry for the inconvenience.</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
             </>
           )}
         </div>

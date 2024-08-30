@@ -188,20 +188,34 @@ export const Step2 = ({
                     Start Parsing: {key} ↓
                   </div>
                 ))}
-
-                {/* {!!finishedParsings.length && !vaaSubmit && (
-                  <div
-                    onClick={() => {
-                      setStep(3);
-                      window.scrollTo(0, 0);
-                    }}
-                    className="submit-btn"
-                  >
-                    Next step
-                  </div>
-                )} */}
               </div>
             )}
+          </div>
+        )}
+
+        {!txSearch && !vaaSubmit && !!resultRaw && (
+          <div className="parse-links">
+            <div className="submit-start-parsing">
+              {whatToParse().map(([key, value]) => (
+                <div
+                  onClick={() => {
+                    setVaaSubmit(encoding.hex.decode(value));
+                    setPropertyName(key);
+
+                    setTimeout(() => {
+                      document.querySelector(".submit-input")?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                      });
+                    }, 50);
+                  }}
+                  className="submit-btn primary"
+                  key={value}
+                >
+                  Start Parsing: {key} ↓
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

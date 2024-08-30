@@ -34,7 +34,6 @@ export const Step4 = ({
 }: Step4Props) => {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      console.log({ acceptedFiles });
       const file = acceptedFiles[0];
 
       if (file) {
@@ -52,7 +51,6 @@ export const Step4 = ({
         reader.onloadend = () => {
           const result = reader.result as string;
           setLogos([...logos, result]);
-          console.log(result);
         };
 
         reader.readAsDataURL(file);
@@ -159,7 +157,10 @@ export const Step4 = ({
             <div {...getRootProps()} className="submit-last-info">
               <input {...getInputProps()} />
               {isDragActive ? (
-                <p>ACTIVO</p>
+                <div className="submit-last-info-drag">
+                  <UploadIcon />
+                  <span>Release to upload</span>
+                </div>
               ) : (
                 <div className="submit-last-info-drag">
                   <UploadIcon />
@@ -206,7 +207,7 @@ export const Step4 = ({
           <div
             className="submit-steps-btn-prev"
             onClick={() => {
-              setStep(2);
+              setStep(3);
               window.scrollTo(0, 0);
             }}
           >

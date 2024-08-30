@@ -323,7 +323,7 @@
       width: 100%;
       margin-left: 12px;
       margin-bottom: 12px;
-      text-align: center;
+      // text-align: center;
       color: var(--color-gray-500);
 
       & > p {
@@ -347,8 +347,14 @@
       background-color: var(--color-gray-950);
       border: 1px solid var(--color-gray-800);
       border-radius: 12px;
-      width: 300px;
+      width: 200px;
+      min-width: 200px;
       margin-right: 12px;
+
+      @include bigDesktop {
+        width: 300px;
+        min-width: 300px;
+      }
 
       &.disabled {
         background-color: var(--color-gray-900);
@@ -367,6 +373,7 @@
 
     &-value {
       margin-left: 8px;
+      word-break: break-all;
     }
 
     &-sub {
@@ -616,6 +623,12 @@
         margin-bottom: 24px;
       }
 
+      &-optional {
+        margin-left: 8px;
+        color: var(--color-gray-400);
+        font-size: 14px;
+      }
+
       &-label {
         color: var(--color-gray-400);
         margin-bottom: 6px;
@@ -836,6 +849,12 @@
 
         &:focus {
           outline: transparent;
+        }
+
+        &:disabled {
+          padding-right: 50px;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
       }
     }
@@ -1222,26 +1241,94 @@
   }
 }
 
-@keyframes animateOutline {
-  0% {
-    outline-width: 1px;
-    outline-offset: 0;
-    outline-color: rgba(0, 130, 206, 0);
+.lastStep {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 36px;
+
+  &-description {
+    color: var(--color-gray-400);
+    font-size: 16px;
   }
 
-  10% {
-    outline-color: var(--color-information-30);
+  &-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+
+    &.check {
+      background-color: var(--color-success-15);
+      color: var(--color-success-100);
+    }
+
+    &.cross {
+      background-color: var(--color-error-15);
+      color: var(--color-error-100);
+    }
   }
 
-  50% {
-    outline-width: 7px;
-    outline-offset: 4px;
-    outline-color: rgba(0, 130, 206, 0);
+  &-buttons {
+    @include centered-row;
+    gap: 8px;
+    margin-top: 24px;
+
+    .primary {
+      @include button-primary;
+      width: 200px;
+      justify-content: center;
+    }
+
+    .download {
+      @include button-secondary;
+      @include centered-row;
+      justify-content: center;
+      gap: 4px;
+      width: 200px;
+    }
   }
 
-  100% {
-    outline-width: 7px;
-    outline-offset: 4px;
-    outline-color: rgba(102, 102, 102, 0);
+  &-sendManual {
+    @include centered-column;
+    align-items: center;
+    gap: 6px;
+
+    color: var(--color-gray-400);
+    margin-top: 36px;
+  }
+
+  h1 {
+    color: var(--color-white);
+  }
+}
+
+.only-desktop {
+  @include centered-column;
+  border-radius: 16px;
+  background-color: var(--color-gray-950);
+  height: 460px;
+  gap: 12px;
+  justify-content: flex-end;
+
+  padding: 24px;
+  padding-bottom: 36px;
+  margin-top: 36px;
+  @include tablet {
+    margin: 36px 64px 0px;
+  }
+
+  &-title {
+    color: var(--color-white);
+    font-weight: 500;
+    font-size: 20px;
+  }
+  &-description {
+    color: var(--color-gray-500);
   }
 }
