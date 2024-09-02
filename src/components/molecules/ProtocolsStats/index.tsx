@@ -43,7 +43,6 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
   const isMainnet = currentNetwork === "Mainnet";
 
   const [dataTable, setDataTable] = useState<ITable[]>([]);
-  const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const { data: monthlyData, isError: isErrorMonthly } = useQuery(["monthlyData"], () =>
@@ -62,11 +61,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
         timespan: "1h",
       }),
   );
-  const {
-    data: last24HoursData,
-    isError: isError24Hours,
-    isFetched,
-  } = useQuery(["last24HoursData"], () =>
+  const { data: last24HoursData, isError: isError24Hours } = useQuery(["last24HoursData"], () =>
     getClient().guardianNetwork.getProtocolActivity({
       from: oneDayAgoISOString,
       to: todayISOString,
@@ -126,9 +121,22 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
     { enabled: isMainnet },
   );
 
+  const isError =
+    isErrorMonthly ||
+    isError48To24 ||
+    isError24Hours ||
+    isErrorAllTimeAllbridge ||
+    isErrorLast48To24Allbridge ||
+    isErrorLast24HoursAllbridge ||
+    isErrorStats ||
+    isErrorLast48To24Mayan ||
+    isErrorLast24HoursMayan;
+
   useEffect(() => {
     setIsLoading(true);
     setDataTable([]);
+
+    if (isError) return;
 
     if (
       (isMainnet &&
@@ -226,10 +234,6 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
           0,
         );
 
-        // don't use last24HoursAllbridge.total_value_transferred, the endpoint has a bug
-        // https://analytics.api.allbridgecoreapi.net/wormhole/activity?from=2024-08-28T21:00:00.000Z&to=2024-08-29T21:00:00.000Z
-        // "total_value_transferred": "NaN"
-
         const allBridgeLast48To24HoursVolume = last48To24HoursAllbridge.activity.reduce(
           (sum, range) => {
             const value = Number(range.total_usd);
@@ -267,7 +271,6 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
 
         processedData.push(allbridgeData);
 
-        // Proceso de los datos de Mayan (solo si isMainnet es true)
         const mayanInfo = stats.find(item => item.protocol === "mayan");
 
         const mayanLastDayValueDiffPercentage = calculatePercentageDiff(
@@ -313,17 +316,8 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
     stats,
     last48To24HoursMayan,
     last24HoursMayan,
-    isErrorMonthly,
-    isError48To24,
-    isError24Hours,
-    isErrorAllTimeAllbridge,
-    isErrorLast48To24Allbridge,
-    isErrorLast24HoursAllbridge,
-    isErrorStats,
-    isErrorLast48To24Mayan,
-    isErrorLast24HoursMayan,
     isMainnet,
-    currentNetwork,
+    isError,
   ]);
 
   return (

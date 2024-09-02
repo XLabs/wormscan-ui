@@ -162,7 +162,7 @@ export const Step1 = ({
               type="searchable"
               value={isEditing ? newIdentifiers.selectedChain : selectedChain}
               closeOnSelect
-              controlStyles={{
+              buttonStyles={{
                 width: "100%",
               }}
               className="select"

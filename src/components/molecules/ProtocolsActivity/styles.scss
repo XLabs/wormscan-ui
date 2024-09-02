@@ -109,10 +109,6 @@
       padding: 12px 16px 16px 16px;
       width: max-content;
 
-      @include desktop {
-        // width: 264px;
-      }
-
       &-date {
         @include text-heading6;
         color: var(--color-gray-400);
