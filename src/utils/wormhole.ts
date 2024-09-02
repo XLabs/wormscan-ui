@@ -30,6 +30,7 @@ import PolygonIcon from "src/icons/blockchains/polygon.svg";
 import PythIcon from "src/icons/blockchains/pyth.svg";
 import ScrollIcon from "src/icons/blockchains/scroll.svg";
 import SeiIcon from "src/icons/blockchains/sei.svg";
+import SnaxChainIcon from "src/icons/blockchains/snaxchain.svg";
 import SolanaIcon from "src/icons/blockchains/solana.svg";
 import SuiIcon from "src/icons/blockchains/sui.svg";
 import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
@@ -69,6 +70,7 @@ import PolygonColorlessIcon from "src/icons/blockchains/colorless/polygon.svg";
 import PythColorlessIcon from "src/icons/blockchains/colorless/pyth.svg";
 import ScrollColorlessIcon from "src/icons/blockchains/colorless/scroll.svg";
 import SeiColorlessIcon from "src/icons/blockchains/colorless/sei.svg";
+import SnaxChainColorlessIcon from "src/icons/blockchains/colorless/snaxchain.svg";
 import SolanaColorlessIcon from "src/icons/blockchains/colorless/solana.svg";
 import SuiColorlessIcon from "src/icons/blockchains/colorless/sui.svg";
 import TerraClassicColorlessIcon from "src/icons/blockchains/colorless/terra-classic.svg";
@@ -114,6 +116,21 @@ const WORMHOLE_CHAINS: any = {
       if (base === "address") return "";
       if (base === "token") return "";
       return "";
+    },
+  },
+  [chainToChainId("Snaxchain")]: {
+    name: "SnaxChain",
+    icon: SnaxChainIcon,
+    colorlessIcon: SnaxChainColorlessIcon,
+    explorer: {
+      Testnet: "https://testnet-explorer.snaxchain.io/",
+      Mainnet: "https://explorer.snaxchain.io/",
+      Devnet: "",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
     },
   },
   [chainToChainId("Btc")]: {

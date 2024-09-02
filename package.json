@@ -50,7 +50,7 @@
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-toggle-group": "1.0.2",
     "@radix-ui/react-tooltip": "1.0.5",
-    "@wormhole-foundation/sdk": "0.7.1-beta.2",
+    "@wormhole-foundation/sdk": "0.10.3",
     "analytics": "^0.8.9",
     "apexcharts": "^3.49.1",
     "axios": "^1.4.0",
@@ -70,9 +70,6 @@
     "react-table": "7.8.0",
     "react-toastify": "^10.0.4",
     "recoil": "0.7.6"
-  },
-  "resolutions": {
-    "rpc-websockets": "7.11.0"
   },
   "alias": {
     "src": "./src",

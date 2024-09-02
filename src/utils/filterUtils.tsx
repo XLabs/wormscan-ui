@@ -1,4 +1,4 @@
-import { chainToChainId } from "@wormhole-foundation/sdk";
+import { chainIdToChain, chainToChainId } from "@wormhole-foundation/sdk";
 import { ProtocolIcon } from "src/components/atoms";
 import {
   CCTP_APP_ID,
@@ -65,6 +65,7 @@ export const ChainFilterMainnet = [
   chainToChainId("Polygon"),
   chainToChainId("Scroll"),
   chainToChainId("Sei"),
+  chainToChainId("Snaxchain"),
   chainToChainId("Solana"),
   chainToChainId("Sui"),
   chainToChainId("Terra"),
@@ -105,6 +106,7 @@ export const ChainFilterTestnet = [
   chainToChainId("Scroll"),
   chainToChainId("Sei"),
   chainToChainId("Sepolia"),
+  chainToChainId("Snaxchain"),
   chainToChainId("Solana"),
   chainToChainId("Sui"),
   chainToChainId("Terra"),
