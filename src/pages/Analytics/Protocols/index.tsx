@@ -1,6 +1,6 @@
-import { NavLink } from "src/components/atoms";
-import { ProtocolsStats } from "src/components/molecules";
 import { ArrowUpRightIcon, Rectangle3DIcon } from "src/icons/generic";
+import { NavLink } from "src/components/atoms";
+import { ProtocolsStats, ProtocolsActivity } from "src/components/molecules";
 import "./styles.scss";
 
 const Protocols = () => {
@@ -21,6 +21,8 @@ const Protocols = () => {
           Submit your Protocol Tool <ArrowUpRightIcon />
         </NavLink>
       </div>
+
+      <ProtocolsActivity />
     </div>
   );
 };

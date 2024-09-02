@@ -7,6 +7,7 @@ import "./styles.scss";
 
 interface Props {
   ariaLabel: string;
+  buttonStyles?: React.CSSProperties;
   className?: string;
   controlStyles?: React.CSSProperties;
   isClearable?: boolean;
@@ -36,6 +37,7 @@ interface Props {
 
 const Select = ({
   ariaLabel,
+  buttonStyles,
   className = "",
   controlStyles,
   isClearable = false,
@@ -71,7 +73,7 @@ const Select = ({
       <div className={`select-searchable ${className}`} ref={ref}>
         <button
           className={`select-searchable-dropdown ${isOpen ? "open" : ""}`}
-          style={{ ...controlStyles }}
+          style={{ ...buttonStyles }}
           onClick={() => {
             if (keepOpen) return;
             return setIsOpen(prev => !prev);
@@ -218,6 +220,7 @@ const Select = ({
         control(base, props) {
           return {
             ...base,
+            minHeight: 36,
             cursor: "pointer",
             ...controlStyles,
           };

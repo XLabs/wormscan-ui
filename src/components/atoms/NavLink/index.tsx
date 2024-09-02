@@ -6,7 +6,7 @@ const NavLink = (props: NavLinkProps) => {
   const { to, onClick } = props;
   const goTop = () => window.scrollTo(0, 0);
   const [searchParams] = useSearchParams();
-  const network = searchParams.get("network")?.toUpperCase() as Network;
+  const network = searchParams.get("network") as Network;
 
   const handleOnClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     onClick && onClick(e);

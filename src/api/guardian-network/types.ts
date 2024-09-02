@@ -83,6 +83,62 @@ export interface IChainActivity {
   volume: number;
 }
 
+export interface IMayanActivityInput {
+  from: string;
+  to: string;
+}
+
+export interface IMayanActivity {
+  activity: {
+    destination_chain_id: string;
+    emitter_chain_id: string;
+    total_usd: number;
+    txs: number;
+  }[];
+  total_messages: number;
+  total_value_secure: number;
+  total_value_transferred: number;
+  volume: number;
+}
+
+export interface IAllbridgeActivityInput {
+  from: string;
+  to: string;
+}
+
+export interface IAllbridgeActivity {
+  activity: {
+    destination_chain_id: number;
+    emitter_chain_id: number;
+    total_usd: string;
+    txs: string;
+  }[];
+  total_value_secure: string;
+  total_value_transferred: string;
+}
+
+export interface IProtocolActivityInput {
+  from: string;
+  to: string;
+  timespan: "1h" | "1d" | "1mo";
+  appId?: string;
+}
+
+export interface IProtocolActivity {
+  app_id: string;
+  time_range_data: {
+    from: string;
+    to: string;
+    total_messages: number;
+    total_value_transferred: number;
+    aggregations?: {
+      app_id: string;
+      total_messages: number;
+      total_value_transferred: number;
+    }[];
+  }[];
+}
+
 export type DateRange = "day" | "week" | "month" | "3-month";
 
 export interface ScoresOutput {
@@ -110,6 +166,7 @@ export interface ProtocolsStatsOutput {
   total_messages: number;
   last_day_messages: number;
   last_day_diff_percentage: string;
+  last_day_volume: number;
 }
 
 export interface AssetsByVolumeInput {
