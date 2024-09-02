@@ -124,7 +124,7 @@ export const Step2 = ({
               type="text"
               className={`parse-txType-input ${txSearch && !input && !isLoading ? "error" : ""}`}
               id="parse-txType-input"
-              placeholder="txHash/VaaID of transaction created with your app"
+              placeholder="Insert a TxHash or VAA ID of a transaction created with your app"
               ref={inputTxRef}
               value={txSearch}
               onChange={e => {

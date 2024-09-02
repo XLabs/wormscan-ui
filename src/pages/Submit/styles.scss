@@ -1036,12 +1036,19 @@
           height: 36px;
           margin-bottom: 16px;
 
+          &-btns {
+            @include centered-row;
+            background-color: var(--color-gray-900);
+            border-radius: 20px;
+          }
+
           &-btn {
             @include button-secondary;
-            background-color: transparent;
+            background-color: transparent !important;
 
             &.active {
               @include button-secondary;
+              background-color: var(--color-gray-800) !important;
             }
           }
 
@@ -1117,12 +1124,19 @@
         height: 36px;
         margin-bottom: 16px;
 
+        &-btns {
+          @include centered-row;
+          background-color: var(--color-gray-900);
+          border-radius: 20px;
+        }
+
         &-btn {
           @include button-secondary;
-          background-color: transparent;
+          background-color: transparent !important;
 
           &.active {
             @include button-secondary;
+            background-color: var(--color-gray-800) !important;
           }
         }
 
