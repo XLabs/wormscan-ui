@@ -667,6 +667,9 @@ const ChainActivity = () => {
               value={targetChainListSelected}
             />
 
+            {/*
+              TODO: Implement this when the endpoint supports all protocols
+            
             <Select
               ariaLabel="Select Protocol"
               className="chain-activity-chart-top-filters-section"
@@ -694,7 +697,7 @@ const ChainActivity = () => {
                 label: filters.appId,
                 value: filters.appId,
               }}
-            />
+            /> */}
 
             <Calendar
               startDate={startDate}
@@ -736,7 +739,7 @@ const ChainActivity = () => {
 
                 {metricSelected === "transactions" ? (
                   <div className="chain-activity-chart-top-filters-legends-container-total">
-                    <span>Messages: </span>
+                    <span>Transfers: </span>
                     <p>
                       {showAllSourceChains
                         ? formatNumber(allMessagesNumber, 0)
@@ -968,7 +971,7 @@ const ChainActivity = () => {
                     
                         ${
                           metricSelected === "transactions"
-                            ? `Total Messages: <span>${formatNumber(totalY, 0)}</span>`
+                            ? `Total Transfers: <span>${formatNumber(totalY, 0)}</span>`
                             : `Total Volume: <span>$${numberToSuffix(totalY, 0)}</span>`
                         }
                       </div>

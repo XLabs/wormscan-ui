@@ -164,6 +164,10 @@
     @include button-secondary;
     padding-right: 8px;
 
+    &.disabled {
+      cursor: not-allowed;
+    }
+
     &.open {
       & > svg {
         transform: rotate(-180deg);

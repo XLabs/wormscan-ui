@@ -239,12 +239,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.23.4, @babel/runtime@npm:^7.24.7":
+"@babel/runtime@npm:^7.24.7":
   version: 7.24.7
   resolution: "@babel/runtime@npm:7.24.7"
   dependencies:
     regenerator-runtime: ^0.14.0
   checksum: d17f29eed6f848ac15cdf4202a910b741facfb0419a9d79e5c7fa37df6362fc3227f1cc2e248cc6db5e53ddffb4caa6686c488e6e80ce3d29c36a4e74c8734ea
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.25.0":
+  version: 7.25.6
+  resolution: "@babel/runtime@npm:7.25.6"
+  dependencies:
+    regenerator-runtime: ^0.14.0
+  checksum: ee1a69d3ac7802803f5ee6a96e652b78b8addc28c6a38c725a4ad7d61a059d9e6cb9f6550ed2f63cce67a1bd82e0b1ef66a1079d895be6bfb536a5cfbd9ccc32
   languageName: node
   linkType: hard
 
@@ -1201,6 +1210,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/curves@npm:^1.4.2":
+  version: 1.5.0
+  resolution: "@noble/curves@npm:1.5.0"
+  dependencies:
+    "@noble/hashes": 1.4.0
+  checksum: a43464c5db67a931b1c93d6634c98e30d791dd567408ebeffd582be1a7f31169f6f26b191e24a9552d89d935408bd8c3dfb90ad8b47286ecf53cbdd2d79d02af
+  languageName: node
+  linkType: hard
+
 "@noble/hashes@npm:1.3.1, @noble/hashes@npm:^1, @noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.0, @noble/hashes@npm:~1.3.0":
   version: 1.3.1
   resolution: "@noble/hashes@npm:1.3.1"
@@ -1222,7 +1240,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.4.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:~1.4.0":
+"@noble/hashes@npm:1.4.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.4.0, @noble/hashes@npm:~1.4.0":
   version: 1.4.0
   resolution: "@noble/hashes@npm:1.4.0"
   checksum: 8ba816ae26c90764b8c42493eea383716396096c5f7ba6bea559993194f49d80a73c081f315f4c367e51bd2d5891700bcdfa816b421d24ab45b41cb03e4f3342
@@ -2363,15 +2381,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-icons@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@radix-ui/react-icons@npm:1.3.0"
-  peerDependencies:
-    react: ^16.x || ^17.x || ^18.x
-  checksum: 982f3ee2271eaaa12b944506ef7701d20fad847082592d99b393b66a2ebbd4cc89e3a0ba48146ed8801418a7bfd76cd55901dc5cb7c6ef404001e7e4c73d05f6
-  languageName: node
-  linkType: hard
-
 "@radix-ui/react-id@npm:1.0.0":
   version: 1.0.0
   resolution: "@radix-ui/react-id@npm:1.0.0"
@@ -2980,29 +2989,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/web3.js@npm:1.91.7":
-  version: 1.91.7
-  resolution: "@solana/web3.js@npm:1.91.7"
-  dependencies:
-    "@babel/runtime": ^7.23.4
-    "@noble/curves": ^1.4.0
-    "@noble/hashes": ^1.3.3
-    "@solana/buffer-layout": ^4.0.1
-    agentkeepalive: ^4.5.0
-    bigint-buffer: ^1.1.5
-    bn.js: ^5.2.1
-    borsh: ^0.7.0
-    bs58: ^4.0.1
-    buffer: 6.0.3
-    fast-stable-stringify: ^1.0.0
-    jayson: ^4.1.0
-    node-fetch: ^2.7.0
-    rpc-websockets: ^7.5.1
-    superstruct: ^0.14.2
-  checksum: 76a81f52dccb05e519fed0a93033a9b18660b80b1eb4d0593e12de94f51f3e4a6f4b9cd85296ff5849d180b8e633367f675906e22f9c6d2baf0b98a10590f361
-  languageName: node
-  linkType: hard
-
 "@solana/web3.js@npm:^1.32.0":
   version: 1.78.2
   resolution: "@solana/web3.js@npm:1.78.2"
@@ -3046,6 +3032,29 @@ __metadata:
     rpc-websockets: ^9.0.2
     superstruct: ^1.0.4
   checksum: ff85de5217d4b9515d280f8e40fcd046e785dc02074a2a33caa31beaf9213099750a15569ec223952d839eaa5dc646849a1d18e5047b33d2c196ffd7987d6879
+  languageName: node
+  linkType: hard
+
+"@solana/web3.js@npm:^1.95.2":
+  version: 1.95.3
+  resolution: "@solana/web3.js@npm:1.95.3"
+  dependencies:
+    "@babel/runtime": ^7.25.0
+    "@noble/curves": ^1.4.2
+    "@noble/hashes": ^1.4.0
+    "@solana/buffer-layout": ^4.0.1
+    agentkeepalive: ^4.5.0
+    bigint-buffer: ^1.1.5
+    bn.js: ^5.2.1
+    borsh: ^0.7.0
+    bs58: ^4.0.1
+    buffer: 6.0.3
+    fast-stable-stringify: ^1.0.0
+    jayson: ^4.1.1
+    node-fetch: ^2.7.0
+    rpc-websockets: ^9.0.2
+    superstruct: ^2.0.2
+  checksum: 6951eb12275de09ef9422fc65982b7496f3d11253b4cd1b09694dd2135d92aa272a04a7adf50ef0136a459b08ea40e07f6e7cbf1970cae44d6193d93fe6acc1f
   languageName: node
   linkType: hard
 
@@ -3176,6 +3185,15 @@ __metadata:
   dependencies:
     tslib: ^2.4.0
   checksum: 71e0e27234590435e4c62b97ef5e796f88e786841a38c7116a5e27a3eafa7b9ead7cdec5249b32165902076de78446945311c973e59bddf77c1e24f33a8f272a
+  languageName: node
+  linkType: hard
+
+"@swc/helpers@npm:^0.5.11":
+  version: 0.5.12
+  resolution: "@swc/helpers@npm:0.5.12"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: 293c0cb8f41804f94beb04a764bbcfaf316707ec43947713154ac66311590299446bf9b96ab253ce59ce9e435a0edc8cc2bf93f88dc3989f9241271507dd5fe9
   languageName: node
   linkType: hard
 
@@ -3351,6 +3369,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-dropzone@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@types/react-dropzone@npm:5.1.0"
+  dependencies:
+    react-dropzone: "*"
+  checksum: 2b68fcf0153fb00e17088907490b823b6d81a29a02e615f820e347df2546f9318c5f025eeb33d575c648d01a14e55a19e528c32907608b5a7f727ff0e96b3923
+  languageName: node
+  linkType: hard
+
 "@types/react-table@npm:^7.7.20":
   version: 7.7.20
   resolution: "@types/react-table@npm:7.7.20"
@@ -3412,12 +3439,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/uuid@npm:^8.3.4":
+  version: 8.3.4
+  resolution: "@types/uuid@npm:8.3.4"
+  checksum: 6f11f3ff70f30210edaa8071422d405e9c1d4e53abbe50fdce365150d3c698fe7bbff65c1e71ae080cbfb8fded860dbb5e174da96fdbbdfcaa3fb3daa474d20f
+  languageName: node
+  linkType: hard
+
 "@types/ws@npm:^7.4.4":
   version: 7.4.7
   resolution: "@types/ws@npm:7.4.7"
   dependencies:
     "@types/node": "*"
   checksum: b4c9b8ad209620c9b21e78314ce4ff07515c0cadab9af101c1651e7bfb992d7fd933bd8b9c99d110738fd6db523ed15f82f29f50b45510288da72e964dedb1a3
+  languageName: node
+  linkType: hard
+
+"@types/ws@npm:^8.2.2":
+  version: 8.5.12
+  resolution: "@types/ws@npm:8.5.12"
+  dependencies:
+    "@types/node": "*"
+  checksum: ddefb6ad1671f70ce73b38a5f47f471d4d493864fca7c51f002a86e5993d031294201c5dced6d5018fb8905ad46888d65c7f20dd54fc165910b69f42fba9a6d0
   languageName: node
   linkType: hard
 
@@ -3611,325 +3654,326 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-algorand-core@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-algorand-core@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-algorand-core@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-algorand-core@npm:0.10.3"
   dependencies:
-    "@wormhole-foundation/sdk-algorand": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-  checksum: 9048f5c0539e4aa4c759cb19e703bfb0928a09db13874a6d3795aa44df27a319f18ba5fac935ee1446fb9ecd3e597a75166f0b2d311659ffdcad9c46a27e9427
+    "@wormhole-foundation/sdk-algorand": 0.10.3
+    "@wormhole-foundation/sdk-connect": 0.10.3
+  checksum: 62ca8cae2454f6ae224624584b0b80498df33689cdd2a173a1650d57d821dff8d30b7d79172a17cdb8409d79aed2c4c0b4d787ca7c401d4943801f131cefc47e
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-algorand-tokenbridge@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-algorand-tokenbridge@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-algorand-tokenbridge@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-algorand-tokenbridge@npm:0.10.3"
   dependencies:
-    "@wormhole-foundation/sdk-algorand": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-algorand-core": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-  checksum: 6faaaef52f386478569b07da092b9395343fd36b59b6f62f176ca85676447ea1911b245d1c00519cccf2c608b03bf06d2031ff29419aed83950b7133615f8171
+    "@wormhole-foundation/sdk-algorand": 0.10.3
+    "@wormhole-foundation/sdk-algorand-core": 0.10.3
+    "@wormhole-foundation/sdk-connect": 0.10.3
+  checksum: cc2fc78d1daa0d54e41e5e56d2ce4ac6d2c71d69315bdd5149d44b05342ecab2ba5425e305632eadaaedcd7fadb60fff87aa75df80b69dfbb17f0ec6f1c37e5d
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-algorand@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-algorand@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-algorand@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-algorand@npm:0.10.3"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
+    "@wormhole-foundation/sdk-connect": 0.10.3
     algosdk: 2.7.0
-  checksum: 9591ccfd61f6efe1ad073e4c3888f49e5c7b2fd1975a021f9c2160fc2d8d60674ff03c33313ed028e6d54babe934714a13e1e544b175a29640bfa683e3740805
+  checksum: 3b35d9e6d9778c411ea62fad369674e6c0363ba234a96c441140727633a403a303feb07644f4043c79d17ac068270e582f95d93bcb06591f385727d1fd8a8bbb
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-aptos-core@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-aptos-core@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-aptos-core@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-aptos-core@npm:0.10.3"
   dependencies:
-    "@wormhole-foundation/sdk-aptos": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-  checksum: f7b1217e5afa1d325fc21492b44aef0995df3f946ee843ae0f441017cb841dea564fd23207ef49519817d43278c46601f4a5cba9dc5e1299b3ab92d88234822b
+    "@wormhole-foundation/sdk-aptos": 0.10.3
+    "@wormhole-foundation/sdk-connect": 0.10.3
+  checksum: c54cf0578423e73660e027e4c0a1c78554f9d28c0909b37909bce276980f1f5163f150bd308b9e363af55aa2e093c3f98a996c98741a559bf52b045247399f68
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-aptos-tokenbridge@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-aptos-tokenbridge@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-aptos-tokenbridge@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-aptos-tokenbridge@npm:0.10.3"
   dependencies:
-    "@wormhole-foundation/sdk-aptos": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-  checksum: 319be12eb2cfe45592ad2d00b6571f776d771b593b8307fad94fc6d092dd85efd005864bf70a7c21565962185a81cb47d4ebb9ff71de836a85ab1e6569b2bc7b
+    "@wormhole-foundation/sdk-aptos": 0.10.3
+    "@wormhole-foundation/sdk-connect": 0.10.3
+  checksum: 6e84664f3a7615a4d8709ac6eef7ca0aa70b0a1092e65eac3503cb80a8bd1e77067304cecb4eca5f3fc5b84323db15a4a6056ff2afe6999499e62d9eeadb55e8
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-aptos@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-aptos@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-aptos@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-aptos@npm:0.10.3"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
+    "@wormhole-foundation/sdk-connect": 0.10.3
     aptos: 1.21.0
-  checksum: b0ea9e0b7d5d978e5f81bc056acebdb7b6e87801e5ba85676ef8a112401f50af56a4d7d0eeefcd3e5d793cf3a510a9c9fa9946f1a15f939010d4e26f2da47e9d
+  checksum: 1fc7836379abd5af9d04c2a693e9007abf2fb567f0975a69bd798e453dc2e598ee799b372b302cf10682b44608263772e2302b0ed472801484bccedc9786ccfc
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-base@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-base@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-base@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-base@npm:0.10.3"
   dependencies:
     "@scure/base": ^1.1.3
-  checksum: 48de8a950110fe6ef7571b2bfec702b2b4e96bf7463ec44c7372a3e2f812c377e27de5b8fc54f3a4a275065ac6a5f884aed697dc88d205dfa65c7c8bcd936a71
+  checksum: 892ce5a05961463c65066bc0fe4761f3a64b3bea97a0b1caafa1503c2c7ec3b4f39bc60a035e47a4fbc2f1e524b0e3cd57ed7743730c058aa0cfd8312af1e33f
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-connect@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-connect@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-connect@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-connect@npm:0.10.3"
   dependencies:
-    "@wormhole-foundation/sdk-base": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-definitions": 0.7.1-beta.2
+    "@wormhole-foundation/sdk-base": 0.10.3
+    "@wormhole-foundation/sdk-definitions": 0.10.3
     axios: ^1.4.0
-  checksum: 7b759fd438a72b4cbd3a161f8cf62cc8af36a54d50302c11de5c839faa6a5698cba1b6a958ca053d45765b634b6d4413f841615290133e7dbbbf38a024222457
+  checksum: 2386f600f8b31d5d247a2d33a942921a61152de3124f21ef89e70b3dd816e4597ce41744e7ce95ed7c8a858ee4ed59f27b6ae6c0ab8b4a10cc140ff706fad1f0
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-cosmwasm-core@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-cosmwasm-core@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-cosmwasm-core@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-cosmwasm-core@npm:0.10.3"
   dependencies:
     "@cosmjs/cosmwasm-stargate": ^0.32.0
     "@cosmjs/stargate": ^0.32.0
     "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-cosmwasm": 0.7.1-beta.2
-  checksum: 3940be4dcaaa589ac1030658b01134b5c293ea3b3e5e81724c9b5860e2f6a701f665168f7bcc3de3650f9751a39429aeb11116498a54fab42193172ef8d4d8fa
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    "@wormhole-foundation/sdk-cosmwasm": 0.10.3
+  checksum: c053178456acee26172351d2749b8ec0c9d49eca9548ca6704356af4058b8212753d74b61d1af4b607458c49c052be7b1c757cc30ef3d4a59f2dfc0b986ad62b
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-cosmwasm-ibc@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-cosmwasm-ibc@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-cosmwasm-ibc@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-cosmwasm-ibc@npm:0.10.3"
   dependencies:
     "@cosmjs/cosmwasm-stargate": ^0.32.0
     "@cosmjs/stargate": ^0.32.0
     "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-cosmwasm": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-cosmwasm-core": 0.7.1-beta.2
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    "@wormhole-foundation/sdk-cosmwasm": 0.10.3
+    "@wormhole-foundation/sdk-cosmwasm-core": 0.10.3
     cosmjs-types: ^0.9.0
-  checksum: 7e88aae0b27086e8ea7d46b4ae67eaa043aea2402215ad246f66a5afced503c1613095f28066ddc6ca140b4001a095a05c869b04ca9e4141c3def235a3771ab2
+  checksum: 8d23c779c1d91f2a6ca4f8de4d10211e6b86fa0b76345ef59bcd63e564718c2a56067d1a79b2eadbaf0bb6621982ea65f97242e71479d30b90d2b15289ac8d19
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:0.10.3"
   dependencies:
     "@cosmjs/cosmwasm-stargate": ^0.32.0
     "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-cosmwasm": 0.7.1-beta.2
-  checksum: 589e2cee95a0738ffbbb4a1844ea620762b3c81bdc97550cc0021375dde7fdc10d7c595dd20fd853cfcb71f714604bead20622b4612b518588efac15a1d87318
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    "@wormhole-foundation/sdk-cosmwasm": 0.10.3
+  checksum: 5e828956b9b4737d446e7a53a24a0e64bffe58bff8ce6e1317b5847529dacbf8524e6c9cc10ee474ce41d1fb2c238ac5592525b57b3c135e85df935c01364d34
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-cosmwasm@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-cosmwasm@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-cosmwasm@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-cosmwasm@npm:0.10.3"
   dependencies:
     "@cosmjs/cosmwasm-stargate": ^0.32.0
     "@cosmjs/proto-signing": ^0.32.0
     "@cosmjs/stargate": ^0.32.0
     "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
+    "@wormhole-foundation/sdk-connect": 0.10.3
     cosmjs-types: ^0.9.0
-  checksum: 99c0fa5d41534d10b1300a18299dfe271ef5ec0cdc424a14ec6ac4a9f646e3e8d030507b28da455333be810356a8b93dcbc0daf6674f38d311840572d49f72d8
+  checksum: 98387f5061c84e18708a23dcdd0c7864b9daf4f063d65dab420f154a9a510d3b94aeade6fa4d4616a80ba0e4cb6e4c77c07a8056b2bf7d17189d23acf011b207
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-definitions@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-definitions@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-definitions@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-definitions@npm:0.10.3"
   dependencies:
     "@noble/curves": ^1.4.0
     "@noble/hashes": ^1.3.1
-    "@wormhole-foundation/sdk-base": 0.7.1-beta.2
-  checksum: 46c8b30cba4465385d376c8f6110d840f8772a29615f10f6da4e096f710f7f47faf35f6412172f82827fe37355b71b1d3c524e99101b26027e9d977a5e00304a
+    "@wormhole-foundation/sdk-base": 0.10.3
+  checksum: 7ee26cbe3e8fbfc349bf9512e6b9f9e6ed478024b47468b67a06c1f19d6e6a5ddec9e5e00d5e9a0d23ac920de6a3a924bbe45f0a800ed36d6d71a72604120bdb
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm-cctp@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-evm-cctp@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-evm-cctp@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-evm-cctp@npm:0.10.3"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-evm": 0.7.1-beta.2
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    "@wormhole-foundation/sdk-evm": 0.10.3
     ethers: ^6.5.1
-  checksum: f72dd95973ab2689c261cfba59688c3a94630c80b2400a5f2df5ba4dd8ad0cbaeeb2fd13f6c3e01fe724c506f57eb79e7e1cc0348770b4ef34fcf102596a5026
+  checksum: 99f49f8f83b91a2a361de1f04a525f8471cee1856130974855172e8a4ced240d03a584936e396a4db11bcfaa0d9ff429f3f8b378682b74af6f3c9f45a99dd619
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm-core@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-evm-core@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-evm-core@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-evm-core@npm:0.10.3"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-evm": 0.7.1-beta.2
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    "@wormhole-foundation/sdk-evm": 0.10.3
     ethers: ^6.5.1
-  checksum: 07b60e2d9a609e4fde6cac50c16efc60cb476f5354c4a10cd19f8d526a424d5b6e995c230eef90f2f4b5ba1cc4dc3f5c034db1a47202bdeeb9d9d2249b77996c
+  checksum: cd92e5208fbed8913ca9dd156dcb683272e53047aeec9bcd3ba00f1db935ad9d6968d8801370f6196250fc81d51980ba67445e90810a4c6e92135c09e7f1e30a
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm-portico@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-evm-portico@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-evm-portico@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-evm-portico@npm:0.10.3"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-evm": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-evm-core": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-evm-tokenbridge": 0.7.1-beta.2
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    "@wormhole-foundation/sdk-evm": 0.10.3
+    "@wormhole-foundation/sdk-evm-core": 0.10.3
+    "@wormhole-foundation/sdk-evm-tokenbridge": 0.10.3
     ethers: ^6.5.1
-  checksum: a53bc089a4b7aaec303570e8440d64a680fd8164333d76dd0d26041fd0b178ebaf15852e78265364666f01d3d44a13409a32e93504ab4368edb192e11e532427
+  checksum: 8d545362f22b2d98b9dac6bf11d41b98a0790afb8263f988ef020d14965abacabde2dac6fdbefc4c37f587f856312f605d5c83942723805ef6f4ff982e92be6b
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm-tokenbridge@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-evm-tokenbridge@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-evm-tokenbridge@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-evm-tokenbridge@npm:0.10.3"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-evm": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-evm-core": 0.7.1-beta.2
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    "@wormhole-foundation/sdk-evm": 0.10.3
+    "@wormhole-foundation/sdk-evm-core": 0.10.3
     ethers: ^6.5.1
-  checksum: 9d20b232d74b624856b655ef8869c235920e9b619d010a4ea03b8fdefb8bdc44d79ed12e56a69b3dcfb59a7c873c05b16476a18e2e4f8e27e3149d88f17e26f4
+  checksum: 32c7a09c8ba3f6e6dd54422386d6f77db020947a86aa07fcff3f92b6eb4f8856c0cefe1b7a1b9a9beb7b6b632c4c4fb22b98dcd682f3dfcb7e699a342328de97
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-evm@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-evm@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-evm@npm:0.10.3"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
+    "@wormhole-foundation/sdk-connect": 0.10.3
     ethers: ^6.5.1
-  checksum: d048d85465337c96e9c26e71d4b2568c36fbc7ad8dc1b66db4cc5101b80f24c389330d87cf8bbde5ba6c06d85bc9adcbc28a70787b81ab35229a18d3b1b6788c
+  checksum: 8b3d29b32ab366d44aec399876154b72d651ff33c84d5b7a7d9f12e82ee065894112445be31ecae644fafe24c20a26e1135ebbe9b79a2fd7afb705398df0a07d
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-solana-cctp@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-solana-cctp@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-solana-cctp@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-solana-cctp@npm:0.10.3"
   dependencies:
     "@coral-xyz/anchor": 0.29.0
     "@solana/spl-token": 0.3.9
-    "@solana/web3.js": 1.91.7
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-solana": 0.7.1-beta.2
-  checksum: fdce4130f53f3740f64c829747c40d70b2e35955aa50953d08a8f89cab5dc0b34d58f70ff6d3640d76e45d682673ac01b54dca8bb7904aa0ec61fdd1ffd621ff
+    "@solana/web3.js": ^1.95.2
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    "@wormhole-foundation/sdk-solana": 0.10.3
+  checksum: d273ebf93e4bfb5e958df1d7ce4396208147ac9879bcae56cb9673583a07eb53d08e3866e9fca843d94695fdf0b5a703ece002bbbad4447ab56146c439fb2871
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-solana-core@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-solana-core@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-solana-core@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-solana-core@npm:0.10.3"
   dependencies:
     "@coral-xyz/anchor": 0.29.0
     "@coral-xyz/borsh": 0.29.0
-    "@solana/web3.js": 1.91.7
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-solana": 0.7.1-beta.2
-  checksum: 44691dd5014605eb556255cd3a61187975c617804bf12e17e8a2585e9db6eb44f75f434d3100980b5d41dcb21a75f28432f049085c3ffa9d454a30f2f0f6e93c
+    "@solana/web3.js": ^1.95.2
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    "@wormhole-foundation/sdk-solana": 0.10.3
+  checksum: be3af499de2f410b7864aa260adcd237d5bf8e5361db362e45c716459370d444edde7d600cc2ee37ae2e8ad514ac8eb291200a96d877d3fe388ba1340c30962a
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-solana-tokenbridge@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-solana-tokenbridge@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-solana-tokenbridge@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-solana-tokenbridge@npm:0.10.3"
   dependencies:
     "@coral-xyz/anchor": 0.29.0
     "@solana/spl-token": 0.3.9
-    "@solana/web3.js": 1.91.7
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-solana": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-solana-core": 0.7.1-beta.2
-  checksum: 3545695d855725f3e0140b3af2e7e2bb41b1f362efd4e7db244670c5f57dc42cdd23afeb1248ee2baec62ab4d69bc76de9ae5e1795dbd87ea830262bf4b8977e
+    "@solana/web3.js": ^1.95.2
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    "@wormhole-foundation/sdk-solana": 0.10.3
+    "@wormhole-foundation/sdk-solana-core": 0.10.3
+  checksum: 06b64503c257452072ed26564596ac99e9b422758128e5814a73d08ca138171271415222ab512df80d1ce7b802df5379e7c0e18b3d1dcc45ae533999c3c917c4
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-solana@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-solana@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-solana@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-solana@npm:0.10.3"
   dependencies:
     "@coral-xyz/anchor": 0.29.0
     "@coral-xyz/borsh": 0.29.0
     "@solana/spl-token": 0.3.9
-    "@solana/web3.js": 1.91.7
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-  checksum: d00e957eb4036ea49665bd1cee6140d7438c9436a5897496f0d8e4de4cf7743c4d1da2bb204d07d71e5a58e4d5f5a6d7e5530a368fe5ba094b8d35bef0f5d2cd
+    "@solana/web3.js": ^1.95.2
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    rpc-websockets: ^7.10.0
+  checksum: 77f6c02dce9254cdae3903c75863f9260a841c941823a4a87d7e53e6e5547a1bc1a8fbd9ca5505c26294844c1385b36765be27e50562ff531f5c6f68ab87ff91
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-sui-core@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-sui-core@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-sui-core@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-sui-core@npm:0.10.3"
   dependencies:
     "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-sui": 0.7.1-beta.2
-  checksum: 9aeac2286b9aaff6ae8bd57a5cee9f741d449d7aea577788ecbc188451e4c0dfd4f3c0f440dc8d14ae4556130638dcda9d7b8302a0e848b37fe48840a2277c4a
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    "@wormhole-foundation/sdk-sui": 0.10.3
+  checksum: de56f06af5886abb91f6d21e77bbf95224303bf2090b79dbb5ab7503ace2d347621ac2497f43aaee4a1ebcf825e7338c2049a5abc593955909734cade7ae1c4c
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-sui-tokenbridge@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-sui-tokenbridge@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-sui-tokenbridge@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-sui-tokenbridge@npm:0.10.3"
   dependencies:
     "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-sui": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-sui-core": 0.7.1-beta.2
-  checksum: cffc26f61bcca2edb2bd6f72ec8ac565d6cc9d33a1443ea88c94f14579eefa86ada770c403bf54e2dc9eae47a98f708fb3fff987db899161c3792d93cc9607d6
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    "@wormhole-foundation/sdk-sui": 0.10.3
+    "@wormhole-foundation/sdk-sui-core": 0.10.3
+  checksum: 02986444ef94f364964741acd958557f1be1fd26d03c7307a65d7efca5b05661868a43f8b67ffde7d68ef6eb13434697de213f066f44f817b49784440efcf626
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-sui@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk-sui@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk-sui@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk-sui@npm:0.10.3"
   dependencies:
     "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-  checksum: 0807ffa57cedbe497c74aacf3f6532cb2a5c8f72f5e2fe44a8a0ada63ba789f186519b1b98d73e9ce534d99d9d61722842b8fb5568e837bc3c2e20bfc11ae365
+    "@wormhole-foundation/sdk-connect": 0.10.3
+  checksum: 4ac91232a6dec17b7f3bfffb861f871847452eaa8c6f27ab77662459639390e22447501e833f328f2b681d0d364f91b4bec46f2f84fb3d70b3ddd30244cbf474
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk@npm:0.7.1-beta.2":
-  version: 0.7.1-beta.2
-  resolution: "@wormhole-foundation/sdk@npm:0.7.1-beta.2"
+"@wormhole-foundation/sdk@npm:0.10.3":
+  version: 0.10.3
+  resolution: "@wormhole-foundation/sdk@npm:0.10.3"
   dependencies:
-    "@wormhole-foundation/sdk-algorand": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-algorand-core": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-algorand-tokenbridge": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-aptos": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-aptos-core": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-aptos-tokenbridge": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-base": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-connect": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-cosmwasm": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-cosmwasm-core": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-cosmwasm-ibc": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-cosmwasm-tokenbridge": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-definitions": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-evm": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-evm-cctp": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-evm-core": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-evm-portico": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-evm-tokenbridge": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-solana": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-solana-cctp": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-solana-core": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-solana-tokenbridge": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-sui": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-sui-core": 0.7.1-beta.2
-    "@wormhole-foundation/sdk-sui-tokenbridge": 0.7.1-beta.2
-  checksum: d0870050d426be4d2dfdb64216018008ac42e3c423149aae8799657e4437b35534256d0d0338b76be6ffabd20996d3c626e4ec8e394dea3f008436ac5f8ca5dc
+    "@wormhole-foundation/sdk-algorand": 0.10.3
+    "@wormhole-foundation/sdk-algorand-core": 0.10.3
+    "@wormhole-foundation/sdk-algorand-tokenbridge": 0.10.3
+    "@wormhole-foundation/sdk-aptos": 0.10.3
+    "@wormhole-foundation/sdk-aptos-core": 0.10.3
+    "@wormhole-foundation/sdk-aptos-tokenbridge": 0.10.3
+    "@wormhole-foundation/sdk-base": 0.10.3
+    "@wormhole-foundation/sdk-connect": 0.10.3
+    "@wormhole-foundation/sdk-cosmwasm": 0.10.3
+    "@wormhole-foundation/sdk-cosmwasm-core": 0.10.3
+    "@wormhole-foundation/sdk-cosmwasm-ibc": 0.10.3
+    "@wormhole-foundation/sdk-cosmwasm-tokenbridge": 0.10.3
+    "@wormhole-foundation/sdk-definitions": 0.10.3
+    "@wormhole-foundation/sdk-evm": 0.10.3
+    "@wormhole-foundation/sdk-evm-cctp": 0.10.3
+    "@wormhole-foundation/sdk-evm-core": 0.10.3
+    "@wormhole-foundation/sdk-evm-portico": 0.10.3
+    "@wormhole-foundation/sdk-evm-tokenbridge": 0.10.3
+    "@wormhole-foundation/sdk-solana": 0.10.3
+    "@wormhole-foundation/sdk-solana-cctp": 0.10.3
+    "@wormhole-foundation/sdk-solana-core": 0.10.3
+    "@wormhole-foundation/sdk-solana-tokenbridge": 0.10.3
+    "@wormhole-foundation/sdk-sui": 0.10.3
+    "@wormhole-foundation/sdk-sui-core": 0.10.3
+    "@wormhole-foundation/sdk-sui-tokenbridge": 0.10.3
+  checksum: e2d140ce9291663ae3a35768ad1e0ce3ecd07b901c5bf0c1a4ed6148566ce062a7a9f16fec6780a8a09d1667b20fc51241eac54f953822a4eaff53371ac6d7d8
   languageName: node
   linkType: hard
 
@@ -4351,6 +4395,13 @@ __metadata:
   version: 0.4.0
   resolution: "asynckit@npm:0.4.0"
   checksum: 7b78c451df768adba04e2d02e63e2d0bf3b07adcd6e42b4cf665cb7ce899bedd344c69a1dcbce355b5f972d597b25aaa1c1742b52cffd9caccb22f348114f6be
+  languageName: node
+  linkType: hard
+
+"attr-accept@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "attr-accept@npm:2.2.2"
+  checksum: 496f7249354ab53e522510c1dc8f67a1887382187adde4dc205507d2f014836a247073b05e9d9ea51e2e9c7f71b0d2aa21730af80efa9af2d68303e5f0565c4d
   languageName: node
   linkType: hard
 
@@ -6040,6 +6091,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"file-selector@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "file-selector@npm:0.6.0"
+  dependencies:
+    tslib: ^2.4.0
+  checksum: 7d051b6e5d793f3c6e2ab287ba5e7c2c6a0971bccc9d56e044c8047ba483e18f60fc0b5771c951dc707c0d15f4f36ccb4f1f1aaf385d21ec8f7700dadf8325ba
+  languageName: node
+  linkType: hard
+
 "file-uri-to-path@npm:1.0.0":
   version: 1.0.0
   resolution: "file-uri-to-path@npm:1.0.0"
@@ -7160,6 +7220,28 @@ __metadata:
   bin:
     jayson: bin/jayson.js
   checksum: 86464322fbdc6db65d2bb4fc278cb6c86fad5c2a506065490d39459f09ba0d30f2b4fb740b33828a1424791419b6c8bd295dc54d361a4ad959bf70cc62b1ca7e
+  languageName: node
+  linkType: hard
+
+"jayson@npm:^4.1.1":
+  version: 4.1.2
+  resolution: "jayson@npm:4.1.2"
+  dependencies:
+    "@types/connect": ^3.4.33
+    "@types/node": ^12.12.54
+    "@types/ws": ^7.4.4
+    JSONStream: ^1.3.5
+    commander: ^2.20.3
+    delay: ^5.0.0
+    es6-promisify: ^5.0.0
+    eyes: ^0.1.8
+    isomorphic-ws: ^4.0.1
+    json-stringify-safe: ^5.0.1
+    uuid: ^8.3.2
+    ws: ^7.5.10
+  bin:
+    jayson: bin/jayson.js
+  checksum: 10d6a0ce55045a1098b9b0d1d9b4b898f034e70696e57240ba76d67eddaabd703e1f59477c667b57e39f6f1fc54dbb87b1327a8a4edef39a37a17b70c79bb6e4
   languageName: node
   linkType: hard
 
@@ -8888,6 +8970,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dropzone@npm:*, react-dropzone@npm:^14.2.3":
+  version: 14.2.3
+  resolution: "react-dropzone@npm:14.2.3"
+  dependencies:
+    attr-accept: ^2.2.2
+    file-selector: ^0.6.0
+    prop-types: ^15.8.1
+  peerDependencies:
+    react: ">= 16.8 || 18.0.0"
+  checksum: 174b744d5ca898cf3d84ec1aeb6cef5211c446697e45dc8ece8287a03d291f8d07253206d5a1247ef156fd385d65e7de666d4d5c2986020b8543b8f2434e8b40
+  languageName: node
+  linkType: hard
+
 "react-error-overlay@npm:6.0.9":
   version: 6.0.9
   resolution: "react-error-overlay@npm:6.0.9"
@@ -8920,12 +9015,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-json-view-lite@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "react-json-view-lite@npm:1.1.0"
+"react-json-view-lite@npm:1.4.0":
+  version: 1.4.0
+  resolution: "react-json-view-lite@npm:1.4.0"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
-  checksum: 6cea282a40b91177e6d5daa5a98ada51f56d226c9368dd2a9c6f3ecfc3a47c168b11de43241ebeb79d0b6570b1158ef2e043db7c08b1f71dc7b215417331e598
+  checksum: 420921258478da46a54887b6e4740e6cf21c7264eba95c33d6264fdf71c482f0746c1345eb187a4a52b31d2a3a951f88c7af338b9fccbced2a918751dd98c844
   languageName: node
   linkType: hard
 
@@ -9300,9 +9395,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpc-websockets@npm:7.11.0":
-  version: 7.11.0
-  resolution: "rpc-websockets@npm:7.11.0"
+"rpc-websockets@npm:^7.10.0, rpc-websockets@npm:^7.5.1":
+  version: 7.11.2
+  resolution: "rpc-websockets@npm:7.11.2"
   dependencies:
     bufferutil: ^4.0.1
     eventemitter3: ^4.0.7
@@ -9314,7 +9409,29 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: bf8b760e661a1ac4a26d4d139cf98978d14b79dd6463d7acfd8a300355db4be57675f8e2cf5e2feada8cd9cc2ab063914f3b63fce442540a66141dff69e74f60
+  checksum: 25311bfc25384132ca8fb8cc1d15b1982661e032b2e8566bc911c1632ced7622fca1eb4cda369b0a548c37a7f61b30e2d9f7ae9cb38f563bb076e4ee5a7a5f01
+  languageName: node
+  linkType: hard
+
+"rpc-websockets@npm:^9.0.2":
+  version: 9.0.2
+  resolution: "rpc-websockets@npm:9.0.2"
+  dependencies:
+    "@swc/helpers": ^0.5.11
+    "@types/uuid": ^8.3.4
+    "@types/ws": ^8.2.2
+    buffer: ^6.0.3
+    bufferutil: ^4.0.1
+    eventemitter3: ^5.0.1
+    utf-8-validate: ^5.0.2
+    uuid: ^8.3.2
+    ws: ^8.5.0
+  dependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: c93cd2e5b348ecfc6a4714d88b34c23470d086cecde5d1ba459750f9f1269c6e8edf80f3c628bab423f8720a49a653093e52821b9b0779fb79e041313d0e7173
   languageName: node
   linkType: hard
 
@@ -9854,6 +9971,13 @@ __metadata:
   version: 1.0.4
   resolution: "superstruct@npm:1.0.4"
   checksum: 2e070994cc4998a753c3f0215449d6de01ffb8180e4f46527f559ffbc2ebcc40fcf428f545ccd355921ef2920db7d138a96258ae35c788e6c24b2aa8bb1695cb
+  languageName: node
+  linkType: hard
+
+"superstruct@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "superstruct@npm:2.0.2"
+  checksum: a5f75b72cb8b14b86f4f7f750dae8c5ab0e4e1d92414b55e7625bae07bbcafad81c92486e7e32ccacd6ae1f553caff2b92a50ff42ad5093fd35b9cb7f4e5ec86
   languageName: node
   linkType: hard
 
@@ -10459,7 +10583,6 @@ __metadata:
     "@metamask/detect-provider": ^2.0.0
     "@parcel/transformer-sass": ^2.8.3
     "@playwright/test": ^1.38.1
-    "@radix-ui/react-icons": ^1.3.0
     "@radix-ui/react-navigation-menu": ^1.1.4
     "@radix-ui/react-switch": ^1.0.3
     "@radix-ui/react-toggle-group": 1.0.2
@@ -10468,10 +10591,11 @@ __metadata:
     "@types/react": ^18.0.27
     "@types/react-datepicker": ^6.2.0
     "@types/react-dom": ^18.0.10
+    "@types/react-dropzone": ^5.1.0
     "@types/react-table": ^7.7.20
     "@typescript-eslint/eslint-plugin": latest
     "@typescript-eslint/parser": latest
-    "@wormhole-foundation/sdk": 0.7.1-beta.2
+    "@wormhole-foundation/sdk": 0.10.3
     analytics: ^0.8.9
     apexcharts: ^3.49.1
     assert: ^2.0.0
@@ -10497,8 +10621,9 @@ __metadata:
     react-datepicker: ^6.9.0
     react-dom: 18.2.0
     react-draggable: 4.4.5
+    react-dropzone: ^14.2.3
     react-i18next: 12.1.5
-    react-json-view-lite: ^1.1.0
+    react-json-view-lite: 1.4.0
     react-query: 3.39.3
     react-router-dom: 6.22.0
     react-select: 5.7.2
@@ -10581,6 +10706,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: c3c100a181b731f40b7f2fddf004aa023f79d64f489706a28bc23ff88e87f6a64b3c6651fbec3a84a53960b75159574d7a7385709847a62ddb7ad6af76f49138
+  languageName: node
+  linkType: hard
+
+"ws@npm:^7.5.10":
+  version: 7.5.10
+  resolution: "ws@npm:7.5.10"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ^5.0.2
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: f9bb062abf54cc8f02d94ca86dcd349c3945d63851f5d07a3a61c2fcb755b15a88e943a63cf580cbdb5b74436d67ef6b67f745b8f7c0814e411379138e1863cb
   languageName: node
   linkType: hard
 

@@ -406,6 +406,11 @@ const VaaParser = () => {
       <div className="devtools-page">
         <div className="devtools-page-container">
           <h1 className="devtools-page-title">VAA Parser</h1>
+          <h2 className="devtools-page-description">
+            The VAA Parser tool allows decoding a VAA using input methods such as txHash, VAA ID
+            (wormholeChainID, EmitterAddress, Sequence), a VAA in hexadecimal format, or base64
+            format
+          </h2>
           <div className="devtools-page-body">
             <div className="parse">
               <div className="parse-txType">
@@ -416,7 +421,7 @@ const VaaParser = () => {
                     txSearch && !input && !isLoading ? "error" : ""
                   }`}
                   id="parse-txType-input"
-                  placeholder="TxHash/VaaID search"
+                  placeholder="Insert a TxHash or VAA ID"
                   ref={inputTxRef}
                   value={txSearch}
                   onChange={e => {
@@ -514,26 +519,28 @@ const VaaParser = () => {
                   aria-label="Parsed result"
                 >
                   <div className="parse-result-top">
-                    <button
-                      className={`parse-result-top-btn ${parsedRaw ? "" : "active"}`}
-                      onClick={() => {
-                        renderExtras();
-                        collapseGuardianSignatures();
-                        setParsedRaw(false);
-                      }}
-                    >
-                      Parsed
-                    </button>
-                    <button
-                      className={`parse-result-top-btn ${parsedRaw ? "active" : ""}`}
-                      onClick={() => {
-                        renderExtras();
-                        collapseGuardianSignatures();
-                        setParsedRaw(true);
-                      }}
-                    >
-                      Raw
-                    </button>
+                    <div className="parse-result-top-btns">
+                      <button
+                        className={`parse-result-top-btn ${parsedRaw ? "" : "active"}`}
+                        onClick={() => {
+                          renderExtras();
+                          collapseGuardianSignatures();
+                          setParsedRaw(false);
+                        }}
+                      >
+                        Parsed
+                      </button>
+                      <button
+                        className={`parse-result-top-btn ${parsedRaw ? "active" : ""}`}
+                        onClick={() => {
+                          renderExtras();
+                          collapseGuardianSignatures();
+                          setParsedRaw(true);
+                        }}
+                      >
+                        Raw
+                      </button>
+                    </div>
 
                     <div className="parse-result-top-copy">
                       <CopyToClipboard

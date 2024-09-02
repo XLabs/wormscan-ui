@@ -50,22 +50,24 @@ const VaaInput = ({
         }`}
       >
         <div className="parse-input-container-top">
-          <button
-            className={`parse-input-container-top-btn ${inputType === "base64" ? "active" : ""}`}
-            onClick={() => {
-              setInputType("base64");
-            }}
-          >
-            Base64
-          </button>
-          <button
-            className={`parse-input-container-top-btn ${inputType === "hex" ? "active" : ""}`}
-            onClick={() => {
-              setInputType("hex");
-            }}
-          >
-            HEX
-          </button>
+          <div className="parse-input-container-top-btns">
+            <button
+              className={`parse-input-container-top-btn ${inputType === "base64" ? "active" : ""}`}
+              onClick={() => {
+                setInputType("base64");
+              }}
+            >
+              Base64
+            </button>
+            <button
+              className={`parse-input-container-top-btn ${inputType === "hex" ? "active" : ""}`}
+              onClick={() => {
+                setInputType("hex");
+              }}
+            >
+              HEX
+            </button>
+          </div>
 
           <div className="parse-input-container-top-copy">
             <CopyToClipboard toCopy={inputType === "base64" ? input : base64ToHex(input)}>
@@ -107,7 +109,6 @@ const VaaInput = ({
             textareaRef?.current?.blur();
           }}
           name="VAA-Input"
-          placeholder={`base64/hex vaa..`}
           aria-label="Base64 VAA input"
           draggable={false}
           spellCheck={false}

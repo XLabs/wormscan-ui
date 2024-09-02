@@ -89,37 +89,7 @@ export const Calendar = ({
         className="chain-activity-chart-top-filters-section-btn"
         onClick={() => setShowCalendar(!showCalendar)}
       >
-        <span>
-          {lastBtnSelected === "custom" ? (
-            <>
-              {startDateDisplayed &&
-                new Date(startDateDisplayed).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}{" "}
-              -{" "}
-              {endDateDisplayed &&
-                new Date(endDateDisplayed).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-            </>
-          ) : lastBtnSelected === "24h" ? (
-            "Last 24 hours"
-          ) : lastBtnSelected === "week" ? (
-            "Last week"
-          ) : lastBtnSelected === "month" ? (
-            "Last month"
-          ) : lastBtnSelected === "year" ? (
-            "Last year"
-          ) : lastBtnSelected === "all" ? (
-            "All time"
-          ) : (
-            ""
-          )}
-        </span>
+        <span>Date range</span>
 
         <ChevronDownIcon style={{ transform: showCalendar ? "rotate(-180deg)" : "" }} width={24} />
       </button>

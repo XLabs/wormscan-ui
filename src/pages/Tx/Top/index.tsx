@@ -37,35 +37,37 @@ const Top = ({ txHash, gatewayInfo, emitterChainId, payloadType }: Props) => {
         <h1 className="tx-top-header-title">{t("tx.top.title")}</h1>
         {txType[payloadType] && <Tag>{txType[payloadType]}</Tag>}
       </div>
-      <div className="tx-top-txId">
-        <div>Tx Hash:</div>
-        <div className="tx-top-txId-container">
-          {/* delete conditional when WORMCHAIN gets an explorer */}
-          {(emitterChainId === chainToChainId("Wormchain") ||
-            emitterChainId === chainToChainId("Sei")) &&
-          !gatewayInfo?.originTxHash ? (
-            <div>
-              <span>{parseTxHash}</span>
-            </div>
-          ) : (
-            <a
-              href={getExplorerLink({
-                network: currentNetwork,
-                chainId: gatewayInfo?.originChainId || emitterChainId,
-                value: gatewayInfo?.originTxHash || parseTxHash,
-                isNativeAddress: true,
-              })}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {gatewayInfo?.originTxHash || parseTxHash}
-            </a>
-          )}
-          <CopyToClipboard toCopy={gatewayInfo?.originTxHash || parseTxHash}>
-            <CopyIcon />
-          </CopyToClipboard>
+      {(parseTxHash || gatewayInfo?.originTxHash) && (
+        <div className="tx-top-txId">
+          <div>Tx Hash:</div>
+          <div className="tx-top-txId-container">
+            {/* delete conditional when WORMCHAIN gets an explorer */}
+            {(emitterChainId === chainToChainId("Wormchain") ||
+              emitterChainId === chainToChainId("Sei")) &&
+            !gatewayInfo?.originTxHash ? (
+              <div>
+                <span>{parseTxHash}</span>
+              </div>
+            ) : (
+              <a
+                href={getExplorerLink({
+                  network: currentNetwork,
+                  chainId: gatewayInfo?.originChainId || emitterChainId,
+                  value: gatewayInfo?.originTxHash || parseTxHash,
+                  isNativeAddress: true,
+                })}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {gatewayInfo?.originTxHash || parseTxHash}
+              </a>
+            )}
+            <CopyToClipboard toCopy={gatewayInfo?.originTxHash || parseTxHash}>
+              <CopyIcon />
+            </CopyToClipboard>
+          </div>
         </div>
-      </div>
+      )}
 
       {gatewayInfo?.originTxHash && (
         <div className="tx-top-txId">

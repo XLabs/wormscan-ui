@@ -71,6 +71,7 @@ const Select = ({
       <div className={`select-searchable ${className}`} ref={ref}>
         <button
           className={`select-searchable-dropdown ${isOpen ? "open" : ""}`}
+          style={{ ...controlStyles }}
           onClick={() => {
             if (keepOpen) return;
             return setIsOpen(prev => !prev);
