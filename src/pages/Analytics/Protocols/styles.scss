@@ -1,6 +1,12 @@
 @import "src/styles/globals.scss";
 
 .protocols-page {
+  margin-top: 8px;
+
+  @include desktop {
+    margin-top: 32px;
+  }
+
   &-tool {
     background-color: var(--color-gray-950);
     border-radius: 16px;

@@ -12,6 +12,7 @@ import { numberToSuffix } from "src/utils/number";
 import { formatAppId } from "src/utils/crypto";
 import { getClient } from "src/api/Client";
 import { IProtocolActivity } from "src/api/guardian-network/types";
+import { Cube3DIcon } from "src/icons/generic";
 import "./styles.scss";
 
 interface TimeRangeData {
@@ -118,177 +119,183 @@ const ProtocolsActivity = () => {
 
   return (
     <div className="protocols-activity">
-      <div className="protocols-activity-top">
-        <Select
-          ariaLabel="Select Protocol"
-          className="protocols-activity-top-select-protocol"
-          controlStyles={{ minWidth: 256 }}
-          isMulti={false}
-          items={PROTOCOL_LIST}
-          menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-          menuPortalStyles={{ zIndex: 100 }}
-          name="protocol"
-          onValueChange={protocol => {
-            setFilters(prevFilters => ({
-              ...prevFilters,
-              appId: protocol?.value === filters.appId ? "" : protocol.value,
-            }));
-          }}
-          text={filters.appId ? formatAppId(filters.appId) : "All Protocols"}
-          type="searchable"
-          value={{
-            label: filters.appId,
-            value: filters.appId,
-          }}
-        />
+      <h3 className="protocols-activity-title">
+        <Cube3DIcon />
+        Protocols Activity
+      </h3>
 
-        <ToggleGroup
-          ariaLabel="Select metric type (volume or transactions)"
-          className="protocols-activity-top-toggle"
-          items={METRIC_CHART_LIST}
-          onValueChange={value => setMetricSelected(value)}
-          value={metricSelected}
-        />
+      <div className="protocols-activity-container">
+        <div className="protocols-activity-container-top">
+          <Select
+            ariaLabel="Select Protocol"
+            className="protocols-activity-container-top-select-protocol"
+            controlStyles={{ minWidth: 256 }}
+            isMulti={false}
+            items={PROTOCOL_LIST}
+            menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
+            menuPortalStyles={{ zIndex: 100 }}
+            name="protocol"
+            onValueChange={protocol => {
+              setFilters(prevFilters => ({
+                ...prevFilters,
+                appId: protocol?.value === filters.appId ? "" : protocol.value,
+              }));
+            }}
+            text={filters.appId ? formatAppId(filters.appId) : "All Protocols"}
+            type="searchable"
+            value={{
+              label: filters.appId,
+              value: filters.appId,
+            }}
+          />
 
-        <Select
-          ariaLabel="Select Time Range"
-          className="protocols-activity-top-select-range"
-          items={RANGE_LIST}
-          name="timeRange"
-          onValueChange={timeRange => {
-            setSelectedTimeRange(timeRange);
-            setFilters(prevFilters => ({
-              ...prevFilters,
-              from: timeRange.value,
-              timespan: timeRange.timespan,
-            }));
-          }}
-          value={selectedTimeRange}
-        />
-      </div>
+          <ToggleGroup
+            ariaLabel="Select metric type (volume or transactions)"
+            className="protocols-activity-container-top-toggle"
+            items={METRIC_CHART_LIST}
+            onValueChange={value => setMetricSelected(value)}
+            value={metricSelected}
+          />
 
-      <div className="protocols-activity-chart">
-        {isError ? (
-          <ErrorPlaceholder />
-        ) : isFetching ? (
-          <Loader />
-        ) : (
-          <>
-            <WormholeScanBrand />
+          <Select
+            ariaLabel="Select Time Range"
+            className="protocols-activity-container-top-select-range"
+            items={RANGE_LIST}
+            name="timeRange"
+            onValueChange={timeRange => {
+              setSelectedTimeRange(timeRange);
+              setFilters(prevFilters => ({
+                ...prevFilters,
+                from: timeRange.value,
+                timespan: timeRange.timespan,
+              }));
+            }}
+            value={selectedTimeRange}
+          />
+        </div>
 
-            <ReactApexChart
-              series={series}
-              type="area"
-              height={isDesktop ? 360 : 300}
-              options={{
-                chart: {
-                  animations: { enabled: true },
-                  toolbar: { show: false },
-                  zoom: { enabled: false },
-                },
-                dataLabels: { enabled: false },
-                grid: {
-                  borderColor: "var(--color-gray-900)",
-                  strokeDashArray: 6,
+        <div className="protocols-activity-container-chart">
+          {isError ? (
+            <ErrorPlaceholder />
+          ) : isFetching ? (
+            <Loader />
+          ) : (
+            <>
+              <WormholeScanBrand />
+
+              <ReactApexChart
+                series={series}
+                type="area"
+                height={isDesktop ? 360 : 300}
+                options={{
+                  chart: {
+                    animations: { enabled: true },
+                    toolbar: { show: false },
+                    zoom: { enabled: false },
+                  },
+                  dataLabels: { enabled: false },
+                  grid: {
+                    borderColor: "var(--color-gray-900)",
+                    strokeDashArray: 6,
+                    xaxis: {
+                      lines: { show: false },
+                    },
+                    yaxis: {
+                      lines: { show: true },
+                    },
+                    padding: {
+                      top: isDesktop ? 16 : 0,
+                    },
+                  },
+                  states: {
+                    hover: {
+                      filter: {
+                        type: "none",
+                      },
+                    },
+                    active: {
+                      filter: {
+                        type: "none",
+                      },
+                    },
+                  },
+                  stroke: {
+                    curve: "straight",
+                    width: 2,
+                    dashArray: 0,
+                  },
+                  fill: {
+                    type: "gradient",
+                    gradient: {
+                      type: "vertical",
+                      shadeIntensity: 0,
+                      opacityFrom: 0.4,
+                      opacityTo: 0,
+                      stops: [0, 100],
+                    },
+                  },
                   xaxis: {
-                    lines: { show: false },
+                    axisBorder: { show: true, strokeWidth: 4, color: "var(--color-gray-10)" },
+                    axisTicks: { show: false },
+                    crosshairs: {
+                      position: "front",
+                    },
+                    tickAmount: isDesktop ? 12 : isTablet ? 6 : 3,
+                    labels: {
+                      formatter: value => {
+                        let date = "";
+
+                        if (filters.timespan === "1h") {
+                          date = new Date(value).toLocaleString("en-GB", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          });
+                        } else if (filters.timespan === "1d") {
+                          date = new Date(value).toLocaleString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                          });
+                        } else {
+                          date = new Date(value).toLocaleString("en-GB", {
+                            month: "short",
+                            year: "2-digit",
+                          });
+                        }
+
+                        return date;
+                      },
+                      hideOverlappingLabels: true,
+                      offsetX: 0,
+                      rotate: 0,
+                      style: {
+                        colors: "var(--color-gray-400)",
+                        fontFamily: "Roboto Mono, Roboto, sans-serif",
+                        fontSize: "12px",
+                        fontWeight: 400,
+                      },
+                      trim: false,
+                    },
+                    tooltip: { enabled: false },
                   },
                   yaxis: {
-                    lines: { show: true },
-                  },
-                  padding: {
-                    top: isDesktop ? 16 : 0,
-                  },
-                },
-                states: {
-                  hover: {
-                    filter: {
-                      type: "none",
+                    labels: {
+                      offsetX: -8,
+                      formatter: formatterYAxis,
+                      style: {
+                        colors: "var(--color-gray-400)",
+                        fontFamily: "Roboto Mono, Roboto, sans-serif",
+                        fontSize: "12px",
+                        fontWeight: 400,
+                      },
                     },
+                    opposite: true,
                   },
-                  active: {
-                    filter: {
-                      type: "none",
-                    },
-                  },
-                },
-                stroke: {
-                  curve: "straight",
-                  width: 2,
-                  dashArray: 0,
-                },
-                fill: {
-                  type: "gradient",
-                  gradient: {
-                    type: "vertical",
-                    shadeIntensity: 0,
-                    opacityFrom: 0.4,
-                    opacityTo: 0,
-                    stops: [0, 100],
-                  },
-                },
-                xaxis: {
-                  axisBorder: { show: true, strokeWidth: 4, color: "var(--color-gray-10)" },
-                  axisTicks: { show: false },
-                  crosshairs: {
-                    position: "front",
-                  },
-                  tickAmount: isDesktop ? 12 : isTablet ? 6 : 3,
-                  labels: {
-                    formatter: value => {
-                      let date = "";
+                  tooltip: {
+                    custom: ({ s, seriesIndex, dataPointIndex, w }) => {
+                      const data = w.config.series[seriesIndex].data[dataPointIndex];
 
-                      if (filters.timespan === "1h") {
-                        date = new Date(value).toLocaleString("en-GB", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        });
-                      } else if (filters.timespan === "1d") {
-                        date = new Date(value).toLocaleString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                        });
-                      } else {
-                        date = new Date(value).toLocaleString("en-GB", {
-                          month: "short",
-                          year: "2-digit",
-                        });
-                      }
-
-                      return date;
-                    },
-                    hideOverlappingLabels: true,
-                    offsetX: 0,
-                    rotate: 0,
-                    style: {
-                      colors: "var(--color-gray-400)",
-                      fontFamily: "Roboto Mono, Roboto, sans-serif",
-                      fontSize: "12px",
-                      fontWeight: 400,
-                    },
-                    trim: false,
-                  },
-                  tooltip: { enabled: false },
-                },
-                yaxis: {
-                  labels: {
-                    offsetX: -8,
-                    formatter: formatterYAxis,
-                    style: {
-                      colors: "var(--color-gray-400)",
-                      fontFamily: "Roboto Mono, Roboto, sans-serif",
-                      fontSize: "12px",
-                      fontWeight: 400,
-                    },
-                  },
-                  opposite: true,
-                },
-                tooltip: {
-                  custom: ({ s, seriesIndex, dataPointIndex, w }) => {
-                    const data = w.config.series[seriesIndex].data[dataPointIndex];
-
-                    return `<div class="protocols-activity-chart-tooltip">
-                              <p class="protocols-activity-chart-tooltip-date">
+                      return `<div class="protocols-activity-container-chart-tooltip">
+                              <p class="protocols-activity-container-chart-tooltip-date">
                                 ${new Date(data.x).toLocaleString("en-GB", {
                                   hour: "2-digit",
                                   minute: "2-digit",
@@ -299,13 +306,13 @@ const ProtocolsActivity = () => {
                                   year: "numeric",
                                 })}
                               </p>
-                              <div class="protocols-activity-chart-tooltip-protocol">
-                                <div class="protocols-activity-chart-tooltip-protocol-icon">
+                              <div class="protocols-activity-container-chart-tooltip-protocol">
+                                <div class="protocols-activity-container-chart-tooltip-protocol-icon">
                                 </div>
-                                <div class="protocols-activity-chart-tooltip-protocol-name">
+                                <div class="protocols-activity-container-chart-tooltip-protocol-name">
                                   ${formatAppId(series[0].name)}
                                 </div>
-                                <div class="protocols-activity-chart-tooltip-protocol-number">
+                                <div class="protocols-activity-container-chart-tooltip-protocol-number">
                                   ${
                                     metricSelected === "volume"
                                       ? `$${numberToSuffix(data.y, 0)}`
@@ -315,14 +322,15 @@ const ProtocolsActivity = () => {
                               </div>
                             </div>
                           `;
+                    },
+                    intersect: false,
+                    shared: true,
                   },
-                  intersect: false,
-                  shared: true,
-                },
-              }}
-            />
-          </>
-        )}
+                }}
+              />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
