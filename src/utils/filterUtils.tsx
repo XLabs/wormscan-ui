@@ -214,7 +214,7 @@ export const chainsSupportedByProtocol: Record<string, ChainId[]> = {
     chainToChainId("Optimism"),
     chainToChainId("Polygon"),
     chainToChainId("Scroll"),
-    // chainToChainId("snaxchain"),
+    chainToChainId("Snaxchain"),
   ],
   [MAYAN_APP_ID]: [
     chainToChainId("Arbitrum"),
