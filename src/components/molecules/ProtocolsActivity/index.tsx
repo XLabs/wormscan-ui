@@ -49,12 +49,10 @@ const ProtocolsActivity = () => {
     timespan: RANGE_LIST[0].timespan as "1h" | "1d" | "1mo",
     appId: "",
   });
-  console.log({ series });
 
   const processSeries = useCallback(
     (data: IProtocolActivity[], metric: "volume" | "transactions") => {
       if (filters.appId) {
-        console.log(1);
         setSeries(
           data.map(item => ({
             name: item.app_id,
@@ -66,7 +64,6 @@ const ProtocolsActivity = () => {
           })),
         );
       } else {
-        console.log(2);
         const combinedData: { [key: string]: TimeRangeData } = {};
 
         data.forEach(item => {
@@ -103,7 +100,6 @@ const ProtocolsActivity = () => {
   );
 
   const { isFetching, isError } = useQuery(["getProtocolActivityChart", filters], async () => {
-    console.log(3);
     const res = await getClient().guardianNetwork.getProtocolActivity({
       from: filters.from,
       to: todayISOString,
@@ -115,9 +111,7 @@ const ProtocolsActivity = () => {
   });
 
   useEffect(() => {
-    console.log(4);
     if (data.length > 0) {
-      console.log(5);
       processSeries(data, metricSelected);
     }
   }, [metricSelected, data, processSeries]);
