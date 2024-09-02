@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { BlockchainIcon, Select, ToggleGroup } from "src/components/atoms";
+import { BlockchainIcon, Counter, Select, ToggleGroup } from "src/components/atoms";
 import { BREAKPOINTS } from "src/consts";
 import { getChainName } from "src/utils/wormhole";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -197,7 +197,7 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
         >
           <FilterListIcon width={24} />
           <span>Filters</span>
-          {totalFilterCounter > 0 && <span className="counter">{totalFilterCounter}</span>}
+          {totalFilterCounter > 0 && <Counter>{totalFilterCounter}</Counter>}
         </button>
       </div>
 
@@ -229,9 +229,7 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
             text={
               <div className="filters-container-select-text">
                 Protocol
-                {checkedState.appId.length > 0 && (
-                  <span className="counter">{checkedState.appId.length}</span>
-                )}
+                {checkedState.appId.length > 0 && <Counter>{checkedState.appId.length}</Counter>}
               </div>
             }
             type="searchable"
@@ -252,7 +250,7 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
               <div className="filters-container-select-text">
                 Source chain
                 {checkedState.sourceChain.length > 0 && (
-                  <span className="counter">{checkedState.sourceChain.length}</span>
+                  <Counter>{checkedState.sourceChain.length}</Counter>
                 )}
               </div>
             }
@@ -274,7 +272,7 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
               <div className="filters-container-select-text">
                 Target chain
                 {checkedState.targetChain.length > 0 && (
-                  <span className="counter">{checkedState.targetChain.length}</span>
+                  <Counter>{checkedState.targetChain.length}</Counter>
                 )}
               </div>
             }

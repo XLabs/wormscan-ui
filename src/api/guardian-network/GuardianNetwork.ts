@@ -20,6 +20,12 @@ import {
   ProtocolsStatsOutput,
   IChainActivity,
   IChainActivityInput,
+  IProtocolActivity,
+  IProtocolActivityInput,
+  IAllbridgeActivity,
+  IMayanActivity,
+  IMayanActivityInput,
+  IAllbridgeActivityInput,
 } from "./types";
 
 export class GuardianNetwork {
@@ -27,10 +33,6 @@ export class GuardianNetwork {
 
   async getScores(): Promise<ScoresOutput> {
     return await this._client.doGet<ScoresOutput>("/scorecards");
-  }
-
-  async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
-    return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
   }
 
   async getOperations({
@@ -146,6 +148,59 @@ export class GuardianNetwork {
 
     const response = await this._client.doGet<IChainActivity[]>(
       `/x-chain-activity/tops?${queryString}`,
+    );
+
+    return response || [];
+  }
+
+  async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
+    return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
+  }
+
+  async getMayanActivity({ from, to }: IMayanActivityInput): Promise<IMayanActivity> {
+    const mayanResp = await fetch(
+      `https://explorer-api.mayan.finance/v3/stats/wh/activity?from=${from}&to=${to}`,
+    );
+
+    if (mayanResp.ok) {
+      const mayanResponse = await mayanResp.json();
+      return mayanResponse;
+    }
+    return null;
+  }
+
+  async getAllbridgeActivity({ from, to }: IAllbridgeActivityInput): Promise<IAllbridgeActivity> {
+    const mayanResp = await fetch(
+      `https://analytics.api.allbridgecoreapi.net/wormhole/activity?from=${from}&to=${to}`,
+    );
+
+    if (mayanResp.ok) {
+      const mayanResponse = await mayanResp.json();
+      return mayanResponse;
+    }
+    return null;
+  }
+
+  async getProtocolActivity({
+    from,
+    to,
+    timespan,
+    appId,
+  }: IProtocolActivityInput): Promise<IProtocolActivity[]> {
+    const params: Record<string, string> = {
+      from: from.toString(),
+      to: to.toString(),
+      timespan: timespan.toString(),
+    };
+
+    if (appId) {
+      params.appId = appId;
+    }
+
+    const queryString = new URLSearchParams(params).toString();
+
+    const response = await this._client.doGet<IProtocolActivity[]>(
+      `/application-activity?${queryString}`,
     );
 
     return response || [];

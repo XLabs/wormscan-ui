@@ -8,6 +8,7 @@ import {
   GR_APP_ID,
   MAYAN_APP_ID,
   NTT_APP_ID,
+  OMNISWAP_APP_ID,
   PORTAL_APP_ID,
   PORTAL_NFT_APP_ID,
   TBTC_APP_ID,
@@ -16,15 +17,15 @@ import {
 
 const ProtocolIcon = ({ protocol, width = 28 }: { protocol: string; width?: number }) => {
   const IconComponent = iconMap[protocol];
-  return IconComponent ? <IconComponent width={width} /> : null;
+  return IconComponent ? <IconComponent width={width} /> : <DefaultIcon width={width} />;
 };
 
 const PortalIcon = ({ width }: { width: number }) => (
   <svg
-    width={width}
+    fill="none"
     height={width}
     viewBox="0 0 28 28"
-    fill="none"
+    width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
     <rect
@@ -93,10 +94,10 @@ const AllbridgeIcon = ({ width }: { width: number }) => (
 
 const C3Icon = ({ width }: { width: number }) => (
   <svg
-    width={width}
+    fill="none"
     height={width}
     viewBox="-20 -20 223 223"
-    fill="none"
+    width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
     <rect width="183" height="183" rx="91.5" fill="white" />
@@ -400,10 +401,10 @@ const WormholeGatewayIcon = ({ width }: { width: number }) => (
 
 const USDTTransferIcon = ({ width }: { width: number }) => (
   <svg
-    width={width}
+    fill="none"
     height={width}
     viewBox="-20 0 270 200"
-    fill="none"
+    width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
     <g clipPath="url(#clip0_313_9792)">
@@ -447,6 +448,43 @@ const TbtcIcon = ({ width }: { width: number }) => (
   </svg>
 );
 
+const OmniSwapIcon = ({ width }: { width: number }) => (
+  <svg width={width} height={width} viewBox="0 -4 44 44" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient x1="100%" y1="24.609%" x2="0%" y2="76.536%" id="icon_logo_svg__a">
+        <stop stopColor="#BBFAE7" offset="0%" />
+        <stop stopColor="#18D6C8" offset="43.23%" />
+        <stop stopColor="#5372EB" offset="100%" />
+      </linearGradient>
+    </defs>
+    <g fill="none" fillRule="evenodd">
+      <path
+        d="m28.841 7.047-.037-.025.32-.121.664-.24.653-.228.642-.214.631-.2.62-.187.305-.088.601-.166.588-.153.575-.138.561-.123.547-.11c.18-.034.357-.066.532-.095l.516-.08.252-.035.493-.059.24-.023.467-.036.45-.021c2.13-.065 3.63.404 4.245 1.468.725 1.256.112 3.169-1.536 5.421l-.158.213-.164.214c-.083.107-.169.215-.256.324l-.338.41-.359.416-.378.421-.397.427-.206.215-.426.433-.22.219-.453.44-.234.22-.48.445-.498.448-.515.45-.532.454-.548.454-.564.457-.58.457-.594.458-.303.23-.618.458-.314.23-.638.458-.653.457-.33.229-.673.456-.342.227-.691.453-.704.45-.717.45-.728.444-.739.442-.373.22-.754.435-.754.425-.75.414-.375.202-.746.396-.743.384-.738.373-.549.269h4.128c3.587.256 6.868-1.552 9.841-5.425a13.27 13.27 0 0 1-6.09 7.684 13.31 13.31 0 0 1-13.189.075l-.173.068-.673.253-.663.241-.653.227-.322.109-.637.207-.626.194-.613.18c-.203.057-.403.113-.601.166l-.589.152-.575.138a31.01 31.01 0 0 1-.282.064l-.554.116-.539.103-.524.087-.509.074c-3.002.394-5.131-.009-5.894-1.33-.53-.916-.346-2.183.433-3.676l.198-.363c.07-.122.144-.246.22-.37l.244-.38.264-.386.14-.196.298-.397c.05-.067.103-.134.156-.201l.328-.407c.112-.137.228-.275.348-.413l.368-.419.388-.424.407-.429.426-.433.444-.438.23-.22.47-.443.49-.447.506-.449.524-.452.54-.453.258-.213c-.387-4.955 2.029-9.928 6.62-12.58 4.605-2.658 10.138-2.253 14.24.582ZM8.157 20.392l-.117.115-.407.407-.387.403-.186.2-.355.394-.177.204-.17.202c-.085.1-.166.2-.246.3l-.155.197c-.102.131-.2.261-.293.39l-.137.191c-1.204 1.716-1.633 3.174-1.071 4.147.5.865 1.722 1.244 3.454 1.187l.219-.01.111-.005.227-.017c.153-.012.31-.027.469-.045l.242-.03.122-.016.25-.036.253-.04.258-.045c.13-.024.262-.049.396-.076l.52-.11.265-.06.542-.134.556-.15.055-.015a13.303 13.303 0 0 1-2.668-3.284 13.293 13.293 0 0 1-1.57-4.264Zm4.759-2.023v2.967a5.935 5.935 0 0 0 3.28 5.31l.384-.152.322-.131.651-.274.329-.142.663-.294.305-.141v-1.208a5.935 5.935 0 0 0-5.934-5.935Zm12.236 0h-.371a4.822 4.822 0 0 0-4.823 4.822v1.799l.274-.132.341-.17.688-.347.345-.179.694-.367.697-.38.7-.394.35-.2.697-.408.343-.206.678-.413.665-.417.652-.42c.108-.07.215-.14.32-.211l.632-.424.31-.212.217-.151a4.441 4.441 0 0 0-3.41-1.59ZM18.85 8.724l-.223.004a5.935 5.935 0 0 0-5.712 5.931v2.968l.185-.003a5.935 5.935 0 0 0 5.75-5.932V8.724Zm6.3 0h-5.193v4.08a4.822 4.822 0 0 0 4.823 4.823h.37a4.451 4.451 0 1 0 0-8.903Zm8.286-1.618-.247.03-.125.017-.255.038-.129.02-.495.086-.254.05-.52.11-.265.06-.543.135-.556.149-.165.046a13.293 13.293 0 0 1 2.908 3.493c.73 1.265 1.23 2.6 1.51 3.955l.047-.046.408-.407.387-.403.185-.2.355-.394.17-.195.323-.386.162-.203c.054-.067.106-.134.157-.2l.15-.2c1.368-1.845 1.882-3.417 1.288-4.447-.595-1.03-2.214-1.37-4.496-1.108Zm-3.322-3.57A1.584 1.584 0 1 0 28.531.792a1.584 1.584 0 0 0 1.584 2.744ZM16.47 34.751a.792.792 0 1 0-.792-1.373.792.792 0 0 0 .792 1.373Zm-3.679 2.124a2.25 2.25 0 1 0-2.25-3.899 2.25 2.25 0 0 0 2.25 3.899Z"
+        fill="url(#icon_logo_svg__a)"
+        transform="translate(0 -.58)"
+      />
+    </g>
+  </svg>
+);
+
+const DefaultIcon = ({ width }: { width: number }) => (
+  <svg
+    fill="none"
+    height={width}
+    viewBox="0 0 28 28"
+    width={width}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect x={1} y={1} width={26} height={26} rx={13} fill="black" stroke="black" strokeWidth={2} />
+    <circle cx={14} cy={14} r={9} stroke="#E6E6E6" strokeWidth={2} />
+    <path
+      d="M6 14C10.4183 14 14 10.4183 14 6C14 10.4183 17.5817 14 22 14C17.5817 14 14 17.5817 14 22C14 17.5817 10.4183 14 6 14Z"
+      stroke="#E6E6E6"
+      strokeWidth="1.5"
+    />
+  </svg>
+);
+
 const iconMap: Record<string, React.FC<{ width: number }>> = {
   [ALL_BRIDGE_APP_ID]: AllbridgeIcon,
   [C3_APP_ID]: C3Icon,
@@ -457,14 +495,11 @@ const iconMap: Record<string, React.FC<{ width: number }>> = {
   [GR_APP_ID]: StandardRelayerIcon,
   [MAYAN_APP_ID]: MayanIcon,
   [NTT_APP_ID]: NTTIcon,
+  [OMNISWAP_APP_ID]: OmniSwapIcon,
   [PORTAL_APP_ID]: PortalIcon,
   [PORTAL_NFT_APP_ID]: PortalNFTIcon,
   [TBTC_APP_ID]: TbtcIcon,
   [USDT_TRANSFER_APP_ID]: USDTTransferIcon,
-
-  // In Featured Protocols it returns other names instead of the appId
-  ["CCTP"]: CCTPIcon,
-  ["ALLBRIDGE"]: AllbridgeIcon,
 };
 
 export default ProtocolIcon;

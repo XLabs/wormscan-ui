@@ -217,6 +217,7 @@ const Select = ({
         control(base, props) {
           return {
             ...base,
+            minHeight: 36,
             cursor: "pointer",
             ...controlStyles,
           };

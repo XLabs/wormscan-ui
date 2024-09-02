@@ -1,0 +1,26 @@
+@import "src/styles/globals.scss";
+
+.counter {
+  @include text-roboto-body-400;
+  align-items: center;
+  background-color: var(--color-white);
+  border-radius: 50%;
+  color: var(--color-gray-900);
+  display: flex;
+  font-size: 12px;
+  font-weight: 400;
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+
+  &.inverted {
+    background-color: var(--color-white);
+    font-weight: 500;
+  }
+
+  &.mobile {
+    @include desktop {
+      display: none;
+    }
+  }
+}

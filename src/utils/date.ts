@@ -83,3 +83,17 @@ export const calculateDateDifferenceInDays = (start: Date, end: Date) => {
   const millisecondsPerDay = 1000 * 60 * 60 * 24;
   return end && start ? Math.floor((end.getTime() - start.getTime()) / millisecondsPerDay) : 0;
 };
+
+export const getISODateZeroed = (daysAgo: number): string => {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() - daysAgo);
+  date.setUTCMinutes(0);
+  date.setUTCSeconds(0);
+  date.setUTCMilliseconds(0);
+  return date.toISOString();
+};
+
+export const firstDataAvailableDate = "2021-08-01T00:00:00.000Z";
+export const twoDaysAgoISOString = getISODateZeroed(2);
+export const oneDayAgoISOString = getISODateZeroed(1);
+export const todayISOString = getISODateZeroed(0);

@@ -175,10 +175,11 @@
     background-color: var(--color-gray-900);
     border-radius: 24px 24px 0 0;
     margin-top: 16px;
+    min-width: max-content;
     padding: 16px 16px 24px 16px;
     position: absolute;
-    z-index: 50;
     width: 100%;
+    z-index: 50;
 
     @include desktop {
       width: max-content;

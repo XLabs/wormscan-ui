@@ -3,7 +3,7 @@ import ReactApexChart from "react-apexcharts";
 import { useQuery } from "react-query";
 import "react-datepicker/dist/react-datepicker.css";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { BlockchainIcon, Loader, Select, ToggleGroup } from "src/components/atoms";
+import { BlockchainIcon, Counter, Loader, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
@@ -607,11 +607,11 @@ const ChainActivity = () => {
             {filters.sourceChain.length > 0 &&
             filters.targetChain.length > 0 &&
             filters.appId !== "" ? (
-              <div className="counter">3</div>
+              <Counter>3</Counter>
             ) : filters.sourceChain.length > 0 && filters.targetChain.length > 0 ? (
-              <div className="counter">2</div>
+              <Counter>2</Counter>
             ) : filters.sourceChain.length > 0 ? (
-              <div className="counter">1</div>
+              <Counter>1</Counter>
             ) : (
               ""
             )}
@@ -637,7 +637,7 @@ const ChainActivity = () => {
               text={
                 <div className="chain-activity-chart-top-filters-section-text">
                   {filters.sourceChain.length > 0 && (
-                    <div className="counter">{filters.sourceChain.length}</div>
+                    <Counter>{filters.sourceChain.length}</Counter>
                   )}
                   Source <span className="hidden-desktop-1150">chain</span>
                 </div>
@@ -658,7 +658,7 @@ const ChainActivity = () => {
               text={
                 <div className="chain-activity-chart-top-filters-section-text">
                   {filters?.targetChain?.length > 0 && (
-                    <div className="counter">{filters.targetChain.length}</div>
+                    <Counter>{filters.targetChain.length}</Counter>
                   )}
                   Target <span className="hidden-desktop-1150">chain</span>
                 </div>
@@ -685,7 +685,7 @@ const ChainActivity = () => {
               }
               text={
                 <div className="chain-activity-chart-top-filters-section-text">
-                  {filters?.appId && <div className="counter">1</div>}
+                  {filters?.appId && <Counter>1</Counter>}
                   Protocol
                 </div>
               }

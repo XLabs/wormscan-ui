@@ -1,0 +1,148 @@
+@import "src/styles/globals.scss";
+
+.protocols-activity {
+  @include centered-column;
+  background-color: var(--color-gray-950);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 48px;
+
+  @include desktop {
+    margin-bottom: 80px;
+  }
+
+  &-top {
+    @include centered-column;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px 0;
+
+    @include desktop {
+      @include centered-row;
+    }
+
+    &-select {
+      &-protocol {
+        & .select-searchable-dropdown {
+          justify-content: space-between;
+          width: 100%;
+
+          @include desktop {
+            width: max-content;
+          }
+        }
+      }
+    }
+
+    &-toggle {
+      max-width: 100%;
+      order: 3;
+
+      @include desktop {
+        left: 0;
+        margin: 0 auto;
+        max-width: max-content;
+        position: absolute;
+        right: 0;
+      }
+
+      & .toggle-group-root {
+        width: 100%;
+
+        & .toggle-group-item {
+          justify-content: center;
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  &-chart {
+    min-height: 315px;
+    position: relative;
+
+    @include desktop {
+      min-height: 375px;
+    }
+
+    & .wormholescan-brand {
+      bottom: 24px;
+      filter: grayscale(1);
+      height: 34px;
+      left: 0;
+      margin: auto;
+      min-height: unset;
+      opacity: 0.2;
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      user-select: none;
+      width: 162px;
+      z-index: 1;
+
+      @include desktop {
+        bottom: 8px;
+        width: 217px;
+      }
+    }
+
+    & .apexcharts-svg {
+      overflow: visible;
+    }
+
+    & .apexcharts-active {
+      stroke: var(--color-gray-600);
+      stroke-linecap: unset;
+      fill-opacity: 1;
+      stroke-dasharray: none;
+      z-index: 9999999;
+    }
+
+    & .apexcharts-xaxis-label {
+      text-transform: uppercase;
+    }
+
+    &-tooltip {
+      background-color: var(--color-gray-900);
+      border-radius: 16px;
+      padding: 12px 16px 16px 16px;
+      width: max-content;
+
+      @include desktop {
+        // width: 264px;
+      }
+
+      &-date {
+        @include text-heading6;
+        color: var(--color-gray-400);
+        font-family: "Roboto Mono", "Roboto", sans-serif !important;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+      }
+
+      &-protocol {
+        @include centered-row;
+        gap: 10px;
+
+        &-icon {
+          background-color: var(--color-primary-100);
+          border-radius: 3px;
+          height: 12px;
+          width: 4px;
+        }
+
+        &-name {
+          @include text-roboto-body-400;
+          font-family: "Roboto", sans-serif !important;
+        }
+
+        &-number {
+          @include text-heading5;
+          font-family: "Roboto Mono", "Roboto", sans-serif !important;
+          margin-left: auto;
+        }
+      }
+    }
+  }
+}

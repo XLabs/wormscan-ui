@@ -3,6 +3,7 @@ export { default as BlockchainIcon } from "./BlockchainIcon";
 export { default as Checkbox } from "./Checkbox";
 export { default as Chip } from "./Chip";
 export { default as CopyContent } from "./CopyContent";
+export { default as Counter } from "./Counter";
 export { default as JsonText } from "./JsonText";
 export { default as Link } from "./Link";
 export { default as Loader } from "./Loader";

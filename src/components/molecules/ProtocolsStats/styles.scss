@@ -2,21 +2,28 @@
 
 .protocols-stats {
   @include centered-column;
-  gap: 24px;
   justify-content: flex-start;
   margin-bottom: 60px;
-  min-height: 1674px;
 
   @include desktop {
     margin-bottom: 80px;
-    min-height: 473px;
   }
 
-  &.TESTNET {
-    min-height: 660px;
+  &.Testnet {
+    & .protocols-stats-container-header {
+      @include desktop {
+        grid-template-columns:
+          minmax(270px, 1.4fr) minmax(130px, 1fr)
+          minmax(120px, 1fr) minmax(170px, 1fr);
+      }
+    }
 
-    @include desktop {
-      min-height: 238px;
+    & .protocols-stats-container-element {
+      @include desktop {
+        grid-template-columns:
+          minmax(270px, 1.4fr) minmax(130px, 1fr)
+          minmax(120px, 1fr) minmax(170px, 1fr);
+      }
     }
   }
 
@@ -25,17 +32,27 @@
     @include text-roboto-subheading-500;
     color: var(--color-white);
     gap: 8px;
+    margin-bottom: 24px;
 
     & > svg {
       color: var(--color-gray-600);
     }
+
+    & > a {
+      @include button-ghost;
+      margin-left: auto;
+    }
   }
 
   &-container {
-    @include centered-column;
+    @include centered-row;
     gap: 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
 
     @include desktop {
+      @include centered-column;
+      align-items: normal;
       gap: 0;
     }
 
@@ -47,9 +64,12 @@
         border-radius: 16px;
         display: grid;
         gap: 16px;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns:
+          minmax(270px, 1fr) minmax(130px, 1fr) minmax(170px, 1fr)
+          minmax(120px, 1fr) minmax(120px, 1fr) minmax(170px, 1fr);
         padding: 12px 16px;
         white-space: nowrap;
+        min-width: fit-content;
 
         &-title {
           @include text-heading6;
@@ -58,15 +78,6 @@
 
           &:last-child {
             text-align: end;
-          }
-
-          & > span {
-            display: none;
-
-            @include bigDesktop {
-              @include text-heading6;
-              display: inline;
-            }
           }
         }
       }
@@ -77,9 +88,12 @@
       border-radius: 16px;
       border: 1px solid var(--color-gray-900);
       display: grid;
-      gap: 32px;
-      grid-template-columns: 1fr 1fr;
+      flex: 3;
+      gap: 32px 16px;
+      min-width: 100%;
       padding: 16px;
+      scroll-snap-align: center;
+      white-space: nowrap;
 
       @include desktop {
         background-color: transparent;
@@ -87,8 +101,12 @@
         border-bottom: 1px solid var(--color-gray-900);
         border-radius: 0;
         gap: 16px;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns:
+          minmax(270px, 1fr) minmax(130px, 1fr) minmax(170px, 1fr)
+          minmax(120px, 1fr) minmax(120px, 1fr) minmax(170px, 1fr);
+        min-width: fit-content;
         padding: 24px 16px;
+        scroll-snap-align: unset;
       }
 
       & > a {
@@ -115,7 +133,7 @@
           }
         }
 
-        &:nth-child(2) {
+        &:last-child {
           grid-column: span 2;
 
           @include desktop {
@@ -142,6 +160,7 @@
           @include text-heading5;
           color: var(--color-white);
           gap: 8px;
+          min-height: 28px;
 
           &-diff {
             @include text-heading6;
