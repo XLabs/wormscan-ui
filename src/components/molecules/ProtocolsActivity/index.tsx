@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "react-query";
 import ReactApexChart from "react-apexcharts";
 import { BREAKPOINTS } from "src/consts";
@@ -11,7 +11,6 @@ import { PROTOCOL_LIST } from "src/utils/filterUtils";
 import { numberToSuffix } from "src/utils/number";
 import { formatAppId } from "src/utils/crypto";
 import { getClient } from "src/api/Client";
-import { IProtocolActivity } from "src/api/guardian-network/types";
 import { Cube3DIcon } from "src/icons/generic";
 import "./styles.scss";
 
@@ -40,7 +39,6 @@ const ProtocolsActivity = () => {
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
 
-  const [series, setSeries] = useState([]);
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
   const [data, setData] = useState([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
@@ -51,54 +49,56 @@ const ProtocolsActivity = () => {
     appId: "",
   });
 
-  const processSeries = useCallback(
-    (data: IProtocolActivity[], metric: "volume" | "transactions") => {
-      if (filters.appId) {
-        setSeries(
-          data.map(item => ({
-            name: item.app_id,
-            color: "#7abfff",
-            data: item.time_range_data.map(dataItem => ({
-              x: dataItem.from,
-              y: metric === "volume" ? dataItem.total_value_transferred : dataItem.total_messages,
-            })),
-          })),
-        );
-      } else {
-        const combinedData: { [key: string]: TimeRangeData } = {};
+  const series = useMemo(() => {
+    if (data.length === 0) return [];
+    if (filters.appId) {
+      return data.map(item => ({
+        name: item.app_id,
+        color: "#7abfff",
+        data: item.time_range_data.map((dataItem: TimeRangeData) => ({
+          x: dataItem.from,
+          y:
+            metricSelected === "volume"
+              ? dataItem.total_value_transferred
+              : dataItem.total_messages,
+        })),
+      }));
+    } else {
+      const combinedData: { [key: string]: TimeRangeData } = {};
 
-        data.forEach(item => {
-          item.time_range_data.forEach(dataItem => {
-            const date = dataItem.from;
-            if (!combinedData[date]) {
-              combinedData[date] = {
-                from: date,
-                to: dataItem.to,
-                total_messages: 0,
-                total_value_transferred: 0,
-              };
-            }
-            combinedData[date].total_messages += dataItem.total_messages;
-            combinedData[date].total_value_transferred += dataItem.total_value_transferred;
-          });
+      data.forEach(item => {
+        item.time_range_data.forEach((dataItem: TimeRangeData) => {
+          const date = dataItem.from;
+          if (!combinedData[date]) {
+            combinedData[date] = {
+              from: date,
+              to: dataItem.to,
+              total_messages: 0,
+              total_value_transferred: 0,
+            };
+          }
+          combinedData[date].total_messages += dataItem.total_messages;
+          combinedData[date].total_value_transferred += dataItem.total_value_transferred;
         });
+      });
 
-        const combinedDataArray = Object.values(combinedData);
+      const combinedDataArray = Object.values(combinedData);
 
-        setSeries([
-          {
-            name: "All Protocols",
-            color: "#7abfff",
-            data: combinedDataArray.map(dataItem => ({
-              x: dataItem.from,
-              y: metric === "volume" ? dataItem.total_value_transferred : dataItem.total_messages,
-            })),
-          },
-        ]);
-      }
-    },
-    [filters.appId],
-  );
+      return [
+        {
+          name: "All Protocols",
+          color: "#7abfff",
+          data: combinedDataArray.map(dataItem => ({
+            x: dataItem.from,
+            y:
+              metricSelected === "volume"
+                ? dataItem.total_value_transferred
+                : dataItem.total_messages,
+          })),
+        },
+      ];
+    }
+  }, [data, filters.appId, metricSelected]);
 
   const { isFetching, isError } = useQuery(["getProtocolActivityChart", filters], async () => {
     const res = await getClient().guardianNetwork.getProtocolActivity({
@@ -108,14 +108,7 @@ const ProtocolsActivity = () => {
       appId: filters.appId,
     });
     setData(res);
-    processSeries(res, metricSelected);
   });
-
-  useEffect(() => {
-    if (data.length > 0) {
-      processSeries(data, metricSelected);
-    }
-  }, [metricSelected, data, processSeries]);
 
   return (
     <div className="protocols-activity">
