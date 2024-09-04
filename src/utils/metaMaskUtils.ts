@@ -24,6 +24,7 @@ import {
   CHAIN_ID_MANTLE,
   CHAIN_ID_ARBITRUM_SEPOLIA,
   CHAIN_ID_SEPOLIA,
+  CHAIN_ID_OPTIMISM_SEPOLIA,
 } from "@certusone/wormhole-sdk";
 import detectEthereumProvider from "@metamask/detect-provider";
 
@@ -376,6 +377,13 @@ export const METAMASK_CHAIN_PARAMETERS: {
     rpcUrls: ["https://ethereum-sepolia-rpc.publicnode.com"],
     blockExplorerUrls: ["https://sepolia.etherscan.io"],
   },
+  11155420: {
+    chainId: "0xaa37dc",
+    chainName: "Optimism Sepolia",
+    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://endpoints.omniatech.io/v1/op/sepolia/public	"],
+    blockExplorerUrls: ["https://sepolia-optimism.etherscan.io/"],
+  },
 };
 
 export const CHAIN_IDS: ChainIds = {
@@ -398,6 +406,7 @@ export const CHAIN_IDS: ChainIds = {
   NEON_NETWORK_CHAIN_ID: { MAINNET: 245022934, TESTNET: 245022926, DEVNET: 245022926 },
   OASIS_NETWORK_CHAIN_ID: { MAINNET: 42262, TESTNET: 42261, DEVNET: 42261 },
   OPTIMISM_NETWORK_CHAIN_ID: { MAINNET: 10, TESTNET: 420, DEVNET: 420 },
+  OPTIMISM_SEPOLIA_NETWORK_CHAIN_ID: { MAINNET: 0, TESTNET: 11155420, DEVNET: 11155420 },
   POLYGON_NETWORK_CHAIN_ID: { MAINNET: 137, TESTNET: 80001, DEVNET: 80001 },
   ROPSTEN_ETH_NETWORK_CHAIN_ID: { MAINNET: 1, TESTNET: 3, DEVNET: 3 },
   SCROLL_NETWORK_CHAIN_ID: { MAINNET: 534352, TESTNET: 534351, DEVNET: 534351 },
@@ -409,8 +418,8 @@ export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number
 
   const chainNetworks = {
     [CHAIN_ID_ACALA]: CHAIN_IDS.ACALA_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_ARBITRUM]: CHAIN_IDS.ARBITRUM_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_ARBITRUM_SEPOLIA]: CHAIN_IDS.ARBITRUM_SEPOLIA_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_ARBITRUM]: CHAIN_IDS.ARBITRUM_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_AURORA]: CHAIN_IDS.AURORA_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_AVAX]: CHAIN_IDS.AVAX_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_BASE]: CHAIN_IDS.BASE_NETWORK_CHAIN_ID[currentNetwork],
@@ -426,9 +435,10 @@ export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number
     [CHAIN_ID_NEON]: CHAIN_IDS.NEON_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_OASIS]: CHAIN_IDS.OASIS_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_OPTIMISM]: CHAIN_IDS.OPTIMISM_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_OPTIMISM_SEPOLIA]: CHAIN_IDS.OPTIMISM_SEPOLIA_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_POLYGON]: CHAIN_IDS.POLYGON_NETWORK_CHAIN_ID[currentNetwork],
-    [CHAIN_ID_SEPOLIA]: CHAIN_IDS.SEPOLIA_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_SCROLL]: CHAIN_IDS.SCROLL_NETWORK_CHAIN_ID[currentNetwork],
+    [CHAIN_ID_SEPOLIA]: CHAIN_IDS.SEPOLIA_NETWORK_CHAIN_ID[currentNetwork],
     [CHAIN_ID_XLAYER]: CHAIN_IDS.XLAYER_NETWORK_CHAIN_ID[currentNetwork],
   };
 
