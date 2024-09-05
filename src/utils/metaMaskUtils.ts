@@ -337,11 +337,47 @@ export const METAMASK_CHAIN_PARAMETERS: {
     rpcUrls: ["https://rpc.testnet.mantle.xyz"],
     blockExplorerUrls: [""],
   },
+  2192: {
+    chainId: "0x890",
+    chainName: "SnaxChain Mainnet",
+    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://mainnet.snaxchain.io/"],
+    blockExplorerUrls: [""],
+  },
+  13001: {
+    chainId: "0x32C9",
+    chainName: "SnaxChain Testnet",
+    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://testnet.snaxchain.io/"],
+    blockExplorerUrls: [""],
+  },
+  421614: {
+    chainId: "0x66eee",
+    chainName: "Arbitrum Sepolia",
+    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://sepolia-rollup.arbitrum.io/rpc	"],
+    blockExplorerUrls: ["https://sepolia.arbiscan.io"],
+  },
+  11155111: {
+    chainId: "0xaa36a7",
+    chainName: "Ethereum Sepolia",
+    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://ethereum-sepolia-rpc.publicnode.com"],
+    blockExplorerUrls: ["https://sepolia.etherscan.io"],
+  },
+  11155420: {
+    chainId: "0xaa37dc",
+    chainName: "Optimism Sepolia",
+    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://endpoints.omniatech.io/v1/op/sepolia/public"],
+    blockExplorerUrls: ["https://sepolia-optimism.etherscan.io/"],
+  },
 };
 
 export const CHAIN_IDS: ChainIds = {
   ACALA_NETWORK_CHAIN_ID: { Mainnet: 787, Testnet: 597, Devnet: 597 },
   ARBITRUM_NETWORK_CHAIN_ID: { Mainnet: 42161, Testnet: 421613, Devnet: 421613 },
+  ARBITRUM_SEPOLIA_NETWORK_CHAIN_ID: { Mainnet: 0, Testnet: 421614, Devnet: 421614 },
   AURORA_NETWORK_CHAIN_ID: { Mainnet: 1313161554, Testnet: 1313161555, Devnet: 1313161555 },
   AVAX_NETWORK_CHAIN_ID: { Mainnet: 43114, Testnet: 43113, Devnet: 43113 },
   BASE_NETWORK_CHAIN_ID: { Mainnet: 8453, Testnet: 84531, Devnet: 84531 },
@@ -357,9 +393,12 @@ export const CHAIN_IDS: ChainIds = {
   NEON_NETWORK_CHAIN_ID: { Mainnet: 245022934, Testnet: 245022926, Devnet: 245022926 },
   OASIS_NETWORK_CHAIN_ID: { Mainnet: 42262, Testnet: 42261, Devnet: 42261 },
   OPTIMISM_NETWORK_CHAIN_ID: { Mainnet: 10, Testnet: 420, Devnet: 420 },
+  OPTIMISM_SEPOLIA_NETWORK_CHAIN_ID: { Mainnet: 0, Testnet: 11155420, Devnet: 11155420 },
   POLYGON_NETWORK_CHAIN_ID: { Mainnet: 137, Testnet: 80001, Devnet: 80001 },
   ROPSTEN_ETH_NETWORK_CHAIN_ID: { Mainnet: 1, Testnet: 3, Devnet: 3 },
   SCROLL_NETWORK_CHAIN_ID: { Mainnet: 534352, Testnet: 534351, Devnet: 534351 },
+  SEPOLIA_NETWORK_CHAIN_ID: { Mainnet: 0, Testnet: 11155111, Devnet: 11155111 },
+  SNAXCHAIN_NETWORK_CHAIN_ID: { Mainnet: 2192, Testnet: 13001, Devnet: 13001 },
   XLAYER_NETWORK_CHAIN_ID: { Mainnet: 196, Testnet: 195, Devnet: 195 },
 };
 
@@ -367,6 +406,8 @@ export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number
   const chainNetworks = {
     [chainToChainId("Acala")]: CHAIN_IDS.ACALA_NETWORK_CHAIN_ID[currentNetwork],
     [chainToChainId("Arbitrum")]: CHAIN_IDS.ARBITRUM_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("ArbitrumSepolia")]:
+      CHAIN_IDS.ARBITRUM_SEPOLIA_NETWORK_CHAIN_ID[currentNetwork],
     [chainToChainId("Aurora")]: CHAIN_IDS.AURORA_NETWORK_CHAIN_ID[currentNetwork],
     [chainToChainId("Avalanche")]: CHAIN_IDS.AVAX_NETWORK_CHAIN_ID[currentNetwork],
     [chainToChainId("Base")]: CHAIN_IDS.BASE_NETWORK_CHAIN_ID[currentNetwork],
@@ -382,8 +423,12 @@ export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number
     [chainToChainId("Neon")]: CHAIN_IDS.NEON_NETWORK_CHAIN_ID[currentNetwork],
     [chainToChainId("Oasis")]: CHAIN_IDS.OASIS_NETWORK_CHAIN_ID[currentNetwork],
     [chainToChainId("Optimism")]: CHAIN_IDS.OPTIMISM_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("OptimismSepolia")]:
+      CHAIN_IDS.OPTIMISM_SEPOLIA_NETWORK_CHAIN_ID[currentNetwork],
     [chainToChainId("Polygon")]: CHAIN_IDS.POLYGON_NETWORK_CHAIN_ID[currentNetwork],
     [chainToChainId("Scroll")]: CHAIN_IDS.SCROLL_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Sepolia")]: CHAIN_IDS.SEPOLIA_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Snaxchain")]: CHAIN_IDS.SNAXCHAIN_NETWORK_CHAIN_ID[currentNetwork],
     [chainToChainId("Xlayer")]: CHAIN_IDS.XLAYER_NETWORK_CHAIN_ID[currentNetwork],
   };
 

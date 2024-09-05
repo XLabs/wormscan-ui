@@ -41,6 +41,7 @@ const MAINNET_RPCS = {
   terra2: "https://lcd-terra.tfl.foundation",
   xpla: "https://dimension-lcd.xpla.dev",
   xlayer: "https://xlayerrpc.okx.com",
+  snaxchain: "https://mainnet.snaxchain.io/",
 };
 
 const TESTNET_RPCS = {
@@ -62,6 +63,7 @@ const TESTNET_RPCS = {
   scroll: "https://rpc.ankr.com/scroll_sepolia_testnet",
   blast: "https://sepolia.blast.io",
   xlayer: "https://xlayertestrpc.okx.com",
+  snaxchain: "https://testnet.snaxchain.io/",
 };
 
 export type Environment = {
@@ -247,6 +249,15 @@ export const testnetEnv: Environment = {
       nativeCurrencyName: "MNT",
       rpcUrl: TESTNET_RPCS.mantle || "",
     },
+    {
+      chainId: 43 as ChainId,
+      chainName: "SnaxChain",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 13001,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      rpcUrl: TESTNET_RPCS.snaxchain || "",
+    },
   ],
   guardianRpcs: ["https://wormhole-v2-testnet-api.certus.one"],
 };
@@ -400,6 +411,15 @@ export const mainnetEnv: Environment = {
       nativeCurrencyDecimals: 18,
       nativeCurrencyName: "OKB",
       rpcUrl: MAINNET_RPCS.xlayer || "",
+    },
+    {
+      chainId: 43 as ChainId,
+      chainName: "SnaxChain",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 2192,
+      nativeCurrencyDecimals: 18,
+      nativeCurrencyName: "ETH",
+      rpcUrl: MAINNET_RPCS.snaxchain || "",
     },
   ],
   guardianRpcs: [
