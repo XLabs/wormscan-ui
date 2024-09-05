@@ -43,6 +43,44 @@ export type VAACount = {
   count: number;
 };
 
+export interface TokensSymbolVolumeInput {
+  limit: number;
+}
+
+export interface TokensSymbolVolumeOutput {
+  symbol: string;
+  volume: number;
+}
+
+export interface TokensSymbolActivityInput {
+  from: string;
+  to: string;
+  symbol: string;
+  timespan: string;
+  sourceChain: ChainId[];
+  targetChain: ChainId[];
+}
+
+export interface TokensSymbolActivityOutput {
+  tokens: {
+    token_symbol: string;
+    total_messages: number;
+    total_value_transferred: number;
+    time_range_data: {
+      from: string;
+      to: string;
+      total_messages: number;
+      total_value_transferred: number;
+      aggregations?: {
+        total_messages: number;
+        total_value_transferred: number;
+        source_chain: ChainId;
+        target_chain: ChainId;
+      }[];
+    }[];
+  }[];
+}
+
 export type CrossChainBy = "tx" | "notional";
 
 export type CrossChainActivityInput = {

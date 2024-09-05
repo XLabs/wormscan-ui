@@ -1,0 +1,9 @@
+@import "src/styles/globals.scss";
+
+.tokens-page {
+  margin-top: 8px;
+
+  @include desktop {
+    margin-top: 32px;
+  }
+}

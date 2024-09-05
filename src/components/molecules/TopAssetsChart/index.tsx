@@ -175,24 +175,6 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
             },
           },
           tooltip: {
-            intersect: false,
-            shared: true,
-            fixed: {
-              enabled: false,
-              position: "topRight",
-              offsetX: 0,
-              offsetY: 0,
-            },
-            followCursor: true,
-            onDatasetHover: {
-              highlightDataSeries: true,
-            },
-            x: {
-              show: false,
-            },
-            y: {
-              formatter: val => String(val),
-            },
             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
               const chainName = assetsDataForChart?.[dataPointIndex]?.chainName;
               const txsFormatted = assetsDataForChart?.[dataPointIndex]?.txsFormatted;
@@ -226,6 +208,9 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
                 "</div>"
               );
             },
+            followCursor: isDesktop,
+            intersect: false,
+            shared: true,
           },
           dataLabels: { enabled: false },
           yaxis: {
@@ -240,7 +225,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
               style: {
                 colors: "var(--color-gray-400)",
                 fontFamily: "Roboto",
-                fontSize: isMobile ? "10px" : "14px",
+                fontSize: "12px",
               },
             },
             axisBorder: {
@@ -253,7 +238,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
               style: {
                 colors: "var(--color-gray-400)",
                 fontFamily: "Roboto",
-                fontSize: isMobile ? "10px" : "14px",
+                fontSize: "12px",
                 cssClass: "chart-container-xaxis-label",
               },
               trim: false,
