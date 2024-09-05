@@ -18,8 +18,14 @@ export const Summary = ({ summary }: SummaryProps) => {
         <div className="summary-top-img">
           <img src={tokenIcon} alt="W Token Icon" height="60" width="60" loading="lazy" />
         </div>
+
         <div className="summary-top-content">
-          <h1 className="summary-top-content-title">Wormhole Token</h1>
+          <h1 className="summary-top-content-title">
+            <div className="summary-top-content-title-mobileImg">
+              <img src={tokenIcon} alt="W Token Icon" height="30" width="30" loading="lazy" />
+            </div>
+            <div>Wormhole Token</div>
+          </h1>
           <div className="summary-top-content-container">
             <div className="summary-top-content-container-item">
               <div className="summary-top-content-container-item-up">Project Name</div>
@@ -114,7 +120,7 @@ export const Summary = ({ summary }: SummaryProps) => {
             {summary?.circulatingSupply && (
               <>
                 <h1 className="summary-metrics-container-item-up">
-                  {numberToSuffix(+summary.circulatingSupply)} W
+                  {numberToSuffix(+summary.circulatingSupply)}
                 </h1>
                 <div className="summary-metrics-container-item-down">Circulating Supply</div>
               </>

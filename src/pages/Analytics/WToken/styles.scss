@@ -3,21 +3,28 @@
 .summary {
   @include centered-column;
   gap: 40px;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 
   &-top {
-    @include centered-row;
+    display: flex;
+    flex-direction: row;
+
     background-color: var(--color-gray-950);
     border-radius: 18px;
     padding: 16px;
     gap: 20px;
 
     &-img {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: none;
+
+      @include desktop {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
       width: 150px;
+      min-width: 100px;
       height: 150px;
       background-color: var(--color-black);
       border-radius: 18px;
@@ -28,17 +35,51 @@
       justify-content: space-between;
       flex-grow: 1;
 
-      height: 140px;
+      // height: 140px;
 
       &-title {
+        @include centered-row;
         @include text-roboto-heading-500;
         padding-top: 16px;
+        gap: 16px;
+
+        margin-bottom: 20px;
+        @include desktop {
+          margin-bottom: 0px;
+        }
+
+        &-mobileImg {
+          @include centered-row;
+          justify-content: center;
+
+          @include desktop {
+            display: none;
+          }
+
+          border-radius: 8px;
+
+          background-color: var(--color-black);
+          width: 70px;
+          height: 70px;
+
+          & > img {
+            width: 40px;
+            height: 40px;
+          }
+        }
       }
 
       &-container {
         @include centered-row;
+        flex-wrap: wrap;
 
-        gap: 20px;
+        gap: 10px;
+        @media only screen and (min-width: 1140px) {
+          gap: 20px;
+        }
+        @include desktop {
+          flex-wrap: nowrap;
+        }
         @include bigDesktop {
           gap: 30px;
         }
@@ -47,13 +88,13 @@
           @include centered-column;
 
           white-space: nowrap;
-          background-color: var(--color-gray-800);
+          background-color: var(--color-gray-900);
           border-radius: 10px;
 
           padding: 12px;
           gap: 6px;
 
-          min-width: 140px;
+          min-width: 134px;
           @include bigDesktop {
             min-width: 160px;
           }
@@ -114,6 +155,7 @@
         padding: 20px 16px;
         gap: 20px;
 
+        min-width: 130px;
         max-width: 160px;
         @include desktop {
           width: 20%;
@@ -132,5 +174,136 @@
         }
       }
     }
+  }
+}
+
+.bychain {
+  @include centered-column;
+  gap: 36px;
+
+  @media only screen and (min-width: 1280px) {
+    @include centered-row;
+    gap: 0px;
+  }
+
+  margin-bottom: 24px;
+
+  &-half {
+    @include centered-column;
+    width: 100%;
+    @media only screen and (min-width: 1280px) {
+      width: 49%;
+    }
+
+    margin-right: 1%;
+    margin-left: 0%;
+    &:last-child {
+      margin-right: 0%;
+      margin-left: 1%;
+    }
+
+    &-title {
+      @include centered-row;
+      @include text-roboto-subheading-500;
+      gap: 8px;
+      margin-bottom: 16px;
+
+      svg {
+        color: var(--color-gray-300);
+      }
+    }
+
+    &-table {
+      @include centered-column;
+
+      &-head {
+        @include centered-row;
+        @include text-heading6;
+        font-size: 13px;
+
+        background-color: var(--color-gray-950);
+        border-radius: 16px;
+        color: var(--color-gray-500);
+        padding: 12px 16px;
+
+        &-row {
+          width: 35%;
+
+          &:last-child {
+            width: 30%;
+            text-align: right;
+          }
+        }
+      }
+
+      &-item {
+        @include centered-row;
+        justify-content: space-between;
+
+        padding: 18px 16px;
+
+        border-bottom: 1px solid var(--color-gray-900);
+
+        .loading {
+          position: relative;
+          height: 20px;
+          width: 100%;
+          overflow: hidden;
+
+          &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+              90deg,
+              var(--color-black),
+              var(--color-gray-800),
+              var(--color-black)
+            );
+            animation: loading-animation 3s infinite;
+          }
+        }
+
+        &-row {
+          @include centered-row;
+          @include text-roboto-body-500;
+          width: 35%;
+          gap: 10px;
+          position: relative;
+
+          .arrow {
+            display: none;
+            position: absolute;
+            right: 20%;
+            color: var(--color-gray-600);
+
+            @include desktop {
+              display: block;
+            }
+          }
+
+          &:last-child {
+            @include text-heading5;
+            width: 30%;
+            justify-content: flex-end;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes loading-animation {
+  0% {
+    left: -50%;
+  }
+  50% {
+    left: 50%;
+  }
+  100% {
+    left: -50%;
   }
 }
