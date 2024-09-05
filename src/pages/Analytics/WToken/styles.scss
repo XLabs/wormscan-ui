@@ -1,0 +1,136 @@
+@import "src/styles/globals.scss";
+
+.summary {
+  @include centered-column;
+  gap: 40px;
+  margin-bottom: 20px;
+
+  &-top {
+    @include centered-row;
+    background-color: var(--color-gray-950);
+    border-radius: 18px;
+    padding: 16px;
+    gap: 20px;
+
+    &-img {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      width: 150px;
+      height: 150px;
+      background-color: var(--color-black);
+      border-radius: 18px;
+    }
+
+    &-content {
+      @include centered-column;
+      justify-content: space-between;
+      flex-grow: 1;
+
+      height: 140px;
+
+      &-title {
+        @include text-roboto-heading-500;
+        padding-top: 16px;
+      }
+
+      &-container {
+        @include centered-row;
+
+        gap: 20px;
+        @include bigDesktop {
+          gap: 30px;
+        }
+
+        &-item {
+          @include centered-column;
+
+          white-space: nowrap;
+          background-color: var(--color-gray-800);
+          border-radius: 10px;
+
+          padding: 12px;
+          gap: 6px;
+
+          min-width: 140px;
+          @include bigDesktop {
+            min-width: 160px;
+          }
+
+          &-up {
+            color: var(--color-gray-500);
+            font-size: 14px;
+          }
+
+          &-down {
+            color: var(--color-white);
+
+            .link {
+              @include button-ghost;
+
+              svg {
+                color: var(--color-gray-400);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &-metrics {
+    @include centered-column;
+    gap: 20px;
+
+    &-title {
+      @include centered-row;
+      gap: 12px;
+
+      &-icon {
+        color: var(--color-gray-300);
+      }
+
+      &-text {
+        @include text-roboto-subheading-500;
+      }
+    }
+
+    &-container {
+      @include centered-row;
+      gap: 12px;
+
+      flex-wrap: wrap;
+      @include desktop {
+        flex-wrap: nowrap;
+      }
+
+      &-item {
+        @include centered-column;
+        height: 130px;
+
+        background-color: var(--color-gray-950);
+        border-radius: 8px;
+        padding: 20px 16px;
+        gap: 20px;
+
+        max-width: 160px;
+        @include desktop {
+          width: 20%;
+          max-width: 20%;
+        }
+
+        &-up {
+          @include text-roboto-heading-500;
+          color: var(--color-white);
+          white-space: nowrap;
+        }
+
+        &-down {
+          color: var(--color-gray-500);
+          margin-top: auto;
+        }
+      }
+    }
+  }
+}
