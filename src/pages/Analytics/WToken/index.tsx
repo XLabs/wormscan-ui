@@ -4,8 +4,9 @@ import { getClient } from "src/api/Client";
 import { Summary } from "./Summary";
 import { ByChain } from "./ByChain";
 import { TransfersOverTime } from "./TransfersOverTime";
-import "./styles.scss";
+import { TopHolders } from "./TopHolders";
 import { TopAddresses } from "./TopAddresses";
+import "./styles.scss";
 
 export type TimeRange = { label: string; value: string };
 export type ByType = "notional" | "tx";
@@ -56,11 +57,7 @@ const WToken = () => {
     { refetchOnWindowFocus: false },
   );
 
-  const {
-    data: topAddressesNotional,
-    isError: isErrorTopAddressesNotional,
-    isFetching: isFetchingTopAddressesNotional,
-  } = useQuery(["getNttTopAddressNotional"], async () => {
+  const { data: topAddressesNotional } = useQuery(["getNttTopAddressNotional"], async () => {
     const data = await getClient().nttApi.getNttTopAddress({
       by: "notional",
       symbol: "W",
@@ -69,11 +66,7 @@ const WToken = () => {
     return data;
   });
 
-  const {
-    data: topAddressesTx,
-    isError: isErrorTopAddressesTx,
-    isFetching: isFetchingTopAddressesTx,
-  } = useQuery(["getNttTopAddressTx"], async () => {
+  const { data: topAddressesTx } = useQuery(["getNttTopAddressTx"], async () => {
     const data = await getClient().nttApi.getNttTopAddress({
       by: "tx",
       symbol: "W",
@@ -82,21 +75,13 @@ const WToken = () => {
     return data;
   });
 
-  const {
-    data: summary,
-    isError: isErrorSummary,
-    isFetching: isFetchingSummary,
-  } = useQuery(["getSummary"], () =>
+  const { data: summary } = useQuery(["getSummary"], () =>
     getClient().nttApi.getNttSummary({
       symbol: "W",
     }),
   );
 
-  const {
-    data: activityNotional,
-    isError: isErrorActivityNotional,
-    isFetching: isFetchingActivityNotional,
-  } = useQuery("getActivityNotional", async () => {
+  const { data: activityNotional } = useQuery("getActivityNotional", async () => {
     const activity = await getClient().nttApi.getNttActivity({
       by: "notional",
       symbol: "W",
@@ -106,11 +91,14 @@ const WToken = () => {
     return activity;
   });
 
-  const {
-    data: activityTx,
-    isError: isErrorActivityTx,
-    isFetching: isFetchingActivityTx,
-  } = useQuery("getActivityTx", async () => {
+  const { data: topHolders } = useQuery("getTopHolders", async () => {
+    const data = await getClient().nttApi.getNttTopHolder({
+      symbol: "W",
+    });
+    return data;
+  });
+
+  const { data: activityTx } = useQuery("getActivityTx", async () => {
     const activity = await getClient().nttApi.getNttActivity({
       by: "tx",
       symbol: "W",
@@ -134,6 +122,7 @@ const WToken = () => {
         by={by}
         setBy={setBy}
       />
+      <TopHolders topHolders={topHolders} />
       <TopAddresses topAddressesNotional={topAddressesNotional} topAddressesTx={topAddressesTx} />
     </div>
   );

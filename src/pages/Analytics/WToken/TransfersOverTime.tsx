@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
 import ReactApexChart from "react-apexcharts";
+import { useState, useMemo } from "react";
 import { GetTransferByTimeResult } from "src/api/native-token-transfer/types";
 import { Loader, ToggleGroup, Select } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
@@ -104,14 +104,16 @@ export const TransfersOverTime = ({
               <WormholeScanBrand />
 
               <div className="transfers-over-time-filters">
-                <Select
-                  name="timeRange"
-                  value={timeRange}
-                  onValueChange={value => setTimeRange(value)}
-                  items={RANGE_LIST}
-                  ariaLabel="Select Time Range"
-                  className="transfers-over-time-select-range"
-                />
+                <div className="transfers-over-time-select-range">
+                  <Select
+                    name="timeRange"
+                    value={timeRange}
+                    onValueChange={value => setTimeRange(value)}
+                    items={RANGE_LIST}
+                    ariaLabel="Select Time Range"
+                  />
+                </div>
+
                 <ToggleGroup
                   ariaLabel="Select data type"
                   className="transfers-over-time-toggle-by"
@@ -119,6 +121,7 @@ export const TransfersOverTime = ({
                   onValueChange={value => setBy(value as ByType)}
                   value={by}
                 />
+
                 <ToggleGroup
                   ariaLabel="Select chart type"
                   className="transfers-over-time-toggle-type"

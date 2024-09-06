@@ -2,7 +2,6 @@ import { GetTopAddressResult } from "src/api/native-token-transfer/types";
 import { CopyIcon, UserIcon } from "src/icons/generic";
 import { formatNumber } from "src/utils/number";
 import { TruncateText } from "src/utils/string";
-import React, { useState } from "react";
 import { CopyToClipboard } from "src/components/molecules";
 
 type TopAddressesProps = {
