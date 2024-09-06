@@ -351,6 +351,11 @@
     margin-left: auto;
     margin-top: 12px;
 
+    border-radius: 12px;
+    .toggle-group-item {
+      border-radius: 12px;
+    }
+
     @include tablet {
       margin-top: 0px;
     }
