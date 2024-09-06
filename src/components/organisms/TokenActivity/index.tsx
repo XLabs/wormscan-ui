@@ -26,6 +26,7 @@ const RANGE_LIST = [
   { label: "Last 7 days", value: getISODateZeroed(7), timespan: "1d" },
   { label: "Last 15 days", value: getISODateZeroed(15), timespan: "1d" },
   { label: "Last 30 days", value: getISODateZeroed(30), timespan: "1d" },
+  // TODO: add when the endpoint supports it
   // { label: "Last 365 days", value: getISODateZeroed(365), timespan: "1mo" },
   // { label: "All Time", value: firstDataAvailableDate, timespan: "1mo" },
 ];
