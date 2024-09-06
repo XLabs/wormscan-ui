@@ -12,7 +12,7 @@ export type TimeRange = { label: string; value: string };
 export type ByType = "notional" | "tx";
 
 const WToken = () => {
-  const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last week", value: "1w" });
+  const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last day", value: "1d" });
   const [by, setBy] = useState<ByType>("tx");
 
   const { startDate, endDate } = useMemo(() => {
@@ -57,29 +57,21 @@ const WToken = () => {
     { refetchOnWindowFocus: false },
   );
 
-  const { data: topAddressesNotional } = useQuery(["getNttTopAddressNotional"], async () => {
-    const data = await getClient().nttApi.getNttTopAddress({
-      by: "notional",
-      symbol: "W",
-    });
-    data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
-    return data;
-  });
-
-  const { data: topAddressesTx } = useQuery(["getNttTopAddressTx"], async () => {
-    const data = await getClient().nttApi.getNttTopAddress({
-      by: "tx",
-      symbol: "W",
-    });
-    data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
-    return data;
-  });
-
   const { data: summary } = useQuery(["getSummary"], () =>
     getClient().nttApi.getNttSummary({
       symbol: "W",
     }),
   );
+
+  const { data: activityTx } = useQuery("getActivityTx", async () => {
+    const activity = await getClient().nttApi.getNttActivity({
+      by: "tx",
+      symbol: "W",
+    });
+    activity.sort((a, b) => (+a.value < +b.value ? 1 : -1));
+
+    return activity;
+  });
 
   const { data: activityNotional } = useQuery("getActivityNotional", async () => {
     const activity = await getClient().nttApi.getNttActivity({
@@ -98,14 +90,22 @@ const WToken = () => {
     return data;
   });
 
-  const { data: activityTx } = useQuery("getActivityTx", async () => {
-    const activity = await getClient().nttApi.getNttActivity({
+  const { data: topAddressesNotional } = useQuery(["getNttTopAddressNotional"], async () => {
+    const data = await getClient().nttApi.getNttTopAddress({
+      by: "notional",
+      symbol: "W",
+    });
+    data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
+    return data;
+  });
+
+  const { data: topAddressesTx } = useQuery(["getNttTopAddressTx"], async () => {
+    const data = await getClient().nttApi.getNttTopAddress({
       by: "tx",
       symbol: "W",
     });
-    activity.sort((a, b) => (+a.value < +b.value ? 1 : -1));
-
-    return activity;
+    data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
+    return data;
   });
 
   return (

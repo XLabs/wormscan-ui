@@ -29,8 +29,8 @@ export const ByChain = ({ activityNotional, activityTx }: ByChainProps) => {
             <div className="bychain-half-table-head-row">AMOUNT</div>
           </div>
 
-          {activityNotional
-            ? activityNotional?.map((item, idx) =>
+          {activityTx
+            ? activityTx?.map((item, idx) =>
                 idx < 10 ? (
                   <div key={`itemTx-${idx}`} className="bychain-half-table-item">
                     <div className="bychain-half-table-item-row">
@@ -78,8 +78,8 @@ export const ByChain = ({ activityNotional, activityTx }: ByChainProps) => {
             <div className="bychain-half-table-head-row">TOTAL VOLUME</div>
           </div>
 
-          {activityTx
-            ? activityTx?.map((item, idx) =>
+          {activityNotional
+            ? activityNotional?.map((item, idx) =>
                 idx < 10 ? (
                   <div key={`itemNot-${idx}`} className="bychain-half-table-item">
                     <div className="bychain-half-table-item-row">
