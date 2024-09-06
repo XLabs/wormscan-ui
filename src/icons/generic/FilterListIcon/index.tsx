@@ -1,4 +1,4 @@
-const FilterListIcon = ({ style, width }: { style?: any; width: number }) => (
+const FilterListIcon = ({ style, width = 24 }: { style?: any; width?: number }) => (
   <svg
     fill="none"
     height={width}

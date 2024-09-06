@@ -243,7 +243,7 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
             menuFixed={!isDesktop}
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
             menuPortalStyles={{ zIndex: 100 }}
-            name="topAssetTimeRange"
+            name="sourceChain"
             onValueChange={(value: any) => setCheckedState({ ...checkedState, sourceChain: value })}
             optionStyles={{ padding: 16 }}
             text={
@@ -265,7 +265,7 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
             menuFixed={!isDesktop}
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
             menuPortalStyles={{ zIndex: 100 }}
-            name="topAssetTimeRange"
+            name="targetChain"
             onValueChange={(value: any) => setCheckedState({ ...checkedState, targetChain: value })}
             optionStyles={{ padding: 16 }}
             text={

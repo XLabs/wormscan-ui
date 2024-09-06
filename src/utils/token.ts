@@ -16,6 +16,7 @@ import FTM from "src/icons/tokens/FTM.svg";
 import GLMR from "src/icons/tokens/GLMR.svg";
 import HXRO from "src/icons/tokens/HXRO.svg";
 import IDIA from "src/icons/tokens/IDIA.svg";
+import LUNA from "src/icons/tokens/LUNA.svg";
 import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KUJI from "src/icons/tokens/KUJI.svg";
 import MATIC from "src/icons/tokens/MATIC.svg";
@@ -32,6 +33,7 @@ import tBTC from "src/icons/tokens/tBTC.svg";
 import TRUMP from "src/icons/tokens/TRUMP.webp";
 import USDC from "src/icons/tokens/USDC.svg";
 import USDT from "src/icons/tokens/USDT.svg";
+import UST from "src/icons/tokens/UST.svg";
 import W from "src/icons/tokens/W.svg";
 import WAVAX from "src/icons/tokens/WAVAX.svg";
 import WBTC from "src/icons/tokens/WBTC.svg";
@@ -63,6 +65,7 @@ const iconTokens = {
   IDIA,
   KLAY: KlaytnIcon,
   KUJI,
+  LUNA,
   MATIC,
   OPTIMISM,
   OSMO,
@@ -81,6 +84,8 @@ const iconTokens = {
   USDCpo: USDC,
   USDCso: USDC,
   USDT,
+  UST,
+  W,
   WAVAX,
   WBNB: BNB,
   WBTC,
@@ -91,7 +96,6 @@ const iconTokens = {
   WKLAY: KlaytnIcon,
   WMATIC,
   WSTETH,
-  W,
   wstETH: WSTETH,
 } as { [K in string]: SVGAElement };
 

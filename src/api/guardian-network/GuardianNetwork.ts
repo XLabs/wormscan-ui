@@ -13,19 +13,23 @@ import {
   GetOperationsInput,
   GetOperationsOutput,
   GetParsedVaaOutput,
-  LastTxs,
-  Observation,
-  ScoresOutput,
-  VAACount,
-  ProtocolsStatsOutput,
+  IAllbridgeActivity,
+  IAllbridgeActivityInput,
   IChainActivity,
   IChainActivityInput,
-  IProtocolActivity,
-  IProtocolActivityInput,
-  IAllbridgeActivity,
   IMayanActivity,
   IMayanActivityInput,
-  IAllbridgeActivityInput,
+  IProtocolActivity,
+  IProtocolActivityInput,
+  LastTxs,
+  Observation,
+  ProtocolsStatsOutput,
+  ScoresOutput,
+  TokensSymbolActivityInput,
+  TokensSymbolActivityOutput,
+  TokensSymbolVolumeInput,
+  TokensSymbolVolumeOutput,
+  VAACount,
 } from "./types";
 
 export class GuardianNetwork {
@@ -83,6 +87,52 @@ export class GuardianNetwork {
     const payload = await this._client.doGet<any>("/vaas/vaa-counts");
     const result = _get(payload, "data", []);
     return result.map(this._mapVAACount);
+  }
+
+  async getTokensSymbolVolume({
+    limit,
+  }: TokensSymbolVolumeInput): Promise<TokensSymbolVolumeOutput[]> {
+    const url = limit ? `/tokens-symbol-volume?limit=${limit}` : "/tokens-symbol-volume";
+    const payload = await this._client.doGet<TokensSymbolVolumeOutput[]>(url);
+    return payload;
+  }
+
+  async getTokensSymbolActivity({
+    from,
+    to,
+    symbol,
+    timespan,
+    sourceChain,
+    targetChain,
+  }: TokensSymbolActivityInput): Promise<TokensSymbolActivityOutput> {
+    const params: Record<string, string> = {
+      from: from.toString(),
+      to: to.toString(),
+      symbol: symbol.toString(),
+      timespan: timespan.toString(),
+    };
+
+    if (sourceChain && sourceChain.length > 0) {
+      params.sourceChain = sourceChain.join(",");
+    }
+
+    if (targetChain && targetChain.length > 0) {
+      params.targetChain = targetChain.join(",");
+    }
+
+    const queryString = new URLSearchParams(params).toString();
+
+    const response = await this._client.doGet<TokensSymbolActivityOutput>(
+      `/tokens-symbol-activity?${queryString}`,
+    );
+
+    if (response.tokens) {
+      return response;
+    } else {
+      return {
+        tokens: [],
+      };
+    }
   }
 
   async getAssetsByVolume(

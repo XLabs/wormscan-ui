@@ -17,7 +17,7 @@ import {
 
 const ProtocolIcon = ({ protocol, width = 28 }: { protocol: string; width?: number }) => {
   const IconComponent = iconMap[protocol];
-  return IconComponent ? <IconComponent width={width} /> : <DefaultIcon width={width} />;
+  return IconComponent ? <IconComponent width={width} /> : null;
 };
 
 const PortalIcon = ({ width }: { width: number }) => (
@@ -464,24 +464,6 @@ const OmniSwapIcon = ({ width }: { width: number }) => (
         transform="translate(0 -.58)"
       />
     </g>
-  </svg>
-);
-
-const DefaultIcon = ({ width }: { width: number }) => (
-  <svg
-    fill="none"
-    height={width}
-    viewBox="0 0 28 28"
-    width={width}
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <rect x={1} y={1} width={26} height={26} rx={13} fill="black" stroke="black" strokeWidth={2} />
-    <circle cx={14} cy={14} r={9} stroke="#E6E6E6" strokeWidth={2} />
-    <path
-      d="M6 14C10.4183 14 14 10.4183 14 6C14 10.4183 17.5817 14 22 14C17.5817 14 14 17.5817 14 22C14 17.5817 10.4183 14 6 14Z"
-      stroke="#E6E6E6"
-      strokeWidth="1.5"
-    />
   </svg>
 );
 
