@@ -132,7 +132,6 @@ const TokenActivity = () => {
       targetChain: [],
       symbol: { label: dataList[0].symbol, value: dataList[0].symbol },
     });
-    setRowSelected(0);
     setOpenFilters(false);
   };
 
