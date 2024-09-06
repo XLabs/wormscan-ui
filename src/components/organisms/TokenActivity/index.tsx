@@ -130,7 +130,6 @@ const TokenActivity = () => {
       ...filters,
       sourceChain: [],
       targetChain: [],
-      symbol: { label: dataList[0].symbol, value: dataList[0].symbol },
     });
     setOpenFilters(false);
   };
