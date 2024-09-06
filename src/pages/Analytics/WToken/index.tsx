@@ -5,6 +5,7 @@ import { Summary } from "./Summary";
 import { ByChain } from "./ByChain";
 import { TransfersOverTime } from "./TransfersOverTime";
 import "./styles.scss";
+import { TopAddresses } from "./TopAddresses";
 
 export type TimeRange = { label: string; value: string };
 export type ByType = "notional" | "tx";
@@ -55,27 +56,31 @@ const WToken = () => {
     { refetchOnWindowFocus: false },
   );
 
-  // const {
-  //   data: topAddressesNotional,
-  //   isError: isErrorTopAddressesNotional,
-  //   isFetching: isFetchingTopAddressesNotional,
-  // } = useQuery(["getNttTopAddressNotional"], () =>
-  //   getClient().nttApi.getNttTopAddress({
-  //     by: "notional",
-  //     symbol: "W",
-  //   }),
-  // );
+  const {
+    data: topAddressesNotional,
+    isError: isErrorTopAddressesNotional,
+    isFetching: isFetchingTopAddressesNotional,
+  } = useQuery(["getNttTopAddressNotional"], async () => {
+    const data = await getClient().nttApi.getNttTopAddress({
+      by: "notional",
+      symbol: "W",
+    });
+    data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
+    return data;
+  });
 
-  // const {
-  //   data: topAddressesTx,
-  //   isError: isErrorTopAddressesTx,
-  //   isFetching: isFetchingTopAddressesTx,
-  // } = useQuery(["getNttTopAddressTx"], () =>
-  //   getClient().nttApi.getNttTopAddress({
-  //     by: "tx",
-  //     symbol: "W",
-  //   }),
-  // );
+  const {
+    data: topAddressesTx,
+    isError: isErrorTopAddressesTx,
+    isFetching: isFetchingTopAddressesTx,
+  } = useQuery(["getNttTopAddressTx"], async () => {
+    const data = await getClient().nttApi.getNttTopAddress({
+      by: "tx",
+      symbol: "W",
+    });
+    data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
+    return data;
+  });
 
   const {
     data: summary,
@@ -129,6 +134,7 @@ const WToken = () => {
         by={by}
         setBy={setBy}
       />
+      <TopAddresses topAddressesNotional={topAddressesNotional} topAddressesTx={topAddressesTx} />
     </div>
   );
 };
