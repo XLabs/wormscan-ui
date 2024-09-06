@@ -149,6 +149,10 @@ const Footer = () => {
               VAA Parser
             </NavLink>
 
+            <NavLink to="/submit" aria-label="Submit Your Protocol">
+              Submit Your Protocol
+            </NavLink>
+
             <a
               href={WORMHOLESCAN_API_DOCS_URL}
               target="_blank"

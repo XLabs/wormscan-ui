@@ -23,6 +23,7 @@ import {
 import { useOutsideClick, useWindowSize } from "src/utils/hooks";
 import { BREAKPOINTS, GITHUB_URL, WORMHOLE_DOCS_URL, WORMHOLESCAN_API_DOCS_URL } from "src/consts";
 import "./styles.scss";
+import { getTokenIcon } from "src/utils/token";
 
 type NetworkSelectProps = { label: string; value: Network };
 
@@ -53,6 +54,7 @@ const Header = ({
   const { pathname, search } = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const tokenIcon = getTokenIcon("W");
 
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "Mainnet";
@@ -200,6 +202,17 @@ const Header = ({
                   </NavigationMenu.Trigger>
 
                   <NavigationMenu.Content className="dropdown-menu-content">
+                    <NavLink to="/analytics/w" aria-label="analytics wormhole token">
+                      <img
+                        className="dropdown-menu-content-wIcon"
+                        src={tokenIcon}
+                        alt="W Token"
+                        width="16"
+                        height="16"
+                      />{" "}
+                      W Token
+                    </NavLink>
+
                     <NavLink to="/analytics/tokens" aria-label="analytics tokens">
                       <LayersIcon /> Tokens
                     </NavLink>
@@ -332,6 +345,21 @@ const Header = ({
             showMobileNav && showMobileAnalytics ? "open" : ""
           }`}
         >
+          <NavLink
+            to="/analytics/w"
+            aria-label="analytics wormhole token"
+            onClick={closeAllMobileMenus}
+          >
+            <img
+              className="header-container-mobile-menu-wIcon"
+              src={tokenIcon}
+              alt="W Token"
+              width="16"
+              height="16"
+            />{" "}
+            W Token
+          </NavLink>
+
           <NavLink
             to="/analytics/tokens"
             aria-label="analytics tokens"

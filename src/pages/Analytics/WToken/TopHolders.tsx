@@ -35,7 +35,7 @@ export const TopHolders = ({ topHolders }: TopHoldersProps) => {
             <div className="top-holders-table-head-row">USER</div>
             <div className="top-holders-table-head-row">CHAIN</div>
             <div className="top-holders-table-head-row">AMOUNT</div>
-            <div className="top-holders-table-head-row">TXNS</div>
+            {/* <div className="top-holders-table-head-row">TXNS</div> */}
             <div className="top-holders-table-head-row"></div>
           </div>
 
@@ -58,7 +58,7 @@ export const TopHolders = ({ topHolders }: TopHoldersProps) => {
 
                   <div className="top-holders-table-item-row">${formatNumber(+item.volume, 0)}</div>
 
-                  <div className="top-holders-table-item-row">??????</div>
+                  {/* <div className="top-holders-table-item-row">??????</div> */}
 
                   <a
                     className="top-holders-table-item-row"
@@ -100,18 +100,6 @@ export const TopHolders = ({ topHolders }: TopHoldersProps) => {
                     </div>
                   </div>
 
-                  <div className="top-holders-mobile-container-item" />
-
-                  <div className="top-holders-mobile-container-item">
-                    <div className="title">AMOUNT</div>
-                    <div className="content number">${formatNumber(+item.volume, 0)}</div>
-                  </div>
-
-                  <div className="top-holders-mobile-container-item">
-                    <div className="title">TXNS</div>
-                    <div className="content number">??????</div>
-                  </div>
-
                   <div className="top-holders-mobile-container-item">
                     <div className="title">CHAIN</div>
 
@@ -122,7 +110,14 @@ export const TopHolders = ({ topHolders }: TopHoldersProps) => {
                   </div>
 
                   <div className="top-holders-mobile-container-item">
+                    <div className="title">AMOUNT</div>
+
+                    <div className="content number">${formatNumber(+item.volume, 0)}</div>
+                  </div>
+
+                  <div className="top-holders-mobile-container-item">
                     <div className="title">HYPERLINK</div>
+
                     <a
                       className="content url"
                       href={getExplorerLink({
@@ -138,6 +133,13 @@ export const TopHolders = ({ topHolders }: TopHoldersProps) => {
                       View on Explorer <LinkIcon />
                     </a>
                   </div>
+
+                  {/* <div className="top-holders-mobile-container-item" /> */}
+
+                  {/* <div className="top-holders-mobile-container-item">
+                    <div className="title">TXNS</div>
+                    <div className="content number">??????</div>
+                  </div> */}
                 </div>
               ))
             : LOADING_ARRAY.map((_, idx) => (
