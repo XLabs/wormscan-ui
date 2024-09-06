@@ -11,10 +11,10 @@ const Protocols = () => {
       <div className="protocols-page-tool">
         <Rectangle3DIcon />
 
-        <h3 className="protocols-page-tool-title">Do you want to add Protocol Tool?</h3>
+        <h3 className="protocols-page-tool-title">Do you want to add your Protocol here?</h3>
 
         <h4 className="protocols-page-tool-description">
-          The Wormhole Governor gives access to users adding their own protocols.
+          You can paste a VAA of your own, decode it and send it to us so we can add it to the list.
         </h4>
 
         <NavLink className="protocols-page-tool-btn" to="/developers/submit">
