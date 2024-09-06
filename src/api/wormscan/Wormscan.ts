@@ -3,16 +3,19 @@ import { Governor } from "src/api/governor";
 import { GuardianNetwork } from "src/api/guardian-network";
 import { Search } from "src/api/search";
 import { _get } from "src/api/utils/Objects";
+import { NttApi } from "../native-token-transfer";
 
 export class Wormscan {
   private readonly _governor: Governor;
   private readonly _guardian: GuardianNetwork;
   private readonly _search: Search;
+  private readonly _native_token_transfer: NttApi;
 
   constructor(private readonly _client: APIClient) {
     this._governor = new Governor(this._client);
     this._guardian = new GuardianNetwork(this._client);
     this._search = new Search(this._client);
+    this._native_token_transfer = new NttApi(this._client);
   }
 
   get governor(): Governor {
@@ -21,6 +24,10 @@ export class Wormscan {
 
   get guardianNetwork(): GuardianNetwork {
     return this._guardian;
+  }
+
+  get nttApi(): NttApi {
+    return this._native_token_transfer;
   }
 
   get search(): Search {

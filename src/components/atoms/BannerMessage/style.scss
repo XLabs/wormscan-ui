@@ -1,6 +1,6 @@
 @import "src/styles/globals.scss";
 
-.maintenance-message {
+.banner-message {
   display: flex;
   gap: 12px;
   height: 102px;
@@ -47,6 +47,13 @@
       @include text-heading6;
       color: var(--color-white);
       text-transform: uppercase;
+
+      &-link {
+        color: var(--color-primary-100);
+        text-decoration: underline;
+        margin-left: 8px;
+        margin-right: 8px;
+      }
     }
   }
 }

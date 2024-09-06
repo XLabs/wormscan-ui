@@ -1,5 +1,3 @@
-import { ChainId } from "@wormhole-foundation/sdk";
-
 export type GetTokenInput = {
   chainId: number;
   tokenAddress: string;
@@ -21,36 +19,6 @@ export type GetTokenPriceInput = {
 
 export type GetTokenPriceOutput = {
   usd: number;
-};
-
-export type CctpRelayOutput = {
-  status: string;
-  metrics: {
-    completedAt: string;
-    receivedAt: string;
-  };
-  fee: {
-    amount: number;
-    symbol: string;
-  };
-  from: {
-    amountSent: number;
-    amountToSwap: number;
-    chain: string;
-    chainId: ChainId;
-    estimatedNativeAssetAmount: number;
-    senderAddress: string;
-    symbol: string;
-    txHash: string;
-  };
-  to: {
-    chain: string;
-    chainId: ChainId;
-    gasUsed: number;
-    recipientAddress: string;
-    txHash: string;
-  };
-  vaa: string;
 };
 
 export interface AutomaticRelayOutput {

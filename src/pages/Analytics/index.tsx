@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import analytics from "src/analytics";
 import Chains from "./Chains";
 import Tokens from "./Tokens";
+import WToken from "./WToken";
 import Protocols from "./Protocols";
 
 const Analytics = () => {
@@ -17,6 +18,7 @@ const Analytics = () => {
     <BaseLayout>
       {analyticsId === "chains" && <Chains />}
       {analyticsId === "tokens" && <Tokens />}
+      {analyticsId === "w" && <WToken />}
       {analyticsId === "protocols" && <Protocols />}
     </BaseLayout>
   );

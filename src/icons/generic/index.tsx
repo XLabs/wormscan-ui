@@ -46,5 +46,6 @@ export { default as TriangleDownIcon } from "./TriangleDownIcon";
 export { default as TwitterIcon } from "./TwitterIcon";
 export { default as TxFlowSelfH } from "./TxFlowSelfH";
 export { default as UploadIcon } from "./UploadIcon";
+export { default as UserIcon } from "./UserIcon";
 export { default as VAAEmittedIcon } from "./VAAEmittedIcon";
 export { default as WalletIcon } from "./WalletIcon";
