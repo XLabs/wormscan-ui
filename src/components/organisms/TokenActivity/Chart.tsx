@@ -26,7 +26,7 @@ const TYPE_CHART_LIST = [
   { label: <AnalyticsIcon width={24} />, value: "bar", ariaLabel: "Bar" },
 ];
 
-const TokenActivityChart = ({ data, filters, isError, isLoading, metricSelected }: Props) => {
+export const Chart = ({ data, filters, isError, isLoading, metricSelected }: Props) => {
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const chartRef = useRef(null);
 
@@ -288,5 +288,3 @@ const TokenActivityChart = ({ data, filters, isError, isLoading, metricSelected 
     </div>
   );
 };
-
-export default TokenActivityChart;

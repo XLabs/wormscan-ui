@@ -305,4 +305,161 @@
       }
     }
   }
+
+  &-chart {
+    background-color: var(--color-gray-950);
+    border-radius: 0 0 16px 16px;
+    border-top: none;
+    border: 1px solid var(--color-gray-900);
+    height: 430px;
+    overflow-y: clip;
+    position: relative;
+    width: 100%;
+
+    @include desktop {
+      background-color: transparent;
+      border: none;
+      flex: 1.4;
+      height: unset;
+      overflow: hidden;
+    }
+
+    &-title {
+      display: none;
+
+      @include desktop {
+        @include text-roboto-subheading-500;
+        color: var(--color-white);
+        display: block;
+        margin-bottom: 24px;
+      }
+    }
+
+    &-graph {
+      @include centered-column;
+      min-height: 430px;
+
+      @include desktop {
+        position: relative;
+        background-color: var(--color-black);
+        border-radius: 16px;
+        min-height: 645px;
+      }
+    }
+
+    & .apexcharts {
+      &-xcrosshairs {
+        fill: var(--color-white-05);
+      }
+
+      &-xaxis-label,
+      &-yaxis-label {
+        text-transform: uppercase;
+      }
+
+      &-xcrosshairs {
+        &.apexcharts-active {
+          stroke: var(--color-gray-600);
+          stroke-linecap: unset;
+          fill-opacity: 1;
+          stroke-dasharray: none;
+          z-index: 9999999;
+        }
+      }
+    }
+
+    &-top {
+      @include centered-row;
+      gap: 0 16px;
+      padding: 16px;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 1;
+
+      @include desktop {
+        gap: 0 36px;
+      }
+
+      &-box {
+        @include centered-column;
+        gap: 4px 12px;
+
+        @include desktop {
+          @include centered-row;
+          flex-wrap: wrap;
+          justify-content: flex-start;
+        }
+
+        &-key {
+          @include text-roboto-body-400;
+          color: var(--color-gray-400);
+        }
+
+        &-value {
+          @include text-roboto-body-500;
+          color: var(--color-white);
+        }
+      }
+
+      &-toggle {
+        margin-left: auto;
+        border-radius: 12px !important;
+
+        & button {
+          border-radius: 12px !important;
+          padding: 6px !important;
+        }
+      }
+    }
+
+    .wormholescan-brand {
+      bottom: 0;
+      filter: grayscale(1);
+      height: 34px;
+      left: 0;
+      margin: auto;
+      min-height: unset;
+      opacity: 0.2;
+      padding-top: 40px;
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      user-select: none;
+      width: 217px;
+      z-index: 10;
+    }
+
+    &-tooltip {
+      background-color: var(--color-gray-900);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px 0;
+      list-style-type: none;
+      min-width: 192px;
+      padding: 12px;
+
+      @include desktop {
+        min-width: 264px;
+        padding: 16px;
+      }
+
+      &-date {
+        @include text-heading6;
+        color: var(--color-gray-400);
+        text-transform: uppercase;
+      }
+
+      &-info {
+        @include centered-row;
+        @include text-roboto-body-400;
+        color: var(--color-white);
+        gap: 0 16px;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+    }
+  }
 }

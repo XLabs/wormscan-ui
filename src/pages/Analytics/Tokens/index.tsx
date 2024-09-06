@@ -1,4 +1,5 @@
-import { TokenActivity, TopAssets } from "src/components/molecules";
+import { TopAssets } from "src/components/molecules";
+import { TokenActivity } from "src/components/organisms";
 import "./styles.scss";
 
 const Tokens = () => {

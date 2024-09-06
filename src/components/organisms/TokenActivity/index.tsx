@@ -13,7 +13,7 @@ import { getISODateZeroed, oneDayAgoISOString, todayISOString } from "src/utils/
 import { getChainName } from "src/utils/wormhole";
 import { ChainFilterMainnet, ChainFilterTestnet } from "src/utils/filterUtils";
 import { getClient } from "src/api/Client";
-import TokenActivityChart from "./TokenActivityChart";
+import { Chart } from "./Chart";
 import "./styles.scss";
 
 const METRIC_CHART_LIST = [
@@ -38,9 +38,7 @@ const TokenActivity = () => {
   const orderedChains = currentNetwork === "Mainnet" ? ChainFilterMainnet : ChainFilterTestnet;
 
   const { width } = useWindowSize();
-  const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
-  const isBigDesktop = width >= BREAKPOINTS.bigDesktop;
 
   const [selectedTopAssetTimeRange, setSelectedTopAssetTimeRange] = useState(RANGE_LIST[0]);
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
@@ -93,6 +91,7 @@ const TokenActivity = () => {
       });
     }
 
+    setRowSelected(0);
     return filteredResponse;
   });
 
@@ -150,7 +149,7 @@ const TokenActivity = () => {
         value: dataList[rowIndex].symbol,
       },
     });
-    setRowSelected(rowIndex === rowSelected ? -1 : rowIndex);
+    setRowSelected(!isDesktop && rowIndex === rowSelected ? -1 : rowIndex);
   };
 
   useOutsideClick({
@@ -337,7 +336,7 @@ const TokenActivity = () => {
                   </div>
 
                   {width < BREAKPOINTS.desktop && rowSelected === rowIndex && (
-                    <TokenActivityChart
+                    <Chart
                       data={dataChart}
                       isError={isErrorChart}
                       isLoading={isLoadingChart}
@@ -352,7 +351,7 @@ const TokenActivity = () => {
           </div>
 
           {width >= BREAKPOINTS.desktop && (
-            <TokenActivityChart
+            <Chart
               data={dataChart}
               isError={isErrorChart}
               isLoading={isLoadingChart}
