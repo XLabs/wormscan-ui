@@ -1,10 +1,60 @@
+import { useState, useMemo } from "react";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
 import { Summary } from "./Summary";
 import { ByChain } from "./ByChain";
+import { TransfersOverTime } from "./TransfersOverTime";
 import "./styles.scss";
 
+export type TimeRange = { label: string; value: string };
+export type ByType = "notional" | "tx";
+
 const WToken = () => {
+  const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last week", value: "1w" });
+  const [by, setBy] = useState<ByType>("tx");
+
+  const { startDate, endDate } = useMemo(() => {
+    const end = new Date();
+    const start = new Date(end);
+    switch (timeRange.value) {
+      case "1d":
+        start.setDate(end.getDate() - 1);
+        break;
+      case "1w":
+        start.setDate(end.getDate() - 7);
+        break;
+      case "1m":
+        start.setMonth(end.getMonth() - 1);
+        break;
+      case "1y":
+        start.setFullYear(end.getFullYear() - 1);
+        break;
+    }
+    return { startDate: start, endDate: end };
+  }, [timeRange]);
+
+  const {
+    data: transfersByTime,
+    isError: isErrorTransfersByTime,
+    isFetching: isFetchingTransfersByTime,
+  } = useQuery(
+    ["getTransferByTimeTx", startDate, endDate, by],
+    async () => {
+      const timeSpan = timeRange.value === "1d" ? "1h" : timeRange.value === "1y" ? "1mo" : "1d";
+      return {
+        data: await getClient().nttApi.getNttTransferByTime({
+          by,
+          symbol: "W",
+          from: startDate.toISOString(),
+          timeSpan,
+          to: endDate.toISOString(),
+        }),
+        timeSpan,
+      };
+    },
+    { refetchOnWindowFocus: false },
+  );
+
   // const {
   //   data: topAddressesNotional,
   //   isError: isErrorTopAddressesNotional,
@@ -65,42 +115,20 @@ const WToken = () => {
     return activity;
   });
 
-  const TODAY = new Date();
-  const LAST_WEEK = new Date();
-  LAST_WEEK.setDate(TODAY.getDate() - 7);
-
-  const {
-    data: transfersByTimeNotional,
-    isError: isErrorTransfersByTimeNotional,
-    isFetching: isFetchingTransfersByTimeNotional,
-  } = useQuery("getTransferByTimeNotional", () =>
-    getClient().nttApi.getNttTransferByTime({
-      by: "notional",
-      symbol: "W",
-      from: LAST_WEEK.toISOString(),
-      timeSpan: "1d",
-      to: TODAY.toISOString(),
-    }),
-  );
-
-  // const {
-  //   data: transfersByTimeTx,
-  //   isError: isErrorTransfersByTimeTx,
-  //   isFetching: isFetchingTransfersByTimeTx,
-  // } = useQuery("getTransferByTimeTx", () =>
-  //   getClient().nttApi.getNttTransferByTime({
-  //     by: "tx",
-  //     symbol: "W",
-  //     from: LAST_WEEK.toISOString(),
-  //     timeSpan: "1d",
-  //     to: TODAY.toISOString(),
-  //   }),
-  // );
-
   return (
     <div>
       <Summary summary={summary} />
       <ByChain activityNotional={activityNotional} activityTx={activityTx} />
+      <TransfersOverTime
+        transfers={transfersByTime?.data}
+        isLoading={isFetchingTransfersByTime}
+        isError={isErrorTransfersByTime}
+        timeSpan={transfersByTime?.timeSpan || "1d"}
+        setTimeRange={value => setTimeRange(value)}
+        timeRange={timeRange}
+        by={by}
+        setBy={setBy}
+      />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { GetSummaryResult } from "src/api/native-token-transfer/types";
 import { Loader } from "src/components/atoms";
 import { WORMHOLE_PAGE_URL } from "src/consts";
-import { ActivityIcon, LinkIcon } from "src/icons/generic";
+import { AnalyticsIcon, LinkIcon } from "src/icons/generic";
 import { formatNumber, numberToSuffix } from "src/utils/number";
 import { getTokenIcon } from "src/utils/token";
 
@@ -60,7 +60,7 @@ export const Summary = ({ summary }: SummaryProps) => {
       <div className="summary-metrics">
         <div className="summary-metrics-title">
           <div className="summary-metrics-title-icon">
-            <ActivityIcon width={20} />
+            <AnalyticsIcon width={20} />
           </div>
           <h2 className="summary-metrics-title-text">Summary Metrics</h2>
         </div>

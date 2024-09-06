@@ -296,6 +296,107 @@
   }
 }
 
+.transfers-over-time {
+  @include centered-column;
+  margin-bottom: 50px;
+  margin-top: 50px;
+
+  &-title {
+    @include centered-row;
+    @include text-roboto-subheading-500;
+    gap: 12px;
+
+    svg {
+      color: var(--color-gray-300);
+    }
+  }
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  &-filters {
+    @include centered-row;
+  }
+
+  &-toggle-by {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+
+  &-toggle-type {
+    margin-left: auto;
+  }
+
+  &-container {
+    background-color: var(--color-gray-950);
+    border-radius: 18px;
+    padding: 24px;
+    padding-bottom: 48px;
+
+    &-chart {
+      position: relative;
+      height: 360px;
+
+      & .wormholescan-brand {
+        bottom: 24px;
+        filter: grayscale(1);
+        height: 34px;
+        left: 0;
+        margin: auto;
+        min-height: unset;
+        opacity: 0.2;
+        pointer-events: none;
+        position: absolute;
+        right: 0;
+        top: 0;
+        user-select: none;
+        width: 162px;
+        z-index: 1;
+
+        @include desktop {
+          bottom: 8px;
+          width: 217px;
+        }
+      }
+
+      .apexcharts-canvas {
+        background-color: transparent !important;
+      }
+
+      &-tooltip {
+        background-color: var(--color-gray-900);
+        border-radius: 8px;
+        padding: 12px;
+
+        &-date {
+          @include text-roboto-body-400;
+          color: var(--color-gray-400);
+          margin-bottom: 8px;
+        }
+
+        &-amount {
+          @include centered-row;
+          gap: 8px;
+
+          img {
+            width: 16px;
+            height: 16px;
+          }
+
+          span {
+            @include text-roboto-body-500;
+            color: var(--color-white);
+          }
+        }
+      }
+    }
+  }
+}
+
 @keyframes loading-animation {
   0% {
     left: -50%;
