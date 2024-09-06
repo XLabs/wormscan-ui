@@ -147,6 +147,10 @@
             @include desktop {
               height: 36px;
             }
+
+            &.hidden {
+              display: none;
+            }
           }
         }
       }

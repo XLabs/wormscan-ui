@@ -121,19 +121,13 @@ const TokenActivity = () => {
       }),
   );
 
-  const handleFiltersOpened = () => {
-    setOpenFilters(prev => !prev);
-  };
-
   const applyFilters = () => {
     setOpenFilters(false);
   };
 
   const resetFilters = () => {
     setFilters({
-      from: oneDayAgoISOString,
-      to: todayISOString,
-      timespan: "1h",
+      ...filters,
       sourceChain: [],
       targetChain: [],
       symbol: { label: dataList[0].symbol, value: dataList[0].symbol },
@@ -249,7 +243,14 @@ const TokenActivity = () => {
                 Apply Filters
               </button>
 
-              <button className="reset-btn" onClick={resetFilters}>
+              <button
+                className={`reset-btn ${
+                  isDesktop && filters.sourceChain.length === 0 && filters.targetChain.length === 0
+                    ? "hidden"
+                    : ""
+                }`}
+                onClick={resetFilters}
+              >
                 Reset Filters
               </button>
             </div>
@@ -281,7 +282,7 @@ const TokenActivity = () => {
 
           <button
             className="token-activity-container-top-filters-btn"
-            onClick={handleFiltersOpened}
+            onClick={() => setOpenFilters(true)}
           >
             <FilterListIcon />
             <span className="token-activity-container-top-filters-btn-txt">Filters</span>
