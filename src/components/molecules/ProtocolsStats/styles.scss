@@ -109,6 +109,35 @@
         scroll-snap-align: unset;
       }
 
+      &-loader {
+        @include desktop {
+          border-bottom: 1px solid var(--color-gray-900);
+          height: 77px;
+          overflow: hidden;
+          position: relative;
+
+          &::before {
+            animation: loading-list 2s linear infinite;
+            background-image: linear-gradient(
+              120deg,
+              var(--color-white-05) 0%,
+              var(--color-white-10) 25%,
+              var(--color-white-05) 50%,
+              var(--color-white-10) 75%,
+              var(--color-white-05) 100%
+            );
+            bottom: 0;
+            content: "";
+            height: 28px;
+            left: 0;
+            margin: auto 0;
+            position: absolute;
+            top: 0;
+            width: 400%;
+          }
+        }
+      }
+
       & > a {
         max-width: max-content;
 
@@ -234,5 +263,14 @@
         }
       }
     }
+  }
+}
+
+@keyframes loading-list {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
   }
 }

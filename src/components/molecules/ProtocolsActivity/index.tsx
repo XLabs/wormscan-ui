@@ -1,29 +1,43 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useQuery } from "react-query";
 import ReactApexChart from "react-apexcharts";
-import { BREAKPOINTS } from "src/consts";
+import { BREAKPOINTS, PORTAL_NFT_APP_ID } from "src/consts";
 import { Loader, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { useWindowSize } from "src/utils/hooks";
 import { firstDataAvailableDate, getISODateZeroed, todayISOString } from "src/utils/date";
-import { formatterYAxis } from "src/utils/apexChartUtils";
+import { grayColors } from "src/utils/chainActivityUtils";
+import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { PROTOCOL_LIST } from "src/utils/filterUtils";
-import { numberToSuffix } from "src/utils/number";
+import { formatNumber, numberToSuffix } from "src/utils/number";
 import { formatAppId } from "src/utils/crypto";
 import { getClient } from "src/api/Client";
-import { Cube3DIcon } from "src/icons/generic";
+import { ActivityIcon, AnalyticsIcon, Cube3DIcon } from "src/icons/generic";
 import "./styles.scss";
 
-interface TimeRangeData {
-  from: string;
-  to: string;
+interface IProtocol {
+  name: string;
+  color: string;
   total_messages: number;
   total_value_transferred: number;
 }
 
+interface ITimeRangeData {
+  from: string;
+  to: string;
+  total_messages: number;
+  total_value_transferred: number;
+  protocols: IProtocol[];
+}
+
 const METRIC_CHART_LIST = [
   { label: "Volume", value: "volume", ariaLabel: "Volume" },
-  { label: "Transactions", value: "transactions", ariaLabel: "Transactions" },
+  { label: "Transfers", value: "transfers", ariaLabel: "Transfers" },
+];
+
+const TYPE_CHART_LIST = [
+  { label: <ActivityIcon width={24} />, value: "area", ariaLabel: "Area" },
+  { label: <AnalyticsIcon width={24} />, value: "bar", ariaLabel: "Bar" },
 ];
 
 const RANGE_LIST = [
@@ -39,7 +53,11 @@ const ProtocolsActivity = () => {
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
 
-  const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
+  const chartRef = useRef(null);
+  const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
+  const [metricSelected, setMetricSelected] = useState<"volume" | "transfers">("volume");
+  const [totalVolumeValue, setTotalVolumeValue] = useState(0);
+  const [totalMessagesValue, setTotalMessagesValue] = useState(0);
   const [data, setData] = useState([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
   const [filters, setFilters] = useState({
@@ -51,23 +69,37 @@ const ProtocolsActivity = () => {
 
   const series = useMemo(() => {
     if (data.length === 0) return [];
+
+    let totalVolume = 0;
+    let totalMessages = 0;
+
     if (filters.appId) {
-      return data.map(item => ({
+      const result = data.map(item => ({
         name: item.app_id,
         color: "#7abfff",
-        data: item.time_range_data.map((dataItem: TimeRangeData) => ({
-          x: dataItem.from,
-          y:
-            metricSelected === "volume"
-              ? dataItem.total_value_transferred
-              : dataItem.total_messages,
-        })),
+        data: item.time_range_data.map((dataItem: ITimeRangeData) => {
+          totalVolume += dataItem.total_value_transferred;
+          totalMessages += dataItem.total_messages;
+
+          return {
+            x: dataItem.from,
+            y:
+              metricSelected === "volume"
+                ? dataItem.total_value_transferred
+                : dataItem.total_messages,
+          };
+        }),
       }));
+
+      setTotalVolumeValue(totalVolume);
+      setTotalMessagesValue(totalMessages);
+
+      return result;
     } else {
-      const combinedData: { [key: string]: TimeRangeData } = {};
+      const combinedData: { [key: string]: ITimeRangeData } = {};
 
       data.forEach(item => {
-        item.time_range_data.forEach((dataItem: TimeRangeData) => {
+        item.time_range_data.forEach((dataItem: ITimeRangeData) => {
           const date = dataItem.from;
           if (!combinedData[date]) {
             combinedData[date] = {
@@ -75,26 +107,91 @@ const ProtocolsActivity = () => {
               to: dataItem.to,
               total_messages: 0,
               total_value_transferred: 0,
+              protocols: [],
             };
           }
           combinedData[date].total_messages += dataItem.total_messages;
           combinedData[date].total_value_transferred += dataItem.total_value_transferred;
+
+          const protocolIndex = combinedData[date].protocols.findIndex(
+            protocol => protocol.name === item.app_id,
+          );
+          if (protocolIndex === -1) {
+            combinedData[date].protocols.push({
+              name: item.app_id,
+              color: grayColors[combinedData[date].protocols.length],
+              total_messages: dataItem.total_messages,
+              total_value_transferred: dataItem.total_value_transferred,
+            });
+          } else {
+            combinedData[date].protocols[protocolIndex].total_messages += dataItem.total_messages;
+            combinedData[date].protocols[protocolIndex].total_value_transferred +=
+              dataItem.total_value_transferred;
+          }
         });
       });
 
-      const combinedDataArray = Object.values(combinedData);
+      const combinedDataArray = Object.values(combinedData).map(dataItem => {
+        const maxItems = 10;
+
+        const positiveProtocols = dataItem.protocols.filter(protocol => {
+          if (metricSelected === "volume") {
+            return protocol.total_value_transferred > 0;
+          } else {
+            return protocol.total_messages > 0;
+          }
+        });
+
+        positiveProtocols.sort((a, b) => {
+          if (metricSelected === "volume") {
+            return b.total_value_transferred - a.total_value_transferred;
+          } else {
+            return b.total_messages - a.total_messages;
+          }
+        });
+
+        const protocols = positiveProtocols.slice(0, maxItems);
+        const others = positiveProtocols.slice(maxItems);
+
+        const othersTotalMessages = others.reduce(
+          (acc, protocol) => acc + protocol.total_messages,
+          0,
+        );
+        const othersTotalValueTransferred = others.reduce(
+          (acc, protocol) => acc + protocol.total_value_transferred,
+          0,
+        );
+
+        if (othersTotalMessages > 0 || othersTotalValueTransferred > 0) {
+          protocols.push({
+            name: "Others",
+            color: grayColors[protocols.length],
+            total_messages: othersTotalMessages,
+            total_value_transferred: othersTotalValueTransferred,
+          });
+        }
+
+        totalVolume += dataItem.total_value_transferred;
+        totalMessages += dataItem.total_messages;
+
+        return {
+          protocols,
+          x: dataItem.from,
+          y:
+            metricSelected === "volume"
+              ? dataItem.total_value_transferred
+              : dataItem.total_messages,
+        };
+      });
+
+      setTotalVolumeValue(totalVolume);
+      setTotalMessagesValue(totalMessages);
 
       return [
         {
           name: "All Protocols",
           color: "#7abfff",
-          data: combinedDataArray.map(dataItem => ({
-            x: dataItem.from,
-            y:
-              metricSelected === "volume"
-                ? dataItem.total_value_transferred
-                : dataItem.total_messages,
-          })),
+          data: combinedDataArray,
         },
       ];
     }
@@ -124,7 +221,7 @@ const ProtocolsActivity = () => {
             className="protocols-activity-container-top-select-protocol"
             controlStyles={{ minWidth: 256 }}
             isMulti={false}
-            items={PROTOCOL_LIST}
+            items={PROTOCOL_LIST.filter(protocol => protocol.value !== PORTAL_NFT_APP_ID)}
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
             menuPortalStyles={{ zIndex: 100 }}
             name="protocol"
@@ -142,13 +239,23 @@ const ProtocolsActivity = () => {
             }}
           />
 
-          <ToggleGroup
-            ariaLabel="Select metric type (volume or transactions)"
-            className="protocols-activity-container-top-toggle"
-            items={METRIC_CHART_LIST}
-            onValueChange={value => setMetricSelected(value)}
-            value={metricSelected}
-          />
+          <div className="protocols-activity-container-top-mid">
+            <ToggleGroup
+              ariaLabel="Select metric type (volume or transfers)"
+              className="protocols-activity-container-top-mid-toggle"
+              items={METRIC_CHART_LIST}
+              onValueChange={value => setMetricSelected(value)}
+              value={metricSelected}
+            />
+
+            <ToggleGroup
+              ariaLabel="Select type"
+              className="protocols-activity-container-top-mid-toggle-type"
+              items={TYPE_CHART_LIST}
+              onValueChange={value => setChartSelected(value)}
+              value={chartSelected}
+            />
+          </div>
 
           <Select
             ariaLabel="Select Time Range"
@@ -167,7 +274,7 @@ const ProtocolsActivity = () => {
           />
         </div>
 
-        <div className="protocols-activity-container-chart">
+        <div className="protocols-activity-container-chart" ref={chartRef}>
           {isError ? (
             <ErrorPlaceholder />
           ) : isFetching ? (
@@ -176,13 +283,42 @@ const ProtocolsActivity = () => {
             <>
               <WormholeScanBrand />
 
+              <div className="protocols-activity-container-chart-header">
+                {metricSelected === "volume" ? (
+                  <div className="protocols-activity-container-chart-header-total-txt">
+                    Volume: <span>${formatNumber(totalVolumeValue)}</span>
+                  </div>
+                ) : (
+                  <div className="protocols-activity-container-chart-header-total-txt">
+                    Transfers: <span>{formatNumber(totalMessagesValue)}</span>
+                  </div>
+                )}
+              </div>
+
               <ReactApexChart
+                key={chartSelected}
                 series={series}
-                type="area"
+                type={chartSelected}
                 height={isDesktop ? 360 : 300}
                 options={{
                   chart: {
                     animations: { enabled: true },
+                    events:
+                      chartSelected === "bar"
+                        ? {
+                            mouseLeave: () => {
+                              changePathOpacity({ ref: chartRef, opacity: 1 });
+                            },
+                            mouseMove(e, chart, options) {
+                              if (options.dataPointIndex < 0) {
+                                changePathOpacity({
+                                  ref: chartRef,
+                                  opacity: 1,
+                                });
+                              }
+                            },
+                          }
+                        : {},
                     toolbar: { show: false },
                     zoom: { enabled: false },
                   },
@@ -195,9 +331,6 @@ const ProtocolsActivity = () => {
                     },
                     yaxis: {
                       lines: { show: true },
-                    },
-                    padding: {
-                      top: isDesktop ? 16 : 0,
                     },
                   },
                   states: {
@@ -213,18 +346,16 @@ const ProtocolsActivity = () => {
                     },
                   },
                   stroke: {
-                    curve: "straight",
-                    width: 2,
-                    dashArray: 0,
+                    width: chartSelected === "area" ? 2 : 0,
                   },
                   fill: {
-                    type: "gradient",
+                    type: chartSelected === "area" ? "gradient" : "solid",
                     gradient: {
-                      type: "vertical",
-                      shadeIntensity: 0,
                       opacityFrom: 0.4,
                       opacityTo: 0,
+                      shadeIntensity: 0,
                       stops: [0, 100],
+                      type: "vertical",
                     },
                   },
                   xaxis: {
@@ -287,6 +418,10 @@ const ProtocolsActivity = () => {
                     custom: ({ s, seriesIndex, dataPointIndex, w }) => {
                       const data = w.config.series[seriesIndex].data[dataPointIndex];
 
+                      if (chartSelected === "bar") {
+                        updatePathStyles({ chartRef, dataPointIndex });
+                      }
+
                       return `<div class="protocols-activity-container-chart-tooltip">
                               <p class="protocols-activity-container-chart-tooltip-date">
                                 ${new Date(data.x).toLocaleString("en-GB", {
@@ -308,11 +443,52 @@ const ProtocolsActivity = () => {
                                 <div class="protocols-activity-container-chart-tooltip-protocol-number">
                                   ${
                                     metricSelected === "volume"
-                                      ? `$${numberToSuffix(data.y, 0)}`
-                                      : numberToSuffix(data.y, 0)
+                                      ? `$${numberToSuffix(data.y)}`
+                                      : numberToSuffix(data.y)
                                   }
                                 </div>    
                               </div>
+                              ${
+                                data?.protocols?.length > 0
+                                  ? `
+                                  <p 
+                                    class="protocols-activity-container-chart-tooltip-date"
+                                    style="margin-top: 24px;"
+                                  >
+                                    PROTOCOLS:
+                                  </p>
+                                `
+                                  : ""
+                              }
+                              ${
+                                data?.protocols?.length > 0
+                                  ? data?.protocols
+                                      ?.map(
+                                        (protocol: IProtocol, i: number) => `
+                                  <div 
+                                    class="protocols-activity-container-chart-tooltip-protocol"
+                                    style="margin-bottom: 8px;"
+                                  >
+                                    <div 
+                                      class="protocols-activity-container-chart-tooltip-protocol-icon" 
+                                      style="background-color: ${grayColors[i]};"
+                                    >
+                                    </div>
+                                    <div class="protocols-activity-container-chart-tooltip-protocol-name">
+                                      ${formatAppId(protocol.name)}
+                                    </div>
+                                    <div class="protocols-activity-container-chart-tooltip-protocol-number">
+                                      ${
+                                        metricSelected === "volume"
+                                          ? `$${numberToSuffix(protocol.total_value_transferred)}`
+                                          : numberToSuffix(protocol.total_messages)
+                                      }
+                                    </div>
+                                  </div>`,
+                                      )
+                                      .join("")
+                                  : ""
+                              }  
                             </div>
                           `;
                     },

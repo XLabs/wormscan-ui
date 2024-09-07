@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { ALL_BRIDGE_APP_ID, MAYAN_APP_ID } from "src/consts";
+import { ALL_BRIDGE_APP_ID, BREAKPOINTS, MAYAN_APP_ID } from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Cube3DIcon, LinkIcon } from "src/icons/generic";
 import { BlockchainIcon, Loader, NavLink, ProtocolIcon, Tooltip } from "src/components/atoms";
@@ -12,6 +12,7 @@ import {
   todayISOString,
   twoDaysAgoISOString,
 } from "src/utils/date";
+import { useWindowSize } from "src/utils/hooks";
 import { getChainName } from "src/utils/wormhole";
 import { formatNumber } from "src/utils/number";
 import { formatAppId } from "src/utils/crypto";
@@ -32,15 +33,30 @@ interface ITable {
 
 const calculatePercentageDiff = (newValue: number, oldValue: number) => {
   if (oldValue === 0 && newValue === 0) return "0.00%";
-  if (oldValue === 0 && newValue > 0) return "∞%";
-  if (newValue === 0 && oldValue > 0) return "-∞%";
+  if (oldValue === 0 && newValue > 0) return "N/A";
   return (((newValue - oldValue) / oldValue) * 100).toFixed(2) + "%";
+};
+
+const getClassAndPrefix = (percentage: string) => {
+  const diffClass =
+    percentage === "0.00%" || percentage === "N/A"
+      ? ""
+      : percentage.startsWith("-")
+      ? "negative"
+      : "positive";
+
+  const prefix = !percentage.startsWith("-") && percentage !== "N/A" ? "+" : "";
+
+  return { diffClass, prefix };
 };
 
 const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "Mainnet";
+
+  const { width } = useWindowSize();
+  const isDesktop = width >= BREAKPOINTS.desktop;
 
   const [dataTable, setDataTable] = useState<ITable[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -321,15 +337,10 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
   ]);
 
   return (
-    <div
-      className={`protocols-stats ${currentNetwork}`}
-      style={{
-        minHeight: numberOfProtocols ? numberOfProtocols * 77 + 88 : "auto",
-      }}
-    >
+    <div className={`protocols-stats ${currentNetwork}`}>
       <h3 className="protocols-stats-title">
         <Cube3DIcon width={24} />
-        {numberOfProtocols ? "Featured Protocols" : "Protocols Stats"}
+        {numberOfProtocols ? `Top ${numberOfProtocols} Protocols by Volume` : "Protocols Stats"}
 
         {numberOfProtocols && (
           <NavLink className="protocols-stats-title-link" to="/analytics/protocols">
@@ -341,10 +352,6 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
       {isError ? (
         <div className="protocols-stats-error">
           <ErrorPlaceholder />
-        </div>
-      ) : isLoading ? (
-        <div className="protocols-stats-loader">
-          <Loader />
         </div>
       ) : (
         <div className="protocols-stats-container">
@@ -361,147 +368,191 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
             <h4 className="protocols-stats-container-header-title">CHAINS</h4>
           </div>
 
-          {dataTable?.map((item, i) => {
-            if (i >= numberOfProtocols) return null;
+          {isLoading ? (
+            isDesktop ? (
+              Array.from({ length: numberOfProtocols || 13 }).map((_, i) => (
+                <div className="protocols-stats-container-element-loader" key={i} />
+              ))
+            ) : (
+              <Loader />
+            )
+          ) : (
+            dataTable?.map((item, i) => {
+              if (i >= numberOfProtocols) return null;
 
-            return (
-              <div className="protocols-stats-container-element" key={item.protocol}>
-                <a
-                  className="protocols-stats-container-element-item"
-                  href={protocolLinksByProtocol[item.protocol]}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <ProtocolIcon protocol={item.protocol} />
+              const { last_day_value_diff_percentage, last_day_diff_percentage } = item || {};
 
-                  <p className="protocols-stats-container-element-item-protocol">
-                    {formatAppId(item.protocol)}
-                  </p>
+              const { diffClass: diffValueClass, prefix: prefixValue } = getClassAndPrefix(
+                last_day_value_diff_percentage,
+              );
+              const { diffClass: diffMessagesClass, prefix: prefixMessages } =
+                getClassAndPrefix(last_day_diff_percentage);
 
-                  <LinkIcon width={24} />
-                </a>
+              return (
+                <div className="protocols-stats-container-element" key={item.protocol}>
+                  <a
+                    className="protocols-stats-container-element-item"
+                    href={protocolLinksByProtocol[item.protocol]}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <ProtocolIcon protocol={item.protocol} />
 
-                {isMainnet && (
-                  <>
-                    <div className="protocols-stats-container-element-item">
-                      <h4 className="protocols-stats-container-element-item-title">TOTAL VOLUME</h4>
-                      <p className="protocols-stats-container-element-item-value">
-                        $
-                        {item?.total_value_transferred
-                          ? formatNumber(item?.total_value_transferred, 0)
-                          : " -"}
-                      </p>
-                    </div>
+                    <p className="protocols-stats-container-element-item-protocol">
+                      {formatAppId(item.protocol)}
+                    </p>
 
-                    <div className="protocols-stats-container-element-item">
-                      <h4 className="protocols-stats-container-element-item-title">24H VOLUME</h4>
-                      <p className="protocols-stats-container-element-item-value">
-                        ${formatNumber(item?.last_day_value_transferred, 0)}
-                        <span
-                          className={`protocols-stats-container-element-item-value-diff ${
-                            item?.last_day_value_diff_percentage === "0.00%"
-                              ? ""
-                              : item?.last_day_value_diff_percentage.startsWith("-")
-                              ? "negative"
-                              : "positive"
-                          }`}
-                        >
-                          {!item?.last_day_value_diff_percentage.startsWith("-") && "+"}
-                          {item?.last_day_value_diff_percentage}
-                        </span>
-                      </p>
-                    </div>
-                  </>
-                )}
+                    <LinkIcon width={24} />
+                  </a>
 
-                <div className="protocols-stats-container-element-item">
-                  <h4 className="protocols-stats-container-element-item-title">TOTAL TRANSFERS</h4>
-                  <p className="protocols-stats-container-element-item-value">
-                    {item?.total_messages ? formatNumber(item?.total_messages, 0) : "-"}
-                  </p>
-                </div>
+                  {isMainnet && (
+                    <>
+                      <div className="protocols-stats-container-element-item">
+                        <h4 className="protocols-stats-container-element-item-title">
+                          TOTAL VOLUME
+                        </h4>
+                        <p className="protocols-stats-container-element-item-value">
+                          $
+                          {item?.total_value_transferred
+                            ? formatNumber(item?.total_value_transferred, 0)
+                            : " -"}
+                        </p>
+                      </div>
 
-                <div className="protocols-stats-container-element-item">
-                  <h4 className="protocols-stats-container-element-item-title">24H TRANSFERS</h4>
-                  <p className="protocols-stats-container-element-item-value">
-                    {formatNumber(item?.last_day_messages, 0)}
-                    <span
-                      className={`protocols-stats-container-element-item-value-diff ${
-                        item?.last_day_diff_percentage === "0.00%"
-                          ? ""
-                          : item?.last_day_diff_percentage.startsWith("-")
-                          ? "negative"
-                          : "positive"
-                      }`}
-                    >
-                      {!item?.last_day_diff_percentage.startsWith("-") && "+"}
-                      {item?.last_day_diff_percentage}
-                    </span>
-                  </p>
-                </div>
-
-                <div className="protocols-stats-container-element-item">
-                  <h4 className="protocols-stats-container-element-item-title">CHAINS</h4>
-                  <div className="protocols-stats-container-element-item-value">
-                    <Tooltip
-                      type="info"
-                      maxWidth={false}
-                      tooltip={
-                        <div className="protocols-stats-container-element-item-value-tooltip">
-                          {chainsSupportedByProtocol?.[item.protocol]?.map(chainId => {
-                            return (
-                              <div
-                                className="protocols-stats-container-element-item-value-tooltip-content"
-                                key={chainId}
-                              >
-                                <BlockchainIcon
-                                  background="#1F1F1F"
-                                  chainId={chainId}
-                                  network={currentNetwork}
-                                  size={20}
-                                />
-
-                                {getChainName({ chainId, network: currentNetwork })}
+                      <div className="protocols-stats-container-element-item">
+                        <h4 className="protocols-stats-container-element-item-title">24H VOLUME</h4>
+                        <p className="protocols-stats-container-element-item-value">
+                          ${formatNumber(item?.last_day_value_transferred, 0)}
+                          <Tooltip
+                            type="info"
+                            tooltip={
+                              <div className="protocols-stats-container-element-item-value-tooltipasd">
+                                <p>
+                                  ${formatNumber(item?.two_days_ago_value_transferred, 0)} were
+                                  transferred in the previous 24 hours.
+                                </p>
+                                <br />
+                                <p>
+                                  ${formatNumber(item?.last_day_value_transferred, 0)} were
+                                  transferred in the last 24 hours.
+                                </p>
                               </div>
+                            }
+                          >
+                            <span
+                              className={`protocols-stats-container-element-item-value-diff ${diffValueClass}`}
+                            >
+                              {prefixValue}
+                              {last_day_value_diff_percentage}
+                            </span>
+                          </Tooltip>
+                        </p>
+                      </div>
+                    </>
+                  )}
+
+                  <div className="protocols-stats-container-element-item">
+                    <h4 className="protocols-stats-container-element-item-title">
+                      TOTAL TRANSFERS
+                    </h4>
+                    <p className="protocols-stats-container-element-item-value">
+                      {item?.total_messages ? formatNumber(item?.total_messages, 0) : "-"}
+                    </p>
+                  </div>
+
+                  <div className="protocols-stats-container-element-item">
+                    <h4 className="protocols-stats-container-element-item-title">24H TRANSFERS</h4>
+                    <p className="protocols-stats-container-element-item-value">
+                      {formatNumber(item?.last_day_messages, 0)}
+                      <Tooltip
+                        type="info"
+                        tooltip={
+                          <div className="protocols-stats-container-element-item-value-tooltipasd">
+                            <p>
+                              {formatNumber(item?.two_days_ago_messages, 0)} messages were sent in
+                              the previous 24 hours.
+                            </p>
+                            <br />
+                            <p>
+                              {formatNumber(item?.last_day_messages, 0)} messages were sent in the
+                              last 24 hours.
+                            </p>
+                          </div>
+                        }
+                      >
+                        <span
+                          className={`protocols-stats-container-element-item-value-diff ${diffMessagesClass}`}
+                        >
+                          {prefixMessages}
+                          {last_day_diff_percentage}
+                        </span>
+                      </Tooltip>
+                    </p>
+                  </div>
+
+                  <div className="protocols-stats-container-element-item">
+                    <h4 className="protocols-stats-container-element-item-title">CHAINS</h4>
+                    <div className="protocols-stats-container-element-item-value">
+                      <Tooltip
+                        type="info"
+                        maxWidth={false}
+                        tooltip={
+                          <div className="protocols-stats-container-element-item-value-tooltip">
+                            {chainsSupportedByProtocol?.[item.protocol]?.map(chainId => {
+                              return (
+                                <div
+                                  className="protocols-stats-container-element-item-value-tooltip-content"
+                                  key={chainId}
+                                >
+                                  <BlockchainIcon
+                                    background="#1F1F1F"
+                                    chainId={chainId}
+                                    network={currentNetwork}
+                                    size={20}
+                                  />
+
+                                  {getChainName({ chainId, network: currentNetwork })}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        }
+                      >
+                        <div className="protocols-stats-container-element-item-value-chains">
+                          {chainsSupportedByProtocol?.[item.protocol]?.map((chainId, i) => {
+                            if (i > 7) return null;
+
+                            if (i === 7 && chainsSupportedByProtocol[item.protocol].length > 8) {
+                              return (
+                                <div
+                                  key={chainId}
+                                  className="protocols-stats-container-element-item-value-chains-chain protocols-stats-container-element-item-value-chains-chain-more"
+                                >
+                                  {chainsSupportedByProtocol[item.protocol].length - 7}
+                                </div>
+                              );
+                            }
+
+                            return (
+                              <BlockchainIcon
+                                background="#1F1F1F"
+                                chainId={chainId}
+                                className="protocols-stats-container-element-item-value-chains-chain"
+                                colorless={true}
+                                key={chainId}
+                                network={currentNetwork}
+                                size={28}
+                              />
                             );
                           })}
                         </div>
-                      }
-                    >
-                      <div className="protocols-stats-container-element-item-value-chains">
-                        {chainsSupportedByProtocol?.[item.protocol]?.map((chainId, i) => {
-                          if (i > 7) return null;
-
-                          if (i === 7 && chainsSupportedByProtocol[item.protocol].length > 8) {
-                            return (
-                              <div
-                                key={chainId}
-                                className="protocols-stats-container-element-item-value-chains-chain protocols-stats-container-element-item-value-chains-chain-more"
-                              >
-                                {chainsSupportedByProtocol[item.protocol].length - 7}
-                              </div>
-                            );
-                          }
-
-                          return (
-                            <BlockchainIcon
-                              background="#1F1F1F"
-                              chainId={chainId}
-                              className="protocols-stats-container-element-item-value-chains-chain"
-                              colorless={true}
-                              key={chainId}
-                              network={currentNetwork}
-                              size={28}
-                            />
-                          );
-                        })}
-                      </div>
-                    </Tooltip>
+                      </Tooltip>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       )}
     </div>

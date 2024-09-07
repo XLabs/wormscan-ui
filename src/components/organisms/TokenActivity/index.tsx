@@ -306,7 +306,11 @@ const TokenActivity = () => {
             {isErrorList ? (
               <ErrorPlaceholder />
             ) : isLoadingList ? (
-              <Loader />
+              <div className="token-activity-container-content-list-loader">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div className="token-activity-container-content-list-loader-row" key={i} />
+                ))}
+              </div>
             ) : (
               dataList?.map((item, rowIndex) => (
                 <Fragment key={rowIndex}>

@@ -64,14 +64,6 @@
       min-height: 500px;
     }
 
-    & .apexcharts-svg {
-      overflow: visible;
-    }
-
-    & .apexcharts-xcrosshairs {
-      fill: var(--color-white-05);
-    }
-
     & .loader {
       margin-top: 64px;
 
@@ -902,10 +894,6 @@
   & .apexcharts {
     z-index: 99;
 
-    &-tooltip {
-      overflow: visible !important;
-    }
-
     &-legend {
       display: inline;
       padding: 0;
@@ -921,21 +909,6 @@
         vertical-align: 1px;
         margin-right: 12px;
       }
-    }
-
-    &-xcrosshairs {
-      &.apexcharts-active {
-        stroke: var(--color-gray-600);
-        stroke-linecap: unset;
-        fill-opacity: 1;
-        stroke-dasharray: none;
-        z-index: 9999999;
-      }
-    }
-
-    &-xaxis-label,
-    &-yaxis-label {
-      text-transform: uppercase;
     }
   }
 }
