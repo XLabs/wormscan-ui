@@ -341,7 +341,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
       <h3 className="protocols-stats-title">
         <Cube3DIcon width={24} />
         {numberOfProtocols
-          ? `Top ${numberOfProtocols} Protocols by ${isMainnet ? "Volume" : "Transfers"}`
+          ? `Top ${numberOfProtocols} protocols by ${isMainnet ? "volume" : "transfers"}`
           : "Protocols Stats"}
 
         {numberOfProtocols && (
