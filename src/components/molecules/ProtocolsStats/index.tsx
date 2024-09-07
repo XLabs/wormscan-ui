@@ -340,7 +340,9 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
     <div className={`protocols-stats ${currentNetwork}`}>
       <h3 className="protocols-stats-title">
         <Cube3DIcon width={24} />
-        {numberOfProtocols ? `Top ${numberOfProtocols} Protocols by Volume` : "Protocols Stats"}
+        {numberOfProtocols
+          ? `Top ${numberOfProtocols} Protocols by ${isMainnet ? "Volume" : "Transfers"}`
+          : "Protocols Stats"}
 
         {numberOfProtocols && (
           <NavLink className="protocols-stats-title-link" to="/analytics/protocols">
