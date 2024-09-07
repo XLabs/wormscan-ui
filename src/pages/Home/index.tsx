@@ -1,12 +1,8 @@
 import { useEffect } from "react";
 import analytics from "src/analytics";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import {
-  CrossChainChart,
-  ProtocolsStats,
-  WormholeStats,
-  TopAssets,
-} from "src/components/molecules";
+import { CrossChainChart, ProtocolsStats, WormholeStats } from "src/components/molecules";
+import { TokenActivity } from "src/components/organisms";
 
 const Home = () => {
   useEffect(() => {
@@ -18,7 +14,7 @@ const Home = () => {
       <WormholeStats />
       <CrossChainChart />
       <ProtocolsStats numberOfProtocols={5} />
-      <TopAssets />
+      <TokenActivity isHomePage />
     </BaseLayout>
   );
 };

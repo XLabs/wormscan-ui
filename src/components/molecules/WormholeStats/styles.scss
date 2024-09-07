@@ -64,7 +64,33 @@
 
         &-time {
           @include text-heading6;
-          color: var(--color-white-30);
+          color: var(--color-gray-200);
+
+          &-arrow {
+            vertical-align: -8px;
+            margin-left: 4px;
+          }
+
+          &-select {
+            display: inline-block;
+
+            & .select__control {
+              @include text-heading6;
+              background-color: transparent;
+              color: var(--color-gray-200);
+              height: auto;
+              min-height: auto;
+              padding: 0;
+
+              &:hover {
+                background-color: transparent;
+              }
+            }
+
+            & .select__indicators {
+              display: none;
+            }
+          }
         }
 
         &-icon {

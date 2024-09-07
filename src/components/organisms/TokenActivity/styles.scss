@@ -29,6 +29,11 @@
     & > svg {
       color: var(--color-gray-600);
     }
+
+    & > a {
+      @include button-ghost;
+      margin-left: auto;
+    }
   }
 
   &-container {

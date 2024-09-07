@@ -4,7 +4,7 @@ import { ChainId } from "@wormhole-foundation/sdk";
 import { BREAKPOINTS } from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { ActivityIcon, ChevronDownIcon, CrossIcon, FilterListIcon } from "src/icons/generic";
-import { BlockchainIcon, Counter, Loader, Select, ToggleGroup } from "src/components/atoms";
+import { BlockchainIcon, Counter, NavLink, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { useLockBodyScroll, useOutsideClick, useWindowSize } from "src/utils/hooks";
 import { getTokenIcon } from "src/utils/token";
@@ -31,7 +31,7 @@ const RANGE_LIST = [
   // { label: "All Time", value: firstDataAvailableDate, timespan: "1mo" },
 ];
 
-const TokenActivity = () => {
+const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
 
@@ -166,7 +166,12 @@ const TokenActivity = () => {
       {openFilters && !isDesktop && <div className="token-activity-bg" />}
 
       <h3 className="token-activity-title">
-        <ActivityIcon /> Cross-chain Token Activity
+        <ActivityIcon /> Cross-Chain Token Activity
+        {isHomePage && (
+          <NavLink className="token-activity-title-link" to="/analytics/tokens">
+            View more
+          </NavLink>
+        )}
       </h3>
 
       <div className="token-activity-container">
