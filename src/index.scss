@@ -121,3 +121,30 @@ body {
     flex: 1;
   }
 }
+
+.apexcharts-tooltip {
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.apexcharts-xcrosshairs {
+  fill: var(--color-white-05);
+}
+
+.apexcharts-active {
+  stroke: var(--color-gray-600);
+  stroke-linecap: unset;
+  fill-opacity: 1;
+  stroke-dasharray: none;
+}
+
+.apexcharts-xaxis-label,
+.apexcharts-yaxis-label {
+  text-transform: uppercase;
+}
+
+.apexcharts-svg {
+  overflow: visible;
+}

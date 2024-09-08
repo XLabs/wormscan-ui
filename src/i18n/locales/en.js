@@ -48,7 +48,7 @@ export default {
           dayVolumeTime: "24H",
         },
         crossChain: {
-          title: "Cross-chain activity",
+          title: "Cross-Chain Activity",
           download: "Download",
           volume: "Volume",
           count: "Transactions",
@@ -60,8 +60,8 @@ export default {
           allApps: "All apps",
           allTime: "All time",
           portalActivity: "Portal Bridge Activity",
-          bottomMessageSources: "Chart shows only top ten targets",
-          bottomMessageDestinations: "Chart shows only top ten sources",
+          bottomMessageSources: "Chart shows top ten targets",
+          bottomMessageDestinations: "Chart shows top ten sources",
         },
         vaaCount: {
           title: "VAAs count by blockchain",

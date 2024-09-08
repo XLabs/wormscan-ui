@@ -1,12 +1,5 @@
 @import "src/styles/globals.scss";
 
-.apexcharts-tooltip {
-  background-color: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-}
-
 .chart-container {
   background-color: var(--color-gray-950);
   border-radius: 0 0 16px 16px;
@@ -28,10 +21,6 @@
 
   @include bigDesktop {
     flex: 1.2;
-  }
-
-  & .apexcharts-xcrosshairs {
-    fill: var(--color-white-05) !important;
   }
 
   & > div:last-child {

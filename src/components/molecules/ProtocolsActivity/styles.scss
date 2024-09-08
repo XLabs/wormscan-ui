@@ -29,9 +29,10 @@
 
     &-top {
       @include centered-column;
-      justify-content: space-between;
       flex-wrap: wrap;
       gap: 16px 0;
+      justify-content: space-between;
+      position: relative;
 
       @include desktop {
         @include centered-row;
@@ -50,7 +51,10 @@
         }
       }
 
-      &-toggle {
+      &-mid {
+        @include centered-row;
+        gap: 0 16px;
+        justify-content: space-between;
         max-width: 100%;
         order: 3;
 
@@ -62,12 +66,23 @@
           right: 0;
         }
 
-        & .toggle-group-root {
-          width: 100%;
-
-          & .toggle-group-item {
-            justify-content: center;
+        &-toggle {
+          & .toggle-group-root {
             width: 100%;
+
+            & .toggle-group-item {
+              justify-content: center;
+              width: 100%;
+            }
+          }
+        }
+
+        &-toggle-type {
+          border-radius: 12px !important;
+
+          & button {
+            border-radius: 12px !important;
+            padding: 6px !important;
           }
         }
       }
@@ -79,6 +94,22 @@
 
       @include desktop {
         min-height: 375px;
+      }
+
+      &-header {
+        @include centered-row;
+        justify-content: flex-end;
+        margin-top: 24px;
+
+        &-total-txt {
+          @include text-roboto-body-400;
+          color: var(--color-gray-500);
+
+          & > span {
+            @include text-heading5;
+            color: var(--color-white);
+          }
+        }
       }
 
       & .wormholescan-brand {
@@ -101,22 +132,6 @@
           bottom: 8px;
           width: 217px;
         }
-      }
-
-      & .apexcharts-svg {
-        overflow: visible;
-      }
-
-      & .apexcharts-active {
-        stroke: var(--color-gray-600);
-        stroke-linecap: unset;
-        fill-opacity: 1;
-        stroke-dasharray: none;
-        z-index: 9999999;
-      }
-
-      & .apexcharts-xaxis-label {
-        text-transform: uppercase;
       }
 
       &-tooltip {
