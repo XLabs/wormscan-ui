@@ -11,6 +11,21 @@
     gap: 8px;
   }
 
+  &-subtitle {
+    @include text-roboto-body-400;
+    color: var(--color-gray-600);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 6px;
+    margin-bottom: 6px;
+
+    a {
+      @include button-ghost;
+      color: var(--color-gray-600);
+    }
+  }
+
   &-loader {
     @include centered-row;
     height: 100%;

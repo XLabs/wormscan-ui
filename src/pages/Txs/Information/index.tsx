@@ -37,6 +37,7 @@ const Information = ({
   //att status txhash sourcechain token name token address time
   //trans status txhash from to protocol time
 
+  const isAttestation = payloadTypeParams === "2";
   const columns: Column[] | any = [
     {
       Header: "STATUS",
@@ -50,15 +51,23 @@ const Information = ({
       Header: "TYPE",
       accessor: "type",
     },
-    {
-      Header: payloadTypeParams === "2" ? "SOURCE CHAIN" : "CHAINS",
-      accessor: "chains",
+    !isAttestation && {
+      Header: "FROM",
+      accessor: "from",
     },
-    payloadTypeParams === "2" && {
+    !isAttestation && {
+      Header: "TO",
+      accessor: "to",
+    },
+    isAttestation && {
+      Header: "SOURCE CHAIN",
+      accessor: "sourceChain",
+    },
+    isAttestation && {
       Header: "TOKEN NAME",
       accessor: "tokenName",
     },
-    payloadTypeParams === "2" && {
+    isAttestation && {
       Header: "TOKEN ADDRESS",
       accessor: "tokenAddress",
     },

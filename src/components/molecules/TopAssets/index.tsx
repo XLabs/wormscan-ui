@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BREAKPOINTS } from "src/consts";
-import { Loader, Select } from "src/components/atoms";
+import { Loader, NavLink, Select } from "src/components/atoms";
 import { ErrorPlaceholder, TopAssetListItem, TopAssetsChart } from "src/components/molecules";
 import { useWindowSize } from "src/utils/hooks";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
@@ -121,6 +121,15 @@ const TopAssets = () => {
                 onValueChange={(value: any) => setSelectedTopAssetTimeRange(value)}
                 value={selectedTopAssetTimeRange}
               />
+            </div>
+          </div>
+
+          <div className="top-assets-subtitle">
+            <div>Tap an asset and analyze the breakdown.</div>
+            <div>
+              <NavLink to="/analytics/tokens" aria-label="View more Tokens">
+                View more Tokens
+              </NavLink>
             </div>
           </div>
 

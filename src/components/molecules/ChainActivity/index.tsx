@@ -57,7 +57,7 @@ const ChainActivity = () => {
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
 
-  const initialDataDate = new Date(2021, 7, 1);
+  const initialDataDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
 
   const [startDate, setStartDate] = useState(initialDataDate);
   const [endDate, setEndDate] = useState(new Date());
@@ -73,7 +73,7 @@ const ChainActivity = () => {
   const [volumeNumber, setVolumeNumber] = useState(0);
   const [allVolumeNumber, setAllVolumeNumber] = useState(0);
 
-  const [lastBtnSelected, setLastBtnSelected] = useState<TSelectedPeriod>("all");
+  const [lastBtnSelected, setLastBtnSelected] = useState<TSelectedPeriod>("year");
   const [openFilters, setOpenFilters] = useState(false);
 
   useLockBodyScroll({

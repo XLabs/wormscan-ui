@@ -40,7 +40,11 @@ export interface TransactionOutput {
   status: React.ReactNode;
   txHash: React.ReactNode;
   type: React.ReactNode;
-  chains: React.ReactNode;
+  from: React.ReactNode;
+  to: React.ReactNode;
+  sourceChain: React.ReactNode;
+  tokenName: React.ReactNode;
+  tokenAddress: React.ReactNode;
   protocol: React.ReactNode;
   viewDetails?: React.ReactNode;
   time: React.ReactNode;
@@ -383,9 +387,66 @@ const Txs = () => {
                     </div>
                   </div>
                 ),
-                chains: (
+                sourceChain: (
                   <div className="tx-chains">
-                    <h4>{isAttestation ? "SOURCE CHAIN" : "CHAINS"}</h4>
+                    <h4>SOURCE CHAIN</h4>
+
+                    <div className="tx-chains-container">
+                      <div className="tx-chains-container-item">
+                        <Tooltip
+                          tooltip={getChainName({ chainId: fromChain, network: currentNetwork })}
+                          type="info"
+                        >
+                          <div>
+                            <BlockchainIcon
+                              chainId={fromChain}
+                              network={currentNetwork}
+                              size={24}
+                            />
+                          </div>
+                        </Tooltip>
+
+                        <div className="tx-chains-container-item-box">
+                          {sourceAddress && (
+                            <>
+                              <div className="tx-chains-container-item-box-address">
+                                <a
+                                  href={getExplorerLink({
+                                    network: currentNetwork,
+                                    chainId: fromChain,
+                                    value: sourceAddress,
+                                    base: "address",
+                                    isNativeAddress: true,
+                                  })}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={stopPropagation}
+                                >
+                                  {shortAddress(sourceAddress).toUpperCase()}
+                                </a>
+
+                                <CopyToClipboard toCopy={sourceAddress}>
+                                  <CopyIcon />
+                                </CopyToClipboard>
+                              </div>
+
+                              {tokenAmount && (
+                                <div className="tx-chains-container-item-box-amount">
+                                  {formatNumber(Number(tokenAmount)) +
+                                    " " +
+                                    (symbol ? symbol : "N/A")}
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ),
+                from: (
+                  <div className="tx-chains">
+                    <h4>FROM</h4>
 
                     <div className="tx-chains-container">
                       <div className="tx-chains-container-item">
@@ -455,47 +516,58 @@ const Txs = () => {
                               </div>
                             )}
                           </div>
-
-                          <div className="tx-chains-container-item">
-                            <Tooltip
-                              tooltip={getChainName({ chainId: toChain, network: currentNetwork })}
-                              type="info"
-                            >
-                              <div>
-                                <BlockchainIcon
-                                  chainId={toChain}
-                                  network={currentNetwork}
-                                  size={24}
-                                />
-                              </div>
-                            </Tooltip>
-
-                            <div className="tx-chains-container-item-box">
-                              <div className="tx-chains-container-item-box-address">
-                                <a
-                                  href={getExplorerLink({
-                                    network: currentNetwork,
-                                    chainId: toChain,
-                                    value: targetAddress,
-                                    base: "address",
-                                    isNativeAddress: true,
-                                  })}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={stopPropagation}
-                                >
-                                  {shortAddress(targetAddress).toUpperCase()}
-                                </a>
-
-                                <CopyToClipboard toCopy={targetAddress}>
-                                  <CopyIcon />
-                                </CopyToClipboard>
-                              </div>
-                            </div>
-                          </div>
                         </>
                       )}
                     </div>
+                  </div>
+                ),
+                to: (
+                  <div className="tx-chains">
+                    <h4>{"TO"}</h4>
+
+                    {toChain && targetAddress ? (
+                      <div className="tx-chains-container">
+                        <div className="tx-chains-container-item">
+                          <Tooltip
+                            tooltip={getChainName({ chainId: toChain, network: currentNetwork })}
+                            type="info"
+                          >
+                            <div>
+                              <BlockchainIcon
+                                chainId={toChain}
+                                network={currentNetwork}
+                                size={24}
+                              />
+                            </div>
+                          </Tooltip>
+
+                          <div className="tx-chains-container-item-box">
+                            <div className="tx-chains-container-item-box-address">
+                              <a
+                                href={getExplorerLink({
+                                  network: currentNetwork,
+                                  chainId: toChain,
+                                  value: targetAddress,
+                                  base: "address",
+                                  isNativeAddress: true,
+                                })}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={stopPropagation}
+                              >
+                                {shortAddress(targetAddress).toUpperCase()}
+                              </a>
+
+                              <CopyToClipboard toCopy={targetAddress}>
+                                <CopyIcon />
+                              </CopyToClipboard>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="not-found">-</div>
+                    )}
                   </div>
                 ),
                 tokenName: (

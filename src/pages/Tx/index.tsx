@@ -1110,7 +1110,7 @@ const Tx = () => {
               sourceSymbol,
               targetSymbol,
               tokenAddress,
-            } = await getPorticoInfo(environment, data);
+            } = porticoInfo;
 
             data.content.standarizedProperties.overwriteSourceTokenAddress = tokenAddress;
             data.content.standarizedProperties.overwriteSourceTokenChain = data?.content
