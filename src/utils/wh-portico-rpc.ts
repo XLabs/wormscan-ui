@@ -1,4 +1,4 @@
-import { ChainId, UniversalAddress } from "@wormhole-foundation/sdk";
+import { ChainId, chainIdToChain, UniversalAddress } from "@wormhole-foundation/sdk";
 import { formatUnits } from "ethers";
 import { Environment, getChainInfo, getEthersProvider } from "./environment";
 import { parseTx } from "./crypto";
@@ -45,7 +45,11 @@ export async function getPorticoInfo(
       sourceSymbol = getChainInfo(env, sourceChain as ChainId).nativeCurrencyName;
     }
 
-    const redeemTokenAddress = parsedPayload.finalTokenAddress;
+    const redeemTokenAddress = new UniversalAddress(parsedPayload.finalTokenAddress)
+      .toNative(
+        parsedPayload.recipientChain ? chainIdToChain(parsedPayload.recipientChain) : "Ethereum",
+      )
+      ?.toString();
 
     if (shouldUnwrapNative) {
       shouldShowTargetTokenUrl = false;

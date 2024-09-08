@@ -11,6 +11,14 @@
     gap: 8px;
   }
 
+  &-subtitle {
+    @include text-roboto-body-400;
+    color: var(--color-gray-600);
+    margin-top: 6px;
+    margin-bottom: 6px;
+    margin-left: 6px;
+  }
+
   &-loader {
     @include centered-row;
     height: 100%;

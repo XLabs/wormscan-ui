@@ -68,7 +68,7 @@ export default {
           excluded: "The following blockchains were excluded from the chart:",
         },
         topAssets: {
-          title: "Top Assets",
+          title: "Top Tokens by Volume",
           subtitle: "Tap an asset and analyze the breakdown",
           token: "TOKEN",
           volume: "VOLUME",

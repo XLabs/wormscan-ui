@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BREAKPOINTS } from "src/consts";
-import { Loader, Select } from "src/components/atoms";
+import { Loader, NavLink, Select } from "src/components/atoms";
 import { ErrorPlaceholder, TopAssetListItem, TopAssetsChart } from "src/components/molecules";
 import { useWindowSize } from "src/utils/hooks";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
@@ -123,6 +123,8 @@ const TopAssets = () => {
               />
             </div>
           </div>
+
+          <div className="top-assets-subtitle">Tap an asset and analyze the breakdown.</div>
 
           <div className="top-assets-body">
             {isLoading || isFetching ? (

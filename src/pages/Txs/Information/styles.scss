@@ -105,6 +105,8 @@
 
           @include desktop {
             @include centered-row;
+            justify-content: space-between;
+            width: 100%;
           }
 
           &-arrow {
