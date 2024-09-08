@@ -208,7 +208,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
                 "</div>"
               );
             },
-            followCursor: isDesktop,
+            followCursor: !isTabletOrMobile,
             intersect: false,
             shared: true,
           },

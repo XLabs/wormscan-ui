@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { WORMHOLE_PAGE_URL } from "src/consts";
-import { Loader, Tooltip } from "src/components/atoms";
+import { Loader, Select, Tooltip } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getClient } from "src/api/Client";
@@ -10,10 +11,17 @@ import { InfoCircleIcon, LinkIcon } from "src/icons/generic";
 import WormholeLogo from "src/assets/wormhole-stats.svg";
 import "./styles.scss";
 
+const RANGE_LIST: { label: string; value: "24h" | "7d" | "30d" }[] = [
+  { label: "Last 24 hours", value: "24h" },
+  { label: "Last 7 days", value: "7d" },
+  { label: "Last 30 days", value: "30d" },
+];
+
 const WormholeStats = () => {
   const { t } = useTranslation();
   const { environment } = useEnvironment();
   const isMainnet = environment.network === "Mainnet";
+  const [rangeTime, setRangeTime] = useState(RANGE_LIST[0]);
 
   const {
     isLoading,
@@ -24,9 +32,14 @@ const WormholeStats = () => {
   const {
     "24h_messages": messages24h,
     "24h_volume": volume24h,
+    "30d_volume": volume30d,
+    "7d_volume": volume7d,
     total_messages,
     total_volume,
   } = scoreData || {};
+
+  const selectedVolume =
+    rangeTime.value === "24h" ? volume24h : rangeTime.value === "7d" ? volume7d : volume30d;
 
   return (
     <div className="wormhole-stats">
@@ -59,10 +72,10 @@ const WormholeStats = () => {
 
           <div className="wormhole-stats-container-item">
             <div className="wormhole-stats-container-item-title">
-              {t("home.statistics.dayMessage")}{" "}
               <span className="wormhole-stats-container-item-title-time">
                 {t("home.statistics.dayMessageTime")}
-              </span>
+              </span>{" "}
+              {t("home.statistics.dayMessage")}
               <Tooltip
                 tooltip={<div>Number of messages sent in the last 24 hours.</div>}
                 type="info"
@@ -98,10 +111,49 @@ const WormholeStats = () => {
 
           <div className="wormhole-stats-container-item">
             <div className="wormhole-stats-container-item-title">
-              {t("home.statistics.dayVolume")}{" "}
               <span className="wormhole-stats-container-item-title-time">
-                {t("home.statistics.dayVolumeTime")}
-              </span>
+                {isMainnet ? (
+                  <Select
+                    ariaLabel="Select Time Range"
+                    className="wormhole-stats-container-item-title-time-select"
+                    items={RANGE_LIST}
+                    name="topAssetTimeRange"
+                    onValueChange={value => setRangeTime(value)}
+                    value={{
+                      label: (
+                        <>
+                          {rangeTime.value}
+                          <svg
+                            className="wormhole-stats-container-item-title-time-arrow"
+                            fill="none"
+                            height={24}
+                            viewBox="0 0 12 24"
+                            width={12}
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              opacity="0.8"
+                              d="M3 10L6 7L9 10"
+                              stroke="#CCCCCC"
+                              strokeWidth="1.5"
+                            />
+                            <path
+                              opacity="0.8"
+                              d="M3 14L6 17L9 14"
+                              stroke="#CCCCCC"
+                              strokeWidth="1.5"
+                            />
+                          </svg>
+                        </>
+                      ),
+                      value: "",
+                    }}
+                  />
+                ) : (
+                  t("home.statistics.dayVolumeTime")
+                )}
+              </span>{" "}
+              {t("home.statistics.dayVolume")}
               <Tooltip
                 tooltip={<div>This metric calculates the last 24h USD value of VAA transfers.</div>}
                 type="info"
@@ -112,7 +164,11 @@ const WormholeStats = () => {
               </Tooltip>
             </div>
             <div className="wormhole-stats-container-item-value">
-              {isMainnet ? <>${volume24h ? formatNumber(Number(volume24h), 0) : "-"}</> : "-"}
+              {isMainnet ? (
+                <>${selectedVolume ? formatNumber(Number(selectedVolume), 0) : "-"}</>
+              ) : (
+                "-"
+              )}
             </div>
           </div>
 

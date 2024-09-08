@@ -183,6 +183,8 @@ export interface ScoresOutput {
   "24h_messages": string;
   "24h_tx_count": string;
   "24h_volume": string;
+  "7d_volume": string;
+  "30d_volume": string;
   total_messages: string;
   total_tx_count: string;
   total_volume: string;
