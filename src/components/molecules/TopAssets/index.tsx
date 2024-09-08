@@ -124,14 +124,7 @@ const TopAssets = () => {
             </div>
           </div>
 
-          <div className="top-assets-subtitle">
-            <div>Tap an asset and analyze the breakdown.</div>
-            <div>
-              <NavLink to="/analytics/tokens" aria-label="View more Tokens">
-                View more Tokens
-              </NavLink>
-            </div>
-          </div>
+          <div className="top-assets-subtitle">Tap an asset and analyze the breakdown.</div>
 
           <div className="top-assets-body">
             {isLoading || isFetching ? (
