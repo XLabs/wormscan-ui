@@ -169,7 +169,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
         <ActivityIcon /> Cross-Chain Token Activity
         {isHomePage && (
           <NavLink className="token-activity-title-link" to="/analytics/tokens">
-            View more
+            View More
           </NavLink>
         )}
       </h3>

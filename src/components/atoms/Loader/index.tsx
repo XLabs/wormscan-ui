@@ -1,14 +1,20 @@
+import Lottie from "react-lottie";
+import LoaderAnimation from "src/lotties/loader.json";
 import "./styles.scss";
 
 const Loader = () => (
   <div className="loader">
-    <div className="loader-container">
-      <div className="loader-circle loader-circle-large" />
-      <div className="loader-circle loader-circle-medium" />
-      <div className="loader-circle loader-circle-small" />
-      <div className="loader-circle loader-circle-smallest" />
-      <div className="loader-circle loader-circle-dot" />
-    </div>
+    <Lottie
+      options={{
+        animationData: LoaderAnimation,
+        rendererSettings: {
+          preserveAspectRatio: "xMidYMid slice",
+        },
+      }}
+      height={48}
+      isClickToPauseDisabled={true}
+      width={48}
+    />
   </div>
 );
 
