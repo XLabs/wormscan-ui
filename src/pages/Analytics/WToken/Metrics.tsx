@@ -1,4 +1,5 @@
 import { GetSummaryResult } from "src/api/native-token-transfer/types";
+import { Loader } from "src/components/atoms";
 import { AnalyticsIcon } from "src/icons/generic";
 import { formatNumber, numberToSuffix } from "src/utils/number";
 
@@ -18,7 +19,7 @@ const Metrics = ({ summary }: IMetricsProps) => {
 
       <div className="summary-metrics-container">
         <div className="summary-metrics-container-item">
-          {summary?.totalValueTokenTransferred && (
+          {summary?.totalValueTokenTransferred ? (
             <>
               <h1 className="summary-metrics-container-item-up">
                 ${numberToSuffix(+summary.totalValueTokenTransferred)}
@@ -27,11 +28,13 @@ const Metrics = ({ summary }: IMetricsProps) => {
                 Total value of W tokens transferred
               </div>
             </>
+          ) : (
+            <Loader />
           )}
         </div>
 
         <div className="summary-metrics-container-item">
-          {summary?.totalTokenTransferred && (
+          {summary?.totalTokenTransferred ? (
             <>
               <h1 className="summary-metrics-container-item-up">
                 {formatNumber(+summary.totalTokenTransferred)}
@@ -40,28 +43,34 @@ const Metrics = ({ summary }: IMetricsProps) => {
                 Total W token transfers across chains
               </div>
             </>
+          ) : (
+            <Loader />
           )}
         </div>
 
         <div className="summary-metrics-container-item">
-          {summary?.circulatingSupply && (
+          {summary?.circulatingSupply ? (
             <>
               <h1 className="summary-metrics-container-item-up">
                 {numberToSuffix(+summary.circulatingSupply)}
               </h1>
               <div className="summary-metrics-container-item-down">Circulating Supply</div>
             </>
+          ) : (
+            <Loader />
           )}
         </div>
 
         <div className="summary-metrics-container-item">
-          {summary?.marketCap && (
+          {summary?.marketCap ? (
             <>
               <h1 className="summary-metrics-container-item-up">
                 ${numberToSuffix(+summary.marketCap)}
               </h1>
               <div className="summary-metrics-container-item-down">Market Cap</div>
             </>
+          ) : (
+            <Loader />
           )}
         </div>
       </div>
