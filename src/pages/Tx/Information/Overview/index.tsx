@@ -5,7 +5,7 @@ import { filterAppIds, formatAppId, formatUnits, parseTx, shortAddress } from "s
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import { useRecoilState } from "recoil";
 import { addressesInfoState } from "src/utils/recoilStates";
-import { BREAKPOINTS, CCTP_MANUAL_APP_ID, txType } from "src/consts";
+import { BREAKPOINTS, CCTP_MANUAL_APP_ID, ETH_BRIDGE_APP_ID, txType } from "src/consts";
 import {
   ArrowDownIcon,
   ArrowRightIcon,
@@ -21,9 +21,10 @@ import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { formatDate } from "src/utils/date";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 import {
-  getChainInfo,
   mainnetDefaultDeliveryProviderContractAddress,
+  mainnetNativeCurrencies,
   testnetDefaultDeliveryProviderContractAddress,
+  testnetNativeCurrencies,
 } from "src/utils/environment";
 import { formatNumber } from "src/utils/number";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -36,6 +37,7 @@ import {
   extractPageName,
 } from "src/utils/txPageUtils";
 import "./styles.scss";
+import { getTokenIcon } from "src/utils/token";
 
 const Overview = ({
   amountSent,
@@ -95,18 +97,20 @@ const Overview = ({
   showSignatures,
   sourceAddress,
   sourceFee,
+  sourceTokenChain,
   sourceFeeUSD,
   sourceSymbol,
+  sourceTokenInfo,
   sourceTokenLink,
   STATUS,
   targetFee,
   targetFeeUSD,
   targetSymbol,
+  targetTokenInfo,
   targetTokenLink,
   targetTxTimestamp,
   toChain,
   tokenAmount,
-  tokenInfo,
   totalGuardiansNeeded,
   transactionLimit,
   txHash,
@@ -130,6 +134,9 @@ const Overview = ({
     chainId: emitterChainId,
   });
   const parseTxHashUpperCase = parseTxHash.toUpperCase();
+
+  const SOURCE_SYMBOL = sourceTokenInfo?.tokenSymbol || sourceSymbol;
+  const TARGET_SYMBOL = targetTokenInfo?.tokenSymbol || targetSymbol;
 
   useLayoutEffect(() => {
     const updateWidth = () => {
@@ -173,9 +180,9 @@ const Overview = ({
                       {tokenAmount && (
                         <>
                           {!isAttestation ? amountSent : ""}{" "}
-                          {sourceSymbol && (
+                          {SOURCE_SYMBOL && (
                             <>
-                              {sourceSymbol} {amountSentUSD && `($${amountSentUSD})`}
+                              {SOURCE_SYMBOL} {amountSentUSD && `($${amountSentUSD})`}
                             </>
                           )}
                         </>
@@ -771,14 +778,14 @@ const Overview = ({
                   {tokenAmount ? (
                     <>
                       {!isAttestation ? amountSent : ""}{" "}
-                      {sourceSymbol ? (
+                      {SOURCE_SYMBOL ? (
                         <>
                           {sourceTokenLink ? (
                             <a href={sourceTokenLink} target="_blank" rel="noopener noreferrer">
-                              {sourceSymbol}
+                              {SOURCE_SYMBOL}
                             </a>
                           ) : (
-                            <span>{sourceSymbol}</span>
+                            <span>{SOURCE_SYMBOL}</span>
                           )}
                           <span>{amountSentUSD && `($${amountSentUSD})`}</span>
                         </>
@@ -790,6 +797,20 @@ const Overview = ({
                     "N/A"
                   )}
                 </div>
+
+                {sourceTokenInfo?.tokenImage && sourceTokenInfo.tokenImage !== "missing.png" ? (
+                  <div className="token-image">
+                    <img src={sourceTokenInfo.tokenImage} height={22} width={22} />
+                  </div>
+                ) : getTokenIcon(SOURCE_SYMBOL, true) ? (
+                  <div className="token-image">
+                    <img src={getTokenIcon(SOURCE_SYMBOL)} height={22} width={22} />
+                  </div>
+                ) : (
+                  <div className="token-image">
+                    <BlockchainIcon chainId={sourceTokenChain} network={currentNetwork} />
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -856,7 +877,9 @@ const Overview = ({
               <div className="tx-overview-section-info-container-value">
                 <div className="text">
                   {formatNumber(+sourceFee)}{" "}
-                  {getChainInfo(environment, fromChain)?.nativeCurrencyName}
+                  {currentNetwork === "Testnet"
+                    ? testnetNativeCurrencies[fromChain]
+                    : mainnetNativeCurrencies[fromChain]}
                   {sourceFeeUSD && <span>(${formatNumber(+sourceFeeUSD)})</span>}
                 </div>
               </div>
@@ -872,26 +895,26 @@ const Overview = ({
                   {Number(fee) ? (
                     <>
                       {!isAttestation ? redeemedAmount : ""}{" "}
-                      {targetSymbol &&
+                      {TARGET_SYMBOL &&
                         (targetTokenLink ? (
                           <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
-                            {targetSymbol}
+                            {TARGET_SYMBOL}
                           </a>
                         ) : (
-                          <span>{targetSymbol}</span>
+                          <span>{TARGET_SYMBOL}</span>
                         ))}
                     </>
                   ) : tokenAmount ? (
                     <>
                       {!isAttestation ? amountSent : ""}{" "}
-                      {targetSymbol ? (
+                      {TARGET_SYMBOL ? (
                         <>
                           {targetTokenLink ? (
                             <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
-                              {targetSymbol}
+                              {TARGET_SYMBOL}
                             </a>
                           ) : (
-                            <span>{targetSymbol}</span>
+                            <span>{TARGET_SYMBOL}</span>
                           )}
                           <span>{amountSentUSD && `($${amountSentUSD})`}</span>
                         </>
@@ -901,6 +924,20 @@ const Overview = ({
                     </>
                   ) : (
                     "N/A"
+                  )}
+
+                  {targetTokenInfo?.tokenImage && targetTokenInfo.tokenImage !== "missing.png" ? (
+                    <div className="token-image">
+                      <img src={targetTokenInfo.tokenImage} height={22} width={22} />
+                    </div>
+                  ) : getTokenIcon(TARGET_SYMBOL, true) ? (
+                    <div className="token-image">
+                      <img src={getTokenIcon(TARGET_SYMBOL)} height={22} width={22} />
+                    </div>
+                  ) : (
+                    <div className="token-image">
+                      <BlockchainIcon chainId={toChain} network={currentNetwork} />
+                    </div>
                   )}
                 </div>
               </div>
@@ -927,7 +964,8 @@ const Overview = ({
                 className="add-to-metamask-btn"
                 currentNetwork={currentNetwork}
                 toChain={toChain as ChainId}
-                tokenInfo={tokenInfo}
+                targetTokenInfo={targetTokenInfo}
+                isPortico={appIds.includes(ETH_BRIDGE_APP_ID)}
               />
             </div>
           )}
@@ -998,7 +1036,8 @@ const Overview = ({
                 className="add-to-metamask-btn"
                 currentNetwork={currentNetwork}
                 toChain={toChain as ChainId}
-                tokenInfo={tokenInfo}
+                targetTokenInfo={targetTokenInfo}
+                isPortico={appIds.includes(ETH_BRIDGE_APP_ID)}
               />
             </div>
           )}
@@ -1010,7 +1049,9 @@ const Overview = ({
               <div className="tx-overview-section-info-container-value">
                 <div className="text">
                   {formatNumber(+targetFee)}{" "}
-                  {getChainInfo(environment, toChain)?.nativeCurrencyName}
+                  {currentNetwork === "Testnet"
+                    ? testnetNativeCurrencies[toChain]
+                    : mainnetNativeCurrencies[toChain]}
                   {targetFeeUSD && <span>(${formatNumber(+targetFeeUSD)})</span>}
                 </div>
               </div>
@@ -1143,7 +1184,7 @@ const Overview = ({
           <div className="tx-overview-section-info">
             <div className="tx-overview-section-info-container">
               <div className="text">
-                {formatNumber(formatUnits(+fee))} {sourceSymbol}
+                {formatNumber(formatUnits(+fee))} {SOURCE_SYMBOL}
               </div>
             </div>
           </div>

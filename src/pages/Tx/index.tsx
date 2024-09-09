@@ -21,7 +21,7 @@ import {
   getTokenInformation,
   getUsdcAddress,
 } from "src/utils/fetchWithRPCsFallthrough";
-import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
+import { formatUnits, parseAddress } from "src/utils/crypto";
 import { ChainLimit, Order } from "src/api";
 import { getClient } from "src/api/Client";
 import analytics from "src/analytics";
@@ -66,6 +66,7 @@ import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 import { DeliveryLifecycleRecord, populateRelayerInfo } from "src/utils/genericRelayerVaaUtils";
 import { BlockSection } from "src/components/molecules";
 import "./styles.scss";
+import { mainnetNativeCurrencies, testnetNativeCurrencies } from "src/utils/environment";
 
 const Tx = () => {
   useEffect(() => {
@@ -80,6 +81,11 @@ const Tx = () => {
   const [, setShowSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
   const [, setShowTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
   const [, setAddressesInfo] = useRecoilState(addressesInfoState);
+
+  useEffect(() => {
+    setShowSourceTokenUrl(true);
+    setShowTargetTokenUrl(true);
+  }, [txHash, seq, setShowSourceTokenUrl, setShowTargetTokenUrl]);
 
   // pattern match the search value to see if it's a candidate for being an EVM transaction hash.
   const search = txHash ? (txHash.startsWith("0x") ? txHash : "0x" + txHash) : "";
@@ -707,9 +713,9 @@ const Tx = () => {
 
             const maxRefundText = () => {
               return `${maxRefund} ${
-                environment.chainInfos.find(
-                  chain => chain.chainId === deliveryInstruction.targetChainId,
-                ).nativeCurrencyName
+                network === "Testnet"
+                  ? testnetNativeCurrencies[deliveryInstruction.targetChainId]
+                  : mainnetNativeCurrencies[deliveryInstruction.targetChainId]
               }`;
             };
 
@@ -727,9 +733,9 @@ const Tx = () => {
               );
 
               return `${receiverValue} ${
-                environment.chainInfos.find(
-                  chain => chain.chainId === deliveryInstruction.targetChainId,
-                ).nativeCurrencyName
+                network === "Testnet"
+                  ? testnetNativeCurrencies[deliveryInstruction.targetChainId]
+                  : mainnetNativeCurrencies[deliveryInstruction.targetChainId]
               }`;
             };
 
@@ -742,9 +748,9 @@ const Tx = () => {
                   ),
                   3,
                 )} ${
-                  environment.chainInfos.find(
-                    chain => chain.chainId === deliveryInstruction.targetChainId,
-                  ).nativeCurrencyName
+                  network === "Testnet"
+                    ? testnetNativeCurrencies[deliveryInstruction.targetChainId]
+                    : mainnetNativeCurrencies[deliveryInstruction.targetChainId]
                 }`;
               }
 
@@ -759,9 +765,9 @@ const Tx = () => {
 
               if (refundAmount)
                 return `${refundAmount} ${
-                  environment.chainInfos.find(
-                    chain => chain.chainId === deliveryInstruction.targetChainId,
-                  ).nativeCurrencyName
+                  network === "Testnet"
+                    ? testnetNativeCurrencies[deliveryInstruction.targetChainId]
+                    : mainnetNativeCurrencies[deliveryInstruction.targetChainId]
                 }`;
 
               return "";

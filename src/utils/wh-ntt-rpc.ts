@@ -5,13 +5,13 @@ import { GetOperationsOutput } from "src/api/guardian-network/types";
 
 // SOLANA MANAGER <--> TOKEN
 const NTT_MANAGER_TOKENS = {
-  MAINNET: {
+  Mainnet: {
     // W
     NTtAaoDJhkeHeaVUHnyhwbPNAN6WgBpHkHBTc6d7vLK: "85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ",
     // BORG
     NttBm3HouTCFnUBz32fEs5joQFRjFoJPA8AyhtgjFrw: "3dQTr7ror2QPKQ3GbBCokJUmjErGg8kTJzdnYjNfvi3Z",
   },
-  TESTNET: {
+  Testnet: {
     // W
     NTtAaoDJhkeHeaVUHnyhwbPNAN6WgBpHkHBTc6d7vLK: "EetppHswYvV1jjRWoQKC1hejdeBDHR9NNzNtCyRQfrrQ",
   },

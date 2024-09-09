@@ -99,7 +99,7 @@ const iconTokens = {
   wstETH: WSTETH,
 } as { [K in string]: SVGAElement };
 
-export const getTokenIcon = (token: string) => {
+export const getTokenIcon = (token: string, nullIfMissing = false) => {
   const icon = iconTokens[token];
-  return icon ? icon : noIconToken;
+  return icon ? icon : nullIfMissing ? null : noIconToken;
 };

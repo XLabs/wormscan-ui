@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChainId, Network } from "@wormhole-foundation/sdk";
+import { ChainId, chainIdToChain, Network, platformToChains } from "@wormhole-foundation/sdk";
 import { Tooltip } from "src/components/atoms";
 import { shortAddress } from "src/utils/crypto";
 import { TokenInfo, addToken } from "src/utils/metaMaskUtils";
@@ -10,23 +10,33 @@ type Props = {
   className?: string;
   currentNetwork: Network;
   toChain: ChainId;
-  tokenInfo: TokenInfo;
+  targetTokenInfo: TokenInfo;
+  isPortico?: boolean;
 };
 
-const AddToMetaMaskBtn = ({ className, currentNetwork, toChain, tokenInfo }: Props) => {
+const AddToMetaMaskBtn = ({
+  className,
+  currentNetwork,
+  toChain,
+  targetTokenInfo,
+  isPortico,
+}: Props) => {
   const [showCheck, setShowCheck] = useState(false);
 
-  if (!tokenInfo) return null;
+  if (!targetTokenInfo) return null;
 
   const copyAddress = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    await navigator.clipboard.writeText(tokenInfo.tokenAddress);
+    await navigator.clipboard.writeText(targetTokenInfo.tokenAddress);
     setShowCheck(true);
 
     setTimeout(() => {
       setShowCheck(false);
     }, 1500);
   };
+
+  const shouldShow = !isPortico && platformToChains("Evm").includes(chainIdToChain(toChain) as any);
+  if (!shouldShow) return null;
 
   return (
     <Tooltip
@@ -35,7 +45,8 @@ const AddToMetaMaskBtn = ({ className, currentNetwork, toChain, tokenInfo }: Pro
           <span>You need to add it manually, the token doesn&apos;t have a symbol.</span>
           <span>Suggestion:</span>
           <span>
-            Token contract address: <b>{shortAddress(tokenInfo.tokenAddress).toUpperCase()}</b>
+            Token contract address:{" "}
+            <b>{shortAddress(targetTokenInfo.tokenAddress).toUpperCase()}</b>
             {showCheck ? (
               <div className="icon">
                 <CheckIcon />
@@ -47,26 +58,26 @@ const AddToMetaMaskBtn = ({ className, currentNetwork, toChain, tokenInfo }: Pro
             )}
           </span>
           <span>
-            Token symbol: <b>{tokenInfo.targetSymbol}</b>
+            Token symbol: <b>{targetTokenInfo.tokenSymbol}</b>
           </span>
           <span>
-            Decimal token: <b>{tokenInfo.tokenDecimals}</b>
+            Decimal token: <b>{targetTokenInfo.tokenDecimals}</b>
           </span>
         </div>
       }
       maxWidth={false}
-      enableTooltip={!tokenInfo.tokenSymbol}
+      enableTooltip={!targetTokenInfo.tokenSymbol}
       type="info"
     >
       <div className={`metamask-btn ${className}`}>
         <button
-          disabled={!tokenInfo.tokenSymbol}
+          disabled={!targetTokenInfo.tokenSymbol}
           onClick={async () => {
             try {
               await addToken({
                 currentNetwork,
                 toChain,
-                tokenInfo,
+                tokenInfo: targetTokenInfo,
               });
             } catch (error) {
               console.error("Failed to add token", error);

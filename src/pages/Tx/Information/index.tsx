@@ -18,13 +18,12 @@ import { formatDate } from "src/utils/date";
 import { formatNumber } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import analytics from "src/analytics";
-import { tryGetRedeemTxn } from "src/utils/cryptoToolkit";
+import { getGeckoTokenInfo, tryGetRedeemTxn } from "src/utils/cryptoToolkit";
 import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
 import { GetBlockData } from "src/api/search/types";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
-import { getTokenInformation } from "src/utils/fetchWithRPCsFallthrough";
-import { TokenInfo, getTokenLogo } from "src/utils/metaMaskUtils";
+import { TokenInfo } from "src/utils/metaMaskUtils";
 
 import Overview from "./Overview";
 import AdvancedView from "./AdvancedView";
@@ -198,6 +197,7 @@ const Information = ({
   const extraRawInfoToChainId: ChainId = extraRawInfo?.to?.chainId || null;
   // ---
 
+  let sourceTokenAddress = standarizedProperties?.overwriteSourceTokenAddress || tokenAddress;
   let sourceTokenLink = showSourceTokenUrl
     ? getExplorerLink({
         network: currentNetwork,
@@ -219,6 +219,7 @@ const Information = ({
     : "";
 
   let sourceSymbol = symbol;
+  let sourceTokenChain = tokenChain as ChainId;
   let targetSymbol = symbol;
   let targetTokenChain = tokenChain as ChainId;
   const wrappedSide = tokenChain !== toChain ? "target" : "source";
@@ -239,6 +240,8 @@ const Information = ({
         targetSymbol = wrappedTokenSymbol;
       }
     } else {
+      sourceTokenChain = fromChain;
+      sourceTokenAddress = wrappedTokenAddress;
       sourceTokenLink = showSourceTokenUrl
         ? getExplorerLink({
             network: currentNetwork,
@@ -266,36 +269,44 @@ const Information = ({
     targetSymbol = standarizedProperties?.overwriteTargetSymbol;
   }
 
-  // --- ⬇ Add to MetaMask ⬇ ---
-  const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null);
+  // --- ⬇ Add to MetaMask and get Gecko Token Info ⬇ ---
+  const [sourceTokenInfo, setSourceTokenInfo] = useState<TokenInfo | null>(null);
+  const [targetTokenInfo, setTargetTokenInfo] = useState<TokenInfo | null>(null);
+
   const tokenEffectiveAddress = wrappedSide === "target" ? wrappedTokenAddress : tokenAddress;
-  const showMetaMaskBtn = toChain && tokenInfo?.tokenDecimals && toChain === targetTokenChain;
+  const showMetaMaskBtn = toChain && targetTokenInfo?.tokenDecimals && toChain === targetTokenChain;
 
   useEffect(() => {
-    if (platformToChains("Evm").includes(chainIdToChain(toChain) as any)) {
-      getTokenInformation(targetTokenChain, environment, targetTokenAddress).then(data => {
-        if (data) {
-          getTokenLogo({ tokenAddress: targetTokenAddress }).then(tokenImage => {
-            setTokenInfo({
-              targetSymbol: targetSymbol,
-              tokenAddress: tokenEffectiveAddress,
-              tokenDecimals: data.tokenDecimals,
-              tokenImage: tokenImage,
-              tokenSymbol: data.symbol,
-            });
-          });
-        }
+    if (targetTokenChain && targetTokenAddress && !targetTokenInfo) {
+      getGeckoTokenInfo(targetTokenAddress, targetTokenChain).then(data => {
+        setTargetTokenInfo({
+          tokenAddress: targetTokenAddress,
+          tokenDecimals: data?.attributes?.decimals,
+          tokenImage: data?.attributes?.image_url,
+          tokenSymbol: data?.attributes?.symbol,
+        });
+      });
+    }
+
+    if (sourceTokenChain && sourceTokenAddress && !sourceTokenInfo) {
+      getGeckoTokenInfo(sourceTokenAddress, sourceTokenChain).then(data => {
+        setSourceTokenInfo({
+          tokenAddress: sourceTokenAddress,
+          tokenDecimals: data?.attributes?.decimals,
+          tokenImage: data?.attributes?.image_url,
+          tokenSymbol: data?.attributes?.symbol,
+        });
       });
     }
   }, [
-    toChain,
-    targetTokenChain,
-    environment,
+    sourceTokenAddress,
+    sourceTokenChain,
+    sourceTokenInfo,
     targetTokenAddress,
-    targetSymbol,
-    tokenEffectiveAddress,
+    targetTokenChain,
+    targetTokenInfo,
   ]);
-  // --- ⬆ Add to MetaMask ⬆ ---
+  // --- ⬆ Add to MetaMask and get Gecko Token Info ⬆ ---
 
   const [loadingRedeem, setLoadingRedeem] = useState(false);
   const [foundRedeem, setFoundRedeem] = useState<null | boolean>(null);
@@ -430,15 +441,17 @@ const Information = ({
     sourceFee,
     sourceFeeUSD,
     sourceSymbol,
+    sourceTokenChain,
+    sourceTokenInfo,
     sourceTokenLink,
     STATUS,
     targetFee,
     targetFeeUSD,
     targetSymbol,
+    targetTokenInfo,
     targetTokenLink,
     toChain: extraRawInfoToChainId || toChain,
     tokenAmount,
-    tokenInfo,
     totalGuardiansNeeded,
     transactionLimit,
     txHash: data?.sourceChain?.transaction?.txHash,

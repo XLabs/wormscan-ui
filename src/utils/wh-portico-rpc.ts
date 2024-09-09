@@ -1,6 +1,12 @@
 import { ChainId, chainIdToChain, UniversalAddress } from "@wormhole-foundation/sdk";
 import { formatUnits } from "ethers";
-import { Environment, getChainInfo, getEthersProvider } from "./environment";
+import {
+  Environment,
+  getChainInfo,
+  getEthersProvider,
+  mainnetNativeCurrencies,
+  testnetNativeCurrencies,
+} from "./environment";
 import { parseTx } from "./crypto";
 import { getTokenInformation } from "./fetchWithRPCsFallthrough";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
@@ -42,7 +48,10 @@ export async function getPorticoInfo(
 
     if (shouldWrapNative) {
       shouldShowSourceTokenUrl = false;
-      sourceSymbol = getChainInfo(env, sourceChain as ChainId).nativeCurrencyName;
+      sourceSymbol =
+        env.network === "Testnet"
+          ? testnetNativeCurrencies[sourceChain]
+          : mainnetNativeCurrencies[sourceChain];
     }
 
     const redeemTokenAddress = new UniversalAddress(parsedPayload.finalTokenAddress)
@@ -53,7 +62,10 @@ export async function getPorticoInfo(
 
     if (shouldUnwrapNative) {
       shouldShowTargetTokenUrl = false;
-      targetSymbol = getChainInfo(env, targetChain as ChainId).nativeCurrencyName;
+      targetSymbol =
+        env.network === "Testnet"
+          ? testnetNativeCurrencies[targetChain]
+          : mainnetNativeCurrencies[targetChain];
       decimals = getChainInfo(env, targetChain as ChainId).nativeCurrencyDecimals;
     } else {
       const tokenDetails = await getTokenInformation(

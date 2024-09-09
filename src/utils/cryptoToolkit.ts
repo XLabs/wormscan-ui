@@ -28,7 +28,54 @@ interface ISolanaCctpResponse {
   timestamp: Date;
 }
 
+interface IGeckoTokenInfoResponse {
+  id: string;
+  type: string;
+  attributes: {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    image_url: string;
+    coingecko_coin_id: string;
+    total_supply: string;
+    price_usd: string;
+    fdv_usd: string;
+    total_reserve_in_usd: string;
+    volume_usd: {
+      h24: string;
+    };
+    market_cap_usd: string | null;
+  };
+  relationships: {
+    top_pools: {
+      data: Array<{
+        id: string;
+        type: string;
+      }>;
+    };
+  };
+}
+
 const BFF_URL = process.env.WORMSCAN_BFF_URL;
+
+export const getGeckoTokenInfo = async (
+  tokenAddress: string,
+  tokenChain: ChainId,
+): Promise<IGeckoTokenInfoResponse> => {
+  try {
+    const geckoTokenInfoRequest = await fetchWithTimeout(
+      `${BFF_URL}/getGeckoTokenInfo?tokenAddress=${tokenAddress}&tokenChain=${tokenChain}`,
+    );
+
+    const geckoTokenInfoResponse = (await geckoTokenInfoRequest.json())
+      ?.data as IGeckoTokenInfoResponse;
+
+    return geckoTokenInfoResponse;
+  } catch (e) {
+    return null;
+  }
+};
 
 export const sendProtocolSubmission = async (body: any): Promise<string> => {
   try {
