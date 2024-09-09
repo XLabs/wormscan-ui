@@ -1,20 +1,10 @@
-import Lottie from "react-lottie";
+import Lottie from "react-lottie-player";
 import LoaderAnimation from "src/lotties/loader.json";
 import "./styles.scss";
 
 const Loader = () => (
   <div className="loader">
-    <Lottie
-      options={{
-        animationData: LoaderAnimation,
-        rendererSettings: {
-          preserveAspectRatio: "xMidYMid slice",
-        },
-      }}
-      height={48}
-      isClickToPauseDisabled={true}
-      width={48}
-    />
+    <Lottie animationData={LoaderAnimation} loop play style={{ width: 48, height: 48 }} />
   </div>
 );
 
