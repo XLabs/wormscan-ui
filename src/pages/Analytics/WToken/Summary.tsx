@@ -1,4 +1,3 @@
-import { GetSummaryResult } from "src/api/native-token-transfer/types";
 import { BlockchainIcon } from "src/components/atoms";
 import { WORMHOLE_PAGE_URL } from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";

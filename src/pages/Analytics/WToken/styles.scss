@@ -320,29 +320,6 @@
 
         border-bottom: 1px solid var(--color-gray-900);
 
-        .loading {
-          position: relative;
-          height: 20px;
-          width: 100%;
-          overflow: hidden;
-
-          &::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-              90deg,
-              var(--color-black),
-              var(--color-gray-800),
-              var(--color-black)
-            );
-            animation: loading-animation 3s infinite;
-          }
-        }
-
         &-row {
           @include centered-row;
           @include text-roboto-body-500;
@@ -630,8 +607,7 @@
           @include text-roboto-body-500;
         }
 
-        &:nth-child(4)/* ,
-        &:nth-child(5) */ {
+        &:nth-child(4) {
           @include text-heading5;
         }
 
@@ -718,29 +694,6 @@
 
         border-bottom: 1px solid var(--color-gray-900);
 
-        .loading {
-          position: relative;
-          height: 20px;
-          width: 100%;
-          overflow: hidden;
-
-          &::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-              90deg,
-              var(--color-black),
-              var(--color-gray-800),
-              var(--color-black)
-            );
-            animation: loading-animation 3s infinite;
-          }
-        }
-
         &-row {
           @include centered-row;
           @include text-roboto-body-500;
@@ -810,6 +763,19 @@
 
     &-item {
       border-bottom: 1px solid var(--color-gray-900);
+      width: 100%;
+    }
+
+    &-loading {
+      @include centered-column;
+      width: 100%;
+      padding: 18px 16px;
+      gap: 36px;
+      border-bottom: 1px solid var(--color-gray-900);
+
+      .loading {
+        height: 30px;
+      }
     }
 
     &-head-row,
@@ -998,5 +964,40 @@
         }
       }
     }
+  }
+}
+
+.loading {
+  position: relative;
+  height: 20px;
+  width: 100%;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      var(--color-black),
+      var(--color-gray-800),
+      var(--color-black)
+    );
+    animation: loading-animation 3s infinite;
+  }
+}
+
+@keyframes loading-animation {
+  0% {
+    left: -50%;
+  }
+  50% {
+    left: 50%;
+  }
+  100% {
+    left: -50%;
   }
 }

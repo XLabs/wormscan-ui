@@ -47,7 +47,11 @@ const WToken = () => {
     return { startDate: start, endDate: end };
   }, [timeRange]);
 
-  const { data: recentTransactions } = useQuery("getRecentTransactions", async () => {
+  const {
+    data: recentTransactions,
+    isError: isErrorRecentTransactions,
+    isFetching: isFetchingRecentTransactions,
+  } = useQuery("getRecentTransactions", async () => {
     let page = 0;
     let transactions: GetOperationsOutput[] = [];
 
@@ -195,7 +199,11 @@ const WToken = () => {
             by={by}
             setBy={setBy}
           />
-          <RecentTransactions recentTransactions={recentTransactions} />
+          <RecentTransactions
+            isError={isErrorRecentTransactions}
+            isLoading={isFetchingRecentTransactions}
+            recentTransactions={recentTransactions}
+          />
         </>
       )}
 

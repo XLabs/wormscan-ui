@@ -1,5 +1,4 @@
 import { GetSummaryResult } from "src/api/native-token-transfer/types";
-import { Loader } from "src/components/atoms";
 import { AnalyticsIcon } from "src/icons/generic";
 import { formatNumber, numberToSuffix } from "src/utils/number";
 
@@ -65,30 +64,6 @@ const Metrics = ({ summary }: IMetricsProps) => {
             </>
           )}
         </div>
-
-        {/* <div className="summary-metrics-container-item">
-          {summary?.averageTransferSize ? (
-            <>
-              <h1 className="summary-metrics-container-item-up">
-                ${formatNumber(+summary.averageTransferSize, 0)}
-              </h1>
-              <div className="summary-metrics-container-item-down">Average transfer size</div>
-            </>
-          ) : (
-            <Loader />
-          )}
-        </div>
-
-        <div className="summary-metrics-container-item">
-          {summary?.medianTransferSize && (
-            <>
-              <h1 className="summary-metrics-container-item-up">
-                ${formatNumber(+summary.medianTransferSize)}
-              </h1>
-              <div className="summary-metrics-container-item-down">Median transfer size</div>
-            </>
-          )}
-        </div> */}
       </div>
     </div>
   );

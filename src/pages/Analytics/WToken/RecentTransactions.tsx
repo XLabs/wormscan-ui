@@ -1,7 +1,7 @@
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { SwapVerticalIcon, CopyIcon } from "src/icons/generic";
 import { CopyToClipboard } from "src/components/molecules";
-import { formatDate, timeAgo } from "src/utils/date";
+import { timeAgo } from "src/utils/date";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { getExplorerLink } from "src/utils/wormhole";
 import { useWindowSize } from "src/utils/hooks";
@@ -14,11 +14,18 @@ import { BREAKPOINTS, NTT_APP_ID } from "src/consts";
 
 interface IRecentTransactionsProps {
   recentTransactions: GetOperationsOutput[];
+  isError: boolean;
+  isLoading: boolean;
 }
 
 const WTokenIcon = getTokenIcon("W");
+const LOADING_ARRAY = Array(7).fill(1);
 
-const RecentTransactions = ({ recentTransactions }: IRecentTransactionsProps) => {
+const RecentTransactions = ({
+  recentTransactions,
+  isError,
+  isLoading,
+}: IRecentTransactionsProps) => {
   const { environment } = useEnvironment();
   const { width } = useWindowSize();
   const isDesktopDesign = width >= BREAKPOINTS.desktop;
@@ -63,6 +70,8 @@ const RecentTransactions = ({ recentTransactions }: IRecentTransactionsProps) =>
     );
   };
 
+  if (isError) return null;
+
   return (
     <div className="recent-transactions">
       <div className="recent-transactions-title">
@@ -81,45 +90,66 @@ const RecentTransactions = ({ recentTransactions }: IRecentTransactionsProps) =>
             <div className="recent-transactions-table-head-row">TIME</div>
           </div>
 
-          {recentTransactions?.map(data => (
-            <div key={data.id} className="recent-transactions-table-item">
-              <div className="recent-transactions-table-item-row">
-                <div className="tx-hash">
-                  {data?.sourceChain?.transaction?.txHash && (
-                    <>
-                      <NavLink
-                        to={`/tx/${parseTx({
-                          value: data.sourceChain.transaction.txHash,
-                          chainId: data.sourceChain.chainId as ChainId,
-                        })}`}
-                        onClick={stopPropagation}
-                      >
-                        {shortAddress(data.sourceChain.transaction.txHash).toUpperCase()}
-                      </NavLink>
-                      <CopyToClipboard toCopy={data.sourceChain.transaction.txHash}>
-                        <CopyIcon />
-                      </CopyToClipboard>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className="recent-transactions-table-item-row">{renderAddress(data, true)}</div>
-              <div className="recent-transactions-table-item-row">{renderAddress(data, false)}</div>
-              <div className="recent-transactions-table-item-row">
-                <div className="token-row">
-                  <span>{formatNumber(+data?.data?.tokenAmount)}</span>
-                  <img src={WTokenIcon} alt="W Token" width="16" height="16" />
-                  <span className="usd">(${formatNumber(+data?.data?.usdAmount, 2)})</span>
-                </div>
-              </div>
-              <div className="recent-transactions-table-item-row">
-                {timeAgo(new Date(data?.sourceChain?.timestamp))}
-              </div>
+          {isLoading && (
+            <div className="recent-transactions-table-loading">
+              {LOADING_ARRAY.map((_, index) => (
+                <div key={index} className="loading" />
+              ))}
             </div>
-          ))}
+          )}
+
+          {!isLoading &&
+            recentTransactions?.map(data => (
+              <div key={data.id} className="recent-transactions-table-item">
+                <div className="recent-transactions-table-item-row">
+                  <div className="tx-hash">
+                    {data?.sourceChain?.transaction?.txHash && (
+                      <>
+                        <NavLink
+                          to={`/tx/${parseTx({
+                            value: data.sourceChain.transaction.txHash,
+                            chainId: data.sourceChain.chainId as ChainId,
+                          })}`}
+                          onClick={stopPropagation}
+                        >
+                          {shortAddress(data.sourceChain.transaction.txHash).toUpperCase()}
+                        </NavLink>
+                        <CopyToClipboard toCopy={data.sourceChain.transaction.txHash}>
+                          <CopyIcon />
+                        </CopyToClipboard>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="recent-transactions-table-item-row">
+                  {renderAddress(data, true)}
+                </div>
+                <div className="recent-transactions-table-item-row">
+                  {renderAddress(data, false)}
+                </div>
+                <div className="recent-transactions-table-item-row">
+                  <div className="token-row">
+                    <span>{formatNumber(+data?.data?.tokenAmount)}</span>
+                    <img src={WTokenIcon} alt="W Token" width="16" height="16" />
+                    <span className="usd">(${formatNumber(+data?.data?.usdAmount, 2)})</span>
+                  </div>
+                </div>
+                <div className="recent-transactions-table-item-row">
+                  {timeAgo(new Date(data?.sourceChain?.timestamp))}
+                </div>
+              </div>
+            ))}
         </div>
       ) : (
         <div className="recent-transactions-mobile">
+          {isLoading && (
+            <div className="recent-transactions-table-loading">
+              {LOADING_ARRAY.map((_, index) => (
+                <div key={index} className="loading" />
+              ))}
+            </div>
+          )}
+
           {recentTransactions?.map(data => (
             <div key={data.id} className="recent-transactions-mobile-container">
               <div className="recent-transactions-mobile-item">

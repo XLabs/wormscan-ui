@@ -58,8 +58,6 @@ export const TopHolders = ({ topHolders }: TopHoldersProps) => {
 
                   <div className="top-holders-table-item-row">${formatNumber(+item.volume, 0)}</div>
 
-                  {/* <div className="top-holders-table-item-row">??????</div> */}
-
                   <a
                     className="top-holders-table-item-row"
                     href={getExplorerLink({
