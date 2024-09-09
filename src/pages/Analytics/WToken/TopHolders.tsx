@@ -25,7 +25,7 @@ export const TopHolders = ({ topHolders }: TopHoldersProps) => {
     <div className="top-holders">
       <div className="top-holders-title">
         <UserIcon />
-        <div>Top Holders</div>
+        <div>Top Holders by Volume</div>
       </div>
 
       {isDesktopDesign && (
@@ -57,8 +57,6 @@ export const TopHolders = ({ topHolders }: TopHoldersProps) => {
                   </div>
 
                   <div className="top-holders-table-item-row">${formatNumber(+item.volume, 0)}</div>
-
-                  {/* <div className="top-holders-table-item-row">??????</div> */}
 
                   <a
                     className="top-holders-table-item-row"

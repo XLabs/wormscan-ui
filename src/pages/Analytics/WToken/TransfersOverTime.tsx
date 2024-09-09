@@ -28,7 +28,7 @@ const TYPE_CHART_LIST = [
 ];
 
 const RANGE_LIST = [
-  { label: "Last day", value: "1d" },
+  { label: "Last 24 hours", value: "1d" },
   { label: "Last week", value: "1w" },
   { label: "Last month", value: "1m" },
   { label: "Last year", value: "1y" },
@@ -91,7 +91,7 @@ export const TransfersOverTime = ({
       <div className="transfers-over-time-header">
         <h3 className="transfers-over-time-title">
           <ActivityIcon width={20} />
-          <span>W Transfers Over time cross-chain</span>
+          <span>Cross-Chain W Token Transfers Over Time</span>
         </h3>
       </div>
 
