@@ -1,4 +1,4 @@
-import { chainToChainId, ChainId, Network } from "@wormhole-foundation/sdk";
+import { chainToChainId, ChainId, Network, chainIdToChain } from "@wormhole-foundation/sdk";
 import { JsonRpcProvider } from "ethers";
 
 export const SLOW_FINALITY_CHAINS = [
@@ -76,10 +76,93 @@ export type ChainInfo = {
   chainId: ChainId;
   evmNetworkId: number;
   chainName: string;
-  nativeCurrencyName: string;
   nativeCurrencyDecimals: number;
   defaultDeliveryProviderContractAddress: string;
   rpcUrl: string;
+};
+
+export const testnetNativeCurrencies: { [key: string]: string } = {
+  [chainIdToChain(1)]: "SOL",
+  [chainIdToChain(2)]: "ETH",
+  [chainIdToChain(3)]: "LUNA",
+  [chainIdToChain(4)]: "BNB",
+  [chainIdToChain(5)]: "MATIC",
+  [chainIdToChain(6)]: "AVAX",
+  [chainIdToChain(7)]: "ROSE",
+  [chainIdToChain(8)]: "ALGO",
+  [chainIdToChain(9)]: "ETH",
+  [chainIdToChain(10)]: "FTM",
+  [chainIdToChain(11)]: "KAR",
+  [chainIdToChain(12)]: "ACA",
+  [chainIdToChain(13)]: "KLAY",
+  [chainIdToChain(14)]: "CELO",
+  [chainIdToChain(15)]: "NEAR",
+  [chainIdToChain(16)]: "GLMR",
+  [chainIdToChain(17)]: "NEON",
+  [chainIdToChain(18)]: "LUNA",
+  [chainIdToChain(19)]: "INJ",
+  [chainIdToChain(20)]: "OSMO",
+  [chainIdToChain(21)]: "SUI",
+  [chainIdToChain(22)]: "APT",
+  [chainIdToChain(23)]: "ETH",
+  [chainIdToChain(24)]: "ETH",
+  [chainIdToChain(25)]: "xDAI",
+  [chainIdToChain(30)]: "ETH",
+  [chainIdToChain(32)]: "SEI",
+  [chainIdToChain(33)]: "RBTC",
+  [chainIdToChain(34)]: "ETH",
+  [chainIdToChain(35)]: "MNT",
+  [chainIdToChain(36)]: "ETH",
+  [chainIdToChain(37)]: "OKB",
+  [chainIdToChain(38)]: "ETH",
+  [chainIdToChain(39)]: "BERA",
+  [chainIdToChain(40)]: "SEI",
+  [chainIdToChain(43)]: "ETH",
+  [chainIdToChain(10002)]: "ETH",
+  [chainIdToChain(10003)]: "ETH",
+  [chainIdToChain(10004)]: "ETH",
+  [chainIdToChain(10005)]: "ETH",
+  [chainIdToChain(10006)]: "ETH",
+  [chainIdToChain(10007)]: "MATIC",
+};
+
+export const mainnetNativeCurrencies: { [key: string]: string } = {
+  [chainIdToChain(1)]: "SOL",
+  [chainIdToChain(2)]: "ETH",
+  [chainIdToChain(3)]: "LUNA",
+  [chainIdToChain(4)]: "BNB",
+  [chainIdToChain(5)]: "MATIC",
+  [chainIdToChain(6)]: "AVAX",
+  [chainIdToChain(7)]: "ROSE",
+  [chainIdToChain(8)]: "ALGO",
+  [chainIdToChain(9)]: "ETH",
+  [chainIdToChain(10)]: "FTM",
+  [chainIdToChain(11)]: "KAR",
+  [chainIdToChain(12)]: "ACA",
+  [chainIdToChain(13)]: "KLAY",
+  [chainIdToChain(14)]: "CELO",
+  [chainIdToChain(15)]: "NEAR",
+  [chainIdToChain(16)]: "GLMR",
+  [chainIdToChain(17)]: "NEON",
+  [chainIdToChain(18)]: "LUNA",
+  [chainIdToChain(19)]: "INJ",
+  [chainIdToChain(20)]: "OSMO",
+  [chainIdToChain(21)]: "SUI",
+  [chainIdToChain(22)]: "APT",
+  [chainIdToChain(23)]: "ETH",
+  [chainIdToChain(24)]: "ETH",
+  [chainIdToChain(25)]: "xDAI",
+  [chainIdToChain(30)]: "ETH",
+  [chainIdToChain(32)]: "SEI",
+  [chainIdToChain(33)]: "RBTC",
+  [chainIdToChain(34)]: "ETH",
+  [chainIdToChain(35)]: "MNT",
+  [chainIdToChain(36)]: "ETH",
+  [chainIdToChain(37)]: "OKB",
+  [chainIdToChain(38)]: "ETH",
+  [chainIdToChain(39)]: "BERA",
+  [chainIdToChain(40)]: "SEI",
+  [chainIdToChain(43)]: "ETH",
 };
 
 export const testnetDefaultDeliveryProviderContractAddress =
@@ -93,7 +176,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 5, // https://chainlist.org/chain/5
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: TESTNET_RPCS.ethereum || "",
     },
     {
@@ -102,7 +184,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 11155111, // https://chainlist.org/chain/11155111
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: TESTNET_RPCS.sepolia || "",
     },
     {
@@ -111,7 +192,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 421614, // https://chainlist.org/chain/421614
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: TESTNET_RPCS.arbitrum_sepolia || "",
     },
     {
@@ -120,7 +200,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 84532, // https://chainlist.org/chain/84532
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: TESTNET_RPCS.base_sepolia || "",
     },
     {
@@ -129,7 +208,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 11155420, // https://chainlist.org/chain/11155420
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: TESTNET_RPCS.optimism_sepolia || "",
     },
     {
@@ -138,7 +216,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 97,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "BNB",
       rpcUrl: TESTNET_RPCS.bsc || "",
     },
     {
@@ -147,7 +224,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 80001,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "MATIC",
       rpcUrl: TESTNET_RPCS.polygon || "",
     },
     {
@@ -156,7 +232,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 43113,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "AVAX",
       rpcUrl: TESTNET_RPCS.avalanche || "",
     },
     {
@@ -165,7 +240,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 4002,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "FTM",
       rpcUrl: TESTNET_RPCS.fantom || "",
     },
     {
@@ -174,7 +248,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 44787,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "Celo",
       rpcUrl: TESTNET_RPCS.celo || "",
     },
     {
@@ -183,7 +256,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 1287,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "GLMR",
       rpcUrl: TESTNET_RPCS.moonbeam || "",
     },
     {
@@ -192,7 +264,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 84531,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: TESTNET_RPCS.base || "",
     },
     {
@@ -201,7 +272,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 42161,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: TESTNET_RPCS.arbitrum || "",
     },
     {
@@ -210,7 +280,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 10,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: TESTNET_RPCS.optimism || "",
     },
     {
@@ -219,7 +288,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 534351,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: TESTNET_RPCS.scroll || "",
     },
     {
@@ -228,7 +296,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 23888,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: TESTNET_RPCS.blast || "",
     },
     {
@@ -237,7 +304,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 195,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "OKB",
       rpcUrl: TESTNET_RPCS.xlayer || "",
     },
     {
@@ -246,7 +312,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 5001,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "MNT",
       rpcUrl: TESTNET_RPCS.mantle || "",
     },
     {
@@ -255,7 +320,6 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 13001,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: TESTNET_RPCS.snaxchain || "",
     },
   ],
@@ -273,7 +337,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 1,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: MAINNET_RPCS.ethereum || "",
     },
     {
@@ -282,7 +345,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 56,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "BNB",
       rpcUrl: MAINNET_RPCS.bsc || "",
     },
     {
@@ -291,7 +353,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 137,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "MATIC",
       rpcUrl: MAINNET_RPCS.polygon || "",
     },
     {
@@ -300,7 +361,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 43114,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "AVAX",
       rpcUrl: MAINNET_RPCS.avalanche || "",
     },
     {
@@ -309,7 +369,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 250,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "FTM",
       rpcUrl: MAINNET_RPCS.fantom || "",
     },
     // {
@@ -319,7 +378,6 @@ export const mainnetEnv: Environment = {
     //   evmNetworkId: 787,
     //   mainnetDefaultDeliveryProviderContractAddress,
     //   nativeCurrencyDecimals: 18,
-    //   nativeCurrencyName: "ACA",
     //   rpcUrl: MAINNET_RPCS.ethereum || "",
     // },
     {
@@ -328,7 +386,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 8217,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "KLAY",
       rpcUrl: MAINNET_RPCS.klaytn || "",
     },
     {
@@ -337,7 +394,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 42220,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "Celo",
       rpcUrl: MAINNET_RPCS.celo || "",
     },
     {
@@ -346,7 +402,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 1284,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "GLMR",
       rpcUrl: MAINNET_RPCS.moonbeam || "",
     },
     {
@@ -355,7 +410,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 42161,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: MAINNET_RPCS.arbitrum || "",
     },
     {
@@ -364,7 +418,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 10,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: MAINNET_RPCS.optimism || "",
     },
     {
@@ -373,7 +426,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 8453,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: MAINNET_RPCS.base || "",
     },
     {
@@ -382,7 +434,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 534352,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: MAINNET_RPCS.scroll || "",
     },
     {
@@ -391,7 +442,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 5000,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "MNT",
       rpcUrl: MAINNET_RPCS.mantle || "",
     },
     {
@@ -400,7 +450,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 81457,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: MAINNET_RPCS.blast || "",
     },
     {
@@ -409,7 +458,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 196,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "OKB",
       rpcUrl: MAINNET_RPCS.xlayer || "",
     },
     {
@@ -418,7 +466,6 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 2192,
       nativeCurrencyDecimals: 18,
-      nativeCurrencyName: "ETH",
       rpcUrl: MAINNET_RPCS.snaxchain || "",
     },
   ],

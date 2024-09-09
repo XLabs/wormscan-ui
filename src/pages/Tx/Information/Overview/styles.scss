@@ -606,6 +606,12 @@
     }
   }
 
+  & .token-image {
+    margin-left: 6px;
+    height: 22px;
+    width: 22px;
+  }
+
   & .text {
     @include centered-row;
     @include text-roboto-body-500;

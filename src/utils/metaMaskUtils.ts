@@ -16,7 +16,6 @@ export interface AddEthereumChainParameter {
 }
 
 export interface TokenInfo {
-  targetSymbol: string;
   tokenAddress: string;
   tokenDecimals: number;
   tokenImage: string;
@@ -438,22 +437,8 @@ export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number
   return undefined;
 };
 
-export const getTokenLogo = async ({ tokenAddress }: { tokenAddress: string }) => {
-  const data = await fetch(process.env.WORMHOLE_MARKET_TOKENS_URL).then(res => res.json());
-  const tokens = data?.tokens;
-  let logo;
-  for (const chainId in tokens) {
-    if (tokens[chainId][tokenAddress]) {
-      logo = tokens[chainId][tokenAddress].logo;
-      break;
-    }
-  }
-
-  return logo;
-};
-
 export const addToken = async ({ currentNetwork, toChain, tokenInfo }: AddToken) => {
-  const { targetSymbol, tokenAddress, tokenDecimals, tokenImage, tokenSymbol } = tokenInfo || {};
+  const { tokenAddress, tokenDecimals, tokenImage, tokenSymbol } = tokenInfo || {};
   const correctEvmNetwork = getEvmChainId(toChain, currentNetwork);
 
   try {
@@ -487,7 +472,7 @@ export const addToken = async ({ currentNetwork, toChain, tokenInfo }: AddToken)
       });
 
       wasAdded
-        ? toast(`${targetSymbol} has been added to MetaMask`, {
+        ? toast(`${tokenSymbol} has been added to MetaMask`, {
             type: "success",
             theme: "dark",
             style: {
@@ -495,7 +480,7 @@ export const addToken = async ({ currentNetwork, toChain, tokenInfo }: AddToken)
               color: "var(--color-white-70)",
             },
           })
-        : console.log(`${targetSymbol} has not been added to MetaMask`);
+        : console.log(`${tokenSymbol} has not been added to MetaMask`);
     };
 
     // Detect current network

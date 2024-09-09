@@ -93,13 +93,22 @@ const WORMHOLE_CHAINS: any = {
     icon: SuiIcon,
     colorlessIcon: SuiColorlessIcon,
     explorer: {
-      Testnet: "https://suiscan.xyz/Testnet",
-      Devnet: "https://suiscan.xyz/Testnet",
-      Mainnet: "https://suiscan.xyz/Mainnet",
+      Testnet: "https://testnet.suivision.xyz",
+      Devnet: "https://devnet.suivision.xyz",
+      Mainnet: "https://suivision.xyz",
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/account/" + value;
-      if (base === "token") return this.explorer?.[network] + "/coin/" + value;
+      if (base === "token")
+        return (
+          this.explorer?.[network] +
+          "/coin/" +
+          // the SUI native token comes as this following address because of wormhole encoding,
+          // we need to hardcode the SUI token address for the explorer to work
+          (value === "0x9258181f5ceac8dbffb7030890243caed69a9599d2886d957a9cb7656af3bdb3"
+            ? "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI"
+            : value)
+        );
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
