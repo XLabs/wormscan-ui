@@ -20,7 +20,7 @@ export const ByChain = ({ activityNotional, activityTx }: ByChainProps) => {
       <div className="bychain-half">
         <div className="bychain-half-title">
           <GlobeIcon />
-          <div>Transfers by Chain</div>
+          <div>Transfers by Chain All Time</div>
         </div>
         <div className="bychain-half-table">
           <div className="bychain-half-table-head">
@@ -69,7 +69,7 @@ export const ByChain = ({ activityNotional, activityTx }: ByChainProps) => {
       <div className="bychain-half">
         <div className="bychain-half-title">
           <GlobeIcon />
-          <div>Volume by Chain</div>
+          <div>Volume by Chain All Time</div>
         </div>
         <div className="bychain-half-table">
           <div className="bychain-half-table-head">

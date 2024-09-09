@@ -4,24 +4,24 @@ import { getClient } from "src/api/Client";
 import { getGeckoTokenInfo } from "src/utils/cryptoToolkit";
 import { chainToChainId } from "@wormhole-foundation/sdk";
 import { Summary } from "./Summary";
-import { ByChain } from "./ByChain";
+import { Metrics } from "./Metrics";
 import { TransfersOverTime } from "./TransfersOverTime";
+import { RecentTransactions } from "./RecentTransactions";
+import { ByChain } from "./ByChain";
 import { TopHolders } from "./TopHolders";
 import { TopAddresses } from "./TopAddresses";
-import "./styles.scss";
 import { ToggleGroup } from "src/components/atoms";
-import Metrics from "./Metrics";
+import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { useWindowSize } from "src/utils/hooks";
 import { NTT_APP_ID } from "src/consts";
-import RecentTransactions from "./RecentTransactions";
 import { Order } from "src/api";
-import { GetOperationsOutput } from "src/api/guardian-network/types";
+import "./styles.scss";
 
 export type TimeRange = { label: string; value: string };
 export type ByType = "notional" | "tx";
 
 const WToken = () => {
-  const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last day", value: "1d" });
+  const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last 24 hours", value: "1d" });
   const [by, setBy] = useState<ByType>("tx");
 
   const { width } = useWindowSize();

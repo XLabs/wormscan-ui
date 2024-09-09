@@ -35,7 +35,6 @@ export const TopHolders = ({ topHolders }: TopHoldersProps) => {
             <div className="top-holders-table-head-row">USER</div>
             <div className="top-holders-table-head-row">CHAIN</div>
             <div className="top-holders-table-head-row">AMOUNT</div>
-            {/* <div className="top-holders-table-head-row">TXNS</div> */}
             <div className="top-holders-table-head-row"></div>
           </div>
 
@@ -131,13 +130,6 @@ export const TopHolders = ({ topHolders }: TopHoldersProps) => {
                       View on Explorer <LinkIcon />
                     </a>
                   </div>
-
-                  {/* <div className="top-holders-mobile-container-item" /> */}
-
-                  {/* <div className="top-holders-mobile-container-item">
-                    <div className="title">TXNS</div>
-                    <div className="content number">??????</div>
-                  </div> */}
                 </div>
               ))
             : LOADING_ARRAY.map((_, idx) => (

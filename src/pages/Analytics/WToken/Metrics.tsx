@@ -7,7 +7,7 @@ interface IMetricsProps {
   summary: GetSummaryResult;
 }
 
-const Metrics = ({ summary }: IMetricsProps) => {
+export const Metrics = ({ summary }: IMetricsProps) => {
   return (
     <div className="summary-metrics">
       <div className="summary-metrics-title">
@@ -77,5 +77,3 @@ const Metrics = ({ summary }: IMetricsProps) => {
     </div>
   );
 };
-
-export default Metrics;

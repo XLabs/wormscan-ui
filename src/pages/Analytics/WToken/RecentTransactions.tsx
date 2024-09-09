@@ -21,7 +21,7 @@ interface IRecentTransactionsProps {
 const WTokenIcon = getTokenIcon("W");
 const LOADING_ARRAY = Array(7).fill(1);
 
-const RecentTransactions = ({
+export const RecentTransactions = ({
   recentTransactions,
   isError,
   isLoading,
@@ -202,5 +202,3 @@ const RecentTransactions = ({
     </div>
   );
 };
-
-export default RecentTransactions;
