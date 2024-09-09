@@ -1,16 +1,33 @@
 import { GetSummaryResult } from "src/api/native-token-transfer/types";
-import { Loader } from "src/components/atoms";
+import { BlockchainIcon } from "src/components/atoms";
 import { WORMHOLE_PAGE_URL } from "src/consts";
-import { AnalyticsIcon, LinkIcon } from "src/icons/generic";
-import { formatNumber, numberToSuffix } from "src/utils/number";
+import { useEnvironment } from "src/context/EnvironmentContext";
+import {
+  ArrowUpRightIcon,
+  DiscordIcon,
+  GithubIcon,
+  LinkIcon,
+  TelegramIcon,
+  TwitterIcon,
+} from "src/icons/generic";
+import { formatNumber } from "src/utils/number";
 import { getTokenIcon } from "src/utils/token";
+import { ChainId, chainToChainId, Network } from "@wormhole-foundation/sdk";
+import { getExplorerLink } from "src/utils/wormhole";
 
 type SummaryProps = {
-  summary: GetSummaryResult;
+  wTokenPrice: string;
+  isErrorWTokenPrice: boolean;
+  isFetchingWTokenPrice: boolean;
 };
 
-export const Summary = ({ summary }: SummaryProps) => {
+export const Summary = ({
+  wTokenPrice,
+  isErrorWTokenPrice,
+  isFetchingWTokenPrice,
+}: SummaryProps) => {
   const tokenIcon = getTokenIcon("W");
+  const { environment } = useEnvironment();
 
   return (
     <div className="summary">
@@ -28,12 +45,42 @@ export const Summary = ({ summary }: SummaryProps) => {
           </h1>
           <div className="summary-top-content-container">
             <div className="summary-top-content-container-item">
-              <div className="summary-top-content-container-item-up">Project Name</div>
-              <div className="summary-top-content-container-item-down">Wormhole Token</div>
+              <div className="summary-top-content-container-item-up">Contracts</div>
+              <div className="summary-top-content-container-item-chain">
+                <ChainItem
+                  chainId={chainToChainId("Solana")}
+                  network={environment.network}
+                  value="85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ"
+                />
+                <ChainItem
+                  chainId={chainToChainId("Ethereum")}
+                  network={environment.network}
+                  value="0xb0ffa8000886e57f86dd5264b9582b2ad87b2b91"
+                />
+                <ChainItem
+                  chainId={chainToChainId("Base")}
+                  network={environment.network}
+                  value="0xb0ffa8000886e57f86dd5264b9582b2ad87b2b91"
+                />
+                <ChainItem
+                  chainId={chainToChainId("Arbitrum")}
+                  network={environment.network}
+                  value="0xb0ffa8000886e57f86dd5264b9582b2ad87b2b91"
+                />
+              </div>
             </div>
 
             <div className="summary-top-content-container-item">
-              <div className="summary-top-content-container-item-up">Project URL</div>
+              <div className="summary-top-content-container-item-up">Price</div>
+              <div className="summary-top-content-container-item-down">
+                {isFetchingWTokenPrice || isErrorWTokenPrice
+                  ? "..."
+                  : `$${formatNumber(+wTokenPrice, 3)}`}
+              </div>
+            </div>
+
+            <div className="summary-top-content-container-item">
+              <div className="summary-top-content-container-item-up">Website</div>
               <div className="summary-top-content-container-item-down">
                 <a className="link" href={WORMHOLE_PAGE_URL} rel="noreferrer" target="_blank">
                   <span>https://wormhole.com</span>
@@ -43,91 +90,45 @@ export const Summary = ({ summary }: SummaryProps) => {
             </div>
 
             <div className="summary-top-content-container-item">
-              <div className="summary-top-content-container-item-up">Unit Name</div>
-              <div className="summary-top-content-container-item-down">W</div>
-            </div>
-
-            <div className="summary-top-content-container-item">
-              <div className="summary-top-content-container-item-up">Market Cap</div>
-              <div className="summary-top-content-container-item-down">
-                ${summary?.marketCap ? formatNumber(+summary.marketCap, 0) : "..."}
+              <div className="summary-top-content-container-item-up">Community</div>
+              <div className="summary-top-content-container-item-down community">
+                <a href="https://x.com/wormhole">
+                  <TwitterIcon />
+                </a>
+                <a href="https://t.me/wormholecrypto">
+                  <TelegramIcon />
+                </a>
+                <a href="https://discord.com/invite/wormholecrypto">
+                  <DiscordIcon />
+                </a>
+                <a href="https://github.com/wormhole-foundation">
+                  <GithubIcon />
+                </a>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <div className="summary-metrics">
-        <div className="summary-metrics-title">
-          <div className="summary-metrics-title-icon">
-            <AnalyticsIcon width={20} />
-          </div>
-          <h2 className="summary-metrics-title-text">Summary Metrics</h2>
-        </div>
-
-        <div className="summary-metrics-container">
-          <div className="summary-metrics-container-item">
-            {summary?.totalValueTokenTransferred && (
-              <>
-                <h1 className="summary-metrics-container-item-up">
-                  ${numberToSuffix(+summary.totalValueTokenTransferred)}
-                </h1>
-                <div className="summary-metrics-container-item-down">
-                  Total value of W tokens transferred
-                </div>
-              </>
-            )}
-          </div>
-
-          <div className="summary-metrics-container-item">
-            {summary?.totalTokenTransferred && (
-              <>
-                <h1 className="summary-metrics-container-item-up">
-                  {formatNumber(+summary.totalTokenTransferred)}
-                </h1>
-                <div className="summary-metrics-container-item-down">
-                  Total W token transfers across chains
-                </div>
-              </>
-            )}
-          </div>
-
-          <div className="summary-metrics-container-item">
-            {summary?.averageTransferSize ? (
-              <>
-                <h1 className="summary-metrics-container-item-up">
-                  ${formatNumber(+summary.averageTransferSize, 0)}
-                </h1>
-                <div className="summary-metrics-container-item-down">Average transfer size</div>
-              </>
-            ) : (
-              <Loader />
-            )}
-          </div>
-
-          <div className="summary-metrics-container-item">
-            {summary?.medianTransferSize && (
-              <>
-                <h1 className="summary-metrics-container-item-up">
-                  ${formatNumber(+summary.medianTransferSize)}
-                </h1>
-                <div className="summary-metrics-container-item-down">Median transfer size</div>
-              </>
-            )}
-          </div>
-
-          <div className="summary-metrics-container-item">
-            {summary?.circulatingSupply && (
-              <>
-                <h1 className="summary-metrics-container-item-up">
-                  {numberToSuffix(+summary.circulatingSupply)}
-                </h1>
-                <div className="summary-metrics-container-item-down">Circulating Supply</div>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
     </div>
+  );
+};
+
+const ChainItem = ({
+  chainId,
+  network,
+  value,
+}: {
+  chainId: ChainId;
+  network: Network;
+  value: string;
+}) => {
+  return (
+    <a
+      href={getExplorerLink({ chainId, network, value, base: "token" })}
+      className="summary-top-content-container-item-chain-contract"
+    >
+      <BlockchainIcon chainId={chainId} network={network} />
+      <ArrowUpRightIcon />
+    </a>
   );
 };

@@ -25,7 +25,7 @@ export const TopHolders = ({ topHolders }: TopHoldersProps) => {
     <div className="top-holders">
       <div className="top-holders-title">
         <UserIcon />
-        <div>Top Holders</div>
+        <div>Top Holders by Volume</div>
       </div>
 
       {isDesktopDesign && (
