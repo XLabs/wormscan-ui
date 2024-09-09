@@ -346,7 +346,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
 
         {numberOfProtocols && (
           <NavLink className="protocols-stats-title-link" to="/analytics/protocols">
-            View more
+            View More
           </NavLink>
         )}
       </h3>

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import i18n from "src/i18n";
-import { Loader, Select, ToggleGroup } from "src/components/atoms";
+import { Loader, NavLink, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { getClient } from "src/api/Client";
 import { CrossChainBy } from "src/api/guardian-network/types";
@@ -53,7 +53,7 @@ const TABLE_HEADERS = [
   "Target Percentage",
 ];
 
-const CrossChainChart = () => {
+const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const { t } = useTranslation();
@@ -196,6 +196,11 @@ const CrossChainChart = () => {
         <div className="cross-chain-top-title">
           <GlobeIcon width={24} />
           {t("home.crossChain.title")}
+          {isHomePage && (
+            <NavLink className="token-activity-title-link" to="/analytics/chains">
+              View More
+            </NavLink>
+          )}
         </div>
 
         <Select

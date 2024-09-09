@@ -12,7 +12,7 @@ const Home = () => {
   return (
     <BaseLayout>
       <WormholeStats />
-      <CrossChainChart />
+      <CrossChainChart isHomePage />
       <ProtocolsStats numberOfProtocols={5} />
       <TokenActivity isHomePage />
     </BaseLayout>
