@@ -337,15 +337,16 @@
   &-alert {
     @include centered-column;
     align-items: center;
-    bottom: 0;
-    left: 0;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+
     margin: auto;
     overflow: hidden;
     padding: 20px;
     pointer-events: none;
     position: absolute;
-    right: 0;
-    top: 0;
     user-select: none;
 
     &.encoded {
@@ -360,7 +361,6 @@
       & > svg {
         align-self: flex-start;
         color: var(--color-gray-600);
-        min-width: max-content;
       }
 
       & > p {
