@@ -149,7 +149,7 @@ const Footer = () => {
               VAA Parser
             </NavLink>
 
-            <NavLink to="/submit" aria-label="Submit Your Protocol">
+            <NavLink to="/developers/submit" aria-label="Submit Your Protocol">
               Submit Your Protocol
             </NavLink>
 
