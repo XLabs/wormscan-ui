@@ -4,6 +4,7 @@ import {
   CCTP_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
+  FAST_TRANSFERS_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
   MAYAN_APP_ID,
@@ -17,8 +18,38 @@ import {
 
 const ProtocolIcon = ({ protocol, width = 28 }: { protocol: string; width?: number }) => {
   const IconComponent = iconMap[protocol];
-  return IconComponent ? <IconComponent width={width} /> : null;
+  if (IconComponent) return <IconComponent width={width} />;
+
+  if (genericIcons.includes(protocol)) {
+    const initials = protocol
+      .split("_")
+      .map(word => word[0])
+      .join("")
+      .toUpperCase();
+
+    return <GenericIcon txt={initials} width={width} />;
+  }
+
+  return null;
 };
+
+const GenericIcon = ({ txt, width }: { txt: string; width: number }) => (
+  <svg width={width} height={width} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="50" fill="var(--color-gray-900)"></circle>
+
+    <text
+      x="50%"
+      y="50%"
+      textAnchor="middle"
+      dy=".35em"
+      fontSize="55"
+      fill="currentColor"
+      fontFamily="Inter, sans-serif"
+    >
+      {txt}
+    </text>
+  </svg>
+);
 
 const PortalIcon = ({ width }: { width: number }) => (
   <svg
@@ -483,5 +514,7 @@ const iconMap: Record<string, React.FC<{ width: number }>> = {
   [TBTC_APP_ID]: TbtcIcon,
   [USDT_TRANSFER_APP_ID]: USDTTransferIcon,
 };
+
+const genericIcons = [FAST_TRANSFERS_APP_ID];
 
 export default ProtocolIcon;
