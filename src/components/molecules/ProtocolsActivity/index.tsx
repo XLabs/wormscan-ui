@@ -221,7 +221,9 @@ const ProtocolsActivity = () => {
             className="protocols-activity-container-top-select-protocol"
             controlStyles={{ minWidth: 256 }}
             isMulti={false}
-            items={PROTOCOL_LIST.filter(protocol => protocol.value !== PORTAL_NFT_APP_ID)}
+            items={PROTOCOL_LIST.filter(
+              protocol => protocol.value !== PORTAL_NFT_APP_ID && protocol.value !== "CONNECT",
+            )}
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
             menuPortalStyles={{ zIndex: 100 }}
             name="protocol"
