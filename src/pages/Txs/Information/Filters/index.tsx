@@ -1,7 +1,8 @@
+import { chainToChainId } from "@wormhole-foundation/sdk";
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { BlockchainIcon, Counter, Select, ToggleGroup } from "src/components/atoms";
-import { BREAKPOINTS } from "src/consts";
+import { BREAKPOINTS, GATEWAY_APP_ID } from "src/consts";
 import { getChainName } from "src/utils/wormhole";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { ChainFilterMainnet, ChainFilterTestnet, PROTOCOL_LIST } from "src/utils/filterUtils";
@@ -91,7 +92,27 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
     ),
     label: getChainName({ network: currentNetwork, chainId }),
     value: String(chainId),
+    searchableBy:
+      chainId === chainToChainId("Wormchain") ? "Kujira, Evmos, Injective, Osmosis" : "",
   }));
+
+  const ONLY_GATEWAY_CHAIN_LIST = [
+    {
+      icon: (
+        <BlockchainIcon
+          background="var(--color-white-10)"
+          chainId={chainToChainId("Wormchain")}
+          colorless
+          lazy={false}
+          network={currentNetwork}
+          size={24}
+        />
+      ),
+      label: getChainName({ network: currentNetwork, chainId: chainToChainId("Wormchain") }),
+      value: String(chainToChainId("Wormchain")),
+      searchableBy: "Kujira, Evmos, Injective, Osmosis",
+    },
+  ];
 
   const handleShowFilters = () => {
     setShowFilters(!showFilters);
@@ -261,7 +282,11 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
           <Select
             keepOpen={isDesktop}
             ariaLabel="Select Target Chain"
-            items={CHAIN_LIST}
+            items={
+              checkedState.appId?.find(a => a.value === GATEWAY_APP_ID)
+                ? ONLY_GATEWAY_CHAIN_LIST
+                : CHAIN_LIST
+            }
             menuFixed={!isDesktop}
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
             menuPortalStyles={{ zIndex: 100 }}

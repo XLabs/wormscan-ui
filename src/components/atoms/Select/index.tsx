@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { chainToChainId } from "@wormhole-foundation/sdk";
 import SelectPrimitive, { components } from "react-select";
 import { Checkbox } from "src/components/atoms";
 import { OverviewIcon, ChevronDownIcon, TriangleDownIcon, SearchIcon } from "src/icons/generic";
@@ -94,17 +95,39 @@ const Select = ({
               components={{
                 IndicatorSeparator: null,
                 DropdownIndicator: null,
-                Option: ({ children, ...props }: any) => (
-                  <components.Option {...props}>
-                    <div className="select-custom-option">
-                      <div className="select-custom-option-container">
-                        {props.data.icon}
-                        {children}
+                Option: ({ children, ...props }: any) => {
+                  return (
+                    <components.Option {...props}>
+                      <div className="select-custom-option">
+                        <div className="select-custom-option-container">
+                          {props.data.icon}
+                          <div className="select-custom-option-text">
+                            {children}
+                            {props.data.value === String(chainToChainId("Wormchain")) &&
+                              !!props.data.searchableBy && (
+                                <div className="select-custom-option-text-subtitle">
+                                  <p>Includes Evmos, Kujira,</p>
+                                  <p>Injective, Osmosis</p>
+                                </div>
+                              )}
+                          </div>
+                        </div>
+                        <Checkbox checked={props.isSelected} locked={props.data.showMinus} />
                       </div>
-                      <Checkbox checked={props.isSelected} locked={props.data.showMinus} />
-                    </div>
-                  </components.Option>
-                ),
+                    </components.Option>
+                  );
+                },
+              }}
+              filterOption={(option, value) => {
+                if (
+                  option.data?.searchableBy?.toLowerCase().includes(value.toLowerCase()) ||
+                  option.data?.label?.toLowerCase().includes(value.toLowerCase()) ||
+                  option.data?.value?.toLowerCase().includes(value.toLowerCase())
+                ) {
+                  return true;
+                }
+
+                return false;
               }}
               controlShouldRenderValue={false}
               defaultMenuIsOpen={false}
