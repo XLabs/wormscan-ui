@@ -19,6 +19,7 @@ import {
   IChainActivityInput,
   IMayanActivity,
   IMayanActivityInput,
+  IMayanStats,
   IProtocolActivity,
   IProtocolActivityInput,
   LastTxs,
@@ -207,6 +208,7 @@ export class GuardianNetwork {
     return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
   }
 
+  // unused until this Mayan endpoint has the correct data
   async getMayanActivity({ from, to }: IMayanActivityInput): Promise<IMayanActivity> {
     const mayanResp = await fetch(
       `https://explorer-api.mayan.finance/v3/stats/wh/activity?from=${from}&to=${to}`,
@@ -216,6 +218,17 @@ export class GuardianNetwork {
       const mayanResponse = await mayanResp.json();
       return mayanResponse;
     }
+    return null;
+  }
+
+  async getMayanStats(): Promise<IMayanStats> {
+    const mayanResp = await fetch("https://explorer-api.mayan.finance/v3/stats/overview");
+
+    if (mayanResp.ok) {
+      const mayanResponse = await mayanResp.json();
+      return mayanResponse;
+    }
+
     return null;
   }
 

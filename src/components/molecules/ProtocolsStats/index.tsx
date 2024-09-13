@@ -22,11 +22,11 @@ import "./styles.scss";
 interface ITable {
   protocol: string;
   total_value_transferred: number;
-  two_days_ago_value_transferred: number;
+  two_days_ago_value_transferred: number | string;
   last_day_value_transferred: number;
   last_day_value_diff_percentage: string;
   total_messages: number;
-  two_days_ago_messages: number;
+  two_days_ago_messages: number | string;
   last_day_messages: number;
   last_day_diff_percentage: string;
 }
@@ -61,13 +61,14 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
   const [dataTable, setDataTable] = useState<ITable[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { data: monthlyData, isError: isErrorMonthly } = useQuery(["monthlyData"], () =>
+  const { data: allData, isError: isErrorAllData } = useQuery(["allData"], () =>
     getClient().guardianNetwork.getProtocolActivity({
       from: firstDataAvailableDate,
       to: todayISOString,
       timespan: "1mo",
     }),
   );
+
   const { data: last48To24HoursData, isError: isError48To24 } = useQuery(
     ["last48To24HoursData"],
     () =>
@@ -77,6 +78,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
         timespan: "1h",
       }),
   );
+
   const { data: last24HoursData, isError: isError24Hours } = useQuery(["last24HoursData"], () =>
     getClient().guardianNetwork.getProtocolActivity({
       from: oneDayAgoISOString,
@@ -94,6 +96,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
       }),
     { enabled: isMainnet },
   );
+
   const { data: last48To24HoursAllbridge, isError: isErrorLast48To24Allbridge } = useQuery(
     ["last48To24HoursAllbridge"],
     () =>
@@ -103,6 +106,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
       }),
     { enabled: isMainnet },
   );
+
   const { data: last24HoursAllbridge, isError: isErrorLast24HoursAllbridge } = useQuery(
     ["last24HoursAllbridge"],
     () =>
@@ -118,35 +122,42 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
     () => getClient().guardianNetwork.getProtocolsStats(),
     { enabled: isMainnet },
   );
-  const { data: last48To24HoursMayan, isError: isErrorLast48To24Mayan } = useQuery(
-    ["last48To24HoursMayan"],
-    () =>
-      getClient().guardianNetwork.getMayanActivity({
-        from: twoDaysAgoISOString,
-        to: oneDayAgoISOString,
-      }),
-    { enabled: isMainnet },
-  );
-  const { data: last24HoursMayan, isError: isErrorLast24HoursMayan } = useQuery(
-    ["last24HoursMayan"],
-    () =>
-      getClient().guardianNetwork.getMayanActivity({
-        from: oneDayAgoISOString,
-        to: todayISOString,
-      }),
+
+  const { data: mayanStats, isError: isErrorMayanStats } = useQuery(
+    ["mayanStats"],
+    () => getClient().guardianNetwork.getMayanStats(),
     { enabled: isMainnet },
   );
 
+  // const { data: last48To24HoursMayan, isError: isErrorLast48To24Mayan } = useQuery(
+  //   ["last48To24HoursMayan"],
+  //   () =>
+  //     getClient().guardianNetwork.getMayanActivity({
+  //       from: twoDaysAgoISOString,
+  //       to: oneDayAgoISOString,
+  //     }),
+  //   { enabled: isMainnet },
+  // );
+
+  // const { data: last24HoursMayan, isError: isErrorLast24HoursMayan } = useQuery(
+  //   ["last24HoursMayan"],
+  //   () =>
+  //     getClient().guardianNetwork.getMayanActivity({
+  //       from: oneDayAgoISOString,
+  //       to: todayISOString,
+  //     }),
+  //   { enabled: isMainnet },
+  // );
+
   const isError =
-    isErrorMonthly ||
+    isErrorAllData ||
     isError48To24 ||
     isError24Hours ||
     isErrorAllTimeAllbridge ||
     isErrorLast48To24Allbridge ||
     isErrorLast24HoursAllbridge ||
     isErrorStats ||
-    isErrorLast48To24Mayan ||
-    isErrorLast24HoursMayan;
+    isErrorMayanStats;
 
   useEffect(() => {
     setIsLoading(true);
@@ -156,20 +167,19 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
 
     if (
       (isMainnet &&
-        monthlyData &&
+        allData &&
         last48To24HoursData &&
         last24HoursData &&
         allTimeAllbridge &&
         last48To24HoursAllbridge &&
         last24HoursAllbridge &&
         stats &&
-        last48To24HoursMayan &&
-        last24HoursMayan) ||
-      (!isMainnet && monthlyData && last48To24HoursData && last24HoursData)
+        mayanStats) ||
+      (!isMainnet && allData && last48To24HoursData && last24HoursData)
     ) {
       const processedData: ITable[] = [];
 
-      monthlyData
+      allData
         .filter(
           item =>
             item.app_id !== "STABLE" &&
@@ -287,28 +297,28 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
 
         processedData.push(allbridgeData);
 
-        const mayanInfo = stats.find(item => item.protocol === "mayan");
+        // const mayanInfo = stats.find(item => item.protocol === "mayan");
 
-        const mayanLastDayValueDiffPercentage = calculatePercentageDiff(
-          last24HoursMayan.total_value_transferred,
-          last48To24HoursMayan.total_value_transferred,
-        );
+        // const mayanLastDayValueDiffPercentage = calculatePercentageDiff(
+        //   last24HoursMayan.total_value_transferred,
+        //   last48To24HoursMayan.total_value_transferred,
+        // );
 
-        const mayanLastDayMessagesDiffPercentage = calculatePercentageDiff(
-          last24HoursMayan.total_messages,
-          last48To24HoursMayan.total_messages,
-        );
+        // const mayanLastDayMessagesDiffPercentage = calculatePercentageDiff(
+        //   last24HoursMayan.total_messages,
+        //   last48To24HoursMayan.total_messages,
+        // );
 
         const mayanData = {
           protocol: MAYAN_APP_ID,
-          total_value_transferred: mayanInfo.total_value_transferred,
-          total_messages: mayanInfo.total_messages,
-          two_days_ago_value_transferred: last48To24HoursMayan.total_value_transferred,
-          last_day_value_transferred: last24HoursMayan.total_value_transferred,
-          last_day_value_diff_percentage: mayanLastDayValueDiffPercentage,
-          two_days_ago_messages: last48To24HoursMayan.total_messages,
-          last_day_messages: last24HoursMayan.total_messages,
-          last_day_diff_percentage: mayanLastDayMessagesDiffPercentage,
+          total_value_transferred: mayanStats.allTime.volume,
+          total_messages: mayanStats.allTime.swaps,
+          two_days_ago_value_transferred: "N/A",
+          last_day_value_transferred: mayanStats.last24h.volume,
+          last_day_value_diff_percentage: "N/A",
+          two_days_ago_messages: "N/A",
+          last_day_messages: mayanStats.last24h.swaps,
+          last_day_diff_percentage: "N/A",
         };
 
         processedData.push(mayanData);
@@ -323,17 +333,16 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
       }
     }
   }, [
-    monthlyData,
+    allData,
     last48To24HoursData,
     last24HoursData,
     allTimeAllbridge,
     last48To24HoursAllbridge,
     last24HoursAllbridge,
     stats,
-    last48To24HoursMayan,
-    last24HoursMayan,
     isMainnet,
     isError,
+    mayanStats,
   ]);
 
   return (
@@ -387,6 +396,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
               const { diffClass: diffValueClass, prefix: prefixValue } = getClassAndPrefix(
                 last_day_value_diff_percentage,
               );
+
               const { diffClass: diffMessagesClass, prefix: prefixMessages } =
                 getClassAndPrefix(last_day_diff_percentage);
 
@@ -425,29 +435,31 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                         <h4 className="protocols-stats-container-element-item-title">24H VOLUME</h4>
                         <p className="protocols-stats-container-element-item-value">
                           ${formatNumber(item?.last_day_value_transferred, 0)}
-                          <Tooltip
-                            type="info"
-                            tooltip={
-                              <div className="protocols-stats-container-element-item-value-tooltipasd">
-                                <p>
-                                  ${formatNumber(item?.two_days_ago_value_transferred, 0)} were
-                                  transferred in the previous 24 hours.
-                                </p>
-                                <br />
-                                <p>
-                                  ${formatNumber(item?.last_day_value_transferred, 0)} were
-                                  transferred in the last 24 hours.
-                                </p>
-                              </div>
-                            }
-                          >
-                            <span
-                              className={`protocols-stats-container-element-item-value-diff ${diffValueClass}`}
+                          {item?.two_days_ago_value_transferred !== "N/A" && (
+                            <Tooltip
+                              type="info"
+                              tooltip={
+                                <div className="protocols-stats-container-element-item-value-tooltip">
+                                  <p>
+                                    ${formatNumber(+item?.two_days_ago_value_transferred, 0)} were
+                                    transferred in the previous 24 hours.
+                                  </p>
+                                  <br />
+                                  <p>
+                                    ${formatNumber(item?.last_day_value_transferred, 0)} were
+                                    transferred in the last 24 hours.
+                                  </p>
+                                </div>
+                              }
                             >
-                              {prefixValue}
-                              {last_day_value_diff_percentage}
-                            </span>
-                          </Tooltip>
+                              <span
+                                className={`protocols-stats-container-element-item-value-diff ${diffValueClass}`}
+                              >
+                                {prefixValue}
+                                {last_day_value_diff_percentage}
+                              </span>
+                            </Tooltip>
+                          )}
                         </p>
                       </div>
                     </>
@@ -466,29 +478,31 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                     <h4 className="protocols-stats-container-element-item-title">24H TRANSFERS</h4>
                     <p className="protocols-stats-container-element-item-value">
                       {formatNumber(item?.last_day_messages, 0)}
-                      <Tooltip
-                        type="info"
-                        tooltip={
-                          <div className="protocols-stats-container-element-item-value-tooltipasd">
-                            <p>
-                              {formatNumber(item?.two_days_ago_messages, 0)} messages were sent in
-                              the previous 24 hours.
-                            </p>
-                            <br />
-                            <p>
-                              {formatNumber(item?.last_day_messages, 0)} messages were sent in the
-                              last 24 hours.
-                            </p>
-                          </div>
-                        }
-                      >
-                        <span
-                          className={`protocols-stats-container-element-item-value-diff ${diffMessagesClass}`}
+                      {item?.two_days_ago_messages !== "N/A" && (
+                        <Tooltip
+                          type="info"
+                          tooltip={
+                            <div className="protocols-stats-container-element-item-value-tooltipasd">
+                              <p>
+                                {formatNumber(+item?.two_days_ago_messages, 0)} messages were sent
+                                in the previous 24 hours.
+                              </p>
+                              <br />
+                              <p>
+                                {formatNumber(item?.last_day_messages, 0)} messages were sent in the
+                                last 24 hours.
+                              </p>
+                            </div>
+                          }
                         >
-                          {prefixMessages}
-                          {last_day_diff_percentage}
-                        </span>
-                      </Tooltip>
+                          <span
+                            className={`protocols-stats-container-element-item-value-diff ${diffMessagesClass}`}
+                          >
+                            {prefixMessages}
+                            {last_day_diff_percentage}
+                          </span>
+                        </Tooltip>
+                      )}
                     </p>
                   </div>
 

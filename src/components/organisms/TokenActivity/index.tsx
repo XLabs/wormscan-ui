@@ -18,7 +18,7 @@ import "./styles.scss";
 
 const METRIC_CHART_LIST = [
   { label: "Volume", value: "volume", ariaLabel: "Volume" },
-  { label: "Transactions", value: "transactions", ariaLabel: "Transactions" },
+  { label: "Transfers", value: "transactions", ariaLabel: "Transfers" },
 ];
 
 const RANGE_LIST = [
@@ -260,7 +260,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
           </div>
 
           <ToggleGroup
-            ariaLabel="Select metric type (volume or transactions)"
+            ariaLabel="Select metric type (volume or transfers)"
             className="token-activity-container-top-toggle"
             items={METRIC_CHART_LIST}
             onValueChange={value => setMetricSelected(value)}

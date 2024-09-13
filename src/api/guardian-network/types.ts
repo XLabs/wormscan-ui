@@ -139,6 +139,23 @@ export interface IMayanActivity {
   volume: number;
 }
 
+export interface IMayanStats {
+  last24h: {
+    volume: number;
+    toSolCount: number;
+    fromSolCount: number;
+    swaps: number;
+    activeTraders: number;
+  };
+  allTime: {
+    volume: number;
+    toSolCount: number;
+    fromSolCount: number;
+    swaps: number;
+    activeTraders: number;
+  };
+}
+
 export interface IAllbridgeActivityInput {
   from: string;
   to: string;
