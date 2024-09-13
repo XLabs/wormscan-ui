@@ -1,4 +1,4 @@
-import { chain, chainToChainId } from "@wormhole-foundation/sdk";
+import { chainToChainId } from "@wormhole-foundation/sdk";
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { BlockchainIcon, Counter, Select, ToggleGroup } from "src/components/atoms";
