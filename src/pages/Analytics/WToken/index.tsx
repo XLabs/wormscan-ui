@@ -77,14 +77,20 @@ const WToken = () => {
     data: wTokenPrice,
     isError: isErrorWTokenPrice,
     isFetching: isFetchingWTokenPrice,
-  } = useQuery(["getWTokenInfo"], async () => {
-    const data = await getGeckoTokenInfo(
-      "85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ",
-      chainToChainId("Solana"),
-    );
-    if (!data || !data.attributes?.price_usd) return null;
-    return data.attributes.price_usd;
-  });
+  } = useQuery(
+    ["getWTokenInfo"],
+    async () => {
+      const data = await getGeckoTokenInfo(
+        "85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ",
+        chainToChainId("Solana"),
+      );
+      if (!data || !data.attributes?.price_usd) return null;
+      return data.attributes.price_usd;
+    },
+    {
+      refetchInterval: 10000,
+    },
+  );
 
   const {
     data: transfersByTime,

@@ -1,3 +1,4 @@
+import FlipNumbers from "react-flip-numbers";
 import { BlockchainIcon } from "src/components/atoms";
 import { WORMHOLE_PAGE_URL } from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -71,10 +72,36 @@ export const Summary = ({
 
             <div className="summary-top-content-container-item">
               <div className="summary-top-content-container-item-up">Price</div>
-              <div className="summary-top-content-container-item-down">
-                {isFetchingWTokenPrice || isErrorWTokenPrice
-                  ? "..."
-                  : `$${formatNumber(+wTokenPrice, 3)}`}
+              <div className="summary-top-content-container-item-down price">
+                <div className="price-value">
+                  {isFetchingWTokenPrice || (isErrorWTokenPrice && "...")}
+
+                  {wTokenPrice && (
+                    <FlipNumbers
+                      height={15}
+                      width={11}
+                      color="white"
+                      background="var(--color-gray-900)"
+                      play
+                      perspective={100}
+                      numbers={`$${formatNumber(+wTokenPrice, 4)}`}
+                      numberStyle={{
+                        fontFamily: "Roboto",
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        letterSpacing: "0.02em",
+                        lineHeight: "20px",
+                      }}
+                      nonNumberStyle={{
+                        fontFamily: "Roboto",
+                        fontSize: "14px",
+                        fontWeight: 400,
+                        letterSpacing: "0.02em",
+                        lineHeight: "20px",
+                      }}
+                    />
+                  )}
+                </div>
               </div>
             </div>
 
