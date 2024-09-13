@@ -10,6 +10,7 @@ import {
   CCTP_MANUAL_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
+  PORTAL_APP_ID,
   USDT_TRANSFER_APP_ID,
 } from "src/consts";
 
@@ -88,6 +89,10 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
 };
 
 export const formatAppId = (appId: string) => {
+  if (appId === PORTAL_APP_ID) {
+    return "Portal";
+  }
+
   if (appId === GR_APP_ID) {
     return "Standard Relayer";
   }

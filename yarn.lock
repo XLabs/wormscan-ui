@@ -8997,6 +8997,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-flip-numbers@npm:^3.0.8":
+  version: 3.0.8
+  resolution: "react-flip-numbers@npm:3.0.8"
+  dependencies:
+    react-simple-animate: ^3.0.1
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18
+    react-dom: ^16.8.0 || ^17 || ^18
+    react-simple-animate: ^3.0.1
+  checksum: ff355565d22aa5dee6d6ed0ca33d49ee5d7ef811542b6b0efd0749e92ab880935712dfb60a2d9f56dffffcc7312cb2416b16d3b68ae47f7c2dd5ff9cabd1db75
+  languageName: node
+  linkType: hard
+
 "react-i18next@npm:12.1.5":
   version: 12.1.5
   resolution: "react-i18next@npm:12.1.5"
@@ -9120,6 +9133,15 @@ __metadata:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: 1cb03c308be98b0bb89361dd842b92010ebd6769e388c380f2303ccfb14768b2085d0b94478dcd67841991272570fd27f75ea3035a230378fe14215d857e8ff7
+  languageName: node
+  linkType: hard
+
+"react-simple-animate@npm:^3.0.1":
+  version: 3.5.2
+  resolution: "react-simple-animate@npm:3.5.2"
+  peerDependencies:
+    react-dom: ^16.8.0 || ^17 || ^18
+  checksum: 9e892e95d5d0852384587a5aa6b9c2afade7f4796935f7f79cdb20f1649c909d3d8cea83c5a7784a5a6f78c0ab189bd7e786007f6b5d8bdab14685bd78767ed6
   languageName: node
   linkType: hard
 
@@ -10642,6 +10664,7 @@ __metadata:
     react-dom: 18.2.0
     react-draggable: 4.4.5
     react-dropzone: ^14.2.3
+    react-flip-numbers: ^3.0.8
     react-i18next: 12.1.5
     react-json-view-lite: 1.4.0
     react-lottie-player: ^2.1.0

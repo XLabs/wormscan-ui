@@ -253,6 +253,78 @@ export class GuardianNetwork {
       `/application-activity?${queryString}`,
     );
 
+    // --- Frontend hack to merge CONNECT and PORTAL_TOKEN_BRIDGE data together ---
+    // If the user ask for Portal Bridge, we need to get the data from both CONNECT and PORTAL_TOKEN_BRIDGE.
+    if (appId === "CONNECT" || appId === "PORTAL_TOKEN_BRIDGE") {
+      const params2 = { ...params, appId: appId === "CONNECT" ? "PORTAL_TOKEN_BRIDGE" : "CONNECT" };
+      const queryString2 = new URLSearchParams(params2).toString();
+
+      const response2 = await this._client.doGet<IProtocolActivity[]>(
+        `/application-activity?${queryString2}`,
+      );
+
+      response.push(...response2);
+    }
+
+    // Actually merging the data
+    if (response) {
+      const portalTokenBridgeIndex = response.findIndex(
+        item => item.app_id === "PORTAL_TOKEN_BRIDGE",
+      );
+      const connectIndex = response.findIndex(item => item.app_id === "CONNECT");
+
+      if (portalTokenBridgeIndex !== -1 && connectIndex !== -1) {
+        const portalData = response[portalTokenBridgeIndex];
+        const connectData = response[connectIndex];
+
+        // Merge time_range_data
+        portalData.time_range_data.forEach((portalTimeRange, index) => {
+          const connectTimeRange = connectData.time_range_data[index];
+
+          if (connectTimeRange) {
+            portalTimeRange.total_messages += connectTimeRange.total_messages;
+            portalTimeRange.total_value_transferred += connectTimeRange.total_value_transferred;
+
+            // Merge aggregations
+            connectTimeRange.aggregations.forEach(connectAgg => {
+              if (connectAgg.app_id === "CONNECT") {
+                const portalTokenBridgeAgg = portalTimeRange.aggregations.find(
+                  agg => agg.app_id === "PORTAL_TOKEN_BRIDGE",
+                );
+                if (portalTokenBridgeAgg) {
+                  portalTokenBridgeAgg.total_messages += connectAgg.total_messages;
+                  portalTokenBridgeAgg.total_value_transferred +=
+                    connectAgg.total_value_transferred;
+                } else {
+                  connectAgg.app_id = "PORTAL_TOKEN_BRIDGE";
+                  portalTimeRange.aggregations.push(connectAgg);
+                }
+              } else {
+                const existingAgg = portalTimeRange.aggregations.find(
+                  agg => agg.app_id === connectAgg.app_id,
+                );
+                if (existingAgg) {
+                  existingAgg.total_messages += connectAgg.total_messages;
+                  existingAgg.total_value_transferred += connectAgg.total_value_transferred;
+                } else {
+                  portalTimeRange.aggregations.push(connectAgg);
+                }
+              }
+            });
+
+            // Remove any remaining CONNECT aggregations
+            portalTimeRange.aggregations = portalTimeRange.aggregations.filter(
+              agg => agg.app_id !== "CONNECT",
+            );
+          }
+        });
+
+        // Remove CONNECT object from response
+        response.splice(connectIndex, 1);
+      }
+    }
+    // --- End of Frontend hack to merge CONNECT and PORTAL_TOKEN_BRIDGE data together ---
+
     return response || [];
   }
 

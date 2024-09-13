@@ -23,7 +23,8 @@
 
   &-container {
     display: grid;
-    gap: 36px;
+    row-gap: 36px;
+    column-gap: 20px;
     grid-template-columns: repeat(2, 1fr);
     padding-bottom: 40px;
     position: relative;
@@ -102,8 +103,29 @@
       }
 
       &-value {
+        display: flex;
+
         @include text-heading4;
         color: var(--color-white);
+
+        &-flip {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 3px;
+          margin-top: 2px;
+
+          transform: scale(0.8) translateX(-12%);
+          width: 180px;
+          @media only screen and (min-width: 520px) {
+            transform: none;
+            width: auto;
+          }
+
+          &-dollar {
+            transform: translateY(1px);
+          }
+        }
 
         &-link {
           @include centered-row;

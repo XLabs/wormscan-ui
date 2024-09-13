@@ -1,4 +1,6 @@
-import { useState } from "react";
+import WormholeLogo from "src/assets/wormhole-stats.svg";
+import FlipNumbers from "react-flip-numbers";
+import { CSSProperties, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -8,7 +10,6 @@ import { ErrorPlaceholder } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getClient } from "src/api/Client";
 import { InfoCircleIcon, LinkIcon } from "src/icons/generic";
-import WormholeLogo from "src/assets/wormhole-stats.svg";
 import "./styles.scss";
 
 const RANGE_LIST: { label: string; value: "24h" | "7d" | "30d" }[] = [
@@ -27,7 +28,9 @@ const WormholeStats = () => {
     isLoading,
     isError,
     data: scoreData,
-  } = useQuery("scoresResponse", () => getClient().guardianNetwork.getScores());
+  } = useQuery("scoresResponse", () => getClient().guardianNetwork.getScores(), {
+    refetchInterval: 25000,
+  });
 
   const {
     "24h_messages": messages24h,
@@ -66,7 +69,23 @@ const WormholeStats = () => {
               </Tooltip>
             </div>
             <div className="wormhole-stats-container-item-value">
-              {total_messages ? formatNumber(Number(total_messages), 0) : "-"}
+              <div className="wormhole-stats-container-item-value-flip">
+                {total_messages ? (
+                  <FlipNumbers
+                    height={20}
+                    width={14}
+                    color="white"
+                    background="var(--color-gray-900)"
+                    play
+                    perspective={100}
+                    numbers={formatNumber(Number(total_messages), 0)}
+                    numberStyle={flipNumberCSS}
+                    nonNumberStyle={{ ...flipNumberCSS, fontSize: 20 }}
+                  />
+                ) : (
+                  "-"
+                )}
+              </div>
             </div>
           </div>
 
@@ -86,7 +105,23 @@ const WormholeStats = () => {
               </Tooltip>
             </div>
             <div className="wormhole-stats-container-item-value">
-              {messages24h ? formatNumber(Number(messages24h), 0) : "-"}
+              <div className="wormhole-stats-container-item-value-flip">
+                {messages24h ? (
+                  <FlipNumbers
+                    height={20}
+                    width={14}
+                    color="white"
+                    background="var(--color-gray-900)"
+                    play
+                    perspective={100}
+                    numbers={formatNumber(Number(messages24h), 0)}
+                    numberStyle={flipNumberCSS}
+                    nonNumberStyle={{ ...flipNumberCSS, fontSize: 20 }}
+                  />
+                ) : (
+                  "-"
+                )}
+              </div>
             </div>
           </div>
 
@@ -105,7 +140,24 @@ const WormholeStats = () => {
               </Tooltip>
             </div>
             <div className="wormhole-stats-container-item-value">
-              {isMainnet ? <>${total_volume ? formatNumber(Number(total_volume)) : "-"}</> : "-"}
+              {isMainnet ? (
+                <div className="wormhole-stats-container-item-value-flip">
+                  <span className="wormhole-stats-container-item-value-flip-dollar">$</span>
+                  <FlipNumbers
+                    height={20}
+                    width={14}
+                    color="white"
+                    background="var(--color-gray-900)"
+                    play
+                    perspective={100}
+                    numbers={formatNumber(Number(total_volume), 0)}
+                    numberStyle={flipNumberCSS}
+                    nonNumberStyle={{ ...flipNumberCSS, fontSize: 20 }}
+                  />
+                </div>
+              ) : (
+                "-"
+              )}
             </div>
           </div>
 
@@ -165,7 +217,24 @@ const WormholeStats = () => {
             </div>
             <div className="wormhole-stats-container-item-value">
               {isMainnet ? (
-                <>${selectedVolume ? formatNumber(Number(selectedVolume), 0) : "-"}</>
+                <div className="wormhole-stats-container-item-value-flip">
+                  <span className="wormhole-stats-container-item-value-flip-dollar">$</span>
+                  {selectedVolume ? (
+                    <FlipNumbers
+                      height={20}
+                      width={14}
+                      color="white"
+                      background="var(--color-gray-900)"
+                      play
+                      perspective={100}
+                      numbers={formatNumber(Number(selectedVolume), 0)}
+                      numberStyle={flipNumberCSS}
+                      nonNumberStyle={{ ...flipNumberCSS, fontSize: 20 }}
+                    />
+                  ) : (
+                    "-"
+                  )}
+                </div>
               ) : (
                 "-"
               )}
@@ -192,6 +261,13 @@ const WormholeStats = () => {
       )}
     </div>
   );
+};
+
+const flipNumberCSS: CSSProperties = {
+  fontFamily: "Roboto Mono",
+  fontSize: "18px",
+  fontWeight: 400,
+  letterSpacing: "0px",
 };
 
 export default WormholeStats;
