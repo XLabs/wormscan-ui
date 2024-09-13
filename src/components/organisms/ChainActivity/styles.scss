@@ -331,6 +331,7 @@
             gap: 8px;
 
             & .hidden-desktop-1150 {
+              margin-left: -4px;
               @include desktop {
                 @media screen and (max-width: 1150px) {
                   display: none;

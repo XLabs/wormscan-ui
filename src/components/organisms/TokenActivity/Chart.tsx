@@ -103,7 +103,7 @@ export const Chart = ({ data, filters, isError, isLoading, metricSelected }: Pro
               width="100%"
               series={[
                 {
-                  name: "Volume or Transactions",
+                  name: "Volume or Transfers",
                   color: "#7BFFB0",
                   data: dataTransformed
                     ? metricSelected === "volume"

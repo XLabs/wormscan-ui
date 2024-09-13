@@ -43,8 +43,8 @@ const TYPE_CHART_LIST = [
 ];
 
 const METRIC_CHART_LIST = [
-  { label: "Volume", value: "volume", ariaLabel: "Volume" },
-  { label: "Transactions", value: "transactions", ariaLabel: "Transactions" },
+  { label: "Volumen", value: "volume", ariaLabel: "Volume" },
+  { label: "Transfers", value: "transactions", ariaLabel: "Transfers" },
 ];
 
 const ChainActivity = () => {
@@ -739,7 +739,20 @@ const ChainActivity = () => {
 
                 {metricSelected === "transactions" ? (
                   <div className="chain-activity-chart-top-filters-legends-container-total">
-                    <span>Transfers: </span>
+                    <span>
+                      {lastBtnSelected === "24h"
+                        ? "Daily"
+                        : lastBtnSelected === "week"
+                        ? "Weekly"
+                        : lastBtnSelected === "month"
+                        ? "Monthly"
+                        : lastBtnSelected === "year"
+                        ? "Yearly"
+                        : lastBtnSelected === "custom"
+                        ? ""
+                        : "All Time"}{" "}
+                      Total Transfers:{" "}
+                    </span>
                     <p>
                       {showAllSourceChains
                         ? formatNumber(allMessagesNumber, 0)
@@ -748,7 +761,20 @@ const ChainActivity = () => {
                   </div>
                 ) : (
                   <div className="chain-activity-chart-top-filters-legends-container-total">
-                    <span>Volume: </span>
+                    <span>
+                      {lastBtnSelected === "24h"
+                        ? "Daily"
+                        : lastBtnSelected === "week"
+                        ? "Weekly"
+                        : lastBtnSelected === "month"
+                        ? "Monthly"
+                        : lastBtnSelected === "year"
+                        ? "Yearly"
+                        : lastBtnSelected === "custom"
+                        ? ""
+                        : "All Time"}{" "}
+                      Total Volume:{" "}
+                    </span>
                     <p>
                       $
                       {showAllSourceChains
@@ -971,8 +997,8 @@ const ChainActivity = () => {
                     
                         ${
                           metricSelected === "transactions"
-                            ? `Total Transfers: <span>${formatNumber(totalY, 0)}</span>`
-                            : `Total Volume: <span>$${numberToSuffix(totalY)}</span>`
+                            ? `Transfers Sum: <span>${formatNumber(totalY, 0)}</span>`
+                            : `Volume Sum: <span>$${numberToSuffix(totalY)}</span>`
                         }
                       </div>
                       <p class="chain-activity-chart-tooltip-chains">Chains:</p>

@@ -51,7 +51,7 @@ export default {
           title: "Cross-Chain Activity",
           download: "Download",
           volume: "Volume",
-          count: "Transactions",
+          count: "Transfers",
           app: "App",
           source: "Source",
           destination: "Target",
