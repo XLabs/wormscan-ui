@@ -211,7 +211,6 @@
       all: inherit;
       border-bottom: 0;
       cursor: pointer;
-      flex: 1;
       outline: none;
       padding: 0;
       vertical-align: middle;
@@ -493,14 +492,14 @@
                                       & > .parameters-col_name {
                                         @include text-roboto-body-400;
                                         color: var(--color-gray-400);
-                                        flex: 1;
+                                        width: 33%;
                                         text-align: start;
                                       }
 
                                       & > .parameters-col_description {
                                         @include text-roboto-body-400;
                                         color: var(--color-gray-400);
-                                        flex: 2;
+                                        width: 67%;
                                         text-align: start;
                                       }
                                     }
@@ -534,7 +533,7 @@
 
                                       @include desktop {
                                         margin-left: 0;
-                                        flex: 1;
+                                        width: 33%;
                                       }
 
                                       &::before {
@@ -585,7 +584,7 @@
 
                                       @include desktop {
                                         margin-left: 0;
-                                        flex: 2;
+                                        width: 67%;
                                       }
 
                                       &::before {
@@ -607,6 +606,7 @@
                                       }
 
                                       & > input {
+                                        @include text-heading6;
                                         background-color: var(--color-gray-900);
                                         border-radius: 12px;
                                         border: none;
@@ -664,7 +664,7 @@
                           padding: 0 12px 12px 12px;
 
                           @include desktop {
-                            padding: 0 20px 20px 34%;
+                            padding: 0 20px 20px calc(33% + 8px);
                           }
 
                           & > .execute {
@@ -696,33 +696,34 @@
                             width: 100%;
 
                             @include desktop {
-                              max-width: 66.6%;
+                              max-width: 67%;
                               margin-left: auto;
                             }
                           }
                         }
 
                         & > .responses-wrapper {
-                          background-color: var(--color-gray-950);
-                          border-radius: 12px;
-                          margin-bottom: 8px;
-                          padding: 20px 12px;
-
-                          @include desktop {
-                            padding: 16px 20px;
-                          }
+                          position: relative;
 
                           & > .opblock-section-header {
-                            position: relative;
+                            @include centered-column;
+                            left: 12px;
+                            padding: 12px 0;
+                            position: absolute;
+                            right: 12px;
+                            z-index: 9;
+
+                            @include desktop {
+                              @include centered-row;
+                              justify-content: space-between;
+                              left: 20px;
+                              padding: 16px 0;
+                              right: 20px;
+                            }
 
                             & > h4 {
                               @include text-roboto-subheading-500;
                               color: var(--color-white);
-                              margin-bottom: 18px;
-
-                              @include desktop {
-                                margin-bottom: 40px;
-                              }
                             }
 
                             & > label {
@@ -730,27 +731,16 @@
 
                               @include desktop {
                                 @include centered-row;
-                                position: absolute;
-                                right: 0;
                                 gap: 0 16px;
-                                top: 0;
                               }
 
                               & > span {
                                 @include text-roboto-body-400;
                                 color: var(--color-gray-400);
-                                margin-bottom: 12px;
+                                margin: 12px 0;
 
                                 @include desktop {
-                                  margin-bottom: 0;
-                                }
-                              }
-
-                              & > .content-type-wrapper {
-                                margin-bottom: 28px;
-
-                                @include desktop {
-                                  margin-bottom: 0;
+                                  margin: 0;
                                 }
                               }
                             }
@@ -758,6 +748,8 @@
 
                           & > .responses-inner {
                             & > div {
+                              position: relative;
+
                               & > div {
                                 & > .curl-command {
                                   display: none;
@@ -776,13 +768,35 @@
 
                               & > h4 {
                                 @include text-roboto-subheading-500;
-                                margin-bottom: 20px;
+                                position: absolute;
+                                bottom: -52px;
+                                left: 12px;
+
+                                @include desktop {
+                                  left: 20px;
+                                }
                               }
                             }
 
                             & .responses-table {
                               @include centered-column;
+                              background-color: var(--color-gray-950);
+                              border-radius: 12px;
+                              margin-bottom: 8px;
+                              padding: 148px 12px 12px 12px;
                               width: 100%;
+
+                              @include desktop {
+                                padding: 72px 20px 20px 20px;
+                              }
+
+                              &:nth-child(2) {
+                                padding: 64px 12px 20px 12px;
+
+                                @include desktop {
+                                  padding: 64px 20px 22px 20px;
+                                }
+                              }
 
                               & > thead {
                                 display: none;
@@ -798,14 +812,14 @@
                                     & > .response-col_status {
                                       @include text-roboto-body-400;
                                       color: var(--color-gray-400);
-                                      flex: 1;
+                                      width: 33%;
                                       text-align: start;
                                     }
 
                                     & > .response-col_description {
                                       @include text-roboto-body-400;
                                       color: var(--color-gray-400);
-                                      flex: 2;
+                                      width: 67%;
                                       text-align: start;
                                     }
                                   }
@@ -826,6 +840,12 @@
                                     justify-content: flex-start;
                                   }
 
+                                  &:last-child {
+                                    border: none;
+                                    margin-bottom: 0;
+                                    padding: 0;
+                                  }
+
                                   & > .response-col_status {
                                     @include centered-column;
                                     @include text-roboto-body-400;
@@ -834,7 +854,7 @@
                                     position: relative;
 
                                     @include desktop {
-                                      flex: 1;
+                                      width: 33%;
                                       margin-bottom: 0;
                                       margin-left: 0;
                                     }
@@ -857,8 +877,9 @@
                                     position: relative;
 
                                     @include desktop {
-                                      flex: 2;
+                                      width: 67%;
                                     }
+
                                     & > div {
                                       & .highlight-code .microlight {
                                         padding: 12px !important;
@@ -916,7 +937,13 @@
                                       @include text-roboto-body-400;
                                       background-color: var(--color-black) !important;
                                       border-radius: 12px;
+                                      max-height: 500px;
                                       width: 100%;
+                                      overflow: auto;
+
+                                      @include desktop {
+                                        max-height: 800px;
+                                      }
 
                                       & > .headerline {
                                         display: none;
@@ -929,6 +956,10 @@
 
                                         & > span[style="color: rgb(162, 252, 162);"] {
                                           color: var(--color-white) !important;
+                                        }
+
+                                        & > span[style="color: rgb(252, 194, 140);"] {
+                                          color: #ff884d !important;
                                         }
                                       }
                                     }
@@ -1159,14 +1190,6 @@
 
                 &:hover {
                   background-color: var(--color-gray-900);
-                }
-
-                & > .pointer {
-                  // display: block;
-                  // max-width: 100%;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  white-space: nowrap;
                 }
               }
             }
