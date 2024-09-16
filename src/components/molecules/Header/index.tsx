@@ -249,14 +249,9 @@ const Header = ({
                       <Code2Icon /> Submit Your Protocol
                     </NavLink>
 
-                    <a
-                      href={WORMHOLESCAN_API_DOCS_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="API Doc"
-                    >
+                    <NavLink to="/developers/api-doc" aria-label="API Doc">
                       <LinkIcon /> API Doc
-                    </a>
+                    </NavLink>
 
                     <a
                       href={WORMHOLE_DOCS_URL}
@@ -415,16 +410,9 @@ const Header = ({
               <Code2Icon /> Submit Your Protocol
             </NavLink>
 
-            <a
-              className="navlink"
-              href={WORMHOLESCAN_API_DOCS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="API Doc"
-              onClick={closeAllMobileMenus}
-            >
+            <NavLink to="/developers/api-doc" aria-label="API Doc" onClick={closeAllMobileMenus}>
               <LinkIcon /> API Doc
-            </a>
+            </NavLink>
 
             <a
               className="navlink"
