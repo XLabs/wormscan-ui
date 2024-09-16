@@ -147,10 +147,11 @@
           text-decoration: line-through;
         }
       }
+
       &-toggle {
         position: relative;
         display: inline-block;
-        margin: auto 0.3em;
+        margin: auto 4px;
         cursor: pointer;
         transition: transform 0.15s ease-in;
         transform: rotate(0);
@@ -197,7 +198,7 @@
         &.property-row {
           td {
             &:first-child {
-              padding-right: 0.2em;
+              padding-right: 2px;
             }
           }
         }
@@ -227,123 +228,6 @@
 
       & > .information-container {
         display: none;
-
-        & > .block {
-          & > div {
-            & > .info {
-              @include centered-column;
-              position: relative;
-
-              & > .main {
-                & > .title {
-                  @include centered-row;
-                  @include text-roboto-heading-500;
-                  color: var(--color-white);
-                  margin-bottom: 20px;
-
-                  & > span {
-                    & > small {
-                      & > .version {
-                        @include text-roboto-body-500;
-                        background-color: var(--color-primary-100);
-                        border-radius: 27px;
-                        color: var(--color-black);
-                        padding: 2px 6px;
-                        max-width: max-content;
-                        transform: translate(8px, -8px);
-                      }
-
-                      &:last-of-type {
-                        display: none;
-                      }
-                    }
-                  }
-                }
-
-                & > .base-url {
-                  display: none;
-                }
-
-                & > a {
-                  @include bigDesktop {
-                    position: absolute;
-                    right: 587px;
-                    top: 0;
-                  }
-                }
-              }
-
-              & > .description {
-                @include text-roboto-body-400;
-                background-color: red;
-                border-radius: 16px;
-                color: var(--color-white);
-                margin-bottom: 36px;
-                opacity: 0.1;
-                order: 3;
-                padding: 44px 20px;
-
-                @include desktop {
-                  height: 200px;
-                  padding: 20px;
-                }
-
-                @media screen and (min-width: 1194px) {
-                  height: 180px;
-                }
-
-                @media screen and (min-width: 1283px) {
-                  height: 160px;
-                }
-              }
-
-              & a {
-                @include button-ghost;
-                margin-bottom: 24px;
-              }
-
-              & > .info__tos {
-                @include bigDesktop {
-                  position: absolute;
-                  right: 455px;
-                  top: 0;
-                }
-              }
-
-              & > .info__contact {
-                @include centered-row;
-                gap: 16px;
-
-                @include bigDesktop {
-                  gap: 0 24px;
-                  position: absolute;
-                  right: 96px;
-                  top: 0;
-                }
-
-                & > div {
-                  @include centered-row;
-                }
-              }
-
-              & > .info__license {
-                position: absolute;
-                top: 88px;
-                left: 124px;
-
-                @include bigDesktop {
-                  position: absolute;
-                  right: 0;
-                  top: 0;
-                }
-                & > .info__license__url {
-                  & > a {
-                  }
-                }
-              }
-            }
-          }
-        }
       }
 
       & > .wrapper {
@@ -744,6 +628,10 @@
                                           outline: 1px solid var(--color-error-100);
                                         }
                                       }
+
+                                      & > select {
+                                        @include text-roboto-body-400;
+                                      }
                                     }
                                   }
                                 }
@@ -1032,6 +920,16 @@
 
                                       & > .headerline {
                                         display: none;
+                                      }
+
+                                      & > .language-json {
+                                        & > span[style="color: rgb(211, 99, 99);"] {
+                                          color: #ff884d !important;
+                                        }
+
+                                        & > span[style="color: rgb(162, 252, 162);"] {
+                                          color: var(--color-white) !important;
+                                        }
                                       }
                                     }
 
