@@ -14,10 +14,10 @@
       flex-wrap: wrap;
       gap: 32px;
       justify-content: space-between;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
 
       @include desktop {
-        margin-bottom: 32px;
+        margin-bottom: 24px;
       }
 
       &-title {
@@ -186,10 +186,6 @@
         position: absolute;
         visibility: hidden;
         white-space: nowrap;
-      }
-
-      p {
-        margin: 0 0 16px 0;
       }
     }
 
@@ -418,8 +414,9 @@
 
                     & > .no-margin {
                       border-radius: 12px;
-                      margin: 8px;
+                      margin: 8px 8px 4px 8px;
                       overflow: hidden;
+                      padding-bottom: 4px;
 
                       & > .opblock-body {
                         & > .opblock-description-wrapper {
@@ -782,7 +779,7 @@
                               @include centered-column;
                               background-color: var(--color-gray-950);
                               border-radius: 12px;
-                              margin-bottom: 8px;
+                              margin-bottom: 4px;
                               padding: 148px 12px 12px 12px;
                               width: 100%;
 
@@ -792,6 +789,7 @@
 
                               &:nth-child(2) {
                                 padding: 64px 12px 20px 12px;
+                                margin-bottom: 8px;
 
                                 @include desktop {
                                   padding: 64px 20px 22px 20px;
@@ -1167,9 +1165,6 @@
 
               &.deprecated {
                 opacity: 0.5;
-              }
-
-              & .model-title__text {
               }
 
               & > .model-box-control {

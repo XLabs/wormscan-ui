@@ -1,11 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SwaggerUI from "swagger-ui-react";
+import { useEnvironment } from "src/context/EnvironmentContext";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { Loader } from "src/components/atoms";
 import "./styles.scss";
 
 const ApiDoc = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+  const isMainnet = currentNetwork === "Mainnet";
+
+  const url = isMainnet
+    ? `${process.env.WORMSCAN_API_BASE_URL_ROOT}/swagger.json`
+    : `${process.env.WORMSCAN_TESTNET_API_BASE_URL_ROOT}/swagger.json`;
+
+  useEffect(() => {
+    setIsLoading(true);
+  }, [isMainnet]);
 
   return (
     <BaseLayout secondaryHeader>
@@ -19,8 +31,8 @@ const ApiDoc = () => {
                 Wormholescan API <span className="version">1.0</span>
               </div>
               <div className="api-doc-top-header-links">
-                <a href="https://api.wormholescan.io/swagger.json" target="_blank" rel="noreferrer">
-                  https://api.wormholescan.io/swagger.json
+                <a href={url} target="_blank" rel="noreferrer">
+                  {url}
                 </a>
 
                 <a href="https://wormhole.com/" target="_blank" rel="noreferrer">
@@ -75,7 +87,8 @@ const ApiDoc = () => {
         )}
 
         <SwaggerUI
-          url="https://api.wormholescan.io/swagger.json"
+          key={url}
+          url={url}
           onComplete={() => {
             setIsLoading(false);
           }}
