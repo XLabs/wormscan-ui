@@ -575,9 +575,10 @@
                                     }
 
                                     & > .parameters-col_description {
-                                      @include centered-row;
+                                      @include centered-column;
                                       margin-left: 100px;
                                       position: relative;
+                                      gap: 4px 0;
 
                                       @include desktop {
                                         margin-left: 0;
@@ -599,7 +600,9 @@
                                       }
 
                                       & > .markdown {
-                                        display: none;
+                                        @include text-roboto-body-400;
+                                        color: var(--color-gray-400);
+                                        text-wrap: pretty;
                                       }
 
                                       & > input {
