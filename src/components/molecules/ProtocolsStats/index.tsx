@@ -439,7 +439,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                             <Tooltip
                               type="info"
                               tooltip={
-                                <div className="protocols-stats-container-element-item-value-tooltip">
+                                <div>
                                   <p>
                                     ${formatNumber(+item?.two_days_ago_value_transferred, 0)} were
                                     transferred in the previous 24 hours.
@@ -482,7 +482,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                         <Tooltip
                           type="info"
                           tooltip={
-                            <div className="protocols-stats-container-element-item-value-tooltipasd">
+                            <div>
                               <p>
                                 {formatNumber(+item?.two_days_ago_messages, 0)} messages were sent
                                 in the previous 24 hours.
