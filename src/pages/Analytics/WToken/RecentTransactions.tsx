@@ -1,6 +1,6 @@
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { SwapVerticalIcon, CopyIcon } from "src/icons/generic";
-import { CopyToClipboard } from "src/components/molecules";
+import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import { timeAgo } from "src/utils/date";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { getExplorerLink } from "src/utils/wormhole";
@@ -83,6 +83,7 @@ export const RecentTransactions = ({
       {isDesktopDesign ? (
         <div className="recent-transactions-table">
           <div className="recent-transactions-table-head">
+            <div className="recent-transactions-table-head-row">STATUS</div>
             <div className="recent-transactions-table-head-row">TX HASH</div>
             <div className="recent-transactions-table-head-row">FROM</div>
             <div className="recent-transactions-table-head-row">TO</div>
@@ -101,6 +102,9 @@ export const RecentTransactions = ({
           {!isLoading &&
             recentTransactions?.map(data => (
               <div key={data.id} className="recent-transactions-table-item">
+                <div className="recent-transactions-table-item-row">
+                  <StatusBadge size="responsive" STATUS={data.STATUS} />
+                </div>
                 <div className="recent-transactions-table-item-row">
                   <div className="tx-hash">
                     {data?.sourceChain?.transaction?.txHash && (
@@ -152,6 +156,12 @@ export const RecentTransactions = ({
 
           {recentTransactions?.map(data => (
             <div key={data.id} className="recent-transactions-mobile-container">
+              <div className="recent-transactions-mobile-item">
+                <div className="title">STATUS</div>
+                <div className="content">
+                  <StatusBadge size="responsive" STATUS={data.STATUS} />
+                </div>
+              </div>
               <div className="recent-transactions-mobile-item">
                 <div className="title">TX HASH</div>
                 <div className="content">

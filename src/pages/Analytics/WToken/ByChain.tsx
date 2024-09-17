@@ -26,7 +26,10 @@ export const ByChain = ({ activityNotional, activityTx }: ByChainProps) => {
           <div className="bychain-half-table-head">
             <div className="bychain-half-table-head-row">SOURCE CHAIN</div>
             <div className="bychain-half-table-head-row">TARGET CHAIN</div>
-            <div className="bychain-half-table-head-row">AMOUNT</div>
+            <div className="bychain-half-table-head-row">
+              <span className="mobile">TXN COUNT</span>
+              <span className="desktop">TRANSFER COUNT</span>
+            </div>
           </div>
 
           {activityTx
