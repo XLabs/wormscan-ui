@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { Loader } from "src/components/atoms";
-import { TermsOfUseBanner } from "src/components/molecules";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { EnvironmentProvider } from "src/context/EnvironmentContext";
 import { AnalyticsLinkTracker } from "src/utils/analyticsLinkTracker";
@@ -17,6 +16,7 @@ const VaaParser = lazy(() => import("../pages/VaaParser"));
 const Submit = lazy(() => import("../pages/Submit"));
 const Governor = lazy(() => import("../pages/Governor"));
 const Analytics = lazy(() => import("../pages/Analytics"));
+const ApiDoc = lazy(() => import("../pages/ApiDoc"));
 
 const Navigation = () => {
   return (
@@ -42,6 +42,7 @@ const Navigation = () => {
                 <Route path="/developers/submit/*" element={<Submit />} />
                 <Route path="/developers/vaa-parser" element={<VaaParser />} />
                 <Route path="/developers/vaa-parser/*" element={<VaaParser />} />
+                <Route path="/developers/api-doc" element={<ApiDoc />} />
                 <Route path="/analytics/:analyticsId" element={<Analytics />} />
                 <Route path="/governor" element={<Governor />} />
                 <Route path="*" element={<NotFound />} />

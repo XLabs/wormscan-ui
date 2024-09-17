@@ -153,14 +153,9 @@ const Footer = () => {
               Submit Your Protocol
             </NavLink>
 
-            <a
-              href={WORMHOLESCAN_API_DOCS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="API Doc"
-            >
+            <NavLink to="/developers/api-doc" aria-label="API Doc">
               API Doc
-            </a>
+            </NavLink>
 
             <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub link">
               GitHub
