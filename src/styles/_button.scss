@@ -1,7 +1,7 @@
 @mixin button-primary {
   @include centered-row;
   @include text-roboto-body-500;
-  background: var(--color-primary-100);
+  background: var(--color-plum);
   border-radius: 27px;
   border: none;
   color: var(--color-black);

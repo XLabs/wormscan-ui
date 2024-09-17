@@ -457,7 +457,7 @@
             @include desktop {
               background-color: var(--color-primary-10);
               box-shadow: unset;
-              color: var(--color-primary-100);
+              color: var(--color-lime);
             }
           }
 
@@ -488,7 +488,7 @@
         }
 
         &[data-selected="true"] {
-          border-color: var(--color-primary-100);
+          border-color: var(--color-lime);
 
           .chain-name {
             opacity: 1;
@@ -496,7 +496,7 @@
 
           .percentage {
             @include desktop {
-              background-color: var(--color-primary-100);
+              background-color: var(--color-lime);
               box-shadow: unset;
               color: var(--color-black);
             }
@@ -517,13 +517,13 @@
 
             &.left {
               @include desktop {
-                background: linear-gradient(270deg, var(--color-primary-12) 25%, transparent 100%);
+                background: linear-gradient(270deg, var(--color-plum-12) 25%, transparent 100%);
               }
             }
 
             &.right {
               @include desktop {
-                background: linear-gradient(270deg, transparent 25%, var(--color-primary-12) 100%);
+                background: linear-gradient(270deg, transparent 25%, var(--color-plum-12) 100%);
               }
             }
           }

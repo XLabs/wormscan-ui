@@ -75,7 +75,7 @@ const WormholeStats = () => {
                     height={20}
                     width={14}
                     color="white"
-                    background="var(--color-gray-900)"
+                    background="var(--color-black)"
                     play
                     perspective={100}
                     numbers={formatNumber(Number(total_messages), 0)}
@@ -111,7 +111,7 @@ const WormholeStats = () => {
                     height={20}
                     width={14}
                     color="white"
-                    background="var(--color-gray-900)"
+                    background="var(--color-black)"
                     play
                     perspective={100}
                     numbers={formatNumber(Number(messages24h), 0)}
@@ -147,7 +147,7 @@ const WormholeStats = () => {
                     height={20}
                     width={14}
                     color="white"
-                    background="var(--color-gray-900)"
+                    background="var(--color-black)"
                     play
                     perspective={100}
                     numbers={formatNumber(Number(total_volume), 0)}
@@ -224,7 +224,7 @@ const WormholeStats = () => {
                       height={20}
                       width={14}
                       color="white"
-                      background="var(--color-gray-900)"
+                      background="var(--color-black)"
                       play
                       perspective={100}
                       numbers={formatNumber(Number(selectedVolume), 0)}
