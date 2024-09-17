@@ -195,8 +195,8 @@ export const Chart = ({
             opacity,
           );
 
-          grad.addColorStop(0, isDesktop ? blendedColor : "#182633");
-          grad.addColorStop(1, isDesktop ? "#121212" : "#182633");
+          grad.addColorStop(0, isDesktop ? blendedColor : "#4d4a67");
+          grad.addColorStop(1, isDesktop ? "#121212" : "#4d4a67");
 
           ctx.strokeStyle = grad;
           ctx.fillStyle = grad;
@@ -270,8 +270,8 @@ export const Chart = ({
             opacity,
           );
 
-          grad.addColorStop(0, isDesktop ? "#121212" : "#182633");
-          grad.addColorStop(1, isDesktop ? blendedColor : "#182633");
+          grad.addColorStop(0, isDesktop ? "#121212" : "#4d4a67");
+          grad.addColorStop(1, isDesktop ? blendedColor : "#4d4a67");
 
           ctx.strokeStyle = grad;
           ctx.fillStyle = grad;

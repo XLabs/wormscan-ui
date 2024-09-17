@@ -39,7 +39,7 @@ export const Chart = ({ data, filters, isError, isLoading, metricSelected }: Pro
 
   const dataTransformed = token
     ? token.time_range_data?.map(item => ({
-        from: new Date(item.from).toLocaleString(),
+        from: new Date(item.from).toISOString(),
         symbol: token.token_symbol,
         volume: item.total_value_transferred,
         transactions: item.total_messages,
