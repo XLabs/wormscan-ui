@@ -250,7 +250,7 @@ const Header = ({
                     </NavLink>
 
                     <NavLink to="/developers/api-doc" aria-label="API Doc">
-                      <LinkIcon /> API Doc
+                      <Code2Icon /> API Doc
                     </NavLink>
 
                     <a
@@ -411,7 +411,7 @@ const Header = ({
             </NavLink>
 
             <NavLink to="/developers/api-doc" aria-label="API Doc" onClick={closeAllMobileMenus}>
-              <LinkIcon /> API Doc
+              <Code2Icon /> API Doc
             </NavLink>
 
             <a

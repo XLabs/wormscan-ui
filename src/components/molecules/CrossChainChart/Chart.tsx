@@ -190,7 +190,7 @@ export const Chart = ({
 
           const opacity = 1 - i * 0.08;
           const blendedColor = blendColors(
-            isBigDesktop ? "#7abfff" : "#4f789e",
+            isBigDesktop ? "#c1bbf6" : "#bebbea",
             "#121212",
             opacity,
           );
@@ -265,7 +265,7 @@ export const Chart = ({
 
           const opacity = 1 - i * 0.08;
           const blendedColor = blendColors(
-            isBigDesktop ? "#7abfff" : "#4f789e",
+            isBigDesktop ? "#c1bbf6" : "#bebbea",
             "#121212",
             opacity,
           );

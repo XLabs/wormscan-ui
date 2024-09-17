@@ -67,11 +67,11 @@
   }
 
   &-info {
-    color: #ff884d;
+    color: var(--color-coral);
   }
 
   &-number {
-    color: var(--color-primary-100);
+    color: var(--color-lime);
   }
 
   &-string {

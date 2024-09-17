@@ -94,7 +94,7 @@
 
   &.active {
     @include desktop {
-      background: linear-gradient(270deg, var(--color-primary-12) 65%, transparent 100%);
+      background: linear-gradient(270deg, var(--color-plum-12) 65%, transparent 100%);
       background-attachment: fixed;
       border-bottom: 1px solid var(--color-white-05);
     }

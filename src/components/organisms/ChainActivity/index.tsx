@@ -454,9 +454,9 @@ const ChainActivity = () => {
             count: item.count,
             emitter_chain: item.emitter_chain,
             details: item.details,
-            color: "#7abfff",
+            color: "var(--color-lime)",
           })),
-          color: "#7abfff",
+          color: "var(--color-lime)",
         },
       ];
 
@@ -991,7 +991,7 @@ const ChainActivity = () => {
                       <div class="chain-activity-chart-tooltip-total-msg">
                         ${
                           showAllSourceChains
-                            ? "<div class='chain-activity-chart-tooltip-container-each-msg-icon' style='background-color: var(--color-primary-100)'></div>"
+                            ? "<div class='chain-activity-chart-tooltip-container-each-msg-icon' style='background-color: var(--color-plum)'></div>"
                             : ""
                         }
                     

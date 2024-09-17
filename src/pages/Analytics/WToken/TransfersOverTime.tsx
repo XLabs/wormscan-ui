@@ -63,7 +63,7 @@ export const TransfersOverTime = ({
     return [
       {
         name: "W Token Transfers",
-        color: "#7abfff",
+        color: "var(--color-lime)",
         data: transfers.map(item => ({
           x: item.time,
           y: +item.value,
