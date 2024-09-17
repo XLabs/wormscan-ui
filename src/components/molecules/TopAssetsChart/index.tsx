@@ -136,7 +136,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
           },
           fill: {
             type: "solid",
-            colors: ["var(--color-primary-100)"],
+            colors: ["var(--color-plum)"],
           },
           labels: assetsDataForChart.map(({ chainName }) => chainName),
           chart: {

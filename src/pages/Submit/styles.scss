@@ -13,7 +13,7 @@
   }
 
   &-parsed {
-    color: green;
+    color: var(--color-lime);
   }
 
   &-unparsed {
@@ -262,7 +262,7 @@
       margin-right: 6px;
 
       &.checked {
-        background-color: var(--color-primary-100);
+        background-color: var(--color-plum);
         color: var(--color-black);
       }
     }
@@ -817,10 +817,10 @@
         align-items: center;
 
         &.disabled {
-          background: var(--color-primary-40);
+          background: var(--color-plum-40);
 
           &:hover {
-            background: var(--color-primary-40);
+            background: var(--color-plum-40);
           }
         }
       }
@@ -968,7 +968,7 @@
       width: 100%;
 
       & svg {
-        color: var(--color-primary-100);
+        color: var(--color-plum);
       }
 
       &-left {
@@ -1078,14 +1078,14 @@
             padding-right: 4px;
             cursor: pointer;
             user-select: none;
-            background-color: var(--color-primary-700);
+            background-color: var(--color-plum-700);
 
             &.active {
-              background-color: var(--color-primary-500);
+              background-color: var(--color-plum-500);
             }
 
             &:hover {
-              background-color: var(--color-primary-300);
+              background-color: var(--color-plum-300);
             }
           }
         }
