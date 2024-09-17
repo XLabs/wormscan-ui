@@ -273,6 +273,20 @@
 
   margin-bottom: 24px;
 
+  & .mobile {
+    @include desktop {
+      display: none;
+    }
+  }
+
+  & .desktop {
+    display: none;
+
+    @include desktop {
+      display: block;
+    }
+  }
+
   &-half {
     @include centered-column;
     width: 100%;
