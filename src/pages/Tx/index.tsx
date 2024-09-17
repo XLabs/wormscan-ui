@@ -8,6 +8,7 @@ import {
   ChainId,
   chainToChainId,
   toChainId,
+  chainIdToChain,
 } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
@@ -714,8 +715,8 @@ const Tx = () => {
             const maxRefundText = () => {
               return `${maxRefund} ${
                 network === "Testnet"
-                  ? testnetNativeCurrencies[deliveryInstruction.targetChainId]
-                  : mainnetNativeCurrencies[deliveryInstruction.targetChainId]
+                  ? testnetNativeCurrencies[chainIdToChain(deliveryInstruction.targetChainId)]
+                  : mainnetNativeCurrencies[chainIdToChain(deliveryInstruction.targetChainId)]
               }`;
             };
 
@@ -734,8 +735,8 @@ const Tx = () => {
 
               return `${receiverValue} ${
                 network === "Testnet"
-                  ? testnetNativeCurrencies[deliveryInstruction.targetChainId]
-                  : mainnetNativeCurrencies[deliveryInstruction.targetChainId]
+                  ? testnetNativeCurrencies[chainIdToChain(deliveryInstruction.targetChainId)]
+                  : mainnetNativeCurrencies[chainIdToChain(deliveryInstruction.targetChainId)]
               }`;
             };
 
@@ -749,8 +750,8 @@ const Tx = () => {
                   3,
                 )} ${
                   network === "Testnet"
-                    ? testnetNativeCurrencies[deliveryInstruction.targetChainId]
-                    : mainnetNativeCurrencies[deliveryInstruction.targetChainId]
+                    ? testnetNativeCurrencies[chainIdToChain(deliveryInstruction.targetChainId)]
+                    : mainnetNativeCurrencies[chainIdToChain(deliveryInstruction.targetChainId)]
                 }`;
               }
 
@@ -766,8 +767,8 @@ const Tx = () => {
               if (refundAmount)
                 return `${refundAmount} ${
                   network === "Testnet"
-                    ? testnetNativeCurrencies[deliveryInstruction.targetChainId]
-                    : mainnetNativeCurrencies[deliveryInstruction.targetChainId]
+                    ? testnetNativeCurrencies[chainIdToChain(deliveryInstruction.targetChainId)]
+                    : mainnetNativeCurrencies[chainIdToChain(deliveryInstruction.targetChainId)]
                 }`;
 
               return "";
