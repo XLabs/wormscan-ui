@@ -169,6 +169,7 @@ export const Chart = ({ data, filters, isError, isLoading, metricSelected }: Pro
                   },
                 },
                 stroke: {
+                  curve: "smooth",
                   width: chartSelected === "area" ? 2 : 0,
                 },
                 tooltip: {

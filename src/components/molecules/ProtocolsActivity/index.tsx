@@ -348,6 +348,7 @@ const ProtocolsActivity = () => {
                     },
                   },
                   stroke: {
+                    curve: "smooth",
                     width: chartSelected === "area" ? 2 : 0,
                   },
                   fill: {

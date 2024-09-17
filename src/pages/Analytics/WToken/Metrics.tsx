@@ -1,7 +1,7 @@
 import { GetSummaryResult } from "src/api/native-token-transfer/types";
 import { Loader } from "src/components/atoms";
 import { AnalyticsIcon } from "src/icons/generic";
-import { formatNumber, numberToSuffix } from "src/utils/number";
+import { formatNumber } from "src/utils/number";
 
 interface IMetricsProps {
   summary: GetSummaryResult;
@@ -22,7 +22,7 @@ export const Metrics = ({ summary }: IMetricsProps) => {
           {summary?.totalValueTokenTransferred ? (
             <>
               <h1 className="summary-metrics-container-item-up">
-                ${numberToSuffix(+summary.totalValueTokenTransferred)}
+                ${formatNumber(+summary.totalValueTokenTransferred)}
               </h1>
               <div className="summary-metrics-container-item-down">
                 Total value of W tokens transferred
@@ -52,7 +52,7 @@ export const Metrics = ({ summary }: IMetricsProps) => {
           {summary?.circulatingSupply ? (
             <>
               <h1 className="summary-metrics-container-item-up">
-                {numberToSuffix(+summary.circulatingSupply)}
+                {formatNumber(+summary.circulatingSupply)}
               </h1>
               <div className="summary-metrics-container-item-down">Circulating Supply</div>
             </>
@@ -65,7 +65,7 @@ export const Metrics = ({ summary }: IMetricsProps) => {
           {summary?.marketCap ? (
             <>
               <h1 className="summary-metrics-container-item-up">
-                ${numberToSuffix(+summary.marketCap)}
+                ${formatNumber(+summary.marketCap)}
               </h1>
               <div className="summary-metrics-container-item-down">Market Cap</div>
             </>

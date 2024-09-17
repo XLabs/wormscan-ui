@@ -13,8 +13,18 @@ import { TopAddresses } from "./TopAddresses";
 import { ToggleGroup } from "src/components/atoms";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { useWindowSize } from "src/utils/hooks";
-import { NTT_APP_ID } from "src/consts";
-import { Order } from "src/api";
+import {
+  canWeGetDestinationTx,
+  CCTP_APP_ID,
+  CCTP_MANUAL_APP_ID,
+  CONNECT_APP_ID,
+  IStatus,
+  NTT_APP_ID,
+  PORTAL_APP_ID,
+  UNKNOWN_APP_ID,
+} from "src/consts";
+import { ChainLimit, Order } from "src/api";
+import { ETH_LIMIT } from "src/pages/Txs";
 import "./styles.scss";
 
 export type TimeRange = { label: string; value: string };
@@ -47,31 +57,122 @@ const WToken = () => {
     return { startDate: start, endDate: end };
   }, [timeRange]);
 
+  const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(["getLimit"], () =>
+    getClient()
+      .governor.getLimit()
+      .catch(() => null),
+  );
+
   const {
     data: recentTransactions,
     isError: isErrorRecentTransactions,
     isFetching: isFetchingRecentTransactions,
-  } = useQuery("getRecentTransactions", async () => {
-    let page = 0;
-    let transactions: GetOperationsOutput[] = [];
+  } = useQuery(
+    "getRecentTransactions",
+    async () => {
+      let page = 0;
+      let transactions: GetOperationsOutput[] = [];
 
-    while (transactions.length < 7) {
-      const data = await getClient().guardianNetwork.getOperations({
-        appId: NTT_APP_ID,
-        pagination: {
-          pageSize: 50,
-          sortOrder: Order.DESC,
-          page,
-        },
-      });
+      while (transactions.length < 7) {
+        const data = await getClient().guardianNetwork.getOperations({
+          appId: NTT_APP_ID,
+          pagination: {
+            pageSize: 50,
+            sortOrder: Order.DESC,
+            page,
+          },
+        });
 
-      transactions = [...transactions, ...data.filter(operation => operation.data?.symbol === "W")];
-      if (page > 10) break;
-      page++;
-    }
+        const filteredTransactions = data.filter(tx => tx.data?.symbol === "W");
 
-    return transactions.slice(0, 7);
-  });
+        const transactionsWithStatus = filteredTransactions.map(tx => {
+          const { emitterChain } = tx;
+          const payload = tx?.content?.payload;
+          const standarizedProperties = tx?.content?.standarizedProperties;
+
+          const {
+            appIds,
+            fromChain: stdFromChain,
+            toChain: stdToChain,
+          } = standarizedProperties || {};
+
+          const globalToChainId = tx.targetChain?.chainId;
+
+          const parsedPayload = payload?.parsedPayload;
+          const fromChainOrig = emitterChain || stdFromChain;
+
+          const attributeType = tx.sourceChain?.attribute?.type;
+          const attributeValue = tx.sourceChain?.attribute?.value;
+
+          // --- Gateway Transfers
+          const fromChain =
+            attributeType === "wormchain-gateway" ? attributeValue?.originChainId : fromChainOrig;
+          const toChain = parsedPayload?.["gateway_transfer"]?.chain
+            ? parsedPayload?.["gateway_transfer"].chain
+            : stdToChain || globalToChainId;
+          // -----
+
+          // --- Status Logic
+          const isCCTP = appIds?.includes(CCTP_APP_ID);
+          const isConnect = appIds?.includes(CONNECT_APP_ID);
+          const isPortal = appIds?.includes(PORTAL_APP_ID);
+          const isTBTC = !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
+          const isTransferWithPayload = false;
+          const hasAnotherApp = !!(
+            appIds &&
+            appIds.filter(
+              appId =>
+                appId !== CONNECT_APP_ID &&
+                appId !== PORTAL_APP_ID &&
+                appId !== UNKNOWN_APP_ID &&
+                !appId.toLowerCase().includes("tbtc"),
+            )?.length
+          );
+
+          const limitDataForChain = chainLimitsData
+            ? chainLimitsData.find((data: ChainLimit) => data.chainId === fromChain)
+            : ETH_LIMIT;
+          const transactionLimit = limitDataForChain?.maxTransactionSize;
+          const isBigTransaction = transactionLimit <= Number(tx?.data?.usdAmount);
+          const isDailyLimitExceeded =
+            limitDataForChain?.availableNotional < Number(tx?.data?.usdAmount);
+
+          const STATUS: IStatus = tx?.targetChain?.transaction?.txHash
+            ? "COMPLETED"
+            : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
+            ? "EXTERNAL_TX"
+            : tx.vaa?.raw
+            ? isConnect || isPortal || isCCTP
+              ? (canWeGetDestinationTx(toChain) &&
+                  !hasAnotherApp &&
+                  (!isTransferWithPayload ||
+                    (isTransferWithPayload && isConnect) ||
+                    (isTransferWithPayload && isTBTC))) ||
+                isCCTP
+                ? "PENDING_REDEEM"
+                : "VAA_EMITTED"
+              : "VAA_EMITTED"
+            : isBigTransaction || isDailyLimitExceeded
+            ? "IN_GOVERNORS"
+            : "IN_PROGRESS";
+
+          return {
+            ...tx,
+            STATUS,
+          };
+        });
+
+        transactions = [...transactions, ...transactionsWithStatus];
+        if (page > 10) break;
+        page++;
+      }
+
+      return transactions.slice(0, 7);
+    },
+    {
+      enabled: !isLoadingLimits,
+    },
+  );
 
   const {
     data: wTokenPrice,
@@ -207,7 +308,7 @@ const WToken = () => {
           />
           <RecentTransactions
             isError={isErrorRecentTransactions}
-            isLoading={isFetchingRecentTransactions}
+            isLoading={isLoadingLimits || isFetchingRecentTransactions}
             recentTransactions={recentTransactions}
           />
         </>
