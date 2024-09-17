@@ -7,7 +7,7 @@
   text-wrap: pretty;
 
   &-bg {
-    background: linear-gradient(180deg, var(--color-primary-40) 0%, var(--color-black-20) 100%);
+    background: linear-gradient(180deg, var(--color-coral-40) 0%, var(--color-black-20) 100%);
     height: inherit;
     left: 0;
     position: absolute;
@@ -27,7 +27,7 @@
 
     &-icon {
       align-items: center;
-      background-color: var(--color-primary-10);
+      background-color: var(--color-coral-10);
       border-radius: 50%;
       display: flex;
       height: 34px;
@@ -36,7 +36,7 @@
       min-width: 34px;
 
       &-dot {
-        background-color: var(--color-primary-100);
+        background-color: var(--color-coral);
         border-radius: 50%;
         height: 8px;
         width: 8px;
@@ -49,7 +49,7 @@
       text-transform: uppercase;
 
       &-link {
-        color: var(--color-primary-100);
+        color: var(--color-coral);
         text-decoration: underline;
         margin-left: 8px;
         margin-right: 8px;

@@ -104,7 +104,7 @@ export const Chart = ({ data, filters, isError, isLoading, metricSelected }: Pro
               series={[
                 {
                   name: "Volume or Transfers",
-                  color: "#7BFFB0",
+                  color: "var(--color-lime)",
                   data: dataTransformed
                     ? metricSelected === "volume"
                       ? dataTransformed?.map(({ volume }) => volume)

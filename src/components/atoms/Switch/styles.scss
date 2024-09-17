@@ -26,11 +26,11 @@
       }
 
       &.active {
-        background-color: var(--color-primary-20);
+        background-color: var(--color-plum-20);
 
         & .switch-label-indicator-dot {
           animation: pulse 1.5s infinite;
-          background-color: var(--color-primary-100);
+          background-color: var(--color-plum);
         }
       }
     }
@@ -47,11 +47,11 @@
     width: 44px;
 
     &[data-state="checked"] {
-      background-color: #4a90e2;
+      background-color: var(--color-plum-600);
     }
 
     &-thumb {
-      background-color: var(--color-gray-200);
+      background-color: var(--color-gray-100);
       border-radius: 9999px;
       display: block;
       height: 18px;

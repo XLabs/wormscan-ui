@@ -193,7 +193,7 @@
         }
 
         &-500 {
-          color: var(--color-primary-100);
+          color: var(--color-plum);
         }
 
         & span {
@@ -221,6 +221,7 @@
 
         & a {
           text-decoration: none;
+          color: var(--color-lime);
 
           &:hover {
             text-decoration: underline;
@@ -228,7 +229,7 @@
         }
 
         & .info-link {
-          color: var(--color-information-100);
+          color: var(--color-lime);
           text-decoration: none;
 
           &:hover {
@@ -238,7 +239,7 @@
       }
 
       &-code {
-        color: var(--color-primary-10);
+        color: var(--color-plum-10);
         font-size: 20px;
         margin-top: 16px;
 

@@ -76,7 +76,7 @@ const ProtocolsActivity = () => {
     if (filters.appId) {
       const result = data.map(item => ({
         name: item.app_id,
-        color: "#7abfff",
+        color: "var(--color-lime)",
         data: item.time_range_data.map((dataItem: ITimeRangeData) => {
           totalVolume += dataItem.total_value_transferred;
           totalMessages += dataItem.total_messages;
@@ -190,7 +190,7 @@ const ProtocolsActivity = () => {
       return [
         {
           name: "All Protocols",
-          color: "#7abfff",
+          color: "var(--color-lime)",
           data: combinedDataArray,
         },
       ];
