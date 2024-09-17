@@ -89,9 +89,6 @@ const WToken = () => {
           const { emitterChain } = tx;
           const payload = tx?.content?.payload;
           const standarizedProperties = tx?.content?.standarizedProperties;
-          let symbol = tx?.data?.symbol;
-          let payloadType = tx?.content?.payload?.payloadType;
-          let tokenAmount = tx?.data?.tokenAmount;
 
           const {
             appIds,
@@ -106,32 +103,6 @@ const WToken = () => {
 
           const attributeType = tx.sourceChain?.attribute?.type;
           const attributeValue = tx.sourceChain?.attribute?.value;
-
-          // --- NTT Transfer
-          if (appIds?.includes(NTT_APP_ID)) {
-            payloadType = 1;
-
-            const decimals =
-              tx.content?.payload?.nttMessage?.trimmedAmount?.decimals ||
-              tx.content?.payload?.parsedPayload?.nttMessage?.trimmedAmount?.decimals;
-
-            tokenAmount = String(
-              +(
-                tx.content?.payload?.nttMessage?.trimmedAmount?.amount ||
-                tx.content?.payload?.parsedPayload?.nttMessage?.trimmedAmount?.amount
-              ) /
-                10 ** decimals,
-            );
-
-            // hotfix until backend tracks evm W tokens
-            if (
-              tx.content?.standarizedProperties?.tokenAddress?.toLowerCase() ===
-              "0xB0fFa8000886e57F86dd5264b9582b2Ad87b2b91".toLowerCase()
-            ) {
-              symbol = "W";
-            }
-          }
-          // ---
 
           // --- Gateway Transfers
           const fromChain =
