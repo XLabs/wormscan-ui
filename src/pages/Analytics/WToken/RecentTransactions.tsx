@@ -100,7 +100,7 @@ export const RecentTransactions = ({
           )}
 
           {!isLoading &&
-            recentTransactions?.map((data, i) => (
+            recentTransactions?.map(data => (
               <div key={data.id} className="recent-transactions-table-item">
                 <div className="recent-transactions-table-item-row">
                   <StatusBadge size="responsive" STATUS={data.STATUS} />
