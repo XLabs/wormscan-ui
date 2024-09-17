@@ -888,7 +888,7 @@ const ChainActivity = () => {
                   },
                 },
                 stroke: {
-                  curve: "straight",
+                  curve: "smooth",
                   width: chartSelected === "area" ? 2 : 0,
                   dashArray: 0,
                 },

@@ -1,5 +1,5 @@
 import ReactApexChart from "react-apexcharts";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { GetTransferByTimeResult } from "src/api/native-token-transfer/types";
 import { Loader, ToggleGroup, Select } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
@@ -8,7 +8,7 @@ import { ActivityIcon, AnalyticsIcon } from "src/icons/generic";
 import { useWindowSize } from "src/utils/hooks";
 import { formatNumber } from "src/utils/number";
 import { getTokenIcon } from "src/utils/token";
-import { formatterYAxis } from "src/utils/apexChartUtils";
+import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { TimeRange, ByType } from "./index";
 
 type TransfersOverTimeProps = {
@@ -54,6 +54,7 @@ export const TransfersOverTime = ({
   const isDesktop = width >= BREAKPOINTS.desktop;
 
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
+  const chartRef = useRef(null);
 
   const tokenIcon = getTokenIcon("W");
 
@@ -96,7 +97,7 @@ export const TransfersOverTime = ({
       </div>
 
       <div className="transfers-over-time-container">
-        <div className="transfers-over-time-container-chart">
+        <div className="transfers-over-time-container-chart" ref={chartRef}>
           {isError ? (
             <ErrorPlaceholder />
           ) : (
@@ -142,6 +143,22 @@ export const TransfersOverTime = ({
                   options={{
                     chart: {
                       animations: { enabled: true },
+                      events:
+                        chartSelected === "bar"
+                          ? {
+                              mouseLeave: () => {
+                                changePathOpacity({ ref: chartRef, opacity: 1 });
+                              },
+                              mouseMove(e, chart, options) {
+                                if (options.dataPointIndex < 0) {
+                                  changePathOpacity({
+                                    ref: chartRef,
+                                    opacity: 1,
+                                  });
+                                }
+                              },
+                            }
+                          : {},
                       toolbar: { show: false },
                       zoom: { enabled: false },
                       stacked: chartSelected === "bar",
@@ -173,7 +190,7 @@ export const TransfersOverTime = ({
                       },
                     },
                     stroke: {
-                      curve: "straight",
+                      curve: "smooth",
                       width: chartSelected === "area" ? 2 : 0,
                       dashArray: 0,
                     },
@@ -228,6 +245,11 @@ export const TransfersOverTime = ({
                       custom: ({ seriesIndex, dataPointIndex, w }) => {
                         const data = w.config.series[seriesIndex].data[dataPointIndex];
                         const date = new Date(data.x);
+
+                        if (chartSelected === "bar") {
+                          updatePathStyles({ chartRef, dataPointIndex });
+                        }
+
                         return `
                         <div class="transfers-over-time-container-chart-tooltip">
                           <p class="transfers-over-time-container-chart-tooltip-date">
