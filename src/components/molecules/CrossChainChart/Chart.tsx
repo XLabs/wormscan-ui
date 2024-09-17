@@ -76,8 +76,12 @@ export const Chart = ({
     if (newChartData.find(a => a.chain === chainToSearch)) {
       setIsShowingOthers(false);
     } else {
-      setIsShowingOthers(true);
       newChartData = processData(data, true, selectedDestination);
+      if (newChartData.find(a => a.chain === chainToSearch)) {
+        setIsShowingOthers(true);
+      } else {
+        return;
+      }
     }
 
     if (selectedChain !== chainToSearch) {

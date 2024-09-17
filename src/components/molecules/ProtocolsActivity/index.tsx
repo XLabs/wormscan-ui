@@ -219,6 +219,7 @@ const ProtocolsActivity = () => {
           <Select
             ariaLabel="Select Protocol"
             className="protocols-activity-container-top-select-protocol"
+            closeOnSelect
             controlStyles={{ minWidth: 256 }}
             isMulti={false}
             items={PROTOCOL_LIST.filter(
