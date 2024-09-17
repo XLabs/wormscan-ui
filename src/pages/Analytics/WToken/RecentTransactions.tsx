@@ -36,9 +36,11 @@ export const RecentTransactions = ({
 
   const renderAddress = (data: GetOperationsOutput, isFrom: boolean) => {
     const chainId = isFrom
-      ? data.sourceChain.chainId
+      ? data.sourceChain?.chainId
       : data.content?.standarizedProperties?.toChain;
-    const address = isFrom ? data.sourceChain.from : data.content?.standarizedProperties?.toAddress;
+    const address = isFrom
+      ? data.sourceChain?.from
+      : data.content?.standarizedProperties?.toAddress;
 
     return (
       <div className="render-address">
@@ -112,7 +114,7 @@ export const RecentTransactions = ({
                         <NavLink
                           to={`/tx/${parseTx({
                             value: data.sourceChain.transaction.txHash,
-                            chainId: data.sourceChain.chainId as ChainId,
+                            chainId: data.sourceChain?.chainId as ChainId,
                           })}`}
                           onClick={stopPropagation}
                         >
@@ -170,7 +172,7 @@ export const RecentTransactions = ({
                       <NavLink
                         to={`/tx/${parseTx({
                           value: data.sourceChain.transaction.txHash,
-                          chainId: data.sourceChain.chainId as ChainId,
+                          chainId: data.sourceChain?.chainId as ChainId,
                         })}`}
                         onClick={stopPropagation}
                       >
