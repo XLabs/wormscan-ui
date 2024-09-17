@@ -145,7 +145,7 @@ const Footer = () => {
           <div className="footer-container-links-container">
             <p className="footer-container-links-container-title">{t("home.footer.developers")}</p>
 
-            <NavLink to="/vaa-parser" aria-label="VAA Parser">
+            <NavLink to="/developers/vaa-parser" aria-label="VAA Parser">
               VAA Parser
             </NavLink>
 
