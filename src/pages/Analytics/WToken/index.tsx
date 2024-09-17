@@ -308,7 +308,7 @@ const WToken = () => {
           />
           <RecentTransactions
             isError={isErrorRecentTransactions}
-            isLoading={isFetchingRecentTransactions}
+            isLoading={isLoadingLimits || isFetchingRecentTransactions}
             recentTransactions={recentTransactions}
           />
         </>
