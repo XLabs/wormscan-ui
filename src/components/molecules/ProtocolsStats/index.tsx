@@ -45,7 +45,8 @@ const getClassAndPrefix = (percentage: string) => {
       ? "negative"
       : "positive";
 
-  const prefix = !percentage.startsWith("-") && percentage !== "N/A" ? "+" : "";
+  const prefix =
+    !percentage.startsWith("-") && percentage !== "0.00%" && percentage !== "N/A" ? "+" : "";
 
   return { diffClass, prefix };
 };
@@ -391,14 +392,13 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
             dataTable?.map((item, i) => {
               if (i >= numberOfProtocols) return null;
 
-              const { last_day_value_diff_percentage, last_day_diff_percentage } = item || {};
-
               const { diffClass: diffValueClass, prefix: prefixValue } = getClassAndPrefix(
-                last_day_value_diff_percentage,
+                item?.last_day_value_diff_percentage,
               );
 
-              const { diffClass: diffMessagesClass, prefix: prefixMessages } =
-                getClassAndPrefix(last_day_diff_percentage);
+              const { diffClass: diffMessagesClass, prefix: prefixMessages } = getClassAndPrefix(
+                item?.last_day_diff_percentage,
+              );
 
               return (
                 <div className="protocols-stats-container-element" key={item.protocol}>
@@ -435,7 +435,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                         <h4 className="protocols-stats-container-element-item-title">24H VOLUME</h4>
                         <p className="protocols-stats-container-element-item-value">
                           ${formatNumber(item?.last_day_value_transferred, 0)}
-                          {item?.two_days_ago_value_transferred !== "N/A" && (
+                          {item?.last_day_diff_percentage !== "N/A" && (
                             <Tooltip
                               type="info"
                               tooltip={
@@ -456,7 +456,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                                 className={`protocols-stats-container-element-item-value-diff ${diffValueClass}`}
                               >
                                 {prefixValue}
-                                {last_day_value_diff_percentage}
+                                {item?.last_day_value_diff_percentage}
                               </span>
                             </Tooltip>
                           )}
@@ -478,7 +478,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                     <h4 className="protocols-stats-container-element-item-title">24H TRANSFERS</h4>
                     <p className="protocols-stats-container-element-item-value">
                       {formatNumber(item?.last_day_messages, 0)}
-                      {item?.two_days_ago_messages !== "N/A" && (
+                      {item?.last_day_diff_percentage !== "N/A" && (
                         <Tooltip
                           type="info"
                           tooltip={
@@ -499,7 +499,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                             className={`protocols-stats-container-element-item-value-diff ${diffMessagesClass}`}
                           >
                             {prefixMessages}
-                            {last_day_diff_percentage}
+                            {item?.last_day_diff_percentage}
                           </span>
                         </Tooltip>
                       )}
