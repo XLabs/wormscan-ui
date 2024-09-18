@@ -178,7 +178,6 @@ const Governor = () => {
       setDataDashboard(tempRows);
       setIsLoadingDashboard(false);
     },
-
     enabled: isMainnet,
   });
 
