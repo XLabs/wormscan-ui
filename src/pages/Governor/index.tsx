@@ -77,6 +77,7 @@ const Governor = () => {
   ]);
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
+  const isMainnet = currentNetwork === "Mainnet";
   const { width } = useWindowSize();
   const isDesktop = width >= BREAKPOINTS.desktop;
   const navigate = useNavigateCustom();
@@ -177,6 +178,8 @@ const Governor = () => {
       setDataDashboard(tempRows);
       setIsLoadingDashboard(false);
     },
+
+    enabled: isMainnet,
   });
 
   useQuery(["getEnqueuedTransactions"], () => getClient().governor.getEnqueuedTransactions(), {
@@ -299,12 +302,6 @@ const Governor = () => {
     },
     enabled: showTransactions && isLoadingTransactions && dataDashboard?.length > 0,
   });
-
-  useEffect(() => {
-    if (currentNetwork !== "Mainnet") {
-      navigate("/");
-    }
-  }, [currentNetwork, navigate]);
 
   const handleReset = (showTxs: boolean) => {
     if (showTxs) {

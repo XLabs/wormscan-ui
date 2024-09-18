@@ -1,5 +1,30 @@
 @import "src/styles/globals.scss";
 
+.only-mainnet {
+  &-text {
+    @include text-heading5;
+    color: var(--color-gray-200);
+
+    &-link {
+      @include button-ghost;
+      @include text-heading5;
+      display: inline-block;
+      color: var(--color-coral);
+      text-decoration-color: var(--color-coral-20);
+
+      &:not(:disabled) {
+        &:hover {
+          text-decoration-color: var(--color-coral-40);
+        }
+
+        &:active {
+          text-decoration-color: var(--color-coral-20);
+        }
+      }
+    }
+  }
+}
+
 .error-page {
   display: flex;
   justify-content: center;

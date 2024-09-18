@@ -36,7 +36,6 @@ const WToken = () => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "Mainnet";
-  const navigate = useNavigate();
 
   const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last 24 hours", value: "1d" });
   const [by, setBy] = useState<ByType>("tx");
@@ -317,24 +316,6 @@ const WToken = () => {
   );
 
   const [activeView, setActiveView] = useState("general-info");
-
-  if (!isMainnet) {
-    return (
-      <div className="w-token-testnet">
-        <p className="w-token-testnet-text">Page available on Mainnet network.</p>
-
-        <p className="w-token-testnet-text">
-          To view on MAINNET click{" "}
-          <button
-            className="w-token-testnet-text-link"
-            onClick={() => navigate("/analytics/w?network=Mainnet")}
-          >
-            HERE
-          </button>
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div>
