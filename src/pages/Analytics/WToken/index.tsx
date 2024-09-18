@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
 import { getGeckoTokenInfo } from "src/utils/cryptoToolkit";
@@ -35,6 +36,7 @@ const WToken = () => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "Mainnet";
+  const navigate = useNavigate();
 
   const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last 24 hours", value: "1d" });
   const [by, setBy] = useState<ByType>("tx");
@@ -323,9 +325,12 @@ const WToken = () => {
 
         <p className="w-token-testnet-text">
           To view on MAINNET click{" "}
-          <NavLink to="/analytics/w?network=Mainnet" className="w-token-testnet-text-link">
+          <button
+            className="w-token-testnet-text-link"
+            onClick={() => navigate("/analytics/w?network=Mainnet")}
+          >
             HERE
-          </NavLink>
+          </button>
         </p>
       </div>
     );
