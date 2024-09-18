@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
 import { getGeckoTokenInfo } from "src/utils/cryptoToolkit";
