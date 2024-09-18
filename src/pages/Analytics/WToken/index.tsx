@@ -3,6 +3,7 @@ import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
 import { getGeckoTokenInfo } from "src/utils/cryptoToolkit";
 import { chainToChainId } from "@wormhole-foundation/sdk";
+import { useEnvironment } from "src/context/EnvironmentContext";
 import { Summary } from "./Summary";
 import { Metrics } from "./Metrics";
 import { TransfersOverTime } from "./TransfersOverTime";
@@ -10,7 +11,7 @@ import { RecentTransactions } from "./RecentTransactions";
 import { ByChain } from "./ByChain";
 import { TopHolders } from "./TopHolders";
 import { TopAddresses } from "./TopAddresses";
-import { ToggleGroup } from "src/components/atoms";
+import { NavLink, ToggleGroup } from "src/components/atoms";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { useWindowSize } from "src/utils/hooks";
 import {
@@ -31,6 +32,10 @@ export type TimeRange = { label: string; value: string };
 export type ByType = "notional" | "tx";
 
 const WToken = () => {
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+  const isMainnet = currentNetwork === "Mainnet";
+
   const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last 24 hours", value: "1d" });
   const [by, setBy] = useState<ByType>("tx");
 
@@ -57,10 +62,16 @@ const WToken = () => {
     return { startDate: start, endDate: end };
   }, [timeRange]);
 
-  const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(["getLimit"], () =>
-    getClient()
-      .governor.getLimit()
-      .catch(() => null),
+  const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(
+    ["getLimit"],
+    () => {
+      return getClient()
+        .governor.getLimit()
+        .catch(() => null);
+    },
+    {
+      enabled: isMainnet,
+    },
   );
 
   const {
@@ -170,7 +181,7 @@ const WToken = () => {
       return transactions.slice(0, 7);
     },
     {
-      enabled: !isLoadingLimits,
+      enabled: !isLoadingLimits && isMainnet,
     },
   );
 
@@ -189,6 +200,7 @@ const WToken = () => {
       return data.attributes.price_usd;
     },
     {
+      enabled: isMainnet,
       refetchInterval: 10000,
     },
   );
@@ -212,61 +224,112 @@ const WToken = () => {
         timeSpan,
       };
     },
-    { refetchOnWindowFocus: false },
+    { enabled: isMainnet, refetchOnWindowFocus: false },
   );
 
-  const { data: summary } = useQuery(["getSummary"], () =>
-    getClient().nttApi.getNttSummary({
-      symbol: "W",
-    }),
+  const { data: summary } = useQuery(
+    ["getSummary"],
+    () => {
+      return getClient().nttApi.getNttSummary({
+        symbol: "W",
+      });
+    },
+    {
+      enabled: isMainnet,
+    },
   );
 
-  const { data: activityTx } = useQuery("getActivityTx", async () => {
-    const activity = await getClient().nttApi.getNttActivity({
-      by: "tx",
-      symbol: "W",
-    });
-    activity.sort((a, b) => (+a.value < +b.value ? 1 : -1));
+  const { data: activityTx } = useQuery(
+    "getActivityTx",
+    async () => {
+      const activity = await getClient().nttApi.getNttActivity({
+        by: "tx",
+        symbol: "W",
+      });
+      activity.sort((a, b) => (+a.value < +b.value ? 1 : -1));
 
-    return activity;
-  });
+      return activity;
+    },
+    {
+      enabled: isMainnet,
+    },
+  );
 
-  const { data: activityNotional } = useQuery("getActivityNotional", async () => {
-    const activity = await getClient().nttApi.getNttActivity({
-      by: "notional",
-      symbol: "W",
-    });
-    activity.sort((a, b) => (+a.value < +b.value ? 1 : -1));
+  const { data: activityNotional } = useQuery(
+    "getActivityNotional",
+    async () => {
+      const activity = await getClient().nttApi.getNttActivity({
+        by: "notional",
+        symbol: "W",
+      });
+      activity.sort((a, b) => (+a.value < +b.value ? 1 : -1));
 
-    return activity;
-  });
+      return activity;
+    },
+    {
+      enabled: isMainnet,
+    },
+  );
 
-  const { data: topHolders } = useQuery("getTopHolders", async () => {
-    const data = await getClient().nttApi.getNttTopHolder({
-      symbol: "W",
-    });
-    return data;
-  });
+  const { data: topHolders } = useQuery(
+    "getTopHolders",
+    async () => {
+      const data = await getClient().nttApi.getNttTopHolder({
+        symbol: "W",
+      });
+      return data;
+    },
+    {
+      enabled: isMainnet,
+    },
+  );
 
-  const { data: topAddressesNotional } = useQuery(["getNttTopAddressNotional"], async () => {
-    const data = await getClient().nttApi.getNttTopAddress({
-      by: "notional",
-      symbol: "W",
-    });
-    data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
-    return data;
-  });
+  const { data: topAddressesNotional } = useQuery(
+    ["getNttTopAddressNotional"],
+    async () => {
+      const data = await getClient().nttApi.getNttTopAddress({
+        by: "notional",
+        symbol: "W",
+      });
+      data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
+      return data;
+    },
+    {
+      enabled: isMainnet,
+    },
+  );
 
-  const { data: topAddressesTx } = useQuery(["getNttTopAddressTx"], async () => {
-    const data = await getClient().nttApi.getNttTopAddress({
-      by: "tx",
-      symbol: "W",
-    });
-    data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
-    return data;
-  });
+  const { data: topAddressesTx } = useQuery(
+    ["getNttTopAddressTx"],
+    async () => {
+      const data = await getClient().nttApi.getNttTopAddress({
+        by: "tx",
+        symbol: "W",
+      });
+      data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
+      return data;
+    },
+    {
+      enabled: isMainnet,
+    },
+  );
 
   const [activeView, setActiveView] = useState("general-info");
+
+  if (!isMainnet) {
+    return (
+      <div className="w-token-testnet">
+        <p className="w-token-testnet-text">Page available on Mainnet network.</p>
+
+        <p className="w-token-testnet-text">
+          To view on MAINNET click{" "}
+          <NavLink to="/analytics/w?network=Mainnet" className="w-token-testnet-text-link">
+            HERE
+          </NavLink>
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div>
