@@ -12,7 +12,7 @@ import { RecentTransactions } from "./RecentTransactions";
 import { ByChain } from "./ByChain";
 import { TopHolders } from "./TopHolders";
 import { TopAddresses } from "./TopAddresses";
-import { NavLink, ToggleGroup } from "src/components/atoms";
+import { ToggleGroup } from "src/components/atoms";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { useWindowSize } from "src/utils/hooks";
 import {
