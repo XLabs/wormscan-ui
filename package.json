@@ -24,6 +24,7 @@
   "scripts": {
     "build": "parcel build --no-scope-hoist --public-url ./ && node addCSP.ts",
     "start": "parcel",
+    "local": "WORMSCAN_BFF_URL='http://localhost:8080' parcel",
     "clean": "rimraf dist && rimraf .parcel-cache",
     "prepare": "husky install",
     "test:e2e": "yarn playwright test",

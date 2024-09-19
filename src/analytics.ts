@@ -18,8 +18,8 @@ const analytics = isProd
       ],
     })
   : {
-      track: () => null as any,
-      page: () => null as any,
+      track: (a: any, b: any) => console.log("track", a, b),
+      page: (a: any, b: any) => console.log("page", a, b),
     };
 
 export default analytics;

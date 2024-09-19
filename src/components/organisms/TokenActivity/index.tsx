@@ -14,6 +14,7 @@ import { getChainName } from "src/utils/wormhole";
 import { ChainFilterMainnet, ChainFilterTestnet } from "src/utils/filterUtils";
 import { getClient } from "src/api/Client";
 import { Chart } from "./Chart";
+import analytics from "src/analytics";
 import "./styles.scss";
 
 const METRIC_CHART_LIST = [
@@ -46,7 +47,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   const [openFilters, setOpenFilters] = useState(false);
   const [rowSelected, setRowSelected] = useState<number>(0);
 
-  const [filters, setFilters] = useState({
+  const [filters, setFiltersState] = useState({
     from: getISODateZeroed(1),
     to: todayISOString,
     timespan: "1h",
@@ -54,6 +55,25 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
     targetChain: [],
     symbol: { label: "USDC", value: "USDC" },
   });
+
+  const setFilters = (newFilters: typeof filters) => {
+    analytics.track("tokenActivity", {
+      network: currentNetwork,
+      selected: metricSelected,
+      chain:
+        filters.sourceChain?.length > 0
+          ? filters.sourceChain.map(chain => chain.label).join(", ")
+          : "Unset",
+      toChain:
+        filters.targetChain?.length > 0
+          ? filters.targetChain.map(chain => chain.label).join(", ")
+          : "Unset",
+      symbol: newFilters?.symbol?.label,
+      selectedTimeRange: selectedTopAssetTimeRange?.label,
+    });
+
+    setFiltersState(newFilters);
+  };
 
   const sourceChains = filters.sourceChain.map(({ value }) => Number(value) as ChainId);
   const targetChains = filters.targetChain.map(({ value }) => Number(value) as ChainId);
