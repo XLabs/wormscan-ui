@@ -661,13 +661,14 @@ const Tx = () => {
 
             const gasLimit = data.content?.payload?.encodedExecutionInfo?.gasLimit;
 
-            if (!data.content.standarizedProperties.toAddress) {
-              return (
-                <div className="tx-information-errored-info">
-                  This is either not an Standard Relayer VAA or something&apos;s wrong with it
-                </div>
-              );
-            }
+            // if (!data.content.standarizedProperties.toAddress) {
+            //   console.log("AH?");
+            //   return (
+            //     <div className="tx-information-errored-info">
+            //       This is either not an Standard Relayer VAA or something&apos;s wrong with it
+            //     </div>
+            //   );
+            // }
 
             const trunkStringsDecimal = (num: string, decimals: number) => {
               const [whole, fraction] = num.split(".");
@@ -1217,7 +1218,7 @@ const Tx = () => {
 
         const limitDataForChain = chainLimitsData
           ? chainLimitsData.find(
-              (d: ChainLimit) => d.chainId === data.content.standarizedProperties.fromChain,
+              (d: ChainLimit) => d.chainId === data?.content?.standarizedProperties?.fromChain,
             )
           : ETH_LIMIT;
         const transactionLimit = limitDataForChain?.maxTransactionSize;
@@ -1324,9 +1325,9 @@ const Tx = () => {
             ? await tryGetAddressInfo(network, sourceAddress)
             : null;
 
-        newAddressesInfo[emitterAddress.toLowerCase()] = emitterInfo;
-        newAddressesInfo[targetAddress.toLowerCase()] = targetInfo;
-        newAddressesInfo[sourceAddress.toLowerCase()] = sourceInfo;
+        if (emitterInfo) newAddressesInfo[emitterAddress.toLowerCase()] = emitterInfo;
+        if (targetInfo) newAddressesInfo[targetAddress.toLowerCase()] = targetInfo;
+        if (sourceInfo) newAddressesInfo[sourceAddress.toLowerCase()] = sourceInfo;
 
         if (!!data.relayerInfo) {
           const fromChain = data.content?.standarizedProperties?.fromChain;
