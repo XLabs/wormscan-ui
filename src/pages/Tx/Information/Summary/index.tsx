@@ -14,8 +14,8 @@ type Props = {
   isGateway: boolean;
   isJustPortalUnknown: boolean;
   loadingRedeem: boolean;
-  setShowOverview: (showOverview: boolean) => void;
-  showOverview: boolean;
+  setShowOverview: (view: string) => void;
+  showOverview: string;
   STATUS: IStatus;
   txHash: string;
   vaa: string;
@@ -48,9 +48,10 @@ const Summary = ({
         items={[
           { label: "Overview", value: "overview", ariaLabel: "overview" },
           { label: "Advanced", value: "advanced", ariaLabel: "advanced" },
+          { label: "Progress", value: "progress", ariaLabel: "progress" },
         ]}
-        onValueChange={() => setShowOverview(!showOverview)}
-        value={showOverview ? "overview" : "advanced"}
+        onValueChange={value => setShowOverview(value)}
+        value={showOverview}
       />
 
       <div className="tx-information-summary-info">

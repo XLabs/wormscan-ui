@@ -7,9 +7,8 @@ import { useRecoilState } from "recoil";
 import { addressesInfoState } from "src/utils/recoilStates";
 import { BREAKPOINTS, CCTP_MANUAL_APP_ID, ETH_BRIDGE_APP_ID, txType } from "src/consts";
 import {
-  ArrowDownIcon,
   ArrowRightIcon,
-  CheckCircle2,
+  ArrowUpRightIcon,
   ChevronDownIcon,
   CopyIcon,
   InfoCircleIcon,
@@ -27,7 +26,6 @@ import {
   testnetNativeCurrencies,
 } from "src/utils/environment";
 import { formatNumber } from "src/utils/number";
-import { useEnvironment } from "src/context/EnvironmentContext";
 import { useWindowSize } from "src/utils/hooks";
 import {
   BIGDIPPER_TRANSACTIONS,
@@ -118,14 +116,11 @@ const Overview = ({
   VAAId,
 }: OverviewProps) => {
   const [addressesInfo] = useRecoilState(addressesInfoState);
-  const progressRef = useRef<HTMLDivElement>(null);
   const lineValueRef = useRef<HTMLDivElement>(null);
   const [lineValueWidth, setLineValueWidth] = useState<number>(0);
 
   const [showDetailsNft, setShowDetailsNft] = useState(false);
-  const [showProgress, setShowProgress] = useState(false);
 
-  const { environment } = useEnvironment();
   const { width } = useWindowSize();
   const isDekstop = width >= BREAKPOINTS.desktop;
 
@@ -155,118 +150,22 @@ const Overview = ({
     };
   }, [lineValueWidth]);
 
-  const ProgressContainer = () => {
-    return (
-      <div className="progress-container">
-        <button
-          className={`progress-title ${showProgress ? "active" : ""}`}
-          onClick={() => setShowProgress(!showProgress)}
-        >
-          TRANSACTION PROGRESS <ChevronDownIcon />
-        </button>
-
-        {showProgress && (
-          <>
-            <div className="progress-item">
-              <div className="progress-icon">
-                <CheckCircle2 />
-              </div>
-
-              <div className="progress-text">
-                <p>
-                  {!isJustGenericRelayer && !isMayanOnly && !nftInfo && (
-                    <>
-                      Transfer{" "}
-                      {tokenAmount && (
-                        <>
-                          {!isAttestation ? amountSent : ""}{" "}
-                          {SOURCE_SYMBOL && (
-                            <>
-                              {SOURCE_SYMBOL} {amountSentUSD && `($${amountSentUSD})`}
-                            </>
-                          )}
-                        </>
-                      )}
-                    </>
-                  )}{" "}
-                  {!isJustGenericRelayer && !isMayanOnly && !nftInfo ? "from" : "From"}{" "}
-                  {getChainName({ chainId: fromChain, network: currentNetwork })}{" "}
-                  {!!toChain &&
-                    ` to ${getChainName({ chainId: toChain, network: currentNetwork })}`}
-                </p>
-
-                <span>{originDateParsed}</span>
-              </div>
-            </div>
-
-            {!isJustGenericRelayer && STATUS === "IN_GOVERNORS" && (
-              <div className="progress-item">
-                <div className="progress-icon">
-                  <CheckCircle2 />
-                </div>
-
-                <div className="progress-text">
-                  <p>In governor - This transaction will take 24 hours to process</p>
-                </div>
-              </div>
-            )}
-
-            <div
-              className={`progress-item ${
-                STATUS === "IN_PROGRESS" || STATUS === "IN_GOVERNORS" ? "disabled" : ""
-              }`}
-            >
-              <div className="progress-icon">
-                <CheckCircle2 />
-              </div>
-
-              <div className="progress-text">
-                <p>VAA signed by wormhole guardians</p>
-              </div>
-            </div>
-
-            {!isJustGenericRelayer && (
-              <div
-                className={`progress-item ${
-                  STATUS === "IN_PROGRESS" || STATUS === "IN_GOVERNORS" || STATUS === "VAA_EMITTED"
-                    ? "disabled"
-                    : ""
-                }`}
-              >
-                <div className="progress-icon">
-                  <CheckCircle2 />
-                </div>
-
-                <div className="progress-text">
-                  <p>
-                    Pending redemption
-                    {!!toChain &&
-                      ` in ${getChainName({ chainId: toChain, network: currentNetwork })}`}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            <div className={`progress-item ${STATUS === "COMPLETED" ? "" : "disabled"}`}>
-              <div className="progress-icon">
-                <CheckCircle2 />
-              </div>
-
-              <div className="progress-text">
-                <p>Transactions completed</p>
-                <span>{destinationDateParsed}</span>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
-    );
-  };
-
   return (
     <div className="tx-overview">
       <div className="tx-overview-section">
-        <h4 className="tx-overview-section-title">Status</h4>
+        <h4 className="tx-overview-section-title">
+          <Tooltip
+            type="info"
+            tooltip={
+              <div className="tx-overview-section-info-tooltip-content">
+                <p>Current state of the transaction</p>
+              </div>
+            }
+            className="tx-overview-section-info-tooltip"
+          >
+            <span>Status</span>
+          </Tooltip>
+        </h4>
 
         <div className="tx-overview-section-info">
           <div className="tx-overview-section-info-container">
@@ -276,8 +175,7 @@ const Overview = ({
               <button
                 className="tx-overview-section-info-steps"
                 onClick={() => {
-                  setShowProgress(true);
-                  progressRef.current?.scrollIntoView({ behavior: "smooth" });
+                  setShowOverview("progress");
                 }}
               >
                 {STATUS === "IN_PROGRESS"
@@ -294,7 +192,7 @@ const Overview = ({
                     : "4"
                   : "5"}
                 /{STATUS === "IN_GOVERNORS" ? "5" : isJustGenericRelayer ? "3" : "4"}
-                <p className="desktop">Steps Complete</p> <ArrowDownIcon width={24} />
+                <p className="desktop">Steps Complete</p> <ArrowUpRightIcon width={24} />
               </button>
 
               {(!hasVAA || isUnknownPayloadType) && (
@@ -436,7 +334,21 @@ const Overview = ({
       </div>
 
       <div className="tx-overview-section">
-        <h4 className="tx-overview-section-title">Source Tx Hash</h4>
+        <h4 className="tx-overview-section-title">
+          <Tooltip
+            type="info"
+            tooltip={
+              <div className="tx-overview-section-info-tooltip-content">
+                <p>
+                  Tx Hash is a unique transaction identifier and could contain more than one VAA.
+                </p>
+              </div>
+            }
+            className="tx-overview-section-info-tooltip"
+          >
+            <span>Source Tx Hash</span>
+          </Tooltip>
+        </h4>
 
         <div className="tx-overview-section-info" ref={lineValueRef}>
           <div className="tx-overview-section-info-container">
@@ -470,7 +382,21 @@ const Overview = ({
 
       {gatewayInfo?.originTxHash && (
         <div className="tx-overview-section">
-          <h4 className="tx-overview-section-title">Gateway Tx Hash</h4>
+          <h4 className="tx-overview-section-title">
+            <Tooltip
+              type="info"
+              tooltip={
+                <div className="tx-overview-section-info-tooltip-content">
+                  <p>
+                    Transaction hash from Gateway, a Wormhole Cosmos chain that bridges Ethereum to
+                    Cosmos via the Guardian network.
+                  </p>
+                </div>
+              }
+            >
+              <span>Gateway Tx Hash</span>
+            </Tooltip>
+          </h4>
 
           <div className="tx-overview-section-info">
             <div className="tx-overview-section-info-container">
@@ -496,7 +422,19 @@ const Overview = ({
       )}
 
       <div className="tx-overview-section">
-        <h4 className="tx-overview-section-title">Protocols</h4>
+        <h4 className="tx-overview-section-title">
+          <Tooltip
+            type="info"
+            tooltip={
+              <div className="tx-overview-section-info-tooltip-content">
+                <p>Protocols used to facilitate the cross-chain transfer.</p>
+              </div>
+            }
+            className="tx-overview-section-info-tooltip"
+          >
+            <span>Protocols</span>
+          </Tooltip>
+        </h4>
         <div className="tx-overview-section-info">
           <div className="tx-overview-section-info-container protocols">
             {appIds?.length > 0 ? (
@@ -514,7 +452,19 @@ const Overview = ({
 
         {deliveryParsedSenderAddress && (
           <>
-            <h4 className="tx-overview-section-title">Source App Contract</h4>
+            <h4 className="tx-overview-section-title">
+              <Tooltip
+                type="info"
+                tooltip={
+                  <div className="tx-overview-section-info-tooltip-content">
+                    <p>Contract address of the source app.</p>
+                  </div>
+                }
+                className="tx-overview-section-info-tooltip"
+              >
+                <span>Source App Contract</span>
+              </Tooltip>
+            </h4>
             <div className="tx-overview-section-info">
               <div className="tx-overview-section-info-container">
                 <div className="text">
@@ -550,7 +500,19 @@ const Overview = ({
           </>
         )}
 
-        <h4 className="tx-overview-section-title">Contract Address</h4>
+        <h4 className="tx-overview-section-title">
+          <Tooltip
+            type="info"
+            tooltip={
+              <div className="tx-overview-section-info-tooltip-content">
+                <p>Smart contract address used on the source chain.</p>
+              </div>
+            }
+            className="tx-overview-section-info-tooltip"
+          >
+            <span>Contract Address</span>
+          </Tooltip>
+        </h4>
         <div className="tx-overview-section-info">
           <div className="tx-overview-section-info-container">
             <div className="text">
@@ -606,7 +568,18 @@ const Overview = ({
 
       {txType[payloadType] && (
         <div className="tx-overview-section">
-          <h4 className="tx-overview-section-title">Type</h4>
+          <h4 className="tx-overview-section-title">
+            <Tooltip
+              type="info"
+              tooltip={
+                <div className="tx-overview-section-info-tooltip-content">
+                  <p>The type of transaction</p>
+                </div>
+              }
+            >
+              <span>Transaction Action</span>
+            </Tooltip>
+          </h4>
 
           <div className="tx-overview-section-info">
             <div className="tx-overview-section-info-container">
@@ -734,7 +707,19 @@ const Overview = ({
       )}
 
       <div className="tx-overview-section">
-        <h4 className="tx-overview-section-title">Chains</h4>
+        <h4 className="tx-overview-section-title">
+          <Tooltip
+            type="info"
+            tooltip={
+              <div className="tx-overview-section-info-tooltip-content">
+                <p>Chains involved in the transaction.</p>
+              </div>
+            }
+            className="tx-overview-section-info-tooltip"
+          >
+            <span>Chains</span>
+          </Tooltip>
+        </h4>
 
         <div className="tx-overview-section-info">
           <div className="tx-overview-section-info-container">
@@ -1178,17 +1163,29 @@ const Overview = ({
       </div>
 
       {+fee > 0 && (
-        <div className="tx-overview-section">
-          <h4 className="tx-overview-section-title">Gas Fee</h4>
-
-          <div className="tx-overview-section-info">
-            <div className="tx-overview-section-info-container">
-              <div className="text">
-                {formatNumber(formatUnits(+fee))} {SOURCE_SYMBOL}
+        <>
+          <div className="tx-overview-section">
+            <h4 className="tx-overview-section-title">
+              <Tooltip
+                type="info"
+                tooltip={
+                  <div>
+                    <p>The fee paid to the relayer for processing the transaction.</p>
+                  </div>
+                }
+              >
+                <span>Transaction Fee</span>
+              </Tooltip>
+            </h4>
+            <div className="tx-overview-section-info">
+              <div className="tx-overview-section-info-container">
+                <div className="text">
+                  {formatNumber(formatUnits(+fee))} {SOURCE_SYMBOL}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {decodeExecution && (
@@ -1317,20 +1314,43 @@ const Overview = ({
       )}
 
       <div className="tx-overview-section">
-        <h4 className="tx-overview-section-title">Time</h4>
+        <h4 className="tx-overview-section-title">
+          <Tooltip
+            type="info"
+            tooltip={
+              <div>
+                <p>The date and time when the transaction was produced.</p>
+              </div>
+            }
+          >
+            <span>Initial Time</span>
+          </Tooltip>
+        </h4>
         <div className="tx-overview-section-info">
           <div className="tx-overview-section-info-container">
             <div className="text">{originDateParsed ? originDateParsed : "N/A"}</div>
           </div>
         </div>
 
-        <h4 className="tx-overview-section-title">Signatures</h4>
+        <h4 className="tx-overview-section-title">
+          <Tooltip
+            type="info"
+            tooltip={
+              <div>
+                <p>Number of guardian signatures obtained.</p>
+                <p>It’s mandatory to have at least 13 signs for Mainnet.</p>
+              </div>
+            }
+          >
+            <span>Signatures</span>
+          </Tooltip>
+        </h4>
         <div className="tx-overview-section-info">
           <div className="tx-overview-section-info-container">
             <div className="text">
               <a
                 onClick={() => {
-                  setShowOverview(false);
+                  setShowOverview("advanced");
                   setTimeout(() => {
                     const signedVaaElem = document.getElementById(`signatures${txIndex}`);
                     if (signedVaaElem) {
@@ -1351,7 +1371,19 @@ const Overview = ({
           </div>
         </div>
 
-        <h4 className="tx-overview-section-title">VAA ID</h4>
+        <h4 className="tx-overview-section-title">
+          <Tooltip
+            type="info"
+            tooltip={
+              <div>
+                <p>Identifier for the approval needed to validate the cross-chain transfer.</p>
+                <p>This concept is formed by chainId/emitterChain/sequence.</p>
+              </div>
+            }
+          >
+            <span>VAA ID</span>
+          </Tooltip>
+        </h4>
         <div className="tx-overview-section-info">
           <div className="tx-overview-section-info-container">
             <div className="text">
@@ -1378,7 +1410,21 @@ const Overview = ({
 
         {parsedRedeemTx && (
           <>
-            <h4 className="tx-overview-section-title">Redeem Tx</h4>
+            <h4 className="tx-overview-section-title">
+              <Tooltip
+                type="info"
+                tooltip={
+                  <div>
+                    <p>
+                      Identifier of the transaction on the destination chain to complete the
+                      operation.
+                    </p>
+                  </div>
+                }
+              >
+                <span>Redeem Tx</span>
+              </Tooltip>
+            </h4>
             <div className="tx-overview-section-info">
               <div className="tx-overview-section-info-container">
                 <div className="text">
@@ -1405,17 +1451,30 @@ const Overview = ({
             </div>
           </>
         )}
-      </div>
 
-      <div className="tx-overview-section progress-section">
-        <h4 className="tx-overview-section-title">
-          <div className="progress-ref" ref={progressRef} />
-          Progress
-        </h4>
-
-        <div className="tx-overview-section-info">
-          <ProgressContainer />
-        </div>
+        {destinationDateParsed && (
+          <>
+            <h4 className="tx-overview-section-title">
+              <Tooltip
+                type="info"
+                tooltip={
+                  <div>
+                    <p>
+                      The date and time when the transactions is finalized in the Destination Chain.
+                    </p>
+                  </div>
+                }
+              >
+                <span>Complete Time</span>
+              </Tooltip>
+            </h4>
+            <div className="tx-overview-section-info">
+              <div className="tx-overview-section-info-container">
+                <div className="text">{destinationDateParsed}</div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

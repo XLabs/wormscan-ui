@@ -311,163 +311,16 @@
       }
     }
 
-    &.progress-section {
-      @include centered-column;
-      align-items: flex-start;
-      position: relative;
-
-      @include desktop {
-        display: grid;
-        grid-template-columns: 0.2fr 0.8fr;
-        width: 100%;
-      }
-
-      & .progress-ref {
-        position: absolute;
-        top: -96px;
-        visibility: hidden;
-      }
-
-      & .progress-container {
-        @include centered-column;
-        background-color: var(--color-gray-950);
-        border-radius: 20px;
-        gap: 24px 0;
-        margin-left: auto;
-        padding: 16px;
-        width: 100%;
-
-        @include desktop {
-          @include centered-column;
-          margin-left: unset;
-          max-width: 1000px;
-          padding: 20px;
-          width: 100%;
-        }
-
-        & .progress-title {
-          all: unset;
-          @include centered-row;
-          @include text-heading6;
-          color: var(--color-gray-600);
-          cursor: pointer;
-          gap: 8px;
-          max-width: max-content;
-
-          &:hover {
-            color: var(--color-gray-400);
-          }
-
-          &:active {
-            color: var(--color-gray-600);
-          }
-
-          &.active {
-            & > svg {
-              rotate: 180deg;
-            }
-          }
-        }
-
-        & .progress-item {
-          @include centered-row;
-          align-items: center;
-          gap: 0 16px;
-          height: 44px;
-          position: relative;
-          width: 100%;
-
-          @include desktop {
-            height: 36px;
-          }
-
-          & .progress-icon {
-            @include centered-row;
-            background-color: var(--color-success-100);
-            border-radius: 50%;
-            color: var(--color-black);
-            justify-content: center;
-            margin-bottom: auto;
-            min-height: 32px;
-            min-width: 32px;
-
-            &::before {
-              background-color: var(--color-success-100);
-              bottom: 100%;
-              content: "";
-              height: 36px;
-              position: absolute;
-              width: 2px;
-
-              @include desktop {
-                height: 28px;
-              }
-            }
-          }
-
-          &:nth-child(2) {
-            & .progress-icon::before {
-              display: none;
-            }
-          }
-
-          & .progress-text {
-            @include centered-column;
-            gap: 8px 0;
-
-            @include desktop {
-              @include centered-row;
-              flex-wrap: wrap;
-              gap: 0 16px;
-              justify-content: space-between;
-              width: 100%;
-            }
-
-            & > p {
-              @include text-roboto-body-500;
-              color: var(--color-white);
-            }
-
-            & > span {
-              @include text-roboto-body-400;
-              color: var(--color-gray-600);
-            }
-          }
-
-          &.disabled {
-            & .progress-icon {
-              background-color: var(--color-gray-900);
-              color: var(--color-gray-400);
-
-              &::before {
-                background-color: var(--color-gray-900);
-              }
-
-              & > svg {
-                display: none;
-              }
-            }
-
-            & .progress-text {
-              & > p {
-                color: var(--color-gray-400);
-              }
-
-              & > span {
-                color: var(--color-gray-600);
-              }
-            }
-          }
-        }
-      }
-    }
-
     &-title {
       @include centered-row;
       @include text-roboto-body-400;
       color: var(--color-gray-200);
       gap: 4px;
       white-space: nowrap;
+
+      & > span {
+        cursor: pointer;
+      }
     }
 
     &-info {

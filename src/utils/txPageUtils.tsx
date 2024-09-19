@@ -62,7 +62,7 @@ export type OverviewProps = {
   refundStatus?: string;
   refundText?: () => string;
   resultLog?: string;
-  setShowOverview?: (bool: boolean) => void;
+  setShowOverview?: (newView: string) => void;
   showMetaMaskBtn?: boolean;
   showSignatures?: boolean;
   sourceAddress?: string;
