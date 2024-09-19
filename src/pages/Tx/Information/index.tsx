@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { useEnvironment } from "src/context/EnvironmentContext";
