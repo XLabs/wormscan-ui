@@ -8,6 +8,7 @@ import { useNavigateCustom, useWindowSize } from "src/utils/hooks";
 import Filters from "./Filters";
 import { BREAKPOINTS } from "src/consts";
 import "./styles.scss";
+import { useEnvironment } from "src/context/EnvironmentContext";
 
 interface Props {
   currentPage: number;
@@ -33,6 +34,7 @@ const Information = ({
   const currentUrlPage = +new URLSearchParams(location.search).get("page") || 1;
   const { width } = useWindowSize();
   const isDesktop = width >= BREAKPOINTS.desktop;
+  const { environment } = useEnvironment();
 
   //att status txhash sourcechain token name token address time
   //trans status txhash from to protocol time
@@ -84,7 +86,7 @@ const Information = ({
   const onRowClick = (row: TransactionOutput) => {
     if (isDesktop) {
       const { txHashId } = row || {};
-      txHashId && navigate(`/tx/${txHashId}`);
+      txHashId && navigate(`/tx/${txHashId}?network=${environment.network}`);
     }
   };
 
