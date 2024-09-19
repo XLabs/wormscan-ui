@@ -45,7 +45,7 @@ export async function fetchWithTimeout(url: string): Promise<Response | null> {
     return response as Response;
   } catch (error: any) {
     // If timeoutPromise wins the race just return null
-    console.log("request timed out");
+    console.log("request errored or timed out");
     return null;
   }
 }

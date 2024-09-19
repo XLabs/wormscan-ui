@@ -19,7 +19,7 @@ jobs:
 
       - name: Set environment vars
         run: |
-          cat .env.development >> .env
+          cat .env.production >> .env
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -34,7 +34,7 @@ jobs:
 
       - name: Build Static Website
         run: |
-         NODE_ENV=development yarn build
+         NODE_ENV=production yarn build
          cp ./robots.txt ./dist/
          cp ./src/og_image.png ./dist/
 

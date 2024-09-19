@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
 import { getGeckoTokenInfo } from "src/utils/cryptoToolkit";
@@ -27,6 +27,8 @@ import {
 import { ChainLimit, Order } from "src/api";
 import { ETH_LIMIT } from "src/pages/Txs";
 import "./styles.scss";
+import { useSearchParams } from "react-router-dom";
+import analytics from "src/analytics";
 
 export type TimeRange = { label: string; value: string };
 export type ByType = "notional" | "tx";
@@ -196,7 +198,7 @@ const WToken = () => {
         "85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ",
         chainToChainId("Solana"),
       );
-      if (!data || !data.attributes?.price_usd) return null;
+      if (!data || !data.attributes?.price_usd) throw new Error("No data");
       return data.attributes.price_usd;
     },
     {
@@ -314,7 +316,12 @@ const WToken = () => {
     },
   );
 
-  const [activeView, setActiveView] = useState("general-info");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeView, setActiveView] = useState(searchParams.get("view") || "general-info");
+
+  useEffect(() => {
+    analytics.page({ title: `ANALYTICS-WTOKEN-${activeView}` });
+  }, [activeView]);
 
   return (
     <div>
@@ -336,6 +343,10 @@ const WToken = () => {
           ]}
           onValueChange={value => {
             setActiveView(value);
+            setSearchParams(prev => {
+              prev.set("view", value);
+              return prev;
+            });
           }}
           value={activeView}
         />

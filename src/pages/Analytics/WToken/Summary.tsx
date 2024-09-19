@@ -74,9 +74,11 @@ export const Summary = ({
               <div className="summary-top-content-container-item-up">Price</div>
               <div className="summary-top-content-container-item-down price">
                 <div className="price-value">
-                  {isFetchingWTokenPrice || isErrorWTokenPrice || !wTokenPrice ? (
-                    "..."
-                  ) : (
+                  {isFetchingWTokenPrice && !isErrorWTokenPrice && !wTokenPrice && "..."}
+
+                  {isErrorWTokenPrice && "N/A"}
+
+                  {wTokenPrice && (
                     <FlipNumbers
                       height={15}
                       width={11}
