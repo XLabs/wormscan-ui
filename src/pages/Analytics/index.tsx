@@ -11,7 +11,9 @@ const Analytics = () => {
   const { analyticsId } = useParams();
 
   useEffect(() => {
-    analytics.page({ title: `ANALYTICS-${analyticsId.toUpperCase()}` });
+    if (analyticsId !== "w") {
+      analytics.page({ title: `ANALYTICS-${analyticsId.toUpperCase()}` });
+    }
   }, [analyticsId]);
 
   return (

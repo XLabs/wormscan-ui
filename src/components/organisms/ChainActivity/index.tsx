@@ -36,6 +36,7 @@ import {
 import { BREAKPOINTS } from "src/consts";
 import { Calendar } from "./Calendar";
 import "./styles.scss";
+import analytics from "src/analytics";
 
 const TYPE_CHART_LIST = [
   { label: <ActivityIcon width={24} />, value: "area", ariaLabel: "Area" },
@@ -184,27 +185,70 @@ const ChainActivity = () => {
         : 4
       : null;
 
+  const lastTrackedObjectRef = useRef(null);
+
+  const trackAnalytics = () => {
+    const objectToSend = {
+      network: currentNetwork,
+      selectedType: metricSelected,
+      selectedTimeRange: lastBtnSelected.toUpperCase(),
+      chain:
+        (filters.sourceChain?.length > 0
+          ? filters.sourceChain
+              .map(chain =>
+                getChainName({
+                  network: currentNetwork,
+                  chainId: +chain as ChainId,
+                }),
+              )
+              .join(", ")
+          : "Unset") +
+        (filters.targetChain?.length > 0
+          ? " -> " +
+            filters.targetChain
+              .map(chain =>
+                getChainName({
+                  network: currentNetwork,
+                  chainId: +chain as ChainId,
+                }),
+              )
+              .join(", ")
+          : ""),
+    };
+
+    // Check if the new objectToSend is different from the last tracked object
+    if (JSON.stringify(objectToSend) !== JSON.stringify(lastTrackedObjectRef.current)) {
+      analytics.track("chainActivity", objectToSend);
+      lastTrackedObjectRef.current = objectToSend;
+    }
+  };
+
   const {
     data: dataAllChains,
     isError: isErrorAllChains,
     isFetching: isFetchingAllChains,
   } = useQuery(
     ["getChainActivity", filters.from, filters.to, filters.targetChain, filters.appId],
-    () =>
-      getClient().guardianNetwork.getChainActivity({
+    () => {
+      trackAnalytics();
+
+      return getClient().guardianNetwork.getChainActivity({
         from: filters.from,
         to: filters.to,
         timespan: filters.timespan,
         sourceChain: [],
         targetChain: filters.targetChain,
         appId: filters.appId,
-      }),
+      });
+    },
   );
 
   const { data, isError, isFetching } = useQuery(["getChainActivity", filters], () => {
     if (filters?.sourceChain?.length === 0) {
       return Promise.resolve([]);
     }
+
+    trackAnalytics();
 
     return getClient().guardianNetwork.getChainActivity({
       from: filters.from,

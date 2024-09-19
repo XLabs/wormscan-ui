@@ -59,15 +59,14 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   const setFilters = (newFilters: typeof filters) => {
     analytics.track("tokenActivity", {
       network: currentNetwork,
-      selected: metricSelected,
+      selectedType: metricSelected,
       chain:
-        filters.sourceChain?.length > 0
+        (filters.sourceChain?.length > 0
           ? filters.sourceChain.map(chain => chain.label).join(", ")
-          : "Unset",
-      toChain:
-        filters.targetChain?.length > 0
-          ? filters.targetChain.map(chain => chain.label).join(", ")
-          : "Unset",
+          : "Unset") +
+        (filters.targetChain?.length > 0
+          ? " -> " + filters.targetChain.map(chain => chain.label).join(", ")
+          : ""),
       symbol: newFilters?.symbol?.label,
       selectedTimeRange: selectedTopAssetTimeRange?.label,
     });

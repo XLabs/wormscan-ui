@@ -19,7 +19,7 @@ const analytics = isProd
     })
   : {
       track: (a: any, b: any) => console.log("track", a, b),
-      page: (a: any, b: any) => console.log("page", a, b),
+      page: (a: any) => console.log("page", a),
     };
 
 export default analytics;

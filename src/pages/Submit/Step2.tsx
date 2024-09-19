@@ -185,7 +185,7 @@ export const Step2 = ({
                     className="submit-btn primary"
                     key={value}
                   >
-                    cuerno Start Parsing: {key} ↓
+                    Start Parsing: {key} ↓
                   </div>
                 ))}
               </div>

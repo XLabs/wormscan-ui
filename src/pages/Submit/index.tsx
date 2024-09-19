@@ -68,7 +68,13 @@ const SubmitYourProtocol = () => {
   const [resultRaw, setResultRaw] = useState<any>(null);
   const [hideJson, setHideJson] = useState(false);
 
-  const [step, setStep] = useState(1);
+  const [step, setStepState] = useState(1);
+  const setStep = (newStep: number) => {
+    if (newStep > 1) {
+      analytics.page({ title: `SUBMIT_PROTOCOL_STEP${newStep}` });
+    }
+    setStepState(newStep);
+  };
 
   const resetResult = () => {
     setInputs(null);
