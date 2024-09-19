@@ -11,15 +11,7 @@
     height: 36px;
     position: relative;
 
-    &::before {
-      background-color: var(--color-gray-950);
-      border-radius: 16px;
-      content: "";
-      display: block;
-      height: inherit;
-      position: absolute;
-      width: 100%;
-    }
+    background-color: var(--color-gray-950);
 
     @include desktop {
       display: table-header-group;
@@ -101,8 +93,9 @@
         }
 
         @include desktop {
-          padding: 0 8px;
+          border: none;
           margin: 0;
+          padding: 0 8px;
 
           &:first-child {
             border-radius: 16px 0 0 16px;
