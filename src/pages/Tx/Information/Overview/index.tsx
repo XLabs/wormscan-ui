@@ -16,7 +16,7 @@ import {
 } from "src/icons/generic";
 import { useLayoutEffect, useRef, useState } from "react";
 import { TruncateText } from "src/utils/string";
-import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
+import { ChainId, chainIdToChain, chainToChainId } from "@wormhole-foundation/sdk";
 import { formatDate } from "src/utils/date";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 import {
@@ -863,9 +863,18 @@ const Overview = ({
                 <div className="text">
                   {formatNumber(+sourceFee)}{" "}
                   {currentNetwork === "Testnet"
-                    ? testnetNativeCurrencies[fromChain]
-                    : mainnetNativeCurrencies[fromChain]}
+                    ? testnetNativeCurrencies[chainIdToChain(fromChain)]
+                    : mainnetNativeCurrencies[chainIdToChain(fromChain)]}
                   {sourceFeeUSD && <span>(${formatNumber(+sourceFeeUSD)})</span>}
+                  <img
+                    src={getTokenIcon(
+                      currentNetwork === "Testnet"
+                        ? testnetNativeCurrencies[chainIdToChain(fromChain)]
+                        : mainnetNativeCurrencies[chainIdToChain(fromChain)],
+                    )}
+                    height={22}
+                    width={22}
+                  />
                 </div>
               </div>
             </div>
@@ -1035,9 +1044,18 @@ const Overview = ({
                 <div className="text">
                   {formatNumber(+targetFee)}{" "}
                   {currentNetwork === "Testnet"
-                    ? testnetNativeCurrencies[toChain]
-                    : mainnetNativeCurrencies[toChain]}
+                    ? testnetNativeCurrencies[chainIdToChain(toChain)]
+                    : mainnetNativeCurrencies[chainIdToChain(toChain)]}
                   {targetFeeUSD && <span>(${formatNumber(+targetFeeUSD)})</span>}
+                  <img
+                    src={getTokenIcon(
+                      currentNetwork === "Testnet"
+                        ? testnetNativeCurrencies[chainIdToChain(toChain)]
+                        : mainnetNativeCurrencies[chainIdToChain(toChain)],
+                    )}
+                    height={22}
+                    width={22}
+                  />
                 </div>
               </div>
             </div>
