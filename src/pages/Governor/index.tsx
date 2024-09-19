@@ -44,21 +44,25 @@ import { ETH_LIMIT } from "../Txs";
 import "./styles.scss";
 
 const Governor = () => {
-  useEffect(() => {
-    analytics.page({ title: "GOVERNOR" });
-  }, []);
-
   const [searchParams, setSearchParams] = useSearchParams();
   const [showTransactions, setShowTransactionsState] = useState(
     searchParams.get("view") === "transactions",
   );
+
+  useEffect(() => {
+    analytics.page({ title: `GOVERNOR_${showTransactions ? "TRANSACTIONS" : "DASHBOARD"}` });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const setShowTransactions = (show: boolean) => {
+    analytics.page({ title: `GOVERNOR_${show ? "TRANSACTIONS" : "DASHBOARD"}` });
     setShowTransactionsState(show);
     setSearchParams(prev => {
       prev.set("view", show ? "transactions" : "dashboard");
       return prev;
     });
   };
+
   const [isLoadingDashboard, setIsLoadingDashboard] = useState(true);
   const [isLoadingTransactions, setIsLoadingTransactions] = useState(true);
   const [isErrorDashboard, setIsErrorDashboard] = useState(false);
