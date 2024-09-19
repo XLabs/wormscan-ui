@@ -1,6 +1,8 @@
 @import "src/styles/globals.scss";
 
 .only-mainnet {
+  margin-bottom: 80px;
+
   &-text {
     @include text-heading5;
     color: var(--color-gray-200);

@@ -169,6 +169,7 @@
 
           @include desktop {
             justify-content: flex-end;
+            position: relative;
 
             & > p {
               @include text-roboto-body-500;
@@ -182,7 +183,7 @@
 
             @include desktop {
               right: 148px;
-              top: 28px;
+              top: 0;
             }
 
             &-bar {
