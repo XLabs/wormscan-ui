@@ -198,7 +198,7 @@ const WToken = () => {
         "85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ",
         chainToChainId("Solana"),
       );
-      if (!data || !data.attributes?.price_usd) return null;
+      if (!data || !data.attributes?.price_usd) throw new Error("No data");
       return data.attributes.price_usd;
     },
     {
