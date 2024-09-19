@@ -50,8 +50,8 @@ export async function getPorticoInfo(
       shouldShowSourceTokenUrl = false;
       sourceSymbol =
         env.network === "Testnet"
-          ? testnetNativeCurrencies[sourceChain]
-          : mainnetNativeCurrencies[sourceChain];
+          ? testnetNativeCurrencies[chainIdToChain(sourceChain)]
+          : mainnetNativeCurrencies[chainIdToChain(sourceChain)];
     }
 
     const redeemTokenAddress = new UniversalAddress(parsedPayload.finalTokenAddress)

@@ -27,6 +27,7 @@ import { TokenInfo } from "src/utils/metaMaskUtils";
 
 import Overview from "./Overview";
 import AdvancedView from "./AdvancedView";
+import ProgressView from "./ProgressView";
 
 import "./styles.scss";
 import { ChainId, chainIdToChain } from "@wormhole-foundation/sdk";
@@ -58,19 +59,19 @@ const Information = ({
   const [showSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
   const [showTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
 
-  const [showOverview, setShowOverviewState] = useState(searchParams.get("view") !== "advanced");
-  const setShowOverview = (show: boolean) => {
-    setShowOverviewState(show);
+  const [showOverview, setShowOverviewState] = useState(searchParams.get("view") || "overview");
+  const setShowOverview = (view: string) => {
+    setShowOverviewState(view);
     setSearchParams(prev => {
-      prev.set("view", show ? "overview" : "advanced");
+      prev.set("view", view);
       return prev;
     });
   };
 
   useEffect(() => {
     if (!hasMultipleTxs) {
-      const view = searchParams.get("view");
-      setShowOverviewState(view !== "advanced");
+      const view = searchParams.get("view") || "overview";
+      setShowOverviewState(view);
     }
   }, [hasMultipleTxs, searchParams]);
 
@@ -478,11 +479,13 @@ const Information = ({
       />
 
       <div className="tx-information-content">
-        {showOverview ? (
+        {showOverview === "overview" && (
           <Overview {...overviewAndDetailProps} {...data?.relayerInfo?.props} />
-        ) : (
+        )}
+        {showOverview === "advanced" && (
           <AdvancedView data={data} extraRawInfo={extraRawInfo} txIndex={txIndex} />
         )}
+        {showOverview === "progress" && <ProgressView {...overviewAndDetailProps} />}
       </div>
     </section>
   );
