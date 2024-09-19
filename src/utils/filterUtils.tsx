@@ -234,8 +234,12 @@ export const chainsSupportedByProtocol: Record<string, ChainId[]> = {
   [NTT_APP_ID]: [
     chainToChainId("Arbitrum"),
     chainToChainId("Base"),
+    chainToChainId("Bsc"),
     chainToChainId("Ethereum"),
+    chainToChainId("Fantom"),
+    chainToChainId("Moonbeam"),
     chainToChainId("Optimism"),
+    chainToChainId("Scroll"),
     chainToChainId("Solana"),
   ],
   [OMNISWAP_APP_ID]: [
