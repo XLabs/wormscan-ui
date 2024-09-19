@@ -56,7 +56,7 @@ const Search = forwardRef<HTMLInputElement, Props>((props, ref) => {
       onError: (_err, { address }) => {
         // Navigate to tx page if by address fails
         const txHash = address;
-        navigate(`/tx/${txHash}`);
+        navigate(`/tx/${txHash}?network=${environment.network}`);
       },
       onSettled: () => {
         setSearch(false);
@@ -80,7 +80,7 @@ const Search = forwardRef<HTMLInputElement, Props>((props, ref) => {
       const splitId = value.split("/");
       if (splitId.length === 3) {
         setSearch(false);
-        navigate(`/tx/${value}`);
+        navigate(`/tx/${value}?network=${environment.network}`);
       } else {
         // Check by address, if fails, navigate to tx page
         mutateFindVAAByAddress({ address: value });

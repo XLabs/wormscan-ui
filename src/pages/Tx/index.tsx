@@ -442,7 +442,10 @@ const Tx = () => {
         const otherNetworkResponse = await getClient(otherNetwork).guardianNetwork.getOperations({
           vaaID: `${chainId}/${emitter}/${seq}`,
         });
-        if (!!otherNetworkResponse) return otherNetworkResponse;
+        if (!!otherNetworkResponse) {
+          navigate(`/tx/${chainId}/${emitter}/${seq}?network=${otherNetwork}`);
+          return otherNetworkResponse;
+        }
       } catch {
         // go check observations
       }
