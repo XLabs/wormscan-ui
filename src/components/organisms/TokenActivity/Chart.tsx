@@ -19,6 +19,7 @@ type Props = {
   filters: {
     timespan: string;
   };
+  rangeShortLabel: string | "24H" | "7D" | "30D" | "365D" | "All";
 };
 
 const TYPE_CHART_LIST = [
@@ -26,7 +27,14 @@ const TYPE_CHART_LIST = [
   { label: <AnalyticsIcon width={24} />, value: "bar", ariaLabel: "Bar" },
 ];
 
-export const Chart = ({ data, filters, isError, isLoading, metricSelected }: Props) => {
+export const Chart = ({
+  data,
+  filters,
+  isError,
+  isLoading,
+  metricSelected,
+  rangeShortLabel,
+}: Props) => {
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const chartRef = useRef(null);
 
@@ -62,7 +70,8 @@ export const Chart = ({ data, filters, isError, isLoading, metricSelected }: Pro
             <div className="token-activity-chart-top">
               <div className="token-activity-chart-top-box">
                 <span className="token-activity-chart-top-box-key">
-                  {metricSelected === "volume" ? "Total volume" : "Total transfers"}:
+                  {rangeShortLabel}{" "}
+                  {metricSelected === "volume" ? "Total Volume" : "Total Transfers"}:
                 </span>
                 <span className="token-activity-chart-top-box-value">
                   {dataTransformed &&
@@ -74,7 +83,7 @@ export const Chart = ({ data, filters, isError, isLoading, metricSelected }: Pro
 
               <div className="token-activity-chart-top-box">
                 <span className="token-activity-chart-top-box-key">
-                  {filters.timespan === "1h" ? "Hourly" : "Daily"} average:
+                  {filters.timespan === "1h" ? "Hourly" : "Daily"} Average:
                 </span>
                 <span className="token-activity-chart-top-box-value">
                   {dataTransformed &&

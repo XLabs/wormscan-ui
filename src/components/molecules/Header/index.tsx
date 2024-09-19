@@ -57,7 +57,6 @@ const Header = ({
   const tokenIcon = getTokenIcon("W");
 
   const currentNetwork = environment.network;
-  const isMainnet = currentNetwork === "Mainnet";
 
   useEffect(() => {
     if (isDesktop) {
@@ -184,11 +183,9 @@ const Header = ({
               {t("home.header.txs")}
             </NavLink>
 
-            {isMainnet && (
-              <NavLink to="/governor" aria-label="Governor">
-                Governor
-              </NavLink>
-            )}
+            <NavLink to="/governor" aria-label="Governor">
+              Governor
+            </NavLink>
 
             <NavigationMenu.Root delayDuration={0}>
               <NavigationMenu.List className="dropdown-menu">
@@ -385,11 +382,9 @@ const Header = ({
             showMobileNav && showMobileOtherMenu ? "open" : ""
           }`}
         >
-          {isMainnet && (
-            <NavLink to="/governor" aria-label="Governor">
-              Governor
-            </NavLink>
-          )}
+          <NavLink to="/governor" aria-label="Governor">
+            Governor
+          </NavLink>
 
           <div className="header-container-mobile-menu-dev-tools-title">Developers</div>
 
