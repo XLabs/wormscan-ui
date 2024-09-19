@@ -193,7 +193,11 @@ export const chainsSupportedByProtocol: Record<string, ChainId[]> = {
     chainToChainId("Optimism"),
     chainToChainId("Polygon"),
   ],
-  [FAST_TRANSFERS_APP_ID]: [chainToChainId("Ethereum")],
+  [FAST_TRANSFERS_APP_ID]: [
+    chainToChainId("Arbitrum"),
+    chainToChainId("Bsc"),
+    chainToChainId("Solana"),
+  ],
   [GATEWAY_APP_ID]: [
     chainToChainId("Evmos"),
     chainToChainId("Injective"),
@@ -227,7 +231,17 @@ export const chainsSupportedByProtocol: Record<string, ChainId[]> = {
     chainToChainId("Polygon"),
     chainToChainId("Solana"),
   ],
-  [NTT_APP_ID]: [chainToChainId("Ethereum"), chainToChainId("Solana")],
+  [NTT_APP_ID]: [
+    chainToChainId("Arbitrum"),
+    chainToChainId("Base"),
+    chainToChainId("Bsc"),
+    chainToChainId("Ethereum"),
+    chainToChainId("Fantom"),
+    chainToChainId("Moonbeam"),
+    chainToChainId("Optimism"),
+    chainToChainId("Scroll"),
+    chainToChainId("Solana"),
+  ],
   [OMNISWAP_APP_ID]: [
     chainToChainId("Aptos"),
     chainToChainId("Avalanche"),

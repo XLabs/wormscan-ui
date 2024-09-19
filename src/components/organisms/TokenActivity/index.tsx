@@ -23,13 +23,13 @@ const METRIC_CHART_LIST = [
 ];
 
 const RANGE_LIST = [
-  { label: "Last 24 hours", value: getISODateZeroed(1), timespan: "1h" },
-  { label: "Last 7 days", value: getISODateZeroed(7), timespan: "1d" },
-  { label: "Last 15 days", value: getISODateZeroed(15), timespan: "1d" },
-  { label: "Last 30 days", value: getISODateZeroed(30), timespan: "1d" },
+  { label: "Last 24 hours", value: getISODateZeroed(1), timespan: "1h", shortLabel: "24H" },
+  { label: "Last 7 days", value: getISODateZeroed(7), timespan: "1d", shortLabel: "7D" },
+  { label: "Last 15 days", value: getISODateZeroed(15), timespan: "1d", shortLabel: "15D" },
+  { label: "Last 30 days", value: getISODateZeroed(30), timespan: "1d", shortLabel: "30D" },
   // TODO: add when the endpoint supports it
-  // { label: "Last 365 days", value: getISODateZeroed(365), timespan: "1mo" },
-  // { label: "All Time", value: firstDataAvailableDate, timespan: "1mo" },
+  // { label: "Last 365 days", value: getISODateZeroed(365), timespan: "1mo", shortLabel: "365D" },
+  // { label: "All Time", value: firstDataAvailableDate, timespan: "1mo", shortLabel: "All" },
 ];
 
 const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
@@ -367,11 +367,12 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                   {width < BREAKPOINTS.desktop && rowSelected === rowIndex && (
                     <Chart
                       data={dataChart}
+                      filters={filters}
                       isError={isErrorChart}
                       isLoading={isLoadingChart}
                       metricSelected={metricSelected}
+                      rangeShortLabel={selectedTopAssetTimeRange.shortLabel}
                       rowSelected={rowSelected}
-                      filters={filters}
                     />
                   )}
                 </Fragment>
@@ -382,11 +383,12 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
           {width >= BREAKPOINTS.desktop && (
             <Chart
               data={dataChart}
+              filters={filters}
               isError={isErrorChart}
               isLoading={isLoadingChart}
               metricSelected={metricSelected}
+              rangeShortLabel={selectedTopAssetTimeRange.shortLabel}
               rowSelected={rowSelected}
-              filters={filters}
             />
           )}
         </div>

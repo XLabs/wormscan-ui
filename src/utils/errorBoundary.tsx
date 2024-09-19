@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import ErrorGeneral from "src/components/organisms/SearchNotFound/ErrorGeneral";
+import OnlyMainnet from "src/components/organisms/SearchNotFound/OnlyMainnet";
 import { BaseLayout } from "src/layouts/BaseLayout";
 
 interface ErrorBoundaryProps {
@@ -52,6 +53,10 @@ const ErrorBoundary = ({ children }: { children: ReactNode }) => {
   const [hasError, setHasError] = useState(false);
   const { pathname } = useLocation();
 
+  const [searchParams] = useSearchParams();
+  const currentNetwork = searchParams.get("network") || "Mainnet";
+  const isMainnet = currentNetwork === "Mainnet";
+
   // if an error occurs, set hasError to true, show the error <ErrorGeneral />
   useEffect(() => {
     const errorHandler = () => {
@@ -72,6 +77,14 @@ const ErrorBoundary = ({ children }: { children: ReactNode }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  if (!isMainnet && (pathname === "/analytics/w" || pathname === "/governor")) {
+    return (
+      <BaseLayout>
+        <OnlyMainnet />
+      </BaseLayout>
+    );
+  }
 
   if (hasError) {
     return (
