@@ -779,7 +779,17 @@ const Overview = ({
                       )}
                     </>
                   ) : (
-                    "N/A"
+                    <>
+                      N/A
+                      {SOURCE_SYMBOL &&
+                        (sourceTokenLink ? (
+                          <a href={sourceTokenLink} target="_blank" rel="noopener noreferrer">
+                            {SOURCE_SYMBOL}
+                          </a>
+                        ) : (
+                          <span>{SOURCE_SYMBOL}</span>
+                        ))}
+                    </>
                   )}
                 </div>
 
@@ -917,7 +927,17 @@ const Overview = ({
                       )}
                     </>
                   ) : (
-                    "N/A"
+                    <>
+                      N/A
+                      {TARGET_SYMBOL &&
+                        (targetTokenLink ? (
+                          <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
+                            {TARGET_SYMBOL}
+                          </a>
+                        ) : (
+                          <span>{TARGET_SYMBOL}</span>
+                        ))}
+                    </>
                   )}
 
                   {targetTokenInfo?.tokenImage && targetTokenInfo.tokenImage !== "missing.png" ? (
