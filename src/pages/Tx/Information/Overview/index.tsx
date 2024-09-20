@@ -803,7 +803,10 @@ const Overview = ({
                   </div>
                 ) : (
                   <div className="token-image">
-                    <BlockchainIcon chainId={sourceTokenChain} network={currentNetwork} />
+                    <BlockchainIcon
+                      chainId={sourceTokenChain ? sourceTokenChain : 0}
+                      network={currentNetwork}
+                    />
                   </div>
                 )}
               </div>
@@ -950,7 +953,7 @@ const Overview = ({
                     </div>
                   ) : (
                     <div className="token-image">
-                      <BlockchainIcon chainId={toChain} network={currentNetwork} />
+                      <BlockchainIcon chainId={toChain ? toChain : 0} network={currentNetwork} />
                     </div>
                   )}
                 </div>
