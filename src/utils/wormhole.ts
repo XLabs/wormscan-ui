@@ -109,7 +109,7 @@ const WORMHOLE_CHAINS: any = {
             ? "0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI"
             : value)
         );
-      return this.explorer?.[network] + "/tx/" + value;
+      return this.explorer?.[network] + "/txblock/" + value;
     },
   },
   [chainToChainId("Pythnet")]: {

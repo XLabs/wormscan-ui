@@ -200,7 +200,7 @@ const Overview = ({
                   <div className="desktop">
                     {!hasVAA
                       ? appIds && appIds.includes(CCTP_MANUAL_APP_ID)
-                        ? "This transaction is processed by Circle&apos;s CCTP and therefore information might be incomplete"
+                        ? "This transaction is processed by Circle's CCTP and therefore information might be incomplete"
                         : "The VAA for this transaction has not been issued yet"
                       : "VAA comes from another multiverse, we don’t have more details about it"}
                   </div>
