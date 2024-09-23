@@ -807,7 +807,9 @@ const Overview = ({
                   )}
                 </div>
 
-                {sourceTokenInfo?.tokenImage && sourceTokenInfo.tokenImage !== "missing.png" ? (
+                {sourceTokenInfo?.tokenImage &&
+                sourceTokenInfo.tokenImage !== "missing.png" &&
+                sourceTokenInfo.tokenImage !== "missing_small.png" ? (
                   <div className="token-image">
                     <img src={sourceTokenInfo.tokenImage} height={22} width={22} />
                   </div>
@@ -957,7 +959,9 @@ const Overview = ({
                     </>
                   )}
 
-                  {targetTokenInfo?.tokenImage && targetTokenInfo.tokenImage !== "missing.png" ? (
+                  {targetTokenInfo?.tokenImage &&
+                  targetTokenInfo.tokenImage !== "missing.png" &&
+                  targetTokenInfo.tokenImage !== "missing_small.png" ? (
                     <div className="token-image">
                       <img src={targetTokenInfo.tokenImage} height={22} width={22} />
                     </div>
