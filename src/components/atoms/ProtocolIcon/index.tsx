@@ -55,41 +55,29 @@ const PortalIcon = ({ width }: { width: number }) => (
   <svg
     fill="none"
     height={width}
-    viewBox="0 0 28 28"
+    viewBox="40 40 350 350"
     width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect
-      fill="transparent"
-      height={width}
-      rx={13}
-      stroke="transparent"
-      strokeWidth={2}
-      width={width}
-      x={1}
-      y={1}
+    <path
+      d="M213.373 0C95.5715 0 0 95.5715 0 213.373C0 331.175 95.5715 426.746 213.373 426.746C331.175 426.746 426.746 331.175 426.746 213.373C426.746 95.5715 331.175 0 213.373 0ZM213.373 305.269C162.612 305.269 121.477 264.135 121.477 213.373C121.477 162.612 162.612 121.477 213.373 121.477C264.135 121.477 305.269 162.612 305.269 213.373C305.269 264.135 264.135 305.269 213.373 305.269Z"
+      fill="url(#paint0_radial_371_24)"
     />
-    <g filter="url(#filter0_f_3556_27158)">
-      <circle cx={14} cy={14} r={9} stroke="#C5A0ED" strokeWidth={2} />
-      <circle cx={14} cy={14} r={7} stroke="#8D64BA" strokeWidth={2} />
-      <circle cx={14} cy={14} r={5} stroke="#613D89" strokeWidth={2} />
-      <circle cx={14} cy={14} r={3} fill="#301C46" />
-    </g>
-    <circle cx={14} cy={14} r={9} stroke="#C5A0ED" strokeWidth={2} />
     <defs>
-      <filter
-        id="filter0_f_3556_27158"
-        x={0}
-        y={0}
-        width={28}
-        height={28}
-        filterUnits="userSpaceOnUse"
-        colorInterpolationFilters="sRGB"
+      <radialGradient
+        id="paint0_radial_371_24"
+        cx={0}
+        cy={0}
+        r={1}
+        gradientUnits="userSpaceOnUse"
+        gradientTransform="translate(213.353 213.345) scale(178.839)"
       >
-        <feFlood floodOpacity={0} result="BackgroundImageFix" />
-        <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
-        <feGaussianBlur stdDeviation={2} result="effect1_foregroundBlur_3556_27158" />
-      </filter>
+        <stop offset="0.2254" stopColor="white" />
+        <stop offset="0.5444" stopColor="white" stopOpacity="0.44" />
+        <stop offset="0.6859" stopColor="white" stopOpacity="0.23" />
+        <stop offset="0.8568" stopColor="white" stopOpacity="0.07" />
+        <stop offset={1} stopColor="white" stopOpacity={0} />
+      </radialGradient>
     </defs>
   </svg>
 );

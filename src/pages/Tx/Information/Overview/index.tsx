@@ -163,7 +163,9 @@ const Overview = ({
             }
             className="tx-overview-section-info-tooltip"
           >
-            <span>Status</span>
+            <span>
+              <InfoCircleIcon /> Status
+            </span>
           </Tooltip>
         </h4>
 
@@ -180,11 +182,9 @@ const Overview = ({
               >
                 {STATUS === "IN_PROGRESS"
                   ? "1"
-                  : STATUS === "IN_GOVERNORS"
+                  : STATUS === "IN_GOVERNORS" || STATUS === "VAA_EMITTED"
                   ? "2"
-                  : STATUS === "VAA_EMITTED"
-                  ? "2"
-                  : STATUS === "PENDING_REDEEM"
+                  : STATUS === "PENDING_REDEEM" || STATUS === "EXTERNAL_TX"
                   ? "3"
                   : STATUS === "COMPLETED"
                   ? isJustGenericRelayer
@@ -346,7 +346,9 @@ const Overview = ({
             }
             className="tx-overview-section-info-tooltip"
           >
-            <span>Source Tx Hash</span>
+            <span>
+              <InfoCircleIcon /> Source Tx Hash
+            </span>
           </Tooltip>
         </h4>
 
@@ -394,7 +396,9 @@ const Overview = ({
                 </div>
               }
             >
-              <span>Gateway Tx Hash</span>
+              <span>
+                <InfoCircleIcon /> Gateway Tx Hash
+              </span>
             </Tooltip>
           </h4>
 
@@ -432,7 +436,9 @@ const Overview = ({
             }
             className="tx-overview-section-info-tooltip"
           >
-            <span>Protocols</span>
+            <span>
+              <InfoCircleIcon /> Protocols
+            </span>
           </Tooltip>
         </h4>
         <div className="tx-overview-section-info">
@@ -462,7 +468,9 @@ const Overview = ({
                 }
                 className="tx-overview-section-info-tooltip"
               >
-                <span>Source App Contract</span>
+                <span>
+                  <InfoCircleIcon /> Source App Contract
+                </span>
               </Tooltip>
             </h4>
             <div className="tx-overview-section-info">
@@ -510,7 +518,9 @@ const Overview = ({
             }
             className="tx-overview-section-info-tooltip"
           >
-            <span>Contract Address</span>
+            <span>
+              <InfoCircleIcon /> Contract Address
+            </span>
           </Tooltip>
         </h4>
         <div className="tx-overview-section-info">
@@ -577,7 +587,9 @@ const Overview = ({
                 </div>
               }
             >
-              <span>Transaction Action</span>
+              <span>
+                <InfoCircleIcon /> Transaction Action
+              </span>
             </Tooltip>
           </h4>
 
@@ -717,7 +729,9 @@ const Overview = ({
             }
             className="tx-overview-section-info-tooltip"
           >
-            <span>Chains</span>
+            <span>
+              <InfoCircleIcon /> Chains
+            </span>
           </Tooltip>
         </h4>
 
@@ -1215,7 +1229,9 @@ const Overview = ({
                   </div>
                 }
               >
-                <span>Transaction Fee</span>
+                <span>
+                  <InfoCircleIcon /> Transaction Fee
+                </span>
               </Tooltip>
             </h4>
             <div className="tx-overview-section-info">
@@ -1364,7 +1380,9 @@ const Overview = ({
               </div>
             }
           >
-            <span>Initial Time</span>
+            <span>
+              <InfoCircleIcon /> Initial Time
+            </span>
           </Tooltip>
         </h4>
         <div className="tx-overview-section-info">
@@ -1383,7 +1401,9 @@ const Overview = ({
               </div>
             }
           >
-            <span>Signatures</span>
+            <span>
+              <InfoCircleIcon /> Signatures
+            </span>
           </Tooltip>
         </h4>
         <div className="tx-overview-section-info">
@@ -1422,7 +1442,9 @@ const Overview = ({
               </div>
             }
           >
-            <span>VAA ID</span>
+            <span>
+              <InfoCircleIcon /> VAA ID
+            </span>
           </Tooltip>
         </h4>
         <div className="tx-overview-section-info">
@@ -1463,7 +1485,9 @@ const Overview = ({
                   </div>
                 }
               >
-                <span>Redeem Tx</span>
+                <span>
+                  <InfoCircleIcon /> Redeem Tx
+                </span>
               </Tooltip>
             </h4>
             <div className="tx-overview-section-info">
@@ -1506,7 +1530,9 @@ const Overview = ({
                   </div>
                 }
               >
-                <span>Complete Time</span>
+                <span>
+                  <InfoCircleIcon /> Complete Time
+                </span>
               </Tooltip>
             </h4>
             <div className="tx-overview-section-info">
