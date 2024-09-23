@@ -319,7 +319,13 @@
       white-space: nowrap;
 
       & > span {
+        @include centered-row;
+        gap: 4px;
         cursor: pointer;
+
+        & > svg {
+          color: var(--color-gray-400);
+        }
       }
     }
 
