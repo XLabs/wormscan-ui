@@ -298,7 +298,6 @@
         @include text-roboto-body-400;
         color: var(--color-gray-200);
         gap: 4px;
-        white-space: nowrap;
 
         @include desktop {
           flex: 1.6;
@@ -311,7 +310,7 @@
         & > span {
           @include centered-row;
           gap: 4px;
-          cursor: pointer;
+          cursor: default;
 
           & > svg {
             color: var(--color-gray-400);
@@ -393,12 +392,14 @@
           @include centered-row;
           gap: 12px 6px;
           justify-content: space-between;
+          min-width: 150px;
           width: 100%;
 
           @include desktop {
-            gap: 20px;
             flex-wrap: nowrap;
+            gap: 20px;
             max-width: max-content;
+            min-width: unset;
             white-space: nowrap;
           }
 
@@ -457,6 +458,10 @@
     }
   }
 
+  &-metamask {
+    order: 3;
+  }
+
   & .token-image {
     margin: 0 6px;
     height: 22px;
@@ -481,6 +486,7 @@
 
     & > span {
       color: var(--color-gray-600);
+      order: 2;
     }
 
     & .budget {
@@ -490,7 +496,7 @@
       border-radius: 8px;
       padding: 6px 10px;
       z-index: 2;
-      cursor: pointer;
+      cursor: default;
     }
   }
 
