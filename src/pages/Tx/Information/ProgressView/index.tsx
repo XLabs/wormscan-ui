@@ -23,8 +23,8 @@ const ProgressView = ({
   const SOURCE_SYMBOL = sourceTokenInfo?.tokenSymbol || sourceSymbol;
 
   return (
-    <div className="tx-overview-section progress-section">
-      <div className="tx-overview-section-info">
+    <div className="tx-overview-section-row progress-section">
+      <div className="tx-overview-section-row-info">
         <div className="progress-container">
           <div className={`progress-title active`}>TRANSACTION PROGRESS</div>
 
