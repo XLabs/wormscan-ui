@@ -463,7 +463,7 @@
   }
 
   & .token-image {
-    margin: 0 6px;
+    margin: 0 4px;
     height: 22px;
     width: 22px;
   }
@@ -486,6 +486,7 @@
 
     & > span {
       color: var(--color-gray-600);
+      margin-right: 6px;
       order: 2;
     }
 
