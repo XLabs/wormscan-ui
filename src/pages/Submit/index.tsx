@@ -757,6 +757,7 @@ const SubmitYourProtocol = () => {
                   txSearch={txSearch}
                   VAA_ID={VAA_ID}
                   finishedParsings={finishedParsings}
+                  setFinishedParsing={setFinishedParsing}
                   vaaSubmit={vaaSubmit}
                   setParsedVAA={setParsedVAA}
                   setVaaSubmit={setVaaSubmit}
