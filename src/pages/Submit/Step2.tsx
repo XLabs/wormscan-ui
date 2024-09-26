@@ -10,7 +10,7 @@ import {
   TriangleDownIcon,
 } from "src/icons/generic";
 import { CopyToClipboard, InputEncodedVaa } from "src/components/molecules";
-import { MutableRefObject, useCallback } from "react";
+import { Dispatch, MutableRefObject, SetStateAction, useCallback, useEffect } from "react";
 import { stringifyWithBigInt } from "src/utils/object";
 import { Submit } from "./Submit";
 import { encoding } from "@wormhole-foundation/sdk";
@@ -30,6 +30,7 @@ interface Step2Props {
   resetResult: () => void;
   resetSubmitFields: () => void;
   resultRaw: any;
+  setFinishedParsing: Dispatch<SetStateAction<any[]>>;
   setHideJson: (b: boolean) => void;
   setInput: (a: string) => void;
   setInputs: (a: any) => void;
@@ -61,6 +62,7 @@ export const Step2 = ({
   resetSubmitFields,
   resultRaw,
   setHideJson,
+  setFinishedParsing,
   setInput,
   setInputs,
   setInputsIndex,
@@ -103,6 +105,17 @@ export const Step2 = ({
     }
     return [];
   }, [resultRaw]);
+
+  // For the first payload, automatically start parsing
+  useEffect(() => {
+    const startParsingButtons = document.querySelectorAll(".startParsing");
+
+    if (finishedParsings.length === 0 && startParsingButtons.length === 1) {
+      setTimeout(() => {
+        (startParsingButtons[0] as HTMLElement).click();
+      }, 200);
+    }
+  }, [finishedParsings, resultRaw]);
 
   return (
     <>
@@ -182,7 +195,7 @@ export const Step2 = ({
                         });
                       }, 50);
                     }}
-                    className="submit-btn primary"
+                    className="submit-btn primary startParsing"
                     key={value}
                   >
                     Start Parsing: {key} ↓
@@ -209,7 +222,7 @@ export const Step2 = ({
                       });
                     }, 50);
                   }}
-                  className="submit-btn primary"
+                  className="submit-btn primary startParsing"
                   key={value}
                 >
                   Start Parsing: {key} ↓
@@ -344,15 +357,22 @@ export const Step2 = ({
           <div
             className="submit-steps-btn-prev"
             onClick={() => {
-              setStep(1);
-              window.scrollTo(0, 0);
+              if (finishedParsings.length) {
+                if (!vaaSubmit) {
+                  setFinishedParsing(prevParsings => prevParsings.slice(0, -1));
+                } else {
+                  setVaaSubmit(null);
+                }
+              } else {
+                setStep(1);
+                window.scrollTo(0, 0);
+              }
             }}
           >
             <ChevronLeftIcon />
             Previous Step
           </div>
           <div
-            /* onClick={() => setVaaSubmit(null)} */
             onClick={() => {
               if (!!finishedParsings.length && !vaaSubmit) {
                 setStep(3);
