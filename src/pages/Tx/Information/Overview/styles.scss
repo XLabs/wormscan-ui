@@ -406,6 +406,14 @@
           &-key {
             @include text-heading6;
             color: var(--color-gray-600);
+
+            &.aligned {
+              margin: 3px 0 auto 0;
+
+              @include tablet {
+                margin: 0;
+              }
+            }
           }
 
           &-value {
@@ -459,7 +467,16 @@
   }
 
   &-metamask {
+    display: flex;
+    justify-content: end;
     order: 3;
+    width: 100%;
+
+    @include tablet {
+      display: unset;
+      justify-content: unset;
+      width: unset;
+    }
   }
 
   & .token-image {

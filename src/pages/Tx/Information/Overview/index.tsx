@@ -769,7 +769,7 @@ const Overview = ({
 
               {!isJustGenericRelayer && !isMayanOnly && !nftInfo && (
                 <div className="tx-overview-section-row-info-container">
-                  <div className="tx-overview-section-row-info-container-key">RECEIVED</div>
+                  <div className="tx-overview-section-row-info-container-key aligned">RECEIVED</div>
 
                   <div className="tx-overview-section-row-info-container-value">
                     <div className="text">
