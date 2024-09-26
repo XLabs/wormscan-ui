@@ -202,6 +202,50 @@ const Overview = ({
         </div>
       </div>
 
+      {gatewayInfo?.originTxHash && (
+        <div className="tx-overview-section">
+          <div className="tx-overview-section-row">
+            <h4 className="tx-overview-section-row-title">
+              <Tooltip
+                type="info"
+                tooltip={
+                  <div className="tx-overview-section-row-info-tooltip-content">
+                    <p>
+                      Transaction hash from Gateway, a Wormhole Cosmos chain that bridges Ethereum
+                      to Cosmos via the Guardian network.
+                    </p>
+                  </div>
+                }
+              >
+                <span>
+                  <InfoCircleIcon /> Gateway Tx Hash
+                </span>
+              </Tooltip>
+            </h4>
+            <div className="tx-overview-section-row-info">
+              <div className="tx-overview-section-row-info-container">
+                <div className="text">
+                  <a
+                    href={`${BIGDIPPER_TRANSACTIONS}/${
+                      parseTxHashUpperCase.startsWith("0X")
+                        ? parseTxHashUpperCase.substring(2)
+                        : parseTxHashUpperCase
+                    }`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <TruncateText containerWidth={lineValueWidth} text={parseTxHashUpperCase} />
+                  </a>
+                  <CopyToClipboard toCopy={parseTxHashUpperCase}>
+                    <CopyIcon width={24} />
+                  </CopyToClipboard>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="tx-overview-section">
         <div className="tx-overview-section-row">
           <h4 className="tx-overview-section-row-title">
@@ -256,6 +300,8 @@ const Overview = ({
                     </div>
                     {!(isDekstop && hasVAA) && (
                       <Tooltip
+                        className="tx-overview-section-row-info-alert-tooltip"
+                        side="bottom"
                         type="info"
                         tooltip={
                           <div className="tx-overview-section-row-info-alert-tooltip-content">
@@ -368,8 +414,6 @@ const Overview = ({
                             )}
                           </div>
                         }
-                        className="tx-overview-section-row-info-alert-tooltip"
-                        side="bottom"
                       >
                         <div className="tx-overview-section-row-info-alert-tooltip-icon">
                           <InfoCircleIcon />
@@ -510,50 +554,6 @@ const Overview = ({
           </div>
         </div>
       </div>
-
-      {gatewayInfo?.originTxHash && (
-        <div className="tx-overview-section">
-          <div className="tx-overview-section-row">
-            <h4 className="tx-overview-section-row-title">
-              <Tooltip
-                type="info"
-                tooltip={
-                  <div className="tx-overview-section-row-info-tooltip-content">
-                    <p>
-                      Transaction hash from Gateway, a Wormhole Cosmos chain that bridges Ethereum
-                      to Cosmos via the Guardian network.
-                    </p>
-                  </div>
-                }
-              >
-                <span>
-                  <InfoCircleIcon /> Gateway Tx Hash
-                </span>
-              </Tooltip>
-            </h4>
-            <div className="tx-overview-section-row-info">
-              <div className="tx-overview-section-row-info-container">
-                <div className="text">
-                  <a
-                    href={`${BIGDIPPER_TRANSACTIONS}/${
-                      parseTxHashUpperCase.startsWith("0X")
-                        ? parseTxHashUpperCase.substring(2)
-                        : parseTxHashUpperCase
-                    }`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <TruncateText containerWidth={lineValueWidth} text={parseTxHashUpperCase} />
-                  </a>
-                  <CopyToClipboard toCopy={parseTxHashUpperCase}>
-                    <CopyIcon width={24} />
-                  </CopyToClipboard>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {txType[payloadType] && (
         <div className="tx-overview-section">
@@ -1123,12 +1123,15 @@ const Overview = ({
                 type="info"
                 tooltip={
                   <div>
-                    <p>The fee paid to the relayer for processing the transaction.</p>
+                    <p>
+                      Amount paid to process the transaction, which may include fees on the source
+                      chain, destination chain, and/or intermediary protocol costs.
+                    </p>
                   </div>
                 }
               >
                 <span>
-                  <InfoCircleIcon /> Fee
+                  <InfoCircleIcon /> Fees charged
                 </span>
               </Tooltip>
             </h4>
@@ -1140,6 +1143,7 @@ const Overview = ({
                   <div className="tx-overview-section-row-info-container-value">
                     <div className="text">
                       {formatNumber(formatUnits(+fee))} {SOURCE_SYMBOL}
+                      <img src={getTokenIcon(SOURCE_SYMBOL)} height={22} width={22} />
                     </div>
                   </div>
                 </div>
@@ -1202,7 +1206,23 @@ const Overview = ({
       {decodeExecution && (
         <div className="tx-overview-section">
           <div className="tx-overview-section-row">
-            <h4 className="tx-overview-section-row-title">Budget</h4>
+            <h4 className="tx-overview-section-row-title">
+              <Tooltip
+                type="info"
+                tooltip={
+                  <div className="tx-overview-section-row-info-tooltip-content">
+                    <p>
+                      Maximum amount the user is willing to pay for the transaction and the amount
+                      effectively used.
+                    </p>
+                  </div>
+                }
+              >
+                <span>
+                  <InfoCircleIcon /> Budget
+                </span>
+              </Tooltip>
+            </h4>
             <div className="tx-overview-section-row-info">
               <div className="tx-overview-section-row-info-container">
                 <div className="text">
