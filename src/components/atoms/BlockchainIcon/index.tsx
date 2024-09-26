@@ -1,6 +1,5 @@
-import { Network } from "@wormhole-foundation/sdk";
+import { Network, ChainId } from "@wormhole-foundation/sdk";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
-import { ChainId } from "@wormhole-foundation/sdk";
 import NoColorlessIcon from "src/icons/blockchains/colorless/noIcon.svg";
 import "./styles.scss";
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChainId, chainIdToChain, Network, platformToChains } from "@wormhole-foundation/sdk";
+import { ChainId, Network } from "@wormhole-foundation/sdk";
 import { Tooltip } from "src/components/atoms";
 import { shortAddress } from "src/utils/crypto";
 import { TokenInfo, addToken } from "src/utils/metaMaskUtils";
@@ -11,16 +11,9 @@ type Props = {
   currentNetwork: Network;
   toChain: ChainId;
   targetTokenInfo: TokenInfo;
-  isPortico?: boolean;
 };
 
-const AddToMetaMaskBtn = ({
-  className,
-  currentNetwork,
-  toChain,
-  targetTokenInfo,
-  isPortico,
-}: Props) => {
+const AddToMetaMaskBtn = ({ className, currentNetwork, toChain, targetTokenInfo }: Props) => {
   const [showCheck, setShowCheck] = useState(false);
 
   if (!targetTokenInfo) return null;
@@ -34,9 +27,6 @@ const AddToMetaMaskBtn = ({
       setShowCheck(false);
     }, 1500);
   };
-
-  const shouldShow = !isPortico && platformToChains("Evm").includes(chainIdToChain(toChain) as any);
-  if (!shouldShow) return null;
 
   return (
     <Tooltip

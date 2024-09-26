@@ -1,11 +1,10 @@
+import { useLayoutEffect, useRef, useState } from "react";
+import { useRecoilState } from "recoil";
+import { ChainId, chainIdToChain, chainToChainId } from "@wormhole-foundation/sdk";
 import { AddToMetaMaskBtn, BlockchainIcon, ProtocolIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
-import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import { filterAppIds, formatAppId, formatUnits, parseTx, shortAddress } from "src/utils/crypto";
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
-import { useRecoilState } from "recoil";
-import { addressesInfoState } from "src/utils/recoilStates";
-import { BREAKPOINTS, CCTP_MANUAL_APP_ID, ETH_BRIDGE_APP_ID, txType } from "src/consts";
+import { BREAKPOINTS, CCTP_MANUAL_APP_ID, txType } from "src/consts";
 import {
   ArrowRightIcon,
   ArrowUpRightIcon,
@@ -14,19 +13,21 @@ import {
   InfoCircleIcon,
   LinkIcon,
 } from "src/icons/generic";
-import { useLayoutEffect, useRef, useState } from "react";
+import { filterAppIds, formatAppId, formatUnits, parseTx, shortAddress } from "src/utils/crypto";
+import { getChainName, getExplorerLink } from "src/utils/wormhole";
+import { addressesInfoState } from "src/utils/recoilStates";
 import { TruncateText } from "src/utils/string";
-import { ChainId, chainIdToChain, chainToChainId } from "@wormhole-foundation/sdk";
 import { formatDate } from "src/utils/date";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
+import { formatNumber } from "src/utils/number";
+import { useWindowSize } from "src/utils/hooks";
+import { getTokenIcon } from "src/utils/token";
 import {
   mainnetDefaultDeliveryProviderContractAddress,
   mainnetNativeCurrencies,
   testnetDefaultDeliveryProviderContractAddress,
   testnetNativeCurrencies,
 } from "src/utils/environment";
-import { formatNumber } from "src/utils/number";
-import { useWindowSize } from "src/utils/hooks";
 import {
   BIGDIPPER_TRANSACTIONS,
   DiscordSupportLink,
@@ -35,7 +36,6 @@ import {
   extractPageName,
 } from "src/utils/txPageUtils";
 import "./styles.scss";
-import { getTokenIcon } from "src/utils/token";
 
 const Overview = ({
   amountSent,
@@ -847,7 +847,6 @@ const Overview = ({
                           currentNetwork={currentNetwork}
                           toChain={toChain}
                           targetTokenInfo={targetTokenInfo}
-                          isPortico={appIds.includes(ETH_BRIDGE_APP_ID)}
                         />
                       )}
                     </div>

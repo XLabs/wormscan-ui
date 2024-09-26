@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import { ChainId, chainIdToChain, platformToChains } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import analytics from "src/analytics";
 import {
   CCTP_MANUAL_APP_ID,
   CONNECT_APP_ID,
@@ -17,23 +19,18 @@ import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
 import { formatNumber } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import analytics from "src/analytics";
 import { getGeckoTokenInfo, tryGetRedeemTxn } from "src/utils/cryptoToolkit";
 import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
+import { TokenInfo } from "src/utils/metaMaskUtils";
+import { deepCloneWithBigInt } from "src/utils/object";
 import { GetBlockData } from "src/api/search/types";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
-import { TokenInfo } from "src/utils/metaMaskUtils";
-
 import Overview from "./Overview";
 import AdvancedView from "./AdvancedView";
 import ProgressView from "./ProgressView";
-
-import "./styles.scss";
-import { ChainId, chainIdToChain } from "@wormhole-foundation/sdk";
-import { platformToChains } from "@wormhole-foundation/sdk";
-import { deepCloneWithBigInt } from "src/utils/object";
 import Summary from "./Summary";
+import "./styles.scss";
 
 interface Props {
   blockData: GetBlockData;
@@ -275,7 +272,12 @@ const Information = ({
   const [targetTokenInfo, setTargetTokenInfo] = useState<TokenInfo | null>(null);
 
   const tokenEffectiveAddress = wrappedSide === "target" ? wrappedTokenAddress : tokenAddress;
-  const showMetaMaskBtn = toChain && targetTokenInfo?.tokenDecimals && toChain === targetTokenChain;
+  const showMetaMaskBtn =
+    toChain &&
+    targetTokenInfo?.tokenDecimals &&
+    toChain === targetTokenChain &&
+    !appIds.includes(ETH_BRIDGE_APP_ID) &&
+    platformToChains("Evm").includes(chainIdToChain(toChain) as any);
 
   useEffect(() => {
     if (targetTokenChain && targetTokenAddress && !targetTokenInfo) {

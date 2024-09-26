@@ -1,13 +1,12 @@
 import { MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Network } from "@wormhole-foundation/sdk";
+import { Network, ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { BREAKPOINTS } from "src/consts";
 import { BlockchainIcon, Pagination } from "src/components/atoms";
 import { WormholeScanBrand } from "src/components/molecules";
 import { formatNumber } from "src/utils/number";
 import { getChainName } from "src/utils/wormhole";
 import { useWindowSize } from "src/utils/hooks";
-import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { CrossChainActivity, CrossChainBy } from "src/api/guardian-network/types";
 import { blendColors, processData } from "./chartUtils";
 import analytics from "src/analytics";
