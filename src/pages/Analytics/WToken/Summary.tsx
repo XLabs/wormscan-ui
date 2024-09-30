@@ -1,7 +1,8 @@
+import { useQuery } from "react-query";
 import FlipNumbers from "react-flip-numbers";
-import { BlockchainIcon } from "src/components/atoms";
-import { WORMHOLE_PAGE_URL } from "src/consts";
+import { ChainId, chainToChainId, Network } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { WORMHOLE_PAGE_URL } from "src/consts";
 import {
   ArrowUpRightIcon,
   DiscordIcon,
@@ -10,24 +11,37 @@ import {
   TelegramIcon,
   TwitterIcon,
 } from "src/icons/generic";
+import { BlockchainIcon } from "src/components/atoms";
 import { formatNumber } from "src/utils/number";
 import { getTokenIcon } from "src/utils/token";
-import { ChainId, chainToChainId, Network } from "@wormhole-foundation/sdk";
 import { getExplorerLink } from "src/utils/wormhole";
+import { getGeckoTokenInfo } from "src/utils/cryptoToolkit";
 
-type SummaryProps = {
-  wTokenPrice: string;
-  isErrorWTokenPrice: boolean;
-  isFetchingWTokenPrice: boolean;
-};
-
-export const Summary = ({
-  wTokenPrice,
-  isErrorWTokenPrice,
-  isFetchingWTokenPrice,
-}: SummaryProps) => {
+export const Summary = () => {
   const tokenIcon = getTokenIcon("W");
   const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+  const isMainnet = currentNetwork === "Mainnet";
+
+  const {
+    data: wTokenPrice,
+    isError: isErrorWTokenPrice,
+    isFetching: isFetchingWTokenPrice,
+  } = useQuery(
+    ["getWTokenInfo"],
+    async () => {
+      const data = await getGeckoTokenInfo(
+        "85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ",
+        chainToChainId("Solana"),
+      );
+      if (!data || !data.attributes?.price_usd) throw new Error("No data");
+      return data.attributes.price_usd;
+    },
+    {
+      enabled: isMainnet,
+      refetchInterval: 10000,
+    },
+  );
 
   return (
     <div className="summary">
@@ -120,16 +134,20 @@ export const Summary = ({
             <div className="summary-top-content-container-item">
               <div className="summary-top-content-container-item-up">Community</div>
               <div className="summary-top-content-container-item-down community">
-                <a href="https://x.com/wormhole">
+                <a href="https://x.com/wormhole" rel="noreferrer" target="_blank">
                   <TwitterIcon />
                 </a>
-                <a href="https://t.me/wormholecrypto">
+                <a href="https://t.me/wormholecrypto" rel="noreferrer" target="_blank">
                   <TelegramIcon />
                 </a>
-                <a href="https://discord.com/invite/wormholecrypto">
+                <a
+                  href="https://discord.com/invite/wormholecrypto"
+                  rel="noreferrer"
+                  target="_blank"
+                >
                   <DiscordIcon />
                 </a>
-                <a href="https://github.com/wormhole-foundation">
+                <a href="https://github.com/wormhole-foundation" rel="noreferrer" target="_blank">
                   <GithubIcon />
                 </a>
               </div>
@@ -154,6 +172,8 @@ const ChainItem = ({
     <a
       href={getExplorerLink({ chainId, network, value, base: "token" })}
       className="summary-top-content-container-item-chain-contract"
+      rel="noreferrer"
+      target="_blank"
     >
       <BlockchainIcon chainId={chainId} network={network} />
       <ArrowUpRightIcon />

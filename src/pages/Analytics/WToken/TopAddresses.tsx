@@ -17,7 +17,9 @@ export const TopAddresses = ({ topAddressesNotional, topAddressesTx }: TopAddres
       <div className="top-addresses-half">
         <div className="top-addresses-half-title">
           <UserIcon />
-          <div>Top Addresses by Transactions</div>
+          <div>
+            Top Addresses by Transactions <span>(All Time)</span>
+          </div>
         </div>
         <div className="top-addresses-half-table">
           <div className="top-addresses-half-table-head">
@@ -54,7 +56,9 @@ export const TopAddresses = ({ topAddressesNotional, topAddressesTx }: TopAddres
       <div className="top-addresses-half">
         <div className="top-addresses-half-title">
           <UserIcon />
-          <div>Top Addresses by Volume</div>
+          <div>
+            Top Addresses by Volume <span>(All Time)</span>
+          </div>
         </div>
         <div className="top-addresses-half-table">
           <div className="top-addresses-half-table-head">

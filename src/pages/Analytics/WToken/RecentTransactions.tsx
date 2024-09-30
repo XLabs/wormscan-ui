@@ -4,7 +4,7 @@ import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import { timeAgo } from "src/utils/date";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { getExplorerLink } from "src/utils/wormhole";
-import { useWindowSize } from "src/utils/hooks";
+import { useNavigateCustom, useWindowSize } from "src/utils/hooks";
 import { BlockchainIcon, Tooltip, NavLink } from "src/components/atoms";
 import { shortAddress, parseTx } from "src/utils/crypto";
 import { ChainId, chainIdToChain } from "@wormhole-foundation/sdk";
@@ -26,6 +26,7 @@ export const RecentTransactions = ({
   isError,
   isLoading,
 }: IRecentTransactionsProps) => {
+  const navigate = useNavigateCustom();
   const { environment } = useEnvironment();
   const { width } = useWindowSize();
   const isDesktopDesign = width >= BREAKPOINTS.desktop;
@@ -43,31 +44,29 @@ export const RecentTransactions = ({
       : data.content?.standarizedProperties?.toAddress;
 
     return (
-      <div className="render-address">
-        <div className="render-address-row">
-          <Tooltip tooltip={<div>{chainIdToChain(chainId)}</div>} maxWidth={false} type="info">
-            <div>
-              <BlockchainIcon chainId={chainId} network={environment.network} />
-            </div>
-          </Tooltip>
-          <a
-            href={getExplorerLink({
-              network: environment.network,
-              chainId,
-              value: address,
-              base: "address",
-              isNativeAddress: true,
-            })}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={stopPropagation}
-          >
-            {shortAddress(address).toUpperCase()}
-          </a>
-          <CopyToClipboard toCopy={address}>
-            <CopyIcon />
-          </CopyToClipboard>
-        </div>
+      <div className="link-container">
+        <Tooltip tooltip={<div>{chainIdToChain(chainId)}</div>} maxWidth={false} type="info">
+          <div>
+            <BlockchainIcon chainId={chainId} network={environment.network} />
+          </div>
+        </Tooltip>
+        <a
+          href={getExplorerLink({
+            network: environment.network,
+            chainId,
+            value: address,
+            base: "address",
+            isNativeAddress: true,
+          })}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={stopPropagation}
+        >
+          {shortAddress(address).toUpperCase()}
+        </a>
+        <CopyToClipboard toCopy={address}>
+          <CopyIcon />
+        </CopyToClipboard>
       </div>
     );
   };
@@ -103,12 +102,25 @@ export const RecentTransactions = ({
 
           {!isLoading &&
             recentTransactions?.map(data => (
-              <div key={data.id} className="recent-transactions-table-item">
+              <div
+                key={data.id}
+                className="recent-transactions-table-item"
+                onClick={() =>
+                  data?.sourceChain?.transaction?.txHash
+                    ? navigate(
+                        `/tx/${parseTx({
+                          value: data.sourceChain.transaction.txHash,
+                          chainId: data.sourceChain?.chainId as ChainId,
+                        })}`,
+                      )
+                    : null
+                }
+              >
                 <div className="recent-transactions-table-item-row">
                   <StatusBadge size="responsive" STATUS={data.STATUS} />
                 </div>
                 <div className="recent-transactions-table-item-row">
-                  <div className="tx-hash">
+                  <div className="link-container">
                     {data?.sourceChain?.transaction?.txHash && (
                       <>
                         <NavLink
@@ -159,30 +171,34 @@ export const RecentTransactions = ({
           {recentTransactions?.map(data => (
             <div key={data.id} className="recent-transactions-mobile-container">
               <div className="recent-transactions-mobile-item">
-                <div className="title">STATUS</div>
-                <div className="content">
+                <div className="title">
                   <StatusBadge size="responsive" STATUS={data.STATUS} />
+                </div>
+                <div className="content">
+                  <div className="time">{timeAgo(new Date(data?.sourceChain?.timestamp))}</div>
                 </div>
               </div>
               <div className="recent-transactions-mobile-item">
                 <div className="title">TX HASH</div>
                 <div className="content">
-                  {data?.sourceChain?.transaction?.txHash && (
-                    <>
-                      <NavLink
-                        to={`/tx/${parseTx({
-                          value: data.sourceChain.transaction.txHash,
-                          chainId: data.sourceChain?.chainId as ChainId,
-                        })}`}
-                        onClick={stopPropagation}
-                      >
-                        {shortAddress(data.sourceChain.transaction.txHash).toUpperCase()}
-                      </NavLink>
-                      <CopyToClipboard toCopy={data.sourceChain.transaction.txHash}>
-                        <CopyIcon />
-                      </CopyToClipboard>
-                    </>
-                  )}
+                  <div className="link-container">
+                    {data?.sourceChain?.transaction?.txHash && (
+                      <>
+                        <NavLink
+                          to={`/tx/${parseTx({
+                            value: data.sourceChain.transaction.txHash,
+                            chainId: data.sourceChain?.chainId as ChainId,
+                          })}`}
+                          onClick={stopPropagation}
+                        >
+                          {shortAddress(data.sourceChain.transaction.txHash).toUpperCase()}
+                        </NavLink>
+                        <CopyToClipboard toCopy={data.sourceChain.transaction.txHash}>
+                          <CopyIcon />
+                        </CopyToClipboard>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="recent-transactions-mobile-item">
@@ -203,10 +219,20 @@ export const RecentTransactions = ({
                   </div>
                 </div>
               </div>
-              <div className="recent-transactions-mobile-item">
-                <div className="title">TIME</div>
-                <div className="content">{timeAgo(new Date(data?.sourceChain?.timestamp))}</div>
-              </div>
+              {data?.sourceChain?.transaction?.txHash && (
+                <div className="recent-transactions-mobile-item">
+                  <NavLink
+                    className="recent-transactions-mobile-item-btn"
+                    to={`/tx/${parseTx({
+                      value: data.sourceChain.transaction.txHash,
+                      chainId: data.sourceChain?.chainId as ChainId,
+                    })}`}
+                    onClick={stopPropagation}
+                  >
+                    View details
+                  </NavLink>
+                </div>
+              )}
             </div>
           ))}
         </div>

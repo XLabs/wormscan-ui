@@ -1,16 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
-import { getGeckoTokenInfo } from "src/utils/cryptoToolkit";
-import { chainToChainId } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { Summary } from "./Summary";
-import { Metrics } from "./Metrics";
-import { TransfersOverTime } from "./TransfersOverTime";
-import { RecentTransactions } from "./RecentTransactions";
-import { ByChain } from "./ByChain";
-import { TopHolders } from "./TopHolders";
-import { TopAddresses } from "./TopAddresses";
 import { ToggleGroup } from "src/components/atoms";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import { useWindowSize } from "src/utils/hooks";
@@ -26,9 +18,15 @@ import {
 } from "src/consts";
 import { ChainLimit, Order } from "src/api";
 import { ETH_LIMIT } from "src/pages/Txs";
-import "./styles.scss";
-import { useSearchParams } from "react-router-dom";
 import analytics from "src/analytics";
+import { Summary } from "./Summary";
+import { ByChain } from "./ByChain";
+import { TopHolders } from "./TopHolders";
+import { TopAddresses } from "./TopAddresses";
+import { Metrics } from "./Metrics";
+import { TransfersOverTime } from "./TransfersOverTime";
+import { RecentTransactions } from "./RecentTransactions";
+import "./styles.scss";
 
 export type TimeRange = { label: string; value: string };
 export type ByType = "notional" | "tx";
@@ -188,26 +186,6 @@ const WToken = () => {
   );
 
   const {
-    data: wTokenPrice,
-    isError: isErrorWTokenPrice,
-    isFetching: isFetchingWTokenPrice,
-  } = useQuery(
-    ["getWTokenInfo"],
-    async () => {
-      const data = await getGeckoTokenInfo(
-        "85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ",
-        chainToChainId("Solana"),
-      );
-      if (!data || !data.attributes?.price_usd) throw new Error("No data");
-      return data.attributes.price_usd;
-    },
-    {
-      enabled: isMainnet,
-      refetchInterval: 10000,
-    },
-  );
-
-  const {
     data: transfersByTime,
     isError: isErrorTransfersByTime,
     isFetching: isFetchingTransfersByTime,
@@ -325,11 +303,7 @@ const WToken = () => {
 
   return (
     <div>
-      <Summary
-        wTokenPrice={wTokenPrice}
-        isErrorWTokenPrice={isErrorWTokenPrice}
-        isFetchingWTokenPrice={isFetchingWTokenPrice}
-      />
+      <Summary />
 
       <div className="tabs">
         <ToggleGroup
