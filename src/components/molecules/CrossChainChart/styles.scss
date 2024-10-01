@@ -115,6 +115,7 @@
           @include centered-row;
           @include text-roboto-body-400;
           gap: 6px;
+          margin-left: auto;
         }
       }
 
@@ -122,6 +123,7 @@
         @include centered-row;
         gap: 6px;
         justify-content: flex-end;
+        margin-left: auto;
 
         @include desktop {
           display: none;

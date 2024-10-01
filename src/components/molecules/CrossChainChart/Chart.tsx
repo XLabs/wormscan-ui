@@ -510,20 +510,22 @@ export const Chart = ({
       <div
         className={`cross-chain-relative-pagination ${isSourcesSelected ? "" : "targetSelected"}`}
       >
-        <Pagination
-          currentPage={isShowingOthers ? 2 : 1}
-          visiblePages={2}
-          goNextPage={() => {
-            setIsShowingOthers(true);
-            setChartData(processData(data, true, selectedDestination));
-          }}
-          goPage={handleGoPage}
-          goPrevPage={() => {
-            setIsShowingOthers(false);
-            setChartData(processData(data, false, selectedDestination));
-          }}
-          disableNextButton={isShowingOthers}
-        />
+        {data?.length > 10 && (
+          <Pagination
+            currentPage={isShowingOthers ? 2 : 1}
+            visiblePages={2}
+            goNextPage={() => {
+              setIsShowingOthers(true);
+              setChartData(processData(data, true, selectedDestination));
+            }}
+            goPage={handleGoPage}
+            goPrevPage={() => {
+              setIsShowingOthers(false);
+              setChartData(processData(data, false, selectedDestination));
+            }}
+            disableNextButton={isShowingOthers}
+          />
+        )}
 
         <div className="cross-chain-relative-pagination-message">
           <InfoCircleIcon />
