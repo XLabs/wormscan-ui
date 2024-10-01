@@ -1,5 +1,13 @@
+@import "src/styles/globals.scss";
+
 .copy-to-clipboard {
   cursor: pointer;
+
+  @include desktop {
+    &:hover {
+      filter: brightness(1.2);
+    }
+  }
 
   &-children {
     display: flex;

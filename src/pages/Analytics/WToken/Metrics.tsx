@@ -11,9 +11,7 @@ export const Metrics = ({ summary }: IMetricsProps) => {
   return (
     <div className="summary-metrics">
       <div className="summary-metrics-title">
-        <div className="summary-metrics-title-icon">
-          <AnalyticsIcon width={20} />
-        </div>
+        <AnalyticsIcon />
         <h2 className="summary-metrics-title-text">Summary Metrics</h2>
       </div>
 
