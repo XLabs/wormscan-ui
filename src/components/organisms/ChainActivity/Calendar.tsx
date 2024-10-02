@@ -59,6 +59,7 @@ export const Calendar = ({
 
     setStartDate(start);
     setEndDate(end);
+    setShowCalendar(false);
   };
 
   const handleLast24Hours = () => setTimePeriod(1, "days", false, "24h");

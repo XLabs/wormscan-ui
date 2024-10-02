@@ -394,7 +394,7 @@ const ChainActivity = () => {
     setEndDate(new Date());
     setStartDateDisplayed(initialDataDate);
     setEndDateDisplayed(new Date());
-    setLastBtnSelected("all");
+    setLastBtnSelected("year");
     setShowAllSourceChains(true);
     setShowAllTargetChains(true);
     setSourceChainListSelected([ALL_SOURCE_CHAINS]);
@@ -1035,14 +1035,14 @@ const ChainActivity = () => {
                       <div class="chain-activity-chart-tooltip-total-msg">
                         ${
                           showAllSourceChains
-                            ? "<div class='chain-activity-chart-tooltip-container-each-msg-icon' style='background-color: var(--color-plum)'></div>"
+                            ? "<div class='chain-activity-chart-tooltip-container-each-msg-icon' style='background-color: var(--color-lime)'></div>"
                             : ""
                         }
                     
                         ${
                           metricSelected === "transactions"
                             ? `Transfers Sum: <span>${formatNumber(totalY, 0)}</span>`
-                            : `Volume Sum: <span>$${numberToSuffix(totalY)}</span>`
+                            : `Volume Sum: <span>$${formatNumber(totalY, 0)}</span>`
                         }
                       </div>
                       <p class="chain-activity-chart-tooltip-chains">Chains:</p>
