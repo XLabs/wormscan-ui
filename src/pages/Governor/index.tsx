@@ -5,7 +5,7 @@ import analytics from "src/analytics";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BREAKPOINTS, MORE_INFO_GOVERNOR_URL } from "src/consts";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { BlockchainIcon, NavLink, Select, Tooltip } from "src/components/atoms";
+import { BlockchainIcon, NavLink, Select, ToggleGroup, Tooltip } from "src/components/atoms";
 import { Table } from "src/components/organisms";
 import { getChainName } from "src/utils/wormhole";
 import { formatNumber } from "src/utils/number";
@@ -71,10 +71,10 @@ const Governor = () => {
   const [dataTransactions, setDataTransactions] = useState([]);
   const [openSortBy, setOpenSortBy] = useState(false);
   const [selectedSortBy, setSelectedSortBy] = useState(
-    showTransactions ? SORT_TRANSACTIONS_BY_LIST[4] : SORT_DASHBOARD_BY_LIST[2],
+    showTransactions ? SORT_TRANSACTIONS_BY_LIST[4] : SORT_DASHBOARD_BY_LIST[3],
   );
   const [selectedSortLowHigh, setSelectedSortLowHigh] = useState(
-    showTransactions ? SORT_LOW_HIGH_LIST[0] : SORT_LOW_HIGH_LIST[1],
+    showTransactions ? SORT_LOW_HIGH_LIST[0] : SORT_LOW_HIGH_LIST[0],
   );
   const [sortBy, setSortBy] = useState<{ id: string; desc: boolean }[]>([
     { id: selectedSortBy.value, desc: selectedSortLowHigh.value },
@@ -312,9 +312,9 @@ const Governor = () => {
       setSelectedSortLowHigh(SORT_LOW_HIGH_LIST[0]);
       setSortBy([{ id: SORT_TRANSACTIONS_BY_LIST[4].value, desc: false }]);
     } else {
-      setSelectedSortBy(SORT_DASHBOARD_BY_LIST[2]);
-      setSelectedSortLowHigh(SORT_LOW_HIGH_LIST[1]);
-      setSortBy([{ id: SORT_DASHBOARD_BY_LIST[2].value, desc: true }]);
+      setSelectedSortBy(SORT_DASHBOARD_BY_LIST[3]);
+      setSelectedSortLowHigh(SORT_LOW_HIGH_LIST[0]);
+      setSortBy([{ id: SORT_DASHBOARD_BY_LIST[3].value, desc: false }]);
     }
     setOpenSortBy(false);
   };
@@ -344,32 +344,25 @@ const Governor = () => {
         <div className="governor-container">
           <div className="governor-container-top">
             <div className="governor-container-top-btns">
-              <div>
-                <button
-                  className={!showTransactions ? "active" : ""}
-                  aria-label="Dashboard"
-                  onClick={() => {
-                    setShowTransactions(false);
-                    handleReset(false);
-                  }}
-                >
-                  Dashboard
-                </button>
-
-                <button
-                  className={`transactions ${showTransactions ? "active" : ""}`}
-                  aria-label="Transactions"
-                  onClick={() => {
-                    setShowTransactions(true);
-                    handleReset(true);
-                  }}
-                >
-                  Queued Transactions
-                </button>
-              </div>
+              <ToggleGroup
+                ariaLabel="Select type"
+                items={[
+                  { label: "Dashboard", value: "dashboard", ariaLabel: "Dashboard" },
+                  {
+                    label: "Queued Transactions",
+                    value: "txs",
+                    ariaLabel: "Queued Transactions",
+                  },
+                ]}
+                onValueChange={value => {
+                  setShowTransactions(value === "txs");
+                  handleReset(value === "txs");
+                }}
+                value={showTransactions ? "txs" : "dashboard"}
+              />
 
               <button
-                className="sort-by-btn active"
+                className="sort-by-btn"
                 aria-label="Sort by"
                 onClick={() => setOpenSortBy(!openSortBy)}
               >
@@ -408,7 +401,9 @@ const Governor = () => {
               <ErrorPlaceholder />
             ) : (
               <Table
-                className="governor-container-table-dashboard"
+                className={`governor-container-table-dashboard ${
+                  isDesktop ? "" : "table-mobile-dashboard"
+                }`}
                 columns={columnsDashboard}
                 data={dataDashboard}
                 emptyMessage="There is no data to display."

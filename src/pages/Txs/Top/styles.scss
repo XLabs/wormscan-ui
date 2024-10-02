@@ -75,6 +75,10 @@
       @include centered-row;
       @include text-roboto-subheading-500;
       gap: 8px;
+
+      & > svg {
+        color: var(--color-gray-600);
+      }
     }
 
     &-live-mode {
