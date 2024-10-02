@@ -179,7 +179,7 @@ const ChainActivity = () => {
   const tickAmount =
     allChainsSerie?.[0]?.data?.length > 0
       ? isBigDesktop
-        ? Math.min(allChainsSerie[0].data.length, 19)
+        ? Math.min(allChainsSerie[0].data.length, 18)
         : isTablet
         ? Math.min(allChainsSerie[0].data.length, 10)
         : 4
