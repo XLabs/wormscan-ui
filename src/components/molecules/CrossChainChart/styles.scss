@@ -97,6 +97,11 @@
 
       &.targetSelected {
         flex-direction: row-reverse;
+
+        & .cross-chain-relative-pagination-message,
+        & .cross-chain-relative-pagination-mobile {
+          margin-left: unset;
+        }
       }
 
       & > .pagination {
