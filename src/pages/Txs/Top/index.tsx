@@ -52,7 +52,7 @@ const Top = ({ address, addressChainId, liveMode, setLiveMode }: Props) => {
 
       <div className="txs-top-header">
         <h1 className="txs-top-header-title">
-          <SwapVerticalIcon width={24} />
+          <SwapVerticalIcon />
           {t("txs.top.title")}
         </h1>
 

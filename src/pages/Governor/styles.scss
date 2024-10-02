@@ -48,37 +48,16 @@
         @include centered-row;
         justify-content: space-between;
 
-        & > div {
-          @include centered-row;
-          gap: 8px;
-        }
-
-        & button {
+        & > .sort-by-btn {
           @include button-secondary;
-          @include centered-row;
-          background-color: transparent;
-          color: var(--color-gray-400);
-
-          &.active {
-            @include button-secondary;
-          }
+          border-radius: 12px;
+          height: 36px;
+          justify-content: center;
+          padding: 0;
+          width: 36px;
 
           @include desktop {
-            & svg {
-              display: none;
-            }
-
-            &.sort-by-btn {
-              display: none;
-            }
-          }
-
-          &.sort-by-btn {
-            border-radius: 12px;
-            height: 36px;
-            justify-content: center;
-            padding: 0;
-            width: 36px;
+            display: none;
           }
         }
       }
@@ -102,7 +81,7 @@
 
         & > div {
           @include centered-row;
-          gap: 8px;
+          gap: 0 8px;
           justify-content: space-between;
           min-height: 24px;
 
@@ -122,7 +101,7 @@
             }
           }
 
-          & > p {
+          & p {
             @include text-heading5;
             color: var(--color-white);
 
@@ -143,6 +122,25 @@
       }
 
       &-dashboard {
+        &.table-mobile-dashboard {
+          & tr {
+            & td:nth-child(1) {
+              order: 1;
+            }
+            & td:nth-child(2) {
+              order: 4;
+              border-bottom: 0;
+            }
+            & td:nth-child(3) {
+              order: 3;
+            }
+            & td:nth-child(4) {
+              order: 2;
+              border-bottom: 1px solid var(--color-gray-900);
+            }
+          }
+        }
+
         & th > .table-head-th-container > svg {
           margin: 0 4px;
         }
@@ -166,6 +164,7 @@
         & .min-remaining {
           @include centered-row;
           justify-content: space-between;
+          flex-wrap: wrap;
 
           @include desktop {
             justify-content: flex-end;
@@ -177,13 +176,16 @@
           }
 
           &-container {
-            position: absolute;
-            right: 16px;
-            top: 16px;
+            @include centered-row;
+            width: 100%;
+            justify-content: flex-end;
+            order: 3;
 
             @include desktop {
+              position: absolute;
               right: 148px;
               top: 0;
+              width: auto;
             }
 
             &-bar {
@@ -370,5 +372,7 @@
 }
 
 .governor-container-table-title-tooltip {
-  max-width: 440px !important;
+  @include tablet {
+    max-width: 440px !important;
+  }
 }

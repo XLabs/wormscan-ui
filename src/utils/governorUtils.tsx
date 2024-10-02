@@ -59,6 +59,7 @@ export interface ISelectSortLowHigh {
 export const SingleTxLimitTooltip = () => (
   <Tooltip
     className="governor-container-table-title-tooltip"
+    maxWidth={false}
     tooltip={
       <div>
         Transactions exceeding this single-transaction threshold activate a 24-hour finality delay
@@ -77,6 +78,7 @@ export const SingleTxLimitTooltip = () => (
 export const DailyLimitTooltip = () => (
   <Tooltip
     className="governor-container-table-title-tooltip"
+    maxWidth={false}
     tooltip={
       <div>
         Maximum total value of transactions that can be signed without delay in any 24-hour rolling
@@ -96,6 +98,7 @@ export const DailyLimitTooltip = () => (
 export const RemainingTxLimitTooltip = () => (
   <Tooltip
     className="governor-container-table-title-tooltip"
+    maxWidth={false}
     tooltip={
       <div>
         This shows the remaining value of transaction volume that can be processed without delay
