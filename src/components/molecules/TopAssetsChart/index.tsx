@@ -185,28 +185,20 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
 
               updatePathStyles({ chartRef, dataPointIndex });
 
-              return (
-                "<div class='chart-container-tooltip'>" +
-                `
-                      <div>
-                        <img class='chart-container-tooltip-img' src=${chainImageSrc} alt='${chainName} icon' width="100px" />
-                        <span class='chart-container-tooltip-chain'>${chainName}</span>
-                      </div>
-                      ` +
-                `
-                      <div>
-                        <span class='chart-container-tooltip-label'>Volume:</span>
-                        <span class='chart-container-tooltip-volume'>$${volumeFormatted}</span>
-                      </div>
-                      ` +
-                `
-                      <div>
-                        <span class='chart-container-tooltip-label'>TXS:</span>
-                        <span class='chart-container-tooltip-txs'>${txsFormatted}</span>
-                      </div>
-                      ` +
-                "</div>"
-              );
+              return `<div class='chart-container-tooltip'>
+                        <div>
+                          <img class='chart-container-tooltip-img' src=${chainImageSrc} alt='${chainName} icon' width="100px" />
+                          <span class='chart-container-tooltip-chain'>${chainName}</span>
+                        </div>
+                        <div>
+                          <span class='chart-container-tooltip-label'>Volume:</span>
+                          <span class='chart-container-tooltip-volume'>$${volumeFormatted}</span>
+                        </div>
+                        <div>
+                          <span class='chart-container-tooltip-label'>TXS:</span>
+                          <span class='chart-container-tooltip-txs'>${txsFormatted}</span>
+                        </div>
+                      </div>`;
             },
             followCursor: !isTabletOrMobile,
             intersect: false,
