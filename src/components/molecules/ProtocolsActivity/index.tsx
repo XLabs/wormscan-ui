@@ -4,7 +4,7 @@ import ReactApexChart from "react-apexcharts";
 import { BREAKPOINTS, PORTAL_NFT_APP_ID } from "src/consts";
 import { Loader, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
-import { useWindowSize } from "src/utils/hooks";
+import { useLockBodyScroll, useWindowSize } from "src/utils/hooks";
 import { firstDataAvailableDate, getISODateZeroed, todayISOString } from "src/utils/date";
 import { grayColors } from "src/utils/chainActivityUtils";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
@@ -12,11 +12,18 @@ import { PROTOCOL_LIST } from "src/utils/filterUtils";
 import { formatNumber, numberToSuffix } from "src/utils/number";
 import { formatAppId } from "src/utils/crypto";
 import { getClient } from "src/api/Client";
-import { ActivityIcon, AnalyticsIcon, Cube3DIcon } from "src/icons/generic";
+import {
+  ActivityIcon,
+  AnalyticsIcon,
+  CrossIcon,
+  Cube3DIcon,
+  FilterListIcon,
+  GlobeIcon,
+} from "src/icons/generic";
 import "./styles.scss";
 
 interface IProtocol {
-  name: string;
+  app_id: string;
   color: string;
   total_messages: number;
   total_value_transferred: number;
@@ -28,6 +35,7 @@ interface ITimeRangeData {
   total_messages: number;
   total_value_transferred: number;
   protocols: IProtocol[];
+  aggregations?: any[];
 }
 
 const METRIC_CHART_LIST = [
@@ -60,6 +68,7 @@ const ProtocolsActivity = () => {
   const [totalMessagesValue, setTotalMessagesValue] = useState(0);
   const [data, setData] = useState([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState(RANGE_LIST[0]);
+  const [openFilters, setOpenFilters] = useState(false);
   const [filters, setFilters] = useState({
     from: RANGE_LIST[0].value,
     to: new Date().toISOString(),
@@ -68,20 +77,40 @@ const ProtocolsActivity = () => {
   });
 
   const series = useMemo(() => {
-    if (data.length === 0) return [];
+    if (data.length === 0) {
+      setTotalVolumeValue(0);
+      setTotalMessagesValue(0);
+      return [];
+    }
 
     let totalVolume = 0;
     let totalMessages = 0;
-
     if (filters.appId) {
       const result = data.map(item => ({
-        name: item.app_id,
+        app_id: item.app_id,
         color: "var(--color-lime)",
         data: item.time_range_data.map((dataItem: ITimeRangeData) => {
           totalVolume += dataItem.total_value_transferred;
           totalMessages += dataItem.total_messages;
 
+          const filteredAndSortedAggregations = [...dataItem.aggregations]
+            .filter(aggregation => {
+              if (metricSelected === "volume") {
+                return aggregation.total_value_transferred !== 0;
+              } else {
+                return aggregation.total_messages !== 0;
+              }
+            })
+            .sort((a, b) => {
+              if (metricSelected === "volume") {
+                return b.total_value_transferred - a.total_value_transferred;
+              } else {
+                return b.total_messages - a.total_messages;
+              }
+            });
+
           return {
+            protocols: filteredAndSortedAggregations,
             x: dataItem.from,
             y:
               metricSelected === "volume"
@@ -114,11 +143,11 @@ const ProtocolsActivity = () => {
           combinedData[date].total_value_transferred += dataItem.total_value_transferred;
 
           const protocolIndex = combinedData[date].protocols.findIndex(
-            protocol => protocol.name === item.app_id,
+            protocol => protocol.app_id === item.app_id,
           );
           if (protocolIndex === -1) {
             combinedData[date].protocols.push({
-              name: item.app_id,
+              app_id: item.app_id,
               color: grayColors[combinedData[date].protocols.length],
               total_messages: dataItem.total_messages,
               total_value_transferred: dataItem.total_value_transferred,
@@ -134,24 +163,24 @@ const ProtocolsActivity = () => {
       const combinedDataArray = Object.values(combinedData).map(dataItem => {
         const maxItems = 10;
 
-        const positiveProtocols = dataItem.protocols.filter(protocol => {
-          if (metricSelected === "volume") {
-            return protocol.total_value_transferred > 0;
-          } else {
-            return protocol.total_messages > 0;
-          }
-        });
+        const filteredAndSortedProtocols = dataItem.protocols
+          .filter(protocol => {
+            if (metricSelected === "volume") {
+              return protocol.total_value_transferred > 0;
+            } else {
+              return protocol.total_messages > 0;
+            }
+          })
+          .sort((a, b) => {
+            if (metricSelected === "volume") {
+              return b.total_value_transferred - a.total_value_transferred;
+            } else {
+              return b.total_messages - a.total_messages;
+            }
+          });
 
-        positiveProtocols.sort((a, b) => {
-          if (metricSelected === "volume") {
-            return b.total_value_transferred - a.total_value_transferred;
-          } else {
-            return b.total_messages - a.total_messages;
-          }
-        });
-
-        const protocols = positiveProtocols.slice(0, maxItems);
-        const others = positiveProtocols.slice(maxItems);
+        const protocols = filteredAndSortedProtocols.slice(0, maxItems);
+        const others = filteredAndSortedProtocols.slice(maxItems);
 
         const othersTotalMessages = others.reduce(
           (acc, protocol) => acc + protocol.total_messages,
@@ -164,7 +193,7 @@ const ProtocolsActivity = () => {
 
         if (othersTotalMessages > 0 || othersTotalValueTransferred > 0) {
           protocols.push({
-            name: "Others",
+            app_id: "Others",
             color: grayColors[protocols.length],
             total_messages: othersTotalMessages,
             total_value_transferred: othersTotalValueTransferred,
@@ -189,7 +218,7 @@ const ProtocolsActivity = () => {
 
       return [
         {
-          name: "All Protocols",
+          app_id: "All Protocols",
           color: "var(--color-lime)",
           data: combinedDataArray,
         },
@@ -207,8 +236,35 @@ const ProtocolsActivity = () => {
     setData(res);
   });
 
+  const handleReset = () => {
+    setSelectedTimeRange(RANGE_LIST[0]);
+    setFilters({
+      from: RANGE_LIST[0].value,
+      to: new Date().toISOString(),
+      timespan: RANGE_LIST[0].timespan as "1h" | "1d" | "1mo",
+      appId: "",
+    });
+    setOpenFilters(false);
+  };
+
+  const handleFiltersOpened = () => {
+    setOpenFilters(prev => !prev);
+  };
+
+  useLockBodyScroll({
+    isLocked: !isDesktop && openFilters,
+    scrollableClasses: [
+      "custom-checkbox",
+      "select__option",
+      "select-custom-option-container",
+      "select-custom-option",
+    ],
+  });
+
   return (
     <div className="protocols-activity">
+      {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
+
       <h3 className="protocols-activity-title">
         <Cube3DIcon />
         Protocols Activity
@@ -216,64 +272,107 @@ const ProtocolsActivity = () => {
 
       <div className="protocols-activity-container">
         <div className="protocols-activity-container-top">
-          <Select
-            ariaLabel="Select Protocol"
-            className="protocols-activity-container-top-select-protocol"
-            closeOnSelect
-            controlStyles={{ minWidth: 256 }}
-            isMulti={false}
-            items={PROTOCOL_LIST.filter(
-              protocol => protocol.value !== PORTAL_NFT_APP_ID && protocol.value !== "CONNECT",
-            )}
-            menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-            menuPortalStyles={{ zIndex: 100 }}
-            name="protocol"
-            onValueChange={protocol => {
-              setFilters(prevFilters => ({
-                ...prevFilters,
-                appId: protocol?.value === filters.appId ? "" : protocol.value,
-              }));
-            }}
-            text={filters.appId ? formatAppId(filters.appId) : "All Protocols"}
-            type="searchable"
-            value={{
-              label: filters.appId,
-              value: filters.appId,
-            }}
-          />
+          <button
+            className="protocols-activity-container-top-mobile-filters-btn"
+            onClick={handleFiltersOpened}
+          >
+            <FilterListIcon width={24} /> Filters
+          </button>
 
-          <div className="protocols-activity-container-top-mid">
+          <div className={`protocols-activity-container-top-filters ${openFilters ? "open" : ""}`}>
+            <div className="protocols-activity-container-top-filters-title">
+              <p>Filters</p>
+              <button onClick={handleFiltersOpened}>
+                <CrossIcon width={24} />
+              </button>
+            </div>
+
+            <Select
+              ariaLabel="Select Protocol"
+              className="protocols-activity-container-top-filters-protocol"
+              closeOnSelect
+              controlStyles={{ minWidth: 256 }}
+              isMulti={false}
+              items={[
+                {
+                  label: "All Protocols",
+                  value: "",
+                  icon: <GlobeIcon width={28} />,
+                  showMinus: filters.appId.length > 0,
+                  disabled: false,
+                },
+                ...PROTOCOL_LIST.filter(
+                  protocol => protocol.value !== PORTAL_NFT_APP_ID && protocol.value !== "CONNECT",
+                ),
+              ]}
+              menuFixed={!isDesktop}
+              menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
+              menuPortalStyles={{ zIndex: 100 }}
+              name="protocol"
+              onValueChange={protocol => {
+                setFilters(prevFilters => ({
+                  ...prevFilters,
+                  appId: protocol?.value === filters.appId ? "" : protocol.value,
+                }));
+              }}
+              text={filters.appId ? formatAppId(filters.appId) : "All Protocols"}
+              type="searchable"
+              value={{
+                label: filters.appId,
+                value: filters.appId,
+              }}
+            />
+
+            <Select
+              ariaLabel="Select Time Range"
+              className="protocols-activity-container-top-filters-range"
+              items={RANGE_LIST}
+              menuFixed={!isDesktop}
+              menuPortalStyles={{ zIndex: 100 }}
+              name="timeRange"
+              onValueChange={timeRange => {
+                setSelectedTimeRange(timeRange);
+                setFilters(prevFilters => ({
+                  ...prevFilters,
+                  from: timeRange.value,
+                  timespan: timeRange.timespan,
+                }));
+              }}
+              value={selectedTimeRange}
+            />
+
             <ToggleGroup
               ariaLabel="Select metric type (volume or transfers)"
-              className="protocols-activity-container-top-mid-toggle"
+              className="protocols-activity-container-top-filters-metric"
               items={METRIC_CHART_LIST}
               onValueChange={value => setMetricSelected(value)}
               value={metricSelected}
             />
 
-            <ToggleGroup
-              ariaLabel="Select type"
-              className="protocols-activity-container-top-mid-toggle-type"
-              items={TYPE_CHART_LIST}
-              onValueChange={value => setChartSelected(value)}
-              value={chartSelected}
-            />
+            <div className="protocols-activity-container-top-filters-btns">
+              <button
+                className="protocols-activity-container-top-filters-btns-apply"
+                onClick={handleFiltersOpened}
+              >
+                Apply Filters
+              </button>
+
+              <button
+                className="protocols-activity-container-top-filters-btns-reset"
+                disabled={!filters.appId && filters.from === RANGE_LIST[0].value}
+                onClick={handleReset}
+              >
+                Reset Filters
+              </button>
+            </div>
           </div>
 
-          <Select
-            ariaLabel="Select Time Range"
-            className="protocols-activity-container-top-select-range"
-            items={RANGE_LIST}
-            name="timeRange"
-            onValueChange={timeRange => {
-              setSelectedTimeRange(timeRange);
-              setFilters(prevFilters => ({
-                ...prevFilters,
-                from: timeRange.value,
-                timespan: timeRange.timespan,
-              }));
-            }}
-            value={selectedTimeRange}
+          <ToggleGroup
+            ariaLabel="Select type"
+            className="protocols-activity-container-top-toggle-design"
+            items={TYPE_CHART_LIST}
+            onValueChange={value => setChartSelected(value)}
+            value={chartSelected}
           />
         </div>
 
@@ -287,13 +386,27 @@ const ProtocolsActivity = () => {
               <WormholeScanBrand />
 
               <div className="protocols-activity-container-chart-header">
-                {metricSelected === "volume" ? (
+                {filters.appId && (
                   <div className="protocols-activity-container-chart-header-total-txt">
-                    Volume: <span>${formatNumber(totalVolumeValue)}</span>
-                  </div>
-                ) : (
-                  <div className="protocols-activity-container-chart-header-total-txt">
-                    Transfers: <span>{formatNumber(totalMessagesValue)}</span>
+                    {selectedTimeRange.label === "Last 24 hours"
+                      ? "Daily"
+                      : selectedTimeRange.label === "Last 7 days"
+                      ? "Weekly"
+                      : selectedTimeRange.label === "Last 30 days"
+                      ? "Monthly"
+                      : selectedTimeRange.label === "Last 365 days"
+                      ? "Yearly"
+                      : "All Time"}{" "}
+                    Total{" "}
+                    {metricSelected === "volume" ? (
+                      <>
+                        Volume: <span>${formatNumber(totalVolumeValue)}</span>
+                      </>
+                    ) : (
+                      <>
+                        Transfers: <span>{formatNumber(totalMessagesValue)}</span>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
@@ -442,7 +555,7 @@ const ProtocolsActivity = () => {
                                 <div class="protocols-activity-container-chart-tooltip-protocol-icon">
                                 </div>
                                 <div class="protocols-activity-container-chart-tooltip-protocol-name">
-                                  ${formatAppId(series[0].name)}
+                                  ${formatAppId(series[0].app_id)}
                                 </div>
                                 <div class="protocols-activity-container-chart-tooltip-protocol-number">
                                   ${
@@ -464,35 +577,46 @@ const ProtocolsActivity = () => {
                                 `
                                   : ""
                               }
-                              ${
-                                data?.protocols?.length > 0
-                                  ? data?.protocols
-                                      ?.map(
-                                        (protocol: IProtocol, i: number) => `
-                                  <div 
-                                    class="protocols-activity-container-chart-tooltip-protocol"
-                                    style="margin-bottom: 8px;"
-                                  >
-                                    <div 
-                                      class="protocols-activity-container-chart-tooltip-protocol-icon" 
-                                      style="background-color: ${grayColors[i]};"
-                                    >
-                                    </div>
-                                    <div class="protocols-activity-container-chart-tooltip-protocol-name">
-                                      ${formatAppId(protocol.name)}
-                                    </div>
-                                    <div class="protocols-activity-container-chart-tooltip-protocol-number">
-                                      ${
-                                        metricSelected === "volume"
-                                          ? `$${numberToSuffix(protocol.total_value_transferred)}`
-                                          : numberToSuffix(protocol.total_messages)
-                                      }
-                                    </div>
-                                  </div>`,
-                                      )
-                                      .join("")
-                                  : ""
-                              }  
+                              ${data?.protocols
+                                ?.map((protocol: IProtocol, i: number) => {
+                                  const percentage =
+                                    metricSelected === "volume"
+                                      ? (protocol.total_value_transferred / data.y) * 100
+                                      : (protocol.total_messages / data.y) * 100;
+
+                                  return `
+                                          <div 
+                                            class="protocols-activity-container-chart-tooltip-protocol"
+                                            style="margin-bottom: 8px;"
+                                          >
+                                            <div 
+                                              class="protocols-activity-container-chart-tooltip-protocol-icon" 
+                                              style="background-color: ${grayColors[i]};"
+                                            >
+                                            </div>
+                                            <div class="protocols-activity-container-chart-tooltip-protocol-name">
+                                              ${formatAppId(protocol.app_id)}
+
+                                              <div class="protocols-activity-container-chart-tooltip-protocol-name-percentage">
+                                                ${formatNumber(
+                                                  percentage,
+                                                  percentage < 1 ? 2 : undefined,
+                                                )}%
+                                              </div>
+                                            </div>
+                                            <div class="protocols-activity-container-chart-tooltip-protocol-number">
+                                              ${
+                                                metricSelected === "volume"
+                                                  ? `$${numberToSuffix(
+                                                      protocol.total_value_transferred,
+                                                    )}`
+                                                  : numberToSuffix(protocol.total_messages)
+                                              }
+                                            </div>
+                                          </div>
+                                          `;
+                                })
+                                .join("")}
                             </div>
                           `;
                     },
