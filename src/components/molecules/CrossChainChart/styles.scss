@@ -22,7 +22,6 @@
       @include centered-row;
       @include text-roboto-subheading-500;
       gap: 8px;
-      justify-content: space-between;
       width: 100%;
 
       @include desktop {

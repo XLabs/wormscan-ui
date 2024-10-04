@@ -79,17 +79,7 @@ const ChainActivity = () => {
 
   useLockBodyScroll({
     isLocked: !isDesktop && openFilters,
-    scrollableClasses: [
-      "blockchain-icon",
-      "custom-checkbox",
-      "select__option",
-      "select-custom-option-container",
-      "select-custom-option",
-      "btn",
-      "show-date",
-      "chain-activity-chart-top-section-box-date-calendar",
-      "react-datepicker",
-    ],
+    scrollableClasses: ["select__option", "show-date"],
   });
 
   const { environment } = useEnvironment();

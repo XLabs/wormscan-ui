@@ -171,13 +171,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
 
   useLockBodyScroll({
     isLocked: !isDesktop && openFilters,
-    scrollableClasses: [
-      "select__option",
-      "select-custom-option",
-      "select-custom-option-container",
-      "blockchain-icon",
-      "custom-checkbox",
-    ],
+    scrollableClasses: ["select__option"],
   });
 
   return (
