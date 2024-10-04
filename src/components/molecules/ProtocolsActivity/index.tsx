@@ -253,12 +253,7 @@ const ProtocolsActivity = () => {
 
   useLockBodyScroll({
     isLocked: !isDesktop && openFilters,
-    scrollableClasses: [
-      "custom-checkbox",
-      "select__option",
-      "select-custom-option-container",
-      "select-custom-option",
-    ],
+    scrollableClasses: ["select__option"],
   });
 
   return (

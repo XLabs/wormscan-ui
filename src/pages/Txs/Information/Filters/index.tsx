@@ -157,13 +157,7 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
 
   useLockBodyScroll({
     isLocked: !isDesktop && showFilters,
-    scrollableClasses: [
-      "blockchain-icon",
-      "custom-checkbox",
-      "select__option",
-      "select-custom-option-container",
-      "select-custom-option",
-    ],
+    scrollableClasses: ["select__option"],
   });
 
   const handleCloseFilters = () => {
