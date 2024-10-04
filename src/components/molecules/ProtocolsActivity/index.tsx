@@ -22,9 +22,8 @@ import {
 } from "src/icons/generic";
 import "./styles.scss";
 
-interface IProtocol {
+interface IAggregations {
   app_id: string;
-  color: string;
   total_messages: number;
   total_value_transferred: number;
 }
@@ -34,12 +33,7 @@ interface ITimeRangeData {
   to: string;
   total_messages: number;
   total_value_transferred: number;
-  protocols: IProtocol[];
-  aggregations?: {
-    app_id: string;
-    total_messages: number;
-    total_value_transferred: number;
-  }[];
+  aggregations: IAggregations[];
 }
 
 const METRIC_CHART_LIST = [
@@ -100,11 +94,11 @@ const ProtocolsActivity = () => {
           totalMessages += dataItem.total_messages;
 
           const filteredAndSortedAggregations = [...dataItem.aggregations]
-            .filter(aggregation => {
+            .filter(agg => {
               if (metricSelected === "volume") {
-                return aggregation.total_value_transferred !== 0;
+                return agg.total_value_transferred !== 0;
               } else {
-                return aggregation.total_messages !== 0;
+                return agg.total_messages !== 0;
               }
             })
             .sort((a, b) => {
@@ -116,7 +110,7 @@ const ProtocolsActivity = () => {
             });
 
           return {
-            protocols: filteredAndSortedAggregations,
+            aggregations: filteredAndSortedAggregations,
             x: dataItem.from,
             y:
               metricSelected === "volume"
@@ -142,25 +136,24 @@ const ProtocolsActivity = () => {
               to: dataItem.to,
               total_messages: 0,
               total_value_transferred: 0,
-              protocols: [],
+              aggregations: [],
             };
           }
           combinedData[date].total_messages += dataItem.total_messages;
           combinedData[date].total_value_transferred += dataItem.total_value_transferred;
 
-          const protocolIndex = combinedData[date].protocols.findIndex(
-            protocol => protocol.app_id === item.app_id,
+          const aggIndex = combinedData[date].aggregations.findIndex(
+            agg => agg.app_id === item.app_id,
           );
-          if (protocolIndex === -1) {
-            combinedData[date].protocols.push({
+          if (aggIndex === -1) {
+            combinedData[date].aggregations.push({
               app_id: item.app_id,
-              color: grayColors[combinedData[date].protocols.length],
               total_messages: dataItem.total_messages,
               total_value_transferred: dataItem.total_value_transferred,
             });
           } else {
-            combinedData[date].protocols[protocolIndex].total_messages += dataItem.total_messages;
-            combinedData[date].protocols[protocolIndex].total_value_transferred +=
+            combinedData[date].aggregations[aggIndex].total_messages += dataItem.total_messages;
+            combinedData[date].aggregations[aggIndex].total_value_transferred +=
               dataItem.total_value_transferred;
           }
         });
@@ -169,12 +162,12 @@ const ProtocolsActivity = () => {
       const combinedDataArray = Object.values(combinedData).map(dataItem => {
         const maxItems = 10;
 
-        const filteredAndSortedProtocols = dataItem.protocols
-          .filter(protocol => {
+        const filteredAndSortedAggregations = dataItem.aggregations
+          .filter(agg => {
             if (metricSelected === "volume") {
-              return protocol.total_value_transferred > 0;
+              return agg.total_value_transferred > 0;
             } else {
-              return protocol.total_messages > 0;
+              return agg.total_messages > 0;
             }
           })
           .sort((a, b) => {
@@ -185,22 +178,18 @@ const ProtocolsActivity = () => {
             }
           });
 
-        const protocols = filteredAndSortedProtocols.slice(0, maxItems);
-        const others = filteredAndSortedProtocols.slice(maxItems);
+        const aggregations = filteredAndSortedAggregations.slice(0, maxItems);
+        const others = filteredAndSortedAggregations.slice(maxItems);
 
-        const othersTotalMessages = others.reduce(
-          (acc, protocol) => acc + protocol.total_messages,
-          0,
-        );
+        const othersTotalMessages = others.reduce((acc, agg) => acc + agg.total_messages, 0);
         const othersTotalValueTransferred = others.reduce(
-          (acc, protocol) => acc + protocol.total_value_transferred,
+          (acc, agg) => acc + agg.total_value_transferred,
           0,
         );
 
         if (othersTotalMessages > 0 || othersTotalValueTransferred > 0) {
-          protocols.push({
+          aggregations.push({
             app_id: "Others",
-            color: grayColors[protocols.length],
             total_messages: othersTotalMessages,
             total_value_transferred: othersTotalValueTransferred,
           });
@@ -210,7 +199,7 @@ const ProtocolsActivity = () => {
         totalMessages += dataItem.total_messages;
 
         return {
-          protocols,
+          aggregations,
           x: dataItem.from,
           y:
             metricSelected === "volume"
@@ -567,7 +556,7 @@ const ProtocolsActivity = () => {
                                 </div>    
                               </div>
                               ${
-                                data?.protocols?.length > 0
+                                data?.aggregations?.length > 0
                                   ? `
                                   <p 
                                     class="protocols-activity-container-chart-tooltip-date"
@@ -578,12 +567,12 @@ const ProtocolsActivity = () => {
                                 `
                                   : ""
                               }
-                              ${data?.protocols
-                                ?.map((protocol: IProtocol, i: number) => {
+                              ${data?.aggregations
+                                ?.map((agg: IAggregations, i: number) => {
                                   const percentage =
                                     metricSelected === "volume"
-                                      ? (protocol.total_value_transferred / data.y) * 100
-                                      : (protocol.total_messages / data.y) * 100;
+                                      ? (agg.total_value_transferred / data.y) * 100
+                                      : (agg.total_messages / data.y) * 100;
 
                                   return `
                                           <div 
@@ -596,7 +585,7 @@ const ProtocolsActivity = () => {
                                             >
                                             </div>
                                             <div class="protocols-activity-container-chart-tooltip-protocol-name">
-                                              ${formatAppId(protocol.app_id)}
+                                              ${formatAppId(agg.app_id)}
 
                                               <div class="protocols-activity-container-chart-tooltip-protocol-name-percentage">
                                                 ${formatNumber(
@@ -609,9 +598,9 @@ const ProtocolsActivity = () => {
                                               ${
                                                 metricSelected === "volume"
                                                   ? `$${numberToSuffix(
-                                                      protocol.total_value_transferred,
+                                                      agg.total_value_transferred,
                                                     )}`
-                                                  : numberToSuffix(protocol.total_messages)
+                                                  : numberToSuffix(agg.total_messages)
                                               }
                                             </div>
                                           </div>
