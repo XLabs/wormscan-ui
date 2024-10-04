@@ -35,7 +35,11 @@ interface ITimeRangeData {
   total_messages: number;
   total_value_transferred: number;
   protocols: IProtocol[];
-  aggregations?: any[];
+  aggregations?: {
+    app_id: string;
+    total_messages: number;
+    total_value_transferred: number;
+  }[];
 }
 
 const METRIC_CHART_LIST = [
