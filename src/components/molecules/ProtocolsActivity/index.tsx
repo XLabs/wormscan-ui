@@ -83,10 +83,12 @@ const ProtocolsActivity = () => {
       return [];
     }
 
+    const dataFiltered = data.filter(item => item.app_id !== "STABLE");
     let totalVolume = 0;
     let totalMessages = 0;
+
     if (filters.appId) {
-      const result = data.map(item => ({
+      const result = dataFiltered.map(item => ({
         app_id: item.app_id,
         color: "var(--color-lime)",
         data: item.time_range_data.map((dataItem: ITimeRangeData) => {
@@ -127,7 +129,7 @@ const ProtocolsActivity = () => {
     } else {
       const combinedData: { [key: string]: ITimeRangeData } = {};
 
-      data.forEach(item => {
+      dataFiltered.forEach(item => {
         item.time_range_data.forEach((dataItem: ITimeRangeData) => {
           const date = dataItem.from;
           if (!combinedData[date]) {
