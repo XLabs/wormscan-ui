@@ -6,7 +6,7 @@ import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { TokensSymbolActivityOutput } from "src/api/guardian-network/types";
 import { useWindowSize } from "src/utils/hooks";
-import { ActivityIcon, AnalyticsIcon } from "src/icons/generic";
+import { ActivityIcon, AnalyticsIcon, LinearIcon, LogarithmicIcon } from "src/icons/generic";
 import { formatNumber } from "src/utils/number";
 import "./styles.scss";
 
@@ -27,6 +27,11 @@ const TYPE_CHART_LIST = [
   { label: <AnalyticsIcon width={24} />, value: "bar", ariaLabel: "Bar" },
 ];
 
+const SCALE_CHART_LIST = [
+  { label: <LogarithmicIcon width={22} />, value: "logarithmic", ariaLabel: "Logarithmic" },
+  { label: <LinearIcon width={22} />, value: "linear", ariaLabel: "Linear" },
+];
+
 export const Chart = ({
   data,
   filters,
@@ -35,6 +40,7 @@ export const Chart = ({
   metricSelected,
   rangeShortLabel,
 }: Props) => {
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const chartRef = useRef(null);
 
@@ -96,13 +102,25 @@ export const Chart = ({
                 </span>
               </div>
 
-              <ToggleGroup
-                ariaLabel="Select type"
-                className="token-activity-chart-top-toggle"
-                items={TYPE_CHART_LIST}
-                onValueChange={value => setChartSelected(value)}
-                value={chartSelected}
-              />
+              <div className="token-activity-chart-top-toggles">
+                {chartSelected === "area" && (
+                  <ToggleGroup
+                    ariaLabel="Select scale"
+                    className="token-activity-chart-top-scale"
+                    items={SCALE_CHART_LIST}
+                    onValueChange={value => setScaleSelected(value)}
+                    value={scaleSelected}
+                  />
+                )}
+
+                <ToggleGroup
+                  ariaLabel="Select type"
+                  className="token-activity-chart-top-toggle"
+                  items={TYPE_CHART_LIST}
+                  onValueChange={value => setChartSelected(value)}
+                  value={chartSelected}
+                />
+              </div>
             </div>
 
             <ReactApexChart
@@ -286,6 +304,8 @@ export const Chart = ({
                       fontWeight: 400,
                     },
                   },
+                  logarithmic: scaleSelected === "logarithmic" && chartSelected === "area",
+                  forceNiceScale: scaleSelected === "logarithmic" && chartSelected === "area",
                   min: 0,
                   opposite: true,
                   tickAmount: 8,

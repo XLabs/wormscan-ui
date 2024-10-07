@@ -346,9 +346,9 @@ const Txs = () => {
                 }
               }
 
-              const vaaBuffer = Buffer.from(tx?.vaa?.raw, "base64");
-              const parsedVaa = deserialize("Uint8Array", vaaBuffer);
-              const vaaTimestamp = parsedVaa?.timestamp * 1000;
+              const vaaBuffer = tx?.vaa?.raw ? Buffer.from(tx.vaa.raw, "base64") : null;
+              const parsedVaa = vaaBuffer ? deserialize("Uint8Array", vaaBuffer) : null;
+              const vaaTimestamp = parsedVaa ? parsedVaa?.timestamp * 1000 : null;
               const timestampDate = timestamp
                 ? new Date(timestamp)
                 : vaaTimestamp

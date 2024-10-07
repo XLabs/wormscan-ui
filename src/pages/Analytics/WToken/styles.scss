@@ -410,6 +410,11 @@
     @include text-roboto-subheading-500;
     gap: 12px;
 
+    &-fullscreen {
+      cursor: pointer;
+      transform: translateY(3px);
+    }
+
     svg {
       color: var(--color-gray-600);
     }
@@ -420,6 +425,12 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
+  }
+
+  &-toggles {
+    @include centered-row;
+    gap: 12px;
+    margin-left: auto;
   }
 
   &-filters {
@@ -476,19 +487,21 @@
     }
   }
 
-  &-toggle-type {
-    margin-left: auto;
-    margin-top: 12px;
+  &-toggle {
+    &-type,
+    &-scale {
+      margin-top: 12px;
 
-    border-radius: 12px;
-
-    .toggle-group-item {
       border-radius: 12px;
-      padding: 6px;
-    }
 
-    @include tablet {
-      margin-top: 0px;
+      .toggle-group-item {
+        border-radius: 12px;
+        padding: 6px;
+      }
+
+      @include tablet {
+        margin-top: 0px;
+      }
     }
   }
 
