@@ -812,8 +812,8 @@ const ChainActivity = () => {
                     <p>
                       $
                       {showAllSourceChains
-                        ? numberToSuffix(allVolumeNumber)
-                        : numberToSuffix(volumeNumber)}
+                        ? formatNumber(allVolumeNumber, 0)
+                        : formatNumber(volumeNumber, 0)}
                     </p>
                   </div>
                 )}
@@ -1032,7 +1032,9 @@ const ChainActivity = () => {
                         ${
                           metricSelected === "transactions"
                             ? `Transfers Sum: <span>${formatNumber(totalY, 0)}</span>`
-                            : `Volume Sum: <span>$${formatNumber(totalY, 0)}</span>`
+                            : `Volume Sum: <span>$${
+                                isDesktop ? formatNumber(totalY, 0) : numberToSuffix(totalY)
+                              }</span>`
                         }
                       </div>
                       <p class="chain-activity-chart-tooltip-chains">Chains:</p>
