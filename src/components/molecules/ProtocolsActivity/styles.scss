@@ -26,7 +26,12 @@
     gap: 8px;
     margin-bottom: 24px;
 
-    & > svg {
+    &-fullscreen {
+      cursor: pointer;
+      transform: translateY(3px);
+    }
+
+    svg {
       color: var(--color-gray-600);
     }
   }
@@ -263,6 +268,21 @@
         @include desktop {
           bottom: 8px;
           width: 217px;
+        }
+      }
+
+      &-scale {
+        position: absolute;
+        right: 0;
+        top: 10px;
+
+        background-color: var(--color-gray-900);
+
+        border-radius: 12px;
+
+        & .toggle-group-item {
+          border-radius: 12px;
+          padding: 6px;
         }
       }
 

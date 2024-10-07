@@ -1,9 +1,15 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { ChainId } from "@wormhole-foundation/sdk";
 import { BREAKPOINTS } from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { ActivityIcon, ChevronDownIcon, CrossIcon, FilterListIcon } from "src/icons/generic";
+import {
+  ActivityIcon,
+  ChevronDownIcon,
+  CrossIcon,
+  FilterListIcon,
+  FullscreenIcon,
+} from "src/icons/generic";
 import { BlockchainIcon, Counter, NavLink, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { useLockBodyScroll, useOutsideClick, useWindowSize } from "src/utils/hooks";
@@ -174,12 +180,42 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
     scrollableClasses: ["select__option"],
   });
 
+  const tokenActivityRef = useRef(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
   return (
-    <div className="token-activity">
+    <div
+      className="token-activity"
+      ref={tokenActivityRef}
+      style={{ padding: isFullscreen ? "4%" : 0, paddingTop: isFullscreen ? "6%" : 0 }}
+    >
       {openFilters && !isDesktop && <div className="token-activity-bg" />}
 
       <h3 className="token-activity-title">
         <ActivityIcon /> Cross-Chain Token Activity
+        <div
+          className="token-activity-title-fullscreen"
+          onClick={() => {
+            if (isFullscreen || !tokenActivityRef.current) {
+              document.exitFullscreen();
+            } else {
+              tokenActivityRef.current.requestFullscreen();
+            }
+          }}
+        >
+          <FullscreenIcon width={20} />
+        </div>
         {isHomePage && (
           <NavLink className="token-activity-title-link" to="/analytics/tokens">
             View More

@@ -26,7 +26,12 @@
     gap: 8px;
     margin-bottom: 24px;
 
-    & > svg {
+    &-fullscreen {
+      cursor: pointer;
+      transform: translateY(3px);
+    }
+
+    svg {
       color: var(--color-gray-600);
     }
 
@@ -429,8 +434,23 @@
         }
       }
 
-      &-toggle {
+      &-toggles {
+        @include centered-row;
         margin-left: auto;
+        gap: 0 16px;
+      }
+
+      &-scale {
+        border-radius: 12px;
+        margin-left: auto;
+
+        & .toggle-group-item {
+          border-radius: 12px;
+          padding: 6px;
+        }
+      }
+
+      &-toggle {
         border-radius: 12px !important;
 
         & button {
