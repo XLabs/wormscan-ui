@@ -346,7 +346,7 @@ const Txs = () => {
                 }
               }
 
-              const timestampDate = new Date(timestamp);
+              const timestampDate = timestamp ? new Date(timestamp) : null;
               const row = {
                 VAAId: VAAId,
                 justAppeared: justAppeared,
