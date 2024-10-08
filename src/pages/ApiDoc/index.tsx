@@ -41,7 +41,7 @@ const ApiDoc = () => {
                 operationId: "tokens-symbol-volume",
                 parameters: [
                   {
-                    type: "string",
+                    type: "number",
                     description: "Limit, default is 10.",
                     name: "limit",
                     in: "query",
