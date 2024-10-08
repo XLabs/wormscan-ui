@@ -6,12 +6,15 @@ import {
   toNative,
 } from "@wormhole-foundation/sdk";
 import {
+  ALL_BRIDGE_APP_ID,
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
   MAYAN_MCTP_APP_ID,
+  NTT_APP_ID,
   PORTAL_APP_ID,
+  TBTC_APP_ID,
   USDT_TRANSFER_APP_ID,
 } from "src/consts";
 
@@ -95,6 +98,15 @@ export const formatAppId = (appId: string) => {
   }
   if (appId === MAYAN_MCTP_APP_ID) {
     return "Mayan MCTP";
+  }
+  if (appId === TBTC_APP_ID) {
+    return "tBTC";
+  }
+  if (appId === NTT_APP_ID) {
+    return "Wormhole NTT";
+  }
+  if (appId === ALL_BRIDGE_APP_ID) {
+    return "Allbridge";
   }
   if (appId === GR_APP_ID) {
     return "Standard Relayer";
