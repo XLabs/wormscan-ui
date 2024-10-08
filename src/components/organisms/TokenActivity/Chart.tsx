@@ -40,7 +40,7 @@ export const Chart = ({
   metricSelected,
   rangeShortLabel,
 }: Props) => {
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("linear");
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const chartRef = useRef(null);
 
@@ -103,7 +103,7 @@ export const Chart = ({
               </div>
 
               <div className="token-activity-chart-top-toggles">
-                {chartSelected === "area" && (
+                {/* {chartSelected === "area" && (
                   <ToggleGroup
                     ariaLabel="Select scale"
                     className="token-activity-chart-top-scale"
@@ -111,7 +111,7 @@ export const Chart = ({
                     onValueChange={value => setScaleSelected(value)}
                     value={scaleSelected}
                   />
-                )}
+                )} */}
 
                 <ToggleGroup
                   ariaLabel="Select type"

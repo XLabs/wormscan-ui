@@ -64,7 +64,7 @@ export const TransfersOverTime = ({
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
 
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("linear");
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const chartRef = useRef(null);
 
@@ -98,31 +98,31 @@ export const TransfersOverTime = ({
     return date.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "2-digit" });
   };
 
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
+  // useEffect(() => {
+  //   const handleFullscreenChange = () => {
+  //     setIsFullscreen(!!document.fullscreenElement);
+  //   };
 
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, []);
+  //   document.addEventListener("fullscreenchange", handleFullscreenChange);
+  //   return () => {
+  //     document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  //   };
+  // }, []);
 
-  const transferOverTimeRef = useRef(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  // const transferOverTimeRef = useRef(null);
+  // const [isFullscreen, setIsFullscreen] = useState(false);
 
   return (
     <div
       className="transfers-over-time"
-      ref={transferOverTimeRef}
-      style={{ padding: isFullscreen ? "4%" : 0, paddingTop: isFullscreen ? "6%" : 0 }}
+      // ref={transferOverTimeRef}
+      // style={{ padding: isFullscreen ? "4%" : 0, paddingTop: isFullscreen ? "6%" : 0 }}
     >
       <div className="transfers-over-time-header">
         <h3 className="transfers-over-time-title">
           <ActivityIcon />
           <span>Cross-Chain W Token Transfers Over Time</span>
-          <div
+          {/* <div
             className="transfers-over-time-title-fullscreen"
             onClick={() => {
               if (isFullscreen || !transferOverTimeRef.current) {
@@ -133,7 +133,7 @@ export const TransfersOverTime = ({
             }}
           >
             <FullscreenIcon width={20} />
-          </div>
+          </div> */}
         </h3>
       </div>
 
@@ -163,7 +163,7 @@ export const TransfersOverTime = ({
                 />
 
                 <div className="transfers-over-time-toggles">
-                  {chartSelected === "area" && (
+                  {/* {chartSelected === "area" && (
                     <ToggleGroup
                       ariaLabel="Select scale"
                       className="transfers-over-time-toggle-scale"
@@ -171,7 +171,7 @@ export const TransfersOverTime = ({
                       onValueChange={value => setScaleSelected(value)}
                       value={scaleSelected}
                     />
-                  )}
+                  )} */}
 
                   <ToggleGroup
                     ariaLabel="Select chart type"

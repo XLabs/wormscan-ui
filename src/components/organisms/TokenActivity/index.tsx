@@ -180,31 +180,31 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
     scrollableClasses: ["select__option"],
   });
 
-  const tokenActivityRef = useRef(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  // const tokenActivityRef = useRef(null);
+  // const [isFullscreen, setIsFullscreen] = useState(false);
 
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
+  // useEffect(() => {
+  //   const handleFullscreenChange = () => {
+  //     setIsFullscreen(!!document.fullscreenElement);
+  //   };
 
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, []);
+  //   document.addEventListener("fullscreenchange", handleFullscreenChange);
+  //   return () => {
+  //     document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  //   };
+  // }, []);
 
   return (
     <div
       className="token-activity"
-      ref={tokenActivityRef}
-      style={{ padding: isFullscreen ? "4%" : 0, paddingTop: isFullscreen ? "6%" : 0 }}
+      // ref={tokenActivityRef}
+      // style={{ padding: isFullscreen ? "4%" : 0, paddingTop: isFullscreen ? "6%" : 0 }}
     >
       {openFilters && !isDesktop && <div className="token-activity-bg" />}
 
       <h3 className="token-activity-title">
         <ActivityIcon /> Cross-Chain Token Activity
-        <div
+        {/* <div
           className="token-activity-title-fullscreen"
           onClick={() => {
             if (isFullscreen || !tokenActivityRef.current) {
@@ -215,7 +215,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
           }}
         >
           <FullscreenIcon width={20} />
-        </div>
+        </div> */}
         {isHomePage && (
           <NavLink className="token-activity-title-link" to="/analytics/tokens">
             View More

@@ -64,7 +64,7 @@ const ChainActivity = () => {
 
   const chartRef = useRef(null);
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("linear");
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
 
   const initialDataDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
@@ -630,31 +630,31 @@ const ChainActivity = () => {
     showAllSourceChains,
   ]);
 
-  const chainActivityRef = useRef(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  // const chainActivityRef = useRef(null);
+  // const [isFullscreen, setIsFullscreen] = useState(false);
 
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
+  // useEffect(() => {
+  //   const handleFullscreenChange = () => {
+  //     setIsFullscreen(!!document.fullscreenElement);
+  //   };
 
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, []);
+  //   document.addEventListener("fullscreenchange", handleFullscreenChange);
+  //   return () => {
+  //     document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  //   };
+  // }, []);
 
   return (
     <div
       className="chain-activity"
-      ref={chainActivityRef}
-      style={{ padding: isFullscreen ? "4%" : 0, paddingTop: isFullscreen ? "6%" : 0 }}
+      // ref={chainActivityRef}
+      // style={{ padding: isFullscreen ? "4%" : 0, paddingTop: isFullscreen ? "6%" : 0 }}
     >
       {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
 
       <h2 className="chain-activity-title">
         <AnalyticsIcon width={24} /> Chains Activity{" "}
-        <div
+        {/* <div
           className="chain-activity-title-fullscreen"
           onClick={() => {
             if (isFullscreen || !chainActivityRef.current) {
@@ -665,7 +665,7 @@ const ChainActivity = () => {
           }}
         >
           <FullscreenIcon width={20} />
-        </div>
+        </div> */}
       </h2>
 
       <div className="chain-activity-chart" ref={chartRef}>
@@ -887,7 +887,7 @@ const ChainActivity = () => {
               value={chartSelected}
             />
 
-            {chartSelected === "area" && (
+            {/* {chartSelected === "area" && (
               <ToggleGroup
                 ariaLabel="Select scale"
                 className="chain-activity-chart-scale"
@@ -895,7 +895,7 @@ const ChainActivity = () => {
                 onValueChange={value => setScaleSelected(value)}
                 value={scaleSelected}
               />
-            )}
+            )} */}
           </div>
         </div>
 
