@@ -7,6 +7,7 @@ import "./styles.scss";
 
 const ApiDoc = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [swaggerSpec, setSwaggerSpec] = useState(null);
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "Mainnet";
@@ -15,9 +16,180 @@ const ApiDoc = () => {
     ? `${process.env.WORMSCAN_API_BASE_URL_ROOT}/swagger.json`
     : `${process.env.WORMSCAN_TESTNET_API_BASE_URL_ROOT}/swagger.json`;
 
+  // TODO: when the endpoint works fine, remove the following code
+  const host = isMainnet
+    ? process.env.WORMSCAN_API_BASE_URL_ROOT?.replace(/^https?:\/\//, "")
+    : process.env.WORMSCAN_TESTNET_API_BASE_URL_ROOT?.replace(/^https?:\/\//, "");
+
   useEffect(() => {
-    setIsLoading(true);
-  }, [isMainnet]);
+    const fetchSwaggerSpec = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(url);
+        let data = await response.json();
+
+        data = {
+          ...data,
+          host: host,
+          schemes: ["https"],
+          paths: {
+            ...data.paths,
+            "/api/v1/tokens-symbol-volume": {
+              get: {
+                description: "Get symbols with the highest volumes of all time.",
+                tags: ["wormholescan"],
+                operationId: "tokens-symbol-volume",
+                parameters: [
+                  {
+                    type: "string",
+                    description: "Limit, default is 10.",
+                    name: "limit",
+                    in: "query",
+                    required: false,
+                  },
+                ],
+                responses: {
+                  "200": {
+                    description: "OK",
+                  },
+                  "400": {
+                    description: "Bad Request",
+                  },
+                  "500": {
+                    description: "Internal Server Error",
+                  },
+                },
+              },
+            },
+            "/api/v1/tokens-symbol-activity": {
+              get: {
+                description: "Get token activity.",
+                tags: ["wormholescan"],
+                operationId: "tokens-symbol-activity",
+                parameters: [
+                  {
+                    type: "string",
+                    description:
+                      "From date, supported in ISO 8601 format. Examples: UTC Time 2024-01-01T15:04:05Z / Local Time 2006-01-01T15:04:05-07:00",
+                    name: "from",
+                    in: "query",
+                    required: true,
+                  },
+                  {
+                    type: "string",
+                    description:
+                      "To date, supported in ISO 8601 format. Examples: UTC Time 2024-01-01T15:04:05Z / Local Time 2006-01-01T15:04:05-07:00",
+                    name: "to",
+                    in: "query",
+                    required: true,
+                  },
+                  {
+                    type: "string",
+                    description: "Token symbols. Example: USDT,USDC",
+                    name: "symbol",
+                    in: "query",
+                    required: false,
+                  },
+                  {
+                    enum: ["1d", "1h"],
+                    type: "string",
+                    description: "Time span",
+                    name: "timespan",
+                    in: "query",
+                    required: true,
+                  },
+                  {
+                    type: "number",
+                    description: "Source chain",
+                    name: "sourceChain",
+                    in: "query",
+                    required: false,
+                  },
+                  {
+                    type: "number",
+                    description: "Target chain",
+                    name: "targetChain",
+                    in: "query",
+                    required: false,
+                  },
+                ],
+                responses: {
+                  "200": {
+                    description: "OK",
+                  },
+                  "400": {
+                    description: "Bad Request",
+                  },
+                  "500": {
+                    description: "Internal Server Error",
+                  },
+                },
+              },
+            },
+          },
+        };
+
+        const pathsToDeprecate = [
+          "/api/v1/address/:address",
+          "/api/v1/global-tx/:chain_id/:emitter/:seq",
+          "/api/v1/transactions/",
+          "/api/v1/transactions/:chain_id/:emitter/:seq",
+        ];
+
+        pathsToDeprecate.forEach(path => {
+          if (data.paths[path] && data.paths[path].get) {
+            data.paths[path].get = {
+              ...data.paths[path].get,
+              deprecated: true,
+            };
+          }
+        });
+
+        const pathsToModify = [
+          "/api/v1/application-activity",
+          "/api/v1/native-token-transfer/transfer-by-time",
+          "/api/v1/x-chain-activity/tops",
+        ];
+
+        pathsToModify.forEach(path => {
+          if (data.paths[path] && data.paths[path].get) {
+            data.paths[path].get.parameters = data.paths[path].get.parameters.map((param: any) => {
+              if (param.name === "timespan") {
+                return {
+                  ...param,
+                  description: "Time span, supported values: 1h, 1d, 1mo and 1y",
+                };
+              }
+              if (param.name === "from") {
+                return {
+                  ...param,
+                  description:
+                    "From date, supported in ISO 8601 format. Examples: UTC Time 2024-01-01T15:04:05Z / Local Time 2006-01-01T15:04:05-07:00",
+                };
+              }
+              if (param.name === "to") {
+                return {
+                  ...param,
+                  description:
+                    "To date, supported in ISO 8601 format. Examples: UTC Time 2024-01-01T15:04:05Z / Local Time 2006-01-01T15:04:05-07:00",
+                };
+              }
+              return param;
+            });
+          }
+        });
+
+        setSwaggerSpec(data);
+      } catch (error) {
+        console.error("Error fetching Swagger spec:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSwaggerSpec();
+  }, [host, url]);
+  // ---
 
   return (
     <BaseLayout secondaryHeader>
@@ -88,7 +260,7 @@ const ApiDoc = () => {
 
         <SwaggerUI
           key={url}
-          url={url}
+          spec={swaggerSpec}
           onComplete={() => {
             setIsLoading(false);
           }}
