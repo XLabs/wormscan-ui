@@ -11,7 +11,7 @@ import { timeAgo } from "src/utils/date";
 import { ArrowRightIcon, CopyIcon, TxFlowSelfH } from "src/icons/generic";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { ChainLimit, Order } from "src/api";
-import { ChainId } from "@wormhole-foundation/sdk";
+import { ChainId, deserialize } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { GetOperationsInput, GetOperationsOutput } from "src/api/guardian-network/types";
 import { Information } from "./Information";
@@ -346,7 +346,15 @@ const Txs = () => {
                 }
               }
 
-              const timestampDate = new Date(timestamp);
+              const vaaBuffer = tx?.vaa?.raw ? Buffer.from(tx.vaa.raw, "base64") : null;
+              const parsedVaa = vaaBuffer ? deserialize("Uint8Array", vaaBuffer) : null;
+              const vaaTimestamp = parsedVaa ? parsedVaa?.timestamp * 1000 : null;
+              const timestampDate = timestamp
+                ? new Date(timestamp)
+                : vaaTimestamp
+                ? new Date(vaaTimestamp)
+                : null;
+
               const row = {
                 VAAId: VAAId,
                 justAppeared: justAppeared,

@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useQuery } from "react-query";
 import ReactApexChart from "react-apexcharts";
 import { BREAKPOINTS, PORTAL_NFT_APP_ID } from "src/consts";
@@ -18,7 +18,10 @@ import {
   CrossIcon,
   Cube3DIcon,
   FilterListIcon,
+  FullscreenIcon,
   GlobeIcon,
+  LinearIcon,
+  LogarithmicIcon,
 } from "src/icons/generic";
 import "./styles.scss";
 
@@ -46,6 +49,11 @@ const TYPE_CHART_LIST = [
   { label: <AnalyticsIcon width={24} />, value: "bar", ariaLabel: "Bar" },
 ];
 
+const SCALE_CHART_LIST = [
+  { label: <LogarithmicIcon width={22} />, value: "logarithmic", ariaLabel: "Logarithmic" },
+  { label: <LinearIcon width={22} />, value: "linear", ariaLabel: "Linear" },
+];
+
 const RANGE_LIST = [
   { label: "Last 24 hours", value: getISODateZeroed(1), timespan: "1h" },
   { label: "Last 7 days", value: getISODateZeroed(7), timespan: "1d" },
@@ -60,6 +68,7 @@ const ProtocolsActivity = () => {
   const isDesktop = width >= BREAKPOINTS.desktop;
 
   const chartRef = useRef(null);
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const [metricSelected, setMetricSelected] = useState<"volume" | "transfers">("volume");
   const [totalVolumeValue, setTotalVolumeValue] = useState(0);
@@ -251,13 +260,42 @@ const ProtocolsActivity = () => {
     scrollableClasses: ["select__option"],
   });
 
+  const protocolsActivityRef = useRef(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
   return (
-    <div className="protocols-activity">
+    <div
+      className="protocols-activity"
+      ref={protocolsActivityRef}
+      style={{ padding: isFullscreen ? "4%" : 0, paddingTop: isFullscreen ? "6%" : 0 }}
+    >
       {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
 
       <h3 className="protocols-activity-title">
         <Cube3DIcon />
         Protocols Activity
+        <div
+          className="protocols-activity-title-fullscreen"
+          onClick={() => {
+            if (isFullscreen || !protocolsActivityRef.current) {
+              document.exitFullscreen();
+            } else {
+              protocolsActivityRef.current.requestFullscreen();
+            }
+          }}
+        >
+          <FullscreenIcon width={20} />
+        </div>
       </h3>
 
       <div className="protocols-activity-container">
@@ -401,6 +439,16 @@ const ProtocolsActivity = () => {
                 )}
               </div>
 
+              {chartSelected === "area" && (
+                <ToggleGroup
+                  ariaLabel="Select scale"
+                  className="protocols-activity-container-chart-scale"
+                  items={SCALE_CHART_LIST}
+                  onValueChange={value => setScaleSelected(value)}
+                  value={scaleSelected}
+                />
+              )}
+
               <ReactApexChart
                 key={chartSelected}
                 series={series}
@@ -520,6 +568,8 @@ const ProtocolsActivity = () => {
                       },
                     },
                     opposite: true,
+                    logarithmic: scaleSelected === "logarithmic" && chartSelected === "area",
+                    forceNiceScale: scaleSelected === "logarithmic" && chartSelected === "area",
                   },
                   tooltip: {
                     custom: ({ s, seriesIndex, dataPointIndex, w }) => {

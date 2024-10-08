@@ -16,7 +16,10 @@ import {
   AnalyticsIcon,
   CrossIcon,
   FilterListIcon,
+  FullscreenIcon,
   GlobeIcon,
+  LinearIcon,
+  LogarithmicIcon,
 } from "src/icons/generic";
 import { IChainActivity, IChainActivityInput } from "src/api/guardian-network/types";
 import { calculateDateDifferenceInDays, startOfDayUTC, startOfMonthUTC } from "src/utils/date";
@@ -43,6 +46,11 @@ const TYPE_CHART_LIST = [
   { label: <AnalyticsIcon width={24} />, value: "bar", ariaLabel: "Bar" },
 ];
 
+const SCALE_CHART_LIST = [
+  { label: <LogarithmicIcon width={22} />, value: "logarithmic", ariaLabel: "Logarithmic" },
+  { label: <LinearIcon width={22} />, value: "linear", ariaLabel: "Linear" },
+];
+
 const METRIC_CHART_LIST = [
   { label: "Volumen", value: "volume", ariaLabel: "Volume" },
   { label: "Transfers", value: "transactions", ariaLabel: "Transfers" },
@@ -56,6 +64,7 @@ const ChainActivity = () => {
 
   const chartRef = useRef(null);
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
 
   const initialDataDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
@@ -621,12 +630,42 @@ const ChainActivity = () => {
     showAllSourceChains,
   ]);
 
+  const chainActivityRef = useRef(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
   return (
-    <div className="chain-activity">
+    <div
+      className="chain-activity"
+      ref={chainActivityRef}
+      style={{ padding: isFullscreen ? "4%" : 0, paddingTop: isFullscreen ? "6%" : 0 }}
+    >
       {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
 
       <h2 className="chain-activity-title">
-        <AnalyticsIcon width={24} /> Chains Activity
+        <AnalyticsIcon width={24} /> Chains Activity{" "}
+        <div
+          className="chain-activity-title-fullscreen"
+          onClick={() => {
+            if (isFullscreen || !chainActivityRef.current) {
+              document.exitFullscreen();
+            } else {
+              chainActivityRef.current.requestFullscreen();
+            }
+          }}
+        >
+          <FullscreenIcon width={20} />
+        </div>
       </h2>
 
       <div className="chain-activity-chart" ref={chartRef}>
@@ -673,7 +712,7 @@ const ChainActivity = () => {
                   {filters.sourceChain.length > 0 && (
                     <Counter>{filters.sourceChain.length}</Counter>
                   )}
-                  Source <span className="hidden-desktop-1150">chain</span>
+                  Source <span className="hidden-desktop-1180">chain</span>
                 </div>
               }
               type="searchable"
@@ -694,7 +733,7 @@ const ChainActivity = () => {
                   {filters?.targetChain?.length > 0 && (
                     <Counter>{filters.targetChain.length}</Counter>
                   )}
-                  Target <span className="hidden-desktop-1150">chain</span>
+                  Target <span className="hidden-desktop-1180">chain</span>
                 </div>
               }
               type="searchable"
@@ -847,6 +886,16 @@ const ChainActivity = () => {
               onValueChange={value => setChartSelected(value)}
               value={chartSelected}
             />
+
+            {chartSelected === "area" && (
+              <ToggleGroup
+                ariaLabel="Select scale"
+                className="chain-activity-chart-scale"
+                items={SCALE_CHART_LIST}
+                onValueChange={value => setScaleSelected(value)}
+                value={scaleSelected}
+              />
+            )}
           </div>
         </div>
 
@@ -995,6 +1044,8 @@ const ChainActivity = () => {
                     },
                   },
                   opposite: true,
+                  logarithmic: scaleSelected === "logarithmic" && chartSelected === "area",
+                  forceNiceScale: scaleSelected === "logarithmic" && chartSelected === "area",
                 },
                 tooltip: {
                   custom: ({ series, seriesIndex, dataPointIndex, w }) => {
