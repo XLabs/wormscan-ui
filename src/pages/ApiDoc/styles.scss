@@ -221,7 +221,8 @@
         display: none;
       }
 
-      & > .information-container {
+      & > .information-container,
+      & > .scheme-container {
         display: none;
       }
 
@@ -290,6 +291,29 @@
                       background-color: var(--color-gray-900);
                     }
 
+                    &-deprecated {
+                      & .opblock-summary-method {
+                        opacity: 0.6;
+                      }
+
+                      &:has(.opblock-summary-control[aria-expanded="true"]) {
+                        background-color: var(--color-gray-900);
+                      }
+
+                      &#operations-wormholescan-find-address-by-id {
+                        & .opblock-title_normal::after {
+                          content: "This endpoint will be deprecated in the coming months. No exact date is set yet. Please migrate to the new '/api/v1/operations?address' soon.";
+                        }
+                      }
+                      &#operations-wormholescan-find-global-transaction-by-id,
+                      &#operations-wormholescan-list-transactions,
+                      &#operations-wormholescan-get-transaction-by-id {
+                        & .opblock-title_normal::after {
+                          content: "This endpoint will be deprecated in the coming months. No exact date is set yet. Please migrate to the new '/api/v1/operations' soon.";
+                        }
+                      }
+                    }
+
                     & > .opblock-summary {
                       @include centered-row;
                       @include text-roboto-body-large-400;
@@ -349,6 +373,32 @@
                           @include text-roboto-body-400;
 
                           & > .opblock-summary-path {
+                            &__deprecated {
+                              @include centered-row;
+                              opacity: 0.6;
+                              position: relative;
+
+                              & > .nostyle {
+                                & > span {
+                                  display: block;
+                                  max-width: calc(100vw - 200px);
+                                  overflow: hidden;
+                                  text-overflow: ellipsis;
+                                  white-space: nowrap;
+
+                                  &::after {
+                                    @include text-roboto-body-400;
+                                    content: "[Upcoming Deprecation]";
+                                    margin-left: 8px;
+                                  }
+
+                                  & > wbr {
+                                    display: none;
+                                  }
+                                }
+                              }
+                            }
+
                             & > .nostyle {
                               & > span {
                                 display: block;
@@ -419,6 +469,39 @@
                       padding-bottom: 4px;
 
                       & > .opblock-body {
+                        & > .opblock-title_normal {
+                          @include centered-column;
+                          @include text-roboto-subheading-500;
+                          background-color: var(--color-gray-950);
+                          padding: 12px;
+                          position: relative;
+
+                          @include desktop {
+                            padding: 16px 20px 0 20px;
+                          }
+
+                          &::before {
+                            @include text-roboto-subheading-500;
+                            background-color: var(--color-gray-950);
+                            color: var(--color-coral);
+                            content: "Warning";
+                            position: absolute;
+                            top: 12px;
+                            width: 100%;
+
+                            @include desktop {
+                              top: 16px;
+                            }
+                          }
+
+                          &::after {
+                            @include text-roboto-body-400;
+                            background-color: var(--color-gray-950);
+                            color: var(--color-gray-400);
+                            content: "This endpoint will be deprecated in the coming months. No exact date is set yet.";
+                          }
+                        }
+
                         & > .opblock-description-wrapper {
                           background-color: var(--color-gray-950);
                           padding: 12px 12px 24px 12px;
@@ -432,6 +515,18 @@
                               & > p {
                                 @include text-roboto-body-400;
                                 color: var(--color-gray-400);
+                                margin-top: 24px;
+                                position: relative;
+
+                                &::before {
+                                  @include text-roboto-subheading-500;
+                                  color: var(--color-white);
+                                  content: "Description";
+                                  height: inherit;
+                                  position: absolute;
+                                  top: -24px;
+                                  width: inherit;
+                                }
                               }
                             }
                           }
@@ -605,6 +700,10 @@
                                         text-wrap: pretty;
                                       }
 
+                                      & > .parameter__enum {
+                                        display: none;
+                                      }
+
                                       & > input {
                                         @include text-heading6;
                                         background-color: var(--color-gray-900);
@@ -703,22 +802,22 @@
                         }
 
                         & > .responses-wrapper {
+                          background-color: var(--color-gray-950);
+                          border-radius: 12px;
+                          padding: 12px;
                           position: relative;
+
+                          @include desktop {
+                            padding: 20px;
+                          }
 
                           & > .opblock-section-header {
                             @include centered-column;
-                            left: 12px;
-                            padding: 12px 0;
-                            position: absolute;
-                            right: 12px;
-                            z-index: 9;
+                            margin-bottom: 24px;
 
                             @include desktop {
                               @include centered-row;
                               justify-content: space-between;
-                              left: 20px;
-                              padding: 16px 0;
-                              right: 20px;
                             }
 
                             & > h4 {
@@ -752,17 +851,92 @@
 
                               & > div {
                                 & > .curl-command {
-                                  display: none;
+                                  @include centered-column;
+                                  border-bottom: 1px solid var(--color-gray-900);
+                                  margin-bottom: 20px;
+                                  padding-bottom: 20px;
+
+                                  @include desktop {
+                                    @include centered-row;
+                                  }
+
+                                  & > h4 {
+                                    @include text-roboto-subheading-500;
+                                    margin-bottom: 12px;
+
+                                    @include desktop {
+                                      margin-bottom: 0;
+                                      width: 33%;
+                                    }
+                                  }
+
+                                  & > .copy-to-clipboard {
+                                    display: none;
+                                  }
+
+                                  & > div {
+                                    @include desktop {
+                                      width: 67%;
+                                    }
+
+                                    & > .curl {
+                                      @include text-roboto-body-400;
+                                      background-color: var(--color-black) !important;
+                                      border-radius: 12px;
+                                      padding: 12px !important;
+
+                                      @include desktop {
+                                        padding: 20px !important;
+                                      }
+
+                                      & > .language-bash {
+                                        & > span[style="color: rgb(162, 252, 162);"] {
+                                          color: #ff884d !important;
+                                        }
+                                      }
+                                    }
+                                  }
                                 }
 
                                 & > div {
                                   & > .request-url {
-                                    display: none;
+                                    @include centered-column;
+                                    border-bottom: 1px solid var(--color-gray-900);
+                                    margin-bottom: 20px;
+                                    padding-bottom: 20px;
+
+                                    @include desktop {
+                                      @include centered-row;
+                                    }
+
+                                    & > h4 {
+                                      @include text-roboto-subheading-500;
+                                      margin-bottom: 12px;
+
+                                      @include desktop {
+                                        margin-bottom: 0;
+                                        width: 33%;
+                                      }
+                                    }
+
+                                    & > .microlight {
+                                      @include text-roboto-body-400;
+                                      background-color: var(--color-black);
+                                      border-radius: 12px;
+                                      overflow: auto;
+                                      padding: 12px;
+
+                                      @include desktop {
+                                        padding: 20px;
+                                        width: 67%;
+                                      }
+                                    }
                                   }
                                 }
 
                                 & > h4 {
-                                  display: none;
+                                  @include text-roboto-subheading-500;
+                                  margin-bottom: 12px;
                                 }
                               }
 
@@ -770,32 +944,23 @@
                                 @include text-roboto-subheading-500;
                                 position: absolute;
                                 bottom: -52px;
-                                left: 12px;
-
-                                @include desktop {
-                                  left: 20px;
-                                }
                               }
                             }
 
                             & .responses-table {
                               @include centered-column;
-                              background-color: var(--color-gray-950);
-                              border-radius: 12px;
-                              margin-bottom: 4px;
-                              padding: 148px 12px 12px 12px;
+                              border-bottom: 1px solid var(--color-gray-900);
+                              margin-bottom: 20px;
+                              padding-bottom: 20px;
                               width: 100%;
 
-                              @include desktop {
-                                padding: 72px 20px 20px 20px;
-                              }
-
                               &:nth-child(2) {
-                                padding: 64px 12px 20px 12px;
-                                margin-bottom: 8px;
+                                border: none;
+                                margin-bottom: 0;
+                                padding: 64px 0 0 0;
 
                                 @include desktop {
-                                  padding: 64px 20px 22px 20px;
+                                  padding: 64px 0 0 0;
                                 }
                               }
 
