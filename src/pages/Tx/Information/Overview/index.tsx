@@ -4,7 +4,13 @@ import { ChainId, chainIdToChain, chainToChainId } from "@wormhole-foundation/sd
 import { AddToMetaMaskBtn, BlockchainIcon, ProtocolIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
-import { BREAKPOINTS, CCTP_MANUAL_APP_ID, txType } from "src/consts";
+import {
+  BREAKPOINTS,
+  CCTP_MANUAL_APP_ID,
+  MAYAN_MCTP_APP_ID,
+  MAYAN_SWIFT_APP_ID,
+  txType,
+} from "src/consts";
 import {
   ArrowRightIcon,
   ArrowUpRightIcon,
@@ -38,6 +44,7 @@ import {
 import "./styles.scss";
 
 const Overview = ({
+  action,
   amountSent,
   amountSentUSD,
   appIds,
@@ -1631,6 +1638,74 @@ const Overview = ({
                     <CopyIcon width={24} />
                   </CopyToClipboard>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {action && (appIds.includes(MAYAN_SWIFT_APP_ID) || appIds.includes(MAYAN_MCTP_APP_ID)) && (
+        <div className="tx-overview-section">
+          <div className="tx-overview-section-row">
+            <h4 className="tx-overview-section-row-title">
+              {appIds.includes(MAYAN_SWIFT_APP_ID) ? (
+                <Tooltip
+                  type="info"
+                  tooltip={
+                    <div>
+                      <p>
+                        The Action field indicates the type of Wormhole messages linked with Swift.
+                      </p>
+                    </div>
+                  }
+                >
+                  <span>
+                    <InfoCircleIcon />
+                    Action
+                  </span>
+                </Tooltip>
+              ) : (
+                <span>Action</span>
+              )}
+            </h4>
+            <div className="tx-overview-section-row-info">
+              <div className="tx-overview-section-row-info-container">
+                <Tooltip
+                  type="info"
+                  tooltip={
+                    <div>
+                      <p>
+                        {appIds.includes(MAYAN_SWIFT_APP_ID)
+                          ? action === 1
+                            ? "Unlock orders from the source chain."
+                            : action === 2
+                            ? "Utilized when not employing batch unlock (the unlock message is immediately emitted upon fulfilling orders)."
+                            : action === 3
+                            ? "Refunding orders on the source chain that are not completed within the specified timeframe."
+                            : action === 4
+                            ? "Refunding orders on the source chain that are not completed by the specified date."
+                            : ""
+                          : appIds.includes(MAYAN_MCTP_APP_ID)
+                          ? action === 1
+                            ? "Swap/Refund Message: Emitted when a swap or refund is needed for non-USDC destination tokens."
+                            : action === 2
+                            ? "Auction Message: Handles auctions when the output token is not USDC."
+                            : action === 3
+                            ? "Bridge with Fee Message: Used for USDC-to-USDC transactions."
+                            : action === 4
+                            ? "Unlock Message: Unlocks fees on the source chain after completing an order on the destination chain."
+                            : action === 5
+                            ? "Refine Fee Message: Unlocks fees on the source chain if the gasdrop was paid by another party."
+                            : ""
+                          : ""}
+                      </p>
+                    </div>
+                  }
+                >
+                  <div className="text">
+                    {action} <InfoCircleIcon />
+                  </div>
+                </Tooltip>
               </div>
             </div>
           </div>

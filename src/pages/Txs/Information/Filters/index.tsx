@@ -228,18 +228,12 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
             keepOpen={isDesktop}
             ariaLabel="Select Protocol"
             controlStyles={{ minWidth: 256 }}
-            isMulti={false}
             items={PROTOCOL_LIST}
             menuFixed={!isDesktop}
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
             menuPortalStyles={{ zIndex: 100 }}
             name="protocol"
-            onValueChange={(value: any) =>
-              setCheckedState({
-                ...checkedState,
-                appId: value?.value === checkedState.appId?.[0]?.value ? [] : [value],
-              })
-            }
+            onValueChange={(value: any) => setCheckedState({ ...checkedState, appId: value })}
             optionStyles={{ padding: 16 }}
             text={
               <div className="filters-container-select-text">

@@ -101,6 +101,7 @@ const Information = ({
     payloadType,
     tokenAddress: payloadTokenAddress,
     tokenChain: payloadTokenChain,
+    action,
   } = payload || {};
 
   const fee = standarizedProperties?.overwriteFee || standarizedProperties?.fee || "";
@@ -405,6 +406,7 @@ const Information = ({
   const isLatestBlockHigherThanVaaEmitBlock = lastFinalizedBlock > currentBlock;
 
   const overviewAndDetailProps = {
+    action,
     amountSent,
     amountSentUSD,
     appIds,

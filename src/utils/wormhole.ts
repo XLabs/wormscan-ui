@@ -395,7 +395,7 @@ const WORMHOLE_CHAINS: any = {
     explorer: {
       Testnet: "https://alfajores.celoscan.io",
       Devnet: "https://alfajores.celoscan.io",
-      Mainnet: "https://explorer.celo.org/Mainnet",
+      Mainnet: "https://explorer.celo.org/mainnet",
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
