@@ -500,6 +500,14 @@
       justify-content: flex-start;
     }
 
+    & > .copy-to-clipboard {
+      color: var(--color-gray-400);
+    }
+
+    & > svg {
+      color: var(--color-gray-400);
+    }
+
     & > span {
       color: var(--color-gray-600);
       margin-right: 6px;

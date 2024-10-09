@@ -5,6 +5,7 @@ import { TokenInfo } from "src/utils/metaMaskUtils";
 import { DISCORD_URL, IStatus, MORE_INFO_GOVERNOR_URL } from "src/consts";
 
 export type OverviewProps = {
+  action?: number;
   amountSent?: string;
   amountSentUSD?: string;
   appIds?: string[];

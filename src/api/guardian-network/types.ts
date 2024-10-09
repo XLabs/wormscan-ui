@@ -313,6 +313,7 @@ export interface GetOperationsOutput {
   };
   content: {
     payload: {
+      action?: number;
       amount?: string;
       fee?: string;
       fromAddress?: string | null;
