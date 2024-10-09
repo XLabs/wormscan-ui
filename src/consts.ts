@@ -17,7 +17,7 @@ export const getGuardianSet = (version: number): GuardianSet[] => {
   const v1 = [
     {
       pubkey: "0x58CC3AE5C097b213cE3c81979e1B9f9570746AA5",
-      name: "Jump Crypto", // Certus One
+      name: "Certus One",
     },
     {
       pubkey: "0xfF6CB952589BDE862c25Ef4392132fb9D4A42157",
@@ -108,7 +108,7 @@ export const getGuardianSet = (version: number): GuardianSet[] => {
   };
 
   const v4 = [...v3];
-  v4[1] = {
+  v4[0] = {
     pubkey: "0x5893B5A76c3f739645648885bDCcC06cd70a3Cd3",
     name: "RockawayX",
   };
