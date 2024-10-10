@@ -319,6 +319,7 @@ export interface GetOperationsOutput {
       fromAddress?: string | null;
       parsedPayload?: any;
       payload?: string;
+      payloadId?: number;
       payloadType?: number;
       toAddress?: string;
       toChain?: ChainId;

@@ -98,7 +98,7 @@ const Information = ({
 
   const {
     parsedPayload,
-    payloadType,
+    payloadType = payload?.payloadType || payload?.payloadId,
     tokenAddress: payloadTokenAddress,
     tokenChain: payloadTokenChain,
     action,
