@@ -38,7 +38,11 @@ const AdvancedView = ({ data, extraRawInfo, txIndex }: Props) => {
     <div className="tx-advanced-view">
       <BlockSection title="Tx data" code={stringifyWithBigInt(dataNoPayload, 4)} />
 
-      <BlockSection title="Payload" code={payload && stringifyWithBigInt(payload, 4)} />
+      <BlockSection
+        id={`action${txIndex}`}
+        title="Payload"
+        code={payload && stringifyWithBigInt(payload, 4)}
+      />
 
       {!!extraRawInfo && (
         <BlockSection

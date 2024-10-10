@@ -10,6 +10,7 @@ import {
   CCTP_MANUAL_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
+  MAYAN_MCTP_APP_ID,
   PORTAL_APP_ID,
   USDT_TRANSFER_APP_ID,
 } from "src/consts";
@@ -92,7 +93,9 @@ export const formatAppId = (appId: string) => {
   if (appId === PORTAL_APP_ID) {
     return "Portal";
   }
-
+  if (appId === MAYAN_MCTP_APP_ID) {
+    return "Mayan MCTP";
+  }
   if (appId === GR_APP_ID) {
     return "Standard Relayer";
   }

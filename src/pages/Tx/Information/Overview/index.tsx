@@ -562,24 +562,31 @@ const Overview = ({
         </div>
       </div>
 
-      {txType[payloadType] && (
-        <div className="tx-overview-section">
-          <div className="tx-overview-section-row start details-row">
-            <h4 className="tx-overview-section-row-title">
-              <Tooltip
-                type="info"
-                tooltip={
-                  <div className="tx-overview-section-row-info-tooltip-content">
+      <div className="tx-overview-section">
+        <div className="tx-overview-section-row start details-row">
+          <h4 className="tx-overview-section-row-title">
+            <Tooltip
+              type="info"
+              tooltip={
+                <div className="tx-overview-section-row-info-tooltip-content">
+                  {action &&
+                  (appIds.includes(MAYAN_SWIFT_APP_ID) || appIds.includes(MAYAN_MCTP_APP_ID)) ? (
+                    <p>
+                      The Action field indicates the type of Wormhole messages linked with Mayan.
+                    </p>
+                  ) : (
                     <p>The type of transaction</p>
-                  </div>
-                }
-              >
-                <span>
-                  <InfoCircleIcon /> Transaction Action
-                </span>
-              </Tooltip>
-            </h4>
-            <div className="tx-overview-section-row-info details-info">
+                  )}
+                </div>
+              }
+            >
+              <span>
+                <InfoCircleIcon /> Transaction Action
+              </span>
+            </Tooltip>
+          </h4>
+          <div className="tx-overview-section-row-info details-info">
+            {txType[payloadType] && (
               <div
                 className={`tx-overview-section-row-info-container span2 ${
                   !!showMetaMaskBtn ? "lg-mb-6" : ""
@@ -590,171 +597,147 @@ const Overview = ({
                   <div className="text">{txType[payloadType]}</div>
                 </div>
               </div>
+            )}
 
+            {parsedOriginAddress && (
               <div className="tx-overview-section-row-info-container">
                 <div className="tx-overview-section-row-info-container-key">FROM</div>
 
                 <div className="tx-overview-section-row-info-container-value">
                   <div className="text">
-                    {parsedOriginAddress ? (
-                      <>
-                        <a
-                          href={getExplorerLink({
-                            network: currentNetwork,
-                            chainId: fromChain,
-                            value: parsedOriginAddress,
-                            base: "address",
-                            isNativeAddress: true,
-                          })}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <div className="desktop">
-                            {shortAddress(parsedOriginAddress.toUpperCase())}
-                          </div>
-                          <div className="mobile">
-                            <TruncateText
-                              containerWidth={lineValueWidth}
-                              text={parsedOriginAddress.toUpperCase()}
-                            />
-                          </div>
-                        </a>
-                        <CopyToClipboard toCopy={parsedOriginAddress}>
-                          <CopyIcon width={24} />
-                        </CopyToClipboard>
-                        {addressesInfo?.[parsedOriginAddress.toLowerCase()] && (
-                          <AddressInfoTooltip
-                            info={addressesInfo[parsedOriginAddress.toLowerCase()]}
-                            chain={fromChain}
-                          />
-                        )}
-                      </>
-                    ) : (
-                      "N/A"
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: fromChain,
+                        value: parsedOriginAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <div className="desktop">
+                        {shortAddress(parsedOriginAddress.toUpperCase())}
+                      </div>
+                      <div className="mobile">
+                        <TruncateText
+                          containerWidth={lineValueWidth}
+                          text={parsedOriginAddress.toUpperCase()}
+                        />
+                      </div>
+                    </a>
+                    <CopyToClipboard toCopy={parsedOriginAddress}>
+                      <CopyIcon width={24} />
+                    </CopyToClipboard>
+                    {addressesInfo?.[parsedOriginAddress.toLowerCase()] && (
+                      <AddressInfoTooltip
+                        info={addressesInfo[parsedOriginAddress.toLowerCase()]}
+                        chain={fromChain}
+                      />
                     )}
                   </div>
                 </div>
               </div>
+            )}
 
-              {!isJustGenericRelayer && !isMayanOnly && !nftInfo && (
-                <div className="tx-overview-section-row-info-container">
-                  <div className="tx-overview-section-row-info-container-key">
-                    {isAttestation ? "TOKEN" : "SENT"}
-                  </div>
-
-                  <div className="tx-overview-section-row-info-container-value">
-                    <div className="text">
-                      {tokenAmount ? (
-                        <>
-                          {!isAttestation ? amountSent : ""}{" "}
-                          {SOURCE_SYMBOL ? (
-                            <>
-                              {sourceTokenLink ? (
-                                <a href={sourceTokenLink} target="_blank" rel="noopener noreferrer">
-                                  {SOURCE_SYMBOL}
-                                </a>
-                              ) : (
-                                <span>{SOURCE_SYMBOL}</span>
-                              )}
-                              <span>{amountSentUSD && `($${amountSentUSD})`}</span>
-                            </>
-                          ) : (
-                            "N/A"
-                          )}
-                        </>
-                      ) : (
-                        <>
-                          N/A
-                          {SOURCE_SYMBOL &&
-                            (sourceTokenLink ? (
-                              <a href={sourceTokenLink} target="_blank" rel="noopener noreferrer">
-                                {SOURCE_SYMBOL}
-                              </a>
-                            ) : (
-                              <span>{SOURCE_SYMBOL}</span>
-                            ))}
-                        </>
-                      )}
-
-                      {sourceTokenInfo?.tokenImage &&
-                      sourceTokenInfo.tokenImage !== "missing.png" &&
-                      sourceTokenInfo.tokenImage !== "missing_small.png" ? (
-                        <img
-                          className="token-image"
-                          src={sourceTokenInfo.tokenImage}
-                          height={22}
-                          width={22}
-                        />
-                      ) : getTokenIcon(SOURCE_SYMBOL, true) ? (
-                        <img
-                          className="token-image"
-                          src={getTokenIcon(SOURCE_SYMBOL)}
-                          height={22}
-                          width={22}
-                        />
-                      ) : (
-                        <BlockchainIcon
-                          className="token-image"
-                          chainId={sourceTokenChain ? sourceTokenChain : 0}
-                          network={currentNetwork}
-                        />
-                      )}
-                    </div>
-                  </div>
+            {!isJustGenericRelayer && !isMayanOnly && !nftInfo && tokenAmount && (
+              <div className="tx-overview-section-row-info-container">
+                <div className="tx-overview-section-row-info-container-key">
+                  {isAttestation ? "TOKEN" : "SENT"}
                 </div>
-              )}
-              {!isJustGenericRelayer && nftInfo && (
-                <div className="tx-overview-section-row-info-container">
-                  <div className="tx-overview-section-row-info-container-key">SENT</div>
 
+                <div className="tx-overview-section-row-info-container-value">
                   <div className="text">
-                    {nftInfo.image && <img src={nftInfo.image} height={24} width={24} />}
-                    {nftInfo.name}
+                    {!isAttestation ? amountSent : ""}{" "}
+                    {SOURCE_SYMBOL ? (
+                      <>
+                        {sourceTokenLink ? (
+                          <a href={sourceTokenLink} target="_blank" rel="noopener noreferrer">
+                            {SOURCE_SYMBOL}
+                          </a>
+                        ) : (
+                          <span>{SOURCE_SYMBOL}</span>
+                        )}
+                        <span>{amountSentUSD && `($${amountSentUSD})`}</span>
+                      </>
+                    ) : (
+                      "N/A"
+                    )}
+                    {sourceTokenInfo?.tokenImage &&
+                    sourceTokenInfo.tokenImage !== "missing.png" &&
+                    sourceTokenInfo.tokenImage !== "missing_small.png" ? (
+                      <img
+                        className="token-image"
+                        src={sourceTokenInfo.tokenImage}
+                        height={22}
+                        width={22}
+                      />
+                    ) : getTokenIcon(SOURCE_SYMBOL, true) ? (
+                      <img
+                        className="token-image"
+                        src={getTokenIcon(SOURCE_SYMBOL)}
+                        height={22}
+                        width={22}
+                      />
+                    ) : (
+                      <BlockchainIcon
+                        className="token-image"
+                        chainId={sourceTokenChain ? sourceTokenChain : 0}
+                        network={currentNetwork}
+                      />
+                    )}
                   </div>
                 </div>
-              )}
+              </div>
+            )}
+            {!isJustGenericRelayer && nftInfo && (
+              <div className="tx-overview-section-row-info-container">
+                <div className="tx-overview-section-row-info-container-key">SENT</div>
 
+                <div className="text">
+                  {nftInfo.image && <img src={nftInfo.image} height={24} width={24} />}
+                  {nftInfo.name}
+                </div>
+              </div>
+            )}
+
+            {parsedDestinationAddress && (
               <div className="tx-overview-section-row-info-container">
                 <div className="tx-overview-section-row-info-container-key">TO</div>
 
                 <div className="tx-overview-section-row-info-container-value">
                   <div className="text">
-                    {parsedDestinationAddress ? (
-                      <>
-                        <a
-                          href={getExplorerLink({
-                            network: currentNetwork,
-                            chainId: toChain,
-                            value: parsedDestinationAddress,
-                            base: "address",
-                            isNativeAddress: true,
-                          })}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <div className="desktop">
-                            {shortAddress(parsedDestinationAddress.toLocaleUpperCase())}
-                          </div>
-                          <div className="mobile">
-                            <TruncateText
-                              containerWidth={lineValueWidth}
-                              text={parsedDestinationAddress.toLocaleUpperCase()}
-                            />
-                          </div>
-                        </a>
-                        <CopyToClipboard toCopy={parsedDestinationAddress}>
-                          <CopyIcon width={24} />
-                        </CopyToClipboard>
-                        {addressesInfo?.[parsedDestinationAddress.toLowerCase()] && (
-                          <AddressInfoTooltip
-                            info={addressesInfo[parsedDestinationAddress.toLowerCase()]}
-                            chain={toChain}
-                          />
-                        )}
-                      </>
-                    ) : (
-                      "N/A"
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: toChain,
+                        value: parsedDestinationAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <div className="desktop">
+                        {shortAddress(parsedDestinationAddress.toLocaleUpperCase())}
+                      </div>
+                      <div className="mobile">
+                        <TruncateText
+                          containerWidth={lineValueWidth}
+                          text={parsedDestinationAddress.toLocaleUpperCase()}
+                        />
+                      </div>
+                    </a>
+                    <CopyToClipboard toCopy={parsedDestinationAddress}>
+                      <CopyIcon width={24} />
+                    </CopyToClipboard>
+                    {addressesInfo?.[parsedDestinationAddress.toLowerCase()] && (
+                      <AddressInfoTooltip
+                        info={addressesInfo[parsedDestinationAddress.toLowerCase()]}
+                        chain={toChain}
+                      />
                     )}
+
                     {isUnknownApp && (
                       <Tooltip
                         tooltip={
@@ -773,26 +756,28 @@ const Overview = ({
                   </div>
                 </div>
               </div>
+            )}
 
-              {!isJustGenericRelayer && !isMayanOnly && !nftInfo && (
-                <div className="tx-overview-section-row-info-container">
-                  <div className="tx-overview-section-row-info-container-key aligned">RECEIVED</div>
+            {!isJustGenericRelayer && !isMayanOnly && !nftInfo && (Number(fee) || tokenAmount) && (
+              <div className="tx-overview-section-row-info-container">
+                <div className="tx-overview-section-row-info-container-key aligned">RECEIVED</div>
 
-                  <div className="tx-overview-section-row-info-container-value">
-                    <div className="text">
-                      {Number(fee) ? (
-                        <>
-                          {!isAttestation ? redeemedAmount : ""}{" "}
-                          {TARGET_SYMBOL &&
-                            (targetTokenLink ? (
-                              <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
-                                {TARGET_SYMBOL}
-                              </a>
-                            ) : (
-                              <span>{TARGET_SYMBOL}</span>
-                            ))}
-                        </>
-                      ) : tokenAmount ? (
+                <div className="tx-overview-section-row-info-container-value">
+                  <div className="text">
+                    {Number(fee) ? (
+                      <>
+                        {!isAttestation ? redeemedAmount : ""}{" "}
+                        {TARGET_SYMBOL &&
+                          (targetTokenLink ? (
+                            <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
+                              {TARGET_SYMBOL}
+                            </a>
+                          ) : (
+                            <span>{TARGET_SYMBOL}</span>
+                          ))}
+                      </>
+                    ) : (
+                      tokenAmount && (
                         <>
                           {!isAttestation ? amountSent : ""}{" "}
                           {TARGET_SYMBOL ? (
@@ -810,195 +795,244 @@ const Overview = ({
                             "N/A"
                           )}
                         </>
-                      ) : (
-                        <>
-                          N/A
-                          {TARGET_SYMBOL &&
-                            (targetTokenLink ? (
-                              <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
-                                {TARGET_SYMBOL}
-                              </a>
-                            ) : (
-                              <span>{TARGET_SYMBOL}</span>
-                            ))}
-                        </>
-                      )}
-
-                      {targetTokenInfo?.tokenImage &&
-                      targetTokenInfo.tokenImage !== "missing.png" &&
-                      targetTokenInfo.tokenImage !== "missing_small.png" ? (
-                        <img
-                          className="token-image"
-                          src={targetTokenInfo.tokenImage}
-                          height={22}
-                          width={22}
-                        />
-                      ) : getTokenIcon(TARGET_SYMBOL, true) ? (
-                        <img
-                          className="token-image"
-                          src={getTokenIcon(TARGET_SYMBOL)}
-                          height={22}
-                          width={22}
-                        />
-                      ) : (
-                        <BlockchainIcon
-                          className="token-image"
-                          chainId={toChain ? toChain : 0}
-                          network={currentNetwork}
-                        />
-                      )}
-
-                      {!!showMetaMaskBtn && (
-                        <AddToMetaMaskBtn
-                          className="tx-overview-metamask"
-                          currentNetwork={currentNetwork}
-                          toChain={toChain}
-                          targetTokenInfo={targetTokenInfo}
-                        />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-              {!isJustGenericRelayer && nftInfo && (
-                <div className="tx-overview-section-row-info-container">
-                  <div className="tx-overview-section-row-info-container-key">RECEIVED</div>
-
-                  <div className="tx-overview-section-row-info-container-value">
-                    <div className="text">
-                      <div className="text">
-                        {nftInfo.image && <img src={nftInfo.image} height={24} width={24} />}
-                        {nftInfo.name}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {isDelivery && deliveryParsedRefundAddress !== deliveryParsedTargetAddress && (
-                <>
-                  <div className="tx-overview-section-row-info-container span2">
-                    <div className="tx-overview-section-row-info-container-key">REFUND ADDRESS</div>
-
-                    <div className="tx-overview-section-row-info-container-value">
-                      <div className="text">
-                        <a
-                          href={getExplorerLink({
-                            network: currentNetwork,
-                            chainId: deliveryInstruction.refundChainId,
-                            value: deliveryParsedRefundAddress,
-                            base: "address",
-                            isNativeAddress: true,
-                          })}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <TruncateText
-                            containerWidth={lineValueWidth}
-                            extraWidth={180}
-                            text={deliveryParsedRefundAddress.toUpperCase()}
-                          />
-                        </a>
-                        <CopyToClipboard toCopy={deliveryParsedRefundAddress}>
-                          <CopyIcon />
-                        </CopyToClipboard>
-                        {addressesInfo?.[deliveryParsedRefundAddress.toLowerCase()] && (
-                          <AddressInfoTooltip
-                            info={addressesInfo[deliveryParsedRefundAddress.toLowerCase()]}
-                            chain={deliveryInstruction.refundChainId}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  {deliveryParsedRefundProviderAddress.toLowerCase() !==
-                    testnetDefaultDeliveryProviderContractAddress.toLowerCase() &&
-                    deliveryParsedRefundProviderAddress.toLowerCase() !==
-                      mainnetDefaultDeliveryProviderContractAddress.toLowerCase() && (
-                      <div className="tx-overview-section-row-info-container span2">
-                        <div className="tx-overview-section-row-info-container-key">
-                          REFUND PROVIDER
-                        </div>
-
-                        <div className="tx-overview-section-row-info-container-value">
-                          <div className="text">
-                            <a
-                              href={getExplorerLink({
-                                network: currentNetwork,
-                                chainId: deliveryInstruction.refundChainId,
-                                value: deliveryParsedRefundProviderAddress,
-                                base: "address",
-                                isNativeAddress: true,
-                              })}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <TruncateText
-                                containerWidth={lineValueWidth}
-                                extraWidth={180}
-                                text={deliveryParsedRefundProviderAddress.toUpperCase()}
-                              />
-                            </a>
-
-                            <CopyToClipboard toCopy={deliveryParsedRefundProviderAddress}>
-                              <CopyIcon />
-                            </CopyToClipboard>
-                          </div>
-                        </div>
-                      </div>
+                      )
                     )}
-                </>
-              )}
 
-              {isDelivery && (
-                <div className="tx-overview-section-row-info-container span2">
-                  <div className="tx-overview-section-row-info-container-key">
-                    DELIVERY PROVIDER
+                    {targetTokenInfo?.tokenImage &&
+                    targetTokenInfo.tokenImage !== "missing.png" &&
+                    targetTokenInfo.tokenImage !== "missing_small.png" ? (
+                      <img
+                        className="token-image"
+                        src={targetTokenInfo.tokenImage}
+                        height={22}
+                        width={22}
+                      />
+                    ) : getTokenIcon(TARGET_SYMBOL, true) ? (
+                      <img
+                        className="token-image"
+                        src={getTokenIcon(TARGET_SYMBOL)}
+                        height={22}
+                        width={22}
+                      />
+                    ) : (
+                      <BlockchainIcon
+                        className="token-image"
+                        chainId={toChain ? toChain : 0}
+                        network={currentNetwork}
+                      />
+                    )}
+
+                    {!!showMetaMaskBtn && (
+                      <AddToMetaMaskBtn
+                        className="tx-overview-metamask"
+                        currentNetwork={currentNetwork}
+                        toChain={toChain}
+                        targetTokenInfo={targetTokenInfo}
+                      />
+                    )}
                   </div>
+                </div>
+              </div>
+            )}
+            {!isJustGenericRelayer && nftInfo && (
+              <div className="tx-overview-section-row-info-container">
+                <div className="tx-overview-section-row-info-container-key">RECEIVED</div>
+
+                <div className="tx-overview-section-row-info-container-value">
+                  <div className="text">
+                    <div className="text">
+                      {nftInfo.image && <img src={nftInfo.image} height={24} width={24} />}
+                      {nftInfo.name}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isDelivery && deliveryParsedRefundAddress !== deliveryParsedTargetAddress && (
+              <>
+                <div className="tx-overview-section-row-info-container span2">
+                  <div className="tx-overview-section-row-info-container-key">REFUND ADDRESS</div>
 
                   <div className="tx-overview-section-row-info-container-value">
                     <div className="text">
                       <a
                         href={getExplorerLink({
                           network: currentNetwork,
-                          chainId: deliveryInstruction.targetChainId,
-                          value: deliveryParsedSourceProviderAddress,
+                          chainId: deliveryInstruction.refundChainId,
+                          value: deliveryParsedRefundAddress,
                           base: "address",
                           isNativeAddress: true,
                         })}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {deliveryParsedSourceProviderAddress.toLowerCase() ===
-                          testnetDefaultDeliveryProviderContractAddress.toLowerCase() ||
-                        deliveryParsedSourceProviderAddress.toLowerCase() ===
-                          mainnetDefaultDeliveryProviderContractAddress.toLowerCase() ? (
-                          "xLabs"
-                        ) : (
-                          <TruncateText
-                            containerWidth={lineValueWidth}
-                            extraWidth={200}
-                            text={deliveryParsedSourceProviderAddress.toUpperCase()}
-                          />
-                        )}
+                        <TruncateText
+                          containerWidth={lineValueWidth}
+                          extraWidth={180}
+                          text={deliveryParsedRefundAddress.toUpperCase()}
+                        />
                       </a>
-                      <CopyToClipboard toCopy={deliveryParsedSourceProviderAddress}>
+                      <CopyToClipboard toCopy={deliveryParsedRefundAddress}>
                         <CopyIcon />
                       </CopyToClipboard>
-                      {addressesInfo?.[deliveryParsedSourceProviderAddress.toLowerCase()] && (
+                      {addressesInfo?.[deliveryParsedRefundAddress.toLowerCase()] && (
                         <AddressInfoTooltip
-                          info={addressesInfo[deliveryParsedSourceProviderAddress.toLowerCase()]}
-                          chain={deliveryInstruction.targetChainId}
+                          info={addressesInfo[deliveryParsedRefundAddress.toLowerCase()]}
+                          chain={deliveryInstruction.refundChainId}
                         />
                       )}
                     </div>
                   </div>
                 </div>
+                {deliveryParsedRefundProviderAddress.toLowerCase() !==
+                  testnetDefaultDeliveryProviderContractAddress.toLowerCase() &&
+                  deliveryParsedRefundProviderAddress.toLowerCase() !==
+                    mainnetDefaultDeliveryProviderContractAddress.toLowerCase() && (
+                    <div className="tx-overview-section-row-info-container span2">
+                      <div className="tx-overview-section-row-info-container-key">
+                        REFUND PROVIDER
+                      </div>
+
+                      <div className="tx-overview-section-row-info-container-value">
+                        <div className="text">
+                          <a
+                            href={getExplorerLink({
+                              network: currentNetwork,
+                              chainId: deliveryInstruction.refundChainId,
+                              value: deliveryParsedRefundProviderAddress,
+                              base: "address",
+                              isNativeAddress: true,
+                            })}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <TruncateText
+                              containerWidth={lineValueWidth}
+                              extraWidth={180}
+                              text={deliveryParsedRefundProviderAddress.toUpperCase()}
+                            />
+                          </a>
+
+                          <CopyToClipboard toCopy={deliveryParsedRefundProviderAddress}>
+                            <CopyIcon />
+                          </CopyToClipboard>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+              </>
+            )}
+
+            {isDelivery && (
+              <div className="tx-overview-section-row-info-container span2">
+                <div className="tx-overview-section-row-info-container-key">DELIVERY PROVIDER</div>
+
+                <div className="tx-overview-section-row-info-container-value">
+                  <div className="text">
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: deliveryInstruction.targetChainId,
+                        value: deliveryParsedSourceProviderAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {deliveryParsedSourceProviderAddress.toLowerCase() ===
+                        testnetDefaultDeliveryProviderContractAddress.toLowerCase() ||
+                      deliveryParsedSourceProviderAddress.toLowerCase() ===
+                        mainnetDefaultDeliveryProviderContractAddress.toLowerCase() ? (
+                        "xLabs"
+                      ) : (
+                        <TruncateText
+                          containerWidth={lineValueWidth}
+                          extraWidth={200}
+                          text={deliveryParsedSourceProviderAddress.toUpperCase()}
+                        />
+                      )}
+                    </a>
+                    <CopyToClipboard toCopy={deliveryParsedSourceProviderAddress}>
+                      <CopyIcon />
+                    </CopyToClipboard>
+                    {addressesInfo?.[deliveryParsedSourceProviderAddress.toLowerCase()] && (
+                      <AddressInfoTooltip
+                        info={addressesInfo[deliveryParsedSourceProviderAddress.toLowerCase()]}
+                        chain={deliveryInstruction.targetChainId}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {action &&
+              (appIds.includes(MAYAN_SWIFT_APP_ID) || appIds.includes(MAYAN_MCTP_APP_ID)) && (
+                <div className="tx-overview-section-row-info-container span2">
+                  <div className="tx-overview-section-row-info-container-key">ACTION</div>
+
+                  <div className="tx-overview-section-row-info-container-value">
+                    <Tooltip
+                      type="info"
+                      tooltip={
+                        <div>
+                          <p>
+                            {appIds.includes(MAYAN_SWIFT_APP_ID)
+                              ? action === 1
+                                ? "Unlock orders from the source chain."
+                                : action === 2
+                                ? "Utilized when not employing batch unlock (the unlock message is immediately emitted upon fulfilling orders)."
+                                : action === 3
+                                ? "Refunding orders on the source chain that are not completed within the specified timeframe."
+                                : action === 4
+                                ? "Refunding orders on the source chain that are not completed by the specified date."
+                                : ""
+                              : appIds.includes(MAYAN_MCTP_APP_ID)
+                              ? action === 1
+                                ? "Swap/Refund Message: Emitted when a swap or refund is needed for non-USDC destination tokens."
+                                : action === 2
+                                ? "Auction Message: Handles auctions when the output token is not USDC."
+                                : action === 3
+                                ? "Bridge with Fee Message: Used for USDC-to-USDC transactions."
+                                : action === 4
+                                ? "Unlock Message: Unlocks fees on the source chain after completing an order on the destination chain."
+                                : action === 5
+                                ? "Refine Fee Message: Unlocks fees on the source chain if the gasdrop was paid by another party."
+                                : ""
+                              : ""}
+                          </p>
+                        </div>
+                      }
+                    >
+                      <div className="text">
+                        <a
+                          onClick={() => {
+                            setShowOverview("advanced");
+                            setTimeout(() => {
+                              const signedVaaElem = document.getElementById(`action${txIndex}`);
+                              if (signedVaaElem) {
+                                signedVaaElem.scrollIntoView({
+                                  behavior: "smooth",
+                                  block: "start",
+                                });
+                              }
+                            }, 100);
+                          }}
+                        >
+                          {action}
+                        </a>
+
+                        <InfoCircleIcon />
+                      </div>
+                    </Tooltip>
+                  </div>
+                </div>
               )}
-            </div>
           </div>
         </div>
-      )}
+      </div>
 
       {nftInfo && (
         <div className="tx-overview-section">
@@ -1313,202 +1347,194 @@ const Overview = ({
                 </div>
               )}
 
-              {deliveryStatus?.status && (
-                <div className="tx-overview-section-row-info-container span2">
-                  <div className="tx-overview-section-row-info-container-key">TARGET TX HASH</div>
+              {deliveryStatus?.status !== "failed" &&
+                deliveryStatus?.status !== "waiting" &&
+                deliveryStatus?.data?.toTxHash && (
+                  <div className="tx-overview-section-row-info-container span2">
+                    <div className="tx-overview-section-row-info-container-key">TARGET TX HASH</div>
 
-                  <div className="tx-overview-section-row-info-container-value">
-                    <div className="text">
-                      {deliveryStatus?.status !== "failed" &&
-                      deliveryStatus?.status !== "waiting" &&
-                      deliveryStatus?.data?.toTxHash ? (
-                        <>
-                          <a
-                            href={getExplorerLink({
-                              network: currentNetwork,
-                              chainId: deliveryInstruction.targetChainId,
-                              value: deliveryStatus?.data?.toTxHash,
-                              isNativeAddress: true,
-                            })}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <TruncateText
-                              containerWidth={lineValueWidth}
-                              extraWidth={150}
-                              text={deliveryStatus?.data?.toTxHash?.toUpperCase()}
-                            />
-                          </a>
-                          <CopyToClipboard toCopy={deliveryStatus?.data?.toTxHash}>
-                            <CopyIcon />
-                          </CopyToClipboard>
-                        </>
-                      ) : (
-                        "N/A"
-                      )}
+                    <div className="tx-overview-section-row-info-container-value">
+                      <div className="text">
+                        <a
+                          href={getExplorerLink({
+                            network: currentNetwork,
+                            chainId: deliveryInstruction.targetChainId,
+                            value: deliveryStatus?.data?.toTxHash,
+                            isNativeAddress: true,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <TruncateText
+                            containerWidth={lineValueWidth}
+                            extraWidth={150}
+                            text={deliveryStatus?.data?.toTxHash?.toUpperCase()}
+                          />
+                        </a>
+                        <CopyToClipboard toCopy={deliveryStatus?.data?.toTxHash}>
+                          <CopyIcon />
+                        </CopyToClipboard>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
         </div>
       )}
 
-      <div className="tx-overview-section">
-        <div className="tx-overview-section-row">
-          <h4 className="tx-overview-section-row-title">
-            <Tooltip
-              type="info"
-              tooltip={
-                <div className="tx-overview-section-row-info-tooltip-content">
-                  <p>Protocols used to facilitate the cross-chain transfer.</p>
-                </div>
-              }
-              className="tx-overview-section-row-info-tooltip"
-            >
-              <span>
-                <InfoCircleIcon /> Protocols
-              </span>
-            </Tooltip>
-          </h4>
-          <div className="tx-overview-section-row-info">
-            <div className="tx-overview-section-row-info-container protocols">
-              {appIds?.length > 0 ? (
-                filterAppIds(appIds).map((appId, i) => (
-                  <div className="text" key={i}>
-                    <ProtocolIcon protocol={appId} width={24} />
-                    {formatAppId(appId)}
-                  </div>
-                ))
-              ) : (
-                <div className="text">N/A</div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {deliveryParsedSenderAddress && (
+      {appIds?.length > 0 && (
+        <div className="tx-overview-section">
           <div className="tx-overview-section-row">
             <h4 className="tx-overview-section-row-title">
               <Tooltip
                 type="info"
                 tooltip={
                   <div className="tx-overview-section-row-info-tooltip-content">
-                    <p>Contract address of the source app.</p>
+                    <p>Protocols used to facilitate the cross-chain transfer.</p>
                   </div>
                 }
                 className="tx-overview-section-row-info-tooltip"
               >
                 <span>
-                  <InfoCircleIcon /> Source App Contract
+                  <InfoCircleIcon /> Protocols
+                </span>
+              </Tooltip>
+            </h4>
+            <div className="tx-overview-section-row-info">
+              <div className="tx-overview-section-row-info-container protocols">
+                {filterAppIds(appIds).map((appId, i) => (
+                  <div className="text" key={i}>
+                    <ProtocolIcon protocol={appId} width={24} />
+                    {formatAppId(appId)}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {deliveryParsedSenderAddress && (
+            <div className="tx-overview-section-row">
+              <h4 className="tx-overview-section-row-title">
+                <Tooltip
+                  type="info"
+                  tooltip={
+                    <div className="tx-overview-section-row-info-tooltip-content">
+                      <p>Contract address of the source app.</p>
+                    </div>
+                  }
+                  className="tx-overview-section-row-info-tooltip"
+                >
+                  <span>
+                    <InfoCircleIcon /> Source App Contract
+                  </span>
+                </Tooltip>
+              </h4>
+              <div className="tx-overview-section-row-info">
+                <div className="tx-overview-section-row-info-container">
+                  <div className="text">
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: fromChain,
+                        value: deliveryParsedSenderAddress,
+                        base: "address",
+                        isNativeAddress: true,
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <TruncateText
+                        containerWidth={lineValueWidth}
+                        text={deliveryParsedSenderAddress.toUpperCase()}
+                      />
+                    </a>
+                    <CopyToClipboard toCopy={deliveryParsedSenderAddress}>
+                      <CopyIcon />
+                    </CopyToClipboard>
+                    {ARKHAM_CHAIN_NAME[fromChain as ChainId] &&
+                      addressesInfo?.[deliveryParsedSenderAddress.toLowerCase()] && (
+                        <AddressInfoTooltip
+                          info={addressesInfo[deliveryParsedSenderAddress.toLowerCase()]}
+                          chain={fromChain}
+                        />
+                      )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="tx-overview-section-row">
+            <h4 className="tx-overview-section-row-title">
+              <Tooltip
+                type="info"
+                tooltip={
+                  <div className="tx-overview-section-row-info-tooltip-content">
+                    <p>Smart contract address used on the source chain.</p>
+                  </div>
+                }
+                className="tx-overview-section-row-info-tooltip"
+              >
+                <span>
+                  <InfoCircleIcon /> Contract Address
                 </span>
               </Tooltip>
             </h4>
             <div className="tx-overview-section-row-info">
               <div className="tx-overview-section-row-info-container">
                 <div className="text">
-                  <a
-                    href={getExplorerLink({
-                      network: currentNetwork,
-                      chainId: fromChain,
-                      value: deliveryParsedSenderAddress,
-                      base: "address",
-                      isNativeAddress: true,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <TruncateText
-                      containerWidth={lineValueWidth}
-                      text={deliveryParsedSenderAddress.toUpperCase()}
-                    />
-                  </a>
-                  <CopyToClipboard toCopy={deliveryParsedSenderAddress}>
-                    <CopyIcon />
-                  </CopyToClipboard>
-                  {ARKHAM_CHAIN_NAME[fromChain as ChainId] &&
-                    addressesInfo?.[deliveryParsedSenderAddress.toLowerCase()] && (
-                      <AddressInfoTooltip
-                        info={addressesInfo[deliveryParsedSenderAddress.toLowerCase()]}
-                        chain={fromChain}
-                      />
-                    )}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="tx-overview-section-row">
-          <h4 className="tx-overview-section-row-title">
-            <Tooltip
-              type="info"
-              tooltip={
-                <div className="tx-overview-section-row-info-tooltip-content">
-                  <p>Smart contract address used on the source chain.</p>
-                </div>
-              }
-              className="tx-overview-section-row-info-tooltip"
-            >
-              <span>
-                <InfoCircleIcon /> Contract Address
-              </span>
-            </Tooltip>
-          </h4>
-          <div className="tx-overview-section-row-info">
-            <div className="tx-overview-section-row-info-container">
-              <div className="text">
-                {parsedEmitterAddress ? (
-                  <>
-                    {/* delete conditional when WORMCHAIN gets an explorer */}
-                    {fromChainOrig === chainToChainId("Wormchain") ? (
-                      <div>
-                        <span>
+                  {parsedEmitterAddress ? (
+                    <>
+                      {/* delete conditional when WORMCHAIN gets an explorer */}
+                      {fromChainOrig === chainToChainId("Wormchain") ? (
+                        <div>
+                          <span>
+                            <TruncateText
+                              containerWidth={lineValueWidth}
+                              text={parsedEmitterAddress.toUpperCase()}
+                            />
+                          </span>
+                        </div>
+                      ) : (
+                        <a
+                          href={getExplorerLink({
+                            network: currentNetwork,
+                            chainId: fromChainOrig,
+                            value: parsedEmitterAddress,
+                            base: "address",
+                            isNativeAddress: true,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           <TruncateText
                             containerWidth={lineValueWidth}
+                            extraWidth={isGatewaySource ? 120 : 80}
                             text={parsedEmitterAddress.toUpperCase()}
                           />
-                        </span>
-                      </div>
-                    ) : (
-                      <a
-                        href={getExplorerLink({
-                          network: currentNetwork,
-                          chainId: fromChainOrig,
-                          value: parsedEmitterAddress,
-                          base: "address",
-                          isNativeAddress: true,
-                        })}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <TruncateText
-                          containerWidth={lineValueWidth}
-                          extraWidth={isGatewaySource ? 120 : 80}
-                          text={parsedEmitterAddress.toUpperCase()}
+                        </a>
+                      )}
+                      <CopyToClipboard toCopy={parsedEmitterAddress}>
+                        <CopyIcon width={24} />
+                      </CopyToClipboard>
+                      {addressesInfo?.[parsedEmitterAddress.toLowerCase()] && (
+                        <AddressInfoTooltip
+                          info={addressesInfo[parsedEmitterAddress.toLowerCase()]}
+                          chain={fromChainOrig}
                         />
-                      </a>
-                    )}
-                    <CopyToClipboard toCopy={parsedEmitterAddress}>
-                      <CopyIcon width={24} />
-                    </CopyToClipboard>
-                    {addressesInfo?.[parsedEmitterAddress.toLowerCase()] && (
-                      <AddressInfoTooltip
-                        info={addressesInfo[parsedEmitterAddress.toLowerCase()]}
-                        chain={fromChainOrig}
-                      />
-                    )}
-                    {isGatewaySource && <span className="comment"> (Gateway)</span>}
-                  </>
-                ) : (
-                  "N/A"
-                )}
+                      )}
+                      {isGatewaySource && <span className="comment"> (Gateway)</span>}
+                    </>
+                  ) : (
+                    "N/A"
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="tx-overview-section">
         <div className="tx-overview-section-row">
@@ -1586,7 +1612,6 @@ const Overview = ({
                       }
                     }, 100);
                   }}
-                  style={{ cursor: "pointer" }}
                 >
                   {showSignatures ? `${guardianSignaturesCount} / ${totalGuardiansNeeded}` : "N/A"}
                 </a>
@@ -1638,74 +1663,6 @@ const Overview = ({
                     <CopyIcon width={24} />
                   </CopyToClipboard>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {action && (appIds.includes(MAYAN_SWIFT_APP_ID) || appIds.includes(MAYAN_MCTP_APP_ID)) && (
-        <div className="tx-overview-section">
-          <div className="tx-overview-section-row">
-            <h4 className="tx-overview-section-row-title">
-              {appIds.includes(MAYAN_SWIFT_APP_ID) ? (
-                <Tooltip
-                  type="info"
-                  tooltip={
-                    <div>
-                      <p>
-                        The Action field indicates the type of Wormhole messages linked with Swift.
-                      </p>
-                    </div>
-                  }
-                >
-                  <span>
-                    <InfoCircleIcon />
-                    Action
-                  </span>
-                </Tooltip>
-              ) : (
-                <span>Action</span>
-              )}
-            </h4>
-            <div className="tx-overview-section-row-info">
-              <div className="tx-overview-section-row-info-container">
-                <Tooltip
-                  type="info"
-                  tooltip={
-                    <div>
-                      <p>
-                        {appIds.includes(MAYAN_SWIFT_APP_ID)
-                          ? action === 1
-                            ? "Unlock orders from the source chain."
-                            : action === 2
-                            ? "Utilized when not employing batch unlock (the unlock message is immediately emitted upon fulfilling orders)."
-                            : action === 3
-                            ? "Refunding orders on the source chain that are not completed within the specified timeframe."
-                            : action === 4
-                            ? "Refunding orders on the source chain that are not completed by the specified date."
-                            : ""
-                          : appIds.includes(MAYAN_MCTP_APP_ID)
-                          ? action === 1
-                            ? "Swap/Refund Message: Emitted when a swap or refund is needed for non-USDC destination tokens."
-                            : action === 2
-                            ? "Auction Message: Handles auctions when the output token is not USDC."
-                            : action === 3
-                            ? "Bridge with Fee Message: Used for USDC-to-USDC transactions."
-                            : action === 4
-                            ? "Unlock Message: Unlocks fees on the source chain after completing an order on the destination chain."
-                            : action === 5
-                            ? "Refine Fee Message: Unlocks fees on the source chain if the gasdrop was paid by another party."
-                            : ""
-                          : ""}
-                      </p>
-                    </div>
-                  }
-                >
-                  <div className="text">
-                    {action} <InfoCircleIcon />
-                  </div>
-                </Tooltip>
               </div>
             </div>
           </div>
