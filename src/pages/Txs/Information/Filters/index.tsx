@@ -2,7 +2,13 @@ import { chainToChainId } from "@wormhole-foundation/sdk";
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { BlockchainIcon, Counter, Select, ToggleGroup } from "src/components/atoms";
-import { BREAKPOINTS, GATEWAY_APP_ID } from "src/consts";
+import {
+  BREAKPOINTS,
+  GATEWAY_APP_ID,
+  MAYAN_APP_ID,
+  MAYAN_MCTP_APP_ID,
+  MAYAN_SWIFT_APP_ID,
+} from "src/consts";
 import { getChainName } from "src/utils/wormhole";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { ChainFilterMainnet, ChainFilterTestnet, PROTOCOL_LIST } from "src/utils/filterUtils";
@@ -233,7 +239,31 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
             menuPortalStyles={{ zIndex: 100 }}
             name="protocol"
-            onValueChange={(value: any) => setCheckedState({ ...checkedState, appId: value })}
+            onValueChange={(selectedItems: Array<{ icon?: any; value: string; label: string }>) => {
+              let updatedSelectedItems = [...selectedItems];
+
+              const mayanSelected = selectedItems.some(item => item.value === MAYAN_APP_ID);
+              const mayanAlreadySelected = checkedState.appId.some(
+                item => item.value === MAYAN_APP_ID,
+              );
+
+              if (mayanSelected && !mayanAlreadySelected) {
+                updatedSelectedItems = [
+                  ...updatedSelectedItems,
+                  { label: "Mayan MCTP", value: MAYAN_MCTP_APP_ID },
+                  { label: "Mayan Swift", value: MAYAN_SWIFT_APP_ID },
+                ];
+              }
+
+              const uniqueValues = Array.from(
+                new Map(updatedSelectedItems.map(item => [item.value, item])).values(),
+              );
+
+              setCheckedState(prevState => ({
+                ...prevState,
+                appId: uniqueValues,
+              }));
+            }}
             optionStyles={{ padding: 16 }}
             text={
               <div className="filters-container-select-text">
