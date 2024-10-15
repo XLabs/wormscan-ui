@@ -306,10 +306,8 @@
                         }
                       }
                       &#operations-wormholescan-find-global-transaction-by-id,
-                      // &#operations-wormholescan-get-token-by-chain-and-address,
                       &#operations-wormholescan-list-transactions,
-                      &#operations-wormholescan-get-transaction-by-id
-                      /* &#operations-wormholescan-get-vaa-counts */ {
+                      &#operations-wormholescan-get-transaction-by-id {
                         & .opblock-title_normal::after {
                           content: "This endpoint will be deprecated in the coming months. No exact date is set yet. Please migrate to the new '/api/v1/operations' soon.";
                         }
