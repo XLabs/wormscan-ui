@@ -43,6 +43,8 @@ export const RecentTransactions = ({
       ? data.sourceChain?.from
       : data.content?.standarizedProperties?.toAddress;
 
+    if (!chainId || !address) return null;
+
     return (
       <div className="link-container">
         <Tooltip tooltip={<div>{chainIdToChain(chainId)}</div>} maxWidth={false} type="info">
@@ -153,7 +155,7 @@ export const RecentTransactions = ({
                   </div>
                 </div>
                 <div className="recent-transactions-table-item-row">
-                  {timeAgo(new Date(data?.sourceChain?.timestamp))}
+                  {data?.sourceChain?.timestamp && timeAgo(new Date(data?.sourceChain?.timestamp))}
                 </div>
               </div>
             ))}
@@ -175,7 +177,10 @@ export const RecentTransactions = ({
                   <StatusBadge size="responsive" STATUS={data.STATUS} />
                 </div>
                 <div className="content">
-                  <div className="time">{timeAgo(new Date(data?.sourceChain?.timestamp))}</div>
+                  <div className="time">
+                    {data?.sourceChain?.timestamp &&
+                      timeAgo(new Date(data?.sourceChain?.timestamp))}
+                  </div>
                 </div>
               </div>
               <div className="recent-transactions-mobile-item">

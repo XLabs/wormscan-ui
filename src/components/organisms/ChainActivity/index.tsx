@@ -52,7 +52,7 @@ const SCALE_CHART_LIST = [
 ];
 
 const METRIC_CHART_LIST = [
-  { label: "Volumen", value: "volume", ariaLabel: "Volume" },
+  { label: "Volume", value: "volume", ariaLabel: "Volume" },
   { label: "Transfers", value: "transactions", ariaLabel: "Transfers" },
 ];
 
