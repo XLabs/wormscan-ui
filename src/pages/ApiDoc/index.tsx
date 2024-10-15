@@ -132,8 +132,10 @@ const ApiDoc = () => {
         const pathsToDeprecate = [
           "/api/v1/address/:address",
           "/api/v1/global-tx/:chain_id/:emitter/:seq",
+          "/api/v1/token/:chain_id/:token_address",
           "/api/v1/transactions/",
           "/api/v1/transactions/:chain_id/:emitter/:seq",
+          "/api/v1/vaas/vaa-counts",
         ];
 
         pathsToDeprecate.forEach(path => {
