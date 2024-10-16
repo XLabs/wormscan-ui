@@ -71,7 +71,7 @@ const ChainActivity = () => {
 
   const chartRef = useRef(null);
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("linear");
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
 
   const initialDataDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
@@ -645,9 +645,9 @@ const ChainActivity = () => {
 
       <h2 className="chain-activity-title">
         <AnalyticsIcon width={24} /> Chains Activity{" "}
-        <div className="chain-activity-title-fullscreen" ref={fullscreenBtnRef}>
+        {/* <div className="chain-activity-title-fullscreen" ref={fullscreenBtnRef}>
           <FullscreenIcon width={20} />
-        </div>
+        </div> */}
       </h2>
 
       <div className="chain-activity-chart" ref={chartRef}>
@@ -869,7 +869,7 @@ const ChainActivity = () => {
               value={chartSelected}
             />
 
-            {chartSelected === "area" && (
+            {/* {chartSelected === "area" && (
               <ToggleGroup
                 ariaLabel="Select scale"
                 className="chain-activity-chart-scale"
@@ -877,7 +877,7 @@ const ChainActivity = () => {
                 onValueChange={value => setScaleSelected(value)}
                 value={scaleSelected}
               />
-            )}
+            )} */}
           </div>
         </div>
 

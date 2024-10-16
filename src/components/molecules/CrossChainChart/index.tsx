@@ -198,9 +198,9 @@ const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
         <div className="cross-chain-top-title">
           <GlobeIcon width={24} />
           {t("home.crossChain.title")}
-          <div className="cross-chain-top-fullscreen" ref={fullscreenBtnRef}>
+          {/* <div className="cross-chain-top-fullscreen" ref={fullscreenBtnRef}>
             <FullscreenIcon width={20} />
-          </div>
+          </div> */}
           {isHomePage && (
             <NavLink className="token-activity-title-link" to="/analytics/chains">
               View More

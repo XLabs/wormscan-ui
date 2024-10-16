@@ -68,7 +68,7 @@ const ProtocolsActivity = () => {
   const isDesktop = width >= BREAKPOINTS.desktop;
 
   const chartRef = useRef(null);
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("linear");
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const [metricSelected, setMetricSelected] = useState<"volume" | "transfers">("volume");
   const [totalVolumeValue, setTotalVolumeValue] = useState(0);
@@ -269,9 +269,9 @@ const ProtocolsActivity = () => {
       <h3 className="protocols-activity-title">
         <Cube3DIcon />
         Protocols Activity
-        <div className="protocols-activity-title-fullscreen" ref={fullscreenBtnRef}>
+        {/* <div className="protocols-activity-title-fullscreen" ref={fullscreenBtnRef}>
           <FullscreenIcon width={20} />
-        </div>
+        </div> */}
       </h3>
 
       <div className="protocols-activity-container">
@@ -416,7 +416,7 @@ const ProtocolsActivity = () => {
                 )}
               </div>
 
-              {chartSelected === "area" && (
+              {/* {chartSelected === "area" && (
                 <ToggleGroup
                   ariaLabel="Select scale"
                   className="protocols-activity-container-chart-scale"
@@ -424,7 +424,7 @@ const ProtocolsActivity = () => {
                   onValueChange={value => setScaleSelected(value)}
                   value={scaleSelected}
                 />
-              )}
+              )} */}
 
               <ReactApexChart
                 key={chartSelected}

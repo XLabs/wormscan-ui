@@ -63,7 +63,7 @@ export const TransfersOverTime = ({
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
 
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("linear");
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const chartRef = useRef(null);
 
@@ -105,9 +105,9 @@ export const TransfersOverTime = ({
         <h3 className="transfers-over-time-title">
           <ActivityIcon />
           <span>Cross-Chain W Token Transfers Over Time</span>
-          <div className="transfers-over-time-title-fullscreen" ref={fullscreenBtnRef}>
+          {/* <div className="transfers-over-time-title-fullscreen" ref={fullscreenBtnRef}>
             <FullscreenIcon width={20} />
-          </div>
+          </div> */}
         </h3>
       </div>
 
@@ -137,7 +137,7 @@ export const TransfersOverTime = ({
                 />
 
                 <div className="transfers-over-time-toggles">
-                  {chartSelected === "area" && (
+                  {/* {chartSelected === "area" && (
                     <ToggleGroup
                       ariaLabel="Select scale"
                       className="transfers-over-time-toggle-scale"
@@ -145,7 +145,7 @@ export const TransfersOverTime = ({
                       onValueChange={value => setScaleSelected(value)}
                       value={scaleSelected}
                     />
-                  )}
+                  )} */}
 
                   <ToggleGroup
                     ariaLabel="Select chart type"

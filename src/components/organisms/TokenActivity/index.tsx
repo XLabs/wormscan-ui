@@ -195,9 +195,9 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
 
       <h3 className="token-activity-title">
         <ActivityIcon /> Cross-Chain Token Activity
-        <div className="token-activity-title-fullscreen" ref={fullscreenBtnRef}>
+        {/* <div className="token-activity-title-fullscreen" ref={fullscreenBtnRef}>
           <FullscreenIcon width={20} />
-        </div>
+        </div> */}
         {isHomePage && (
           <NavLink className="token-activity-title-link" to="/analytics/tokens">
             View More
