@@ -18,6 +18,11 @@
       margin-bottom: 28px;
     }
 
+    &-fullscreen {
+      cursor: pointer;
+      transform: translateY(3px);
+    }
+
     &-title {
       @include centered-row;
       @include text-roboto-subheading-500;
@@ -28,7 +33,7 @@
         max-width: max-content;
       }
 
-      & > svg {
+      svg {
         color: var(--color-gray-600);
       }
 

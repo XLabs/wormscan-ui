@@ -10,7 +10,14 @@ import {
   FilterListIcon,
   FullscreenIcon,
 } from "src/icons/generic";
-import { BlockchainIcon, Counter, NavLink, Select, ToggleGroup } from "src/components/atoms";
+import {
+  BlockchainIcon,
+  Counter,
+  Fullscreenable,
+  NavLink,
+  Select,
+  ToggleGroup,
+} from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { useLockBodyScroll, useOutsideClick, useWindowSize } from "src/utils/hooks";
 import { getTokenIcon } from "src/utils/token";
@@ -180,40 +187,15 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
     scrollableClasses: ["select__option"],
   });
 
-  const tokenActivityRef = useRef(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, []);
+  const fullscreenBtnRef = useRef(null);
 
   return (
-    <div
-      className="token-activity"
-      ref={tokenActivityRef}
-      style={{ padding: isFullscreen ? "4%" : 0, paddingTop: isFullscreen ? "6%" : 0 }}
-    >
+    <Fullscreenable className="token-activity" buttonRef={fullscreenBtnRef}>
       {openFilters && !isDesktop && <div className="token-activity-bg" />}
 
       <h3 className="token-activity-title">
         <ActivityIcon /> Cross-Chain Token Activity
-        <div
-          className="token-activity-title-fullscreen"
-          onClick={() => {
-            if (isFullscreen || !tokenActivityRef.current) {
-              document.exitFullscreen();
-            } else {
-              tokenActivityRef.current.requestFullscreen();
-            }
-          }}
-        >
+        <div className="token-activity-title-fullscreen" ref={fullscreenBtnRef}>
           <FullscreenIcon width={20} />
         </div>
         {isHomePage && (
@@ -422,7 +404,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
           )}
         </div>
       </div>
-    </div>
+    </Fullscreenable>
   );
 };
 

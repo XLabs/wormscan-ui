@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { useQuery } from "react-query";
 import ReactApexChart from "react-apexcharts";
 import { BREAKPOINTS, PORTAL_NFT_APP_ID } from "src/consts";
-import { Loader, Select, ToggleGroup } from "src/components/atoms";
+import { Fullscreenable, Loader, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { useLockBodyScroll, useWindowSize } from "src/utils/hooks";
 import { firstDataAvailableDate, getISODateZeroed, todayISOString } from "src/utils/date";
@@ -260,40 +260,16 @@ const ProtocolsActivity = () => {
     scrollableClasses: ["select__option"],
   });
 
-  const protocolsActivityRef = useRef(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, []);
+  const fullscreenBtnRef = useRef(null);
 
   return (
-    <div
-      className="protocols-activity"
-      ref={protocolsActivityRef}
-      style={{ padding: isFullscreen ? "4%" : 0, paddingTop: isFullscreen ? "6%" : 0 }}
-    >
+    <Fullscreenable className="protocols-activity" buttonRef={fullscreenBtnRef}>
       {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
 
       <h3 className="protocols-activity-title">
         <Cube3DIcon />
         Protocols Activity
-        <div
-          className="protocols-activity-title-fullscreen"
-          onClick={() => {
-            if (isFullscreen || !protocolsActivityRef.current) {
-              document.exitFullscreen();
-            } else {
-              protocolsActivityRef.current.requestFullscreen();
-            }
-          }}
-        >
+        <div className="protocols-activity-title-fullscreen" ref={fullscreenBtnRef}>
           <FullscreenIcon width={20} />
         </div>
       </h3>
@@ -320,6 +296,7 @@ const ProtocolsActivity = () => {
               className="protocols-activity-container-top-filters-protocol"
               closeOnSelect
               controlStyles={{ minWidth: 256 }}
+              menuPortalTarget={document.querySelector(".protocols-activity")}
               isMulti={false}
               items={[
                 {
@@ -669,7 +646,7 @@ const ProtocolsActivity = () => {
           )}
         </div>
       </div>
-    </div>
+    </Fullscreenable>
   );
 };
 

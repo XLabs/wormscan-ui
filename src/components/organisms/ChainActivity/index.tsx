@@ -3,7 +3,14 @@ import ReactApexChart from "react-apexcharts";
 import { useQuery } from "react-query";
 import "react-datepicker/dist/react-datepicker.css";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { BlockchainIcon, Counter, Loader, Select, ToggleGroup } from "src/components/atoms";
+import {
+  BlockchainIcon,
+  Counter,
+  Fullscreenable,
+  Loader,
+  Select,
+  ToggleGroup,
+} from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
@@ -630,40 +637,15 @@ const ChainActivity = () => {
     showAllSourceChains,
   ]);
 
-  const chainActivityRef = useRef(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, []);
+  const fullscreenBtnRef = useRef(null);
 
   return (
-    <div
-      className="chain-activity"
-      ref={chainActivityRef}
-      style={{ padding: isFullscreen ? "4%" : 0, paddingTop: isFullscreen ? "6%" : 0 }}
-    >
+    <Fullscreenable className="chain-activity" buttonRef={fullscreenBtnRef}>
       {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
 
       <h2 className="chain-activity-title">
         <AnalyticsIcon width={24} /> Chains Activity{" "}
-        <div
-          className="chain-activity-title-fullscreen"
-          onClick={() => {
-            if (isFullscreen || !chainActivityRef.current) {
-              document.exitFullscreen();
-            } else {
-              chainActivityRef.current.requestFullscreen();
-            }
-          }}
-        >
+        <div className="chain-activity-title-fullscreen" ref={fullscreenBtnRef}>
           <FullscreenIcon width={20} />
         </div>
       </h2>
@@ -1206,7 +1188,7 @@ const ChainActivity = () => {
           </>
         )}
       </div>
-    </div>
+    </Fullscreenable>
   );
 };
 

@@ -34,6 +34,8 @@ interface Props {
   type?: "primary" | "searchable" | "secondary";
   value: any;
   closeOnSelect?: boolean;
+
+  menuPortalTarget?: HTMLElement;
 }
 
 const Select = ({
@@ -58,6 +60,7 @@ const Select = ({
   type = "primary",
   closeOnSelect,
   value,
+  menuPortalTarget,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(keepOpen);
   const ref = useRef<HTMLDivElement>(null);
@@ -137,7 +140,8 @@ const Select = ({
               isOptionDisabled={option => option?.disabled}
               isSearchable
               menuIsOpen
-              menuPortalTarget={document.body}
+              menuPortalTarget={menuPortalTarget || document.body}
+              menuPosition={menuPortalTarget ? "fixed" : "absolute"}
               name={name}
               noOptionsMessage={() => noOptionsMessage}
               onChange={v => {
@@ -233,7 +237,8 @@ const Select = ({
       isClearable={isClearable}
       isSearchable={false}
       menuPlacement={menuPlacement}
-      menuPortalTarget={document.body}
+      menuPortalTarget={menuPortalTarget || document.body}
+      menuPosition={menuPortalTarget ? "fixed" : "absolute"}
       name={name}
       noOptionsMessage={() => noOptionsMessage}
       onChange={value => onValueChange(value)}

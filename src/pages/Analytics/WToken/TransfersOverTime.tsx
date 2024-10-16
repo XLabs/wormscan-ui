@@ -1,7 +1,7 @@
 import ReactApexChart from "react-apexcharts";
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef } from "react";
 import { GetTransferByTimeResult } from "src/api/native-token-transfer/types";
-import { Loader, ToggleGroup, Select } from "src/components/atoms";
+import { Loader, ToggleGroup, Select, Fullscreenable } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { BREAKPOINTS } from "src/consts";
 import {
@@ -13,7 +13,6 @@ import {
 } from "src/icons/generic";
 import { useWindowSize } from "src/utils/hooks";
 import { formatNumber } from "src/utils/number";
-import { getTokenIcon } from "src/utils/token";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { TimeRange, ByType } from "./index";
 
@@ -98,40 +97,15 @@ export const TransfersOverTime = ({
     return date.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "2-digit" });
   };
 
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, []);
-
-  const transferOverTimeRef = useRef(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const fullscreenBtnRef = useRef(null);
 
   return (
-    <div
-      className="transfers-over-time"
-      ref={transferOverTimeRef}
-      style={{ padding: isFullscreen ? "4%" : 0, paddingTop: isFullscreen ? "6%" : 0 }}
-    >
+    <Fullscreenable className="transfers-over-time" buttonRef={fullscreenBtnRef}>
       <div className="transfers-over-time-header">
         <h3 className="transfers-over-time-title">
           <ActivityIcon />
           <span>Cross-Chain W Token Transfers Over Time</span>
-          <div
-            className="transfers-over-time-title-fullscreen"
-            onClick={() => {
-              if (isFullscreen || !transferOverTimeRef.current) {
-                document.exitFullscreen();
-              } else {
-                transferOverTimeRef.current.requestFullscreen();
-              }
-            }}
-          >
+          <div className="transfers-over-time-title-fullscreen" ref={fullscreenBtnRef}>
             <FullscreenIcon width={20} />
           </div>
         </h3>
@@ -316,9 +290,10 @@ export const TransfersOverTime = ({
                             fontWeight: 400,
                           },
                         },
+                        opposite: true,
                         logarithmic: scaleSelected === "logarithmic" && chartSelected === "area",
                         forceNiceScale: scaleSelected === "logarithmic" && chartSelected === "area",
-                        opposite: true,
+                        logBase: 2,
                       },
                       tooltip: {
                         custom: ({ seriesIndex, dataPointIndex, w }) => {
@@ -355,6 +330,6 @@ export const TransfersOverTime = ({
           )}
         </div>
       </div>
-    </div>
+    </Fullscreenable>
   );
 };

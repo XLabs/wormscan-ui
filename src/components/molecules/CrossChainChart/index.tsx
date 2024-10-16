@@ -3,13 +3,13 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import i18n from "src/i18n";
-import { Loader, NavLink, Select, ToggleGroup } from "src/components/atoms";
+import { Fullscreenable, Loader, NavLink, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { getClient } from "src/api/Client";
 import { CrossChainBy } from "src/api/guardian-network/types";
 import { Chart } from "./Chart";
 import { ChainId } from "@wormhole-foundation/sdk";
-import { SwapSmallVerticalIcon, GlobeIcon } from "src/icons/generic";
+import { SwapSmallVerticalIcon, GlobeIcon, FullscreenIcon } from "src/icons/generic";
 import { useWindowSize } from "src/utils/hooks";
 import "./styles.scss";
 
@@ -190,12 +190,17 @@ const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
     }
   };
 
+  const fullscreenBtnRef = useRef(null);
+
   return (
-    <div className="cross-chain" data-testid="cross-chain-card">
+    <Fullscreenable className="cross-chain" buttonRef={fullscreenBtnRef}>
       <div className="cross-chain-top">
         <div className="cross-chain-top-title">
           <GlobeIcon width={24} />
           {t("home.crossChain.title")}
+          <div className="cross-chain-top-fullscreen" ref={fullscreenBtnRef}>
+            <FullscreenIcon width={20} />
+          </div>
           {isHomePage && (
             <NavLink className="token-activity-title-link" to="/analytics/chains">
               View More
@@ -283,7 +288,7 @@ const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
           </>
         )}
       </div>
-    </div>
+    </Fullscreenable>
   );
 };
 
