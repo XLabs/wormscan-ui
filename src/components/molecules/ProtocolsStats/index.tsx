@@ -184,6 +184,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
         .filter(
           item =>
             item.app_id !== "STABLE" &&
+            item.app_id !== "C3" &&
             item.app_id !== "WORMHOLE_GATEWAY_TRANSFER" &&
             item.app_id !== MAYAN_APP_ID,
         )

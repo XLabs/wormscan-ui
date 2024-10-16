@@ -40,7 +40,6 @@ const appIds = [
   MAYAN_APP_ID,
   MAYAN_MCTP_APP_ID,
   MAYAN_SWIFT_APP_ID,
-  NTT_APP_ID,
   OMNISWAP_APP_ID,
   PORTAL_NFT_APP_ID,
   PORTAL_APP_ID,
@@ -49,6 +48,7 @@ const appIds = [
   // UNKNOWN_APP_ID, // disabled until the backend is ready
   USDT_TRANSFER_APP_ID,
   GATEWAY_APP_ID,
+  NTT_APP_ID,
 ];
 
 export const PROTOCOL_LIST: { label: string; value: string }[] = appIds.map(appId => ({
