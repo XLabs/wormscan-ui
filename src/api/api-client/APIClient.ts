@@ -10,6 +10,21 @@ export class AxiosClient implements APIClient {
 
   constructor(baseURL: string) {
     this._client = axios.create({ baseURL });
+
+    // Add interceptor to include the DB_LAYER header when URL contains 'wormscan'
+    this._client.interceptors.request.use(
+      config => {
+        console.log("YES", { config });
+        if (config.baseURL?.includes("wormscan")) {
+          config.headers["DB_LAYER"] = "postgres";
+        }
+        return config;
+      },
+      error => {
+        console.log("NO");
+        return Promise.reject(error);
+      },
+    );
   }
 
   async doGet<T>(path: string, params?: any): Promise<T> {
