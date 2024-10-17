@@ -1,7 +1,14 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useQuery } from "react-query";
 import ReactApexChart from "react-apexcharts";
-import { BREAKPOINTS, PORTAL_NFT_APP_ID } from "src/consts";
+import {
+  BREAKPOINTS,
+  C3_APP_ID,
+  CONNECT_APP_ID,
+  MAYAN_MCTP_APP_ID,
+  MAYAN_SWIFT_APP_ID,
+  PORTAL_NFT_APP_ID,
+} from "src/consts";
 import { Fullscreenable, Loader, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { useLockBodyScroll, useWindowSize } from "src/utils/hooks";
@@ -68,8 +75,11 @@ const ProtocolsActivity = () => {
   const isDesktop = width >= BREAKPOINTS.desktop;
 
   const chartRef = useRef(null);
+
+  const [someZeroValue, setSomeZeroValue] = useState(false);
   const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
+
   const [metricSelected, setMetricSelected] = useState<"volume" | "transfers">("volume");
   const [totalVolumeValue, setTotalVolumeValue] = useState(0);
   const [totalMessagesValue, setTotalMessagesValue] = useState(0);
@@ -230,6 +240,46 @@ const ProtocolsActivity = () => {
     }
   }, [data, filters.appId, metricSelected]);
 
+  useEffect(() => {
+    const checkForZeroValues = (obj: any, path = "") => {
+      let hasZeroValue = false;
+      let hasNonZeroValue = false;
+
+      const checkValue = (value: any, currentPath: string) => {
+        if (typeof value === "object" && value !== null) {
+          Object.entries(value).forEach(([key, val]) => {
+            const newPath = currentPath ? `${currentPath}.${key}` : key;
+            checkValue(val, newPath);
+          });
+        } else if (value === 0) {
+          hasZeroValue = true;
+          // console.log("zero value found at", currentPath);
+        } else if (typeof value === "number" && value !== 0) {
+          hasNonZeroValue = true;
+        }
+      };
+
+      checkValue(obj, path);
+      return { hasZeroValue, hasNonZeroValue };
+    };
+
+    let seriesHasZeroValue = false;
+    let seriesHasNonZeroValue = false;
+
+    series.forEach((seriesItem, index) => {
+      const { hasZeroValue, hasNonZeroValue } = checkForZeroValues(seriesItem, `series[${index}]`);
+      seriesHasZeroValue = seriesHasZeroValue || hasZeroValue;
+      seriesHasNonZeroValue = seriesHasNonZeroValue || hasNonZeroValue;
+    });
+
+    setSomeZeroValue(seriesHasZeroValue);
+    if (seriesHasZeroValue) {
+      setScaleSelected("linear");
+    } else if (seriesHasNonZeroValue) {
+      setScaleSelected("logarithmic");
+    }
+  }, [series]);
+
   const { isFetching, isError } = useQuery(["getProtocolActivityChart", filters], async () => {
     const res = await getClient().guardianNetwork.getProtocolActivity({
       from: filters.from,
@@ -307,7 +357,12 @@ const ProtocolsActivity = () => {
                   disabled: false,
                 },
                 ...PROTOCOL_LIST.filter(
-                  protocol => protocol.value !== PORTAL_NFT_APP_ID && protocol.value !== "CONNECT",
+                  protocol =>
+                    protocol.value !== PORTAL_NFT_APP_ID &&
+                    protocol.value !== CONNECT_APP_ID &&
+                    protocol.value !== C3_APP_ID &&
+                    protocol.value !== MAYAN_MCTP_APP_ID &&
+                    protocol.value !== MAYAN_SWIFT_APP_ID,
                 ),
               ]}
               menuFixed={!isDesktop}
@@ -334,6 +389,7 @@ const ProtocolsActivity = () => {
               items={RANGE_LIST}
               menuFixed={!isDesktop}
               menuPortalStyles={{ zIndex: 100 }}
+              menuPortalTarget={document.querySelector(".protocols-activity")}
               name="timeRange"
               onValueChange={timeRange => {
                 setSelectedTimeRange(timeRange);
@@ -416,7 +472,7 @@ const ProtocolsActivity = () => {
                 )}
               </div>
 
-              {chartSelected === "area" && (
+              {chartSelected === "area" && !someZeroValue && (
                 <ToggleGroup
                   ariaLabel="Select scale"
                   className="protocols-activity-container-chart-scale"

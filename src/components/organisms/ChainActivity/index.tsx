@@ -70,6 +70,8 @@ const ChainActivity = () => {
   const isBigDesktop = width >= BREAKPOINTS.bigDesktop;
 
   const chartRef = useRef(null);
+
+  const [someZeroValue, setSomeZeroValue] = useState(false);
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
@@ -637,6 +639,46 @@ const ChainActivity = () => {
     showAllSourceChains,
   ]);
 
+  useEffect(() => {
+    const checkForZeroValues = (obj: any, path = "") => {
+      let hasZeroValue = false;
+      let hasNonZeroValue = false;
+
+      const checkValue = (value: any, currentPath: string) => {
+        if (typeof value === "object" && value !== null) {
+          Object.entries(value).forEach(([key, val]) => {
+            const newPath = currentPath ? `${currentPath}.${key}` : key;
+            checkValue(val, newPath);
+          });
+        } else if (value === 0) {
+          hasZeroValue = true;
+          // console.log("zero value found at", currentPath);
+        } else if (typeof value === "number" && value !== 0) {
+          hasNonZeroValue = true;
+        }
+      };
+
+      checkValue(obj, path);
+      return { hasZeroValue, hasNonZeroValue };
+    };
+
+    let seriesHasZeroValue = false;
+    let seriesHasNonZeroValue = false;
+
+    series.forEach((seriesItem, index) => {
+      const { hasZeroValue, hasNonZeroValue } = checkForZeroValues(seriesItem, `series[${index}]`);
+      seriesHasZeroValue = seriesHasZeroValue || hasZeroValue;
+      seriesHasNonZeroValue = seriesHasNonZeroValue || hasNonZeroValue;
+    });
+
+    setSomeZeroValue(seriesHasZeroValue);
+    if (seriesHasZeroValue) {
+      setScaleSelected("linear");
+    } else if (seriesHasNonZeroValue) {
+      setScaleSelected("logarithmic");
+    }
+  }, [series]);
+
   const fullscreenBtnRef = useRef(null);
 
   return (
@@ -684,6 +726,7 @@ const ChainActivity = () => {
               ariaLabel="Select Chains"
               className="chain-activity-chart-top-filters-section"
               items={SOURCE_CHAIN_LIST}
+              menuPortalTarget={document.querySelector(".chain-activity")}
               menuFixed={!isDesktop}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
               menuPortalStyles={{ zIndex: 100 }}
@@ -708,6 +751,7 @@ const ChainActivity = () => {
               menuFixed={!isDesktop}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
               menuPortalStyles={{ zIndex: 100 }}
+              menuPortalTarget={document.querySelector(".chain-activity")}
               name="targetChain"
               onValueChange={(value: any) => handleChainSelection(value, "target")}
               text={
@@ -869,7 +913,7 @@ const ChainActivity = () => {
               value={chartSelected}
             />
 
-            {chartSelected === "area" && (
+            {chartSelected === "area" && !someZeroValue && (
               <ToggleGroup
                 ariaLabel="Select scale"
                 className="chain-activity-chart-scale"

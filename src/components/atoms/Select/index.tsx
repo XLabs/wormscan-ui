@@ -153,7 +153,7 @@ const Select = ({
               styles={{
                 menuPortal: base => ({
                   ...base,
-                  position: menuFixed ? "fixed" : "absolute",
+                  position: menuFixed || menuPortalTarget ? "fixed" : "absolute",
                   zIndex: 95,
                   ...menuPortalStyles,
                 }),
@@ -255,7 +255,7 @@ const Select = ({
         },
         menuPortal: base => ({
           ...base,
-          position: menuFixed ? "fixed" : "absolute",
+          position: menuFixed || menuPortalTarget ? "fixed" : "absolute",
           zIndex: 95,
           ...menuPortalStyles,
         }),

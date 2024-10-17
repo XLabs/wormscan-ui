@@ -4785,7 +4785,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apexcharts@npm:^3.49.1":
+"apexcharts@npm:3.49.1":
   version: 3.49.1
   resolution: "apexcharts@npm:3.49.1"
   dependencies:
@@ -12207,7 +12207,7 @@ __metadata:
     "@typescript-eslint/parser": latest
     "@wormhole-foundation/sdk": 0.10.3
     analytics: ^0.8.9
-    apexcharts: ^3.49.1
+    apexcharts: 3.49.1
     assert: ^2.0.0
     axios: ^1.4.0
     crypto-browserify: ^3.12.0

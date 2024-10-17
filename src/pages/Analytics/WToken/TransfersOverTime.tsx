@@ -1,5 +1,5 @@
 import ReactApexChart from "react-apexcharts";
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { GetTransferByTimeResult } from "src/api/native-token-transfer/types";
 import { Loader, ToggleGroup, Select, Fullscreenable } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
@@ -63,9 +63,15 @@ export const TransfersOverTime = ({
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
 
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("linear");
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const chartRef = useRef(null);
+
+  useEffect(() => {
+    if (by === "tx") {
+      setScaleSelected("linear");
+    }
+  }, [by]);
 
   const series = useMemo(() => {
     if (!transfers || transfers.length === 0) return [];
@@ -122,6 +128,7 @@ export const TransfersOverTime = ({
                   <Select
                     name="timeRange"
                     value={timeRange}
+                    menuPortalTarget={document.querySelector(".transfers-over-time")}
                     onValueChange={value => setTimeRange(value)}
                     items={RANGE_LIST}
                     ariaLabel="Select Time Range"
@@ -137,7 +144,7 @@ export const TransfersOverTime = ({
                 />
 
                 <div className="transfers-over-time-toggles">
-                  {chartSelected === "area" && (
+                  {chartSelected === "area" && by === "notional" && (
                     <ToggleGroup
                       ariaLabel="Select scale"
                       className="transfers-over-time-toggle-scale"
@@ -293,7 +300,6 @@ export const TransfersOverTime = ({
                         opposite: true,
                         logarithmic: scaleSelected === "logarithmic" && chartSelected === "area",
                         forceNiceScale: scaleSelected === "logarithmic" && chartSelected === "area",
-                        logBase: 2,
                       },
                       tooltip: {
                         custom: ({ seriesIndex, dataPointIndex, w }) => {

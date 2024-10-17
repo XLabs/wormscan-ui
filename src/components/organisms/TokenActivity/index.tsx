@@ -56,6 +56,8 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   const isDesktop = width >= BREAKPOINTS.desktop;
 
   const [selectedTopAssetTimeRange, setSelectedTopAssetTimeRange] = useState(RANGE_LIST[0]);
+
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
   const [openFilters, setOpenFilters] = useState(false);
   const [rowSelected, setRowSelected] = useState<number>(0);
@@ -228,6 +230,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                 height: isDesktop ? 36 : 48,
               }}
               items={CHAIN_LIST}
+              menuPortalTarget={document.querySelector(".token-activity")}
               menuFixed={!isDesktop}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
               menuPortalStyles={{ zIndex: 100 }}
@@ -255,6 +258,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
               }}
               items={CHAIN_LIST}
               menuFixed={!isDesktop}
+              menuPortalTarget={document.querySelector(".token-activity")}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
               menuPortalStyles={{ zIndex: 100 }}
               name="topAssetTimeRange"
@@ -294,7 +298,12 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
             ariaLabel="Select metric type (volume or transfers)"
             className="token-activity-container-top-toggle"
             items={METRIC_CHART_LIST}
-            onValueChange={value => setMetricSelected(value)}
+            onValueChange={value => {
+              if (value === "transactions") {
+                setScaleSelected("linear");
+              }
+              setMetricSelected(value);
+            }}
             value={metricSelected}
           />
 
@@ -302,6 +311,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
             ariaLabel="Select Time Range"
             className="token-activity-container-top-select"
             items={RANGE_LIST}
+            menuPortalTarget={document.querySelector(".token-activity")}
             name="topAssetTimeRange"
             onValueChange={value => {
               setFilters({
@@ -384,6 +394,8 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                       metricSelected={metricSelected}
                       rangeShortLabel={selectedTopAssetTimeRange.shortLabel}
                       rowSelected={rowSelected}
+                      setScaleSelected={setScaleSelected}
+                      scaleSelected={scaleSelected}
                     />
                   )}
                 </Fragment>
@@ -400,6 +412,8 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
               metricSelected={metricSelected}
               rangeShortLabel={selectedTopAssetTimeRange.shortLabel}
               rowSelected={rowSelected}
+              setScaleSelected={setScaleSelected}
+              scaleSelected={scaleSelected}
             />
           )}
         </div>

@@ -20,6 +20,8 @@ type Props = {
     timespan: string;
   };
   rangeShortLabel: string | "24H" | "7D" | "30D" | "365D" | "All";
+  setScaleSelected: (value: "linear" | "logarithmic") => void;
+  scaleSelected: "linear" | "logarithmic";
 };
 
 const TYPE_CHART_LIST = [
@@ -39,8 +41,9 @@ export const Chart = ({
   isLoading,
   metricSelected,
   rangeShortLabel,
+  setScaleSelected,
+  scaleSelected,
 }: Props) => {
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const chartRef = useRef(null);
 
@@ -103,7 +106,7 @@ export const Chart = ({
               </div>
 
               <div className="token-activity-chart-top-toggles">
-                {chartSelected === "area" && (
+                {chartSelected === "area" && metricSelected === "volume" && (
                   <ToggleGroup
                     ariaLabel="Select scale"
                     className="token-activity-chart-top-scale"
