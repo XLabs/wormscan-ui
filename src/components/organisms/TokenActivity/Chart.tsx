@@ -22,6 +22,8 @@ type Props = {
   rangeShortLabel: string | "24H" | "7D" | "30D" | "365D" | "All";
   setScaleSelected: (value: "linear" | "logarithmic") => void;
   scaleSelected: "linear" | "logarithmic";
+  chartSelected: "area" | "bar";
+  setChartSelected: (value: "area" | "bar") => void;
 };
 
 const TYPE_CHART_LIST = [
@@ -43,8 +45,9 @@ export const Chart = ({
   rangeShortLabel,
   setScaleSelected,
   scaleSelected,
+  chartSelected,
+  setChartSelected,
 }: Props) => {
-  const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const chartRef = useRef(null);
 
   const { width } = useWindowSize();
@@ -80,7 +83,12 @@ export const Chart = ({
               <div className="token-activity-chart-top-box">
                 <span className="token-activity-chart-top-box-key">
                   {rangeShortLabel}{" "}
-                  {metricSelected === "volume" ? "Total Volume" : "Total Transfers"}:
+                  {metricSelected === "volume"
+                    ? isDesktop
+                      ? "Total Volume"
+                      : "Vol"
+                    : "Total Transfers"}
+                  :
                 </span>
                 <span className="token-activity-chart-top-box-value">
                   {dataTransformed &&
@@ -106,7 +114,7 @@ export const Chart = ({
               </div>
 
               <div className="token-activity-chart-top-toggles">
-                {chartSelected === "area" && metricSelected === "volume" && (
+                {isDesktop && chartSelected === "area" && metricSelected === "volume" && (
                   <ToggleGroup
                     ariaLabel="Select scale"
                     className="token-activity-chart-top-scale"

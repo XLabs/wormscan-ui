@@ -267,7 +267,7 @@ export class GuardianNetwork {
       `/application-activity?${queryString}`,
     );
 
-    // Take out from the response the CONNECT app as its included in Portal
+    // Take out from the response the CONNECT app as its included in Portal.
     return response.filter(a => a.app_id !== CONNECT_APP_ID) || [];
   }
 

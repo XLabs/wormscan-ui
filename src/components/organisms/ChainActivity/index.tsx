@@ -58,6 +58,11 @@ const SCALE_CHART_LIST = [
   { label: <LinearIcon width={22} />, value: "linear", ariaLabel: "Linear" },
 ];
 
+const SCALE_CHART_LIST_TEXT = [
+  { label: "Logarithmic", value: "logarithmic", ariaLabel: "Logarithmic" },
+  { label: "Linear", value: "linear", ariaLabel: "Linear" },
+];
+
 const METRIC_CHART_LIST = [
   { label: "Volume", value: "volume", ariaLabel: "Volume" },
   { label: "Transfers", value: "transactions", ariaLabel: "Transfers" },
@@ -73,7 +78,7 @@ const ChainActivity = () => {
 
   const [someZeroValue, setSomeZeroValue] = useState(false);
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("linear");
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
 
   const initialDataDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
@@ -828,6 +833,16 @@ const ChainActivity = () => {
               value={metricSelected}
             />
 
+            {!isDesktop && chartSelected === "area" && !someZeroValue && (
+              <ToggleGroup
+                ariaLabel="Select scale"
+                className="chain-activity-chart-top-filters-toggle-metric"
+                items={SCALE_CHART_LIST_TEXT}
+                onValueChange={value => setScaleSelected(value)}
+                value={scaleSelected}
+              />
+            )}
+
             <div
               className={`chain-activity-chart-top-filters-legends ${
                 isFetching || isFetchingAllChains || isError || isErrorAllChains ? "hidden" : ""
@@ -913,7 +928,7 @@ const ChainActivity = () => {
               value={chartSelected}
             />
 
-            {chartSelected === "area" && !someZeroValue && (
+            {isDesktop && chartSelected === "area" && !someZeroValue && (
               <ToggleGroup
                 ariaLabel="Select scale"
                 className="chain-activity-chart-scale"

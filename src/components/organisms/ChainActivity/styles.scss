@@ -84,10 +84,10 @@
       top: 0px;
       border-radius: 12px;
 
-      @media only screen and (min-width: 1030px) {
-        right: -6px;
-        top: 104px;
-        transform: scale(0.9);
+      @include desktop {
+        right: 272px;
+        top: 0px;
+        transform: scale(0.94);
       }
 
       & .toggle-group-item {
@@ -195,7 +195,7 @@
         border: 1px solid var(--color-gray-900);
         border-bottom: none;
         display: flex;
-        gap: 16px;
+        gap: 10px;
         inset: 120vh 0 0 0;
         justify-content: flex-start;
         padding: 20px;
@@ -854,11 +854,22 @@
             @include button-ghost;
             height: 48px;
             justify-content: center;
-            padding: 8px;
-            width: 100%;
+            padding: 0px;
 
             @include desktop {
+              word-break: break-all;
+              width: 40px;
+              margin-left: -2px;
+              font-size: 12px;
               height: 36px;
+            }
+
+            @media only screen and (min-width: 1100px) {
+              margin-left: 0px;
+              padding: 8px;
+              width: 100%;
+              word-break: normal;
+              font-size: 14px;
             }
           }
         }
@@ -934,6 +945,24 @@
         vertical-align: 1px;
         margin-right: 12px;
       }
+    }
+  }
+}
+
+.date-range-text {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  .range-text {
+    display: block;
+
+    @include desktop {
+      display: none;
+    }
+
+    @media only screen and (min-width: 1215px) {
+      display: block;
     }
   }
 }

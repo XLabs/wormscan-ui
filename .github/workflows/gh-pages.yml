@@ -11,14 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repos develop branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: "develop"
 
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "16"
+          cache: yarn
 
       - name: Build and Deploy Github Page
         run: |

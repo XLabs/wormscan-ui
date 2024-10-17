@@ -90,7 +90,9 @@ export const Calendar = ({
         className="chain-activity-chart-top-filters-section-btn"
         onClick={() => setShowCalendar(!showCalendar)}
       >
-        <span>Date range</span>
+        <span className="date-range-text">
+          Date <span className="range-text">Range</span>
+        </span>
 
         <ChevronDownIcon style={{ transform: showCalendar ? "rotate(-180deg)" : "" }} width={24} />
       </button>

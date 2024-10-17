@@ -77,7 +77,7 @@ const ProtocolsActivity = () => {
   const chartRef = useRef(null);
 
   const [someZeroValue, setSomeZeroValue] = useState(false);
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("linear");
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
 
   const [metricSelected, setMetricSelected] = useState<"volume" | "transfers">("volume");

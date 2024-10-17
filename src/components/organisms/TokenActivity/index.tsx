@@ -35,6 +35,11 @@ const METRIC_CHART_LIST = [
   { label: "Transfers", value: "transactions", ariaLabel: "Transfers" },
 ];
 
+const SCALE_CHART_LIST = [
+  { label: "Logarithmic", value: "logarithmic", ariaLabel: "Logarithmic" },
+  { label: "Linear", value: "linear", ariaLabel: "Linear" },
+];
+
 const RANGE_LIST = [
   { label: "Last 24 hours", value: getISODateZeroed(1), timespan: "1h", shortLabel: "24H" },
   { label: "Last 7 days", value: getISODateZeroed(7), timespan: "1d", shortLabel: "7D" },
@@ -57,7 +62,8 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
 
   const [selectedTopAssetTimeRange, setSelectedTopAssetTimeRange] = useState(RANGE_LIST[0]);
 
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("linear");
+  const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
   const [openFilters, setOpenFilters] = useState(false);
   const [rowSelected, setRowSelected] = useState<number>(0);
@@ -276,6 +282,32 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
               value={filters.targetChain}
             />
 
+            {!isDesktop && (
+              <ToggleGroup
+                ariaLabel="Select metric type (volume or transfers)"
+                className="token-activity-container-top-toggle"
+                items={METRIC_CHART_LIST}
+                onValueChange={value => {
+                  if (value === "transactions") {
+                    setScaleSelected("linear");
+                  }
+                  setMetricSelected(value);
+                }}
+                value={metricSelected}
+              />
+            )}
+
+            {!isDesktop && chartSelected === "area" && metricSelected === "volume" && (
+              <ToggleGroup
+                ariaLabel="Select scale (linear or logarithmic)"
+                className="token-activity-container-top-toggle"
+                // className="token-activity-chart-top-scale"
+                items={SCALE_CHART_LIST}
+                onValueChange={value => setScaleSelected(value)}
+                value={scaleSelected}
+              />
+            )}
+
             <div className="token-activity-container-top-menu-buttons">
               <button className="apply-btn" onClick={applyFilters}>
                 Apply Filters
@@ -294,18 +326,20 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
             </div>
           </div>
 
-          <ToggleGroup
-            ariaLabel="Select metric type (volume or transfers)"
-            className="token-activity-container-top-toggle"
-            items={METRIC_CHART_LIST}
-            onValueChange={value => {
-              if (value === "transactions") {
-                setScaleSelected("linear");
-              }
-              setMetricSelected(value);
-            }}
-            value={metricSelected}
-          />
+          {isDesktop && (
+            <ToggleGroup
+              ariaLabel="Select metric type (volume or transfers)"
+              className="token-activity-container-top-toggle"
+              items={METRIC_CHART_LIST}
+              onValueChange={value => {
+                if (value === "transactions") {
+                  setScaleSelected("linear");
+                }
+                setMetricSelected(value);
+              }}
+              value={metricSelected}
+            />
+          )}
 
           <Select
             ariaLabel="Select Time Range"
@@ -396,6 +430,8 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                       rowSelected={rowSelected}
                       setScaleSelected={setScaleSelected}
                       scaleSelected={scaleSelected}
+                      chartSelected={chartSelected}
+                      setChartSelected={setChartSelected}
                     />
                   )}
                 </Fragment>
@@ -414,6 +450,8 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
               rowSelected={rowSelected}
               setScaleSelected={setScaleSelected}
               scaleSelected={scaleSelected}
+              setChartSelected={setChartSelected}
+              chartSelected={chartSelected}
             />
           )}
         </div>
