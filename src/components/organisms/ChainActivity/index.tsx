@@ -78,7 +78,14 @@ const ChainActivity = () => {
 
   const [someZeroValue, setSomeZeroValue] = useState(false);
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("linear");
+  const [scaleSelected, setScaleSelectedState] = useState<"linear" | "logarithmic">("linear");
+  const setScaleSelected = (value: "linear" | "logarithmic") => {
+    setScaleSelectedState(value);
+    analytics.track("scaleSelected", {
+      selected: value,
+      selectedType: "chainActivity",
+    });
+  };
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
 
   const initialDataDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));

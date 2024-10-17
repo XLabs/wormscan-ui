@@ -15,6 +15,7 @@ import { useWindowSize } from "src/utils/hooks";
 import { formatNumber } from "src/utils/number";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { TimeRange, ByType } from "./index";
+import analytics from "src/analytics";
 
 type TransfersOverTimeProps = {
   transfers: GetTransferByTimeResult;
@@ -63,7 +64,14 @@ export const TransfersOverTime = ({
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
 
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("linear");
+  const [scaleSelected, setScaleSelectedState] = useState<"linear" | "logarithmic">("linear");
+  const setScaleSelected = (value: "linear" | "logarithmic") => {
+    setScaleSelectedState(value);
+    analytics.track("scaleSelected", {
+      selected: value,
+      selectedType: "transfersOverTime",
+    });
+  };
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const chartRef = useRef(null);
 

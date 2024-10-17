@@ -62,7 +62,14 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
 
   const [selectedTopAssetTimeRange, setSelectedTopAssetTimeRange] = useState(RANGE_LIST[0]);
 
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("linear");
+  const [scaleSelected, setScaleSelectedState] = useState<"linear" | "logarithmic">("linear");
+  const setScaleSelected = (value: "linear" | "logarithmic") => {
+    setScaleSelectedState(value);
+    analytics.track("scaleSelected", {
+      selected: value,
+      selectedType: "tokenActivity",
+    });
+  };
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
   const [openFilters, setOpenFilters] = useState(false);
