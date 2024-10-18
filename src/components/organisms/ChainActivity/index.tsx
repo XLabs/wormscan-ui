@@ -29,8 +29,13 @@ import {
   LogarithmicIcon,
 } from "src/icons/generic";
 import { IChainActivity, IChainActivityInput } from "src/api/guardian-network/types";
-import { calculateDateDifferenceInDays, startOfDayUTC, startOfMonthUTC } from "src/utils/date";
-import { ChainFilterMainnet, ChainFilterTestnet, PROTOCOL_LIST } from "src/utils/filterUtils";
+import {
+  calculateDateDifferenceInDays,
+  getNextDate,
+  startOfDayUTC,
+  startOfMonthUTC,
+} from "src/utils/date";
+import { ChainFilterMainnet, ChainFilterTestnet } from "src/utils/filterUtils";
 import {
   colors,
   DAY_IN_MILLISECONDS,
@@ -78,6 +83,7 @@ const ChainActivity = () => {
 
   const [someZeroValue, setSomeZeroValue] = useState(false);
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
+  const [isLoading, setIsLoading] = useState(true);
   const [scaleSelected, setScaleSelectedState] = useState<"linear" | "logarithmic">("linear");
   const setScaleSelected = (value: "linear" | "logarithmic") => {
     setScaleSelectedState(value);
@@ -514,6 +520,7 @@ const ChainActivity = () => {
           data: totalVolumeAndCountPerDay.map(item => ({
             x: item.from,
             y: metricSelected === "transactions" ? item.count : item.volume,
+            to: item.to,
             volume: item.volume,
             count: item.count,
             emitter_chain: item.emitter_chain,
@@ -532,6 +539,7 @@ const ChainActivity = () => {
           details: [],
           emitter_chain: "allChains",
           volume: 0,
+          to: getNextDate(date, filters.timespan),
           x: date,
           y: 0,
         };
@@ -552,10 +560,11 @@ const ChainActivity = () => {
       setAllVolumeNumber(totalVolume / 10 ** 8);
       setAllChainsSerie(seriesForAllChains);
     }
-  }, [dataAllChains, getDateList, metricSelected]);
+  }, [dataAllChains, filters.timespan, getDateList, metricSelected]);
 
   useEffect(() => {
     if (!data) return;
+    setIsLoading(true);
 
     const dataByChain: { [key: string]: any[] } = {};
     const allDates: { [key: string]: boolean } = {};
@@ -576,6 +585,7 @@ const ChainActivity = () => {
       dataByChain[item.emitter_chain].push({
         x: formatDate,
         y: metricSelected === "transactions" ? item.count : item.volume / 10 ** 8,
+        to: item.to,
         volume: item.volume / 10 ** 8,
         count: item.count,
         emitter_chain: item.emitter_chain,
@@ -597,6 +607,7 @@ const ChainActivity = () => {
           existingData || {
             x: date,
             y: 0,
+            to: getNextDate(date, filters.timespan),
             volume: 0,
             count: 0,
             emitter_chain: chain,
@@ -649,6 +660,7 @@ const ChainActivity = () => {
     getDateList,
     metricSelected,
     showAllSourceChains,
+    filters.timespan,
   ]);
 
   useEffect(() => {
@@ -689,6 +701,8 @@ const ChainActivity = () => {
     } else if (seriesHasNonZeroValue) {
       setScaleSelected("logarithmic");
     }
+
+    setIsLoading(false);
   }, [series]);
 
   const fullscreenBtnRef = useRef(null);
@@ -949,7 +963,7 @@ const ChainActivity = () => {
 
         {isError || isErrorAllChains ? (
           <ErrorPlaceholder errorType="chart" />
-        ) : isFetching || isFetchingAllChains ? (
+        ) : isFetching || isFetchingAllChains || isLoading ? (
           <Loader />
         ) : (
           <>
@@ -1110,17 +1124,32 @@ const ChainActivity = () => {
                     }
 
                     return `<div class="chain-activity-chart-tooltip">
-                      <p class="chain-activity-chart-tooltip-date">
-                        ${new Date(data.x).toLocaleString("en-GB", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })},
-                        ${new Date(data.x).toLocaleString("en-GB", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </p>
+                      <div class="chain-activity-chart-tooltip-date">
+                        <p>
+                          From:
+                          ${new Date(data.x).toLocaleString("en-GB", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })},
+                          ${new Date(data.x).toLocaleString("en-GB", {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </p>
+                        <p>
+                          To:
+                          ${new Date(data.to).toLocaleString("en-GB", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })},
+                          ${new Date(data.to).toLocaleString("en-GB", {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </p>
+                      </div>
                       <div class="chain-activity-chart-tooltip-total-msg">
                         ${
                           showAllSourceChains
