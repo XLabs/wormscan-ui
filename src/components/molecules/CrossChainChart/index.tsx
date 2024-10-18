@@ -230,7 +230,7 @@ const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
             value={selectedType}
           />
         ) : (
-          <div className="cross-chain-options-txsText">Transactions</div>
+          <div className="cross-chain-options-txsText">Transfers</div>
         )}
 
         <div className="cross-chain-destination">
