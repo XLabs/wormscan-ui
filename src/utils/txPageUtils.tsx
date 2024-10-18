@@ -62,6 +62,7 @@ export type OverviewProps = {
   redeemedAmount?: string;
   refundStatus?: string;
   refundText?: () => string;
+  releaseTimestamp?: Date;
   resultLog?: string;
   setShowOverview?: (newView: string) => void;
   showMetaMaskBtn?: boolean;

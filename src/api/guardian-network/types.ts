@@ -437,5 +437,6 @@ export interface GetOperationsOutput {
   isDailyLimitExceeded?: boolean;
   transactionLimit?: number;
   relayerInfo?: DeliveryLifecycleRecord;
+  releaseTimestamp?: Date;
 }
 [];
