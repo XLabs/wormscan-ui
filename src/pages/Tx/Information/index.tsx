@@ -440,6 +440,7 @@ const Information = ({
     parsedRedeemTx,
     payloadType,
     redeemedAmount,
+    releaseTimestamp: data?.releaseTimestamp,
     setShowOverview,
     showMetaMaskBtn,
     showSignatures: !(appIds && appIds.includes(CCTP_MANUAL_APP_ID)),

@@ -1253,6 +1253,20 @@ const Tx = () => {
         data.isDailyLimitExceeded = isDailyLimitExceeded;
         data.transactionLimit = transactionLimit;
 
+        if (STATUS === "IN_GOVERNORS") {
+          const enqueuedTransactions = await getClient(
+            environment.network,
+          ).governor.getEnqueuedTransactions();
+
+          const tx = enqueuedTransactions.find(
+            a => a.txHash === data.sourceChain?.transaction?.txHash,
+          );
+
+          if (tx) {
+            data.releaseTimestamp = tx.releaseTime;
+          }
+        }
+
         if (STATUS === "IN_PROGRESS" && isEvmTxHash) {
           const timestamp = new Date(data?.sourceChain?.timestamp);
           const now = new Date();
