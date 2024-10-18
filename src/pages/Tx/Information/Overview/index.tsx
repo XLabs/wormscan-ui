@@ -466,27 +466,31 @@ const Overview = ({
           </div>
         </div>
 
-        <div className="tx-overview-section-row">
-          <h4 className="tx-overview-section-row-title">
-            <Tooltip
-              type="info"
-              tooltip={
-                <div>
-                  <p>The date and time when the transaction will get released by the Governors.</p>
-                </div>
-              }
-            >
-              <span>
-                <InfoCircleIcon /> Release Time
-              </span>
-            </Tooltip>
-          </h4>
-          <div className="tx-overview-section-row-info">
-            <div className="tx-overview-section-row-info-container">
-              <div className="text">{releaseTimestamp ? `${remainingTime}` : "N/A"}</div>
+        {releaseTimestamp && (
+          <div className="tx-overview-section-row">
+            <h4 className="tx-overview-section-row-title">
+              <Tooltip
+                type="info"
+                tooltip={
+                  <div>
+                    <p>
+                      The date and time when the transaction will get released by the Governors.
+                    </p>
+                  </div>
+                }
+              >
+                <span>
+                  <InfoCircleIcon /> Release Time
+                </span>
+              </Tooltip>
+            </h4>
+            <div className="tx-overview-section-row-info">
+              <div className="tx-overview-section-row-info-container">
+                <div className="text">{releaseTimestamp ? `${remainingTime}` : "N/A"}</div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {destinationDateParsed && (
           <div className="tx-overview-section-row">
