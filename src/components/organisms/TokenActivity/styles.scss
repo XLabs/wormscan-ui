@@ -494,8 +494,10 @@
       }
 
       &-date {
+        @include centered-column;
         @include text-heading6;
         color: var(--color-gray-400);
+        gap: 4px 0;
         text-transform: uppercase;
       }
 

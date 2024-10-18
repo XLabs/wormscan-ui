@@ -564,23 +564,25 @@
         padding: 12px;
 
         &-date {
-          @include text-roboto-body-400;
+          @include centered-column;
+          @include text-heading6;
           color: var(--color-gray-400);
-          margin-bottom: 8px;
+          font-family: "Roboto Mono", "Roboto", sans-serif !important;
+          gap: 4px 0;
+          margin-bottom: 12px;
+          text-transform: uppercase;
         }
 
         &-amount {
           @include centered-row;
-          gap: 8px;
-
-          img {
-            width: 16px;
-            height: 16px;
-          }
+          @include text-roboto-body-400;
+          font-family: "Roboto", sans-serif !important;
+          gap: 0 8px;
 
           span {
-            @include text-roboto-body-500;
-            color: var(--color-white);
+            @include text-heading5;
+            font-family: "Roboto Mono", "Roboto", sans-serif !important;
+            margin-left: auto;
           }
         }
       }

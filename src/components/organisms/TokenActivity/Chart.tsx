@@ -60,6 +60,7 @@ export const Chart = ({
   const dataTransformed = token
     ? token.time_range_data?.map(item => ({
         from: new Date(item.from).toISOString(),
+        to: new Date(item.to).toISOString(),
         symbol: token.token_symbol,
         volume: item.total_value_transferred,
         transactions: item.total_messages,
@@ -213,7 +214,7 @@ export const Chart = ({
                 tooltip: {
                   custom: function ({ series, seriesIndex, dataPointIndex, w }) {
                     const dataPoint = dataTransformed[dataPointIndex];
-                    const { from, volume, symbol, transactions } = dataPoint;
+                    const { from, to, volume, symbol, transactions } = dataPoint;
 
                     if (chartSelected === "bar") {
                       updatePathStyles({ chartRef, dataPointIndex });
@@ -221,15 +222,30 @@ export const Chart = ({
 
                     return `<div class='token-activity-chart-tooltip'>
                               <div class='token-activity-chart-tooltip-date'>
-                                ${new Date(from).toLocaleString("en-GB", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })},
-                                ${new Date(from).toLocaleString("en-GB", {
-                                  day: "2-digit",
-                                  month: "long",
-                                  year: "numeric",
-                                })}
+                                <div>
+                                  From:
+                                  ${new Date(from).toLocaleString("en-GB", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })},
+                                  ${new Date(from).toLocaleString("en-GB", {
+                                    day: "2-digit",
+                                    month: "long",
+                                    year: "numeric",
+                                  })}
+                                </div>
+                                <div>
+                                  To:
+                                  ${new Date(to).toLocaleString("en-GB", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })},
+                                  ${new Date(to).toLocaleString("en-GB", {
+                                    day: "2-digit",
+                                    month: "long",
+                                    year: "numeric",
+                                  })}
+                                </div>
                               </div>
                               <div class='token-activity-chart-tooltip-info'>
                                 ${symbol} Transferred:

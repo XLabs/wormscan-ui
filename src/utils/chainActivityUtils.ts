@@ -30,6 +30,7 @@ export interface ICompleteData {
     details: IDetails[];
     emitter_chain: string;
     volume: number;
+    to: string;
     x: string;
     y: number;
   };

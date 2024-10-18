@@ -107,15 +107,13 @@
       }
 
       &-date {
+        @include centered-column;
         @include text-heading6;
         color: var(--color-gray-400);
         font-family: "Roboto Mono", "Roboto", sans-serif !important;
-        margin-bottom: 8px;
+        gap: 4px 0;
+        margin-bottom: 12px;
         text-transform: uppercase;
-
-        @include desktop {
-          margin-bottom: 12px;
-        }
       }
 
       &-total-msg {

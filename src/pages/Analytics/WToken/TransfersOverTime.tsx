@@ -13,6 +13,7 @@ import {
 } from "src/icons/generic";
 import { useWindowSize } from "src/utils/hooks";
 import { formatNumber } from "src/utils/number";
+import { getNextDate } from "src/utils/date";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { TimeRange, ByType } from "./index";
 import analytics from "src/analytics";
@@ -21,7 +22,7 @@ type TransfersOverTimeProps = {
   transfers: GetTransferByTimeResult;
   isLoading: boolean;
   isError: boolean;
-  timeSpan: string;
+  timeSpan: "1h" | "1d" | "1mo";
   setTimeRange: (value: TimeRange) => void;
   timeRange: TimeRange;
   by: ByType;
@@ -91,11 +92,12 @@ export const TransfersOverTime = ({
         totalValue: transfers.reduce((acc, item) => acc + +item.value, 0),
         data: transfers.map(item => ({
           x: item.time,
+          to: getNextDate(item.time, timeSpan),
           y: +item.value,
         })),
       },
     ];
-  }, [transfers]);
+  }, [timeSpan, transfers]);
 
   const formatDate = (date: Date) => {
     if (timeSpan === "1h") {
@@ -292,7 +294,7 @@ export const TransfersOverTime = ({
                           },
                         },
                         tooltip: { enabled: false },
-                        offsetX: 15,
+                        offsetX: 0,
                       },
                       yaxis: {
                         labels: {
@@ -312,7 +314,6 @@ export const TransfersOverTime = ({
                       tooltip: {
                         custom: ({ seriesIndex, dataPointIndex, w }) => {
                           const data = w.config.series[seriesIndex].data[dataPointIndex];
-                          const date = new Date(data.x);
 
                           if (chartSelected === "bar") {
                             updatePathStyles({ chartRef, dataPointIndex });
@@ -320,14 +321,40 @@ export const TransfersOverTime = ({
 
                           return `
                         <div class="transfers-over-time-container-chart-tooltip">
-                          <p class="transfers-over-time-container-chart-tooltip-date">
-                            ${formatDate(date)}
-                          </p>
+                          <div class="transfers-over-time-container-chart-tooltip-date">
+                            <p>
+                              From:
+                              ${new Date(data.x).toLocaleString("en-GB", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })},
+                              ${new Date(data.x).toLocaleString("en-GB", {
+                                day: "2-digit",
+                                month: "long",
+                                year: "numeric",
+                              })}
+                            </p>
+                            <p>
+                              To:
+                              ${new Date(data.to).toLocaleString("en-GB", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })},
+                              ${new Date(data.to).toLocaleString("en-GB", {
+                                day: "2-digit",
+                                month: "long",
+                                year: "numeric",
+                              })}
+                            </p>
+                          </div>
                           <div class="transfers-over-time-container-chart-tooltip-amount">
                             ${
                               by === "notional"
-                                ? `<span>$${formatNumber(data.y, data.y > 10000 ? 0 : 2)}</span>`
-                                : `<span>${formatNumber(data.y)} Transfers</span>`
+                                ? `Volume: <span>$${formatNumber(
+                                    data.y,
+                                    data.y > 10000 ? 0 : 2,
+                                  )}</span>`
+                                : `Transfers: <span>${formatNumber(data.y)}</span>`
                             }
                           </div>
                         </div>
