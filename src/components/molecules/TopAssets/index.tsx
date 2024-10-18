@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BREAKPOINTS } from "src/consts";
-import { Loader, NavLink, Select } from "src/components/atoms";
+import { Loader, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder, TopAssetListItem, TopAssetsChart } from "src/components/molecules";
 import { useWindowSize } from "src/utils/hooks";
 import { getChainIcon, getChainName } from "src/utils/wormhole";
@@ -15,22 +15,29 @@ import analytics from "src/analytics";
 import { LayersIcon } from "src/icons/generic";
 import "./styles.scss";
 
+const METRIC_CHART_LIST = [
+  { label: "Volume", value: "volume", ariaLabel: "Volume" },
+  { label: "Transfers", value: "transfers", ariaLabel: "Transfers" },
+];
+
 const RANGE_LIST: { label: string; value: "7d" | "15d" | "30d" }[] = [
   { label: "Last 7 days", value: "7d" },
   { label: "Last 15 days", value: "15d" },
   { label: "Last 30 days", value: "30d" },
 ];
 
-const HIDDEN_ROW = -1;
+const HIDDEN_ROW = "";
 
 const TopAssets = () => {
+  const [metricSelected, setMetricSelected] = useState<"volume" | "transfers">("volume");
   const [selectedTopAssetTimeRange, setSelectedTopAssetTimeRange] = useState(RANGE_LIST[0]);
   const [top7AssetsData, setTop7AssetsData] = useState([]);
-  const [rowSelected, setRowSelected] = useState<number>(0);
+  const [rowSelected, setRowSelected] = useState<string>(top7AssetsData[0]?.symbol || HIDDEN_ROW);
   const { t } = useTranslation();
   const { width } = useWindowSize();
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
+  const isMainnet = currentNetwork === "Mainnet";
 
   const { isLoading, isFetching, isError, data } = useQuery(
     ["assetsByVolume", selectedTopAssetTimeRange.value],
@@ -43,7 +50,7 @@ const TopAssets = () => {
 
   useEffect(() => {
     if (width >= BREAKPOINTS.desktop && rowSelected === HIDDEN_ROW) {
-      setRowSelected(0);
+      setRowSelected("");
     }
   }, [width, rowSelected]);
 
@@ -86,7 +93,13 @@ const TopAssets = () => {
           });
         });
 
-        const sortedTokens = Object.values(groups).sort((a, b) => b.volume - a.volume);
+        const sortedTokens = Object.values(groups).sort((a, b) => {
+          if (metricSelected === "volume") {
+            return b.volume - a.volume;
+          } else {
+            return b.txs - a.txs;
+          }
+        });
 
         return {
           ...asset,
@@ -94,13 +107,33 @@ const TopAssets = () => {
         };
       });
 
-      setTop7AssetsData(dataAssetsTransformed);
+      const sortedAssets = dataAssetsTransformed.sort((a, b) => {
+        if (metricSelected === "volume") {
+          return (
+            b.tokens.reduce((sum, token) => sum + token.volume, 0) -
+            a.tokens.reduce((sum, token) => sum + token.volume, 0)
+          );
+        } else {
+          return (
+            b.tokens.reduce((sum, token) => sum + token.txs, 0) -
+            a.tokens.reduce((sum, token) => sum + token.txs, 0)
+          );
+        }
+      });
+
+      setTop7AssetsData(sortedAssets);
     };
 
     if (data && data?.length > 0) {
       processApiAssetsData(data);
     }
-  }, [currentNetwork, data]);
+  }, [currentNetwork, data, metricSelected, rowSelected, top7AssetsData]);
+
+  useEffect(() => {
+    if (!isMainnet) {
+      setMetricSelected("transfers");
+    }
+  }, [isMainnet]);
 
   return (
     <>
@@ -113,6 +146,14 @@ const TopAssets = () => {
             </h3>
 
             <div className="top-assets-header-select-container">
+              <ToggleGroup
+                ariaLabel="Select metric type (volume or transfers)"
+                className="token-activity-container-top-toggle"
+                items={isMainnet ? METRIC_CHART_LIST : [METRIC_CHART_LIST[1]]}
+                onValueChange={value => setMetricSelected(value)}
+                value={metricSelected}
+              />
+
               <Select
                 ariaLabel="Select Time Range"
                 className="top-assets-header-select"
@@ -138,7 +179,7 @@ const TopAssets = () => {
                     <tr>
                       <th>#</th>
                       <th>{t("home.topAssets.token")}</th>
-                      <th>{t("home.topAssets.volume")}</th>
+                      {isMainnet && <th>{t("home.topAssets.volume")}</th>}
                       <th>{t("home.topAssets.txs")}</th>
                       <th></th>
                     </tr>
@@ -153,28 +194,29 @@ const TopAssets = () => {
                           <Fragment key={symbol}>
                             <TopAssetListItem
                               itemIndex={rowIndex}
-                              rowSelected={rowSelected}
-                              showThisGraph={() => {
+                              onClick={() => {
                                 analytics.track("topSevenAsset", {
                                   network: currentNetwork,
                                   selectedTimeRange: selectedTopAssetTimeRange.value,
                                   selected: symbol,
                                 });
 
-                                if (width < BREAKPOINTS.desktop && rowSelected === rowIndex) {
+                                if (width < BREAKPOINTS.desktop && rowSelected === symbol) {
                                   return setRowSelected(HIDDEN_ROW);
                                 }
 
-                                return setRowSelected(rowIndex);
+                                return setRowSelected(symbol);
                               }}
+                              rowSelected={rowSelected}
                               symbol={symbol}
                               txs={txs}
                               volume={volume}
                             />
-                            {width < BREAKPOINTS.desktop && rowSelected === rowIndex && (
+                            {width < BREAKPOINTS.desktop && rowSelected === symbol && (
                               <tr>
                                 <td colSpan={5}>
                                   <TopAssetsChart
+                                    metricSelected={metricSelected}
                                     rowSelected={rowSelected}
                                     top7AssetsData={top7AssetsData}
                                     width={width}
@@ -188,8 +230,9 @@ const TopAssets = () => {
                   </tbody>
                 </table>
 
-                {width >= BREAKPOINTS.desktop && (
+                {width >= BREAKPOINTS.desktop && rowSelected && (
                   <TopAssetsChart
+                    metricSelected={metricSelected}
                     rowSelected={rowSelected}
                     top7AssetsData={top7AssetsData}
                     width={width}

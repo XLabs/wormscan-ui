@@ -11,18 +11,20 @@ import { getChainIcon } from "src/utils/wormhole";
 import "./styles.scss";
 
 type Props = {
-  rowSelected: number;
+  metricSelected: "volume" | "transfers";
+  rowSelected: string;
   top7AssetsData: AssetsByVolumeTransformed[];
   width: number;
 };
 
-const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
+const TopAssetsChart = ({ metricSelected, rowSelected, top7AssetsData, width }: Props) => {
   const { t } = useTranslation();
   const [XPositionLabels, setXPositionLabels] = useState([]);
   const { environment } = useEnvironment();
   const chartRef = useRef(null);
   const currentNetwork = environment.network;
-  const assetsDataForChart = top7AssetsData?.[rowSelected]?.tokens;
+  const selectedAsset = top7AssetsData.find(asset => asset.symbol === rowSelected);
+  const assetsDataForChart = selectedAsset?.tokens || [];
   const isMobile = width < BREAKPOINTS.tablet;
   const isTabletOrMobile = width < BREAKPOINTS.desktop;
   const isDesktop = width >= BREAKPOINTS.desktop && width < BREAKPOINTS.bigDesktop;
@@ -54,7 +56,7 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
     return () => clearTimeout(timer);
   }, [assetsDataForChart, rowSelected, width]);
 
-  if (!assetsDataForChart?.length) {
+  if (!assetsDataForChart.length) {
     return null;
   }
 
@@ -105,12 +107,15 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
         series={[
           {
             name: "Volume",
-            data: assetsDataForChart.map(({ volume }) => volume),
+            data:
+              metricSelected === "volume"
+                ? assetsDataForChart.map(({ volume }) => volume)
+                : assetsDataForChart.map(({ txs }) => txs),
           },
         ]}
         options={{
           title: {
-            text: t("home.topAssets.chartTitle") + " " + top7AssetsData?.[rowSelected]?.symbol,
+            text: t("home.topAssets.chartTitle") + " " + selectedAsset?.symbol,
             align: "left",
             margin: isTabletOrMobile ? 49 : 0,
             offsetX: 0,
@@ -210,7 +215,13 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
             opposite: true,
             axisTicks: { show: false },
             labels: {
-              formatter: (vol, opts) => `$${formatterYAxis(vol, opts)}`,
+              formatter: (val, opts) => {
+                if (metricSelected === "volume") {
+                  return `$${formatterYAxis(val, opts)}`;
+                } else {
+                  return formatterYAxis(val, opts);
+                }
+              },
               minWidth: isMobile ? 48 : 64,
               maxWidth: isMobile ? 48 : 64,
               align: "left",

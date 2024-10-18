@@ -22,8 +22,6 @@ type Props = {
   rangeShortLabel: string | "24H" | "7D" | "30D" | "365D" | "All";
   setScaleSelected: (value: "linear" | "logarithmic") => void;
   scaleSelected: "linear" | "logarithmic";
-  chartSelected: "area" | "bar";
-  setChartSelected: (value: "area" | "bar") => void;
 };
 
 const TYPE_CHART_LIST = [
@@ -45,9 +43,8 @@ export const Chart = ({
   rangeShortLabel,
   setScaleSelected,
   scaleSelected,
-  chartSelected,
-  setChartSelected,
 }: Props) => {
+  const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const chartRef = useRef(null);
 
   const { width } = useWindowSize();
@@ -66,6 +63,15 @@ export const Chart = ({
       }))
     : null;
 
+  // const maxNumber =
+  //   metricSelected === "volume"
+  //     ? dataTransformed?.map(({ volume }) => volume).reduce((a, b) => Math.max(a, b), 0)
+  //     : dataTransformed
+  //         ?.map(({ transactions }) => transactions)
+  //         .reduce((a, b) => Math.max(a, b), 0);
+
+  // console.log({ maxNumber });
+
   return (
     <div className="token-activity-chart" ref={chartRef}>
       <div className="token-activity-chart-title">Token Activity</div>
@@ -83,12 +89,7 @@ export const Chart = ({
               <div className="token-activity-chart-top-box">
                 <span className="token-activity-chart-top-box-key">
                   {rangeShortLabel}{" "}
-                  {metricSelected === "volume"
-                    ? isDesktop
-                      ? "Total Volume"
-                      : "Vol"
-                    : "Total Transfers"}
-                  :
+                  {metricSelected === "volume" ? "Total Volume" : "Total Transfers"}:
                 </span>
                 <span className="token-activity-chart-top-box-value">
                   {dataTransformed &&
@@ -114,12 +115,14 @@ export const Chart = ({
               </div>
 
               <div className="token-activity-chart-top-toggles">
-                {isDesktop && chartSelected === "area" && metricSelected === "volume" && (
+                {chartSelected === "area" && metricSelected === "volume" && (
                   <ToggleGroup
                     ariaLabel="Select scale"
                     className="token-activity-chart-top-scale"
                     items={SCALE_CHART_LIST}
+                    // items={maxNumber > 100 ? SCALE_CHART_LIST : [SCALE_CHART_LIST[1]]}
                     onValueChange={value => setScaleSelected(value)}
+                    // value={maxNumber > 100 ? scaleSelected : "linear"}
                     value={scaleSelected}
                   />
                 )}
@@ -317,6 +320,10 @@ export const Chart = ({
                   },
                   logarithmic: scaleSelected === "logarithmic" && chartSelected === "area",
                   forceNiceScale: scaleSelected === "logarithmic" && chartSelected === "area",
+                  // logarithmic:
+                  //   scaleSelected === "logarithmic" && chartSelected === "area" && maxNumber > 100,
+                  // forceNiceScale:
+                  //   scaleSelected === "logarithmic" && chartSelected === "area" && maxNumber > 100,
                   min: 0,
                   opposite: true,
                   tickAmount: 8,

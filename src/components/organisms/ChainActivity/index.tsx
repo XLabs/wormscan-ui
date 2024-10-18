@@ -58,11 +58,6 @@ const SCALE_CHART_LIST = [
   { label: <LinearIcon width={22} />, value: "linear", ariaLabel: "Linear" },
 ];
 
-const SCALE_CHART_LIST_TEXT = [
-  { label: "Logarithmic", value: "logarithmic", ariaLabel: "Logarithmic" },
-  { label: "Linear", value: "linear", ariaLabel: "Linear" },
-];
-
 const METRIC_CHART_LIST = [
   { label: "Volume", value: "volume", ariaLabel: "Volume" },
   { label: "Transfers", value: "transactions", ariaLabel: "Transfers" },
@@ -74,18 +69,18 @@ const ChainActivity = () => {
   const isDesktop = width >= BREAKPOINTS.desktop;
   const isBigDesktop = width >= BREAKPOINTS.bigDesktop;
 
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+  const isMainnet = currentNetwork === "Mainnet";
+
   const chartRef = useRef(null);
 
   const [someZeroValue, setSomeZeroValue] = useState(false);
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
-  const [scaleSelected, setScaleSelectedState] = useState<"linear" | "logarithmic">("linear");
-  const setScaleSelected = (value: "linear" | "logarithmic") => {
-    setScaleSelectedState(value);
-    analytics.track("scaleSelected", {
-      selected: value,
-      selectedType: "chainActivity",
-    });
-  };
+  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
+  // const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">(
+  //   isMainnet ? "volume" : "transactions",
+  // );
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
 
   const initialDataDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
@@ -112,9 +107,7 @@ const ChainActivity = () => {
     scrollableClasses: ["select__option", "show-date"],
   });
 
-  const { environment } = useEnvironment();
-  const currentNetwork = environment.network;
-  const orderedChains = currentNetwork === "Mainnet" ? ChainFilterMainnet : ChainFilterTestnet;
+  const orderedChains = isMainnet ? ChainFilterMainnet : ChainFilterTestnet;
   const ALL_SOURCE_CHAINS = {
     label: "All Chains",
     value: "All Chains",
@@ -652,6 +645,12 @@ const ChainActivity = () => {
   ]);
 
   useEffect(() => {
+    if (!isMainnet) {
+      setMetricSelected("transactions");
+    }
+  }, [isMainnet]);
+
+  useEffect(() => {
     const checkForZeroValues = (obj: any, path = "") => {
       let hasZeroValue = false;
       let hasNonZeroValue = false;
@@ -835,20 +834,10 @@ const ChainActivity = () => {
             <ToggleGroup
               ariaLabel="Select type"
               className="chain-activity-chart-top-filters-toggle-metric"
-              items={METRIC_CHART_LIST}
+              items={isMainnet ? METRIC_CHART_LIST : [METRIC_CHART_LIST[1]]}
               onValueChange={value => setMetricSelected(value)}
               value={metricSelected}
             />
-
-            {!isDesktop && chartSelected === "area" && !someZeroValue && (
-              <ToggleGroup
-                ariaLabel="Select scale"
-                className="chain-activity-chart-top-filters-toggle-metric"
-                items={SCALE_CHART_LIST_TEXT}
-                onValueChange={value => setScaleSelected(value)}
-                value={scaleSelected}
-              />
-            )}
 
             <div
               className={`chain-activity-chart-top-filters-legends ${
@@ -935,7 +924,7 @@ const ChainActivity = () => {
               value={chartSelected}
             />
 
-            {isDesktop && chartSelected === "area" && !someZeroValue && (
+            {chartSelected === "area" && !someZeroValue && (
               <ToggleGroup
                 ariaLabel="Select scale"
                 className="chain-activity-chart-scale"
@@ -1094,6 +1083,7 @@ const ChainActivity = () => {
                   opposite: true,
                   logarithmic: scaleSelected === "logarithmic" && chartSelected === "area",
                   forceNiceScale: scaleSelected === "logarithmic" && chartSelected === "area",
+                  min: scaleSelected === "logarithmic" && chartSelected === "area" ? 1 : 0,
                 },
                 tooltip: {
                   custom: ({ series, seriesIndex, dataPointIndex, w }) => {
