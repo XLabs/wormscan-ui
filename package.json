@@ -97,6 +97,9 @@
     "swagger-ui": "^5.17.14",
     "swagger-ui-react": "^5.17.14"
   },
+  "resolutions": {
+    "sass": "1.38.0"
+  },
   "alias": {
     "src": "./src",
     "./node_modules/swagger-ui-react/index.mjs": "./node_modules/swagger-ui-react/index.cjs",
