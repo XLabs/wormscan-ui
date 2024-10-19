@@ -1,4 +1,4 @@
-@import "src/styles/globals.scss";
+@use "src/styles/globals.scss" as *;
 
 .tabs {
   margin-top: 24px;
@@ -36,17 +36,17 @@
     &-img {
       display: none;
 
-      @include desktop {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
       width: 168px;
       min-width: 168px;
       height: 168px;
       background-color: var(--color-black);
       border-radius: 18px;
+
+      @include desktop {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
     }
 
     &-content {
@@ -68,15 +68,15 @@
           @include centered-row;
           justify-content: center;
 
-          @include desktop {
-            display: none;
-          }
-
           border-radius: 8px;
 
           background-color: var(--color-black);
           width: 70px;
           height: 70px;
+
+          @include desktop {
+            display: none;
+          }
 
           & > img {
             width: 40px;
@@ -243,6 +243,23 @@
       width: 100%;
       gap: 12px;
 
+      @media only screen and (min-width: 768px) {
+        @include centered-row;
+        flex-wrap: wrap;
+
+        &-item {
+          width: calc(50% - 6px);
+        }
+      }
+
+      @media only screen and (min-width: 1100px) {
+        flex-wrap: nowrap;
+
+        &-item {
+          width: calc(25% - 9px);
+        }
+      }
+
       &-item {
         @include centered-column;
         width: 100%;
@@ -265,23 +282,6 @@
           color: var(--color-gray-500);
         }
       }
-
-      @media only screen and (min-width: 768px) {
-        @include centered-row;
-        flex-wrap: wrap;
-
-        &-item {
-          width: calc(50% - 6px);
-        }
-      }
-
-      @media only screen and (min-width: 1100px) {
-        flex-wrap: nowrap;
-
-        &-item {
-          width: calc(25% - 9px);
-        }
-      }
     }
   }
 }
@@ -289,13 +289,12 @@
 .bychain {
   @include centered-column;
   gap: 36px;
+  margin-bottom: 56px;
 
   @media only screen and (min-width: 1280px) {
     @include centered-row;
     gap: 0px;
   }
-
-  margin-bottom: 56px;
 
   & .mobile {
     @include desktop {
@@ -314,12 +313,14 @@
   &-half {
     @include centered-column;
     width: 100%;
+
+    margin-right: 1%;
+    margin-left: 0%;
+
     @media only screen and (min-width: 1280px) {
       width: 49%;
     }
 
-    margin-right: 1%;
-    margin-left: 0%;
     &:last-child {
       margin-right: 0%;
       margin-left: 1%;
@@ -735,23 +736,24 @@
 .top-addresses {
   @include centered-column;
   gap: 36px;
+  margin-bottom: 56px;
 
   @media only screen and (min-width: 1280px) {
     @include centered-row;
     gap: 0px;
   }
 
-  margin-bottom: 56px;
-
   &-half {
     @include centered-column;
     width: 100%;
+
+    margin-right: 1%;
+    margin-left: 0%;
+
     @media only screen and (min-width: 1280px) {
       width: 49%;
     }
 
-    margin-right: 1%;
-    margin-left: 0%;
     &:last-child {
       margin-right: 0%;
       margin-left: 1%;

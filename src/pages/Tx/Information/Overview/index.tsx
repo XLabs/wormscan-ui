@@ -701,6 +701,7 @@ const Overview = ({
                     )}
                     {sourceTokenInfo?.tokenImage &&
                     sourceTokenInfo.tokenImage !== "missing.png" &&
+                    sourceTokenInfo.tokenImage !== "missing_large.png" &&
                     sourceTokenInfo.tokenImage !== "missing_small.png" ? (
                       <img
                         className="token-image"
@@ -836,6 +837,7 @@ const Overview = ({
 
                     {targetTokenInfo?.tokenImage &&
                     targetTokenInfo.tokenImage !== "missing.png" &&
+                    targetTokenInfo.tokenImage !== "missing_large.png" &&
                     targetTokenInfo.tokenImage !== "missing_small.png" ? (
                       <img
                         className="token-image"
