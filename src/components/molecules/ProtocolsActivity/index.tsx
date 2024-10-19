@@ -138,6 +138,7 @@ const ProtocolsActivity = () => {
           return {
             aggregations: filteredAndSortedAggregations,
             x: dataItem.from,
+            to: dataItem.to,
             y:
               metricSelected === "volume"
                 ? dataItem.total_value_transferred
@@ -227,6 +228,7 @@ const ProtocolsActivity = () => {
         return {
           aggregations,
           x: dataItem.from,
+          to: dataItem.to,
           y:
             metricSelected === "volume"
               ? dataItem.total_value_transferred
@@ -626,17 +628,32 @@ const ProtocolsActivity = () => {
                       }
 
                       return `<div class="protocols-activity-container-chart-tooltip">
-                              <p class="protocols-activity-container-chart-tooltip-date">
-                                ${new Date(data.x).toLocaleString("en-GB", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })},
-                                ${new Date(data.x).toLocaleString("en-GB", {
-                                  day: "2-digit",
-                                  month: "long",
-                                  year: "numeric",
-                                })}
-                              </p>
+                              <div class="protocols-activity-container-chart-tooltip-date">
+                                <p>
+                                  From:
+                                  ${new Date(data.x).toLocaleString("en-GB", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })},
+                                  ${new Date(data.x).toLocaleString("en-GB", {
+                                    day: "2-digit",
+                                    month: "long",
+                                    year: "numeric",
+                                  })}
+                                </p>
+                                <p>
+                                  To:
+                                  ${new Date(data.to).toLocaleString("en-GB", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })},
+                                  ${new Date(data.to).toLocaleString("en-GB", {
+                                    day: "2-digit",
+                                    month: "long",
+                                    year: "numeric",
+                                  })}
+                                </p>
+                              </div>
                               <div class="protocols-activity-container-chart-tooltip-protocol">
                                 <div class="protocols-activity-container-chart-tooltip-protocol-icon">
                                 </div>

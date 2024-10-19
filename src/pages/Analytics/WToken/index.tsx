@@ -192,7 +192,8 @@ const WToken = () => {
   } = useQuery(
     ["getTransferByTimeTx", startDate, endDate, by],
     async () => {
-      const timeSpan = timeRange.value === "1d" ? "1h" : timeRange.value === "1y" ? "1mo" : "1d";
+      const timeSpan: "1h" | "1d" | "1mo" =
+        timeRange.value === "1d" ? "1h" : timeRange.value === "1y" ? "1mo" : "1d";
       return {
         data: await getClient().nttApi.getNttTransferByTime({
           by,
