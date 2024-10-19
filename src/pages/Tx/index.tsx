@@ -1259,7 +1259,7 @@ const Tx = () => {
           ).governor.getEnqueuedTransactions();
 
           const tx = enqueuedTransactions.find(
-            a => a.txHash === data.sourceChain?.transaction?.txHash,
+            a => a.txHash === data.sourceChain?.transaction?.txHash || a.vaaId === data?.id,
           );
 
           if (tx) {

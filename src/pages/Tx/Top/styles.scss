@@ -1,4 +1,4 @@
-@import "src/styles/globals.scss";
+@use "src/styles/globals.scss" as *;
 
 .tx-top {
   @include centered-column;
@@ -25,15 +25,15 @@
     @include text-roboto-body-400;
     @include centered-column;
 
+    color: var(--color-plum);
+    word-break: break-all;
+
     @include desktop {
       @include centered-row;
 
       justify-content: start;
       gap: 8px;
     }
-
-    color: var(--color-plum);
-    word-break: break-all;
 
     &-container {
       @include centered-row;
