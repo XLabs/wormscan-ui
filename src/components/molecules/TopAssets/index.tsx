@@ -106,20 +106,14 @@ const TopAssets = () => {
   }, [data, metricSelected, currentNetwork]);
 
   useEffect(() => {
-    if (width >= BREAKPOINTS.desktop && rowSelected === HIDDEN_ROW) {
-      setRowSelected("");
-    }
-  }, [width, rowSelected]);
-
-  useEffect(() => {
     if (!isMainnet) setMetricSelected("transfers");
   }, [isMainnet]);
 
   useEffect(() => {
-    if (data && !rowSelected && top7AssetsData[0]?.symbol) {
+    if (top7AssetsData[0]?.symbol && !rowSelected && width >= BREAKPOINTS.desktop) {
       setRowSelected(top7AssetsData[0].symbol);
     }
-  }, [data, rowSelected, top7AssetsData]);
+  }, [rowSelected, top7AssetsData, width]);
 
   return (
     <>
