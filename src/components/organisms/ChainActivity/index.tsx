@@ -2,7 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useQuery } from "react-query";
 import "react-datepicker/dist/react-datepicker.css";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import analytics from "src/analytics";
 import {
   BlockchainIcon,
   Counter,
@@ -14,7 +16,6 @@ import {
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
-import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { useWindowSize, useLockBodyScroll } from "src/utils/hooks";
 import { formatNumber, numberToSuffix } from "src/utils/number";
@@ -51,7 +52,6 @@ import {
 import { BREAKPOINTS } from "src/consts";
 import { Calendar } from "./Calendar";
 import "./styles.scss";
-import analytics from "src/analytics";
 
 const TYPE_CHART_LIST = [
   { label: <ActivityIcon width={24} />, value: "area", ariaLabel: "Area" },
@@ -61,6 +61,11 @@ const TYPE_CHART_LIST = [
 const SCALE_CHART_LIST = [
   { label: <LogarithmicIcon width={22} />, value: "logarithmic", ariaLabel: "Logarithmic" },
   { label: <LinearIcon width={22} />, value: "linear", ariaLabel: "Linear" },
+];
+
+const SCALE_CHART_LIST_TEXT = [
+  { label: "Logarithmic", value: "logarithmic", ariaLabel: "Logarithmic" },
+  { label: "Linear", value: "linear", ariaLabel: "Linear" },
 ];
 
 const METRIC_CHART_LIST = [
@@ -858,6 +863,16 @@ const ChainActivity = () => {
               value={metricSelected}
             />
 
+            {!isDesktop && chartSelected === "area" && !someZeroValue && (
+              <ToggleGroup
+                ariaLabel="Select scale"
+                className="chain-activity-chart-top-filters-toggle-metric"
+                items={SCALE_CHART_LIST_TEXT}
+                onValueChange={value => setScaleSelected(value)}
+                value={scaleSelected}
+              />
+            )}
+
             <div
               className={`chain-activity-chart-top-filters-legends ${
                 isFetching || isFetchingAllChains || isError || isErrorAllChains ? "hidden" : ""
@@ -943,7 +958,7 @@ const ChainActivity = () => {
               value={chartSelected}
             />
 
-            {chartSelected === "area" && !someZeroValue && (
+            {isDesktop && chartSelected === "area" && !someZeroValue && (
               <ToggleGroup
                 ariaLabel="Select scale"
                 className={`chain-activity-chart-scale ${isMainnet ? "" : "is-testnet"}`}
@@ -1102,7 +1117,6 @@ const ChainActivity = () => {
                   opposite: true,
                   logarithmic: scaleSelected === "logarithmic" && chartSelected === "area",
                   forceNiceScale: scaleSelected === "logarithmic" && chartSelected === "area",
-                  min: scaleSelected === "logarithmic" && chartSelected === "area" ? 1 : 0,
                 },
                 tooltip: {
                   custom: ({ series, seriesIndex, dataPointIndex, w }) => {

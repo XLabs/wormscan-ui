@@ -57,7 +57,7 @@ const TopAssetsChart = ({ metricSelected, rowSelected, top7AssetsData, width }: 
     return () => clearTimeout(timer);
   }, [assetsDataForChart, rowSelected, width]);
 
-  if (!assetsDataForChart.length) {
+  if (!assetsDataForChart?.length) {
     return null;
   }
 

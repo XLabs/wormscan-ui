@@ -1,6 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useQuery } from "react-query";
 import ReactApexChart from "react-apexcharts";
+import analytics from "src/analytics";
+import { useEnvironment } from "src/context/EnvironmentContext";
 import {
   BREAKPOINTS,
   C3_APP_ID,
@@ -31,8 +33,6 @@ import {
   LogarithmicIcon,
 } from "src/icons/generic";
 import "./styles.scss";
-import analytics from "src/analytics";
-import { useEnvironment } from "src/context/EnvironmentContext";
 
 interface IAggregations {
   app_id: string;
