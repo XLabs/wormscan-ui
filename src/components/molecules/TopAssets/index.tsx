@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -10,7 +10,7 @@ import { getChainIcon, getChainName } from "src/utils/wormhole";
 import { formatNumber } from "src/utils/number";
 import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
-import { AssetsByVolumeOutput, Tokens } from "src/api/guardian-network/types";
+import { Tokens } from "src/api/guardian-network/types";
 import analytics from "src/analytics";
 import { LayersIcon } from "src/icons/generic";
 import "./styles.scss";
@@ -31,32 +31,29 @@ const HIDDEN_ROW = "";
 const TopAssets = () => {
   const [metricSelected, setMetricSelected] = useState<"volume" | "transfers">("volume");
   const [selectedTopAssetTimeRange, setSelectedTopAssetTimeRange] = useState(RANGE_LIST[0]);
-  const [top7AssetsData, setTop7AssetsData] = useState([]);
-  const [rowSelected, setRowSelected] = useState<string>(top7AssetsData[0]?.symbol || HIDDEN_ROW);
+  const [rowSelected, setRowSelected] = useState<string>(HIDDEN_ROW);
   const { t } = useTranslation();
   const { width } = useWindowSize();
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "Mainnet";
 
-  const { isLoading, isFetching, isError, data } = useQuery(
+  const { isLoading, isError, data } = useQuery(
     ["assetsByVolume", selectedTopAssetTimeRange.value],
-    () =>
-      getClient().guardianNetwork.getAssetsByVolume({ timeSpan: selectedTopAssetTimeRange.value }),
-    {
-      refetchOnWindowFocus: false,
+    () => {
+      setRowSelected(HIDDEN_ROW);
+      return getClient().guardianNetwork.getAssetsByVolume({
+        timeSpan: selectedTopAssetTimeRange.value,
+      });
     },
+    { refetchOnWindowFocus: false },
   );
 
-  useEffect(() => {
-    if (width >= BREAKPOINTS.desktop && rowSelected === HIDDEN_ROW) {
-      setRowSelected("");
-    }
-  }, [width, rowSelected]);
+  const top7AssetsData = useMemo(() => {
+    if (!data) return [];
 
-  useEffect(() => {
-    const processApiAssetsData = async (data: AssetsByVolumeOutput[]) => {
-      const dataAssetsTransformed = data.map(asset => {
+    return data
+      .map(asset => {
         const groups: Record<number, Tokens> = {};
 
         asset.tokens.forEach(({ emitter_chain, volume, txs }) => {
@@ -94,46 +91,35 @@ const TopAssets = () => {
         });
 
         const sortedTokens = Object.values(groups).sort((a, b) => {
-          if (metricSelected === "volume") {
-            return b.volume - a.volume;
-          } else {
-            return b.txs - a.txs;
-          }
+          return metricSelected === "volume" ? b.volume - a.volume : b.txs - a.txs;
         });
 
-        return {
-          ...asset,
-          tokens: sortedTokens,
-        };
+        return { ...asset, tokens: sortedTokens };
+      })
+      .sort((a, b) => {
+        return metricSelected === "volume"
+          ? b.tokens.reduce((sum, token) => sum + token.volume, 0) -
+              a.tokens.reduce((sum, token) => sum + token.volume, 0)
+          : b.tokens.reduce((sum, token) => sum + token.txs, 0) -
+              a.tokens.reduce((sum, token) => sum + token.txs, 0);
       });
-
-      const sortedAssets = dataAssetsTransformed.sort((a, b) => {
-        if (metricSelected === "volume") {
-          return (
-            b.tokens.reduce((sum, token) => sum + token.volume, 0) -
-            a.tokens.reduce((sum, token) => sum + token.volume, 0)
-          );
-        } else {
-          return (
-            b.tokens.reduce((sum, token) => sum + token.txs, 0) -
-            a.tokens.reduce((sum, token) => sum + token.txs, 0)
-          );
-        }
-      });
-
-      setTop7AssetsData(sortedAssets);
-    };
-
-    if (data && data?.length > 0) {
-      processApiAssetsData(data);
-    }
-  }, [currentNetwork, data, metricSelected, rowSelected, top7AssetsData]);
+  }, [data, metricSelected, currentNetwork]);
 
   useEffect(() => {
-    if (!isMainnet) {
-      setMetricSelected("transfers");
+    if (width >= BREAKPOINTS.desktop && rowSelected === HIDDEN_ROW) {
+      setRowSelected("");
     }
+  }, [width, rowSelected]);
+
+  useEffect(() => {
+    if (!isMainnet) setMetricSelected("transfers");
   }, [isMainnet]);
+
+  useEffect(() => {
+    if (data && !rowSelected && top7AssetsData[0]?.symbol) {
+      setRowSelected(top7AssetsData[0].symbol);
+    }
+  }, [data, rowSelected, top7AssetsData]);
 
   return (
     <>
@@ -168,7 +154,7 @@ const TopAssets = () => {
           <div className="top-assets-subtitle">Tap an asset and analyze the breakdown.</div>
 
           <div className="top-assets-body">
-            {isLoading || isFetching ? (
+            {isLoading ? (
               <Loader />
             ) : isError ? (
               <ErrorPlaceholder />

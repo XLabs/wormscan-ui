@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useTranslation } from "react-i18next";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -23,8 +23,9 @@ const TopAssetsChart = ({ metricSelected, rowSelected, top7AssetsData, width }: 
   const { environment } = useEnvironment();
   const chartRef = useRef(null);
   const currentNetwork = environment.network;
+  const isMainnet = currentNetwork === "Mainnet";
   const selectedAsset = top7AssetsData.find(asset => asset.symbol === rowSelected);
-  const assetsDataForChart = selectedAsset?.tokens || [];
+  const assetsDataForChart = useMemo(() => selectedAsset?.tokens || [], [selectedAsset]);
   const isMobile = width < BREAKPOINTS.tablet;
   const isTabletOrMobile = width < BREAKPOINTS.desktop;
   const isDesktop = width >= BREAKPOINTS.desktop && width < BREAKPOINTS.bigDesktop;
@@ -190,18 +191,20 @@ const TopAssetsChart = ({ metricSelected, rowSelected, top7AssetsData, width }: 
 
               updatePathStyles({ chartRef, dataPointIndex });
 
-              return `<div class='chart-container-tooltip'>
-                        <div>
-                          <img class='chart-container-tooltip-img' src=${chainImageSrc} alt='${chainName} icon' width="100px" />
-                          <span class='chart-container-tooltip-chain'>${chainName}</span>
+              return `<div class='chart-container-tooltip ${metricSelected} ${
+                isMainnet ? "" : "is-testnet"
+              }'>
+                        <div class="chart-container-tooltip-item">
+                          <img class='chart-container-tooltip-item-img' src=${chainImageSrc} alt='${chainName} icon' width="100px" />
+                          <span class='chart-container-tooltip-item-chain'>${chainName}</span>
                         </div>
-                        <div>
-                          <span class='chart-container-tooltip-label'>Volume:</span>
-                          <span class='chart-container-tooltip-volume'>$${volumeFormatted}</span>
+                        <div class="chart-container-tooltip-item volume">
+                          <span class='chart-container-tooltip-item-label'>Volume:</span>
+                          <span class='chart-container-tooltip-item-volume'>$${volumeFormatted}</span>
                         </div>
-                        <div>
-                          <span class='chart-container-tooltip-label'>TXS:</span>
-                          <span class='chart-container-tooltip-txs'>${txsFormatted}</span>
+                        <div class="chart-container-tooltip-item txs">
+                          <span class='chart-container-tooltip-item-label'>TXS:</span>
+                          <span class='chart-container-tooltip-item-txs'>${txsFormatted}</span>
                         </div>
                       </div>`;
             },

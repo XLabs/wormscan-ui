@@ -949,7 +949,7 @@ const ChainActivity = () => {
             {chartSelected === "area" && !someZeroValue && (
               <ToggleGroup
                 ariaLabel="Select scale"
-                className="chain-activity-chart-scale"
+                className={`chain-activity-chart-scale ${isMainnet ? "" : "is-testnet"}`}
                 items={SCALE_CHART_LIST}
                 onValueChange={value => setScaleSelected(value)}
                 value={scaleSelected}

@@ -53,9 +53,10 @@ const RANGE_LIST = [
 const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
+  const isMainnet = currentNetwork === "Mainnet";
 
   const filterContainerRef = useRef<HTMLDivElement>(null);
-  const orderedChains = currentNetwork === "Mainnet" ? ChainFilterMainnet : ChainFilterTestnet;
+  const orderedChains = isMainnet ? ChainFilterMainnet : ChainFilterTestnet;
 
   const { width } = useWindowSize();
   const isDesktop = width >= BREAKPOINTS.desktop;
@@ -126,7 +127,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
     data: dataList,
   } = useQuery(["tokensSymbolVolume", currentNetwork], async () => {
     const response = await getClient().guardianNetwork.getTokensSymbolVolume({
-      limit: currentNetwork === "Mainnet" ? 16 : 10,
+      limit: isMainnet ? 16 : 10,
     });
 
     const excludedSymbols = ["UST", "LUNA", "stETH", "XCN", "sAVAX", "FTX Token"];
@@ -191,6 +192,12 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
     });
     setRowSelected(!isDesktop && rowIndex === rowSelected ? -1 : rowIndex);
   };
+
+  useEffect(() => {
+    if (!isMainnet) {
+      setMetricSelected("transactions");
+    }
+  }, [isMainnet]);
 
   useOutsideClick({
     ref: filterContainerRef,
@@ -293,7 +300,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
               <ToggleGroup
                 ariaLabel="Select metric type (volume or transfers)"
                 className="token-activity-container-top-toggle"
-                items={METRIC_CHART_LIST}
+                items={isMainnet ? METRIC_CHART_LIST : [METRIC_CHART_LIST[1]]}
                 onValueChange={value => {
                   if (value === "transactions") {
                     setScaleSelected("linear");
@@ -337,7 +344,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
             <ToggleGroup
               ariaLabel="Select metric type (volume or transfers)"
               className="token-activity-container-top-toggle"
-              items={METRIC_CHART_LIST}
+              items={isMainnet ? METRIC_CHART_LIST : [METRIC_CHART_LIST[1]]}
               onValueChange={value => {
                 if (value === "transactions") {
                   setScaleSelected("linear");
