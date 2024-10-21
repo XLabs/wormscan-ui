@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useTranslation } from "react-i18next";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -11,18 +11,21 @@ import { getChainIcon } from "src/utils/wormhole";
 import "./styles.scss";
 
 type Props = {
-  rowSelected: number;
+  metricSelected: "volume" | "transfers";
+  rowSelected: string;
   top7AssetsData: AssetsByVolumeTransformed[];
   width: number;
 };
 
-const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
+const TopAssetsChart = ({ metricSelected, rowSelected, top7AssetsData, width }: Props) => {
   const { t } = useTranslation();
   const [XPositionLabels, setXPositionLabels] = useState([]);
   const { environment } = useEnvironment();
   const chartRef = useRef(null);
   const currentNetwork = environment.network;
-  const assetsDataForChart = top7AssetsData?.[rowSelected]?.tokens;
+  const isMainnet = currentNetwork === "Mainnet";
+  const selectedAsset = top7AssetsData.find(asset => asset.symbol === rowSelected);
+  const assetsDataForChart = useMemo(() => selectedAsset?.tokens || [], [selectedAsset]);
   const isMobile = width < BREAKPOINTS.tablet;
   const isTabletOrMobile = width < BREAKPOINTS.desktop;
   const isDesktop = width >= BREAKPOINTS.desktop && width < BREAKPOINTS.bigDesktop;
@@ -105,12 +108,15 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
         series={[
           {
             name: "Volume",
-            data: assetsDataForChart.map(({ volume }) => volume),
+            data:
+              metricSelected === "volume"
+                ? assetsDataForChart.map(({ volume }) => volume)
+                : assetsDataForChart.map(({ txs }) => txs),
           },
         ]}
         options={{
           title: {
-            text: t("home.topAssets.chartTitle") + " " + top7AssetsData?.[rowSelected]?.symbol,
+            text: t("home.topAssets.chartTitle") + " " + selectedAsset?.symbol,
             align: "left",
             margin: isTabletOrMobile ? 49 : 0,
             offsetX: 0,
@@ -185,18 +191,20 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
 
               updatePathStyles({ chartRef, dataPointIndex });
 
-              return `<div class='chart-container-tooltip'>
-                        <div>
-                          <img class='chart-container-tooltip-img' src=${chainImageSrc} alt='${chainName} icon' width="100px" />
-                          <span class='chart-container-tooltip-chain'>${chainName}</span>
+              return `<div class='chart-container-tooltip ${metricSelected} ${
+                isMainnet ? "" : "is-testnet"
+              }'>
+                        <div class="chart-container-tooltip-item">
+                          <img class='chart-container-tooltip-item-img' src=${chainImageSrc} alt='${chainName} icon' width="100px" />
+                          <span class='chart-container-tooltip-item-chain'>${chainName}</span>
                         </div>
-                        <div>
-                          <span class='chart-container-tooltip-label'>Volume:</span>
-                          <span class='chart-container-tooltip-volume'>$${volumeFormatted}</span>
+                        <div class="chart-container-tooltip-item volume">
+                          <span class='chart-container-tooltip-item-label'>Volume:</span>
+                          <span class='chart-container-tooltip-item-volume'>$${volumeFormatted}</span>
                         </div>
-                        <div>
-                          <span class='chart-container-tooltip-label'>TXS:</span>
-                          <span class='chart-container-tooltip-txs'>${txsFormatted}</span>
+                        <div class="chart-container-tooltip-item txs">
+                          <span class='chart-container-tooltip-item-label'>TXS:</span>
+                          <span class='chart-container-tooltip-item-txs'>${txsFormatted}</span>
                         </div>
                       </div>`;
             },
@@ -210,7 +218,13 @@ const TopAssetsChart = ({ rowSelected, top7AssetsData, width }: Props) => {
             opposite: true,
             axisTicks: { show: false },
             labels: {
-              formatter: (vol, opts) => `$${formatterYAxis(vol, opts)}`,
+              formatter: (val, opts) => {
+                if (metricSelected === "volume") {
+                  return `$${formatterYAxis(val, opts)}`;
+                } else {
+                  return formatterYAxis(val, opts);
+                }
+              },
               minWidth: isMobile ? 48 : 64,
               maxWidth: isMobile ? 48 : 64,
               align: "left",

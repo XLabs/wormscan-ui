@@ -14,7 +14,7 @@ type Props = {
   isGateway: boolean;
   isJustPortalUnknown: boolean;
   loadingRedeem: boolean;
-  setShowOverview: (view: string) => void;
+  setShowOverview: (view: "overview" | "advanced" | "progress") => void;
   showOverview: string;
   STATUS: IStatus;
   txHash: string;

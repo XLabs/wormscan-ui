@@ -130,7 +130,7 @@ const Overview = ({
   const [showDetailsNft, setShowDetailsNft] = useState(false);
 
   const { width } = useWindowSize();
-  const isDekstop = width >= BREAKPOINTS.desktop;
+  const isDesktop = width >= BREAKPOINTS.desktop;
 
   const parseTxHash = parseTx({
     value: txHash,
@@ -315,7 +315,7 @@ const Overview = ({
                           : "The VAA for this transaction has not been issued yet"
                         : "VAA comes from another multiverse, we don’t have more details about it"}
                     </div>
-                    {!(isDekstop && hasVAA) && (
+                    {!(isDesktop && hasVAA) && (
                       <Tooltip
                         className="tx-overview-section-row-info-alert-tooltip"
                         side="bottom"
