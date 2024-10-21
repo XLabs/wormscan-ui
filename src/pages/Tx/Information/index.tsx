@@ -42,8 +42,6 @@ interface Props {
   txIndex: number;
 }
 
-type TShowOverview = "overview" | "advanced" | "progress";
-
 const Information = ({
   blockData,
   data,
@@ -54,19 +52,12 @@ const Information = ({
   txIndex,
 }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const viewParam = searchParams.get("view") as TShowOverview;
 
   const [showSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
   const [showTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
 
-  const { environment } = useEnvironment();
-  const currentNetwork = environment.network;
-  const isMainnet = currentNetwork === "Mainnet";
-  const defaultView: TShowOverview = isMainnet ? "overview" : "advanced";
-
-  const [showOverview, setShowOverviewState] = useState<TShowOverview>(viewParam || defaultView);
-  console.log({ viewParam, showOverview });
-  const setShowOverview = (view: TShowOverview) => {
+  const [showOverview, setShowOverviewState] = useState(searchParams.get("view") || "overview");
+  const setShowOverview = (view: string) => {
     setShowOverviewState(view);
     setSearchParams(prev => {
       prev.set("view", view);
@@ -74,15 +65,17 @@ const Information = ({
     });
   };
 
-  // useEffect(() => {
-  //   if (!hasMultipleTxs) {
-  //     const view = searchParams.get("view") || "overview";
-  //     console.log({ viewParam, view });
-  //     setShowOverviewState(view);
-  //   }
-  // }, [hasMultipleTxs, searchParams]);
+  useEffect(() => {
+    if (!hasMultipleTxs) {
+      const view = searchParams.get("view") || "overview";
+      setShowOverviewState(view);
+    }
+  }, [hasMultipleTxs, searchParams]);
 
-  const totalGuardiansNeeded = isMainnet ? 13 : 1;
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+
+  const totalGuardiansNeeded = currentNetwork === "Mainnet" ? 13 : 1;
   const vaa = data?.vaa;
   const { isDuplicated } = data?.vaa || {};
   const guardianSignaturesCount =
@@ -447,6 +440,7 @@ const Information = ({
     parsedRedeemTx,
     payloadType,
     redeemedAmount,
+    releaseTimestamp: data?.releaseTimestamp,
     setShowOverview,
     showMetaMaskBtn,
     showSignatures: !(appIds && appIds.includes(CCTP_MANUAL_APP_ID)),

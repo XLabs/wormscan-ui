@@ -31,6 +31,7 @@ import {
   LogarithmicIcon,
 } from "src/icons/generic";
 import "./styles.scss";
+import analytics from "src/analytics";
 import { useEnvironment } from "src/context/EnvironmentContext";
 
 interface IAggregations {
@@ -82,7 +83,14 @@ const ProtocolsActivity = () => {
   const chartRef = useRef(null);
 
   const [someZeroValue, setSomeZeroValue] = useState(false);
-  const [scaleSelected, setScaleSelected] = useState<"linear" | "logarithmic">("logarithmic");
+  const [scaleSelected, setScaleSelectedState] = useState<"linear" | "logarithmic">("linear");
+  const setScaleSelected = (value: "linear" | "logarithmic") => {
+    setScaleSelectedState(value);
+    analytics.track("scaleSelected", {
+      selected: value,
+      selectedType: "protocolsActivity",
+    });
+  };
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
 
   const [metricSelected, setMetricSelected] = useState<"volume" | "transfers">(

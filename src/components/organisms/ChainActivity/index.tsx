@@ -93,9 +93,6 @@ const ChainActivity = () => {
   };
 
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
-  // const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">(
-  //   isMainnet ? "volume" : "transactions",
-  // );
 
   const initialDataDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
 
