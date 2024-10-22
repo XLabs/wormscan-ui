@@ -1,7 +1,7 @@
 import { chainToChainId, ChainId, Network, chainIdToChain } from "@wormhole-foundation/sdk";
 import { JsonRpcProvider } from "ethers";
 
-export const SLOW_FINALITY_CHAINS = [
+export const SLOW_FINALITY_CHAINS_MAINNET = [
   chainToChainId("Ethereum"),
   chainToChainId("Polygon"),
   chainToChainId("Bsc"),
@@ -9,6 +9,17 @@ export const SLOW_FINALITY_CHAINS = [
   chainToChainId("Arbitrum"),
   chainToChainId("Avalanche"),
   chainToChainId("Base"),
+  chainToChainId("Celo"),
+  chainToChainId("Xlayer"),
+];
+
+export const SLOW_FINALITY_CHAINS_TESTNET = [
+  chainToChainId("Sepolia"),
+  chainToChainId("ArbitrumSepolia"),
+  chainToChainId("Bsc"),
+  chainToChainId("BaseSepolia"),
+  chainToChainId("OptimismSepolia"),
+  chainToChainId("PolygonSepolia"),
   chainToChainId("Celo"),
   chainToChainId("Xlayer"),
 ];
@@ -45,10 +56,8 @@ const MAINNET_RPCS = {
 };
 
 const TESTNET_RPCS = {
-  arbitrum: "https://goerli-rollup.arbitrum.io/rpc",
   arbitrum_sepolia: "https://sepolia-rollup.arbitrum.io/rpc",
   avalanche: "https://api.avax-test.network/ext/bc/C/rpc",
-  base: "https://goerli.base.org",
   base_sepolia: "https://sepolia.base.org",
   bsc: "https://data-seed-prebsc-2-s3.binance.org:8545",
   celo: "https://alfajores-forno.celo-testnet.org",
@@ -57,9 +66,9 @@ const TESTNET_RPCS = {
   mantle: "https://rpc.testnet.mantle.xyz",
   moonbeam: "https://rpc.api.moonbase.moonbeam.network",
   sepolia: "https://ethereum-sepolia.publicnode.com",
-  optimism: "https://goerli.optimism.io",
   optimism_sepolia: "https://sepolia.optimism.io",
   polygon: "https://rpc.ankr.com/polygon_mumbai",
+  polygon_sepolia: "https://rpc.ankr.com/polygon_amoy",
   scroll: "https://rpc.ankr.com/scroll_sepolia_testnet",
   blast: "https://sepolia.blast.io",
   xlayer: "https://xlayertestrpc.okx.com",
@@ -211,6 +220,14 @@ export const testnetEnv: Environment = {
       rpcUrl: TESTNET_RPCS.optimism_sepolia || "",
     },
     {
+      chainId: 10007 as ChainId,
+      chainName: "Polygon Amoy",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 80002, // https://chainlist.org/chain/80002
+      nativeCurrencyDecimals: 18,
+      rpcUrl: TESTNET_RPCS.polygon_sepolia || "",
+    },
+    {
       chainId: 4 as ChainId,
       chainName: "BSC - Testnet",
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
@@ -257,30 +274,6 @@ export const testnetEnv: Environment = {
       evmNetworkId: 1287,
       nativeCurrencyDecimals: 18,
       rpcUrl: TESTNET_RPCS.moonbeam || "",
-    },
-    {
-      chainId: 30 as ChainId,
-      chainName: "BASE Goerli",
-      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
-      evmNetworkId: 84531,
-      nativeCurrencyDecimals: 18,
-      rpcUrl: TESTNET_RPCS.base || "",
-    },
-    {
-      chainId: 23 as ChainId,
-      chainName: "Arbitrum",
-      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
-      evmNetworkId: 42161,
-      nativeCurrencyDecimals: 18,
-      rpcUrl: TESTNET_RPCS.arbitrum || "",
-    },
-    {
-      chainId: 24 as ChainId,
-      chainName: "Optimism",
-      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
-      evmNetworkId: 10,
-      nativeCurrencyDecimals: 18,
-      rpcUrl: TESTNET_RPCS.optimism || "",
     },
     {
       chainId: 34 as ChainId,
