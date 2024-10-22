@@ -18,7 +18,13 @@ import { Contract, TransactionReceipt, formatUnits as ethersFormatUnits } from "
 import { CCTP_MANUAL_APP_ID, GR_APP_ID, IStatus, getGuardianSet } from "src/consts";
 import { Order, WormholeTokenList } from "src/api";
 import { getClient } from "src/api/Client";
-import { Environment, SLOW_FINALITY_CHAINS, getChainInfo, getEthersProvider } from "./environment";
+import {
+  Environment,
+  SLOW_FINALITY_CHAINS_MAINNET,
+  SLOW_FINALITY_CHAINS_TESTNET,
+  getChainInfo,
+  getEthersProvider,
+} from "./environment";
 import { formatUnits, parseAddress } from "./crypto";
 import { isConnect, parseConnectPayload } from "./wh-connect-rpc";
 import { hexToBase58 } from "./string";
@@ -66,6 +72,9 @@ async function hitAllSlowChains(
 ): Promise<TxReceiptHolder | null> {
   //map of chainId to promises
   const allPromises: Map<ChainId, Promise<TransactionReceipt | null>> = new Map();
+
+  const SLOW_FINALITY_CHAINS =
+    env.network === "Mainnet" ? SLOW_FINALITY_CHAINS_MAINNET : SLOW_FINALITY_CHAINS_TESTNET;
 
   for (const chain of SLOW_FINALITY_CHAINS) {
     const ethersProvider = getEthersProvider(getChainInfo(env, chain as ChainId));
