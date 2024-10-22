@@ -51,7 +51,7 @@ yarn clean
 
 ## Documentation
 
-- [API Doc](https://docs.wormholescan.io/)
+- [API Doc](https://wormholescan.io/#/developers/api-doc)
 
 ## Stack used
 

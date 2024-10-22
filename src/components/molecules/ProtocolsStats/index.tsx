@@ -122,7 +122,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
 
           {isLoading ? (
             isDesktop ? (
-              Array.from({ length: numberOfProtocols || isMainnet ? 11 : 8 }).map((_, i) => (
+              Array.from({ length: numberOfProtocols || (isMainnet ? 11 : 8) }).map((_, i) => (
                 <div className="protocols-stats-container-element-loader" key={i} />
               ))
             ) : (
