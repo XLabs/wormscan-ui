@@ -1,6 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useQuery } from "react-query";
 import ReactApexChart from "react-apexcharts";
+import analytics from "src/analytics";
+import { useEnvironment } from "src/context/EnvironmentContext";
 import {
   BREAKPOINTS,
   C3_APP_ID,
@@ -31,7 +33,6 @@ import {
   LogarithmicIcon,
 } from "src/icons/generic";
 import "./styles.scss";
-import analytics from "src/analytics";
 
 interface IAggregations {
   app_id: string;
@@ -75,6 +76,10 @@ const ProtocolsActivity = () => {
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
 
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+  const isMainnet = currentNetwork === "Mainnet";
+
   const chartRef = useRef(null);
 
   const [someZeroValue, setSomeZeroValue] = useState(false);
@@ -88,7 +93,9 @@ const ProtocolsActivity = () => {
   };
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
 
-  const [metricSelected, setMetricSelected] = useState<"volume" | "transfers">("volume");
+  const [metricSelected, setMetricSelected] = useState<"volume" | "transfers">(
+    isMainnet ? "volume" : "transfers",
+  );
   const [totalVolumeValue, setTotalVolumeValue] = useState(0);
   const [totalMessagesValue, setTotalMessagesValue] = useState(0);
   const [data, setData] = useState([]);
@@ -315,6 +322,12 @@ const ProtocolsActivity = () => {
     setOpenFilters(prev => !prev);
   };
 
+  useEffect(() => {
+    if (!isMainnet) {
+      setMetricSelected("transfers");
+    }
+  }, [isMainnet]);
+
   useLockBodyScroll({
     isLocked: !isDesktop && openFilters,
     scrollableClasses: ["select__option"],
@@ -415,7 +428,7 @@ const ProtocolsActivity = () => {
             <ToggleGroup
               ariaLabel="Select metric type (volume or transfers)"
               className="protocols-activity-container-top-filters-metric"
-              items={METRIC_CHART_LIST}
+              items={isMainnet ? METRIC_CHART_LIST : [METRIC_CHART_LIST[1]]}
               onValueChange={value => setMetricSelected(value)}
               value={metricSelected}
             />

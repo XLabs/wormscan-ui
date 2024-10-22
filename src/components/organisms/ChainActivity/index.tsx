@@ -2,7 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useQuery } from "react-query";
 import "react-datepicker/dist/react-datepicker.css";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import analytics from "src/analytics";
 import {
   BlockchainIcon,
   Counter,
@@ -14,7 +16,6 @@ import {
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
-import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { useWindowSize, useLockBodyScroll } from "src/utils/hooks";
 import { formatNumber, numberToSuffix } from "src/utils/number";
@@ -51,7 +52,6 @@ import {
 import { BREAKPOINTS } from "src/consts";
 import { Calendar } from "./Calendar";
 import "./styles.scss";
-import analytics from "src/analytics";
 
 const TYPE_CHART_LIST = [
   { label: <ActivityIcon width={24} />, value: "area", ariaLabel: "Area" },
@@ -79,6 +79,10 @@ const ChainActivity = () => {
   const isDesktop = width >= BREAKPOINTS.desktop;
   const isBigDesktop = width >= BREAKPOINTS.bigDesktop;
 
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+  const isMainnet = currentNetwork === "Mainnet";
+
   const chartRef = useRef(null);
 
   const [someZeroValue, setSomeZeroValue] = useState(false);
@@ -92,6 +96,7 @@ const ChainActivity = () => {
       selectedType: "chainActivity",
     });
   };
+
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
 
   const initialDataDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
@@ -118,9 +123,7 @@ const ChainActivity = () => {
     scrollableClasses: ["select__option", "show-date"],
   });
 
-  const { environment } = useEnvironment();
-  const currentNetwork = environment.network;
-  const orderedChains = currentNetwork === "Mainnet" ? ChainFilterMainnet : ChainFilterTestnet;
+  const orderedChains = isMainnet ? ChainFilterMainnet : ChainFilterTestnet;
   const ALL_SOURCE_CHAINS = {
     label: "All Chains",
     value: "All Chains",
@@ -664,6 +667,12 @@ const ChainActivity = () => {
   ]);
 
   useEffect(() => {
+    if (!isMainnet) {
+      setMetricSelected("transactions");
+    }
+  }, [isMainnet]);
+
+  useEffect(() => {
     const checkForZeroValues = (obj: any, path = "") => {
       let hasZeroValue = false;
       let hasNonZeroValue = false;
@@ -849,7 +858,7 @@ const ChainActivity = () => {
             <ToggleGroup
               ariaLabel="Select type"
               className="chain-activity-chart-top-filters-toggle-metric"
-              items={METRIC_CHART_LIST}
+              items={isMainnet ? METRIC_CHART_LIST : [METRIC_CHART_LIST[1]]}
               onValueChange={value => setMetricSelected(value)}
               value={metricSelected}
             />
@@ -952,7 +961,7 @@ const ChainActivity = () => {
             {isDesktop && chartSelected === "area" && !someZeroValue && (
               <ToggleGroup
                 ariaLabel="Select scale"
-                className="chain-activity-chart-scale"
+                className={`chain-activity-chart-scale ${isMainnet ? "" : "is-testnet"}`}
                 items={SCALE_CHART_LIST}
                 onValueChange={value => setScaleSelected(value)}
                 value={scaleSelected}

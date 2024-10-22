@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
+import { GovernorHeader } from "src/components/atoms";
 import ErrorGeneral from "src/components/organisms/SearchNotFound/ErrorGeneral";
 import OnlyMainnet from "src/components/organisms/SearchNotFound/OnlyMainnet";
 import { BaseLayout } from "src/layouts/BaseLayout";
@@ -81,6 +82,7 @@ const ErrorBoundary = ({ children }: { children: ReactNode }) => {
   if (!isMainnet && (pathname === "/analytics/w" || pathname === "/governor")) {
     return (
       <BaseLayout>
+        {pathname === "/governor" && <GovernorHeader />}
         <OnlyMainnet />
       </BaseLayout>
     );
