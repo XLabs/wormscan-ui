@@ -122,7 +122,8 @@ const TopAssets = () => {
           <div className="top-assets-header">
             <h3 className="top-assets-header-title">
               <LayersIcon width={24} />
-              {t("home.topAssets.title")}
+              {t("home.topAssets.title")}{" "}
+              {metricSelected.charAt(0).toUpperCase() + metricSelected.slice(1)}
             </h3>
 
             <div className="top-assets-header-select-container">
