@@ -208,22 +208,16 @@ export interface ScoresOutput {
   tvl: string;
 }
 
-export type ProtocolName =
-  | "cctp"
-  | "allbridge"
-  | "portal_token_bridge"
-  | "mayan"
-  | "native_token_transfer";
-
 export interface ProtocolsStatsOutput {
-  protocol: ProtocolName;
+  last_24_hour_volume: number;
+  last_day_diff_percentage: string;
+  last_day_diff_volume_percentage: string;
+  last_day_messages: number;
+  protocol: string;
+  total_messages: number;
   total_value_locked?: number;
   total_value_secured?: number;
   total_value_transferred: number;
-  total_messages: number;
-  last_day_messages: number;
-  last_day_diff_percentage: string;
-  last_day_volume: number;
 }
 
 export interface AssetsByVolumeInput {

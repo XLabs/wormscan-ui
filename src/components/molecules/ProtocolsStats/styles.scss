@@ -72,12 +72,19 @@
         min-width: fit-content;
 
         &-title {
+          @include centered-row;
           @include text-heading6;
           color: var(--color-gray-400);
+          gap: 0 4px;
+          height: 16px;
           text-transform: uppercase;
 
           &:last-child {
-            text-align: end;
+            justify-content: end;
+          }
+
+          &-tooltip {
+            @include centered-row;
           }
         }
       }
@@ -176,8 +183,11 @@
         }
 
         &-title {
+          @include centered-row;
           @include text-heading6;
           color: var(--color-gray-400);
+          gap: 0 4px;
+          height: 16px;
 
           @include desktop {
             display: none;

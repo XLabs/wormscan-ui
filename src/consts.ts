@@ -129,6 +129,8 @@ export const CCTP_URL = "https://portalbridge.com/usdc-bridge";
 export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";
 export const GATEWAY_URL = "https://wormhole.com/platform/gateway";
 export const GITHUB_URL = "https://github.com/wormhole-foundation";
+export const GR_URL =
+  "https://wormhole.com/docs/learn/infrastructure/relayer/#wormhole-automatic-relayers";
 export const MAYAN_URL = "https://mayan.finance";
 export const MORE_INFO_GOVERNOR_URL =
   "https://github.com/wormhole-foundation/wormhole/blob/main/whitepapers/0007_governor.md";
@@ -136,6 +138,7 @@ export const NTT_URL = "https://wormhole.com/products/native-token-transfers";
 export const OMNISWAP_URL = "https://app.omnibtc.finance/swap";
 export const PORTAL_BRIDGE_URL = "https://www.portalbridge.com";
 export const PROVIDE_FEEDBACK_URL = "https://forms.gle/rZesvKLgePamiTPi6";
+export const TBTC_URL = "https://portalbridge.com/tbtc-bridge";
 export const TWITTER_URL = "https://x.com/wormhole";
 export const WORMHOLE_BLOG = "https://wormhole.com/blog";
 export const WORMHOLE_DOCS_URL = "https://wormhole.com/docs";
