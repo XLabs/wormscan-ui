@@ -193,6 +193,15 @@ const ApiDoc = () => {
   }, [host, url]);
   // ---
 
+  const customRequestInterceptor = (request: any) => {
+    // the governor/config response is extremely big, so we limit the page size to 1
+    if (request.url.endsWith("/api/v1/governor/config")) {
+      request.url = `${request.url}?pageSize=1`;
+    }
+
+    return request;
+  };
+
   return (
     <BaseLayout secondaryHeader>
       <div className="api-doc">
@@ -266,6 +275,7 @@ const ApiDoc = () => {
           onComplete={() => {
             setIsLoading(false);
           }}
+          requestInterceptor={customRequestInterceptor}
         />
       </div>
     </BaseLayout>
