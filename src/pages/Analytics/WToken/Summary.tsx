@@ -84,7 +84,7 @@ export const Summary = () => {
                 <ChainItem
                   chainId={chainToChainId("Optimism")}
                   network={environment.network}
-                  value="0x27428DD2d3DD32A4D7f7C497eAaa23130d894911 "
+                  value="0xB0fFa8000886e57F86dd5264b9582b2Ad87b2b91"
                 />
               </div>
             </div>
