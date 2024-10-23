@@ -851,7 +851,7 @@ const WORMHOLE_CHAINS: any = {
     explorer: {
       Testnet: "https://unichain-sepolia.blockscout.com",
       Devnet: "https://unichain-sepolia.blockscout.com",
-      Mainnet: "https://unichain-sepolia.blockscout.com",
+      Mainnet: "https://unichain-sepolia.blockscout.com", // TODO: mainnet when exists
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
