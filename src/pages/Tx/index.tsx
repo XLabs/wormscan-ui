@@ -433,7 +433,9 @@ const Tx = () => {
         const currentNetworkResponse = await getClient().guardianNetwork.getOperations({
           vaaID: `${chainId}/${emitter}/${seq}`,
         });
-        if (!!currentNetworkResponse) return currentNetworkResponse;
+        if (!!currentNetworkResponse && currentNetworkResponse?.length > 0) {
+          return currentNetworkResponse;
+        }
       } catch {
         // go to the next call
       }
@@ -442,7 +444,7 @@ const Tx = () => {
         const otherNetworkResponse = await getClient(otherNetwork).guardianNetwork.getOperations({
           vaaID: `${chainId}/${emitter}/${seq}`,
         });
-        if (!!otherNetworkResponse) {
+        if (!!otherNetworkResponse && otherNetworkResponse?.length > 0) {
           navigate(`/tx/${chainId}/${emitter}/${seq}?network=${otherNetwork}`);
           return otherNetworkResponse;
         }
@@ -464,7 +466,6 @@ const Tx = () => {
           { page: 0, pageSize: 20, sortOrder: Order.ASC },
         )
         .then(observations => {
-          console.log({ observations, a, b, c, cnum: +c, VAAId });
           if (!!observations?.length) {
             const guardianSetList = getGuardianSet(4);
 
@@ -482,6 +483,8 @@ const Tx = () => {
             });
 
             setIsLoading(false);
+          } else {
+            throw new Error("no observations found");
           }
         })
         .catch(() => {
