@@ -198,7 +198,7 @@ export const TransfersOverTime = ({
                       </span>
                       <p>
                         {by === "tx" ? "" : "$"}
-                        {series?.[0]?.totalValue && (series[0].totalValue, 0)}
+                        {series?.[0]?.totalValue && formatNumber(series[0].totalValue, 0)}
                       </p>
                     </div>
                   </div>
