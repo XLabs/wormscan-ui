@@ -81,6 +81,11 @@ export const Summary = () => {
                   network={environment.network}
                   value="0xb0ffa8000886e57f86dd5264b9582b2ad87b2b91"
                 />
+                <ChainItem
+                  chainId={chainToChainId("Optimism")}
+                  network={environment.network}
+                  value="0xb0ffa8000886e57f86dd5264b9582b2ad87b2b91"
+                />
               </div>
             </div>
 

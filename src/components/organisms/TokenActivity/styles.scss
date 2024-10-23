@@ -308,7 +308,7 @@
           }
 
           &.row-0 {
-            border-top: none !important;
+            border-top: none;
           }
 
           &.open {
@@ -321,6 +321,10 @@
               border-radius: 0;
               border: none;
               border-top: 1px solid var(--color-gray-900);
+
+              &.row-0 {
+                border-top: none;
+              }
             }
 
             & svg {

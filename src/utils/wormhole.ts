@@ -35,6 +35,7 @@ import SolanaIcon from "src/icons/blockchains/solana.svg";
 import SuiIcon from "src/icons/blockchains/sui.svg";
 import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
 import TerraIcon from "src/icons/blockchains/terra.svg";
+import UnichainIcon from "src/icons/blockchains/unichain.svg";
 import WormChainIcon from "src/icons/blockchains/wormchain.svg";
 import XLayerIcon from "src/icons/blockchains/xlayer.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
@@ -75,6 +76,7 @@ import SolanaColorlessIcon from "src/icons/blockchains/colorless/solana.svg";
 import SuiColorlessIcon from "src/icons/blockchains/colorless/sui.svg";
 import TerraClassicColorlessIcon from "src/icons/blockchains/colorless/terra-classic.svg";
 import TerraColorlessIcon from "src/icons/blockchains/colorless/terra.svg";
+import UniChainColorlessIcon from "src/icons/blockchains/colorless/unichain.svg";
 import WormChainColorlessIcon from "src/icons/blockchains/colorless/wormchain.svg";
 import XLayerColorlessIcon from "src/icons/blockchains/colorless/xlayer.svg";
 import XplaColorlessIcon from "src/icons/blockchains/colorless/xpla.svg";
@@ -833,6 +835,23 @@ const WORMHOLE_CHAINS: any = {
       Testnet: "https://amoy.polygonscan.com",
       Devnet: "https://amoy.polygonscan.com",
       Mainnet: "https://polygonscan.com",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [chainToChainId("Unichain")]: {
+    name: "Unichain",
+    nameTestnet: "Unichain",
+    icon: UnichainIcon,
+    colorlessIcon: UniChainColorlessIcon,
+    explorer: {
+      Testnet: "https://unichain-sepolia.blockscout.com",
+      Devnet: "https://unichain-sepolia.blockscout.com",
+      Mainnet: "https://unichain-sepolia.blockscout.com", // TODO: mainnet when exists
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;

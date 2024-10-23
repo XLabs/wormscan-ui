@@ -130,6 +130,7 @@ export const ChainFilterTestnet = [
   chainToChainId("Sui"),
   chainToChainId("Terra"),
   chainToChainId("Terra2"),
+  chainToChainId("Unichain"),
   chainToChainId("Wormchain"),
   chainToChainId("Xlayer"),
   chainToChainId("Xpla"),
