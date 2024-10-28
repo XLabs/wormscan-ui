@@ -181,7 +181,10 @@ const ChainItem = ({
       target="_blank"
     >
       <BlockchainIcon chainId={chainId} network={network} />
-      <ArrowUpRightIcon />
+      <ArrowUpRightIcon
+        className="summary-top-content-container-item-chain-contract-arrow"
+        width={20}
+      />
     </a>
   );
 };
