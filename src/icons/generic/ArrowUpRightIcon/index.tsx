@@ -1,5 +1,6 @@
-const ArrowUpRightIcon = ({ width = 24 }: { width?: number }) => (
+const ArrowUpRightIcon = ({ className, width = 24 }: { className?: string; width?: number }) => (
   <svg
+    className={className}
     fill="none"
     height={width}
     viewBox="0 0 24 24"
