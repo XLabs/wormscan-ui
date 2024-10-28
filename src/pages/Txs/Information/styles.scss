@@ -7,12 +7,13 @@
 
   &-top {
     @include centered-column;
-    column-gap: 24px;
+    gap: 24px;
     margin-bottom: 32px;
 
     @include desktop {
       @include centered-row;
       justify-content: space-between;
+      flex-wrap: wrap;
       margin-bottom: 20px;
     }
   }
@@ -240,10 +241,10 @@
   .txs-pagination {
     display: flex;
     justify-content: center;
-    width: 100%;
 
     @include desktop {
       justify-content: flex-end;
+      margin-left: auto;
     }
 
     &-bottom {

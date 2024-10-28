@@ -45,10 +45,12 @@ export class GuardianNetwork {
     address,
     appId,
     exclusiveAppId,
+    from,
     pagination = DefaultPageRequest,
     payloadType,
     sourceChain,
     targetChain,
+    to,
     txHash,
     vaaID,
   }: GetOperationsInput): Promise<GetOperationsOutput[]> {
@@ -58,9 +60,11 @@ export class GuardianNetwork {
       address,
       appId,
       exclusiveAppId,
+      from,
       payloadType,
       sourceChain,
       targetChain,
+      to,
       txHash,
     });
 

@@ -13,7 +13,7 @@ import {
   Select,
   ToggleGroup,
 } from "src/components/atoms";
-import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
+import { Calendar, ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
 import { getClient } from "src/api/Client";
@@ -50,7 +50,6 @@ import {
   TSelectedPeriod,
 } from "src/utils/chainActivityUtils";
 import { BREAKPOINTS } from "src/consts";
-import { Calendar } from "./Calendar";
 import "./styles.scss";
 
 const TYPE_CHART_LIST = [
@@ -757,9 +756,22 @@ const ChainActivity = () => {
               </button>
             </div>
 
+            <Calendar
+              className="chain-activity-chart-top-filters-calendar"
+              startDate={startDate}
+              setStartDate={setStartDate}
+              endDate={endDate}
+              setEndDate={setEndDate}
+              lastBtnSelected={lastBtnSelected}
+              setLastBtnSelected={setLastBtnSelected}
+              startDateDisplayed={startDateDisplayed}
+              endDateDisplayed={endDateDisplayed}
+              isDesktop={isDesktop}
+            />
+
             <Select
               ariaLabel="Select Chains"
-              className="chain-activity-chart-top-filters-section"
+              className="chain-activity-chart-top-filters-select"
               items={SOURCE_CHAIN_LIST}
               menuPortalTarget={document.querySelector(".chain-activity")}
               menuFixed={!isDesktop}
@@ -768,7 +780,7 @@ const ChainActivity = () => {
               name="sourceChain"
               onValueChange={(value: any) => handleChainSelection(value, "source")}
               text={
-                <div className="chain-activity-chart-top-filters-section-text">
+                <div className="chain-activity-chart-top-filters-select-text">
                   {filters.sourceChain.length > 0 && (
                     <Counter>{filters.sourceChain.length}</Counter>
                   )}
@@ -781,7 +793,7 @@ const ChainActivity = () => {
 
             <Select
               ariaLabel="Select Chains"
-              className="chain-activity-chart-top-filters-section"
+              className="chain-activity-chart-top-filters-select"
               items={TARGET_CHAIN_LIST}
               menuFixed={!isDesktop}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
@@ -790,7 +802,7 @@ const ChainActivity = () => {
               name="targetChain"
               onValueChange={(value: any) => handleChainSelection(value, "target")}
               text={
-                <div className="chain-activity-chart-top-filters-section-text">
+                <div className="chain-activity-chart-top-filters-select-text">
                   {filters?.targetChain?.length > 0 && (
                     <Counter>{filters.targetChain.length}</Counter>
                   )}
@@ -806,7 +818,7 @@ const ChainActivity = () => {
             
             <Select
               ariaLabel="Select Protocol"
-              className="chain-activity-chart-top-filters-section"
+              className="chain-activity-chart-top-filters-select"
               controlStyles={{ minWidth: 256 }}
               isMulti={false}
               items={PROTOCOL_LIST}
@@ -821,7 +833,7 @@ const ChainActivity = () => {
                 })
               }
               text={
-                <div className="chain-activity-chart-top-filters-section-text">
+                <div className="chain-activity-chart-top-filters-select-text">
                   {filters?.appId && <Counter>1</Counter>}
                   Protocol
                 </div>
@@ -832,28 +844,6 @@ const ChainActivity = () => {
                 value: filters.appId,
               }}
             /> */}
-
-            <Calendar
-              startDate={startDate}
-              setStartDate={setStartDate}
-              endDate={endDate}
-              setEndDate={setEndDate}
-              lastBtnSelected={lastBtnSelected}
-              setLastBtnSelected={setLastBtnSelected}
-              startDateDisplayed={startDateDisplayed}
-              endDateDisplayed={endDateDisplayed}
-              isDesktop={isDesktop}
-            />
-
-            <div className="chain-activity-chart-top-filters-buttons">
-              <button className="apply-btn" onClick={applyFilters}>
-                Apply Filters
-              </button>
-
-              <button className="reset-btn" onClick={resetFilters}>
-                Reset Filters
-              </button>
-            </div>
 
             <ToggleGroup
               ariaLabel="Select type"
@@ -872,6 +862,24 @@ const ChainActivity = () => {
                 value={scaleSelected}
               />
             )}
+
+            <div className="chain-activity-chart-top-filters-buttons">
+              <button className="apply-btn" onClick={applyFilters}>
+                Apply Filters
+              </button>
+
+              <button
+                className="reset-btn"
+                disabled={
+                  filters.sourceChain.length === 0 &&
+                  filters.targetChain.length === 0 &&
+                  lastBtnSelected === "year"
+                }
+                onClick={resetFilters}
+              >
+                Reset Filters
+              </button>
+            </div>
 
             <div
               className={`chain-activity-chart-top-filters-legends ${

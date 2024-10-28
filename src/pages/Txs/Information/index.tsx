@@ -1,22 +1,22 @@
 import { Dispatch, SetStateAction } from "react";
 import { useLocation } from "react-router-dom";
 import { Column } from "react-table";
-import { PAGE_SIZE, TransactionOutput } from "..";
+import { IParams, PAGE_SIZE, TransactionOutput } from "..";
 import { Table } from "src/components/organisms";
 import { Pagination } from "src/components/atoms";
 import { useNavigateCustom, useWindowSize } from "src/utils/hooks";
 import Filters from "./Filters";
 import { BREAKPOINTS } from "src/consts";
-import "./styles.scss";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import "./styles.scss";
 
 interface Props {
   currentPage: number;
   isPaginationLoading: boolean;
   isTxsFiltered: boolean;
   onChangePagination: (pageNumber: number) => void;
+  params: IParams;
   parsedTxsData: TransactionOutput[] | undefined;
-  payloadTypeParams: string;
   setIsPaginationLoading: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -25,8 +25,8 @@ const Information = ({
   isPaginationLoading,
   isTxsFiltered = false,
   onChangePagination,
+  params,
   parsedTxsData,
-  payloadTypeParams,
   setIsPaginationLoading,
 }: Props) => {
   const navigate = useNavigateCustom();
@@ -39,7 +39,7 @@ const Information = ({
   //att status txhash sourcechain token name token address time
   //trans status txhash from to protocol time
 
-  const isAttestation = payloadTypeParams === "2";
+  const isAttestation = params.payloadType === "2";
   const columns: Column[] | any = [
     {
       Header: "STATUS",
@@ -49,7 +49,7 @@ const Information = ({
       Header: "SOURCE TX HASH",
       accessor: "txHash",
     },
-    !payloadTypeParams && {
+    !params.payloadType && {
       Header: "TYPE",
       accessor: "type",
     },
@@ -120,7 +120,6 @@ const Information = ({
         goFirstPage={() => goFirstPage()}
         goPrevPage={() => goPrevPage(currentPage)}
         goNextPage={() => goNextPage(currentPage)}
-        // goLastPage={() => goLastPage()}
         goPage={isTxsFiltered ? null : goPage}
         disabled={isPaginationLoading}
         disableNextButton={parsedTxsData?.length <= 0 || parsedTxsData?.length < PAGE_SIZE}
@@ -132,7 +131,9 @@ const Information = ({
   return (
     <section className="txs-information">
       <div className="txs-information-top">
-        {!isTxsFiltered && <Filters setIsPaginationLoading={setIsPaginationLoading} />}
+        {!isTxsFiltered && (
+          <Filters params={params} setIsPaginationLoading={setIsPaginationLoading} />
+        )}
 
         <div className="txs-pagination">
           <PaginationComponent />

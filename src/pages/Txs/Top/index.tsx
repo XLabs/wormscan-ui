@@ -14,9 +14,10 @@ interface Props {
   addressChainId: ChainId;
   liveMode: boolean;
   setLiveMode: (b: boolean) => void;
+  showLiveMode: boolean;
 }
 
-const Top = ({ address, addressChainId, liveMode, setLiveMode }: Props) => {
+const Top = ({ address, addressChainId, liveMode, setLiveMode, showLiveMode }: Props) => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const { width } = useWindowSize();
@@ -56,7 +57,7 @@ const Top = ({ address, addressChainId, liveMode, setLiveMode }: Props) => {
           {t("txs.top.title")}
         </h1>
 
-        {!address && (
+        {showLiveMode && (
           <Switch
             label="LIVE MODE"
             showIndicator

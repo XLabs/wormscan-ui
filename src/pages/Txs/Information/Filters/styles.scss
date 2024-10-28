@@ -3,7 +3,6 @@
 .filters {
   @include centered-column;
   position: relative;
-  width: 100%;
 
   &-bg {
     background-color: var(--color-black-50);
@@ -125,6 +124,31 @@
 
       @include bigDesktop {
         left: 268px;
+      }
+    }
+
+    &-calendar {
+      & > .calendar-custom-btn {
+        height: 36px;
+
+        & > span {
+          margin: 0 auto;
+          padding-left: 24px;
+
+          @include desktop {
+            margin: 0;
+            padding: 0;
+          }
+        }
+      }
+
+      & > .calendar-custom-box {
+        position: absolute;
+        width: 100%;
+
+        @include desktop {
+          width: auto;
+        }
       }
     }
 
