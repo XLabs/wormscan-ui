@@ -428,7 +428,7 @@ export interface GetOperationsOutput {
     usdAmount: string;
   };
   decodedVaa?: any;
-  STATUS?: IStatus;
+  status?: IStatus;
   isBigTransaction?: boolean;
   isDailyLimitExceeded?: boolean;
   transactionLimit?: number;

@@ -119,7 +119,7 @@ export const RecentTransactions = ({
                 }
               >
                 <div className="recent-transactions-table-item-row">
-                  <StatusBadge size="responsive" STATUS={data.STATUS} />
+                  <StatusBadge size="responsive" status={data.status} />
                 </div>
                 <div className="recent-transactions-table-item-row">
                   <div className="link-container">
@@ -174,7 +174,7 @@ export const RecentTransactions = ({
             <div key={data.id} className="recent-transactions-mobile-container">
               <div className="recent-transactions-mobile-item">
                 <div className="title">
-                  <StatusBadge size="responsive" STATUS={data.STATUS} />
+                  <StatusBadge size="responsive" status={data.status} />
                 </div>
                 <div className="content">
                   <div className="time">

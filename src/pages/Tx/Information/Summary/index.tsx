@@ -16,7 +16,7 @@ type Props = {
   loadingRedeem: boolean;
   setShowOverview: (view: "overview" | "advanced" | "progress") => void;
   showOverview: string;
-  STATUS: IStatus;
+  status: IStatus;
   txHash: string;
   vaa: string;
 };
@@ -32,12 +32,12 @@ const Summary = ({
   loadingRedeem,
   setShowOverview,
   showOverview,
-  STATUS,
+  status,
   txHash,
   vaa,
 }: Props) => {
   const showVerifyRedemption =
-    STATUS === "VAA_EMITTED" &&
+    status === "vaa_emitted" &&
     (isJustPortalUnknown || isConnect || isGateway) &&
     (foundRedeem === false || (!canTryToGetRedeem && !foundRedeem));
 
@@ -55,7 +55,7 @@ const Summary = ({
       />
 
       <div className="tx-information-summary-info">
-        {STATUS !== "COMPLETED" && (
+        {status !== "completed" && (
           <GetRedeem
             canTryToGetRedeem={canTryToGetRedeem}
             foundRedeem={foundRedeem}

@@ -63,7 +63,7 @@ interface RPCResponse {
   txHash?: string;
   usdAmount?: string;
   wrappedTokenAddress?: string;
-  STATUS?: IStatus;
+  status?: IStatus;
 }
 
 async function hitAllSlowChains(
@@ -304,7 +304,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             payloadType,
             sender,
             sequence: sequence.toString(),
-            STATUS: "IN_PROGRESS" as IStatus,
+            status: "in_progress" as IStatus,
             symbol,
             timestamp,
             toAddress,
@@ -369,7 +369,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             id: VAA_ID,
             parsedFromAddress,
             sequence: sequence.toString(),
-            STATUS: "IN_PROGRESS" as IStatus,
+            status: "in_progress" as IStatus,
             symbol: "USDC",
             timestamp,
             toAddress: circleInfo.toAddress,
@@ -431,7 +431,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               lastFinalizedBlock,
               payloadType: 1,
               sequence: sequence.toString(),
-              STATUS: "IN_PROGRESS" as IStatus,
+              status: "in_progress" as IStatus,
               timestamp,
               toAddress: targetAddress,
               toChain: targetChainId,
@@ -476,7 +476,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
               lastFinalizedBlock,
               payloadType: 2,
               sequence: sequence.toString(),
-              STATUS: "IN_PROGRESS" as IStatus,
+              status: "in_progress" as IStatus,
               timestamp,
               toChain: targetChainId,
               tokenAddress: wrappedTokenAddress,
@@ -547,7 +547,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           txHash: searchValue,
           usdAmount: "" + formatUnits(amount.toString(), 6),
           wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(destinationDomain)),
-          STATUS: "EXTERNAL_TX" as IStatus,
+          status: "external_tx" as IStatus,
 
           // no data properties
           id: null,

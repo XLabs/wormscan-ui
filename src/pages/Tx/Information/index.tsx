@@ -123,7 +123,7 @@ const Information = ({
     wrappedTokenSymbol,
   } = standarizedProperties || {};
 
-  const { STATUS, isBigTransaction, isDailyLimitExceeded, transactionLimit } = data;
+  const { status, isBigTransaction, isDailyLimitExceeded, transactionLimit } = data;
   const {
     fee: targetFee,
     gasTokenNotional: targetGasTokenNotional,
@@ -322,9 +322,9 @@ const Information = ({
 
   const date_30_min_before = new Date(new Date().getTime() - 30 * 60000);
   const canTryToGetRedeem =
-    (STATUS === "EXTERNAL_TX" ||
-      STATUS === "VAA_EMITTED" ||
-      (STATUS === "PENDING_REDEEM" && new Date(timestamp) < date_30_min_before)) &&
+    (status === "external_tx" ||
+      status === "vaa_emitted" ||
+      (status === "pending_redeem" && new Date(timestamp) < date_30_min_before)) &&
     (platformToChains("Evm").includes(chainIdToChain(toChain) as any) ||
       toChain === 1 ||
       toChain === 21) &&
@@ -369,7 +369,7 @@ const Information = ({
 
       const newData: GetOperationsOutput = deepCloneWithBigInt(data);
 
-      newData.STATUS = "COMPLETED";
+      newData.status = "completed";
       newData.targetChain = newDestinationTx;
 
       if (newData?.content?.standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID)) {
@@ -455,7 +455,7 @@ const Information = ({
     sourceTokenChain,
     sourceTokenInfo,
     sourceTokenLink,
-    STATUS,
+    status,
     targetFee,
     targetFeeUSD,
     targetSymbol,
@@ -483,7 +483,7 @@ const Information = ({
         loadingRedeem={loadingRedeem}
         setShowOverview={setShowOverview}
         showOverview={showOverview}
-        STATUS={STATUS}
+        status={status}
         txHash={data?.sourceChain?.transaction?.txHash}
         vaa={vaa?.raw}
       />
