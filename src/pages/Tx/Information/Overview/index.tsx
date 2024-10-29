@@ -1350,7 +1350,7 @@ const Overview = ({
             <h4 className="tx-overview-section-row-title">Relay Status</h4>
             <div className="tx-overview-section-row-info details-info">
               <div className="tx-overview-section-row-info-container span2">
-                <div className="tx-overview-section-row-info-container-key">status</div>
+                <div className="tx-overview-section-row-info-container-key">STATUS</div>
                 <div className="tx-overview-section-row-info-container-value">
                   <div className="text">
                     {" "}
