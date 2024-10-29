@@ -280,6 +280,8 @@ export interface GetOperationsInput {
   targetChain?: string;
   txHash?: string;
   vaaID?: string;
+  from?: string;
+  to?: string;
 }
 
 export interface INFTInfo {

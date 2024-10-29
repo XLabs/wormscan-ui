@@ -50,6 +50,18 @@ export interface TransactionOutput {
   time: React.ReactNode;
 }
 
+export interface IParams {
+  page: string | null;
+  address: string | null;
+  appId: string | null;
+  exclusiveAppId: string | null;
+  sourceChain: string | null;
+  targetChain: string | null;
+  payloadType: string | null;
+  from: string | null;
+  to: string | null;
+}
+
 export const PAGE_SIZE = 50;
 
 export const ETH_LIMIT = {
@@ -62,27 +74,32 @@ const Txs = () => {
   const currentNetwork = environment.network;
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const address = searchParams.get("address") || null;
-  const appIdParams = searchParams.get("appId") || null;
-  const exclusiveAppIdParams = searchParams.get("exclusiveAppId") || null;
-  const sourceChainParams = searchParams.get("sourceChain") || null;
-  const targetChainParams = searchParams.get("targetChain") || null;
-  const payloadTypeParams = searchParams.get("payloadType") || null;
+  const params: IParams = {
+    page: searchParams.get("page") || null,
+    address: searchParams.get("address") || null,
+    appId: searchParams.get("appId") || null,
+    exclusiveAppId: searchParams.get("exclusiveAppId") || null,
+    sourceChain: searchParams.get("sourceChain") || null,
+    targetChain: searchParams.get("targetChain") || null,
+    payloadType: searchParams.get("payloadType") || null,
+    from: searchParams.get("from") || null,
+    to: searchParams.get("to") || null,
+  };
 
   useEffect(() => {
-    if (address) {
+    if (params.address) {
       analytics.page({ title: "TXS_LIST_ADDRESS" });
     } else {
       analytics.page({ title: "TXS_LIST_TXN" });
     }
-  }, [address]);
+  }, [params.address]);
 
-  const page = Number(searchParams.get("page"));
+  const page = Number(params.page) || 1;
   const currentPage = page >= 1 ? page : 1;
   const prevPage = useRef(currentPage);
 
-  const q = address ? address : "txs";
-  const isTxsFiltered = address ? true : false;
+  const q = params.address ? params.address : "txs";
+  const isTxsFiltered = params.address ? true : false;
   const REFETCH_TIME = 1000 * 8;
 
   const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
@@ -91,6 +108,7 @@ const Txs = () => {
   const [parsedTxsData, setParsedTxsData] = useState<TransactionOutput[] | undefined>(undefined);
 
   const [liveMode, setLiveMode] = useLocalStorage<boolean>("liveMode", true);
+  const showLiveMode = !params.address && !params.from && !params.to;
   const [lastUpdatedList, setLastUpdatedList] =
     useState<{ txHash: string; status: string }[]>(null);
 
@@ -110,7 +128,7 @@ const Txs = () => {
 
   useEffect(() => {
     setErrorCode(undefined);
-  }, [address]);
+  }, [params.address]);
 
   useEffect(() => {
     setIsPaginationLoading(true);
@@ -123,24 +141,26 @@ const Txs = () => {
   );
 
   const getOperationsInput: GetOperationsInput = {
-    address,
+    address: params.address,
     pagination: {
       page: currentPage - 1,
       pageSize: PAGE_SIZE,
       sortOrder: Order.DESC,
     },
-    appId: appIdParams,
-    exclusiveAppId: exclusiveAppIdParams,
-    sourceChain: sourceChainParams,
-    targetChain: targetChainParams,
-    payloadType: payloadTypeParams,
+    appId: params.appId,
+    exclusiveAppId: params.exclusiveAppId,
+    sourceChain: params.sourceChain,
+    targetChain: params.targetChain,
+    payloadType: params.payloadType,
+    from: params.from,
+    to: params.to,
   };
 
   const { refetch, isLoading: isLoadingOperations } = useQuery(
     ["getTxs", getOperationsInput],
     () => getClient().guardianNetwork.getOperations(getOperationsInput),
     {
-      refetchInterval: () => (liveMode && !address ? REFETCH_TIME : false),
+      refetchInterval: () => (liveMode && showLiveMode ? REFETCH_TIME : false),
       onError: (err: Error) => {
         let statusCode = 404;
 
@@ -162,7 +182,7 @@ const Txs = () => {
         const destinationChainId = firstStandarizedProperties?.toChain;
 
         const addressChainId =
-          String(address).toLowerCase() === String(originAddress).toLowerCase()
+          String(params.address).toLowerCase() === String(originAddress).toLowerCase()
             ? originChainId
             : destinationChainId;
 
@@ -280,8 +300,8 @@ const Txs = () => {
                 : parsedDestinationAddress;
               // -----
 
-              const isOutflow = sourceAddress?.toLowerCase() === address?.toLowerCase();
-              const isInflow = targetAddress?.toLowerCase() === address?.toLowerCase();
+              const isOutflow = sourceAddress?.toLowerCase() === params.address?.toLowerCase();
+              const isInflow = targetAddress?.toLowerCase() === params.address?.toLowerCase();
               const isInOut = sourceAddress?.toLowerCase() === targetAddress?.toLowerCase();
 
               // --- Status Logic
@@ -510,11 +530,11 @@ const Txs = () => {
                       {!isAttestation && toChain && (
                         <>
                           <div className="tx-chains-container-arrow">
-                            {(!address || !isInOut) && (
-                              <ArrowRightIcon className={address ? "is-address" : ""} />
+                            {(!params.address || !isInOut) && (
+                              <ArrowRightIcon className={params.address ? "is-address" : ""} />
                             )}
 
-                            {address && (isInOut || isOutflow || isInflow) && (
+                            {params.address && (isInOut || isOutflow || isInflow) && (
                               <div
                                 className={`tx-chains-container-arrow-flow tx-chains-container-arrow-flow-${
                                   isInOut ? "self" : isOutflow ? "out" : "in"
@@ -703,10 +723,11 @@ const Txs = () => {
         ) : (
           <>
             <Top
-              address={address}
+              address={params.address}
               addressChainId={addressChainId}
               liveMode={liveMode}
               setLiveMode={setLiveMode}
+              showLiveMode={showLiveMode}
             />
             <Information
               parsedTxsData={isPaginationLoading ? [] : parsedTxsData}
@@ -715,7 +736,7 @@ const Txs = () => {
               isPaginationLoading={isPaginationLoading || isLoadingOperations}
               setIsPaginationLoading={setIsPaginationLoading}
               isTxsFiltered={isTxsFiltered}
-              payloadTypeParams={payloadTypeParams}
+              params={params}
             />
           </>
         )}
