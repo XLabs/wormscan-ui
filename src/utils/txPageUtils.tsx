@@ -75,7 +75,7 @@ export type OverviewProps = {
   sourceTokenInfo?: TokenInfo;
   sourceTokenLink?: string;
   sourceTxHash?: string;
-  STATUS?: IStatus;
+  status?: IStatus;
   targetFee?: string;
   targetFeeUSD?: string;
   targetSymbol?: string;

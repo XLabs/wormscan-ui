@@ -148,10 +148,10 @@ const WToken = () => {
           const isDailyLimitExceeded =
             limitDataForChain?.availableNotional < Number(tx?.data?.usdAmount);
 
-          const STATUS: IStatus = tx?.targetChain?.transaction?.txHash
-            ? "COMPLETED"
+          const status: IStatus = tx?.targetChain?.transaction?.txHash
+            ? "completed"
             : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
-            ? "EXTERNAL_TX"
+            ? "external_tx"
             : tx.vaa?.raw
             ? isConnect || isPortal || isCCTP
               ? (canWeGetDestinationTx(toChain) &&
@@ -160,16 +160,16 @@ const WToken = () => {
                     (isTransferWithPayload && isConnect) ||
                     (isTransferWithPayload && isTBTC))) ||
                 isCCTP
-                ? "PENDING_REDEEM"
-                : "VAA_EMITTED"
-              : "VAA_EMITTED"
+                ? "pending_redeem"
+                : "vaa_emitted"
+              : "vaa_emitted"
             : isBigTransaction || isDailyLimitExceeded
-            ? "IN_GOVERNORS"
-            : "IN_PROGRESS";
+            ? "in_governors"
+            : "in_progress";
 
           return {
             ...tx,
-            STATUS,
+            status,
           };
         });
 

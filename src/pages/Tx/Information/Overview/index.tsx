@@ -108,7 +108,7 @@ const Overview = ({
   sourceTokenChain,
   sourceTokenInfo,
   sourceTokenLink,
-  STATUS,
+  status,
   targetFee,
   targetFeeUSD,
   targetSymbol,
@@ -283,7 +283,7 @@ const Overview = ({
           <div className="tx-overview-section-row-info">
             <div className="tx-overview-section-row-info-container">
               <div className="text">
-                <StatusBadge STATUS={STATUS} />
+                <StatusBadge status={status} />
 
                 <button
                   className="tx-overview-section-row-info-steps"
@@ -291,18 +291,18 @@ const Overview = ({
                     setShowOverview("progress");
                   }}
                 >
-                  {STATUS === "IN_PROGRESS"
+                  {status === "in_progress"
                     ? "1"
-                    : STATUS === "IN_GOVERNORS" || STATUS === "VAA_EMITTED"
+                    : status === "in_governors" || status === "vaa_emitted"
                     ? "2"
-                    : STATUS === "PENDING_REDEEM" || STATUS === "EXTERNAL_TX"
+                    : status === "pending_redeem" || status === "external_tx"
                     ? "3"
-                    : STATUS === "COMPLETED"
+                    : status === "completed"
                     ? isJustGenericRelayer
                       ? "3"
                       : "4"
                     : "5"}
-                  /{STATUS === "IN_GOVERNORS" ? "5" : isJustGenericRelayer ? "3" : "4"}
+                  /{status === "in_governors" ? "5" : isJustGenericRelayer ? "3" : "4"}
                   <p className="desktop">Steps Complete</p> <ArrowUpRightIcon width={24} />
                 </button>
 
@@ -1350,7 +1350,7 @@ const Overview = ({
             <h4 className="tx-overview-section-row-title">Relay Status</h4>
             <div className="tx-overview-section-row-info details-info">
               <div className="tx-overview-section-row-info-container span2">
-                <div className="tx-overview-section-row-info-container-key">STATUS</div>
+                <div className="tx-overview-section-row-info-container-key">status</div>
                 <div className="tx-overview-section-row-info-container-value">
                   <div className="text">
                     {" "}

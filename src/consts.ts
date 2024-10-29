@@ -170,12 +170,12 @@ export const canWeGetDestinationTx = (toChain: any) =>
   ].includes(toChain);
 
 export type IStatus =
-  | "EXTERNAL_TX"
-  | "COMPLETED"
-  | "PENDING_REDEEM"
-  | "VAA_EMITTED"
-  | "IN_PROGRESS"
-  | "IN_GOVERNORS";
+  | "external_tx"
+  | "completed"
+  | "pending_redeem"
+  | "vaa_emitted"
+  | "in_progress"
+  | "in_governors";
 
 export const ALL_BRIDGE_APP_ID = "ALL_BRIDGE";
 export const C3_APP_ID = "C3";

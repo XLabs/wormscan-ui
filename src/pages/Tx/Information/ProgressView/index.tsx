@@ -13,7 +13,7 @@ const ProgressView = ({
   fromChain,
   toChain,
   currentNetwork,
-  STATUS,
+  status,
   originDateParsed,
   sourceTokenInfo,
   sourceSymbol,
@@ -59,7 +59,7 @@ const ProgressView = ({
             </div>
           </div>
 
-          {!isJustGenericRelayer && STATUS === "IN_GOVERNORS" && (
+          {!isJustGenericRelayer && status === "in_governors" && (
             <div className="progress-item">
               <div className="progress-icon">
                 <CheckCircle2 />
@@ -73,7 +73,7 @@ const ProgressView = ({
 
           <div
             className={`progress-item ${
-              STATUS === "IN_PROGRESS" || STATUS === "IN_GOVERNORS" ? "disabled" : ""
+              status === "in_progress" || status === "in_governors" ? "disabled" : ""
             }`}
           >
             <div className="progress-icon">
@@ -88,7 +88,7 @@ const ProgressView = ({
           {!isJustGenericRelayer && (
             <div
               className={`progress-item ${
-                STATUS === "IN_PROGRESS" || STATUS === "IN_GOVERNORS" || STATUS === "VAA_EMITTED"
+                status === "in_progress" || status === "in_governors" || status === "vaa_emitted"
                   ? "disabled"
                   : ""
               }`}
@@ -107,7 +107,7 @@ const ProgressView = ({
             </div>
           )}
 
-          <div className={`progress-item ${STATUS === "COMPLETED" ? "" : "disabled"}`}>
+          <div className={`progress-item ${status === "completed" ? "" : "disabled"}`}>
             <div className="progress-icon">
               <CheckCircle2 />
             </div>

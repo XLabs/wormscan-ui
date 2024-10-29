@@ -330,10 +330,10 @@ const Txs = () => {
               const isDailyLimitExceeded =
                 limitDataForChain?.availableNotional < Number(tx?.data?.usdAmount);
 
-              const STATUS: IStatus = tx?.targetChain?.transaction?.txHash
-                ? "COMPLETED"
+              const status: IStatus = tx?.targetChain?.transaction?.txHash
+                ? "completed"
                 : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
-                ? "EXTERNAL_TX"
+                ? "external_tx"
                 : tx.vaa?.raw
                 ? isConnect || isPortal || isCCTP
                   ? (canWeGetDestinationTx(toChain) &&
@@ -342,12 +342,12 @@ const Txs = () => {
                         (isTransferWithPayload && isConnect) ||
                         (isTransferWithPayload && isTBTC))) ||
                     isCCTP
-                    ? "PENDING_REDEEM"
-                    : "VAA_EMITTED"
-                  : "VAA_EMITTED"
+                    ? "pending_redeem"
+                    : "vaa_emitted"
+                  : "vaa_emitted"
                 : isBigTransaction || isDailyLimitExceeded
-                ? "IN_GOVERNORS"
-                : "IN_PROGRESS";
+                ? "in_governors"
+                : "in_progress";
 
               // -----
 
@@ -356,7 +356,7 @@ const Txs = () => {
               if (liveMode && prevPage.current === currentPage) {
                 if (
                   lastUpdatedList &&
-                  lastUpdatedList.find(a => a.txHash === parseTxHash && a.status !== STATUS)
+                  lastUpdatedList.find(a => a.txHash === parseTxHash && a.status !== status)
                 ) {
                   statusChanged = true;
                 }
@@ -379,13 +379,13 @@ const Txs = () => {
                 VAAId: VAAId,
                 justAppeared: justAppeared,
                 txHashId: parseTxHash,
-                statusString: STATUS,
+                statusString: status,
                 status: (
                   <StatusBadge
-                    key={`${tx.sequence} ${STATUS}`}
+                    key={`${tx.sequence} ${status}`}
                     className={statusChanged ? "appear" : ""}
                     size="responsive"
-                    STATUS={STATUS}
+                    status={status}
                   />
                 ),
                 txHash: (
