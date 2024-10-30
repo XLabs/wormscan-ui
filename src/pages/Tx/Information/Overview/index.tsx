@@ -1675,7 +1675,7 @@ const Overview = ({
                 }
               >
                 <span>
-                  <InfoCircleIcon /> Redeem Tx
+                  <InfoCircleIcon /> Executed Tx
                 </span>
               </Tooltip>
             </h4>

@@ -99,7 +99,7 @@ const ProgressView = ({
 
               <div className="progress-text">
                 <p>
-                  Pending redemption
+                  Pending execution
                   {!!toChain &&
                     ` in ${getChainName({ chainId: toChain, network: currentNetwork })}`}
                 </p>

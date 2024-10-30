@@ -117,7 +117,7 @@ const StatusPendingRedeem = () => (
     side="right"
     tooltip={
       <div className="status-badge-tooltip">
-        Your transaction has been completed on the blockchain, but has not yet been redeemed.
+        Your transaction has been completed on the blockchain, but has not yet been executed.
       </div>
     }
     type="info"
@@ -125,7 +125,7 @@ const StatusPendingRedeem = () => (
     <div>
       <Chip className="status-badge-status" color="progress">
         <ClockIcon width={24} />
-        <p>Pending redeem</p>
+        <p>Pending execution</p>
       </Chip>
     </div>
   </Tooltip>
