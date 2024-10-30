@@ -1675,7 +1675,7 @@ const Overview = ({
                 }
               >
                 <span>
-                  <InfoCircleIcon /> Executed Tx
+                  <InfoCircleIcon /> Executed Tx Hash
                 </span>
               </Tooltip>
             </h4>
