@@ -34,7 +34,7 @@ export const GetRedeem = ({ canTryToGetRedeem, foundRedeem, loadingRedeem, getRe
 
   useEffect(() => {
     if (showCross) {
-      toast("Redeem Transaction Not Found", {
+      toast("Executed Transaction Not Found", {
         type: "error",
         theme: "dark",
         style: {
@@ -52,7 +52,7 @@ export const GetRedeem = ({ canTryToGetRedeem, foundRedeem, loadingRedeem, getRe
         <Tooltip
           controlled={!showTooltip}
           open={showTooltip}
-          tooltip={<div>Try to find the redeem transaction</div>}
+          tooltip={<div>Try to find execution transaction</div>}
           type="info"
         >
           <div
@@ -93,7 +93,7 @@ export const GetRedeem = ({ canTryToGetRedeem, foundRedeem, loadingRedeem, getRe
                 <Cube3DIcon width={24} />
               </div>
             </div>
-            <div className="getRedeem-find-txt">Find Redeem</div>
+            <div className="getRedeem-find-txt">Find Execution Tx</div>
           </div>
         </Tooltip>
       )}

@@ -47,7 +47,7 @@ export const VerifyRedemption = ({
 
   return (
     <Tooltip
-      tooltip={<div>Click here to verify token redemption status</div>}
+      tooltip={<div>Click here to verify token execution status</div>}
       type="info"
       maxWidth={false}
     >
