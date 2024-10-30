@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import analytics from "src/analytics";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { BREAKPOINTS, MORE_INFO_GOVERNOR_URL } from "src/consts";
+import { BREAKPOINTS } from "src/consts";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import {
   BlockchainIcon,
@@ -119,72 +119,74 @@ const Governor = () => {
     onSuccess: (data: IDataDashboard[]) => {
       const tempRows: IRowDashboard[] = [];
 
-      data.map((item: IDataDashboard) => {
-        const { chainId, notionalLimit, maxTransactionSize, availableNotional } = item;
-        const availablePercentage = (item.availableNotional / item.notionalLimit) * 100;
-        const formattedValue = parseFloat(formatNumber(availablePercentage, 2));
-        const chainName = getChainName({ chainId: item.chainId, network: currentNetwork });
+      data
+        .filter((item: IDataDashboard) => item.notionalLimit > 0 && item.maxTransactionSize > 0)
+        .map((item: IDataDashboard) => {
+          const { chainId, notionalLimit, maxTransactionSize, availableNotional } = item;
+          const availablePercentage = (item.availableNotional / item.notionalLimit) * 100;
+          const formattedValue = parseFloat(formatNumber(availablePercentage, 2));
+          const chainName = getChainName({ chainId: item.chainId, network: currentNetwork });
 
-        const row = {
-          chainId,
-          chainName,
-          maxTransactionSize,
-          notionalLimit,
-          availableNotional,
-          chain: (
-            <div className="dashboard chain">
-              <BlockchainIcon
-                background="var(--color-black-25)"
-                chainId={chainId}
-                className="chain-icon"
-                colorless={false}
-                network={currentNetwork}
-                size={24}
-              />
-              <p>{chainName}</p>
-            </div>
-          ),
-          singleTransactionLimit: (
-            <div className="dashboard big-transaction">
-              <h4>
-                single tx limit <SingleTxLimitTooltip />
-              </h4>
-              <p>{formatNumber(item.maxTransactionSize, 0)} USD</p>
-            </div>
-          ),
-          dailyLimit: (
-            <div className="dashboard daily-limit">
-              <h4>
-                daily limit <DailyLimitTooltip />
-              </h4>
-              <p>{formatNumber(item.notionalLimit, 0)} USD</p>
-            </div>
-          ),
-          remainingTransactionLimit: (
-            <div className="dashboard min-remaining">
-              <div className="min-remaining-container">
-                <Tooltip side="left" tooltip={<div>{formattedValue}%</div>}>
-                  <div>
-                    <MinRemainingBar
-                      color={
-                        100 - availablePercentage >= 80 ? "#FF884D" : "var(--color-success-100)"
-                      }
-                      percentage={availablePercentage}
-                    />
-                  </div>
-                </Tooltip>
+          const row = {
+            chainId,
+            chainName,
+            maxTransactionSize,
+            notionalLimit,
+            availableNotional,
+            chain: (
+              <div className="dashboard chain">
+                <BlockchainIcon
+                  background="var(--color-black-25)"
+                  chainId={chainId}
+                  className="chain-icon"
+                  colorless={false}
+                  network={currentNetwork}
+                  size={24}
+                />
+                <p>{chainName}</p>
               </div>
+            ),
+            singleTransactionLimit: (
+              <div className="dashboard big-transaction">
+                <h4>
+                  single tx limit <SingleTxLimitTooltip />
+                </h4>
+                <p>{formatNumber(item.maxTransactionSize, 0)} USD</p>
+              </div>
+            ),
+            dailyLimit: (
+              <div className="dashboard daily-limit">
+                <h4>
+                  daily limit <DailyLimitTooltip />
+                </h4>
+                <p>{formatNumber(item.notionalLimit, 0)} USD</p>
+              </div>
+            ),
+            remainingTransactionLimit: (
+              <div className="dashboard min-remaining">
+                <div className="min-remaining-container">
+                  <Tooltip side="left" tooltip={<div>{formattedValue}%</div>}>
+                    <div>
+                      <MinRemainingBar
+                        color={
+                          100 - availablePercentage >= 80 ? "#FF884D" : "var(--color-success-100)"
+                        }
+                        percentage={availablePercentage}
+                      />
+                    </div>
+                  </Tooltip>
+                </div>
 
-              <h4>
-                remaining tx limit <RemainingTxLimitTooltip />
-              </h4>
-              <p>{formatNumber(item.availableNotional, 0)} USD</p>
-            </div>
-          ),
-        };
+                <h4>
+                  remaining tx limit <RemainingTxLimitTooltip />
+                </h4>
+                <p>{formatNumber(item.availableNotional, 0)} USD</p>
+              </div>
+            ),
+          };
 
-        tempRows.push(row);
-      });
+          tempRows.push(row);
+        });
 
       setDataDashboard(tempRows);
       setIsLoadingDashboard(false);
