@@ -36,6 +36,7 @@ const Calendar = ({
 }: ICalendarProps) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const dateContainerRef = useRef<HTMLDivElement>(null);
+  const minDate = new Date(2021, 7, 1);
 
   const setTimePeriod = (
     from: number,
@@ -44,7 +45,7 @@ const Calendar = ({
     resetHours: boolean = true,
     btnSelected: TSelectedPeriod = "custom",
   ) => {
-    const start = from === Infinity ? new Date(2021, 7, 1) : new Date();
+    const start = from === Infinity ? minDate : new Date();
     const end = new Date();
 
     setLastBtnSelected(btnSelected);
@@ -148,6 +149,7 @@ const Calendar = ({
             selectsRange
             inline
             maxDate={new Date()}
+            minDate={minDate}
             monthsShown={isDesktop ? 2 : 1}
             showMonthDropdown
           />
@@ -176,6 +178,7 @@ const Calendar = ({
         <div className="calendar-custom-box-date-selector">
           {showAgoButtons ? (
             <div>
+              {/*  don't show at the moment
               <button
                 className={`btn ${lastBtnSelected === "ago1Week" ? "active" : ""}`}
                 onClick={handleAgo1Week}
@@ -199,7 +202,7 @@ const Calendar = ({
                 onClick={handleAgo6Months}
               >
                 6 months ago
-              </button>
+              </button> */}
               <button
                 className={`btn ${lastBtnSelected === "all" ? "active" : ""}`}
                 onClick={handleAgoAllTime}

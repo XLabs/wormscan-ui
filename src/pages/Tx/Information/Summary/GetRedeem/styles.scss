@@ -5,11 +5,16 @@
   cursor: default;
 
   &.cross {
-    background-color: #bdbed7;
-  }
+    background: var(--color-plum-300);
+    opacity: 0.8;
 
-  &.tooltip {
-    @include button-primary;
+    &:hover {
+      background: var(--color-plum-300);
+    }
+
+    &:active {
+      background: var(--color-plum-300);
+    }
   }
 
   &.dissapearing {
