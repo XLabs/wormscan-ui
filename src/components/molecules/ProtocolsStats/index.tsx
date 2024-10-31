@@ -122,7 +122,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
 
           {isLoading ? (
             isDesktop ? (
-              Array.from({ length: numberOfProtocols || (isMainnet ? 11 : 8) }).map((_, i) => (
+              Array.from({ length: numberOfProtocols || (isMainnet ? 12 : 8) }).map((_, i) => (
                 <div className="protocols-stats-container-element-loader" key={i} />
               ))
             ) : (
@@ -134,20 +134,39 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
 
               return (
                 <div className="protocols-stats-container-element" key={item.protocol}>
-                  <a
-                    className="protocols-stats-container-element-item"
-                    href={protocolLinksByProtocol[item.protocol.toUpperCase()]}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <ProtocolIcon protocol={item.protocol} />
+                  <div className="protocols-stats-container-element-item">
+                    <a
+                      className="protocols-stats-container-element-item-link"
+                      href={protocolLinksByProtocol[item.protocol.toUpperCase()]}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <ProtocolIcon protocol={item.protocol} />
 
-                    <p className="protocols-stats-container-element-item-protocol">
-                      {formatAppId(item.protocol)}
-                    </p>
+                      <p className="protocols-stats-container-element-item-link-protocol">
+                        {formatAppId(item.protocol)}
+                      </p>
 
-                    <LinkIcon width={24} />
-                  </a>
+                      <LinkIcon width={24} />
+                    </a>
+
+                    {isDesktop && item.protocol === PORTAL_APP_ID && item.total_value_locked && (
+                      <Tooltip
+                        maxWidth={false}
+                        tooltip={
+                          <div className="protocols-stats-container-element-item-tooltip-text">
+                            <span>TOTAL VALUE LOCKED: </span>$
+                            {formatNumber(item.total_value_locked, 0)}
+                          </div>
+                        }
+                        type="info"
+                      >
+                        <div className="protocols-stats-container-element-item-tooltip">
+                          <InfoCircleIcon />
+                        </div>
+                      </Tooltip>
+                    )}
+                  </div>
 
                   {isMainnet && (
                     <>
@@ -209,6 +228,17 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                     </p>
                   </div>
 
+                  {item?.total_value_locked && (
+                    <div className="protocols-stats-container-element-item mobile">
+                      <h4 className="protocols-stats-container-element-item-title">
+                        TOTAL VALUE LOCKED
+                      </h4>
+                      <p className="protocols-stats-container-element-item-value">
+                        ${formatNumber(item.total_value_locked, 0)}
+                      </p>
+                    </div>
+                  )}
+
                   <div className="protocols-stats-container-element-item">
                     <h4 className="protocols-stats-container-element-item-title">CHAINS</h4>
                     <div className="protocols-stats-container-element-item-value">
@@ -239,15 +269,22 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                       >
                         <div className="protocols-stats-container-element-item-value-chains">
                           {chainsSupportedByProtocol[item.protocol].map((chainId, i) => {
-                            if (i > 7) return null;
+                            const maxVisibleChains = isDesktop ? 7 : 4;
+                            const maxChainsLimit = isDesktop ? 8 : 5;
 
-                            if (i === 7 && chainsSupportedByProtocol[item.protocol].length > 8) {
+                            if (i > maxVisibleChains) return null;
+
+                            if (
+                              i === maxVisibleChains &&
+                              chainsSupportedByProtocol[item.protocol].length > maxChainsLimit
+                            ) {
                               return (
                                 <div
                                   key={chainId}
                                   className="protocols-stats-container-element-item-value-chains-chain protocols-stats-container-element-item-value-chains-chain-more"
                                 >
-                                  {chainsSupportedByProtocol[item.protocol].length - 7}
+                                  {chainsSupportedByProtocol[item.protocol].length -
+                                    maxVisibleChains}
                                 </div>
                               );
                             }
