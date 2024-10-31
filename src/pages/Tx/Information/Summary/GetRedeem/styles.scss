@@ -5,15 +5,14 @@
   cursor: default;
 
   &.cross {
-    background: var(--color-plum-300);
-    opacity: 0.8;
+    background: var(--color-gray-300);
 
     &:hover {
-      background: var(--color-plum-300);
+      background: var(--color-gray-300);
     }
 
     &:active {
-      background: var(--color-plum-300);
+      background: var(--color-gray-300);
     }
   }
 
