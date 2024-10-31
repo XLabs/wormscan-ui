@@ -5,11 +5,15 @@
   cursor: default;
 
   &.cross {
-    background-color: #bdbed7;
-  }
+    background: #bdbed7;
 
-  &.tooltip {
-    @include button-primary;
+    &:hover {
+      background: #bdbed7;
+    }
+
+    &:active {
+      background: #bdbed7;
+    }
   }
 
   &.dissapearing {
