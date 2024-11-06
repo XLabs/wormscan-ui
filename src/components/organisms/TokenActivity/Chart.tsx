@@ -20,7 +20,7 @@ type Props = {
     timespan: string;
   };
   rangeShortLabel: string | "24H" | "7D" | "30D" | "365D" | "All";
-  setScaleSelected: (value: "linear" | "logarithmic") => void;
+  setScaleSelected: (value: "linear" | "logarithmic", track: boolean) => void;
   scaleSelected: "linear" | "logarithmic";
   chartSelected: "area" | "bar";
   setChartSelected: (value: "area" | "bar") => void;
@@ -120,7 +120,7 @@ export const Chart = ({
                     ariaLabel="Select scale"
                     className="token-activity-chart-top-scale"
                     items={SCALE_CHART_LIST}
-                    onValueChange={value => setScaleSelected(value)}
+                    onValueChange={value => setScaleSelected(value, true)}
                     value={scaleSelected}
                   />
                 )}

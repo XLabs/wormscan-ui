@@ -12,6 +12,7 @@ import { ChainId } from "@wormhole-foundation/sdk";
 import { SwapSmallVerticalIcon, GlobeIcon, FullscreenIcon } from "src/icons/generic";
 import { useWindowSize } from "src/utils/hooks";
 import "./styles.scss";
+import analytics from "src/analytics";
 
 interface ICsvRow {
   "Target Chain": number;
@@ -193,7 +194,7 @@ const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   const fullscreenBtnRef = useRef(null);
 
   return (
-    <Fullscreenable className="cross-chain" buttonRef={fullscreenBtnRef}>
+    <Fullscreenable className="cross-chain" buttonRef={fullscreenBtnRef} itemName="crossChainChart">
       <div className="cross-chain-top">
         <div className="cross-chain-top-title">
           <GlobeIcon width={24} />
@@ -202,7 +203,16 @@ const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
             <FullscreenIcon width={20} />
           </div>
           {isHomePage && (
-            <NavLink className="token-activity-title-link" to="/analytics/chains">
+            <NavLink
+              className="token-activity-title-link"
+              to="/analytics/chains"
+              onClick={() => {
+                analytics.track("viewMore", {
+                  network: currentNetwork,
+                  selected: "Cross-Chain Activity",
+                });
+              }}
+            >
               View More
             </NavLink>
           )}
@@ -226,7 +236,15 @@ const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
             ariaLabel="Select type"
             className="cross-chain-options-items"
             items={TYPE_LIST}
-            onValueChange={value => setSelectedType(value)}
+            onValueChange={value => {
+              setSelectedType(value);
+
+              analytics.track("metricSelected", {
+                network: currentNetwork,
+                selected: value,
+                selectedType: "crossChainChart",
+              });
+            }}
             value={selectedType}
           />
         ) : (
@@ -237,7 +255,13 @@ const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
           <button
             aria-label="Select graphic type"
             className="cross-chain-destination-button"
-            onClick={() => setSelectedDestination(isSources ? "destinations" : "sources")}
+            onClick={() => {
+              setSelectedDestination(isSources ? "destinations" : "sources");
+              analytics.track("crossChainChartDirection", {
+                network: currentNetwork,
+                selected: isSources ? "Source to Target" : "Target to Source",
+              });
+            }}
           >
             <SwapSmallVerticalIcon width={24} />
 
@@ -250,7 +274,14 @@ const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
             <Select
               name="timeRange"
               value={selectedTimeRange}
-              onValueChange={(value: any) => setSelectedTimeRange(value)}
+              onValueChange={(value: any) => {
+                setSelectedTimeRange(value);
+
+                analytics.track("crossChainChartTimeRange", {
+                  network: environment.network,
+                  selected: value.label,
+                });
+              }}
               menuPortalTarget={document.querySelector(".cross-chain")}
               items={RANGE_LIST}
               ariaLabel="Select Time Range"

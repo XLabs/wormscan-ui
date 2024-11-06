@@ -97,11 +97,21 @@ const Governor = () => {
   const handleSelectedSortBy = (value: ISelectSortBy) => {
     setSelectedSortBy(value);
     setSortBy([{ id: value.value, desc: selectedSortLowHigh.value }]);
+    analytics.track("txsSortBy", {
+      network: currentNetwork,
+      selected: value.value,
+      selectedType: selectedSortLowHigh.value ? "desc" : "asc",
+    });
   };
 
   const handleSelectedSortLowHigh = (value: ISelectSortLowHigh) => {
     setSelectedSortLowHigh(value);
     setSortBy([{ id: selectedSortBy.value, desc: value.value }]);
+    analytics.track("txsSortBy", {
+      network: currentNetwork,
+      selected: selectedSortBy.value,
+      selectedType: value.value ? "desc" : "asc",
+    });
   };
 
   const onRowClick = (row: IRowTransaction) => {
@@ -369,6 +379,7 @@ const Governor = () => {
                 <ErrorPlaceholder />
               ) : (
                 <Table
+                  trackTxsSortBy
                   className="governor-container-table-transactions"
                   columns={
                     isDesktop
@@ -402,6 +413,7 @@ const Governor = () => {
                 hasSort={true}
                 isLoading={isLoadingDashboard}
                 sortBy={sortBy}
+                trackTxsSortBy={true}
               />
             )}
           </div>

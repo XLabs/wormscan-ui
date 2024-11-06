@@ -8,6 +8,7 @@ import { getExplorerLink } from "src/utils/wormhole";
 import { TruncateText } from "src/utils/string";
 import { useWindowSize } from "src/utils/hooks";
 import "./styles.scss";
+import analytics from "src/analytics";
 
 interface Props {
   address: string;
@@ -62,7 +63,14 @@ const Top = ({ address, addressChainId, liveMode, setLiveMode, showLiveMode }: P
             label="LIVE MODE"
             showIndicator
             value={liveMode}
-            setValue={() => setLiveMode(!liveMode)}
+            setValue={() => {
+              setLiveMode(!liveMode);
+
+              analytics.track("txsLiveMode", {
+                network: currentNetwork,
+                selected: !liveMode,
+              });
+            }}
           />
         )}
       </div>

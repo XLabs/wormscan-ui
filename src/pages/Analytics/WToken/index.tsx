@@ -339,6 +339,7 @@ const WToken = () => {
             timeRange={timeRange}
             by={by}
             setBy={setBy}
+            currentNetwork={currentNetwork}
           />
           <RecentTransactions
             isError={isErrorRecentTransactions}

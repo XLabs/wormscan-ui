@@ -131,7 +131,15 @@ const TopAssets = () => {
                 ariaLabel="Select metric type (volume or transfers)"
                 className="token-activity-container-top-toggle"
                 items={isMainnet ? METRIC_CHART_LIST : [METRIC_CHART_LIST[1]]}
-                onValueChange={value => setMetricSelected(value)}
+                onValueChange={value => {
+                  setMetricSelected(value);
+
+                  analytics.track("metricSelected", {
+                    network: currentNetwork,
+                    selected: value,
+                    selectedType: "topAssets",
+                  });
+                }}
                 value={metricSelected}
               />
 
@@ -140,7 +148,14 @@ const TopAssets = () => {
                 className="top-assets-header-select"
                 items={RANGE_LIST}
                 name="topAssetTimeRange"
-                onValueChange={(value: any) => setSelectedTopAssetTimeRange(value)}
+                onValueChange={(value: any) => {
+                  setSelectedTopAssetTimeRange(value);
+
+                  analytics.track("topAssetsTimeRange", {
+                    network: environment.network,
+                    selected: value.label,
+                  });
+                }}
                 value={selectedTopAssetTimeRange}
               />
             </div>

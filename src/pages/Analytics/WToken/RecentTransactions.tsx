@@ -11,6 +11,7 @@ import { ChainId, chainIdToChain } from "@wormhole-foundation/sdk";
 import { getTokenIcon } from "src/utils/token";
 import { formatNumber } from "src/utils/number";
 import { BREAKPOINTS, NTT_APP_ID } from "src/consts";
+import analytics from "src/analytics";
 
 interface IRecentTransactionsProps {
   recentTransactions: GetOperationsOutput[];
@@ -80,7 +81,17 @@ export const RecentTransactions = ({
       <div className="recent-transactions-title">
         <SwapVerticalIcon />
         <div>Recent Transactions</div>
-        <a href={`#/txs?appId=${NTT_APP_ID}`}>View All</a>
+        <a
+          onClick={() => {
+            analytics.track("viewMore", {
+              network: environment.network,
+              selected: "WToken Recent Transactions",
+            });
+          }}
+          href={`#/txs?appId=${NTT_APP_ID}`}
+        >
+          View All
+        </a>
       </div>
 
       {isDesktopDesign ? (
