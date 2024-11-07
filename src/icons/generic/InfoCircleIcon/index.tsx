@@ -1,5 +1,14 @@
-const InfoCircleIcon = ({ style, width = 24 }: { style?: React.CSSProperties; width?: number }) => (
+const InfoCircleIcon = ({
+  className,
+  style,
+  width = 24,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+  width?: number;
+}) => (
   <svg
+    className={className}
     fill="none"
     height={width}
     style={style}

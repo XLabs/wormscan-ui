@@ -328,11 +328,8 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
               </button>
 
               <button
-                className={`reset-btn ${
-                  isDesktop && filters.sourceChain.length === 0 && filters.targetChain.length === 0
-                    ? "hidden"
-                    : ""
-                }`}
+                className="reset-btn"
+                disabled={filters.sourceChain.length === 0 && filters.targetChain.length === 0}
                 onClick={resetFilters}
               >
                 Reset Filters

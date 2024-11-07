@@ -118,18 +118,18 @@ export const Chart = ({
                 {isDesktop && chartSelected === "area" && metricSelected === "volume" && (
                   <ToggleGroup
                     ariaLabel="Select scale"
-                    className="token-activity-chart-top-scale"
                     items={SCALE_CHART_LIST}
                     onValueChange={value => setScaleSelected(value)}
+                    type="secondary"
                     value={scaleSelected}
                   />
                 )}
 
                 <ToggleGroup
                   ariaLabel="Select type"
-                  className="token-activity-chart-top-toggle"
                   items={TYPE_CHART_LIST}
                   onValueChange={value => setChartSelected(value)}
+                  type="secondary"
                   value={chartSelected}
                 />
               </div>

@@ -84,8 +84,10 @@
           border: none;
           flex-wrap: wrap;
           inset: unset;
+          margin-right: auto;
           padding: 0;
           position: relative;
+          width: max-content;
           z-index: unset;
         }
 
@@ -132,7 +134,6 @@
           order: 4;
 
           @include desktop {
-            margin-right: auto;
             order: unset;
           }
 
@@ -156,10 +157,6 @@
 
             @include desktop {
               height: 36px;
-            }
-
-            &.hidden {
-              display: none;
             }
           }
         }
@@ -442,25 +439,6 @@
         @include centered-row;
         margin-left: auto;
         gap: 0 16px;
-      }
-
-      &-scale {
-        border-radius: 12px;
-        margin-left: auto;
-
-        & .toggle-group-item {
-          border-radius: 12px;
-          padding: 6px;
-        }
-      }
-
-      &-toggle {
-        border-radius: 12px !important;
-
-        & button {
-          border-radius: 12px !important;
-          padding: 6px !important;
-        }
       }
     }
 

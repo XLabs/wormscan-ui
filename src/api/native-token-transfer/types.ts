@@ -49,21 +49,51 @@ export type GetActivityResult = GetActivityItem[];
 
 // Summary
 export type GetSummary = {
-  symbol: string;
+  coingecko_id: string;
 };
 
 export type GetSummaryResult = {
+  averageTransferSize?: string;
+  medianTransferSize?: string;
+  symbol: string;
+  price: string;
   totalValueTokenTransferred: string;
   totalTokenTransferred: string;
-  averageTransferSize: string;
-  medianTransferSize: string;
   marketCap: string;
   circulatingSupply: string;
+  totalSupply: string;
+  fullyDilutedValuation: string;
+  platforms: {
+    [key: string]: string;
+  };
+  image: {
+    thumb: string;
+    small: string;
+    large: string;
+  };
+};
+
+// List
+export type GetListResult = {
+  coingecko_id: string;
+  symbol: string;
+  fully_diluted_valuation: string;
+  price: string;
+  price_change_percentage_24h: string;
+  volume_24h: string;
+  total_value_locked: string;
+  market_cap: string;
+  circulating_supply: string;
+  image: {
+    thumb: string;
+    small: string;
+    large: string;
+  };
 };
 
 // Top Holder
 export type GetTopHolder = {
-  symbol: string;
+  coingecko_id: string;
 };
 
 export type GetTopHolderItem = {

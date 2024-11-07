@@ -17,6 +17,7 @@ import { getNextDate } from "src/utils/date";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { TimeRange, ByType } from "./index";
 import analytics from "src/analytics";
+import { useParams } from "react-router-dom";
 
 type TransfersOverTimeProps = {
   transfers: GetTransferByTimeResult;
@@ -64,6 +65,8 @@ export const TransfersOverTime = ({
   const { width } = useWindowSize();
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
+  const { symbol, coingecko_id } = useParams();
+  const isUSDCe = coingecko_id === "wormhole-bridged-usdc-fantom";
 
   const [scaleSelected, setScaleSelectedState] = useState<"linear" | "logarithmic">("linear");
   const setScaleSelected = (value: "linear" | "logarithmic") => {
@@ -120,7 +123,7 @@ export const TransfersOverTime = ({
       <div className="transfers-over-time-header">
         <h3 className="transfers-over-time-title">
           <ActivityIcon />
-          <span>Cross-Chain W Token Transfers Over Time</span>
+          <span>Cross-Chain {isUSDCe ? "USDC.e" : symbol} Token Transfers Over Time</span>
           <div className="transfers-over-time-title-fullscreen" ref={fullscreenBtnRef}>
             <FullscreenIcon width={20} />
           </div>
@@ -147,7 +150,6 @@ export const TransfersOverTime = ({
 
                 <ToggleGroup
                   ariaLabel="Select data type"
-                  className="transfers-over-time-toggle-by"
                   items={BY_TYPE_LIST}
                   onValueChange={value => setBy(value as ByType)}
                   value={by}
@@ -157,18 +159,18 @@ export const TransfersOverTime = ({
                   {chartSelected === "area" && by === "notional" && (
                     <ToggleGroup
                       ariaLabel="Select scale"
-                      className="transfers-over-time-toggle-scale"
                       items={SCALE_CHART_LIST}
                       onValueChange={value => setScaleSelected(value)}
+                      type="secondary"
                       value={scaleSelected}
                     />
                   )}
 
                   <ToggleGroup
                     ariaLabel="Select chart type"
-                    className="transfers-over-time-toggle-type"
                     items={TYPE_CHART_LIST}
                     onValueChange={value => setChartSelected(value as "area" | "bar")}
+                    type="secondary"
                     value={chartSelected}
                   />
                 </div>

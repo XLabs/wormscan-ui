@@ -201,17 +201,10 @@
       }
 
       &-toggle-design {
-        border-radius: 12px;
-
         @include desktop {
           position: absolute;
           right: 0;
           top: 0;
-        }
-
-        & .toggle-group-item {
-          border-radius: 12px;
-          padding: 6px;
         }
       }
     }
@@ -276,18 +269,9 @@
         right: 88px;
         top: -35px;
 
-        background-color: var(--color-gray-900);
-
-        border-radius: 12px;
-
         @include desktop {
           right: 276px;
           top: -35px;
-        }
-
-        & .toggle-group-item {
-          border-radius: 12px;
-          padding: 6px;
         }
       }
 

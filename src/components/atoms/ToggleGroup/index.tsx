@@ -2,20 +2,28 @@ import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
 import "./styles.scss";
 
 type Props = {
+  ariaLabel: string;
+  className?: string;
   items: {
     label: string | JSX.Element;
     value: string;
     ariaLabel?: string;
   }[];
-  value: string;
   onValueChange: (value: any) => void;
-  ariaLabel: string;
   separatedOptions?: boolean;
-  className?: string;
+  type?: "primary" | "secondary";
+  value: string;
 };
 
-const ToggleGroup = ({ value, onValueChange, items, ariaLabel, className = "" }: Props) => (
-  <div className={`toggle-group ${className}`}>
+const ToggleGroup = ({
+  ariaLabel,
+  className = "",
+  items,
+  onValueChange,
+  type = "primary",
+  value,
+}: Props) => (
+  <div className={`toggle-group ${className} ${type}`}>
     <ToggleGroupPrimitive.Root
       type="single"
       className="toggle-group-root"

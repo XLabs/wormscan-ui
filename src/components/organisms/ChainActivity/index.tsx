@@ -960,9 +960,9 @@ const ChainActivity = () => {
           <div className="chain-activity-chart-top-filters-design">
             <ToggleGroup
               ariaLabel="Select type"
-              className="chain-activity-chart-top-filters-design-toggle-type"
               items={TYPE_CHART_LIST}
               onValueChange={value => setChartSelected(value)}
+              type="secondary"
               value={chartSelected}
             />
 
@@ -972,6 +972,7 @@ const ChainActivity = () => {
                 className={`chain-activity-chart-scale ${isMainnet ? "" : "is-testnet"}`}
                 items={SCALE_CHART_LIST}
                 onValueChange={value => setScaleSelected(value)}
+                type="secondary"
                 value={scaleSelected}
               />
             )}

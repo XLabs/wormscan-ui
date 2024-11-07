@@ -11,6 +11,33 @@
     }
   }
 
+  & .new-icon {
+    @include centered-row;
+    @include text-heading6;
+    background-color: var(--color-plum);
+    border-radius: 2px;
+    color: var(--color-black);
+    height: 14px;
+    justify-content: center;
+    position: relative;
+    width: 29px;
+
+    @include desktop {
+      position: absolute;
+      right: 8px;
+    }
+
+    &::before {
+      background-color: var(--color-plum);
+      bottom: -1.5px;
+      content: "";
+      height: 3px;
+      position: absolute;
+      rotate: 45deg;
+      width: 3px;
+    }
+  }
+
   &-banner {
     bottom: 0;
     left: 0;
@@ -263,8 +290,8 @@
         & > a {
           @include centered-row;
           @include text-roboto-body-400;
-          gap: 8px;
           background-color: var(--color-gray-900);
+          gap: 8px;
           padding: 8px 24px 8px 8px;
           text-transform: capitalize;
 
