@@ -32,8 +32,7 @@ import "./styles.scss";
 export type TimeRange = { label: string; value: string };
 export type ByType = "notional" | "tx";
 
-export const TOKEN_ADDRESS_WORMHOLE_BRIDGED_USDC_FANTOM =
-  "0X2F733095B80A04B38B0D10CC884524A3D09B836A";
+const TOKEN_ADDRESS_WORMHOLE_BRIDGED_USDC_FANTOM = "0X2F733095B80A04B38B0D10CC884524A3D09B836A";
 
 const NTTToken = () => {
   const { environment } = useEnvironment();
