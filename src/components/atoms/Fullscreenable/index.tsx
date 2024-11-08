@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
+import analytics from "src/analytics";
 
 type FullscreenableProps = React.ComponentPropsWithoutRef<"div"> & {
   children: React.ReactNode;
   buttonRef: React.RefObject<HTMLDivElement>;
+  itemName: string;
   style?: React.CSSProperties;
 };
 
 const Fullscreenable: React.FC<FullscreenableProps> = ({
   children,
   buttonRef,
+  itemName,
   style,
   ...props
 }) => {
@@ -21,6 +24,11 @@ const Fullscreenable: React.FC<FullscreenableProps> = ({
     };
 
     const handleFullscreenClick = () => {
+      analytics.track("fullscreen", {
+        selected: !isFullscreen,
+        selectedType: itemName,
+      });
+
       if (isFullscreen || !fullscreenElemRef.current) {
         document.exitFullscreen();
       } else {
@@ -37,7 +45,7 @@ const Fullscreenable: React.FC<FullscreenableProps> = ({
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       button?.removeEventListener("click", handleFullscreenClick);
     };
-  }, [buttonRef, isFullscreen]);
+  }, [buttonRef, isFullscreen, itemName]);
 
   return (
     <div

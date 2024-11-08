@@ -21,8 +21,9 @@ import {
   useOutsideClick,
 } from "src/utils/hooks";
 import { CrossIcon, FilterListIcon } from "src/icons/generic";
-import "./styles.scss";
+import analytics from "src/analytics";
 import { IParams } from "../..";
+import "./styles.scss";
 
 interface Props {
   params: IParams;
@@ -115,6 +116,8 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
 
   const handleShowFilters = () => {
     setShowFilters(!showFilters);
+
+    analytics.track("txsFilters", { network: environment.network });
   };
 
   const resetFilters = () => {
@@ -201,6 +204,11 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
             { label: "Attestation", value: "2", ariaLabel: "Attestation" },
           ]}
           onValueChange={value => {
+            analytics.track("txsType", {
+              network: environment.network,
+              selected: value === "0" ? "All" : value.includes("1") ? "Transfers" : "Attestation",
+            });
+
             if (value === "0") {
               searchParams.delete("payloadType");
             } else {
