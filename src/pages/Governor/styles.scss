@@ -107,8 +107,8 @@
           }
         }
 
-        & th > .table-head-th-container > svg {
-          margin: 0 4px;
+        & th > .table-head-th-container svg {
+          color: var(--color-gray-400);
         }
 
         & td {

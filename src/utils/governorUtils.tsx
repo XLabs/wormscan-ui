@@ -175,10 +175,7 @@ export const columnsDashboard: Column[] | any = [
     ),
     accessor: "remainingTransactionLimit",
     sortType: (rowA: Row<IRowDashboard>, rowB: Row<IRowDashboard>) => {
-      return (
-        (rowA.original.availableNotional / rowA.original.notionalLimit) * 100 -
-        (rowB.original.availableNotional / rowB.original.notionalLimit) * 100
-      );
+      return rowA.original.availableNotional - rowB.original.availableNotional;
     },
   },
 ];

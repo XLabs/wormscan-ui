@@ -44,6 +44,7 @@ export { default as PieChartIcon } from "./PieChartIcon";
 export { default as Rectangle3DIcon } from "./Rectangle3DIcon";
 export { default as Rectangle3DIcon2 } from "./Rectangle3DIcon2";
 export { default as SearchIcon } from "./SearchIcon";
+export { default as SortByIcon } from "./SortByIcon";
 export { default as StaticsIncreaseIcon } from "./StaticsIncreaseIcon";
 export { default as SwapSmallVerticalIcon } from "./SwapSmallVerticalIcon";
 export { default as SwapVerticalIcon } from "./SwapVerticalIcon";
