@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import ReactDatePicker from "react-datepicker";
 import { ArrowRightIcon, ChevronDownIcon } from "src/icons/generic";
 import { TSelectedPeriod } from "src/utils/chainActivityUtils";
@@ -12,12 +13,14 @@ interface ICalendarProps {
   endDate: Date;
   setEndDate: (date: Date) => void;
   lastBtnSelected: TSelectedPeriod;
-  setLastBtnSelected: (btn: TSelectedPeriod) => void;
+  setLastBtnSelected?: (btn: TSelectedPeriod) => void;
   startDateDisplayed: Date;
   endDateDisplayed: Date;
   isDesktop: boolean;
   showDateRange?: boolean;
   showAgoButtons?: boolean;
+  minDate?: Date;
+  shouldUpdateURL?: boolean;
 }
 
 const Calendar = ({
@@ -27,16 +30,18 @@ const Calendar = ({
   endDate,
   setEndDate,
   lastBtnSelected,
-  setLastBtnSelected,
+  setLastBtnSelected = () => {},
   startDateDisplayed,
   endDateDisplayed,
   isDesktop,
   showDateRange = false,
   showAgoButtons = false,
+  minDate = new Date(2021, 7, 1),
+  shouldUpdateURL = false,
 }: ICalendarProps) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showCalendar, setShowCalendar] = useState(false);
   const dateContainerRef = useRef<HTMLDivElement>(null);
-  const minDate = new Date(2021, 7, 1);
 
   const setTimePeriod = (
     from: number,
@@ -77,20 +82,20 @@ const Calendar = ({
   const handleLast24Hours = () => setTimePeriod(1, undefined, "days", false, "24h");
   const handleLastWeekBtn = () => setTimePeriod(7, undefined, "days", true, "week");
   const handleLastMonthBtn = () => setTimePeriod(1, undefined, "months", true, "month");
-  const handleLast6MonthsBtn = () => setTimePeriod(6, undefined, "months", true, "custom");
   const handleLastYearBtn = () => setTimePeriod(1, undefined, "years", true, "year");
   const handleAllTime = () => setTimePeriod(Infinity, undefined, undefined, true, "all");
 
-  const handleAgo3Days = () => setTimePeriod(7, 3, "days", true, "custom");
-  const handleAgo1Week = () => setTimePeriod(30, 7, "days", true, "ago1Week");
-  const handleAgo1Month = () => setTimePeriod(3, 1, "months", true, "ago1Month");
-  const handleAgo3Months = () => setTimePeriod(6, 3, "months", true, "ago3Months");
-  const handleAgo6Months = () => setTimePeriod(12, 6, "months", true, "ago6Months");
   const handleAgoAllTime = () => {
     setLastBtnSelected("all");
     setStartDate(null);
     setEndDate(null);
     setShowCalendar(false);
+
+    if (shouldUpdateURL) {
+      searchParams.delete("from");
+      searchParams.delete("to");
+      setSearchParams(searchParams);
+    }
   };
 
   const handleOutsideClickDate = () => {
@@ -137,11 +142,17 @@ const Calendar = ({
               if (start?.getTime() !== end?.getTime()) {
                 setStartDate(start);
                 setEndDate(end);
-              }
 
-              if (end?.getTime()) {
-                setLastBtnSelected("custom");
-                setShowCalendar(false);
+                if (shouldUpdateURL && start && end) {
+                  searchParams.set("from", start.toISOString());
+                  searchParams.set("to", end.toISOString());
+                  setSearchParams(searchParams);
+                }
+
+                if (end?.getTime()) {
+                  setLastBtnSelected("custom");
+                  setShowCalendar(false);
+                }
               }
             }}
             startDate={startDate}
@@ -152,6 +163,7 @@ const Calendar = ({
             minDate={minDate}
             monthsShown={isDesktop ? 2 : 1}
             showMonthDropdown
+            showYearDropdown
           />
 
           <div className="calendar-custom-box-date-calendar-btns">
@@ -178,41 +190,13 @@ const Calendar = ({
         <div className="calendar-custom-box-date-selector">
           {showAgoButtons ? (
             <div>
-              {/*  don't show at the moment
-              <button
-                className={`btn ${lastBtnSelected === "ago1Week" ? "active" : ""}`}
-                onClick={handleAgo1Week}
-              >
-                1 week ago
-              </button>
-              <button
-                className={`btn ${lastBtnSelected === "ago1Month" ? "active" : ""}`}
-                onClick={handleAgo1Month}
-              >
-                1 month ago
-              </button>
-              <button
-                className={`btn ${lastBtnSelected === "ago3Months" ? "active" : ""}`}
-                onClick={handleAgo3Months}
-              >
-                3 months ago
-              </button>
-              <button
-                className={`btn ${lastBtnSelected === "ago6Months" ? "active" : ""}`}
-                onClick={handleAgo6Months}
-              >
-                6 months ago
-              </button> */}
               <button
                 className={`btn ${lastBtnSelected === "all" ? "active" : ""}`}
                 onClick={handleAgoAllTime}
               >
                 All time
               </button>
-              <button
-                className={`btn ${lastBtnSelected === "custom" ? "active" : ""}`}
-                onClick={handleAgo3Days}
-              >
+              <button className={`btn ${lastBtnSelected === "custom" ? "active" : ""}`} disabled>
                 Custom
               </button>
             </div>
@@ -248,10 +232,7 @@ const Calendar = ({
               >
                 All time
               </button>
-              <button
-                className={`btn ${lastBtnSelected === "custom" ? "active" : ""}`}
-                onClick={handleLast6MonthsBtn}
-              >
+              <button className={`btn ${lastBtnSelected === "custom" ? "active" : ""}`} disabled>
                 Custom
               </button>
             </div>

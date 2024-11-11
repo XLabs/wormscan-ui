@@ -38,6 +38,13 @@ const parseParams = (params: string | null) => {
   return params.split(",").map(value => ({ value }));
 };
 
+const getParsedCheckedState = (params: IParams) => ({
+  appId: parseParams(params.appId),
+  exclusiveAppId: parseParams(params.exclusiveAppId),
+  sourceChain: parseParams(params.sourceChain),
+  targetChain: parseParams(params.targetChain),
+});
+
 const Filters = ({ params, setIsPaginationLoading }: Props) => {
   const navigate = useNavigateCustom();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -54,14 +61,9 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
     params.from ? new Date(params.from) : null,
   );
   const [endDateDisplayed, setEndDateDisplayed] = useState(params.to ? new Date(params.to) : null);
-  const [lastBtnSelected, setLastBtnSelected] = useState<TSelectedPeriod>("all");
+  const lastBtnSelected: TSelectedPeriod = startDateDisplayed ? "custom" : "all";
 
-  const [checkedState, setCheckedState] = useState({
-    appId: parseParams(params.appId),
-    exclusiveAppId: parseParams(params.exclusiveAppId),
-    sourceChain: parseParams(params.sourceChain),
-    targetChain: parseParams(params.targetChain),
-  });
+  const [checkedState, setCheckedState] = useState(getParsedCheckedState(params));
 
   const totalFilterCounter =
     (params.appId ? 1 : 0) +
@@ -154,13 +156,7 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
   });
 
   const handleCloseFilters = () => {
-    setCheckedState({
-      appId: parseParams(params.appId),
-      exclusiveAppId: parseParams(params.exclusiveAppId),
-      sourceChain: parseParams(params.sourceChain),
-      targetChain: parseParams(params.targetChain),
-    });
-
+    setCheckedState(getParsedCheckedState(params));
     setShowFilters(false);
   };
 
@@ -171,24 +167,13 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
   });
 
   useEffect(() => {
-    if (startDate && endDate) {
-      searchParams.set("from", startDate.toISOString());
-      searchParams.set("to", endDate.toISOString());
-      setStartDateDisplayed(startDate);
-      setEndDateDisplayed(endDate);
-    } else if (!startDate && !endDate) {
-      searchParams.delete("from");
-      searchParams.delete("to");
-      setStartDateDisplayed(null);
-      setEndDateDisplayed(null);
-    }
+    setCheckedState(getParsedCheckedState(params));
 
-    if (endDate?.toLocaleDateString() !== endDateDisplayed?.toLocaleDateString()) {
-      searchParams.delete("page");
-    }
-
-    setSearchParams(searchParams);
-  }, [endDate, endDateDisplayed, searchParams, setSearchParams, startDate]);
+    setStartDate(params.from ? new Date(params.from) : null);
+    setEndDate(params.to ? new Date(params.to) : null);
+    setStartDateDisplayed(params.from ? new Date(params.from) : null);
+    setEndDateDisplayed(params.to ? new Date(params.to) : null);
+  }, [params]);
 
   return (
     <div className="filters">
@@ -240,12 +225,13 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
           endDate={endDate}
           setEndDate={setEndDate}
           lastBtnSelected={lastBtnSelected}
-          setLastBtnSelected={setLastBtnSelected}
           startDateDisplayed={startDateDisplayed}
           endDateDisplayed={endDateDisplayed}
           isDesktop={isDesktop}
           showDateRange
           showAgoButtons
+          minDate={new Date(2022, 1, 1)}
+          shouldUpdateURL
         />
       </div>
 
