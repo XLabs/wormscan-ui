@@ -169,17 +169,11 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
   useEffect(() => {
     setCheckedState(getParsedCheckedState(params));
 
-    if (
-      (startDate &&
-        endDate &&
-        new Date(params.from).getTime() !== new Date(startDate).getTime() &&
-        new Date(params.to).getTime() !== new Date(endDate).getTime()) ||
-      (!startDate && !endDate)
-    ) {
-      setEndDateDisplayed(endDate);
-      setStartDateDisplayed(startDate);
-    }
-  }, [endDate, params, startDate]);
+    setStartDate(params.from ? new Date(params.from) : null);
+    setEndDate(params.to ? new Date(params.to) : null);
+    setStartDateDisplayed(params.from ? new Date(params.from) : null);
+    setEndDateDisplayed(params.to ? new Date(params.to) : null);
+  }, [params]);
 
   return (
     <div className="filters">
