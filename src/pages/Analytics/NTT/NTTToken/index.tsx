@@ -332,8 +332,8 @@ const NTTToken = () => {
   );
 
   useEffect(() => {
-    analytics.page({ title: `ANALYTICS-NTTTOKEN-${activeView}` });
-  }, [activeView]);
+    analytics.page({ title: `ANALYTICS-${symbol.toUpperCase()}-TOKEN-${activeView}` });
+  }, [activeView, symbol]);
 
   useEffect(() => {
     setActiveView(searchParams.get("view") || "general-info");

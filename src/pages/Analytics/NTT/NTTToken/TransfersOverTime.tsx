@@ -65,8 +65,7 @@ export const TransfersOverTime = ({
   const { width } = useWindowSize();
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
-  const { symbol, coingecko_id } = useParams();
-  const isUSDCe = coingecko_id === "wormhole-bridged-usdc-fantom";
+  const { symbol } = useParams();
 
   const [scaleSelected, setScaleSelectedState] = useState<"linear" | "logarithmic">("linear");
   const setScaleSelected = (value: "linear" | "logarithmic") => {
@@ -123,7 +122,7 @@ export const TransfersOverTime = ({
       <div className="transfers-over-time-header">
         <h3 className="transfers-over-time-title">
           <ActivityIcon />
-          <span>Cross-Chain {isUSDCe ? "USDC.e" : symbol} Token Transfers Over Time</span>
+          <span>Cross-Chain {symbol} Token Transfers Over Time</span>
           <div className="transfers-over-time-title-fullscreen" ref={fullscreenBtnRef}>
             <FullscreenIcon width={20} />
           </div>
