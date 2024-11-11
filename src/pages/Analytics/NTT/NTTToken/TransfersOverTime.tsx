@@ -28,6 +28,7 @@ type TransfersOverTimeProps = {
   timeRange: TimeRange;
   by: ByType;
   setBy: (value: ByType) => void;
+  currentNetwork: "Mainnet" | "Testnet" | "Devnet";
 };
 
 const TYPE_CHART_LIST = [
@@ -61,6 +62,7 @@ export const TransfersOverTime = ({
   timeSpan,
   by,
   setBy,
+  currentNetwork,
 }: TransfersOverTimeProps) => {
   const { width } = useWindowSize();
   const isTablet = width >= BREAKPOINTS.tablet;
@@ -68,19 +70,22 @@ export const TransfersOverTime = ({
   const { symbol } = useParams();
 
   const [scaleSelected, setScaleSelectedState] = useState<"linear" | "logarithmic">("linear");
-  const setScaleSelected = (value: "linear" | "logarithmic") => {
+  const setScaleSelected = (value: "linear" | "logarithmic", track: boolean) => {
     setScaleSelectedState(value);
-    analytics.track("scaleSelected", {
-      selected: value,
-      selectedType: "transfersOverTime",
-    });
+
+    if (track) {
+      analytics.track("scaleSelected", {
+        selected: value,
+        selectedType: "transfersOverTime",
+      });
+    }
   };
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const chartRef = useRef(null);
 
   useEffect(() => {
     if (by === "tx") {
-      setScaleSelected("linear");
+      setScaleSelected("linear", false);
     }
   }, [by]);
 
@@ -118,7 +123,11 @@ export const TransfersOverTime = ({
   const fullscreenBtnRef = useRef(null);
 
   return (
-    <Fullscreenable className="transfers-over-time" buttonRef={fullscreenBtnRef}>
+    <Fullscreenable
+      className="transfers-over-time"
+      buttonRef={fullscreenBtnRef}
+      itemName="transfersOverTime"
+    >
       <div className="transfers-over-time-header">
         <h3 className="transfers-over-time-title">
           <ActivityIcon />
@@ -141,7 +150,14 @@ export const TransfersOverTime = ({
                     name="timeRange"
                     value={timeRange}
                     menuPortalTarget={document.querySelector(".transfers-over-time")}
-                    onValueChange={value => setTimeRange(value)}
+                    onValueChange={value => {
+                      setTimeRange(value);
+
+                      analytics.track("transfersOverTimeTimeRange", {
+                        network: currentNetwork,
+                        selected: value.label,
+                      });
+                    }}
                     items={RANGE_LIST}
                     ariaLabel="Select Time Range"
                   />
@@ -150,7 +166,15 @@ export const TransfersOverTime = ({
                 <ToggleGroup
                   ariaLabel="Select data type"
                   items={BY_TYPE_LIST}
-                  onValueChange={value => setBy(value as ByType)}
+                  onValueChange={value => {
+                    setBy(value as ByType);
+
+                    analytics.track("metricSelected", {
+                      network: currentNetwork,
+                      selected: value,
+                      selectedType: "transfersOverTime",
+                    });
+                  }}
                   value={by}
                 />
 
@@ -159,7 +183,7 @@ export const TransfersOverTime = ({
                     <ToggleGroup
                       ariaLabel="Select scale"
                       items={SCALE_CHART_LIST}
-                      onValueChange={value => setScaleSelected(value)}
+                      onValueChange={value => setScaleSelected(value, true)}
                       type="secondary"
                       value={scaleSelected}
                     />
@@ -168,7 +192,14 @@ export const TransfersOverTime = ({
                   <ToggleGroup
                     ariaLabel="Select chart type"
                     items={TYPE_CHART_LIST}
-                    onValueChange={value => setChartSelected(value as "area" | "bar")}
+                    onValueChange={value => {
+                      setChartSelected(value as "area" | "bar");
+
+                      analytics.track("transfersOverTimeChartType", {
+                        network: currentNetwork,
+                        selected: value,
+                      });
+                    }}
                     type="secondary"
                     value={chartSelected}
                   />

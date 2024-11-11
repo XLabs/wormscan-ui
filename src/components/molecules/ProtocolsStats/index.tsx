@@ -29,6 +29,7 @@ import { formatNumber } from "src/utils/number";
 import { formatAppId } from "src/utils/crypto";
 import { getClient } from "src/api/Client";
 import "./styles.scss";
+import analytics from "src/analytics";
 
 // TODO: remove when /protocols/stats returns the correct app_id
 const protocolMapping: Record<string, string> = {
@@ -91,7 +92,16 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
           : "Protocols Stats"}
 
         {numberOfProtocols && (
-          <NavLink className="protocols-stats-title-link" to="/analytics/protocols">
+          <NavLink
+            className="protocols-stats-title-link"
+            to="/analytics/protocols"
+            onClick={() => {
+              analytics.track("viewMore", {
+                network: currentNetwork,
+                selected: "Protocols Stats",
+              });
+            }}
+          >
             View More
           </NavLink>
         )}

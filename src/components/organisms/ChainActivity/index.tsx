@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useQuery } from "react-query";
-import "react-datepicker/dist/react-datepicker.css";
 import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import analytics from "src/analytics";
@@ -51,6 +50,7 @@ import {
 } from "src/utils/chainActivityUtils";
 import { BREAKPOINTS } from "src/consts";
 import "./styles.scss";
+import "react-datepicker/dist/react-datepicker.css";
 
 const TYPE_CHART_LIST = [
   { label: <ActivityIcon width={24} />, value: "area", ariaLabel: "Area" },
@@ -88,12 +88,15 @@ const ChainActivity = () => {
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const [isLoading, setIsLoading] = useState(true);
   const [scaleSelected, setScaleSelectedState] = useState<"linear" | "logarithmic">("linear");
-  const setScaleSelected = (value: "linear" | "logarithmic") => {
+  const setScaleSelected = (value: "linear" | "logarithmic", track: boolean) => {
     setScaleSelectedState(value);
-    analytics.track("scaleSelected", {
-      selected: value,
-      selectedType: "chainActivity",
-    });
+
+    if (track) {
+      analytics.track("scaleSelected", {
+        selected: value,
+        selectedType: "chainActivity",
+      });
+    }
   };
 
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
@@ -705,9 +708,9 @@ const ChainActivity = () => {
 
     setSomeZeroValue(seriesHasZeroValue);
     if (seriesHasZeroValue) {
-      setScaleSelected("linear");
+      setScaleSelected("linear", false);
     } else if (seriesHasNonZeroValue) {
-      setScaleSelected("logarithmic");
+      setScaleSelected("logarithmic", false);
     }
 
     setIsLoading(false);
@@ -716,7 +719,11 @@ const ChainActivity = () => {
   const fullscreenBtnRef = useRef(null);
 
   return (
-    <Fullscreenable className="chain-activity" buttonRef={fullscreenBtnRef}>
+    <Fullscreenable
+      className="chain-activity"
+      buttonRef={fullscreenBtnRef}
+      itemName="chainActivity"
+    >
       {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
 
       <h2 className="chain-activity-title">
@@ -849,7 +856,15 @@ const ChainActivity = () => {
               ariaLabel="Select type"
               className="chain-activity-chart-top-filters-toggle-metric"
               items={isMainnet ? METRIC_CHART_LIST : [METRIC_CHART_LIST[1]]}
-              onValueChange={value => setMetricSelected(value)}
+              onValueChange={value => {
+                setMetricSelected(value);
+
+                analytics.track("metricSelected", {
+                  network: currentNetwork,
+                  selected: value,
+                  selectedType: "chainActivity",
+                });
+              }}
               value={metricSelected}
             />
 
@@ -858,7 +873,7 @@ const ChainActivity = () => {
                 ariaLabel="Select scale"
                 className="chain-activity-chart-top-filters-toggle-metric"
                 items={SCALE_CHART_LIST_TEXT}
-                onValueChange={value => setScaleSelected(value)}
+                onValueChange={value => setScaleSelected(value, true)}
                 value={scaleSelected}
               />
             )}
@@ -961,7 +976,14 @@ const ChainActivity = () => {
             <ToggleGroup
               ariaLabel="Select type"
               items={TYPE_CHART_LIST}
-              onValueChange={value => setChartSelected(value)}
+              onValueChange={value => {
+                setChartSelected(value);
+
+                analytics.track("chainActivityChartType", {
+                  network: currentNetwork,
+                  selected: value,
+                });
+              }}
               type="secondary"
               value={chartSelected}
             />
@@ -971,7 +993,7 @@ const ChainActivity = () => {
                 ariaLabel="Select scale"
                 className={`chain-activity-chart-scale ${isMainnet ? "" : "is-testnet"}`}
                 items={SCALE_CHART_LIST}
-                onValueChange={value => setScaleSelected(value)}
+                onValueChange={value => setScaleSelected(value, true)}
                 type="secondary"
                 value={scaleSelected}
               />

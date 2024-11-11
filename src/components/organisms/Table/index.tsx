@@ -10,6 +10,8 @@ import {
 } from "react-table";
 import { ArrowUpIcon } from "src/icons/generic";
 import "./styles.scss";
+import analytics from "src/analytics";
+import { useEnvironment } from "src/context/EnvironmentContext";
 
 type Props<T extends object> = {
   className?: string;
@@ -21,6 +23,7 @@ type Props<T extends object> = {
   numberOfColumns?: number;
   onRowClick?: (row: any) => void;
   sortBy?: { id: string; desc: boolean }[];
+  trackTxsSortBy?: boolean;
 };
 
 type ExtendedTableInstance<T extends object> = TableInstance<T> & {
@@ -37,7 +40,10 @@ const Table = <T extends object>({
   numberOfColumns = 7,
   onRowClick,
   sortBy = [],
+  trackTxsSortBy = false,
 }: Props<T>) => {
+  const { environment } = useEnvironment();
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -59,7 +65,7 @@ const Table = <T extends object>({
     if (sortBy.length > 0) {
       setSortBy(sortBy);
     }
-  }, [sortBy, setSortBy]);
+  }, [sortBy, setSortBy, environment.network]);
 
   return (
     <>
@@ -71,7 +77,24 @@ const Table = <T extends object>({
       >
         <thead className="table-head">
           {headerGroups.map((headerGroup, index) => (
-            <tr key={index} {...headerGroup.getHeaderGroupProps()}>
+            <tr
+              key={index}
+              {...headerGroup.getHeaderGroupProps()}
+              onClick={() => {
+                if (trackTxsSortBy) {
+                  setTimeout(() => {
+                    const sortedColumn = headerGroup.headers.find((header: any) => header.isSorted);
+
+                    analytics.track("txsSortBy", {
+                      network: environment.network,
+                      selected: sortedColumn?.id,
+                      // @ts-expect-error Property 'isSortedDesc' exists at runtime but TypeScript doesn't know about it
+                      selectedType: sortedColumn?.isSortedDesc ? "desc" : "asc",
+                    });
+                  }, 0);
+                }
+              }}
+            >
               {headerGroup.headers.map((column: any, index) => {
                 const style: CSSProperties = column.style as CSSProperties;
                 const sortIcon = hasSort && (

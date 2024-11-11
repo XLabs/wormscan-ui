@@ -393,6 +393,7 @@ const NTTToken = () => {
             timeRange={timeRange}
             timeSpan={transfersByTime?.timeSpan || "1d"}
             transfers={transfersByTime?.data}
+            currentNetwork={currentNetwork}
           />
         )}
 

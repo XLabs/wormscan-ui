@@ -84,12 +84,15 @@ const ProtocolsActivity = () => {
 
   const [someZeroValue, setSomeZeroValue] = useState(false);
   const [scaleSelected, setScaleSelectedState] = useState<"linear" | "logarithmic">("linear");
-  const setScaleSelected = (value: "linear" | "logarithmic") => {
+  const setScaleSelected = (value: "linear" | "logarithmic", track: boolean) => {
     setScaleSelectedState(value);
-    analytics.track("scaleSelected", {
-      selected: value,
-      selectedType: "protocolsActivity",
-    });
+
+    if (track) {
+      analytics.track("scaleSelected", {
+        selected: value,
+        selectedType: "protocolsActivity",
+      });
+    }
   };
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
 
@@ -291,9 +294,9 @@ const ProtocolsActivity = () => {
 
     setSomeZeroValue(seriesHasZeroValue);
     if (seriesHasZeroValue) {
-      setScaleSelected("linear");
+      setScaleSelected("linear", false);
     } else if (seriesHasNonZeroValue) {
-      setScaleSelected("logarithmic");
+      setScaleSelected("logarithmic", false);
     }
   }, [series]);
 
@@ -336,7 +339,11 @@ const ProtocolsActivity = () => {
   const fullscreenBtnRef = useRef(null);
 
   return (
-    <Fullscreenable className="protocols-activity" buttonRef={fullscreenBtnRef}>
+    <Fullscreenable
+      className="protocols-activity"
+      buttonRef={fullscreenBtnRef}
+      itemName="protocolsActivity"
+    >
       {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
 
       <h3 className="protocols-activity-title">
@@ -393,6 +400,11 @@ const ProtocolsActivity = () => {
               menuPortalStyles={{ zIndex: 100 }}
               name="protocol"
               onValueChange={protocol => {
+                analytics.track("protocolsActivityProtocol", {
+                  network: currentNetwork,
+                  selected: protocol.label,
+                });
+
                 setFilters(prevFilters => ({
                   ...prevFilters,
                   appId: protocol?.value === filters.appId ? "" : protocol.value,
@@ -416,6 +428,12 @@ const ProtocolsActivity = () => {
               name="timeRange"
               onValueChange={timeRange => {
                 setSelectedTimeRange(timeRange);
+
+                analytics.track("protocolsActivityTimeRange", {
+                  network: currentNetwork,
+                  selected: timeRange.label,
+                });
+
                 setFilters(prevFilters => ({
                   ...prevFilters,
                   from: timeRange.value,
@@ -429,7 +447,15 @@ const ProtocolsActivity = () => {
               ariaLabel="Select metric type (volume or transfers)"
               className="protocols-activity-container-top-filters-metric"
               items={isMainnet ? METRIC_CHART_LIST : [METRIC_CHART_LIST[1]]}
-              onValueChange={value => setMetricSelected(value)}
+              onValueChange={value => {
+                setMetricSelected(value);
+
+                analytics.track("metricSelected", {
+                  network: currentNetwork,
+                  selected: value,
+                  selectedType: "protocolsActivity",
+                });
+              }}
               value={metricSelected}
             />
 
@@ -455,7 +481,14 @@ const ProtocolsActivity = () => {
             ariaLabel="Select type"
             className="protocols-activity-container-top-toggle-design"
             items={TYPE_CHART_LIST}
-            onValueChange={value => setChartSelected(value)}
+            onValueChange={value => {
+              setChartSelected(value);
+
+              analytics.track("protocolsActivityChartType", {
+                network: currentNetwork,
+                selected: value,
+              });
+            }}
             type="secondary"
             value={chartSelected}
           />
@@ -501,7 +534,7 @@ const ProtocolsActivity = () => {
                   ariaLabel="Select scale"
                   className="protocols-activity-container-chart-scale"
                   items={SCALE_CHART_LIST}
-                  onValueChange={value => setScaleSelected(value)}
+                  onValueChange={value => setScaleSelected(value, true)}
                   type="secondary"
                   value={scaleSelected}
                 />

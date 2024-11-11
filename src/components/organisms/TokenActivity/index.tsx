@@ -64,12 +64,15 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   const [selectedTopAssetTimeRange, setSelectedTopAssetTimeRange] = useState(RANGE_LIST[0]);
 
   const [scaleSelected, setScaleSelectedState] = useState<"linear" | "logarithmic">("linear");
-  const setScaleSelected = (value: "linear" | "logarithmic") => {
+  const setScaleSelected = (value: "linear" | "logarithmic", track: boolean) => {
     setScaleSelectedState(value);
-    analytics.track("scaleSelected", {
-      selected: value,
-      selectedType: "tokenActivity",
-    });
+
+    if (track) {
+      analytics.track("scaleSelected", {
+        selected: value,
+        selectedType: "tokenActivity",
+      });
+    }
   };
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
@@ -85,7 +88,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
     symbol: { label: "USDC", value: "USDC" },
   });
 
-  const setFilters = (newFilters: typeof filters) => {
+  const setFilters = (newFilters: typeof filters, timeRange?: string) => {
     analytics.track("tokenActivity", {
       network: currentNetwork,
       selectedType: metricSelected,
@@ -97,7 +100,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
           ? " -> " + filters.targetChain.map(chain => chain.label).join(", ")
           : ""),
       symbol: newFilters?.symbol?.label,
-      selectedTimeRange: selectedTopAssetTimeRange?.label,
+      selectedTimeRange: timeRange ? timeRange : selectedTopAssetTimeRange?.label,
     });
 
     setFiltersState(newFilters);
@@ -212,7 +215,11 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   const fullscreenBtnRef = useRef(null);
 
   return (
-    <Fullscreenable className="token-activity" buttonRef={fullscreenBtnRef}>
+    <Fullscreenable
+      className="token-activity"
+      buttonRef={fullscreenBtnRef}
+      itemName="tokenActivity"
+    >
       {openFilters && !isDesktop && <div className="token-activity-bg" />}
 
       <h3 className="token-activity-title">
@@ -221,7 +228,16 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
           <FullscreenIcon width={20} />
         </div>
         {isHomePage && (
-          <NavLink className="token-activity-title-link" to="/analytics/tokens">
+          <NavLink
+            className="token-activity-title-link"
+            to="/analytics/tokens"
+            onClick={() => {
+              analytics.track("viewMore", {
+                network: currentNetwork,
+                selected: "Token Activity",
+              });
+            }}
+          >
             View More
           </NavLink>
         )}
@@ -303,9 +319,15 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                 items={isMainnet ? METRIC_CHART_LIST : [METRIC_CHART_LIST[1]]}
                 onValueChange={value => {
                   if (value === "transactions") {
-                    setScaleSelected("linear");
+                    setScaleSelected("linear", false);
                   }
                   setMetricSelected(value);
+
+                  analytics.track("metricSelected", {
+                    network: currentNetwork,
+                    selected: value,
+                    selectedType: "tokenActivity",
+                  });
                 }}
                 value={metricSelected}
               />
@@ -317,7 +339,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                 className="token-activity-container-top-toggle"
                 // className="token-activity-chart-top-scale"
                 items={SCALE_CHART_LIST}
-                onValueChange={value => setScaleSelected(value)}
+                onValueChange={value => setScaleSelected(value, true)}
                 value={scaleSelected}
               />
             )}
@@ -344,9 +366,15 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
               items={isMainnet ? METRIC_CHART_LIST : [METRIC_CHART_LIST[1]]}
               onValueChange={value => {
                 if (value === "transactions") {
-                  setScaleSelected("linear");
+                  setScaleSelected("linear", false);
                 }
                 setMetricSelected(value);
+
+                analytics.track("metricSelected", {
+                  network: currentNetwork,
+                  selected: value,
+                  selectedType: "tokenActivity",
+                });
               }}
               value={metricSelected}
             />
@@ -359,12 +387,15 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
             menuPortalTarget={document.querySelector(".token-activity")}
             name="topAssetTimeRange"
             onValueChange={value => {
-              setFilters({
-                ...filters,
-                from: value.value,
-                timespan: value.timespan,
-              });
               setSelectedTopAssetTimeRange(value);
+              setFilters(
+                {
+                  ...filters,
+                  from: value.value,
+                  timespan: value.timespan,
+                },
+                value?.label,
+              );
             }}
             value={selectedTopAssetTimeRange}
           />
