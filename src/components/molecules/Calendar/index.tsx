@@ -148,11 +148,11 @@ const Calendar = ({
                   searchParams.set("to", end.toISOString());
                   setSearchParams(searchParams);
                 }
-              }
 
-              if (end?.getTime()) {
-                setLastBtnSelected("custom");
-                setShowCalendar(false);
+                if (end?.getTime()) {
+                  setLastBtnSelected("custom");
+                  setShowCalendar(false);
+                }
               }
             }}
             startDate={startDate}
