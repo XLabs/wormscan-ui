@@ -375,7 +375,7 @@ const ProtocolsActivity = () => {
               ariaLabel="Select Protocol"
               className="protocols-activity-container-top-filters-protocol"
               closeOnSelect
-              controlStyles={{ minWidth: 256 }}
+              controlStyles={{ minWidth: 260 }}
               isMulti={false}
               items={[
                 {
