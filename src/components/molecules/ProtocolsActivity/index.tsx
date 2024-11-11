@@ -376,7 +376,6 @@ const ProtocolsActivity = () => {
               className="protocols-activity-container-top-filters-protocol"
               closeOnSelect
               controlStyles={{ minWidth: 256 }}
-              menuPortalTarget={document.querySelector(".protocols-activity")}
               isMulti={false}
               items={[
                 {
@@ -397,7 +396,6 @@ const ProtocolsActivity = () => {
               ]}
               menuFixed={!isDesktop}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-              menuPortalStyles={{ zIndex: 100 }}
               name="protocol"
               onValueChange={protocol => {
                 analytics.track("protocolsActivityProtocol", {
@@ -423,8 +421,6 @@ const ProtocolsActivity = () => {
               className="protocols-activity-container-top-filters-range"
               items={RANGE_LIST}
               menuFixed={!isDesktop}
-              menuPortalStyles={{ zIndex: 100 }}
-              menuPortalTarget={document.querySelector(".protocols-activity")}
               name="timeRange"
               onValueChange={timeRange => {
                 setSelectedTimeRange(timeRange);

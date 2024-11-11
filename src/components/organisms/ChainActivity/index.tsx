@@ -780,10 +780,8 @@ const ChainActivity = () => {
               ariaLabel="Select Chains"
               className="chain-activity-chart-top-filters-select"
               items={SOURCE_CHAIN_LIST}
-              menuPortalTarget={document.querySelector(".chain-activity")}
               menuFixed={!isDesktop}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-              menuPortalStyles={{ zIndex: 100 }}
               name="sourceChain"
               onValueChange={(value: any) => handleChainSelection(value, "source")}
               text={
@@ -804,8 +802,6 @@ const ChainActivity = () => {
               items={TARGET_CHAIN_LIST}
               menuFixed={!isDesktop}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-              menuPortalStyles={{ zIndex: 100 }}
-              menuPortalTarget={document.querySelector(".chain-activity")}
               name="targetChain"
               onValueChange={(value: any) => handleChainSelection(value, "target")}
               text={
@@ -831,7 +827,6 @@ const ChainActivity = () => {
               items={PROTOCOL_LIST}
               menuFixed={!isDesktop}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-              menuPortalStyles={{ zIndex: 100 }}
               name="protocol"
               onValueChange={(value: any) =>
                 setFilters({
