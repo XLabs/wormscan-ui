@@ -50,8 +50,7 @@ export const TopHolders = ({ isError, isLoading, topHolders }: TopHoldersProps) 
                 <div className="loading" />
               </div>
             ))
-          ) : (
-            topHolders &&
+          ) : topHolders ? (
             topHolders.map((item, idx) => (
               <div key={`item-${idx}`} className="top-holders-table-item">
                 <div className="top-holders-table-item-row">{idx + 1}</div>
@@ -86,6 +85,8 @@ export const TopHolders = ({ isError, isLoading, topHolders }: TopHoldersProps) 
                 </a>
               </div>
             ))
+          ) : (
+            <div className="top-addresses-half-table-error">Holders not found</div>
           )}
         </div>
       )}
@@ -93,15 +94,14 @@ export const TopHolders = ({ isError, isLoading, topHolders }: TopHoldersProps) 
       {!isDesktopDesign && (
         <div className="top-holders-mobile">
           {isError ? (
-            <div className="top-holders-table-error">No holders found</div>
+            <div className="top-holders-table-error">Failed to get top holders</div>
           ) : isLoading ? (
             LOADING_ARRAY.map((_, idx) => (
               <div key={`loading-${idx}`} className="top-holders-table-item">
                 <div className="loading" />
               </div>
             ))
-          ) : (
-            topHolders &&
+          ) : topHolders ? (
             topHolders.map((item, idx) => (
               <div key={`item-${idx}`} className="top-holders-mobile-container">
                 <div className="top-holders-mobile-container-item">
@@ -146,6 +146,8 @@ export const TopHolders = ({ isError, isLoading, topHolders }: TopHoldersProps) 
                 </div>
               </div>
             ))
+          ) : (
+            <div className="top-addresses-half-table-error">Holders not found</div>
           )}
         </div>
       )}

@@ -47,8 +47,7 @@ export const TopAddresses = ({
                 <div className="loading" />
               </div>
             ))
-          ) : (
-            topAddressesTx &&
+          ) : topAddressesTx ? (
             topAddressesTx?.map((item, idx) =>
               idx < 10 ? (
                 <div key={`itemTx-${idx}`} className="top-addresses-half-table-item">
@@ -65,6 +64,8 @@ export const TopAddresses = ({
                 </div>
               ) : null,
             )
+          ) : (
+            <div className="top-addresses-half-table-error">Addresses not found</div>
           )}
         </div>
       </div>
@@ -91,8 +92,7 @@ export const TopAddresses = ({
                 <div className="loading" />
               </div>
             ))
-          ) : (
-            topAddressesNotional &&
+          ) : topAddressesNotional ? (
             topAddressesNotional?.map((item, idx) =>
               idx < 10 ? (
                 <div key={`itemNot-${idx}`} className="top-addresses-half-table-item">
@@ -110,6 +110,8 @@ export const TopAddresses = ({
                 </div>
               ) : null,
             )
+          ) : (
+            <div className="top-addresses-half-table-error">Addresses not found</div>
           )}
         </div>
       </div>

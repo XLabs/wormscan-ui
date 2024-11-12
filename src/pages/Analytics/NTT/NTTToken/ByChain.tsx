@@ -53,8 +53,7 @@ export const ByChain = ({
                 <div className="loading" />
               </div>
             ))
-          ) : (
-            activityTx &&
+          ) : activityTx ? (
             activityTx?.map((item, idx) =>
               idx < 10 ? (
                 <div key={`itemTx-${idx}`} className="bychain-half-table-item">
@@ -73,6 +72,8 @@ export const ByChain = ({
                 </div>
               ) : null,
             )
+          ) : (
+            <div className="top-addresses-half-table-error">Transfers not found</div>
           )}
         </div>
       </div>
@@ -99,8 +100,7 @@ export const ByChain = ({
                 <div className="loading" />
               </div>
             ))
-          ) : (
-            activityNotional &&
+          ) : activityNotional ? (
             activityNotional?.map((item, idx) =>
               idx < 10 ? (
                 <div key={`itemNot-${idx}`} className="bychain-half-table-item">
@@ -119,6 +119,8 @@ export const ByChain = ({
                 </div>
               ) : null,
             )
+          ) : (
+            <div className="top-addresses-half-table-error">Transfers not found</div>
           )}
         </div>
       </div>

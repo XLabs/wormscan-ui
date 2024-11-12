@@ -112,7 +112,9 @@ export const RecentTransactions = ({
               ))}
             </div>
           ) : recentTransactions?.length === 0 ? (
-            <div className="recent-transactions-table-empty">No transactions found</div>
+            <div className="recent-transactions-table-empty">
+              No recent transaction found; take a look at All Transactions.
+            </div>
           ) : (
             recentTransactions?.map(data => (
               <div
@@ -196,7 +198,9 @@ export const RecentTransactions = ({
               ))}
             </div>
           ) : recentTransactions?.length === 0 ? (
-            <div className="recent-transactions-table-empty">No transactions found</div>
+            <div className="recent-transactions-table-empty">
+              No recent transaction found; take a look at All Transactions.
+            </div>
           ) : (
             recentTransactions?.map(data => (
               <div key={data.id} className="recent-transactions-mobile-container">

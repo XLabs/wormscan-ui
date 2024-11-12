@@ -26,10 +26,13 @@ import { TopAddresses } from "./TopAddresses";
 import { Metrics } from "./Metrics";
 import { TransfersOverTime } from "./TransfersOverTime";
 import { RecentTransactions } from "./RecentTransactions";
-import { CommunityBanner } from "./CommunityBanner";
+// import { CommunityBanner } from "./CommunityBanner";
 import "./styles.scss";
 
-export type TimeRange = { label: string; value: string };
+export type TimeRange = {
+  label: "Last 24 hours" | "Last week" | "Last month" | "Last year";
+  value: "1d" | "1w" | "1m" | "1y";
+};
 export type ByType = "notional" | "tx";
 
 const TOKEN_ADDRESS_WORMHOLE_BRIDGED_USDC_FANTOM = "0X2F733095B80A04B38B0D10CC884524A3D09B836A";
@@ -43,8 +46,8 @@ const NTTToken = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeView, setActiveView] = useState(searchParams.get("view") || "general-info");
 
-  const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last 24 hours", value: "1d" });
-  const [by, setBy] = useState<ByType>("tx");
+  const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last month", value: "1m" });
+  const [by, setBy] = useState<ByType>("notional");
 
   const isUSDCe = coingecko_id === "wormhole-bridged-usdc-fantom";
 
@@ -247,8 +250,7 @@ const NTTToken = () => {
         by: "tx",
         symbol,
       });
-      activity.sort((a, b) => (+a.value < +b.value ? 1 : -1));
-
+      activity?.sort((a, b) => (+a.value < +b.value ? 1 : -1));
       return activity;
     },
     {
@@ -267,8 +269,7 @@ const NTTToken = () => {
         by: "notional",
         symbol,
       });
-      activity.sort((a, b) => (+a.value < +b.value ? 1 : -1));
-
+      activity?.sort((a, b) => (+a.value < +b.value ? 1 : -1));
       return activity;
     },
     {
@@ -304,7 +305,7 @@ const NTTToken = () => {
         by: "notional",
         symbol,
       });
-      data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
+      data?.sort((a, b) => (+a.value < +b.value ? 1 : -1));
       return data;
     },
     {
@@ -323,7 +324,7 @@ const NTTToken = () => {
         by: "tx",
         symbol,
       });
-      data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
+      data?.sort((a, b) => (+a.value < +b.value ? 1 : -1));
       return data;
     },
     {
