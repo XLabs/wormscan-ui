@@ -79,6 +79,8 @@ export const TokensTradedList = ({ data, isLoading, isError }: Props) => {
             isLoading={isLoading}
             sortBy={sortState.sortBy}
             onRowClick={v => {
+              window.scrollTo(0, 0);
+
               if (isDesktop) {
                 return navigate(`/analytics/ntt/${v.coingecko_id}/${v.symbol}`);
               }

@@ -49,70 +49,72 @@ const NTT = () => {
     {
       onSuccess: dataTokensList => {
         if (dataTokensList?.length > 0) {
-          const transformedData = dataTokensList.map(item => ({
-            coingecko_id: item.coingecko_id,
-            symbol: item.symbol,
-            priceNumber: +item.price,
-            priceVariationNumber: +item.price_change_percentage_24h,
-            circulatingSupplyNumber: +item.circulating_supply,
-            marketCapNumber: +item.market_cap,
-            volumeNumber: +item.volume_24h,
-            token: (
-              <div className="ntt-page-tokens-list-table-item token">
-                <img
-                  src={item?.image?.small}
-                  alt={`${item.symbol} icon`}
-                  height="24"
-                  width="24"
-                  className="top-asset-list-row-item-to-icon"
-                  loading="lazy"
-                />
-                {isUSDCe ? "USDC.e" : item.symbol}
-              </div>
-            ),
-            price: (
-              <div className="ntt-page-tokens-list-table-item">${formatNumber(+item.price)}</div>
-            ),
-            priceVariation: (
-              <div className="ntt-page-tokens-list-table-item">
-                <h4>24H PRICE VARIATION%</h4>
-                <div
-                  className={`price-variation ${
-                    item.price_change_percentage_24h
-                      ? +item.price_change_percentage_24h > 0
-                        ? "positive"
-                        : "negative"
-                      : ""
-                  }`}
-                >
-                  {+item.price_change_percentage_24h > 0 && "+"}
-                  {item.price_change_percentage_24h}
+          const transformedData = dataTokensList
+            .filter(item => item.circulating_supply !== "0" && item.market_cap !== "0")
+            .map(item => ({
+              coingecko_id: item.coingecko_id,
+              symbol: item.symbol,
+              priceNumber: +item.price,
+              priceVariationNumber: +item.price_change_percentage_24h,
+              circulatingSupplyNumber: +item.circulating_supply,
+              marketCapNumber: +item.market_cap,
+              volumeNumber: +item.volume_24h,
+              token: (
+                <div className="ntt-page-tokens-list-table-item token">
+                  <img
+                    src={item?.image?.small}
+                    alt={`${item.symbol} icon`}
+                    height="24"
+                    width="24"
+                    className="top-asset-list-row-item-to-icon"
+                    loading="lazy"
+                  />
+                  {isUSDCe ? "USDC.e" : item.symbol}
                 </div>
-              </div>
-            ),
-            circulatingSupply: (
-              <div className="ntt-page-tokens-list-table-item">
-                <h4>CIRCULATING SUPPLY</h4>${formatNumber(+item.circulating_supply, 0)}
-              </div>
-            ),
-            marketCap: (
-              <div className="ntt-page-tokens-list-table-item">
-                <h4>MARKET CAP</h4>${formatNumber(+item.market_cap, 0)}
-              </div>
-            ),
-            volume: (
-              <div className="ntt-page-tokens-list-table-item volume">
-                <h4>24H VOLUME</h4>${formatNumber(+item.volume_24h, 0)}
-              </div>
-            ),
-            viewDetails: (
-              <div className="ntt-page-tokens-list-table-item view-details">
-                <NavLink to={`/analytics/ntt/${item.coingecko_id}/${item.symbol}`}>
-                  View details
-                </NavLink>
-              </div>
-            ),
-          }));
+              ),
+              price: (
+                <div className="ntt-page-tokens-list-table-item">${formatNumber(+item.price)}</div>
+              ),
+              priceVariation: (
+                <div className="ntt-page-tokens-list-table-item">
+                  <h4>24H PRICE VARIATION%</h4>
+                  <div
+                    className={`price-variation ${
+                      item.price_change_percentage_24h
+                        ? +item.price_change_percentage_24h > 0
+                          ? "positive"
+                          : "negative"
+                        : ""
+                    }`}
+                  >
+                    {+item.price_change_percentage_24h > 0 && "+"}
+                    {item.price_change_percentage_24h}
+                  </div>
+                </div>
+              ),
+              circulatingSupply: (
+                <div className="ntt-page-tokens-list-table-item">
+                  <h4>CIRCULATING SUPPLY</h4>${formatNumber(+item.circulating_supply, 0)}
+                </div>
+              ),
+              marketCap: (
+                <div className="ntt-page-tokens-list-table-item">
+                  <h4>MARKET CAP</h4>${formatNumber(+item.market_cap, 0)}
+                </div>
+              ),
+              volume: (
+                <div className="ntt-page-tokens-list-table-item volume">
+                  <h4>24H VOLUME</h4>${formatNumber(+item.volume_24h, 0)}
+                </div>
+              ),
+              viewDetails: (
+                <div className="ntt-page-tokens-list-table-item view-details">
+                  <NavLink to={`/analytics/ntt/${item.coingecko_id}/${item.symbol}`}>
+                    View details
+                  </NavLink>
+                </div>
+              ),
+            }));
           setTokensList(transformedData);
         }
       },

@@ -97,13 +97,11 @@
         gap: 24px 10px;
 
         @include tablet {
+          @include centered-row;
           gap: 24px 20px;
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
         }
 
         @include bigDesktop {
-          @include centered-row;
           gap: 24px 30px;
         }
 
@@ -120,6 +118,10 @@
           @include desktop {
             gap: 12px;
 
+            &:first-child {
+              flex: 3;
+            }
+
             &:nth-last-child(-n + 2) {
               flex-basis: unset;
             }
@@ -132,14 +134,13 @@
 
           &-down {
             @include centered-row;
-            gap: 12px;
-
-            color: var(--color-white);
+            @include text-roboto-body-400;
             background-color: var(--color-gray-900);
             border-radius: 10px;
-            padding: 12px;
-            @include text-roboto-body-400;
+            color: var(--color-white);
+            gap: 12px;
             height: 44px;
+            padding: 12px;
 
             &.price {
               position: relative;
