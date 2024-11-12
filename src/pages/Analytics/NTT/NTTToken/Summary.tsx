@@ -51,7 +51,6 @@ export const Summary = ({ isError, isLoading, summary, coingecko_id }: Props) =>
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "Mainnet";
   const tokenIcon = summary?.image?.large;
-  const isUSDCe = coingecko_id === "wormhole-bridged-usdc-fantom";
 
   const { links } = summary || {};
   const websiteLink = links?.homepage?.[0];
@@ -72,42 +71,6 @@ export const Summary = ({ isError, isLoading, summary, coingecko_id }: Props) =>
     enabled: isMainnet,
     refetchInterval: 40000,
   });
-
-  const renderPrice = () => {
-    if (isFetchingTokenPrice && !isErrorTokenSummary && !dataTokenSummary?.price) {
-      return "...";
-    }
-    if (isErrorTokenSummary || isError) {
-      return "N/A";
-    }
-    return dataTokenSummary?.price ? (
-      <FlipNumbers
-        height={15}
-        width={11}
-        color="white"
-        background="var(--color-gray-900)"
-        play
-        perspective={100}
-        numbers={`$${formatNumber(+Number(dataTokenSummary?.price).toFixed(4))}`}
-        numberStyle={{
-          fontFamily: "Roboto",
-          fontSize: "14px",
-          fontWeight: 400,
-          letterSpacing: "0.02em",
-          lineHeight: "20px",
-        }}
-        nonNumberStyle={{
-          fontFamily: "Roboto",
-          fontSize: "14px",
-          fontWeight: 400,
-          letterSpacing: "0.02em",
-          lineHeight: "20px",
-        }}
-      />
-    ) : (
-      "N/A"
-    );
-  };
 
   return (
     <div className="summary">
@@ -141,7 +104,7 @@ export const Summary = ({ isError, isLoading, summary, coingecko_id }: Props) =>
                     />
                   )}
                 </div>
-                <div>{isUSDCe ? "USDC.e" : summary?.symbol || "N/A"} Token</div>
+                <div>{summary?.symbol} Token</div>
               </h1>
               <div className="summary-top-content-container">
                 <div className="summary-top-content-container-item">
@@ -152,42 +115,58 @@ export const Summary = ({ isError, isLoading, summary, coingecko_id }: Props) =>
                 <div className="summary-top-content-container-item">
                   <div className="summary-top-content-container-item-up">Price</div>
                   <div className="summary-top-content-container-item-down price">
-                    <div className="price-value">{renderPrice()}</div>
+                    <div className="price-value">
+                      <TokenPrice
+                        dataTokenSummary={dataTokenSummary}
+                        isErrorTokenSummary={isErrorTokenSummary}
+                        isFetchingTokenPrice={isFetchingTokenPrice}
+                      />
+                    </div>
                   </div>
                 </div>
 
                 <div className="summary-top-content-container-item">
                   <div className="summary-top-content-container-item-up">Website</div>
                   <div className="summary-top-content-container-item-down">
-                    <a className="link" href={websiteLink} rel="noreferrer" target="_blank">
-                      <span>{websiteLink}</span>
-                      <LinkIcon width={24} />
-                    </a>
+                    {isError ? (
+                      "N/A"
+                    ) : (
+                      <a className="link" href={websiteLink} rel="noreferrer" target="_blank">
+                        <span>{websiteLink}</span>
+                        <LinkIcon width={24} />
+                      </a>
+                    )}
                   </div>
                 </div>
 
                 <div className="summary-top-content-container-item">
                   <div className="summary-top-content-container-item-up">Community</div>
                   <div className="summary-top-content-container-item-down community">
-                    {twitterLink && (
-                      <a href={twitterLink} rel="noreferrer" target="_blank">
-                        <TwitterIcon />
-                      </a>
-                    )}
-                    {telegramLink && (
-                      <a href={telegramLink} rel="noreferrer" target="_blank">
-                        <TelegramIcon />
-                      </a>
-                    )}
-                    {discordLink && (
-                      <a href={discordLink} rel="noreferrer" target="_blank">
-                        <DiscordIcon />
-                      </a>
-                    )}
-                    {githubLink && (
-                      <a href={githubLink} rel="noreferrer" target="_blank">
-                        <GithubIcon />
-                      </a>
+                    {isError ? (
+                      "N/A"
+                    ) : (
+                      <>
+                        {twitterLink && (
+                          <a href={twitterLink} rel="noreferrer" target="_blank">
+                            <TwitterIcon />
+                          </a>
+                        )}
+                        {telegramLink && (
+                          <a href={telegramLink} rel="noreferrer" target="_blank">
+                            <TelegramIcon />
+                          </a>
+                        )}
+                        {discordLink && (
+                          <a href={discordLink} rel="noreferrer" target="_blank">
+                            <DiscordIcon />
+                          </a>
+                        )}
+                        {githubLink && (
+                          <a href={githubLink} rel="noreferrer" target="_blank">
+                            <GithubIcon />
+                          </a>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -313,5 +292,49 @@ const ChainItem = ({
         width={20}
       />
     </a>
+  );
+};
+
+const TokenPrice = ({
+  dataTokenSummary,
+  isErrorTokenSummary,
+  isFetchingTokenPrice,
+}: {
+  dataTokenSummary: GetSummaryResult;
+  isErrorTokenSummary: boolean;
+  isFetchingTokenPrice: boolean;
+}) => {
+  if (isFetchingTokenPrice && !isErrorTokenSummary && !dataTokenSummary?.price) {
+    return "...";
+  }
+  if (isErrorTokenSummary) {
+    return "N/A";
+  }
+  return dataTokenSummary?.price ? (
+    <FlipNumbers
+      height={15}
+      width={11}
+      color="white"
+      background="var(--color-gray-900)"
+      play
+      perspective={100}
+      numbers={`$${formatNumber(+Number(dataTokenSummary?.price).toFixed(4))}`}
+      numberStyle={{
+        fontFamily: "Roboto",
+        fontSize: "14px",
+        fontWeight: 400,
+        letterSpacing: "0.02em",
+        lineHeight: "20px",
+      }}
+      nonNumberStyle={{
+        fontFamily: "Roboto",
+        fontSize: "14px",
+        fontWeight: 400,
+        letterSpacing: "0.02em",
+        lineHeight: "20px",
+      }}
+    />
+  ) : (
+    "N/A"
   );
 };

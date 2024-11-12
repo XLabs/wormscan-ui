@@ -76,7 +76,7 @@ export type GetSummaryResult = {
     bitcointalk_thread_identifier: null;
     blockchain_site: string[];
     chat_url: string[];
-    facebook_username: "";
+    facebook_username: string;
     homepage: string[];
     official_forum_url: string[];
     repos_url: {
