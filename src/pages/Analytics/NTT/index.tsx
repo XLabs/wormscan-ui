@@ -21,7 +21,6 @@ const NTT = () => {
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "Mainnet";
   const { symbol, coingecko_id } = useParams();
-  const isUSDCe = coingecko_id === "wormhole-bridged-usdc-fantom";
 
   const {
     data: dataStats,
@@ -69,11 +68,13 @@ const NTT = () => {
                     className="top-asset-list-row-item-to-icon"
                     loading="lazy"
                   />
-                  {isUSDCe ? "USDC.e" : item.symbol}
+                  {item.symbol}
                 </div>
               ),
               price: (
-                <div className="ntt-page-tokens-list-table-item">${formatNumber(+item.price)}</div>
+                <div className="ntt-page-tokens-list-table-item">
+                  ${formatNumber(+(+item.price).toFixed(4))}
+                </div>
               ),
               priceVariation: (
                 <div className="ntt-page-tokens-list-table-item">

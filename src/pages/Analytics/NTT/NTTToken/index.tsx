@@ -356,7 +356,7 @@ const NTTToken = () => {
             className="tabs-toggle-group"
             items={[
               { label: "General Information", value: "general-info" },
-              ...(!isUSDCe ? [{ label: "Transfers Over Time", value: "transfers-over-time" }] : []),
+              { label: "Transfers Over Time", value: "transfers-over-time" },
               { label: "Top Transfers", value: "top-transfers" },
               { label: "Top Holders", value: "top-holders" },
               { label: "Top Addresses", value: "top-addresses" },
