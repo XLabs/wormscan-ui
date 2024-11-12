@@ -53,6 +53,17 @@ export const Summary = ({ isError, isLoading, summary, coingecko_id }: Props) =>
   const tokenIcon = summary?.image?.large;
   const isUSDCe = coingecko_id === "wormhole-bridged-usdc-fantom";
 
+  const { links } = summary || {};
+  const websiteLink = links?.homepage?.[0];
+  const twitterLink = links?.twitter_screen_name
+    ? `https://x.com/${links?.twitter_screen_name}`
+    : "";
+  const telegramLink = links?.telegram_channel_identifier
+    ? `https://t.me/${links?.telegram_channel_identifier}`
+    : "";
+  const discordLink = links?.chat_url?.[0];
+  const githubLink = links?.repos_url?.github?.[0];
+
   const {
     data: dataTokenSummary,
     isFetching: isFetchingTokenPrice,
@@ -77,7 +88,7 @@ export const Summary = ({ isError, isLoading, summary, coingecko_id }: Props) =>
         background="var(--color-gray-900)"
         play
         perspective={100}
-        numbers={`$${formatNumber(+dataTokenSummary.price, 4)}`}
+        numbers={`$${formatNumber(+Number(dataTokenSummary?.price).toFixed(4))}`}
         numberStyle={{
           fontFamily: "Roboto",
           fontSize: "14px",
@@ -145,50 +156,41 @@ export const Summary = ({ isError, isLoading, summary, coingecko_id }: Props) =>
                   </div>
                 </div>
 
-                {coingecko_id === "wormhole" && (
-                  <>
-                    <div className="summary-top-content-container-item">
-                      <div className="summary-top-content-container-item-up">Website</div>
-                      <div className="summary-top-content-container-item-down">
-                        <a
-                          className="link"
-                          href={WORMHOLE_PAGE_URL}
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          <span>https://wormhole.com</span>
-                          <LinkIcon width={24} />
-                        </a>
-                      </div>
-                    </div>
+                <div className="summary-top-content-container-item">
+                  <div className="summary-top-content-container-item-up">Website</div>
+                  <div className="summary-top-content-container-item-down">
+                    <a className="link" href={websiteLink} rel="noreferrer" target="_blank">
+                      <span>{websiteLink}</span>
+                      <LinkIcon width={24} />
+                    </a>
+                  </div>
+                </div>
 
-                    <div className="summary-top-content-container-item">
-                      <div className="summary-top-content-container-item-up">Community</div>
-                      <div className="summary-top-content-container-item-down community">
-                        <a href="https://x.com/wormhole" rel="noreferrer" target="_blank">
-                          <TwitterIcon />
-                        </a>
-                        <a href="https://t.me/wormholecrypto" rel="noreferrer" target="_blank">
-                          <TelegramIcon />
-                        </a>
-                        <a
-                          href="https://discord.com/invite/wormholecrypto"
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          <DiscordIcon />
-                        </a>
-                        <a
-                          href="https://github.com/wormhole-foundation"
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          <GithubIcon />
-                        </a>
-                      </div>
-                    </div>
-                  </>
-                )}
+                <div className="summary-top-content-container-item">
+                  <div className="summary-top-content-container-item-up">Community</div>
+                  <div className="summary-top-content-container-item-down community">
+                    {twitterLink && (
+                      <a href={twitterLink} rel="noreferrer" target="_blank">
+                        <TwitterIcon />
+                      </a>
+                    )}
+                    {telegramLink && (
+                      <a href={telegramLink} rel="noreferrer" target="_blank">
+                        <TelegramIcon />
+                      </a>
+                    )}
+                    {discordLink && (
+                      <a href={discordLink} rel="noreferrer" target="_blank">
+                        <DiscordIcon />
+                      </a>
+                    )}
+                    {githubLink && (
+                      <a href={githubLink} rel="noreferrer" target="_blank">
+                        <GithubIcon />
+                      </a>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </>

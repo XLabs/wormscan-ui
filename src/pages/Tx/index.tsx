@@ -867,9 +867,9 @@ const Tx = () => {
             );
 
             data.data = {
-              tokenAmount: amount,
-              symbol: tokenInfo.symbol,
-              usdAmount: null,
+              tokenAmount: data?.data?.tokenAmount || amount,
+              symbol: data?.data?.symbol || tokenInfo.symbol,
+              usdAmount: data?.data?.usdAmount || null,
             };
 
             const nttInfo = await getNttInfo(environment, data, parsedPayload);

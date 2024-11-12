@@ -71,6 +71,23 @@ export type GetSummaryResult = {
     small: string;
     large: string;
   };
+  links: {
+    announcement_url: string[];
+    bitcointalk_thread_identifier: null;
+    blockchain_site: string[];
+    chat_url: string[];
+    facebook_username: "";
+    homepage: string[];
+    official_forum_url: string[];
+    repos_url: {
+      bitbucket: string[];
+      github: string[];
+    };
+    subreddit_url: string;
+    telegram_channel_identifier: string;
+    twitter_screen_name: string;
+    whitepaper: string;
+  };
 };
 
 // List

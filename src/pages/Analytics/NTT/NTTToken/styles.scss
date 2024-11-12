@@ -97,14 +97,14 @@
         gap: 24px 10px;
 
         @include tablet {
-          @include centered-row;
+          gap: 24px 20px;
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
         }
 
-        @media only screen and (min-width: 1140px) {
-          gap: 20px;
-        }
         @include bigDesktop {
-          gap: 30px;
+          @include centered-row;
+          gap: 24px 30px;
         }
 
         &-item {
@@ -113,13 +113,15 @@
           gap: 8px;
           flex: 1;
 
-          @include desktop {
-            gap: 12px;
+          &:nth-last-child(-n + 2) {
+            flex-basis: 100%;
           }
 
-          &:nth-last-child(-n + 2) {
-            @media (max-width: 1139px) {
-              flex-basis: 100%;
+          @include desktop {
+            gap: 12px;
+
+            &:nth-last-child(-n + 2) {
+              flex-basis: unset;
             }
           }
 
@@ -187,7 +189,7 @@
             @include centered-row;
             gap: 4px;
 
-            @media only screen and (min-width: 420px) {
+            @media only screen and (min-width: 400px) {
               gap: 12px;
             }
 
@@ -199,13 +201,9 @@
               cursor: pointer;
               gap: 6px;
               justify-content: center;
-              padding: 10px 4px;
-              width: 100%;
+              padding: 10px;
 
-              @media only screen and (min-width: 500px) {
-                padding: 10px;
-                width: auto;
-
+              @media only screen and (min-width: 400px) {
                 &-arrow {
                   height: 24px;
                   width: 24px;

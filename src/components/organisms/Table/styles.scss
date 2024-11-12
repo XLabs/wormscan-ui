@@ -171,6 +171,8 @@
     > thead {
       > tr {
         > th {
+          user-select: none;
+
           &:hover {
             cursor: pointer;
             background-color: var(--color-white-05);
