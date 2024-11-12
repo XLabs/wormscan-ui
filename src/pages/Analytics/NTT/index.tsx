@@ -88,7 +88,7 @@ const NTT = () => {
                     }`}
                   >
                     {+item.price_change_percentage_24h > 0 && "+"}
-                    {item.price_change_percentage_24h}
+                    {(+item.price_change_percentage_24h).toFixed(4)}
                   </div>
                 </div>
               ),

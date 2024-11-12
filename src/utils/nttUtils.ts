@@ -27,7 +27,7 @@ const sortByNumber = (key: keyof IRowToken) => (rowA: Row<IRowToken>, rowB: Row<
   return (rowA.original[key] as number) - (rowB.original[key] as number);
 };
 
-export const COLUMNS_NTT: Column<IRowToken>[] = [
+export const COLUMNS_NTT: Column<IRowToken>[] | any = [
   { Header: "TOKEN", accessor: "token", sortType: sortBySymbol },
   { Header: "PRICE", accessor: "price", sortType: sortByNumber("priceNumber") },
   {
