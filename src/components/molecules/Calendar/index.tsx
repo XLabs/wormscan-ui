@@ -92,6 +92,7 @@ const Calendar = ({
     setShowCalendar(false);
 
     if (shouldUpdateURL) {
+      searchParams.delete("page");
       searchParams.delete("from");
       searchParams.delete("to");
       setSearchParams(searchParams);
@@ -144,6 +145,7 @@ const Calendar = ({
                 setEndDate(end);
 
                 if (shouldUpdateURL && start && end) {
+                  searchParams.delete("page");
                   searchParams.set("from", start.toISOString());
                   searchParams.set("to", end.toISOString());
                   setSearchParams(searchParams);
