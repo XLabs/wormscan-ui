@@ -1,11 +1,11 @@
 import { useState, useMemo, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { getClient } from "src/api/Client";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { BaseLayout } from "src/layouts/BaseLayout";
 import { ToggleGroup } from "src/components/atoms";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
-import { useWindowSize } from "src/utils/hooks";
 import {
   canWeGetDestinationTx,
   CCTP_APP_ID,
@@ -26,21 +26,30 @@ import { TopAddresses } from "./TopAddresses";
 import { Metrics } from "./Metrics";
 import { TransfersOverTime } from "./TransfersOverTime";
 import { RecentTransactions } from "./RecentTransactions";
+// import { CommunityBanner } from "./CommunityBanner";
 import "./styles.scss";
 
-export type TimeRange = { label: string; value: string };
+export type TimeRange = {
+  label: "Last 24 hours" | "Last week" | "Last month" | "Last year";
+  value: "1d" | "1w" | "1m" | "1y";
+};
 export type ByType = "notional" | "tx";
 
-const WToken = () => {
+const TOKEN_ADDRESS_WORMHOLE_BRIDGED_USDC_FANTOM = "0X2F733095B80A04B38B0D10CC884524A3D09B836A";
+
+const NTTToken = () => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "Mainnet";
 
-  const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last 24 hours", value: "1d" });
-  const [by, setBy] = useState<ByType>("tx");
+  const { symbol, coingecko_id } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeView, setActiveView] = useState(searchParams.get("view") || "general-info");
 
-  const { width } = useWindowSize();
-  const isSmallMobile = width && width < 550;
+  const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last month", value: "1m" });
+  const [by, setBy] = useState<ByType>("notional");
+
+  const isUSDCe = coingecko_id === "wormhole-bridged-usdc-fantom";
 
   const { startDate, endDate } = useMemo(() => {
     const end = new Date();
@@ -94,7 +103,13 @@ const WToken = () => {
           },
         });
 
-        const filteredTransactions = data.filter(tx => tx.data?.symbol === "W");
+        const filteredTransactions = isUSDCe
+          ? data.filter(
+              tx =>
+                tx.content?.standarizedProperties?.tokenAddress.toUpperCase() ===
+                TOKEN_ADDRESS_WORMHOLE_BRIDGED_USDC_FANTOM,
+            )
+          : data.filter(tx => tx.data?.symbol.toUpperCase() === symbol.toUpperCase());
 
         const transactionsWithStatus = filteredTransactions.map(tx => {
           const { emitterChain } = tx;
@@ -197,7 +212,7 @@ const WToken = () => {
       return {
         data: await getClient().nttApi.getNttTransferByTime({
           by,
-          symbol: "W",
+          symbol,
           from: startDate.toISOString(),
           timeSpan,
           to: endDate.toISOString(),
@@ -208,11 +223,15 @@ const WToken = () => {
     { enabled: isMainnet, refetchOnWindowFocus: false },
   );
 
-  const { data: summary } = useQuery(
+  const {
+    data: summary,
+    isError: isErrorSummary,
+    isFetching: isFetchingSummary,
+  } = useQuery(
     ["getSummary"],
     () => {
       return getClient().nttApi.getNttSummary({
-        symbol: "W",
+        coingecko_id,
       });
     },
     {
@@ -220,15 +239,18 @@ const WToken = () => {
     },
   );
 
-  const { data: activityTx } = useQuery(
+  const {
+    data: activityTx,
+    isError: isErrorActivityTx,
+    isFetching: isFetchingActivityTx,
+  } = useQuery(
     "getActivityTx",
     async () => {
       const activity = await getClient().nttApi.getNttActivity({
         by: "tx",
-        symbol: "W",
+        symbol,
       });
-      activity.sort((a, b) => (+a.value < +b.value ? 1 : -1));
-
+      activity?.sort((a, b) => (+a.value < +b.value ? 1 : -1));
       return activity;
     },
     {
@@ -236,15 +258,18 @@ const WToken = () => {
     },
   );
 
-  const { data: activityNotional } = useQuery(
+  const {
+    data: activityNotional,
+    isError: isErrorActivityNotional,
+    isFetching: isFetchingActivityNotional,
+  } = useQuery(
     "getActivityNotional",
     async () => {
       const activity = await getClient().nttApi.getNttActivity({
         by: "notional",
-        symbol: "W",
+        symbol,
       });
-      activity.sort((a, b) => (+a.value < +b.value ? 1 : -1));
-
+      activity?.sort((a, b) => (+a.value < +b.value ? 1 : -1));
       return activity;
     },
     {
@@ -252,11 +277,15 @@ const WToken = () => {
     },
   );
 
-  const { data: topHolders } = useQuery(
+  const {
+    data: topHolders,
+    isError: isErrorTopHolders,
+    isFetching: isFetchingTopHolders,
+  } = useQuery(
     "getTopHolders",
     async () => {
       const data = await getClient().nttApi.getNttTopHolder({
-        symbol: "W",
+        coingecko_id,
       });
       return data;
     },
@@ -265,14 +294,18 @@ const WToken = () => {
     },
   );
 
-  const { data: topAddressesNotional } = useQuery(
+  const {
+    data: topAddressesNotional,
+    isError: isErrorTopAddressesNotional,
+    isFetching: isFetchingTopAddressesNotional,
+  } = useQuery(
     ["getNttTopAddressNotional"],
     async () => {
       const data = await getClient().nttApi.getNttTopAddress({
         by: "notional",
-        symbol: "W",
+        symbol,
       });
-      data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
+      data?.sort((a, b) => (+a.value < +b.value ? 1 : -1));
       return data;
     },
     {
@@ -280,14 +313,18 @@ const WToken = () => {
     },
   );
 
-  const { data: topAddressesTx } = useQuery(
+  const {
+    data: topAddressesTx,
+    isError: isErrorTopAddressesTx,
+    isFetching: isFetchingTopAddressesTx,
+  } = useQuery(
     ["getNttTopAddressTx"],
     async () => {
       const data = await getClient().nttApi.getNttTopAddress({
         by: "tx",
-        symbol: "W",
+        symbol,
       });
-      data.sort((a, b) => (+a.value < +b.value ? 1 : -1));
+      data?.sort((a, b) => (+a.value < +b.value ? 1 : -1));
       return data;
     },
     {
@@ -295,69 +332,106 @@ const WToken = () => {
     },
   );
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [activeView, setActiveView] = useState(searchParams.get("view") || "general-info");
+  useEffect(() => {
+    analytics.page({ title: `ANALYTICS-${symbol.toUpperCase()}-TOKEN-${activeView}` });
+  }, [activeView, symbol]);
 
   useEffect(() => {
-    analytics.page({ title: `ANALYTICS-WTOKEN-${activeView}` });
-  }, [activeView]);
+    setActiveView(searchParams.get("view") || "general-info");
+  }, [searchParams]);
 
   return (
-    <div>
-      <Summary />
-
-      <div className="tabs">
-        <ToggleGroup
-          ariaLabel="Select W Token data view"
-          className="tabs-toggle-group"
-          items={[
-            { label: isSmallMobile ? "Info" : "General Information", value: "general-info" },
-            { label: isSmallMobile ? "Transfers" : "Top Transfers", value: "top-transfers" },
-            { label: isSmallMobile ? "Holders" : "Top Holders", value: "top-holders" },
-            { label: isSmallMobile ? "Addresses" : "Top Addresses", value: "top-addresses" },
-          ]}
-          onValueChange={value => {
-            setActiveView(value);
-            setSearchParams(prev => {
-              prev.set("view", value);
-              return prev;
-            });
-          }}
-          value={activeView}
+    <BaseLayout>
+      <div className="ntt-token-page">
+        <Summary
+          summary={summary}
+          isLoading={isFetchingSummary}
+          isError={isErrorSummary}
+          coingecko_id={coingecko_id}
         />
-      </div>
 
-      {activeView === "general-info" && (
-        <>
-          <Metrics summary={summary} />
+        <div className="tabs">
+          <ToggleGroup
+            ariaLabel="Select Token data view"
+            className="tabs-toggle-group"
+            items={[
+              { label: "General Information", value: "general-info" },
+              { label: "Transfers Over Time", value: "transfers-over-time" },
+              { label: "Top Transfers", value: "top-transfers" },
+              { label: "Top Holders", value: "top-holders" },
+              { label: "Top Addresses", value: "top-addresses" },
+            ]}
+            onValueChange={value => {
+              setActiveView(value);
+              setSearchParams(prev => {
+                prev.set("view", value);
+                return prev;
+              });
+            }}
+            value={activeView}
+          />
+        </div>
+
+        {activeView === "general-info" && (
+          <>
+            <Metrics summary={summary} isLoading={isFetchingSummary} isError={isErrorSummary} />
+            <RecentTransactions
+              isError={isErrorRecentTransactions}
+              isLoading={isLoadingLimits || isFetchingRecentTransactions}
+              recentTransactions={recentTransactions}
+              tokenIcon={summary?.image?.small}
+            />
+          </>
+        )}
+
+        {activeView === "transfers-over-time" && (
           <TransfersOverTime
-            transfers={transfersByTime?.data}
-            isLoading={isFetchingTransfersByTime}
+            by={by}
             isError={isErrorTransfersByTime}
-            timeSpan={transfersByTime?.timeSpan || "1d"}
+            isLoading={isFetchingTransfersByTime}
+            setBy={setBy}
             setTimeRange={value => setTimeRange(value)}
             timeRange={timeRange}
-            by={by}
-            setBy={setBy}
+            timeSpan={transfersByTime?.timeSpan || "1d"}
+            transfers={transfersByTime?.data}
             currentNetwork={currentNetwork}
           />
-          <RecentTransactions
-            isError={isErrorRecentTransactions}
-            isLoading={isLoadingLimits || isFetchingRecentTransactions}
-            recentTransactions={recentTransactions}
-          />
-        </>
-      )}
+        )}
 
-      {activeView === "top-transfers" && (
-        <ByChain activityNotional={activityNotional} activityTx={activityTx} />
-      )}
-      {activeView === "top-holders" && <TopHolders topHolders={topHolders} />}
-      {activeView === "top-addresses" && (
-        <TopAddresses topAddressesNotional={topAddressesNotional} topAddressesTx={topAddressesTx} />
-      )}
-    </div>
+        {activeView === "top-transfers" && (
+          <ByChain
+            activityNotional={activityNotional}
+            activityTx={activityTx}
+            isErrorActivityNotional={isErrorActivityNotional}
+            isErrorActivityTx={isErrorActivityTx}
+            isLoadingActivityNotional={isFetchingActivityNotional}
+            isLoadingActivityTx={isFetchingActivityTx}
+          />
+        )}
+
+        {activeView === "top-holders" && (
+          <TopHolders
+            isError={isErrorTopHolders}
+            isLoading={isFetchingTopHolders}
+            topHolders={topHolders}
+          />
+        )}
+
+        {activeView === "top-addresses" && (
+          <TopAddresses
+            isErrorTopAddressesNotional={isErrorTopAddressesNotional}
+            isErrorTopAddressesTx={isErrorTopAddressesTx}
+            isLoadingTopAddressesNotional={isFetchingTopAddressesNotional}
+            isLoadingTopAddressesTx={isFetchingTopAddressesTx}
+            topAddressesNotional={topAddressesNotional}
+            topAddressesTx={topAddressesTx}
+          />
+        )}
+
+        {/* TODO: show when Multigov is available {symbol === "W" && <CommunityBanner />} */}
+      </div>
+    </BaseLayout>
   );
 };
 
-export default WToken;
+export default NTTToken;

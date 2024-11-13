@@ -139,6 +139,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
               <Loader />
             )
           ) : (
+            data?.length > 0 &&
             data?.map((item, i) => {
               if (i >= numberOfProtocols) return null;
 

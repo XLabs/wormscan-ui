@@ -8,7 +8,7 @@ import {
   UseSortByOptions,
   TableInstance,
 } from "react-table";
-import { ArrowUpIcon } from "src/icons/generic";
+import { SortByIcon } from "src/icons/generic";
 import "./styles.scss";
 import analytics from "src/analytics";
 import { useEnvironment } from "src/context/EnvironmentContext";
@@ -99,16 +99,9 @@ const Table = <T extends object>({
                 const style: CSSProperties = column.style as CSSProperties;
                 const sortIcon = hasSort && (
                   <span className="table-head-th-container-arrow">
-                    {column.isSorted ? (
-                      <ArrowUpIcon
-                        style={{
-                          rotate: column.isSortedDesc ? "180deg" : "0deg",
-                        }}
-                        width={24}
-                      />
-                    ) : (
-                      ""
-                    )}
+                    <SortByIcon
+                      sortBy={column.isSorted ? (column.isSortedDesc ? "DSC" : "ASC") : null}
+                    />
                   </span>
                 );
 
@@ -122,9 +115,8 @@ const Table = <T extends object>({
                     }}
                   >
                     <div className="table-head-th-container">
-                      {index !== 0 && sortIcon}
                       {column.render("Header")}
-                      {index === 0 && sortIcon}
+                      {sortIcon}
                     </div>
                   </th>
                 );

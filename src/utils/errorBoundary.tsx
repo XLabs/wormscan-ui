@@ -79,7 +79,7 @@ const ErrorBoundary = ({ children }: { children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  if (!isMainnet && (pathname === "/analytics/w" || pathname === "/governor")) {
+  if (!isMainnet && (pathname.includes("/analytics/ntt") || pathname === "/governor")) {
     return (
       <BaseLayout>
         {pathname === "/governor" && <GovernorHeader />}
