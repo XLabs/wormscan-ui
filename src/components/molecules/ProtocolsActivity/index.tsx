@@ -489,6 +489,7 @@ const ProtocolsActivity = () => {
                 selected: value,
               });
             }}
+            type="secondary"
             value={chartSelected}
           />
         </div>
@@ -534,6 +535,7 @@ const ProtocolsActivity = () => {
                   className="protocols-activity-container-chart-scale"
                   items={SCALE_CHART_LIST}
                   onValueChange={value => setScaleSelected(value, true)}
+                  type="secondary"
                   value={scaleSelected}
                 />
               )}

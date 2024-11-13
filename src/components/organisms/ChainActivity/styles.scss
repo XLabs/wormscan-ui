@@ -78,11 +78,9 @@
     }
 
     &-scale {
-      background-color: var(--color-gray-900);
       position: absolute;
       right: 90px;
       top: 0px;
-      border-radius: 12px;
 
       @include desktop {
         right: 272px;
@@ -92,11 +90,6 @@
         &.is-testnet {
           right: 192px;
         }
-      }
-
-      & .toggle-group-item {
-        border-radius: 12px;
-        padding: 6px;
       }
     }
 
@@ -358,15 +351,6 @@
           right: 0;
           top: 0;
           z-index: 9;
-
-          &-toggle-type {
-            border-radius: 12px !important;
-
-            & button {
-              border-radius: 12px !important;
-              padding: 6px !important;
-            }
-          }
         }
 
         & .select-searchable-dropdown {

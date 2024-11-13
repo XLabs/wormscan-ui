@@ -42,7 +42,6 @@ import {
   CopyIcon,
   CrossIcon,
   FilterListIcon,
-  LayersIcon,
   PieChartIcon,
   StaticsIncreaseIcon,
 } from "src/icons/generic";

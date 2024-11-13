@@ -12,6 +12,7 @@ import {
   GetTopHolder,
   GetTopHolderResult,
   GetTransferByTimeResult,
+  GetListResult,
 } from "./types";
 
 export class NttApi {
@@ -50,15 +51,19 @@ export class NttApi {
     });
   }
 
-  async getNttSummary({ symbol }: GetSummary): Promise<GetSummaryResult> {
+  async getNttTokenList(): Promise<GetListResult[]> {
+    return await this._client.doGet<GetListResult[]>("/native-token-transfer/token-list");
+  }
+
+  async getNttSummary({ coingecko_id }: GetSummary): Promise<GetSummaryResult> {
     return await this._client.doGet<GetSummaryResult>("/native-token-transfer/summary", {
-      symbol,
+      coingecko_id,
     });
   }
 
-  async getNttTopHolder({ symbol }: GetTopHolder): Promise<GetTopHolderResult> {
+  async getNttTopHolder({ coingecko_id }: GetTopHolder): Promise<GetTopHolderResult> {
     return await this._client.doGet<GetTopHolderResult>("/native-token-transfer/top-holder", {
-      symbol,
+      coingecko_id,
     });
   }
 }
