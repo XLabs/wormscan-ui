@@ -2,8 +2,8 @@ import { useQuery } from "react-query";
 import FlipNumbers from "react-flip-numbers";
 import { Chain, ChainId, chainToChainId, Network } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { WORMHOLE_PAGE_URL } from "src/consts";
 import {
+  ArrowRightIcon,
   ArrowUpRightIcon,
   DiscordIcon,
   GithubIcon,
@@ -12,7 +12,7 @@ import {
   TelegramIcon,
   TwitterIcon,
 } from "src/icons/generic";
-import { BlockchainIcon, Loader, Tooltip } from "src/components/atoms";
+import { BlockchainIcon, Loader, NavLink, Tooltip } from "src/components/atoms";
 import { formatNumber } from "src/utils/number";
 import { getExplorerLink } from "src/utils/wormhole";
 import { getClient } from "src/api/Client";
@@ -74,6 +74,11 @@ export const Summary = ({ isError, isLoading, summary, coingecko_id }: Props) =>
 
   return (
     <div className="summary">
+      <NavLink to="/analytics/ntt" className="summary-back">
+        <ArrowRightIcon />
+        <span>Back to tokens list</span>
+      </NavLink>
+
       <div className="summary-top">
         {isLoading ? (
           <Loader />

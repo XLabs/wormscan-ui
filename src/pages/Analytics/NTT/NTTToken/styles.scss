@@ -21,8 +21,25 @@
 
 .summary {
   @include centered-column;
-  gap: 40px;
+  gap: 12px;
   margin-bottom: 50px;
+
+  &-back {
+    @include centered-row;
+    @include text-roboto-body-500;
+    color: var(--color-white-60);
+    gap: 0 4px;
+    max-width: max-content;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--color-white);
+    }
+
+    & > svg {
+      rotate: 180deg;
+    }
+  }
 
   &-top {
     @include centered-row;
