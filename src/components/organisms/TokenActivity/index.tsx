@@ -266,10 +266,8 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                 height: isDesktop ? 36 : 48,
               }}
               items={CHAIN_LIST}
-              menuPortalTarget={document.querySelector(".token-activity")}
               menuFixed={!isDesktop}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-              menuPortalStyles={{ zIndex: 100 }}
               name="topAssetTimeRange"
               onValueChange={value => setFilters({ ...filters, sourceChain: value })}
               optionStyles={{ padding: 16 }}
@@ -294,9 +292,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
               }}
               items={CHAIN_LIST}
               menuFixed={!isDesktop}
-              menuPortalTarget={document.querySelector(".token-activity")}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-              menuPortalStyles={{ zIndex: 100 }}
               name="topAssetTimeRange"
               onValueChange={value => setFilters({ ...filters, targetChain: value })}
               optionStyles={{ padding: 16 }}
@@ -384,7 +380,6 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
             ariaLabel="Select Time Range"
             className="token-activity-container-top-select"
             items={RANGE_LIST}
-            menuPortalTarget={document.querySelector(".token-activity")}
             name="topAssetTimeRange"
             onValueChange={value => {
               setSelectedTopAssetTimeRange(value);

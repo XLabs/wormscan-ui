@@ -246,11 +246,10 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
           <Select
             keepOpen={isDesktop}
             ariaLabel="Select Protocol"
-            controlStyles={{ minWidth: 256 }}
+            controlStyles={{ minWidth: 260 }}
             items={PROTOCOL_LIST}
             menuFixed={!isDesktop}
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-            menuPortalStyles={{ zIndex: 100 }}
             name="protocol"
             onValueChange={(selectedItems: Array<{ icon?: any; value: string; label: string }>) => {
               let updatedSelectedItems = [...selectedItems];
@@ -294,7 +293,6 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
             items={CHAIN_LIST}
             menuFixed={!isDesktop}
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-            menuPortalStyles={{ zIndex: 100 }}
             name="sourceChain"
             onValueChange={(value: any) => setCheckedState({ ...checkedState, sourceChain: value })}
             optionStyles={{ padding: 16 }}
@@ -320,7 +318,6 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
             }
             menuFixed={!isDesktop}
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-            menuPortalStyles={{ zIndex: 100 }}
             name="targetChain"
             onValueChange={(value: any) => setCheckedState({ ...checkedState, targetChain: value })}
             optionStyles={{ padding: 16 }}

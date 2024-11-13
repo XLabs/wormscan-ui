@@ -149,7 +149,6 @@ export const TransfersOverTime = ({
                   <Select
                     name="timeRange"
                     value={timeRange}
-                    menuPortalTarget={document.querySelector(".transfers-over-time")}
                     onValueChange={value => {
                       setTimeRange(value);
 

@@ -222,7 +222,6 @@ const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
           ariaLabel="Select Download Format"
           className="cross-chain-top-download"
           items={DOWNLOADABLE_LIST}
-          menuPortalTarget={document.querySelector(".cross-chain")}
           name="downloadAs"
           onValueChange={({ value }) => handleDownloadAs(value)}
           placeholder="Download"
@@ -282,7 +281,6 @@ const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                   selected: value.label,
                 });
               }}
-              menuPortalTarget={document.querySelector(".cross-chain")}
               items={RANGE_LIST}
               ariaLabel="Select Time Range"
               className="cross-chain-filters-select"
