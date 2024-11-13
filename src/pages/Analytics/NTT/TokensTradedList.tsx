@@ -105,7 +105,6 @@ export const TokensTradedList = ({ data, isLoading, isError }: Props) => {
           className="ntt-page-tokens-list-mobile-filters-select"
           items={SORT_TRANSFERS_NTT}
           menuFixed
-          menuPortalStyles={{ zIndex: 99 }}
           menuListStyles={{ maxHeight: "unset" }}
           name="topAssetTimeRange"
           onValueChange={handleSelectedSortBy}
@@ -118,7 +117,6 @@ export const TokensTradedList = ({ data, isLoading, isError }: Props) => {
           className="ntt-page-tokens-list-mobile-filters-select"
           items={SORT_LOW_HIGH_LIST_NTT}
           menuFixed
-          menuPortalStyles={{ zIndex: 99 }}
           name="topAssetTimeRange"
           onValueChange={handleSelectedSortLowHigh}
           optionStyles={{ padding: 16 }}
