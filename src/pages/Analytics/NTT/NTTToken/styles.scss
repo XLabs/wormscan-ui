@@ -563,6 +563,7 @@
       display: inline;
       margin: 0 auto;
       padding: 16px;
+      text-wrap: pretty;
 
       & > a {
         @include button-ghost;

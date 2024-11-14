@@ -20,7 +20,6 @@ import {
   Code2Icon,
   AnalyticsIcon,
 } from "src/icons/generic";
-import { getTokenIcon } from "src/utils/token";
 import { useOutsideClick, useWindowSize } from "src/utils/hooks";
 import { BREAKPOINTS, GITHUB_URL, NTT_APP_ID, WORMHOLE_DOCS_URL } from "src/consts";
 import "./styles.scss";
@@ -54,7 +53,6 @@ const Header = ({
   const { pathname, search } = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const tokenIcon = getTokenIcon("W");
 
   const currentNetwork = environment.network;
 

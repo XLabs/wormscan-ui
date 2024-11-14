@@ -43,7 +43,12 @@ const Tooltip = ({
     if (controlled || window.innerWidth >= BREAKPOINTS.desktop) return;
 
     const handleInteraction = (e: MouseEvent | TouchEvent) => {
-      if (triggerRef?.current && !triggerRef.current.contains(e.target)) {
+      const target = e.target as HTMLElement;
+      if (
+        triggerRef?.current &&
+        !triggerRef.current.contains(target) &&
+        !target.closest(".tooltip-container")
+      ) {
         setIsOpen(false);
       }
     };
@@ -87,10 +92,8 @@ const Tooltip = ({
           asChild
           ref={triggerRef}
           onMouseEnter={isDesktop ? undefined : () => handleSetIsOpen(true)}
-          onMouseLeave={isDesktop ? undefined : () => handleSetIsOpen(false)}
           onFocus={isDesktop ? undefined : () => handleSetIsOpen(true)}
           onClick={isDesktop ? undefined : () => handleSetIsOpen(true)}
-          onBlur={isDesktop ? undefined : () => handleSetIsOpen(false)}
         >
           {children}
         </TooltipPrimitive.Trigger>

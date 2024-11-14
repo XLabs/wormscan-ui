@@ -49,7 +49,13 @@ const NTT = () => {
       onSuccess: dataTokensList => {
         if (dataTokensList?.length > 0) {
           const transformedData = dataTokensList
-            .filter(item => item.circulating_supply !== "0" && item.market_cap !== "0")
+            .filter(item => {
+              return (
+                item.circulating_supply !== "0" &&
+                item.market_cap !== "0" &&
+                item.coingecko_id !== "usd-coin"
+              );
+            })
             .map(item => ({
               coingecko_id: item.coingecko_id,
               symbol: item.symbol,
