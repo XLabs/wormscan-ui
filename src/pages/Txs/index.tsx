@@ -473,7 +473,7 @@ const Txs = () => {
                   </div>
                 ),
                 from: (
-                  <div className="tx-chains">
+                  <div className={`tx-chains from ${toChain && targetAddress ? "exists-to" : ""}`}>
                     <h4>FROM</h4>
 
                     <div className="tx-chains-container">
@@ -550,8 +550,8 @@ const Txs = () => {
                   </div>
                 ),
                 to: (
-                  <div className="tx-chains">
-                    <h4>{"TO"}</h4>
+                  <div className={`tx-chains to ${toChain && targetAddress ? "exists-to" : ""}`}>
+                    <h4>TO</h4>
 
                     {toChain && targetAddress ? (
                       <div className="tx-chains-container">
