@@ -236,8 +236,8 @@ const NTTToken = () => {
 
       // TODO: when coingecko returns optimism, remove this
       if (data.symbol === "W") {
-        if (!data.platforms.optimism) {
-          data.platforms.optimism = "0xb0ffa8000886e57f86dd5264b9582b2ad87b2b91";
+        if (!data.platforms["optimistic-ethereum"]) {
+          data.platforms["optimistic-ethereum"] = "0xb0ffa8000886e57f86dd5264b9582b2ad87b2b91";
         }
       }
 
