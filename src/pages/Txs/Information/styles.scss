@@ -34,6 +34,10 @@
       &:has(.from):has(.exists-to) {
         border-bottom: 0;
         padding-bottom: 0;
+
+        & > .from {
+          align-items: start;
+        }
       }
 
       &:has(.to):has(.exists-to) {
@@ -107,7 +111,6 @@
 
       .tx-chains {
         @include centered-row;
-        align-items: start;
         flex-wrap: wrap;
         gap: 8px;
         height: auto;
@@ -116,7 +119,7 @@
         &-container {
           @include centered-column;
           gap: 8px;
-          max-width: 184px;
+          max-width: 188px;
           min-width: max-content;
           width: 100%;
 
@@ -185,10 +188,10 @@
 
           &-item {
             @include centered-row;
-            gap: 0 12px;
             justify-content: space-between;
 
             @include desktop {
+              gap: 0 12px;
               justify-content: flex-start;
               min-width: max-content;
               width: 194px;
