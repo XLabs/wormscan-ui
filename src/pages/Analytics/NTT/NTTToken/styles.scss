@@ -558,11 +558,17 @@
     }
 
     &-empty {
-      @include centered-row;
       @include text-roboto-body-400;
       color: var(--color-gray-500);
-      justify-content: center;
+      display: inline;
+      margin: 0 auto;
       padding: 16px;
+
+      & > a {
+        @include button-ghost;
+        color: var(--color-gray-500);
+        display: inline;
+      }
     }
 
     &-head-row,

@@ -140,217 +140,215 @@ export const TransfersOverTime = ({
 
       <div className="transfers-over-time-container">
         <div className="transfers-over-time-container-chart" ref={chartRef}>
+          <div className="transfers-over-time-filters">
+            <div className="transfers-over-time-select-range">
+              <Select
+                name="timeRange"
+                value={timeRange}
+                onValueChange={value => {
+                  setTimeRange(value);
+
+                  analytics.track("transfersOverTimeTimeRange", {
+                    network: currentNetwork,
+                    selected: value.label,
+                  });
+                }}
+                items={RANGE_LIST}
+                ariaLabel="Select Time Range"
+              />
+            </div>
+
+            <ToggleGroup
+              ariaLabel="Select data type"
+              items={BY_TYPE_LIST}
+              onValueChange={value => {
+                setBy(value as ByType);
+
+                analytics.track("metricSelected", {
+                  network: currentNetwork,
+                  selected: value,
+                  selectedType: "transfersOverTime",
+                });
+              }}
+              value={by}
+            />
+
+            <div className="transfers-over-time-toggles">
+              {chartSelected === "area" && by === "notional" && (
+                <ToggleGroup
+                  ariaLabel="Select scale"
+                  items={SCALE_CHART_LIST}
+                  onValueChange={value => setScaleSelected(value, true)}
+                  type="secondary"
+                  value={scaleSelected}
+                />
+              )}
+
+              <ToggleGroup
+                ariaLabel="Select chart type"
+                items={TYPE_CHART_LIST}
+                onValueChange={value => {
+                  setChartSelected(value as "area" | "bar");
+
+                  analytics.track("transfersOverTimeChartType", {
+                    network: currentNetwork,
+                    selected: value,
+                  });
+                }}
+                type="secondary"
+                value={chartSelected}
+              />
+            </div>
+          </div>
+
           {isError ? (
             <ErrorPlaceholder />
+          ) : isLoading ? (
+            <Loader />
           ) : (
             <>
-              <div className="transfers-over-time-filters">
-                <div className="transfers-over-time-select-range">
-                  <Select
-                    name="timeRange"
-                    value={timeRange}
-                    onValueChange={value => {
-                      setTimeRange(value);
+              <WormholeScanBrand />
 
-                      analytics.track("transfersOverTimeTimeRange", {
-                        network: currentNetwork,
-                        selected: value.label,
-                      });
-                    }}
-                    items={RANGE_LIST}
-                    ariaLabel="Select Time Range"
-                  />
-                </div>
-
-                <ToggleGroup
-                  ariaLabel="Select data type"
-                  items={BY_TYPE_LIST}
-                  onValueChange={value => {
-                    setBy(value as ByType);
-
-                    analytics.track("metricSelected", {
-                      network: currentNetwork,
-                      selected: value,
-                      selectedType: "transfersOverTime",
-                    });
-                  }}
-                  value={by}
-                />
-
-                <div className="transfers-over-time-toggles">
-                  {chartSelected === "area" && by === "notional" && (
-                    <ToggleGroup
-                      ariaLabel="Select scale"
-                      items={SCALE_CHART_LIST}
-                      onValueChange={value => setScaleSelected(value, true)}
-                      type="secondary"
-                      value={scaleSelected}
-                    />
-                  )}
-
-                  <ToggleGroup
-                    ariaLabel="Select chart type"
-                    items={TYPE_CHART_LIST}
-                    onValueChange={value => {
-                      setChartSelected(value as "area" | "bar");
-
-                      analytics.track("transfersOverTimeChartType", {
-                        network: currentNetwork,
-                        selected: value,
-                      });
-                    }}
-                    type="secondary"
-                    value={chartSelected}
-                  />
+              <div className="transfers-over-time-filters-legends">
+                <div className="transfers-over-time-filters-legends-total">
+                  <span>
+                    {timeRange.value === "1d"
+                      ? "Daily"
+                      : timeRange.value === "1w"
+                      ? "Weekly"
+                      : timeRange.value === "1m"
+                      ? "Monthly"
+                      : timeRange.value === "1y"
+                      ? "Yearly"
+                      : timeRange.value === "custom"
+                      ? ""
+                      : "All Time"}{" "}
+                    Total {by === "tx" ? "Transfers" : "Volume"}:
+                  </span>
+                  <p>
+                    {by === "tx" ? "" : "$"}
+                    {series?.[0]?.totalValue && formatNumber(series[0].totalValue, 0)}
+                  </p>
                 </div>
               </div>
 
-              {isLoading ? (
-                <Loader />
-              ) : (
-                <>
-                  <WormholeScanBrand />
-
-                  <div className="transfers-over-time-filters-legends">
-                    <div className="transfers-over-time-filters-legends-total">
-                      <span>
-                        {timeRange.value === "1d"
-                          ? "Daily"
-                          : timeRange.value === "1w"
-                          ? "Weekly"
-                          : timeRange.value === "1m"
-                          ? "Monthly"
-                          : timeRange.value === "1y"
-                          ? "Yearly"
-                          : timeRange.value === "custom"
-                          ? ""
-                          : "All Time"}{" "}
-                        Total {by === "tx" ? "Transfers" : "Volume"}:
-                      </span>
-                      <p>
-                        {by === "tx" ? "" : "$"}
-                        {series?.[0]?.totalValue && formatNumber(series[0].totalValue, 0)}
-                      </p>
-                    </div>
-                  </div>
-
-                  <ReactApexChart
-                    key={chartSelected}
-                    series={series}
-                    type={chartSelected}
-                    height={isDesktop ? 360 : 300}
-                    options={{
-                      chart: {
-                        animations: { enabled: true },
-                        events:
-                          chartSelected === "bar"
-                            ? {
-                                mouseLeave: () => {
-                                  changePathOpacity({ ref: chartRef, opacity: 1 });
-                                },
-                                mouseMove(e, chart, options) {
-                                  if (options.dataPointIndex < 0) {
-                                    changePathOpacity({
-                                      ref: chartRef,
-                                      opacity: 1,
-                                    });
-                                  }
-                                },
+              <ReactApexChart
+                key={chartSelected}
+                series={series}
+                type={chartSelected}
+                height={isDesktop ? 360 : 300}
+                options={{
+                  chart: {
+                    animations: { enabled: true },
+                    events:
+                      chartSelected === "bar"
+                        ? {
+                            mouseLeave: () => {
+                              changePathOpacity({ ref: chartRef, opacity: 1 });
+                            },
+                            mouseMove(e, chart, options) {
+                              if (options.dataPointIndex < 0) {
+                                changePathOpacity({
+                                  ref: chartRef,
+                                  opacity: 1,
+                                });
                               }
-                            : {},
-                        toolbar: { show: false },
-                        zoom: { enabled: false },
-                        stacked: chartSelected === "bar",
-                      },
-                      dataLabels: { enabled: false },
-                      grid: {
-                        borderColor: "var(--color-gray-900)",
-                        strokeDashArray: 6,
-                        xaxis: {
-                          lines: { show: false },
-                        },
-                        yaxis: {
-                          lines: { show: true },
-                        },
-                        padding: {
-                          top: isDesktop ? 16 : 0,
-                        },
-                      },
-                      states: {
-                        hover: {
-                          filter: {
-                            type: "none",
-                          },
-                        },
-                        active: {
-                          filter: {
-                            type: "none",
-                          },
-                        },
-                      },
-                      stroke: {
-                        curve: "smooth",
-                        width: chartSelected === "area" ? 2 : 0,
-                        dashArray: 0,
-                      },
-                      fill: {
-                        type: chartSelected === "area" ? "gradient" : "solid",
-                        gradient: {
-                          type: "vertical",
-                          shadeIntensity: 0,
-                          opacityFrom: 0.4,
-                          opacityTo: 0,
-                          stops: [0, 100],
-                        },
-                      },
-                      xaxis: {
-                        axisBorder: { show: true, strokeWidth: 4, color: "var(--color-gray-10)" },
-                        axisTicks: { show: false },
-                        crosshairs: {
-                          position: "front",
-                        },
-                        tickAmount: isDesktop ? 6 : isTablet ? 4 : 3,
-                        labels: {
-                          rotate: 0,
-                          formatter: value => {
-                            const date = new Date(value);
-                            return formatDate(date);
-                          },
-                          hideOverlappingLabels: true,
-                          style: {
-                            colors: "var(--color-gray-400)",
-                            fontFamily: "Roboto Mono, Roboto, sans-serif",
-                            fontSize: "12px",
-                            fontWeight: 400,
-                          },
-                        },
-                        tooltip: { enabled: false },
-                        offsetX: 0,
-                      },
-                      yaxis: {
-                        labels: {
-                          offsetX: -8,
-                          formatter: formatterYAxis,
-                          style: {
-                            colors: "var(--color-gray-400)",
-                            fontFamily: "Roboto Mono, Roboto, sans-serif",
-                            fontSize: "12px",
-                            fontWeight: 400,
-                          },
-                        },
-                        opposite: true,
-                        logarithmic: scaleSelected === "logarithmic" && chartSelected === "area",
-                        forceNiceScale: scaleSelected === "logarithmic" && chartSelected === "area",
-                      },
-                      tooltip: {
-                        custom: ({ seriesIndex, dataPointIndex, w }) => {
-                          const data = w.config.series[seriesIndex].data[dataPointIndex];
-
-                          if (chartSelected === "bar") {
-                            updatePathStyles({ chartRef, dataPointIndex });
+                            },
                           }
+                        : {},
+                    toolbar: { show: false },
+                    zoom: { enabled: false },
+                    stacked: chartSelected === "bar",
+                  },
+                  dataLabels: { enabled: false },
+                  grid: {
+                    borderColor: "var(--color-gray-900)",
+                    strokeDashArray: 6,
+                    xaxis: {
+                      lines: { show: false },
+                    },
+                    yaxis: {
+                      lines: { show: true },
+                    },
+                    padding: {
+                      top: isDesktop ? 16 : 0,
+                    },
+                  },
+                  states: {
+                    hover: {
+                      filter: {
+                        type: "none",
+                      },
+                    },
+                    active: {
+                      filter: {
+                        type: "none",
+                      },
+                    },
+                  },
+                  stroke: {
+                    curve: "smooth",
+                    width: chartSelected === "area" ? 2 : 0,
+                    dashArray: 0,
+                  },
+                  fill: {
+                    type: chartSelected === "area" ? "gradient" : "solid",
+                    gradient: {
+                      type: "vertical",
+                      shadeIntensity: 0,
+                      opacityFrom: 0.4,
+                      opacityTo: 0,
+                      stops: [0, 100],
+                    },
+                  },
+                  xaxis: {
+                    axisBorder: { show: true, strokeWidth: 4, color: "var(--color-gray-10)" },
+                    axisTicks: { show: false },
+                    crosshairs: {
+                      position: "front",
+                    },
+                    tickAmount: isDesktop ? 6 : isTablet ? 4 : 3,
+                    labels: {
+                      rotate: 0,
+                      formatter: value => {
+                        const date = new Date(value);
+                        return formatDate(date);
+                      },
+                      hideOverlappingLabels: true,
+                      style: {
+                        colors: "var(--color-gray-400)",
+                        fontFamily: "Roboto Mono, Roboto, sans-serif",
+                        fontSize: "12px",
+                        fontWeight: 400,
+                      },
+                    },
+                    tooltip: { enabled: false },
+                    offsetX: 0,
+                  },
+                  yaxis: {
+                    labels: {
+                      offsetX: -8,
+                      formatter: formatterYAxis,
+                      style: {
+                        colors: "var(--color-gray-400)",
+                        fontFamily: "Roboto Mono, Roboto, sans-serif",
+                        fontSize: "12px",
+                        fontWeight: 400,
+                      },
+                    },
+                    opposite: true,
+                    logarithmic: scaleSelected === "logarithmic" && chartSelected === "area",
+                    forceNiceScale: scaleSelected === "logarithmic" && chartSelected === "area",
+                  },
+                  tooltip: {
+                    custom: ({ seriesIndex, dataPointIndex, w }) => {
+                      const data = w.config.series[seriesIndex].data[dataPointIndex];
 
-                          return `
+                      if (chartSelected === "bar") {
+                        updatePathStyles({ chartRef, dataPointIndex });
+                      }
+
+                      return `
                         <div class="transfers-over-time-container-chart-tooltip">
                           <div class="transfers-over-time-container-chart-tooltip-date">
                             <p>
@@ -390,14 +388,12 @@ export const TransfersOverTime = ({
                           </div>
                         </div>
                       `;
-                        },
-                        intersect: false,
-                        shared: true,
-                      },
-                    }}
-                  />
-                </>
-              )}
+                    },
+                    intersect: false,
+                    shared: true,
+                  },
+                }}
+              />
             </>
           )}
         </div>

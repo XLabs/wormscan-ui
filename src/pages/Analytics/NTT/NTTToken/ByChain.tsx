@@ -53,7 +53,7 @@ export const ByChain = ({
                 <div className="loading" />
               </div>
             ))
-          ) : activityTx ? (
+          ) : activityTx?.length > 0 ? (
             activityTx?.map((item, idx) =>
               idx < 10 ? (
                 <div key={`itemTx-${idx}`} className="bychain-half-table-item">
@@ -100,7 +100,7 @@ export const ByChain = ({
                 <div className="loading" />
               </div>
             ))
-          ) : activityNotional ? (
+          ) : activityNotional?.length > 0 ? (
             activityNotional?.map((item, idx) =>
               idx < 10 ? (
                 <div key={`itemNot-${idx}`} className="bychain-half-table-item">
