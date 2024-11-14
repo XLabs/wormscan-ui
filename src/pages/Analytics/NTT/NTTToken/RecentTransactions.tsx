@@ -85,7 +85,7 @@ export const RecentTransactions = ({
           onClick={() => {
             analytics.track("viewMore", {
               network: environment.network,
-              selected: "WToken Recent Transactions",
+              selected: "NTT Token Recent Transactions",
             });
           }}
           href={`#/txs?appId=${NTT_APP_ID}`}
@@ -113,7 +113,19 @@ export const RecentTransactions = ({
             </div>
           ) : recentTransactions?.length === 0 ? (
             <div className="recent-transactions-table-empty">
-              No recent transaction found; take a look at All Transactions.
+              No recent transaction found; take a look at&nbsp;
+              <a
+                onClick={() => {
+                  analytics.track("viewMore", {
+                    network: environment.network,
+                    selected: "NTT Token Recent Transactions",
+                  });
+                }}
+                href={`#/txs?appId=${NTT_APP_ID}`}
+              >
+                All Transactions
+              </a>
+              .
             </div>
           ) : (
             recentTransactions?.map(data => (
@@ -199,7 +211,19 @@ export const RecentTransactions = ({
             </div>
           ) : recentTransactions?.length === 0 ? (
             <div className="recent-transactions-table-empty">
-              No recent transaction found; take a look at All Transactions.
+              No recent transaction found; take a look at&nbsp;
+              <a
+                onClick={() => {
+                  analytics.track("viewMore", {
+                    network: environment.network,
+                    selected: "NTT Token Recent Transactions",
+                  });
+                }}
+                href={`#/txs?appId=${NTT_APP_ID}`}
+              >
+                All Transactions
+              </a>
+              .
             </div>
           ) : (
             recentTransactions?.map(data => (

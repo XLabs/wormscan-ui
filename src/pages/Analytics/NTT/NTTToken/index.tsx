@@ -229,10 +229,19 @@ const NTTToken = () => {
     isFetching: isFetchingSummary,
   } = useQuery(
     ["getSummary"],
-    () => {
-      return getClient().nttApi.getNttSummary({
+    async () => {
+      const data = await getClient().nttApi.getNttSummary({
         coingecko_id,
       });
+
+      // TODO: when coingecko returns optimism, remove this
+      if (data.symbol === "W") {
+        if (!data.platforms["optimistic-ethereum"]) {
+          data.platforms["optimistic-ethereum"] = "0xb0ffa8000886e57f86dd5264b9582b2ad87b2b91";
+        }
+      }
+
+      return data;
     },
     {
       enabled: isMainnet,

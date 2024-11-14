@@ -47,7 +47,7 @@ export const TopAddresses = ({
                 <div className="loading" />
               </div>
             ))
-          ) : topAddressesTx ? (
+          ) : topAddressesTx?.length > 0 ? (
             topAddressesTx?.map((item, idx) =>
               idx < 10 ? (
                 <div key={`itemTx-${idx}`} className="top-addresses-half-table-item">
@@ -92,7 +92,7 @@ export const TopAddresses = ({
                 <div className="loading" />
               </div>
             ))
-          ) : topAddressesNotional ? (
+          ) : topAddressesNotional?.length > 0 ? (
             topAddressesNotional?.map((item, idx) =>
               idx < 10 ? (
                 <div key={`itemNot-${idx}`} className="top-addresses-half-table-item">
