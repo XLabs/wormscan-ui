@@ -54,6 +54,7 @@ import {
   GATEWAY_APP_ID,
   GR_APP_ID,
   IStatus,
+  MAYAN_MCTP_APP_ID,
   NTT_APP_ID,
   PORTAL_APP_ID,
   PORTAL_NFT_APP_ID,
@@ -68,6 +69,7 @@ import { DeliveryLifecycleRecord, populateRelayerInfo } from "src/utils/genericR
 import { BlockSection } from "src/components/molecules";
 import "./styles.scss";
 import { mainnetNativeCurrencies, testnetNativeCurrencies } from "src/utils/environment";
+import getMayanMctpInfo from "src/utils/mayan";
 
 const Tx = () => {
   useEffect(() => {
@@ -1147,6 +1149,46 @@ const Tx = () => {
             if (formattedFinalUserAmount)
               data.content.standarizedProperties.overwriteRedeemAmount = formattedFinalUserAmount;
             data.content.standarizedProperties.overwriteFee = formattedRelayerFee;
+          }
+        }
+        // ----
+
+        // check Mayan
+        if (data?.content?.standarizedProperties?.appIds?.includes(MAYAN_MCTP_APP_ID)) {
+          if (data?.content?.payload?.action === 1 || data?.content?.payload?.action === 3) {
+            try {
+              const mayanInfo = await getMayanMctpInfo(data.sourceChain?.transaction?.txHash);
+
+              data.data = {
+                ...data.data,
+                symbol: mayanInfo?.fromTokenSymbol,
+                tokenAmount: mayanInfo?.fromAmount,
+              };
+
+              data.content.standarizedProperties = {
+                ...data.content.standarizedProperties,
+                fee: ((+mayanInfo?.fromAmount - +mayanInfo?.toAmount) * 10 ** 8).toString(),
+                amount: (+mayanInfo?.fromAmount * 10 ** 8).toString(),
+                tokenAddress: mayanInfo?.fromTokenAddress,
+                tokenChain: +mayanInfo?.fromTokenChain as ChainId,
+                overwriteTargetTokenAddress: mayanInfo?.toTokenAddress,
+                overwriteTargetTokenChain: +mayanInfo?.toTokenChain as ChainId,
+                overwriteSourceSymbol: mayanInfo?.fromTokenSymbol,
+                overwriteTargetSymbol: mayanInfo?.toTokenSymbol,
+                toAddress: mayanInfo?.destAddress,
+                toChain: +mayanInfo?.destChain as ChainId,
+              };
+
+              setExtraRawInfo((extraRawInfo: any) => ({
+                ...extraRawInfo,
+                // Add mayan info without null values to extra raw info so its available for users.
+                "Mayan Info": Object.fromEntries(
+                  Object.entries(mayanInfo).filter(([_, v]) => v !== null),
+                ),
+              }));
+            } catch (e) {
+              console.error("Error fetching Mayan MCTP info", e);
+            }
           }
         }
         // ----
