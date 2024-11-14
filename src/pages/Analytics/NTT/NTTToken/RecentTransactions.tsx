@@ -85,7 +85,7 @@ export const RecentTransactions = ({
           onClick={() => {
             analytics.track("viewMore", {
               network: environment.network,
-              selected: "WToken Recent Transactions",
+              selected: "NTT Token Recent Transactions",
             });
           }}
           href={`#/txs?appId=${NTT_APP_ID}`}
@@ -118,7 +118,7 @@ export const RecentTransactions = ({
                 onClick={() => {
                   analytics.track("viewMore", {
                     network: environment.network,
-                    selected: "WToken Recent Transactions",
+                    selected: "NTT Token Recent Transactions",
                   });
                 }}
                 href={`#/txs?appId=${NTT_APP_ID}`}
@@ -216,7 +216,7 @@ export const RecentTransactions = ({
                 onClick={() => {
                   analytics.track("viewMore", {
                     network: environment.network,
-                    selected: "WToken Recent Transactions",
+                    selected: "NTT Token Recent Transactions",
                   });
                 }}
                 href={`#/txs?appId=${NTT_APP_ID}`}
