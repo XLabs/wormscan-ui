@@ -214,10 +214,11 @@ export const chainsSupportedByProtocol: Record<string, ChainId[]> = {
     chainToChainId("Optimism"),
     chainToChainId("Polygon"),
   ],
-  [FAST_TRANSFERS_APP_ID]: [
+  [LIQUIDITY_LAYER_APP_ID]: [
     chainToChainId("Arbitrum"),
     chainToChainId("Bsc"),
     chainToChainId("Solana"),
+    chainToChainId("Base"),
   ],
   [GATEWAY_APP_ID]: [
     chainToChainId("Evmos"),

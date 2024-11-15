@@ -258,7 +258,18 @@ export class GuardianNetwork {
   }
 
   async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
-    return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
+    const response = await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
+
+    // liquidity layer patch
+    const responseProcessed = response?.map(item => {
+      if (item.protocol === "fast_transfers") {
+        item.protocol = "wormhole_liquidity_layer";
+      }
+
+      return item;
+    });
+
+    return responseProcessed;
   }
 
   async getProtocolActivity({
