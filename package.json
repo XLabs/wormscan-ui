@@ -25,7 +25,6 @@
     "build": "parcel build --no-scope-hoist --public-url ./ && node addCSP.ts",
     "start": "parcel",
     "local": "WORMSCAN_BFF_URL='http://localhost:8080' parcel",
-    "prod": "WORMSCAN_BFF_URL='http://localhost:8080' WORMSCAN_ANALYTICS_ID=\"G-XD1LW6R8X0\" WORMSCAN_API_BASE_URL_ROOT=\"https://api.wormholescan.io\" WORMSCAN_API_BASE_URL=\"https://api.wormholescan.io/api/v1\" WORMSCAN_TESTNET_API_BASE_URL_ROOT=\"https://api.testnet.wormscan.io\" WORMSCAN_TESTNET_API_BASE_URL=\"https://api.testnet.wormholescan.io/api/v1\" WORMHOLE_MARKET_TOKENS_URL=\"https://raw.githubusercontent.com/certusone/wormhole-token-list/main/src/markets.json\" parcel",
     "clean": "rimraf dist && rimraf .parcel-cache",
     "prepare": "husky install",
     "test:e2e": "yarn playwright test",

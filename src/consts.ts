@@ -196,7 +196,7 @@ export const TBTC_APP_ID = "TBTC";
 export const USDT_TRANSFER_APP_ID = "USDT_TRANSFER";
 export const UNKNOWN_APP_ID = "UNKNOWN";
 
-// This two (fast transfers & swap layer) are being swapped to liquidiy
+// This two (fast transfers & swap layer) are being swapped to liquidity
 // layer and mayan shuttle. If changed in vaa-parser, we need to remove
 // patch logic by removing FAST_TRANSFER_APP_ID and SWAP_LAYER_APP_ID
 // in all their occurrences in the codebase.
