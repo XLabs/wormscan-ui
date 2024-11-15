@@ -97,3 +97,26 @@ export const firstDataAvailableDate = "2021-08-01T00:00:00.000Z";
 export const twoDaysAgoISOString = getISODateZeroed(2);
 export const oneDayAgoISOString = getISODateZeroed(1);
 export const todayISOString = getISODateZeroed(0);
+
+const addOneMonth = (date: Date): Date => {
+  const originalDate = date.getDate();
+  const newDate = new Date(date);
+  newDate.setMonth(newDate.getMonth() + 1);
+
+  if (newDate.getDate() < originalDate) {
+    newDate.setDate(0);
+  }
+
+  return newDate;
+};
+
+export const getNextDate = (date: string, timespan: "1h" | "1d" | "1mo"): string => {
+  const baseDate = new Date(date);
+  return timespan === "1h"
+    ? new Date(baseDate.setHours(baseDate.getHours() + 1)).toISOString()
+    : timespan === "1d"
+    ? new Date(baseDate.setDate(baseDate.getDate() + 1)).toISOString()
+    : timespan === "1mo"
+    ? addOneMonth(baseDate).toISOString()
+    : new Date(baseDate.setFullYear(baseDate.getFullYear() + 1)).toISOString();
+};

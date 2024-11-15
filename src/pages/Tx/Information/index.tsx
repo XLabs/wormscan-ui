@@ -42,6 +42,8 @@ interface Props {
   txIndex: number;
 }
 
+type TView = "overview" | "advanced" | "progress";
+
 const Information = ({
   blockData,
   data,
@@ -56,8 +58,14 @@ const Information = ({
   const [showSourceTokenUrl] = useRecoilState(showSourceTokenUrlState);
   const [showTargetTokenUrl] = useRecoilState(showTargetTokenUrlState);
 
-  const [showOverview, setShowOverviewState] = useState(searchParams.get("view") || "overview");
-  const setShowOverview = (view: string) => {
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+  const isMainnet = currentNetwork === "Mainnet";
+
+  const [showOverview, setShowOverviewState] = useState<TView>(
+    (searchParams.get("view") as TView) || (isMainnet ? "overview" : "advanced"),
+  );
+  const setShowOverview = (view: TView) => {
     setShowOverviewState(view);
     setSearchParams(prev => {
       prev.set("view", view);
@@ -67,15 +75,12 @@ const Information = ({
 
   useEffect(() => {
     if (!hasMultipleTxs) {
-      const view = searchParams.get("view") || "overview";
+      const view = (searchParams.get("view") || (isMainnet ? "overview" : "advanced")) as TView;
       setShowOverviewState(view);
     }
-  }, [hasMultipleTxs, searchParams]);
+  }, [hasMultipleTxs, isMainnet, searchParams]);
 
-  const { environment } = useEnvironment();
-  const currentNetwork = environment.network;
-
-  const totalGuardiansNeeded = currentNetwork === "Mainnet" ? 13 : 1;
+  const totalGuardiansNeeded = isMainnet ? 13 : 1;
   const vaa = data?.vaa;
   const { isDuplicated } = data?.vaa || {};
   const guardianSignaturesCount =
@@ -118,7 +123,7 @@ const Information = ({
     wrappedTokenSymbol,
   } = standarizedProperties || {};
 
-  const { STATUS, isBigTransaction, isDailyLimitExceeded, transactionLimit } = data;
+  const { status, isBigTransaction, isDailyLimitExceeded, transactionLimit } = data;
   const {
     fee: targetFee,
     gasTokenNotional: targetGasTokenNotional,
@@ -317,9 +322,9 @@ const Information = ({
 
   const date_30_min_before = new Date(new Date().getTime() - 30 * 60000);
   const canTryToGetRedeem =
-    (STATUS === "EXTERNAL_TX" ||
-      STATUS === "VAA_EMITTED" ||
-      (STATUS === "PENDING_REDEEM" && new Date(timestamp) < date_30_min_before)) &&
+    (status === "external_tx" ||
+      status === "vaa_emitted" ||
+      (status === "pending_redeem" && new Date(timestamp) < date_30_min_before)) &&
     (platformToChains("Evm").includes(chainIdToChain(toChain) as any) ||
       toChain === 1 ||
       toChain === 21) &&
@@ -364,7 +369,7 @@ const Information = ({
 
       const newData: GetOperationsOutput = deepCloneWithBigInt(data);
 
-      newData.STATUS = "COMPLETED";
+      newData.status = "completed";
       newData.targetChain = newDestinationTx;
 
       if (newData?.content?.standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID)) {
@@ -440,6 +445,7 @@ const Information = ({
     parsedRedeemTx,
     payloadType,
     redeemedAmount,
+    releaseTimestamp: data?.releaseTimestamp,
     setShowOverview,
     showMetaMaskBtn,
     showSignatures: !(appIds && appIds.includes(CCTP_MANUAL_APP_ID)),
@@ -449,7 +455,7 @@ const Information = ({
     sourceTokenChain,
     sourceTokenInfo,
     sourceTokenLink,
-    STATUS,
+    status,
     targetFee,
     targetFeeUSD,
     targetSymbol,
@@ -477,7 +483,7 @@ const Information = ({
         loadingRedeem={loadingRedeem}
         setShowOverview={setShowOverview}
         showOverview={showOverview}
-        STATUS={STATUS}
+        status={status}
         txHash={data?.sourceChain?.transaction?.txHash}
         vaa={vaa?.raw}
       />

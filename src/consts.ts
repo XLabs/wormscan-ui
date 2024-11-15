@@ -129,6 +129,8 @@ export const CCTP_URL = "https://portalbridge.com/usdc-bridge";
 export const DISCORD_URL = "https://discord.com/invite/wormholecrypto";
 export const GATEWAY_URL = "https://wormhole.com/platform/gateway";
 export const GITHUB_URL = "https://github.com/wormhole-foundation";
+export const GR_URL =
+  "https://wormhole.com/docs/learn/infrastructure/relayer/#wormhole-automatic-relayers";
 export const MAYAN_URL = "https://mayan.finance";
 export const MORE_INFO_GOVERNOR_URL =
   "https://github.com/wormhole-foundation/wormhole/blob/main/whitepapers/0007_governor.md";
@@ -136,6 +138,7 @@ export const NTT_URL = "https://wormhole.com/products/native-token-transfers";
 export const OMNISWAP_URL = "https://app.omnibtc.finance/swap";
 export const PORTAL_BRIDGE_URL = "https://www.portalbridge.com";
 export const PROVIDE_FEEDBACK_URL = "https://forms.gle/rZesvKLgePamiTPi6";
+export const TBTC_URL = "https://portalbridge.com/tbtc-bridge";
 export const TWITTER_URL = "https://x.com/wormhole";
 export const WORMHOLE_BLOG = "https://wormhole.com/blog";
 export const WORMHOLE_DOCS_URL = "https://wormhole.com/docs";
@@ -167,12 +170,12 @@ export const canWeGetDestinationTx = (toChain: any) =>
   ].includes(toChain);
 
 export type IStatus =
-  | "EXTERNAL_TX"
-  | "COMPLETED"
-  | "PENDING_REDEEM"
-  | "VAA_EMITTED"
-  | "IN_PROGRESS"
-  | "IN_GOVERNORS";
+  | "external_tx"
+  | "completed"
+  | "pending_redeem"
+  | "vaa_emitted"
+  | "in_progress"
+  | "in_governors";
 
 export const ALL_BRIDGE_APP_ID = "ALL_BRIDGE";
 export const C3_APP_ID = "C3";
@@ -180,7 +183,6 @@ export const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
 export const CCTP_MANUAL_APP_ID = "CCTP_MANUAL";
 export const CONNECT_APP_ID = "CONNECT";
 export const ETH_BRIDGE_APP_ID = "ETH_BRIDGE";
-export const FAST_TRANSFERS_APP_ID = "FAST_TRANSFERS";
 export const GATEWAY_APP_ID = "WORMCHAIN_GATEWAY_TRANSFER";
 export const GR_APP_ID = "GENERIC_RELAYER";
 export const MAYAN_APP_ID = "MAYAN";
@@ -190,8 +192,15 @@ export const NTT_APP_ID = "NATIVE_TOKEN_TRANSFER";
 export const OMNISWAP_APP_ID = "OMNISWAP";
 export const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
 export const PORTAL_NFT_APP_ID = "PORTAL_NFT_BRIDGE";
-export const SWAP_LAYER_APP_ID = "SWAP_LAYER";
 export const TBTC_APP_ID = "TBTC";
 export const USDT_TRANSFER_APP_ID = "USDT_TRANSFER";
-
 export const UNKNOWN_APP_ID = "UNKNOWN";
+
+// This two (fast transfers & swap layer) are being swapped to liquidity
+// layer and mayan shuttle. If changed in vaa-parser, we need to remove
+// patch logic by removing FAST_TRANSFER_APP_ID and SWAP_LAYER_APP_ID
+// in all their occurrences in the codebase.
+export const FAST_TRANSFERS_APP_ID = "FAST_TRANSFERS";
+export const SWAP_LAYER_APP_ID = "SWAP_LAYER";
+export const LIQUIDITY_LAYER_APP_ID = "WORMHOLE_LIQUIDITY_LAYER";
+export const MAYAN_SHUTTLE_APP_ID = "MAYAN_SHUTTLE";

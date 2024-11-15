@@ -13,13 +13,8 @@ import {
   GetOperationsInput,
   GetOperationsOutput,
   GetParsedVaaOutput,
-  IAllbridgeActivity,
-  IAllbridgeActivityInput,
   IChainActivity,
   IChainActivityInput,
-  IMayanActivity,
-  IMayanActivityInput,
-  IMayanStats,
   IProtocolActivity,
   IProtocolActivityInput,
   LastTxs,
@@ -32,7 +27,13 @@ import {
   TokensSymbolVolumeOutput,
   VAACount,
 } from "./types";
-import { CONNECT_APP_ID } from "src/consts";
+import {
+  CONNECT_APP_ID,
+  FAST_TRANSFERS_APP_ID,
+  LIQUIDITY_LAYER_APP_ID,
+  MAYAN_SHUTTLE_APP_ID,
+  SWAP_LAYER_APP_ID,
+} from "src/consts";
 
 export class GuardianNetwork {
   constructor(private readonly _client: APIClient) {}
@@ -45,26 +46,77 @@ export class GuardianNetwork {
     address,
     appId,
     exclusiveAppId,
+    from,
     pagination = DefaultPageRequest,
     payloadType,
     sourceChain,
     targetChain,
+    to,
     txHash,
     vaaID,
+    filterRepeatedTxs = false,
   }: GetOperationsInput): Promise<GetOperationsOutput[]> {
     const path = vaaID ? `/operations/${vaaID}` : "/operations";
-    const result: any = await this._client.doGet(path, {
+    const response: any = await this._client.doGet(path, {
       ...pagination,
       address,
       appId,
       exclusiveAppId,
+      from,
       payloadType,
       sourceChain,
       targetChain,
+      to,
       txHash,
     });
 
-    return (result?.operations ? result.operations : [result]) as GetOperationsOutput[];
+    const result = (
+      response?.operations ? response.operations : [response]
+    ) as GetOperationsOutput[];
+
+    // LIQUIDITY LAYER PATCH
+    const resultProcessed = result.map(data => {
+      if (data?.content?.standarizedProperties?.appIds?.includes(FAST_TRANSFERS_APP_ID)) {
+        // AppID patch
+        if (data?.content?.standarizedProperties?.appIds?.includes(SWAP_LAYER_APP_ID)) {
+          data.content.standarizedProperties.appIds = [MAYAN_SHUTTLE_APP_ID];
+        } else {
+          data.content.standarizedProperties.appIds = [LIQUIDITY_LAYER_APP_ID];
+        }
+
+        // Fix for when user got a refund in another chain
+        if (
+          !!data?.targetChain?.chainId &&
+          data?.targetChain?.chainId !== data?.content?.standarizedProperties?.toChain
+        ) {
+          data.content.standarizedProperties.toChain = data?.targetChain?.chainId;
+        }
+      }
+
+      return data;
+    });
+
+    // LIQUIDITY LAYER FILTER REPEATED TXS PATCH
+    if (filterRepeatedTxs) {
+      const uniqueResults = resultProcessed.reduce((acc: GetOperationsOutput[], current) => {
+        const lastElement = acc[acc.length - 1];
+
+        // If this is first element or has different txHash than previous, keep it
+        if (
+          !lastElement ||
+          lastElement?.sourceChain?.transaction?.txHash !==
+            current?.sourceChain?.transaction?.txHash
+        ) {
+          acc.push(current);
+        }
+
+        return acc;
+      }, []);
+
+      return uniqueResults;
+    }
+
+    return resultProcessed;
   }
 
   async getParsedVaa(vaa: string): Promise<GetParsedVaaOutput> {
@@ -206,43 +258,18 @@ export class GuardianNetwork {
   }
 
   async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
-    return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
-  }
+    const response = await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
 
-  // unused until this Mayan endpoint has the correct data
-  async getMayanActivity({ from, to }: IMayanActivityInput): Promise<IMayanActivity> {
-    const mayanResp = await fetch(
-      `https://explorer-api.mayan.finance/v3/stats/wh/activity?from=${from}&to=${to}`,
-    );
+    // liquidity layer patch
+    const responseProcessed = response?.map(item => {
+      if (item.protocol === "fast_transfers") {
+        item.protocol = "wormhole_liquidity_layer";
+      }
 
-    if (mayanResp.ok) {
-      const mayanResponse = await mayanResp.json();
-      return mayanResponse;
-    }
-    return null;
-  }
+      return item;
+    });
 
-  async getMayanStats(): Promise<IMayanStats> {
-    const mayanResp = await fetch("https://explorer-api.mayan.finance/v3/stats/overview");
-
-    if (mayanResp.ok) {
-      const mayanResponse = await mayanResp.json();
-      return mayanResponse;
-    }
-
-    return null;
-  }
-
-  async getAllbridgeActivity({ from, to }: IAllbridgeActivityInput): Promise<IAllbridgeActivity> {
-    const mayanResp = await fetch(
-      `https://analytics.api.allbridgecoreapi.net/wormhole/activity?from=${from}&to=${to}`,
-    );
-
-    if (mayanResp.ok) {
-      const mayanResponse = await mayanResp.json();
-      return mayanResponse;
-    }
-    return null;
+    return responseProcessed;
   }
 
   async getProtocolActivity({

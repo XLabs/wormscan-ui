@@ -1,4 +1,4 @@
-@import "src/styles/globals.scss";
+@use "src/styles/globals.scss" as *;
 
 .token-activity {
   margin-bottom: 48px;
@@ -84,8 +84,10 @@
           border: none;
           flex-wrap: wrap;
           inset: unset;
+          margin-right: auto;
           padding: 0;
           position: relative;
+          width: max-content;
           z-index: unset;
         }
 
@@ -132,7 +134,6 @@
           order: 4;
 
           @include desktop {
-            margin-right: auto;
             order: unset;
           }
 
@@ -156,10 +157,6 @@
 
             @include desktop {
               height: 36px;
-            }
-
-            &.hidden {
-              display: none;
             }
           }
         }
@@ -308,7 +305,7 @@
           }
 
           &.row-0 {
-            border-top: none !important;
+            border-top: none;
           }
 
           &.open {
@@ -321,6 +318,10 @@
               border-radius: 0;
               border: none;
               border-top: 1px solid var(--color-gray-900);
+
+              &.row-0 {
+                border-top: none;
+              }
             }
 
             & svg {
@@ -439,25 +440,6 @@
         margin-left: auto;
         gap: 0 16px;
       }
-
-      &-scale {
-        border-radius: 12px;
-        margin-left: auto;
-
-        & .toggle-group-item {
-          border-radius: 12px;
-          padding: 6px;
-        }
-      }
-
-      &-toggle {
-        border-radius: 12px !important;
-
-        & button {
-          border-radius: 12px !important;
-          padding: 6px !important;
-        }
-      }
     }
 
     .wormholescan-brand {
@@ -494,8 +476,11 @@
       }
 
       &-date {
+        @include centered-column;
         @include text-heading6;
         color: var(--color-gray-400);
+        font-family: "Roboto Mono", "Roboto", sans-serif !important;
+        gap: 4px 0;
         text-transform: uppercase;
       }
 

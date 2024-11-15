@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Network } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { NavLink, Select } from "src/components/atoms";
+import { NavLink, ProtocolIcon, Select } from "src/components/atoms";
 import { TermsOfUseBanner, WormholeScanBrand } from "src/components/molecules";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import Search from "./Search";
@@ -21,9 +21,8 @@ import {
   AnalyticsIcon,
 } from "src/icons/generic";
 import { useOutsideClick, useWindowSize } from "src/utils/hooks";
-import { BREAKPOINTS, GITHUB_URL, WORMHOLE_DOCS_URL, WORMHOLESCAN_API_DOCS_URL } from "src/consts";
+import { BREAKPOINTS, GITHUB_URL, NTT_APP_ID, WORMHOLE_DOCS_URL } from "src/consts";
 import "./styles.scss";
-import { getTokenIcon } from "src/utils/token";
 
 type NetworkSelectProps = { label: string; value: Network };
 
@@ -54,7 +53,6 @@ const Header = ({
   const { pathname, search } = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const tokenIcon = getTokenIcon("W");
 
   const currentNetwork = environment.network;
 
@@ -199,15 +197,9 @@ const Header = ({
                   </NavigationMenu.Trigger>
 
                   <NavigationMenu.Content className="dropdown-menu-content">
-                    <NavLink to="/analytics/w" aria-label="analytics wormhole token">
-                      <img
-                        className="dropdown-menu-content-wIcon"
-                        src={tokenIcon}
-                        alt="W Token"
-                        width="16"
-                        height="16"
-                      />{" "}
-                      W Token
+                    <NavLink to="/analytics/ntt" aria-label="analytics Wormhole NTT">
+                      <ProtocolIcon protocol={NTT_APP_ID} width={24} /> NTT
+                      <div className="new-icon">NEW</div>
                     </NavLink>
 
                     <NavLink to="/analytics/tokens" aria-label="analytics tokens">
@@ -279,7 +271,6 @@ const Header = ({
               name="networkSelect"
               onValueChange={(env: NetworkSelectProps) => onClickChangeNetwork(env.value)}
               type="secondary"
-              menuPortalStyles={{ zIndex: 99 }}
               value={NETWORK_LIST.find(a => a.value === currentNetwork)}
             />
           </nav>
@@ -338,18 +329,12 @@ const Header = ({
           }`}
         >
           <NavLink
-            to="/analytics/w"
-            aria-label="analytics wormhole token"
+            to="/analytics/ntt"
+            aria-label="analytics Wormhole NTT"
             onClick={closeAllMobileMenus}
           >
-            <img
-              className="header-container-mobile-menu-wIcon"
-              src={tokenIcon}
-              alt="W Token"
-              width="16"
-              height="16"
-            />{" "}
-            W Token
+            <ProtocolIcon protocol={NTT_APP_ID} width={24} /> NTT
+            <div className="new-icon">NEW</div>
           </NavLink>
 
           <NavLink

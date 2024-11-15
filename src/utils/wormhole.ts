@@ -12,13 +12,16 @@ import BSCIcon from "src/icons/blockchains/bsc.svg";
 import BtcIcon from "src/icons/blockchains/btc.svg";
 import CeloIcon from "src/icons/blockchains/celo.svg";
 import DymensionIcon from "src/icons/blockchains/dymension.svg";
+import EnergiIcon from "src/icons/blockchains/energi.svg";
 import EthereumIcon from "src/icons/blockchains/eth.svg";
 import EvmosIcon from "src/icons/blockchains/evmos.svg";
 import FantomIcon from "src/icons/blockchains/fantom.svg";
+import HederaIcon from "src/icons/blockchains/hedera.svg";
 import InjectiveIcon from "src/icons/blockchains/injective.svg";
 import KaruraIcon from "src/icons/blockchains/karura.svg";
 import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KujiraIcon from "src/icons/blockchains/kujira.svg";
+import LineaIcon from "src/icons/blockchains/linea.svg";
 import MantleIcon from "src/icons/blockchains/mantle.svg";
 import MoonbeamIcon from "src/icons/blockchains/moonbeam.svg";
 import NearIcon from "src/icons/blockchains/near.svg";
@@ -26,18 +29,23 @@ import NeonIcon from "src/icons/blockchains/neon.svg";
 import OasisIcon from "src/icons/blockchains/oasis.svg";
 import OptimismIcon from "src/icons/blockchains/optimism.svg";
 import OsmosisIcon from "src/icons/blockchains/osmosis.svg";
+import PolkadotIcon from "src/icons/blockchains/polkadot.svg";
 import PolygonIcon from "src/icons/blockchains/polygon.svg";
 import PythIcon from "src/icons/blockchains/pyth.svg";
 import ScrollIcon from "src/icons/blockchains/scroll.svg";
 import SeiIcon from "src/icons/blockchains/sei.svg";
 import SnaxChainIcon from "src/icons/blockchains/snaxchain.svg";
 import SolanaIcon from "src/icons/blockchains/solana.svg";
+import StellarIcon from "src/icons/blockchains/stellar.svg";
 import SuiIcon from "src/icons/blockchains/sui.svg";
 import TerraClassicIcon from "src/icons/blockchains/terra-classic.svg";
 import TerraIcon from "src/icons/blockchains/terra.svg";
+import TronIcon from "src/icons/blockchains/tron.svg";
+import UnichainIcon from "src/icons/blockchains/unichain.svg";
 import WormChainIcon from "src/icons/blockchains/wormchain.svg";
 import XLayerIcon from "src/icons/blockchains/xlayer.svg";
 import XplaIcon from "src/icons/blockchains/xpla.svg";
+import ZksyncIcon from "src/icons/blockchains/zksync.svg";
 
 import AcalaColorlessIcon from "src/icons/blockchains/colorless/acala.svg";
 import AlgorandColorlessIcon from "src/icons/blockchains/colorless/algorand.svg";
@@ -51,13 +59,16 @@ import BSCColorlessIcon from "src/icons/blockchains/colorless/bsc.svg";
 import BtcColorlessIcon from "src/icons/blockchains/colorless/btc.svg";
 import CeloColorlessIcon from "src/icons/blockchains/colorless/celo.svg";
 import DymensionColorlessIcon from "src/icons/blockchains/colorless/dymension.svg";
+import EnergiColorlessIcon from "src/icons/blockchains/colorless/energi.svg";
 import EthereumColorlessIcon from "src/icons/blockchains/colorless/eth.svg";
 import EvmosColorlessIcon from "src/icons/blockchains/colorless/evmos.svg";
 import FantomColorlessIcon from "src/icons/blockchains/colorless/fantom.svg";
+import HederaColorlessIcon from "src/icons/blockchains/colorless/hedera.svg";
 import InjectiveColorlessIcon from "src/icons/blockchains/colorless/injective.svg";
 import KaruraColorlessIcon from "src/icons/blockchains/colorless/karura.svg";
 import KlaytnColorlessIcon from "src/icons/blockchains/colorless/klaytn.svg";
 import KujiraColorlessIcon from "src/icons/blockchains/colorless/kujira.svg";
+import LineaColorlessIcon from "src/icons/blockchains/colorless/linea.svg";
 import MantleColorlessIcon from "src/icons/blockchains/colorless/mantle.svg";
 import MoonbeamColorlessIcon from "src/icons/blockchains/colorless/moonbeam.svg";
 import NearColorlessIcon from "src/icons/blockchains/colorless/near.svg";
@@ -66,18 +77,23 @@ import NoColorlessIcon from "src/icons/blockchains/colorless/noIcon.svg";
 import OasisColorlessIcon from "src/icons/blockchains/colorless/oasis.svg";
 import OptimismColorlessIcon from "src/icons/blockchains/colorless/optimism.svg";
 import OsmosisColorlessIcon from "src/icons/blockchains/colorless/osmosis.svg";
+import PolkadotColorlessIcon from "src/icons/blockchains/colorless/polkadot.svg";
 import PolygonColorlessIcon from "src/icons/blockchains/colorless/polygon.svg";
 import PythColorlessIcon from "src/icons/blockchains/colorless/pyth.svg";
 import ScrollColorlessIcon from "src/icons/blockchains/colorless/scroll.svg";
 import SeiColorlessIcon from "src/icons/blockchains/colorless/sei.svg";
 import SnaxChainColorlessIcon from "src/icons/blockchains/colorless/snaxchain.svg";
 import SolanaColorlessIcon from "src/icons/blockchains/colorless/solana.svg";
+import StellarColorlessIcon from "src/icons/blockchains/colorless/stellar.svg";
 import SuiColorlessIcon from "src/icons/blockchains/colorless/sui.svg";
 import TerraClassicColorlessIcon from "src/icons/blockchains/colorless/terra-classic.svg";
 import TerraColorlessIcon from "src/icons/blockchains/colorless/terra.svg";
+import TronColorlessIcon from "src/icons/blockchains/colorless/tron.svg";
+import UniChainColorlessIcon from "src/icons/blockchains/colorless/unichain.svg";
 import WormChainColorlessIcon from "src/icons/blockchains/colorless/wormchain.svg";
 import XLayerColorlessIcon from "src/icons/blockchains/colorless/xlayer.svg";
 import XplaColorlessIcon from "src/icons/blockchains/colorless/xpla.svg";
+import ZksyncColorlessIcon from "src/icons/blockchains/colorless/zksync.svg";
 
 import { parseAddress, parseTx } from "./crypto";
 
@@ -841,6 +857,136 @@ const WORMHOLE_CHAINS: any = {
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
+  [chainToChainId("Unichain")]: {
+    name: "Unichain",
+    nameTestnet: "Unichain",
+    icon: UnichainIcon,
+    colorlessIcon: UniChainColorlessIcon,
+    explorer: {
+      Testnet: "https://unichain-sepolia.blockscout.com",
+      Devnet: "https://unichain-sepolia.blockscout.com",
+      Mainnet: "https://unichain-sepolia.blockscout.com", // TODO: mainnet when exists
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [chainToChainId("Linea")]: {
+    name: "Linea",
+    icon: LineaIcon,
+    colorlessIcon: LineaColorlessIcon,
+    explorer: {
+      Testnet: "https://sepolia.lineascan.build",
+      Devnet: "https://sepolia.lineascan.build",
+      Mainnet: "https://lineascan.build",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+
+  // ---
+
+  // TODO: change the chainId number when it exists
+  // we're using these fake chainIds on the NTT-Token page
+  // src/pages/Analytics/NTT/NTTToken/Summary.tsx
+
+  [/* chainToChainId("Energi") */ 99949991]: {
+    name: "Energi",
+    icon: EnergiIcon,
+    colorlessIcon: EnergiColorlessIcon,
+    explorer: {
+      Testnet: "https://testnet.energi.network",
+      Devnet: "https://devnet.energi.network",
+      Mainnet: "https://explorer.energi.network",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [/* chainToChainId("Hedera Hashgraph") */ 99949992]: {
+    name: "Hedera Hashgraph",
+    icon: HederaIcon,
+    colorlessIcon: HederaColorlessIcon,
+    explorer: {
+      Testnet: "https://hashscan.io/testnet",
+      Devnet: "https://hashscan.io/testnet",
+      Mainnet: "https://hashscan.io/mainnet",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/account/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      return this.explorer?.[network] + "/transaction/" + value;
+    },
+  },
+  [/* chainToChainId("Polkadot") */ 99949993]: {
+    name: "Polkadot",
+    icon: PolkadotIcon,
+    colorlessIcon: PolkadotColorlessIcon,
+    explorer: {
+      Testnet: "https://testnet.subscan.io",
+      Devnet: "https://devnet.subscan.io",
+      Mainnet: "https://polkadot.subscan.io",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/account/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      return this.explorer?.[network] + "/extrinsic/" + value;
+    },
+  },
+  [/* chainToChainId("Stellar") */ 99949994]: {
+    name: "Stellar",
+    icon: StellarIcon,
+    colorlessIcon: StellarColorlessIcon,
+    explorer: {
+      Testnet: "https://testnet.stellarchain.io",
+      Devnet: "https://testnet.stellarchain.io",
+      Mainnet: "https://stellarchain.io",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
+      if (base === "token") return this.explorer?.[network] + "/assets/" + value;
+      return this.explorer?.[network] + "/transactions/" + value;
+    },
+  },
+  [/* chainToChainId("Tron") */ 99949995]: {
+    name: "Tron",
+    icon: TronIcon,
+    colorlessIcon: TronColorlessIcon,
+    explorer: {
+      Testnet: "https://nile.tronscan.org/#",
+      Devnet: "https://nile.tronscan.org/#",
+      Mainnet: "https://tronscan.org/#",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token20/" + value;
+      return this.explorer?.[network] + "/transaction/" + value;
+    },
+  },
+  [/* chainToChainId("zkSync") */ 99949996]: {
+    name: "zkSync",
+    icon: ZksyncIcon,
+    colorlessIcon: ZksyncColorlessIcon,
+    explorer: {
+      Testnet: "https://sepolia.explorer.zksync.io",
+      Devnet: "https://sepolia.explorer.zksync.io",
+      Mainnet: "https://explorer.zksync.io",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/address/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  // ---
 };
 
 const OTHERS_FAKE_CHAIN_ID = 123123123 as ChainId;

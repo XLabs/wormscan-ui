@@ -15,8 +15,12 @@ const NotFound = lazy(() => import("../pages/NotFound"));
 const VaaParser = lazy(() => import("../pages/VaaParser"));
 const Submit = lazy(() => import("../pages/Submit"));
 const Governor = lazy(() => import("../pages/Governor"));
-const Analytics = lazy(() => import("../pages/Analytics"));
 const ApiDoc = lazy(() => import("../pages/ApiDoc"));
+const NTT = lazy(() => import("../pages/Analytics/NTT"));
+const NTTToken = lazy(() => import("../pages/Analytics/NTT/NTTToken"));
+const Tokens = lazy(() => import("../pages/Analytics/Tokens"));
+const Chains = lazy(() => import("../pages/Analytics/Chains"));
+const Protocols = lazy(() => import("../pages/Analytics/Protocols"));
 
 const Navigation = () => {
   return (
@@ -43,7 +47,11 @@ const Navigation = () => {
                 <Route path="/developers/vaa-parser" element={<VaaParser />} />
                 <Route path="/developers/vaa-parser/*" element={<VaaParser />} />
                 <Route path="/developers/api-doc" element={<ApiDoc />} />
-                <Route path="/analytics/:analyticsId" element={<Analytics />} />
+                <Route path="/analytics/ntt" element={<NTT />} />
+                <Route path="/analytics/ntt/:coingecko_id/:symbol" element={<NTTToken />} />
+                <Route path="/analytics/tokens" element={<Tokens />} />
+                <Route path="/analytics/chains" element={<Chains />} />
+                <Route path="/analytics/protocols" element={<Protocols />} />
                 <Route path="/governor" element={<Governor />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

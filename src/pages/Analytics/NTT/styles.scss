@@ -1,0 +1,251 @@
+@use "src/styles/globals.scss" as *;
+
+.ntt-page {
+  &-title {
+    @include centered-row;
+    @include text-roboto-heading-500;
+    gap: 0 8px;
+    margin-bottom: 16px;
+  }
+
+  &-description {
+    @include text-roboto-body-400;
+    color: var(--color-gray-400);
+    margin-bottom: 24px;
+    max-width: 765px;
+  }
+
+  &-stats {
+    @include centered-column;
+    background-color: var(--color-gray-950);
+    border-radius: 16px;
+    gap: 24px;
+    margin-bottom: 40px;
+    padding: 16px;
+
+    @include desktop {
+      @include centered-row;
+      justify-content: space-between;
+      max-height: 84px;
+      padding: 16px 32px;
+    }
+
+    &-item {
+      @include centered-column;
+      gap: 12px 0;
+      min-width: max-content;
+      width: 180px;
+
+      &-label {
+        @include text-heading6;
+        color: var(--color-gray-400);
+      }
+
+      &-value {
+        @include text-roboto-heading-500;
+        color: var(--color-white);
+      }
+    }
+  }
+
+  &-tokens-list {
+    margin-bottom: 48px;
+
+    @include desktop {
+      margin-bottom: 80px;
+    }
+
+    &-title {
+      @include centered-row;
+      @include text-roboto-subheading-500;
+      color: var(--color-white);
+      margin-bottom: 24px;
+      gap: 0 8px;
+
+      & > svg {
+        color: var(--color-gray-400);
+      }
+
+      & > .sort-by-btn {
+        @include button-secondary;
+        border-radius: 12px;
+        height: 36px;
+        justify-content: center;
+        margin-left: auto;
+        padding: 0;
+        width: 36px;
+
+        @include desktop {
+          display: none;
+        }
+      }
+    }
+
+    &-error {
+      @include centered-row;
+      @include text-roboto-body-400;
+      color: var(--color-gray-500);
+      justify-content: center;
+      padding: 16px;
+    }
+
+    &-table {
+      overflow-x: auto;
+
+      & td:nth-child(2) {
+        border: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        @include desktop {
+          position: relative;
+        }
+      }
+
+      &-item {
+        @include centered-row;
+        @include text-heading5;
+
+        & h4 {
+          @include text-heading6;
+          color: var(--color-gray-400);
+          margin-right: auto;
+
+          @include desktop {
+            display: none;
+          }
+        }
+
+        &.token {
+          @include centered-row;
+          @include text-roboto-body-500;
+          gap: 0 12px;
+        }
+
+        & .price-variation {
+          @include text-heading6;
+          align-items: center;
+          border-radius: 12px;
+          color: var(--color-gray-400);
+          display: flex;
+          max-width: max-content;
+          padding: 2px 8px;
+
+          @include desktop {
+            margin-left: 92px;
+          }
+
+          &.negative {
+            background-color: var(--color-error-15);
+            color: var(--color-error-100);
+          }
+
+          &.positive {
+            background-color: var(--color-success-10);
+            color: var(--color-success-100);
+
+            & svg {
+              transform: rotate(180deg);
+            }
+          }
+
+          & svg {
+            margin-right: 8px;
+          }
+        }
+
+        &.volume {
+          justify-content: flex-end;
+        }
+
+        &.view-details {
+          & > a {
+            @include button-secondary;
+            justify-content: center;
+            width: 100%;
+          }
+        }
+      }
+    }
+
+    &-mobile-filters {
+      @include centered-column;
+      background-color: var(--color-gray-950);
+      border-radius: 40px 40px 0 0;
+      border: 1px solid var(--color-gray-900);
+      border-bottom: none;
+      display: flex;
+      gap: 16px;
+      inset: 120vh 0 0 0;
+      justify-content: flex-start;
+      padding: 20px;
+      position: fixed;
+      transition: inset 0.3s ease;
+      width: 100%;
+      z-index: 99;
+
+      @include desktop {
+        display: none;
+      }
+
+      &.open {
+        inset: max(16px, calc(100% - 472px)) 0 0 0;
+      }
+
+      &-top {
+        @include centered-row;
+        @include text-roboto-subheading-500;
+        justify-content: center;
+
+        &-btn {
+          @include button-secondary;
+          height: 24px;
+          padding: 0;
+          width: 24px;
+          position: absolute;
+          right: 20px;
+          top: 20px;
+        }
+      }
+
+      &-select {
+        height: 48px;
+
+        & > .select__control {
+          height: inherit;
+          justify-content: space-between;
+        }
+      }
+
+      &-btns {
+        @include centered-column;
+        gap: 16px;
+        margin-top: auto;
+
+        &-apply {
+          @include button-primary;
+          height: 48px;
+          justify-content: center;
+        }
+
+        &-reset {
+          @include button-ghost;
+          height: 48px;
+          justify-content: center;
+        }
+      }
+
+      &-overlay {
+        background-color: var(--color-black-50);
+        inset: 0;
+        position: fixed;
+        z-index: 88;
+
+        @include desktop {
+          display: none;
+        }
+      }
+    }
+  }
+}

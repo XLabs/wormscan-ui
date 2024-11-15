@@ -8,15 +8,17 @@ import { getExplorerLink } from "src/utils/wormhole";
 import { TruncateText } from "src/utils/string";
 import { useWindowSize } from "src/utils/hooks";
 import "./styles.scss";
+import analytics from "src/analytics";
 
 interface Props {
   address: string;
   addressChainId: ChainId;
   liveMode: boolean;
   setLiveMode: (b: boolean) => void;
+  showLiveMode: boolean;
 }
 
-const Top = ({ address, addressChainId, liveMode, setLiveMode }: Props) => {
+const Top = ({ address, addressChainId, liveMode, setLiveMode, showLiveMode }: Props) => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const { width } = useWindowSize();
@@ -56,12 +58,19 @@ const Top = ({ address, addressChainId, liveMode, setLiveMode }: Props) => {
           {t("txs.top.title")}
         </h1>
 
-        {!address && (
+        {showLiveMode && (
           <Switch
             label="LIVE MODE"
             showIndicator
             value={liveMode}
-            setValue={() => setLiveMode(!liveMode)}
+            setValue={() => {
+              setLiveMode(!liveMode);
+
+              analytics.track("txsLiveMode", {
+                network: currentNetwork,
+                selected: !liveMode,
+              });
+            }}
           />
         )}
       </div>

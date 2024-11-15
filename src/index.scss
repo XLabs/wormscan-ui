@@ -1,4 +1,4 @@
-@import "src/styles/globals.scss";
+@use "src/styles/globals.scss" as *;
 
 :root {
   --color-gray-10: #e6e6e61a;

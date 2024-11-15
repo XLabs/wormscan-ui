@@ -2,6 +2,7 @@ import { chainToChainId } from "@wormhole-foundation/sdk";
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { BlockchainIcon, Counter, Select, ToggleGroup } from "src/components/atoms";
+import { Calendar } from "src/components/molecules";
 import {
   BREAKPOINTS,
   GATEWAY_APP_ID,
@@ -12,6 +13,7 @@ import {
 import { getChainName } from "src/utils/wormhole";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { ChainFilterMainnet, ChainFilterTestnet, PROTOCOL_LIST } from "src/utils/filterUtils";
+import { TSelectedPeriod } from "src/utils/chainActivityUtils";
 import {
   useWindowSize,
   useNavigateCustom,
@@ -19,35 +21,33 @@ import {
   useOutsideClick,
 } from "src/utils/hooks";
 import { CrossIcon, FilterListIcon } from "src/icons/generic";
+import analytics from "src/analytics";
+import { IParams } from "../..";
 import "./styles.scss";
 
 interface Props {
+  params: IParams;
   setIsPaginationLoading: Dispatch<SetStateAction<boolean>>;
 }
 
-interface ICheckedState {
-  appId: Array<{ value: string }>;
-  exclusiveAppId: Array<{ value: string }>;
-  sourceChain: Array<{ value: string }>;
-  targetChain: Array<{ value: string }>;
-}
-
-enum FilterKeys {
-  AppId = "appId",
-  ExclusiveAppId = "exclusiveAppId",
-  SourceChain = "sourceChain",
-  TargetChain = "targetChain",
-}
-
-const PAYLOAD_TYPE = "payloadType";
+const filterKeys = ["appId", "exclusiveAppId", "sourceChain", "targetChain"] as const;
+type TFilterKey = (typeof filterKeys)[number];
 
 const parseParams = (params: string | null) => {
   if (!params) return [];
   return params.split(",").map(value => ({ value }));
 };
 
-const Filters = ({ setIsPaginationLoading }: Props) => {
+const getParsedCheckedState = (params: IParams) => ({
+  appId: parseParams(params.appId),
+  exclusiveAppId: parseParams(params.exclusiveAppId),
+  sourceChain: parseParams(params.sourceChain),
+  targetChain: parseParams(params.targetChain),
+});
+
+const Filters = ({ params, setIsPaginationLoading }: Props) => {
   const navigate = useNavigateCustom();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
   const filterContainerRef = useRef<HTMLDivElement>(null);
   const showFiltersButtonRef = useRef<HTMLButtonElement>(null);
@@ -55,31 +55,27 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
   const { width } = useWindowSize();
   const isDesktop = width >= BREAKPOINTS.desktop;
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const appIdParams = searchParams.get(FilterKeys.AppId) || "";
-  const exclusiveAppIdParams = searchParams.get(FilterKeys.ExclusiveAppId) || "";
-  const sourceChainParams = searchParams.get(FilterKeys.SourceChain) || "";
-  const targetChainParams = searchParams.get(FilterKeys.TargetChain) || "";
-  const payloadTypeParams = searchParams.get(PAYLOAD_TYPE) || "";
+  const [startDate, setStartDate] = useState(params.from ? new Date(params.from) : null);
+  const [endDate, setEndDate] = useState(params.to ? new Date(params.to) : null);
+  const [startDateDisplayed, setStartDateDisplayed] = useState(
+    params.from ? new Date(params.from) : null,
+  );
+  const [endDateDisplayed, setEndDateDisplayed] = useState(params.to ? new Date(params.to) : null);
+  const lastBtnSelected: TSelectedPeriod = startDateDisplayed ? "custom" : "all";
 
-  const [checkedState, setCheckedState] = useState<ICheckedState>({
-    appId: parseParams(appIdParams),
-    exclusiveAppId: parseParams(exclusiveAppIdParams),
-    sourceChain: parseParams(sourceChainParams),
-    targetChain: parseParams(targetChainParams),
-  });
+  const [checkedState, setCheckedState] = useState(getParsedCheckedState(params));
 
   const totalFilterCounter =
-    (appIdParams ? 1 : 0) +
-    (exclusiveAppIdParams ? 1 : 0) +
-    (sourceChainParams ? 1 : 0) +
-    (targetChainParams ? 1 : 0);
+    (params.appId ? 1 : 0) +
+    (params.exclusiveAppId ? 1 : 0) +
+    (params.sourceChain ? 1 : 0) +
+    (params.targetChain ? 1 : 0);
 
   const disableApplyButton =
-    checkedState.exclusiveAppId.map(item => item.value).join(",") === exclusiveAppIdParams &&
-    checkedState.appId.map(item => item.value).join(",") === appIdParams &&
-    checkedState.sourceChain.map(item => item.value).join(",") === sourceChainParams &&
-    checkedState.targetChain.map(item => item.value).join(",") === targetChainParams;
+    checkedState.exclusiveAppId.map(item => item.value).join(",") === params.exclusiveAppId &&
+    checkedState.appId.map(item => item.value).join(",") === params.appId &&
+    checkedState.sourceChain.map(item => item.value).join(",") === params.sourceChain &&
+    checkedState.targetChain.map(item => item.value).join(",") === params.targetChain;
 
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
@@ -122,44 +118,37 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
 
   const handleShowFilters = () => {
     setShowFilters(!showFilters);
+
+    analytics.track("txsFilters", { network: environment.network });
   };
 
   const resetFilters = () => {
-    Object.values(FilterKeys).forEach(key => searchParams.delete(key));
+    filterKeys.forEach(key => searchParams.delete(key));
     setSearchParams(searchParams);
     setIsPaginationLoading(true);
     setShowFilters(false);
   };
 
   const applyFilters = useCallback(() => {
-    const appendFilter = (key: string, values: { value: string }[]) => {
+    const appendFilter = (key: TFilterKey, values: { value: string }[]) => {
       if (values.length > 0) {
         const joinedValues = values.map(item => item.value).join(",");
         searchParams.append(key, joinedValues);
       }
     };
 
-    Object.values(FilterKeys).forEach(key => searchParams.delete(key));
+    filterKeys.forEach(key => searchParams.delete(key));
 
-    appendFilter(FilterKeys.AppId, checkedState.appId);
-    appendFilter(FilterKeys.ExclusiveAppId, checkedState.exclusiveAppId);
-    appendFilter(FilterKeys.SourceChain, checkedState.sourceChain);
-    appendFilter(FilterKeys.TargetChain, checkedState.targetChain);
+    appendFilter("appId", checkedState.appId);
+    appendFilter("exclusiveAppId", checkedState.exclusiveAppId);
+    appendFilter("sourceChain", checkedState.sourceChain);
+    appendFilter("targetChain", checkedState.targetChain);
 
-    searchParams.set("page", "1");
+    searchParams.delete("page");
     setSearchParams(searchParams);
     setIsPaginationLoading(true);
     setShowFilters(false);
-  }, [checkedState, searchParams, setSearchParams, setShowFilters, setIsPaginationLoading]);
-
-  useEffect(() => {
-    setCheckedState({
-      appId: parseParams(appIdParams),
-      exclusiveAppId: parseParams(exclusiveAppIdParams),
-      sourceChain: parseParams(sourceChainParams),
-      targetChain: parseParams(targetChainParams),
-    });
-  }, [appIdParams, exclusiveAppIdParams, sourceChainParams, targetChainParams]);
+  }, [checkedState, searchParams, setIsPaginationLoading, setSearchParams]);
 
   useLockBodyScroll({
     isLocked: !isDesktop && showFilters,
@@ -167,13 +156,7 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
   });
 
   const handleCloseFilters = () => {
-    setCheckedState({
-      appId: parseParams(appIdParams),
-      exclusiveAppId: parseParams(exclusiveAppIdParams),
-      sourceChain: parseParams(sourceChainParams),
-      targetChain: parseParams(targetChainParams),
-    });
-
+    setCheckedState(getParsedCheckedState(params));
     setShowFilters(false);
   };
 
@@ -182,6 +165,15 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
     secondRef: showFiltersButtonRef,
     callback: handleCloseFilters,
   });
+
+  useEffect(() => {
+    setCheckedState(getParsedCheckedState(params));
+
+    setStartDate(params.from ? new Date(params.from) : null);
+    setEndDate(params.to ? new Date(params.to) : null);
+    setStartDateDisplayed(params.from ? new Date(params.from) : null);
+    setEndDateDisplayed(params.to ? new Date(params.to) : null);
+  }, [params]);
 
   return (
     <div className="filters">
@@ -197,18 +189,23 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
             { label: "Attestation", value: "2", ariaLabel: "Attestation" },
           ]}
           onValueChange={value => {
+            analytics.track("txsType", {
+              network: environment.network,
+              selected: value === "0" ? "All" : value.includes("1") ? "Transfers" : "Attestation",
+            });
+
             if (value === "0") {
-              searchParams.delete(PAYLOAD_TYPE);
+              searchParams.delete("payloadType");
             } else {
-              searchParams.set(PAYLOAD_TYPE, value);
-              searchParams.set("page", "1");
+              searchParams.set("payloadType", value);
+              searchParams.delete("page");
             }
 
             setIsPaginationLoading(true);
             setSearchParams(searchParams);
             navigate(`?${searchParams.toString()}`);
           }}
-          value={payloadTypeParams || "0"}
+          value={params.payloadType || "0"}
         />
 
         <button
@@ -220,6 +217,22 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
           <span>Filters</span>
           {totalFilterCounter > 0 && <Counter>{totalFilterCounter}</Counter>}
         </button>
+
+        <Calendar
+          className="filters-container-calendar"
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+          lastBtnSelected={lastBtnSelected}
+          startDateDisplayed={startDateDisplayed}
+          endDateDisplayed={endDateDisplayed}
+          isDesktop={isDesktop}
+          showDateRange
+          showAgoButtons
+          minDate={new Date(2022, 1, 1)}
+          shouldUpdateURL
+        />
       </div>
 
       {((isDesktop && showFilters) || !isDesktop) && (
@@ -233,11 +246,10 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
           <Select
             keepOpen={isDesktop}
             ariaLabel="Select Protocol"
-            controlStyles={{ minWidth: 256 }}
+            controlStyles={{ minWidth: 260 }}
             items={PROTOCOL_LIST}
             menuFixed={!isDesktop}
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-            menuPortalStyles={{ zIndex: 100 }}
             name="protocol"
             onValueChange={(selectedItems: Array<{ icon?: any; value: string; label: string }>) => {
               let updatedSelectedItems = [...selectedItems];
@@ -281,7 +293,6 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
             items={CHAIN_LIST}
             menuFixed={!isDesktop}
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-            menuPortalStyles={{ zIndex: 100 }}
             name="sourceChain"
             onValueChange={(value: any) => setCheckedState({ ...checkedState, sourceChain: value })}
             optionStyles={{ padding: 16 }}
@@ -307,7 +318,6 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
             }
             menuFixed={!isDesktop}
             menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-            menuPortalStyles={{ zIndex: 100 }}
             name="targetChain"
             onValueChange={(value: any) => setCheckedState({ ...checkedState, targetChain: value })}
             optionStyles={{ padding: 16 }}
@@ -332,14 +342,10 @@ const Filters = ({ setIsPaginationLoading }: Props) => {
           </button>
 
           <button
-            className={`filters-container-reset-btn ${
-              checkedState.exclusiveAppId.length === 0 &&
-              checkedState.appId.length === 0 &&
-              checkedState.sourceChain.length === 0 &&
-              checkedState.targetChain.length === 0
-                ? "hidden"
-                : ""
-            }`}
+            className="filters-container-reset-btn"
+            disabled={
+              !params.appId && !params.exclusiveAppId && !params.sourceChain && !params.targetChain
+            }
             onClick={resetFilters}
           >
             Reset Filters

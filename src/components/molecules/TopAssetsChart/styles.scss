@@ -1,4 +1,4 @@
-@import "src/styles/globals.scss";
+@use "src/styles/globals.scss" as *;
 
 .chart-container {
   background-color: var(--color-gray-950);
@@ -84,7 +84,19 @@
       padding: 16px;
     }
 
-    & > div {
+    &.transfers {
+      & > .volume {
+        order: 3;
+      }
+    }
+
+    &.is-testnet {
+      & > .volume {
+        display: none;
+      }
+    }
+
+    &-item {
       @include centered-row;
       gap: 8px;
       justify-content: space-between;
@@ -93,34 +105,34 @@
         justify-content: flex-start;
         margin-bottom: 4px;
       }
-    }
 
-    &-img {
-      border-radius: 50%;
-      height: 20px;
-      width: 20px;
-    }
+      &-img {
+        border-radius: 50%;
+        height: 20px;
+        width: 20px;
+      }
 
-    &-label {
-      @include text-roboto-body-400;
-      color: var(--color-white);
-    }
+      &-label {
+        @include text-roboto-body-400;
+        color: var(--color-white);
+      }
 
-    &-chain {
-      @include text-roboto-body-400;
-      color: var(--color-gray-400);
-    }
+      &-chain {
+        @include text-roboto-body-400;
+        color: var(--color-gray-400);
+      }
 
-    &-volume {
-      @include text-heading5;
-      color: var(--color-white);
-      font-family: "Roboto Mono", "Roboto", sans-serif !important;
-    }
+      &-volume {
+        @include text-heading5;
+        color: var(--color-white);
+        font-family: "Roboto Mono", "Roboto", sans-serif !important;
+      }
 
-    &-txs {
-      @include text-heading5;
-      color: var(--color-white);
-      font-family: "Roboto Mono", "Roboto", sans-serif !important;
+      &-txs {
+        @include text-heading5;
+        color: var(--color-white);
+        font-family: "Roboto Mono", "Roboto", sans-serif !important;
+      }
     }
   }
 

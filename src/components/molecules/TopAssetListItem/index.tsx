@@ -1,3 +1,4 @@
+import { useEnvironment } from "src/context/EnvironmentContext";
 import { getTokenIcon } from "src/utils/token";
 import { formatNumber } from "src/utils/number";
 import { ChevronDownIcon } from "src/icons/generic";
@@ -5,27 +6,24 @@ import "./styles.scss";
 
 type Props = {
   itemIndex: number;
-  rowSelected: number;
-  showThisGraph: () => void;
+  onClick: () => void;
+  rowSelected: string;
   symbol: string;
   txs: string;
   volume: string;
 };
 
-const TopAssetListItem = ({
-  itemIndex,
-  rowSelected,
-  showThisGraph,
-  symbol,
-  txs,
-  volume,
-}: Props) => {
+const TopAssetListItem = ({ itemIndex, onClick, rowSelected, symbol, txs, volume }: Props) => {
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+  const isMainnet = currentNetwork === "Mainnet";
+
   const tokenIcon = getTokenIcon(symbol);
 
   return (
     <tr
-      className={`top-asset-list-row ${rowSelected === itemIndex ? "active" : ""}`}
-      onClick={showThisGraph}
+      className={`top-asset-list-row ${rowSelected === symbol ? "active" : ""}`}
+      onClick={onClick}
     >
       <td className="top-asset-list-row-item">
         <div>{itemIndex + 1}</div>
@@ -47,9 +45,11 @@ const TopAssetListItem = ({
         </div>
       </td>
 
-      <td className="top-asset-list-row-item">
-        <div>${formatNumber(Number(volume), 0)}</div>
-      </td>
+      {isMainnet && (
+        <td className="top-asset-list-row-item">
+          <div>${formatNumber(Number(volume), 0)}</div>
+        </td>
+      )}
 
       <td className="top-asset-list-row-item">
         <div>{txs}</div>

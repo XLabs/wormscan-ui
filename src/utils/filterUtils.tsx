@@ -30,6 +30,10 @@ import {
   GATEWAY_URL,
   SWAP_LAYER_APP_ID,
   FAST_TRANSFERS_APP_ID,
+  TBTC_URL,
+  GR_URL,
+  MAYAN_SHUTTLE_APP_ID,
+  LIQUIDITY_LAYER_APP_ID,
 } from "src/consts";
 
 const appIds = [
@@ -37,25 +41,37 @@ const appIds = [
   CCTP_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
+  GATEWAY_APP_ID,
+  GR_APP_ID,
   MAYAN_APP_ID,
   MAYAN_MCTP_APP_ID,
   MAYAN_SWIFT_APP_ID,
-  OMNISWAP_APP_ID,
-  PORTAL_NFT_APP_ID,
-  PORTAL_APP_ID,
-  GR_APP_ID,
-  TBTC_APP_ID,
-  // UNKNOWN_APP_ID, // disabled until the backend is ready
-  USDT_TRANSFER_APP_ID,
-  GATEWAY_APP_ID,
   NTT_APP_ID,
+  OMNISWAP_APP_ID,
+  PORTAL_APP_ID,
+  PORTAL_NFT_APP_ID,
+  TBTC_APP_ID,
+  USDT_TRANSFER_APP_ID,
+  // UNKNOWN_APP_ID, // disabled until the backend is ready
 ];
 
-export const PROTOCOL_LIST: { label: string; value: string }[] = appIds.map(appId => ({
-  icon: <ProtocolIcon protocol={appId} />,
-  label: formatAppId(appId),
-  value: String(appId),
-}));
+export const PROTOCOL_LIST: { label: string; value: string }[] = [
+  ...appIds.map(appId => ({
+    icon: <ProtocolIcon protocol={appId} />,
+    label: formatAppId(appId),
+    value: String(appId),
+  })),
+  {
+    icon: <ProtocolIcon protocol={MAYAN_SHUTTLE_APP_ID} />,
+    label: "Mayan Shuttle",
+    value: SWAP_LAYER_APP_ID,
+  },
+  {
+    icon: <ProtocolIcon protocol={LIQUIDITY_LAYER_APP_ID} />,
+    label: "Wormhole Liquidity Layer",
+    value: FAST_TRANSFERS_APP_ID,
+  },
+].sort((a, b) => a.label.localeCompare(b.label));
 
 export const ChainFilterMainnet = [
   chainToChainId("Acala"),
@@ -128,6 +144,7 @@ export const ChainFilterTestnet = [
   chainToChainId("Sui"),
   chainToChainId("Terra"),
   chainToChainId("Terra2"),
+  chainToChainId("Unichain"),
   chainToChainId("Wormchain"),
   chainToChainId("Xlayer"),
   chainToChainId("Xpla"),
@@ -197,10 +214,11 @@ export const chainsSupportedByProtocol: Record<string, ChainId[]> = {
     chainToChainId("Optimism"),
     chainToChainId("Polygon"),
   ],
-  [FAST_TRANSFERS_APP_ID]: [
+  [LIQUIDITY_LAYER_APP_ID]: [
     chainToChainId("Arbitrum"),
     chainToChainId("Bsc"),
     chainToChainId("Solana"),
+    chainToChainId("Base"),
   ],
   [GATEWAY_APP_ID]: [
     chainToChainId("Evmos"),
@@ -312,12 +330,12 @@ export const protocolLinksByProtocol: Record<string, string> = {
   [CONNECT_APP_ID]: PORTAL_BRIDGE_URL,
   [ETH_BRIDGE_APP_ID]: PORTAL_BRIDGE_URL,
   [GATEWAY_APP_ID]: GATEWAY_URL,
-  [GR_APP_ID]: PORTAL_BRIDGE_URL,
+  [GR_APP_ID]: GR_URL,
   [MAYAN_APP_ID]: MAYAN_URL,
   [NTT_APP_ID]: NTT_URL,
   [OMNISWAP_APP_ID]: OMNISWAP_URL,
   [PORTAL_APP_ID]: PORTAL_BRIDGE_URL,
   [PORTAL_NFT_APP_ID]: PORTAL_BRIDGE_URL,
-  [TBTC_APP_ID]: PORTAL_BRIDGE_URL,
+  [TBTC_APP_ID]: TBTC_URL,
   [USDT_TRANSFER_APP_ID]: PORTAL_BRIDGE_URL,
 };

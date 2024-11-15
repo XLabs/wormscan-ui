@@ -1,4 +1,4 @@
-@import "src/styles/globals.scss";
+@use "src/styles/globals.scss" as *;
 
 .table {
   width: 100%;
@@ -44,7 +44,7 @@
         & .table-head-th-container {
           @include centered-row;
           @include text-heading6;
-          gap: 4px;
+          gap: 2px;
           justify-content: start;
           line-height: 1;
         }
@@ -171,33 +171,11 @@
     > thead {
       > tr {
         > th {
+          user-select: none;
+
           &:hover {
             cursor: pointer;
             background-color: var(--color-white-05);
-          }
-
-          & .table-head-th-container {
-            &-arrow {
-              width: 24px;
-            }
-          }
-        }
-      }
-    }
-
-    > tbody {
-      > tr {
-        > td {
-          @include desktop {
-            padding: 0 0 0 36px;
-
-            &:first-child {
-              padding: 0 0 0 16px;
-            }
-
-            &:last-child {
-              padding-right: 16px;
-            }
           }
         }
       }

@@ -24,7 +24,6 @@ interface Props {
   menuFixed?: boolean;
   menuListStyles?: React.CSSProperties;
   menuPlacement?: "auto" | "bottom" | "top";
-  menuPortalStyles?: React.CSSProperties;
   name: string;
   noOptionsMessage?: string;
   onValueChange: (value: any) => void;
@@ -34,8 +33,6 @@ interface Props {
   type?: "primary" | "searchable" | "secondary";
   value: any;
   closeOnSelect?: boolean;
-
-  menuPortalTarget?: HTMLElement;
 }
 
 const Select = ({
@@ -50,7 +47,6 @@ const Select = ({
   menuFixed = false,
   menuListStyles,
   menuPlacement = "auto",
-  menuPortalStyles,
   name,
   noOptionsMessage = "No Options",
   onValueChange,
@@ -60,7 +56,6 @@ const Select = ({
   type = "primary",
   closeOnSelect,
   value,
-  menuPortalTarget,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(keepOpen);
   const ref = useRef<HTMLDivElement>(null);
@@ -140,8 +135,6 @@ const Select = ({
               isOptionDisabled={option => option?.disabled}
               isSearchable
               menuIsOpen
-              menuPortalTarget={menuPortalTarget || document.body}
-              menuPosition={menuPortalTarget ? "fixed" : "absolute"}
               name={name}
               noOptionsMessage={() => noOptionsMessage}
               onChange={v => {
@@ -151,12 +144,6 @@ const Select = ({
               options={items}
               placeholder="Search"
               styles={{
-                menuPortal: base => ({
-                  ...base,
-                  position: menuFixed || menuPortalTarget ? "fixed" : "absolute",
-                  zIndex: 95,
-                  ...menuPortalStyles,
-                }),
                 menu: base => ({
                   ...base,
                   borderRadius: 0,
@@ -237,8 +224,6 @@ const Select = ({
       isClearable={isClearable}
       isSearchable={false}
       menuPlacement={menuPlacement}
-      menuPortalTarget={menuPortalTarget || document.body}
-      menuPosition={menuPortalTarget ? "fixed" : "absolute"}
       name={name}
       noOptionsMessage={() => noOptionsMessage}
       onChange={value => onValueChange(value)}
@@ -253,11 +238,9 @@ const Select = ({
             ...controlStyles,
           };
         },
-        menuPortal: base => ({
+        menu: base => ({
           ...base,
-          position: menuFixed || menuPortalTarget ? "fixed" : "absolute",
           zIndex: 95,
-          ...menuPortalStyles,
         }),
         menuList: base => ({
           ...base,

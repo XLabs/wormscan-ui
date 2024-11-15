@@ -3,9 +3,16 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import analytics from "src/analytics";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { BREAKPOINTS, MORE_INFO_GOVERNOR_URL } from "src/consts";
+import { BREAKPOINTS } from "src/consts";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { BlockchainIcon, NavLink, Select, ToggleGroup, Tooltip } from "src/components/atoms";
+import {
+  BlockchainIcon,
+  GovernorHeader,
+  NavLink,
+  Select,
+  ToggleGroup,
+  Tooltip,
+} from "src/components/atoms";
 import { Table } from "src/components/organisms";
 import { getChainName } from "src/utils/wormhole";
 import { formatNumber } from "src/utils/number";
@@ -35,7 +42,6 @@ import {
   CopyIcon,
   CrossIcon,
   FilterListIcon,
-  LayersIcon,
   PieChartIcon,
   StaticsIncreaseIcon,
 } from "src/icons/generic";
@@ -90,11 +96,21 @@ const Governor = () => {
   const handleSelectedSortBy = (value: ISelectSortBy) => {
     setSelectedSortBy(value);
     setSortBy([{ id: value.value, desc: selectedSortLowHigh.value }]);
+    analytics.track("txsSortBy", {
+      network: currentNetwork,
+      selected: value.value,
+      selectedType: selectedSortLowHigh.value ? "desc" : "asc",
+    });
   };
 
   const handleSelectedSortLowHigh = (value: ISelectSortLowHigh) => {
     setSelectedSortLowHigh(value);
     setSortBy([{ id: selectedSortBy.value, desc: value.value }]);
+    analytics.track("txsSortBy", {
+      network: currentNetwork,
+      selected: selectedSortBy.value,
+      selectedType: value.value ? "desc" : "asc",
+    });
   };
 
   const onRowClick = (row: IRowTransaction) => {
@@ -112,72 +128,74 @@ const Governor = () => {
     onSuccess: (data: IDataDashboard[]) => {
       const tempRows: IRowDashboard[] = [];
 
-      data.map((item: IDataDashboard) => {
-        const { chainId, notionalLimit, maxTransactionSize, availableNotional } = item;
-        const availablePercentage = (item.availableNotional / item.notionalLimit) * 100;
-        const formattedValue = parseFloat(formatNumber(availablePercentage, 2));
-        const chainName = getChainName({ chainId: item.chainId, network: currentNetwork });
+      data
+        .filter((item: IDataDashboard) => item.notionalLimit > 0 && item.maxTransactionSize > 0)
+        .map((item: IDataDashboard) => {
+          const { chainId, notionalLimit, maxTransactionSize, availableNotional } = item;
+          const availablePercentage = (item.availableNotional / item.notionalLimit) * 100;
+          const formattedValue = parseFloat(formatNumber(availablePercentage, 2));
+          const chainName = getChainName({ chainId: item.chainId, network: currentNetwork });
 
-        const row = {
-          chainId,
-          chainName,
-          maxTransactionSize,
-          notionalLimit,
-          availableNotional,
-          chain: (
-            <div className="dashboard chain">
-              <BlockchainIcon
-                background="var(--color-black-25)"
-                chainId={chainId}
-                className="chain-icon"
-                colorless={false}
-                network={currentNetwork}
-                size={24}
-              />
-              <p>{chainName}</p>
-            </div>
-          ),
-          singleTransactionLimit: (
-            <div className="dashboard big-transaction">
-              <h4>
-                single tx limit <SingleTxLimitTooltip />
-              </h4>
-              <p>{formatNumber(item.maxTransactionSize, 0)} USD</p>
-            </div>
-          ),
-          dailyLimit: (
-            <div className="dashboard daily-limit">
-              <h4>
-                daily limit <DailyLimitTooltip />
-              </h4>
-              <p>{formatNumber(item.notionalLimit, 0)} USD</p>
-            </div>
-          ),
-          remainingTransactionLimit: (
-            <div className="dashboard min-remaining">
-              <div className="min-remaining-container">
-                <Tooltip side="left" tooltip={<div>{formattedValue}%</div>}>
-                  <div>
-                    <MinRemainingBar
-                      color={
-                        100 - availablePercentage >= 80 ? "#FF884D" : "var(--color-success-100)"
-                      }
-                      percentage={availablePercentage}
-                    />
-                  </div>
-                </Tooltip>
+          const row = {
+            chainId,
+            chainName,
+            maxTransactionSize,
+            notionalLimit,
+            availableNotional,
+            chain: (
+              <div className="dashboard chain">
+                <BlockchainIcon
+                  background="var(--color-black-25)"
+                  chainId={chainId}
+                  className="chain-icon"
+                  colorless={false}
+                  network={currentNetwork}
+                  size={24}
+                />
+                <p>{chainName}</p>
               </div>
+            ),
+            singleTransactionLimit: (
+              <div className="dashboard big-transaction">
+                <h4>
+                  single tx limit <SingleTxLimitTooltip />
+                </h4>
+                <p>{formatNumber(item.maxTransactionSize, 0)} USD</p>
+              </div>
+            ),
+            dailyLimit: (
+              <div className="dashboard daily-limit">
+                <h4>
+                  daily limit <DailyLimitTooltip />
+                </h4>
+                <p>{formatNumber(item.notionalLimit, 0)} USD</p>
+              </div>
+            ),
+            remainingTransactionLimit: (
+              <div className="dashboard min-remaining">
+                <div className="min-remaining-container">
+                  <Tooltip side="left" tooltip={<div>{formattedValue}%</div>}>
+                    <div>
+                      <MinRemainingBar
+                        color={
+                          100 - availablePercentage >= 80 ? "#FF884D" : "var(--color-success-100)"
+                        }
+                        percentage={availablePercentage}
+                      />
+                    </div>
+                  </Tooltip>
+                </div>
 
-              <h4>
-                remaining tx limit <RemainingTxLimitTooltip />
-              </h4>
-              <p>{formatNumber(item.availableNotional, 0)} USD</p>
-            </div>
-          ),
-        };
+                <h4>
+                  remaining tx limit <RemainingTxLimitTooltip />
+                </h4>
+                <p>{formatNumber(item.availableNotional, 0)} USD</p>
+              </div>
+            ),
+          };
 
-        tempRows.push(row);
-      });
+          tempRows.push(row);
+        });
 
       setDataDashboard(tempRows);
       setIsLoadingDashboard(false);
@@ -322,24 +340,7 @@ const Governor = () => {
   return (
     <BaseLayout>
       <section className="governor">
-        <div className="governor-header">
-          <h1 className="governor-header-title">
-            <LayersIcon width={24} />
-            Governor
-          </h1>
-          <p className="governor-header-description">
-            The Wormhole Governor is an added security measure that enhances stability and safety by
-            setting thresholds for transaction sizes and volume.{" "}
-            <a
-              className="governor-header-description-link"
-              href={MORE_INFO_GOVERNOR_URL}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Learn more
-            </a>
-          </p>
-        </div>
+        <GovernorHeader />
 
         <div className="governor-container">
           <div className="governor-container-top">
@@ -377,6 +378,7 @@ const Governor = () => {
                 <ErrorPlaceholder />
               ) : (
                 <Table
+                  trackTxsSortBy
                   className="governor-container-table-transactions"
                   columns={
                     isDesktop
@@ -410,6 +412,7 @@ const Governor = () => {
                 hasSort={true}
                 isLoading={isLoadingDashboard}
                 sortBy={sortBy}
+                trackTxsSortBy={true}
               />
             )}
           </div>
@@ -436,7 +439,6 @@ const Governor = () => {
             className="governor-mobile-filters-select"
             items={showTransactions ? SORT_TRANSACTIONS_BY_LIST : SORT_DASHBOARD_BY_LIST}
             menuFixed={true}
-            menuPortalStyles={{ zIndex: 99 }}
             name="topAssetTimeRange"
             onValueChange={(value: ISelectSortBy) => handleSelectedSortBy(value)}
             optionStyles={{ padding: 16 }}
@@ -448,7 +450,6 @@ const Governor = () => {
             className="governor-mobile-filters-select"
             items={SORT_LOW_HIGH_LIST}
             menuFixed={true}
-            menuPortalStyles={{ zIndex: 99 }}
             name="topAssetTimeRange"
             onValueChange={(value: ISelectSortLowHigh) => handleSelectedSortLowHigh(value)}
             optionStyles={{ padding: 16 }}

@@ -68,12 +68,12 @@ export default {
           excluded: "The following blockchains were excluded from the chart:",
         },
         topAssets: {
-          title: "Top Tokens by Volume",
+          title: "Top Tokens by",
           subtitle: "Tap an asset and analyze the breakdown",
           token: "TOKEN",
           volume: "VOLUME",
           txs: "TXS",
-          chartTitle: "EMITTER CHAIN VOLUME ANALYSIS FOR",
+          chartTitle: "EMITTER CHAIN ANALYSIS FOR",
         },
         join: {
           initText: "Want to join the ",

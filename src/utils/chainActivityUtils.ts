@@ -30,12 +30,23 @@ export interface ICompleteData {
     details: IDetails[];
     emitter_chain: string;
     volume: number;
+    to: string;
     x: string;
     y: number;
   };
 }
 
-export type TSelectedPeriod = "24h" | "week" | "month" | "year" | "all" | "custom";
+export type TSelectedPeriod =
+  | "24h"
+  | "week"
+  | "month"
+  | "year"
+  | "all"
+  | "ago1Week"
+  | "ago1Month"
+  | "ago3Months"
+  | "ago6Months"
+  | "custom";
 
 export const DAY_IN_MILLISECONDS = 86400000;
 export const SHORT_TIMESPAN_LIMIT = 6;

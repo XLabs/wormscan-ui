@@ -1,15 +1,19 @@
-@import "src/styles/globals.scss";
+@use "src/styles/globals.scss" as *;
 
 .getRedeem {
   @include button-primary;
   cursor: default;
 
   &.cross {
-    background-color: #bdbed7;
-  }
+    background: var(--color-gray-300);
 
-  &.tooltip {
-    @include button-primary;
+    &:hover {
+      background: var(--color-gray-300);
+    }
+
+    &:active {
+      background: var(--color-gray-300);
+    }
   }
 
   &.dissapearing {
@@ -19,10 +23,6 @@
 
   &-button {
     position: relative;
-
-    margin-top: 16px;
-    margin-bottom: 16px;
-
     height: 30px;
     width: 30px;
 

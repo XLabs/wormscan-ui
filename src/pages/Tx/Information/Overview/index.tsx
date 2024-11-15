@@ -96,18 +96,19 @@ const Overview = ({
   redeemedAmount,
   refundStatus,
   refundText,
+  releaseTimestamp,
   resultLog,
   setShowOverview,
   showMetaMaskBtn,
   showSignatures,
   sourceAddress,
   sourceFee,
-  sourceTokenChain,
   sourceFeeUSD,
   sourceSymbol,
+  sourceTokenChain,
   sourceTokenInfo,
   sourceTokenLink,
-  STATUS,
+  status,
   targetFee,
   targetFeeUSD,
   targetSymbol,
@@ -129,7 +130,7 @@ const Overview = ({
   const [showDetailsNft, setShowDetailsNft] = useState(false);
 
   const { width } = useWindowSize();
-  const isDekstop = width >= BREAKPOINTS.desktop;
+  const isDesktop = width >= BREAKPOINTS.desktop;
 
   const parseTxHash = parseTx({
     value: txHash,
@@ -156,6 +157,15 @@ const Overview = ({
       window.removeEventListener("resize", updateWidth);
     };
   }, [lineValueWidth]);
+
+  const releaseDate = releaseTimestamp ? new Date(releaseTimestamp) : null;
+  const currentDate = new Date();
+  const diffInMilliseconds = releaseDate?.getTime() - currentDate.getTime();
+  const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
+  const diffInMinutes = Math.floor((diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+  const remainingTime = `${diffInHours <= 0 ? "" : `${diffInHours}h, `}${
+    diffInMinutes <= 0 ? "" : `${diffInMinutes}m`
+  } left`;
 
   return (
     <div className="tx-overview">
@@ -273,7 +283,7 @@ const Overview = ({
           <div className="tx-overview-section-row-info">
             <div className="tx-overview-section-row-info-container">
               <div className="text">
-                <StatusBadge STATUS={STATUS} />
+                <StatusBadge status={status} />
 
                 <button
                   className="tx-overview-section-row-info-steps"
@@ -281,18 +291,18 @@ const Overview = ({
                     setShowOverview("progress");
                   }}
                 >
-                  {STATUS === "IN_PROGRESS"
+                  {status === "in_progress"
                     ? "1"
-                    : STATUS === "IN_GOVERNORS" || STATUS === "VAA_EMITTED"
+                    : status === "in_governors" || status === "vaa_emitted"
                     ? "2"
-                    : STATUS === "PENDING_REDEEM" || STATUS === "EXTERNAL_TX"
+                    : status === "pending_redeem" || status === "external_tx"
                     ? "3"
-                    : STATUS === "COMPLETED"
+                    : status === "completed"
                     ? isJustGenericRelayer
                       ? "3"
                       : "4"
                     : "5"}
-                  /{STATUS === "IN_GOVERNORS" ? "5" : isJustGenericRelayer ? "3" : "4"}
+                  /{status === "in_governors" ? "5" : isJustGenericRelayer ? "3" : "4"}
                   <p className="desktop">Steps Complete</p> <ArrowUpRightIcon width={24} />
                 </button>
 
@@ -305,7 +315,7 @@ const Overview = ({
                           : "The VAA for this transaction has not been issued yet"
                         : "VAA comes from another multiverse, we don’t have more details about it"}
                     </div>
-                    {!(isDekstop && hasVAA) && (
+                    {!(isDesktop && hasVAA) && (
                       <Tooltip
                         className="tx-overview-section-row-info-alert-tooltip"
                         side="bottom"
@@ -455,6 +465,32 @@ const Overview = ({
             </div>
           </div>
         </div>
+
+        {releaseTimestamp && (
+          <div className="tx-overview-section-row">
+            <h4 className="tx-overview-section-row-title">
+              <Tooltip
+                type="info"
+                tooltip={
+                  <div>
+                    <p>
+                      The date and time when the transaction will get released by the Governors.
+                    </p>
+                  </div>
+                }
+              >
+                <span>
+                  <InfoCircleIcon /> Release Time
+                </span>
+              </Tooltip>
+            </h4>
+            <div className="tx-overview-section-row-info">
+              <div className="tx-overview-section-row-info-container">
+                <div className="text">{releaseTimestamp ? `${remainingTime}` : "N/A"}</div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {destinationDateParsed && (
           <div className="tx-overview-section-row">
@@ -665,6 +701,7 @@ const Overview = ({
                     )}
                     {sourceTokenInfo?.tokenImage &&
                     sourceTokenInfo.tokenImage !== "missing.png" &&
+                    sourceTokenInfo.tokenImage !== "missing_large.png" &&
                     sourceTokenInfo.tokenImage !== "missing_small.png" ? (
                       <img
                         className="token-image"
@@ -800,6 +837,7 @@ const Overview = ({
 
                     {targetTokenInfo?.tokenImage &&
                     targetTokenInfo.tokenImage !== "missing.png" &&
+                    targetTokenInfo.tokenImage !== "missing_large.png" &&
                     targetTokenInfo.tokenImage !== "missing_small.png" ? (
                       <img
                         className="token-image"
@@ -1637,7 +1675,7 @@ const Overview = ({
                 }
               >
                 <span>
-                  <InfoCircleIcon /> Redeem Tx
+                  <InfoCircleIcon /> Executed Tx Hash
                 </span>
               </Tooltip>
             </h4>

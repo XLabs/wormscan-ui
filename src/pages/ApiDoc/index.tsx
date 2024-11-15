@@ -5,6 +5,17 @@ import { BaseLayout } from "src/layouts/BaseLayout";
 import { Loader } from "src/components/atoms";
 import "./styles.scss";
 
+const replacePathParams = (data: { paths: { [key: string]: any } }) => {
+  const newPaths: { [key: string]: any } = {};
+  for (const path in data.paths) {
+    // Replace ':param' with '{param}'
+    const updatedPath = path.replace(/:([a-zA-Z_]+)/g, "{$1}");
+    newPaths[updatedPath] = data.paths[path];
+  }
+  data.paths = newPaths;
+  return data;
+};
+
 const ApiDoc = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [swaggerSpec, setSwaggerSpec] = useState(null);
@@ -27,6 +38,8 @@ const ApiDoc = () => {
       try {
         const response = await fetch(url);
         let data = await response.json();
+
+        data = replacePathParams(data);
 
         data = {
           ...data,
@@ -130,11 +143,11 @@ const ApiDoc = () => {
         };
 
         const pathsToDeprecate = [
-          "/api/v1/address/:address",
-          "/api/v1/global-tx/:chain_id/:emitter/:seq",
-          "/api/v1/token/:chain_id/:token_address",
+          "/api/v1/address/{address}",
+          "/api/v1/global-tx/{chain_id}/{emitter}/{seq}",
+          "/api/v1/token/{chain_id}/{token_address}",
           "/api/v1/transactions/",
-          "/api/v1/transactions/:chain_id/:emitter/:seq",
+          "/api/v1/transactions/{chain_id}/{emitter}/{seq}",
           "/api/v1/vaas/vaa-counts",
         ];
 
@@ -192,6 +205,15 @@ const ApiDoc = () => {
     fetchSwaggerSpec();
   }, [host, url]);
   // ---
+
+  const customRequestInterceptor = (request: any) => {
+    // the governor/config response is extremely big, so we limit the page size to 1
+    if (request.url.endsWith("/api/v1/governor/config")) {
+      request.url = `${request.url}?pageSize=1`;
+    }
+
+    return request;
+  };
 
   return (
     <BaseLayout secondaryHeader>
@@ -266,6 +288,7 @@ const ApiDoc = () => {
           onComplete={() => {
             setIsLoading(false);
           }}
+          requestInterceptor={customRequestInterceptor}
         />
       </div>
     </BaseLayout>

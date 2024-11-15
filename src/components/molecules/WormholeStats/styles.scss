@@ -1,4 +1,4 @@
-@import "src/styles/globals.scss";
+@use "src/styles/globals.scss" as *;
 
 .wormhole-stats {
   @include centered-column;
@@ -89,6 +89,10 @@
               }
             }
 
+            & .select__menu-list {
+              text-transform: capitalize;
+            }
+
             & .select__indicators {
               display: none;
             }
@@ -104,9 +108,9 @@
 
       &-value {
         display: flex;
+        color: var(--color-white);
 
         @include text-heading4;
-        color: var(--color-white);
 
         &-flip {
           display: flex;

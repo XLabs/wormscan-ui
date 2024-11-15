@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { useQuery } from "react-query";
-import "react-datepicker/dist/react-datepicker.css";
+import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import analytics from "src/analytics";
 import {
   BlockchainIcon,
   Counter,
@@ -11,10 +12,9 @@ import {
   Select,
   ToggleGroup,
 } from "src/components/atoms";
-import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
+import { Calendar, ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { getChainName } from "src/utils/wormhole";
-import { ChainId, chainToChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { useWindowSize, useLockBodyScroll } from "src/utils/hooks";
 import { formatNumber, numberToSuffix } from "src/utils/number";
@@ -29,8 +29,13 @@ import {
   LogarithmicIcon,
 } from "src/icons/generic";
 import { IChainActivity, IChainActivityInput } from "src/api/guardian-network/types";
-import { calculateDateDifferenceInDays, startOfDayUTC, startOfMonthUTC } from "src/utils/date";
-import { ChainFilterMainnet, ChainFilterTestnet, PROTOCOL_LIST } from "src/utils/filterUtils";
+import {
+  calculateDateDifferenceInDays,
+  getNextDate,
+  startOfDayUTC,
+  startOfMonthUTC,
+} from "src/utils/date";
+import { ChainFilterMainnet, ChainFilterTestnet } from "src/utils/filterUtils";
 import {
   colors,
   DAY_IN_MILLISECONDS,
@@ -44,9 +49,8 @@ import {
   TSelectedPeriod,
 } from "src/utils/chainActivityUtils";
 import { BREAKPOINTS } from "src/consts";
-import { Calendar } from "./Calendar";
 import "./styles.scss";
-import analytics from "src/analytics";
+import "react-datepicker/dist/react-datepicker.css";
 
 const TYPE_CHART_LIST = [
   { label: <ActivityIcon width={24} />, value: "area", ariaLabel: "Area" },
@@ -74,18 +78,27 @@ const ChainActivity = () => {
   const isDesktop = width >= BREAKPOINTS.desktop;
   const isBigDesktop = width >= BREAKPOINTS.bigDesktop;
 
+  const { environment } = useEnvironment();
+  const currentNetwork = environment.network;
+  const isMainnet = currentNetwork === "Mainnet";
+
   const chartRef = useRef(null);
 
   const [someZeroValue, setSomeZeroValue] = useState(false);
   const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
+  const [isLoading, setIsLoading] = useState(true);
   const [scaleSelected, setScaleSelectedState] = useState<"linear" | "logarithmic">("linear");
-  const setScaleSelected = (value: "linear" | "logarithmic") => {
+  const setScaleSelected = (value: "linear" | "logarithmic", track: boolean) => {
     setScaleSelectedState(value);
-    analytics.track("scaleSelected", {
-      selected: value,
-      selectedType: "chainActivity",
-    });
+
+    if (track) {
+      analytics.track("scaleSelected", {
+        selected: value,
+        selectedType: "chainActivity",
+      });
+    }
   };
+
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
 
   const initialDataDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
@@ -112,9 +125,7 @@ const ChainActivity = () => {
     scrollableClasses: ["select__option", "show-date"],
   });
 
-  const { environment } = useEnvironment();
-  const currentNetwork = environment.network;
-  const orderedChains = currentNetwork === "Mainnet" ? ChainFilterMainnet : ChainFilterTestnet;
+  const orderedChains = isMainnet ? ChainFilterMainnet : ChainFilterTestnet;
   const ALL_SOURCE_CHAINS = {
     label: "All Chains",
     value: "All Chains",
@@ -514,6 +525,7 @@ const ChainActivity = () => {
           data: totalVolumeAndCountPerDay.map(item => ({
             x: item.from,
             y: metricSelected === "transactions" ? item.count : item.volume,
+            to: item.to,
             volume: item.volume,
             count: item.count,
             emitter_chain: item.emitter_chain,
@@ -532,6 +544,7 @@ const ChainActivity = () => {
           details: [],
           emitter_chain: "allChains",
           volume: 0,
+          to: getNextDate(date, filters.timespan),
           x: date,
           y: 0,
         };
@@ -552,10 +565,11 @@ const ChainActivity = () => {
       setAllVolumeNumber(totalVolume / 10 ** 8);
       setAllChainsSerie(seriesForAllChains);
     }
-  }, [dataAllChains, getDateList, metricSelected]);
+  }, [dataAllChains, filters.timespan, getDateList, metricSelected]);
 
   useEffect(() => {
     if (!data) return;
+    setIsLoading(true);
 
     const dataByChain: { [key: string]: any[] } = {};
     const allDates: { [key: string]: boolean } = {};
@@ -576,6 +590,7 @@ const ChainActivity = () => {
       dataByChain[item.emitter_chain].push({
         x: formatDate,
         y: metricSelected === "transactions" ? item.count : item.volume / 10 ** 8,
+        to: item.to,
         volume: item.volume / 10 ** 8,
         count: item.count,
         emitter_chain: item.emitter_chain,
@@ -597,6 +612,7 @@ const ChainActivity = () => {
           existingData || {
             x: date,
             y: 0,
+            to: getNextDate(date, filters.timespan),
             volume: 0,
             count: 0,
             emitter_chain: chain,
@@ -649,7 +665,14 @@ const ChainActivity = () => {
     getDateList,
     metricSelected,
     showAllSourceChains,
+    filters.timespan,
   ]);
+
+  useEffect(() => {
+    if (!isMainnet) {
+      setMetricSelected("transactions");
+    }
+  }, [isMainnet]);
 
   useEffect(() => {
     const checkForZeroValues = (obj: any, path = "") => {
@@ -685,16 +708,22 @@ const ChainActivity = () => {
 
     setSomeZeroValue(seriesHasZeroValue);
     if (seriesHasZeroValue) {
-      setScaleSelected("linear");
+      setScaleSelected("linear", false);
     } else if (seriesHasNonZeroValue) {
-      setScaleSelected("logarithmic");
+      setScaleSelected("logarithmic", false);
     }
+
+    setIsLoading(false);
   }, [series]);
 
   const fullscreenBtnRef = useRef(null);
 
   return (
-    <Fullscreenable className="chain-activity" buttonRef={fullscreenBtnRef}>
+    <Fullscreenable
+      className="chain-activity"
+      buttonRef={fullscreenBtnRef}
+      itemName="chainActivity"
+    >
       {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
 
       <h2 className="chain-activity-title">
@@ -734,18 +763,29 @@ const ChainActivity = () => {
               </button>
             </div>
 
+            <Calendar
+              className="chain-activity-chart-top-filters-calendar"
+              startDate={startDate}
+              setStartDate={setStartDate}
+              endDate={endDate}
+              setEndDate={setEndDate}
+              lastBtnSelected={lastBtnSelected}
+              setLastBtnSelected={setLastBtnSelected}
+              startDateDisplayed={startDateDisplayed}
+              endDateDisplayed={endDateDisplayed}
+              isDesktop={isDesktop}
+            />
+
             <Select
               ariaLabel="Select Chains"
-              className="chain-activity-chart-top-filters-section"
+              className="chain-activity-chart-top-filters-select"
               items={SOURCE_CHAIN_LIST}
-              menuPortalTarget={document.querySelector(".chain-activity")}
               menuFixed={!isDesktop}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-              menuPortalStyles={{ zIndex: 100 }}
               name="sourceChain"
               onValueChange={(value: any) => handleChainSelection(value, "source")}
               text={
-                <div className="chain-activity-chart-top-filters-section-text">
+                <div className="chain-activity-chart-top-filters-select-text">
                   {filters.sourceChain.length > 0 && (
                     <Counter>{filters.sourceChain.length}</Counter>
                   )}
@@ -758,16 +798,14 @@ const ChainActivity = () => {
 
             <Select
               ariaLabel="Select Chains"
-              className="chain-activity-chart-top-filters-section"
+              className="chain-activity-chart-top-filters-select"
               items={TARGET_CHAIN_LIST}
               menuFixed={!isDesktop}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-              menuPortalStyles={{ zIndex: 100 }}
-              menuPortalTarget={document.querySelector(".chain-activity")}
               name="targetChain"
               onValueChange={(value: any) => handleChainSelection(value, "target")}
               text={
-                <div className="chain-activity-chart-top-filters-section-text">
+                <div className="chain-activity-chart-top-filters-select-text">
                   {filters?.targetChain?.length > 0 && (
                     <Counter>{filters.targetChain.length}</Counter>
                   )}
@@ -783,13 +821,12 @@ const ChainActivity = () => {
             
             <Select
               ariaLabel="Select Protocol"
-              className="chain-activity-chart-top-filters-section"
+              className="chain-activity-chart-top-filters-select"
               controlStyles={{ minWidth: 256 }}
               isMulti={false}
               items={PROTOCOL_LIST}
               menuFixed={!isDesktop}
               menuListStyles={{ maxHeight: isDesktop ? 264 : 180 }}
-              menuPortalStyles={{ zIndex: 100 }}
               name="protocol"
               onValueChange={(value: any) =>
                 setFilters({
@@ -798,7 +835,7 @@ const ChainActivity = () => {
                 })
               }
               text={
-                <div className="chain-activity-chart-top-filters-section-text">
+                <div className="chain-activity-chart-top-filters-select-text">
                   {filters?.appId && <Counter>1</Counter>}
                   Protocol
                 </div>
@@ -810,33 +847,19 @@ const ChainActivity = () => {
               }}
             /> */}
 
-            <Calendar
-              startDate={startDate}
-              setStartDate={setStartDate}
-              endDate={endDate}
-              setEndDate={setEndDate}
-              lastBtnSelected={lastBtnSelected}
-              setLastBtnSelected={setLastBtnSelected}
-              startDateDisplayed={startDateDisplayed}
-              endDateDisplayed={endDateDisplayed}
-              isDesktop={isDesktop}
-            />
-
-            <div className="chain-activity-chart-top-filters-buttons">
-              <button className="apply-btn" onClick={applyFilters}>
-                Apply Filters
-              </button>
-
-              <button className="reset-btn" onClick={resetFilters}>
-                Reset Filters
-              </button>
-            </div>
-
             <ToggleGroup
               ariaLabel="Select type"
               className="chain-activity-chart-top-filters-toggle-metric"
-              items={METRIC_CHART_LIST}
-              onValueChange={value => setMetricSelected(value)}
+              items={isMainnet ? METRIC_CHART_LIST : [METRIC_CHART_LIST[1]]}
+              onValueChange={value => {
+                setMetricSelected(value);
+
+                analytics.track("metricSelected", {
+                  network: currentNetwork,
+                  selected: value,
+                  selectedType: "chainActivity",
+                });
+              }}
               value={metricSelected}
             />
 
@@ -845,10 +868,28 @@ const ChainActivity = () => {
                 ariaLabel="Select scale"
                 className="chain-activity-chart-top-filters-toggle-metric"
                 items={SCALE_CHART_LIST_TEXT}
-                onValueChange={value => setScaleSelected(value)}
+                onValueChange={value => setScaleSelected(value, true)}
                 value={scaleSelected}
               />
             )}
+
+            <div className="chain-activity-chart-top-filters-buttons">
+              <button className="apply-btn" onClick={applyFilters}>
+                Apply Filters
+              </button>
+
+              <button
+                className="reset-btn"
+                disabled={
+                  filters.sourceChain.length === 0 &&
+                  filters.targetChain.length === 0 &&
+                  lastBtnSelected === "year"
+                }
+                onClick={resetFilters}
+              >
+                Reset Filters
+              </button>
+            </div>
 
             <div
               className={`chain-activity-chart-top-filters-legends ${
@@ -929,18 +970,26 @@ const ChainActivity = () => {
           <div className="chain-activity-chart-top-filters-design">
             <ToggleGroup
               ariaLabel="Select type"
-              className="chain-activity-chart-top-filters-design-toggle-type"
               items={TYPE_CHART_LIST}
-              onValueChange={value => setChartSelected(value)}
+              onValueChange={value => {
+                setChartSelected(value);
+
+                analytics.track("chainActivityChartType", {
+                  network: currentNetwork,
+                  selected: value,
+                });
+              }}
+              type="secondary"
               value={chartSelected}
             />
 
             {isDesktop && chartSelected === "area" && !someZeroValue && (
               <ToggleGroup
                 ariaLabel="Select scale"
-                className="chain-activity-chart-scale"
+                className={`chain-activity-chart-scale ${isMainnet ? "" : "is-testnet"}`}
                 items={SCALE_CHART_LIST}
-                onValueChange={value => setScaleSelected(value)}
+                onValueChange={value => setScaleSelected(value, true)}
+                type="secondary"
                 value={scaleSelected}
               />
             )}
@@ -949,7 +998,7 @@ const ChainActivity = () => {
 
         {isError || isErrorAllChains ? (
           <ErrorPlaceholder errorType="chart" />
-        ) : isFetching || isFetchingAllChains ? (
+        ) : isFetching || isFetchingAllChains || isLoading ? (
           <Loader />
         ) : (
           <>
@@ -1110,17 +1159,32 @@ const ChainActivity = () => {
                     }
 
                     return `<div class="chain-activity-chart-tooltip">
-                      <p class="chain-activity-chart-tooltip-date">
-                        ${new Date(data.x).toLocaleString("en-GB", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })},
-                        ${new Date(data.x).toLocaleString("en-GB", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </p>
+                      <div class="chain-activity-chart-tooltip-date">
+                        <p>
+                          From:
+                          ${new Date(data.x).toLocaleString("en-GB", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })},
+                          ${new Date(data.x).toLocaleString("en-GB", {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </p>
+                        <p>
+                          To:
+                          ${new Date(data.to).toLocaleString("en-GB", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })},
+                          ${new Date(data.to).toLocaleString("en-GB", {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </p>
+                      </div>
                       <div class="chain-activity-chart-tooltip-total-msg">
                         ${
                           showAllSourceChains

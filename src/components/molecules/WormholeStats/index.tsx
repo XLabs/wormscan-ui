@@ -11,6 +11,7 @@ import { formatNumber } from "src/utils/number";
 import { getClient } from "src/api/Client";
 import { InfoCircleIcon, LinkIcon } from "src/icons/generic";
 import "./styles.scss";
+import analytics from "src/analytics";
 
 const RANGE_LIST: { label: string; value: "24h" | "7d" | "30d" }[] = [
   { label: "Last 24 hours", value: "24h" },
@@ -170,7 +171,14 @@ const WormholeStats = () => {
                     className="wormhole-stats-container-item-title-time-select"
                     items={RANGE_LIST}
                     name="topAssetTimeRange"
-                    onValueChange={value => setRangeTime(value)}
+                    onValueChange={value => {
+                      setRangeTime(value);
+
+                      analytics.track("wormholeStatsTimeRange", {
+                        network: environment.network,
+                        selected: value.label,
+                      });
+                    }}
                     value={{
                       label: (
                         <>

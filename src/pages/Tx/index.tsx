@@ -54,6 +54,7 @@ import {
   GATEWAY_APP_ID,
   GR_APP_ID,
   IStatus,
+  MAYAN_MCTP_APP_ID,
   NTT_APP_ID,
   PORTAL_APP_ID,
   PORTAL_NFT_APP_ID,
@@ -68,6 +69,7 @@ import { DeliveryLifecycleRecord, populateRelayerInfo } from "src/utils/genericR
 import { BlockSection } from "src/components/molecules";
 import "./styles.scss";
 import { mainnetNativeCurrencies, testnetNativeCurrencies } from "src/utils/environment";
+import getMayanMctpInfo from "src/utils/mayan";
 
 const Tx = () => {
   useEffect(() => {
@@ -190,10 +192,10 @@ const Tx = () => {
               tokenAmount: txData.tokenAmount,
               usdAmount: txData.usdAmount,
             },
-            STATUS:
-              txData.STATUS === "IN_PROGRESS" && (isBigTransaction || isDailyLimitExceeded)
-                ? "IN_GOVERNORS"
-                : txData.STATUS,
+            status:
+              txData.status === "in_progress" && (isBigTransaction || isDailyLimitExceeded)
+                ? "in_governors"
+                : txData.status,
             isBigTransaction,
             isDailyLimitExceeded,
             transactionLimit,
@@ -359,7 +361,7 @@ const Tx = () => {
                     tokenAmount: "" + +resp.amount / 10 ** 6,
                     usdAmount: "" + +resp.amount / 10 ** 6,
                   },
-                  STATUS: "EXTERNAL_TX",
+                  status: "external_tx",
                   sequence: "",
                   sourceChain: {
                     chainId: 1,
@@ -433,7 +435,9 @@ const Tx = () => {
         const currentNetworkResponse = await getClient().guardianNetwork.getOperations({
           vaaID: `${chainId}/${emitter}/${seq}`,
         });
-        if (!!currentNetworkResponse) return currentNetworkResponse;
+        if (!!currentNetworkResponse && currentNetworkResponse?.length > 0) {
+          return currentNetworkResponse;
+        }
       } catch {
         // go to the next call
       }
@@ -442,7 +446,7 @@ const Tx = () => {
         const otherNetworkResponse = await getClient(otherNetwork).guardianNetwork.getOperations({
           vaaID: `${chainId}/${emitter}/${seq}`,
         });
-        if (!!otherNetworkResponse) {
+        if (!!otherNetworkResponse && otherNetworkResponse?.length > 0) {
           navigate(`/tx/${chainId}/${emitter}/${seq}?network=${otherNetwork}`);
           return otherNetworkResponse;
         }
@@ -464,7 +468,6 @@ const Tx = () => {
           { page: 0, pageSize: 20, sortOrder: Order.ASC },
         )
         .then(observations => {
-          console.log({ observations, a, b, c, cnum: +c, VAAId });
           if (!!observations?.length) {
             const guardianSetList = getGuardianSet(4);
 
@@ -482,6 +485,8 @@ const Tx = () => {
             });
 
             setIsLoading(false);
+          } else {
+            throw new Error("no observations found");
           }
         })
         .catch(() => {
@@ -864,9 +869,9 @@ const Tx = () => {
             );
 
             data.data = {
-              tokenAmount: amount,
-              symbol: tokenInfo.symbol,
-              usdAmount: null,
+              tokenAmount: data?.data?.tokenAmount || amount,
+              symbol: data?.data?.symbol || tokenInfo.symbol,
+              usdAmount: data?.data?.usdAmount || null,
             };
 
             const nttInfo = await getNttInfo(environment, data, parsedPayload);
@@ -1148,6 +1153,46 @@ const Tx = () => {
         }
         // ----
 
+        // check Mayan
+        if (data?.content?.standarizedProperties?.appIds?.includes(MAYAN_MCTP_APP_ID)) {
+          if (data?.content?.payload?.action === 1 || data?.content?.payload?.action === 3) {
+            try {
+              const mayanInfo = await getMayanMctpInfo(data.sourceChain?.transaction?.txHash);
+
+              data.data = {
+                ...data.data,
+                symbol: mayanInfo?.fromTokenSymbol,
+                tokenAmount: mayanInfo?.fromAmount,
+              };
+
+              data.content.standarizedProperties = {
+                ...data.content.standarizedProperties,
+                fee: ((+mayanInfo?.fromAmount - +mayanInfo?.toAmount) * 10 ** 8).toString(),
+                amount: (+mayanInfo?.fromAmount * 10 ** 8).toString(),
+                tokenAddress: mayanInfo?.fromTokenAddress,
+                tokenChain: +mayanInfo?.fromTokenChain as ChainId,
+                overwriteTargetTokenAddress: mayanInfo?.toTokenAddress,
+                overwriteTargetTokenChain: +mayanInfo?.toTokenChain as ChainId,
+                overwriteSourceSymbol: mayanInfo?.fromTokenSymbol,
+                overwriteTargetSymbol: mayanInfo?.toTokenSymbol,
+                toAddress: mayanInfo?.destAddress,
+                toChain: +mayanInfo?.destChain as ChainId,
+              };
+
+              setExtraRawInfo((extraRawInfo: any) => ({
+                ...extraRawInfo,
+                // Add mayan info without null values to extra raw info so its available for users.
+                "Mayan Info": Object.fromEntries(
+                  Object.entries(mayanInfo).filter(([_, v]) => v !== null),
+                ),
+              }));
+            } catch (e) {
+              console.error("Error fetching Mayan MCTP info", e);
+            }
+          }
+        }
+        // ----
+
         // track analytics on non-rpc txs (those are tracked on top)
         if (!data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID)) {
           const appIds = data?.content?.standarizedProperties?.appIds?.filter(a => a !== "UNKNOWN");
@@ -1198,8 +1243,9 @@ const Tx = () => {
         ) {
           data.content.standarizedProperties.appIds.push(C3_APP_ID);
         }
+        // ----
 
-        // Add STATUS logic
+        // Add status logic
         const { fromChain, appIds } = data?.content?.standarizedProperties || {};
         const payloadType = data?.content?.payload?.payloadType;
         const isTransferWithPayload = payloadType === 3;
@@ -1229,10 +1275,10 @@ const Tx = () => {
         const isDailyLimitExceeded =
           limitDataForChain?.availableNotional < Number(data?.data?.usdAmount);
 
-        const STATUS: IStatus = data?.targetChain?.transaction?.txHash
-          ? "COMPLETED"
+        const status: IStatus = data?.targetChain?.transaction?.txHash
+          ? "completed"
           : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
-          ? "EXTERNAL_TX"
+          ? "external_tx"
           : vaa
           ? isConnect || isPortal || isCCTP
             ? (canWeGetDestinationTx(data?.content?.standarizedProperties?.toChain) &&
@@ -1241,19 +1287,33 @@ const Tx = () => {
                   (isTransferWithPayload && isConnect) ||
                   (isTransferWithPayload && isTBTC))) ||
               isCCTP
-              ? "PENDING_REDEEM"
-              : "VAA_EMITTED"
-            : "VAA_EMITTED"
+              ? "pending_redeem"
+              : "vaa_emitted"
+            : "vaa_emitted"
           : isBigTransaction || isDailyLimitExceeded
-          ? "IN_GOVERNORS"
-          : "IN_PROGRESS";
+          ? "in_governors"
+          : "in_progress";
 
-        data.STATUS = STATUS;
+        data.status = status;
         data.isBigTransaction = isBigTransaction;
         data.isDailyLimitExceeded = isDailyLimitExceeded;
         data.transactionLimit = transactionLimit;
 
-        if (STATUS === "IN_PROGRESS" && isEvmTxHash) {
+        if (status === "in_governors") {
+          const enqueuedTransactions = await getClient(
+            environment.network,
+          ).governor.getEnqueuedTransactions();
+
+          const tx = enqueuedTransactions.find(
+            a => a.txHash === data.sourceChain?.transaction?.txHash || a.vaaId === data?.id,
+          );
+
+          if (tx) {
+            data.releaseTimestamp = tx.releaseTime;
+          }
+        }
+
+        if (status === "in_progress" && isEvmTxHash) {
           const timestamp = new Date(data?.sourceChain?.timestamp);
           const now = new Date();
           const differenceInMinutes = (now.getTime() - timestamp.getTime()) / 60000;
@@ -1278,8 +1338,8 @@ const Tx = () => {
         // extra relayer logic
         if (relayerInfo) {
           // Check relayer txn: if it has a redeem txn, move status to completed.
-          if (relayerInfo?.targetTransaction?.targetTxHash && data && data.STATUS !== "COMPLETED") {
-            data.STATUS = "COMPLETED";
+          if (relayerInfo?.targetTransaction?.targetTxHash && data && data.status !== "completed") {
+            data.status = "completed";
             data.targetChain = {
               ...data?.targetChain,
               timestamp: new Date(relayerInfo?.targetTransaction?.targetTxTimestamp * 1000),

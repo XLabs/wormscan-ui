@@ -1,4 +1,4 @@
-@import "src/styles/globals.scss";
+@use "src/styles/globals.scss" as *;
 
 .protocols-activity {
   @include centered-column;
@@ -201,17 +201,10 @@
       }
 
       &-toggle-design {
-        border-radius: 12px;
-
         @include desktop {
           position: absolute;
           right: 0;
           top: 0;
-        }
-
-        & .toggle-group-item {
-          border-radius: 12px;
-          padding: 6px;
         }
       }
     }
@@ -276,18 +269,9 @@
         right: 88px;
         top: -35px;
 
-        background-color: var(--color-gray-900);
-
-        border-radius: 12px;
-
         @include desktop {
           right: 276px;
           top: -35px;
-        }
-
-        & .toggle-group-item {
-          border-radius: 12px;
-          padding: 6px;
         }
       }
 
@@ -298,9 +282,11 @@
         width: max-content;
 
         &-date {
+          @include centered-column;
           @include text-heading6;
           color: var(--color-gray-400);
           font-family: "Roboto Mono", "Roboto", sans-serif !important;
+          gap: 4px 0;
           margin-bottom: 12px;
           text-transform: uppercase;
         }

@@ -8,23 +8,25 @@ import { useNavigateCustom, useWindowSize } from "src/utils/hooks";
 import { BlockchainIcon, Tooltip, NavLink } from "src/components/atoms";
 import { shortAddress, parseTx } from "src/utils/crypto";
 import { ChainId, chainIdToChain } from "@wormhole-foundation/sdk";
-import { getTokenIcon } from "src/utils/token";
 import { formatNumber } from "src/utils/number";
+import { Environment } from "src/utils/environment";
 import { BREAKPOINTS, NTT_APP_ID } from "src/consts";
+import analytics from "src/analytics";
 
 interface IRecentTransactionsProps {
-  recentTransactions: GetOperationsOutput[];
   isError: boolean;
   isLoading: boolean;
+  recentTransactions: GetOperationsOutput[];
+  tokenIcon: string;
 }
 
-const WTokenIcon = getTokenIcon("W");
 const LOADING_ARRAY = Array(7).fill(1);
 
 export const RecentTransactions = ({
-  recentTransactions,
   isError,
   isLoading,
+  recentTransactions,
+  tokenIcon,
 }: IRecentTransactionsProps) => {
   const navigate = useNavigateCustom();
   const { environment } = useEnvironment();
@@ -80,7 +82,7 @@ export const RecentTransactions = ({
       <div className="recent-transactions-title">
         <SwapVerticalIcon />
         <div>Recent Transactions</div>
-        <a href={`#/txs?appId=${NTT_APP_ID}`}>View All</a>
+        <ViewMore environment={environment}>View All</ViewMore>
       </div>
 
       {isDesktopDesign ? (
@@ -94,15 +96,18 @@ export const RecentTransactions = ({
             <div className="recent-transactions-table-head-row">TIME</div>
           </div>
 
-          {isLoading && (
+          {isLoading ? (
             <div className="recent-transactions-table-loading">
               {LOADING_ARRAY.map((_, index) => (
                 <div key={index} className="loading" />
               ))}
             </div>
-          )}
-
-          {!isLoading &&
+          ) : recentTransactions?.length === 0 ? (
+            <div className="recent-transactions-table-empty">
+              No recent transaction found; take a look at&nbsp;
+              <ViewMore environment={environment}>All Transactions</ViewMore>.
+            </div>
+          ) : (
             recentTransactions?.map(data => (
               <div
                 key={data.id}
@@ -119,7 +124,7 @@ export const RecentTransactions = ({
                 }
               >
                 <div className="recent-transactions-table-item-row">
-                  <StatusBadge size="responsive" STATUS={data.STATUS} />
+                  <StatusBadge size="responsive" status={data.status} />
                 </div>
                 <div className="recent-transactions-table-item-row">
                   <div className="link-container">
@@ -149,99 +154,160 @@ export const RecentTransactions = ({
                 </div>
                 <div className="recent-transactions-table-item-row">
                   <div className="token-row">
-                    <span>{formatNumber(+data?.data?.tokenAmount)}</span>
-                    <img src={WTokenIcon} alt="W Token" width="16" height="16" />
-                    <span className="usd">(${formatNumber(+data?.data?.usdAmount, 2)})</span>
+                    <span>
+                      {formatNumber(
+                        data?.data?.tokenAmount
+                          ? +data?.data?.tokenAmount
+                          : +data?.content?.payload?.parsedPayload?.nttMessage?.trimmedAmount
+                              ?.amount / 1000000 ||
+                              +data?.content?.payload?.nttMessage?.trimmedAmount?.amount / 1000000,
+                      )}
+                    </span>
+                    <img
+                      src={tokenIcon}
+                      alt={`${data?.data?.symbol} Token`}
+                      width="16"
+                      height="16"
+                    />
+                    {data?.data?.usdAmount && (
+                      <span className="usd">(${formatNumber(+data?.data?.usdAmount, 2)})</span>
+                    )}
                   </div>
                 </div>
                 <div className="recent-transactions-table-item-row">
                   {data?.sourceChain?.timestamp && timeAgo(new Date(data?.sourceChain?.timestamp))}
                 </div>
               </div>
-            ))}
+            ))
+          )}
         </div>
       ) : (
         <div className="recent-transactions-mobile">
-          {isLoading && (
+          {isLoading ? (
             <div className="recent-transactions-table-loading">
               {LOADING_ARRAY.map((_, index) => (
                 <div key={index} className="loading" />
               ))}
             </div>
-          )}
-
-          {recentTransactions?.map(data => (
-            <div key={data.id} className="recent-transactions-mobile-container">
-              <div className="recent-transactions-mobile-item">
-                <div className="title">
-                  <StatusBadge size="responsive" STATUS={data.STATUS} />
-                </div>
-                <div className="content">
-                  <div className="time">
-                    {data?.sourceChain?.timestamp &&
-                      timeAgo(new Date(data?.sourceChain?.timestamp))}
-                  </div>
-                </div>
-              </div>
-              <div className="recent-transactions-mobile-item">
-                <div className="title">TX HASH</div>
-                <div className="content">
-                  <div className="link-container">
-                    {data?.sourceChain?.transaction?.txHash && (
-                      <>
-                        <NavLink
-                          to={`/tx/${parseTx({
-                            value: data.sourceChain.transaction.txHash,
-                            chainId: data.sourceChain?.chainId as ChainId,
-                          })}`}
-                          onClick={stopPropagation}
-                        >
-                          {shortAddress(data.sourceChain.transaction.txHash).toUpperCase()}
-                        </NavLink>
-                        <CopyToClipboard toCopy={data.sourceChain.transaction.txHash}>
-                          <CopyIcon />
-                        </CopyToClipboard>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="recent-transactions-mobile-item">
-                <div className="title">FROM</div>
-                <div className="content">{renderAddress(data, true)}</div>
-              </div>
-              <div className="recent-transactions-mobile-item">
-                <div className="title">TO</div>
-                <div className="content">{renderAddress(data, false)}</div>
-              </div>
-              <div className="recent-transactions-mobile-item">
-                <div className="title">AMOUNT</div>
-                <div className="content">
-                  <div className="token-row">
-                    <span>{formatNumber(+data?.data?.tokenAmount)}</span>
-                    <img src={WTokenIcon} alt="W Token" width="16" height="16" />
-                    <span className="usd">(${formatNumber(+data?.data?.usdAmount, 2)})</span>
-                  </div>
-                </div>
-              </div>
-              {data?.sourceChain?.transaction?.txHash && (
-                <div className="recent-transactions-mobile-item">
-                  <NavLink
-                    className="recent-transactions-mobile-item-btn"
-                    to={`/tx/${parseTx({
-                      value: data.sourceChain.transaction.txHash,
-                      chainId: data.sourceChain?.chainId as ChainId,
-                    })}`}
-                    onClick={stopPropagation}
-                  >
-                    View details
-                  </NavLink>
-                </div>
-              )}
+          ) : recentTransactions?.length === 0 ? (
+            <div className="recent-transactions-table-empty">
+              No recent transaction found; take a look at&nbsp;
+              <ViewMore environment={environment}>All Transactions</ViewMore>.
             </div>
-          ))}
+          ) : (
+            recentTransactions?.map(data => (
+              <div key={data.id} className="recent-transactions-mobile-container">
+                <div className="recent-transactions-mobile-item">
+                  <div className="title">
+                    <StatusBadge size="responsive" status={data.status} />
+                  </div>
+                  <div className="content">
+                    <div className="time">
+                      {data?.sourceChain?.timestamp &&
+                        timeAgo(new Date(data?.sourceChain?.timestamp))}
+                    </div>
+                  </div>
+                </div>
+                <div className="recent-transactions-mobile-item">
+                  <div className="title">TX HASH</div>
+                  <div className="content">
+                    <div className="link-container">
+                      {data?.sourceChain?.transaction?.txHash && (
+                        <>
+                          <NavLink
+                            to={`/tx/${parseTx({
+                              value: data.sourceChain.transaction.txHash,
+                              chainId: data.sourceChain?.chainId as ChainId,
+                            })}`}
+                            onClick={stopPropagation}
+                          >
+                            {shortAddress(data.sourceChain.transaction.txHash).toUpperCase()}
+                          </NavLink>
+                          <CopyToClipboard toCopy={data.sourceChain.transaction.txHash}>
+                            <CopyIcon />
+                          </CopyToClipboard>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="recent-transactions-mobile-item">
+                  <div className="title">FROM</div>
+                  <div className="content">{renderAddress(data, true)}</div>
+                </div>
+                <div className="recent-transactions-mobile-item">
+                  <div className="title">TO</div>
+                  <div className="content">{renderAddress(data, false)}</div>
+                </div>
+                <div className="recent-transactions-mobile-item">
+                  <div className="title">AMOUNT</div>
+                  <div className="content">
+                    <div className="token-row">
+                      <span>
+                        {formatNumber(
+                          data?.data?.tokenAmount
+                            ? +data?.data?.tokenAmount
+                            : +data?.content?.payload?.parsedPayload?.nttMessage?.trimmedAmount
+                                ?.amount / 1000000 ||
+                                +data?.content?.payload?.nttMessage?.trimmedAmount?.amount /
+                                  1000000,
+                        )}
+                      </span>
+                      <img
+                        src={tokenIcon}
+                        alt={`${data?.data?.symbol} Token`}
+                        width="16"
+                        height="16"
+                      />
+                      {data?.data?.usdAmount && (
+                        <span className="usd">(${formatNumber(+data?.data?.usdAmount, 2)})</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                {data?.sourceChain?.transaction?.txHash && (
+                  <div className="recent-transactions-mobile-item">
+                    <NavLink
+                      className="recent-transactions-mobile-item-btn"
+                      to={`/tx/${parseTx({
+                        value: data.sourceChain.transaction.txHash,
+                        chainId: data.sourceChain?.chainId as ChainId,
+                      })}`}
+                      onClick={stopPropagation}
+                    >
+                      View details
+                    </NavLink>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
         </div>
       )}
     </div>
+  );
+};
+
+const ViewMore = ({
+  environment,
+  children,
+}: {
+  environment: Environment;
+  children: React.ReactNode;
+}) => {
+  return (
+    <a
+      onClick={() => {
+        window.scrollTo(0, 0);
+
+        analytics.track("viewMore", {
+          network: environment.network,
+          selected: "NTT Token Recent Transactions",
+        });
+      }}
+      href={`#/txs?appId=${NTT_APP_ID}`}
+    >
+      {children}
+    </a>
   );
 };

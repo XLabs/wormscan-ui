@@ -7,10 +7,10 @@ import "./styles.scss";
 type Props = {
   className?: string;
   size?: "normal" | "small" | "responsive";
-  STATUS: IStatus;
+  status: IStatus;
 };
 
-const StatusBadge = ({ STATUS, className, size = "normal" }: Props) => {
+const StatusBadge = ({ status, className, size = "normal" }: Props) => {
   const { width } = useWindowSize();
   const isDesktop = width >= BREAKPOINTS.desktop;
 
@@ -18,21 +18,21 @@ const StatusBadge = ({ STATUS, className, size = "normal" }: Props) => {
     <div className={`status-badge ${className ?? ""}`}>
       {size === "small" || (size === "responsive" && isDesktop) ? (
         <>
-          {STATUS === "EXTERNAL_TX" && <StatusExternalTxSmall />}
-          {STATUS === "COMPLETED" && <StatusCompletedSmall />}
-          {STATUS === "IN_PROGRESS" && <StatusInProgressSmall />}
-          {STATUS === "IN_GOVERNORS" && <StatusInGovernorsSmall />}
-          {STATUS === "PENDING_REDEEM" && <StatusPendingRedeemSmall />}
-          {STATUS === "VAA_EMITTED" && <StatusVaaEmittedSmall />}
+          {status === "external_tx" && <StatusExternalTxSmall />}
+          {status === "completed" && <StatusCompletedSmall />}
+          {status === "in_progress" && <StatusInProgressSmall />}
+          {status === "in_governors" && <StatusInGovernorsSmall />}
+          {status === "pending_redeem" && <StatusPendingRedeemSmall />}
+          {status === "vaa_emitted" && <StatusVaaEmittedSmall />}
         </>
       ) : (
         <>
-          {STATUS === "EXTERNAL_TX" && <StatusExternalTx />}
-          {STATUS === "COMPLETED" && <StatusCompleted />}
-          {STATUS === "IN_PROGRESS" && <StatusInProgress />}
-          {STATUS === "IN_GOVERNORS" && <StatusInGovernors />}
-          {STATUS === "PENDING_REDEEM" && <StatusPendingRedeem />}
-          {STATUS === "VAA_EMITTED" && <StatusVaaEmitted />}
+          {status === "external_tx" && <StatusExternalTx />}
+          {status === "completed" && <StatusCompleted />}
+          {status === "in_progress" && <StatusInProgress />}
+          {status === "in_governors" && <StatusInGovernors />}
+          {status === "pending_redeem" && <StatusPendingRedeem />}
+          {status === "vaa_emitted" && <StatusVaaEmitted />}
         </>
       )}
     </div>
@@ -117,7 +117,7 @@ const StatusPendingRedeem = () => (
     side="right"
     tooltip={
       <div className="status-badge-tooltip">
-        Your transaction has been completed on the blockchain, but has not yet been redeemed.
+        Your transaction has been completed on the blockchain, but has not yet been executed.
       </div>
     }
     type="info"
@@ -125,7 +125,7 @@ const StatusPendingRedeem = () => (
     <div>
       <Chip className="status-badge-status" color="progress">
         <ClockIcon width={24} />
-        <p>Pending redeem</p>
+        <p>Pending execution</p>
       </Chip>
     </div>
   </Tooltip>

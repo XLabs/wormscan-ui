@@ -62,8 +62,9 @@ export type OverviewProps = {
   redeemedAmount?: string;
   refundStatus?: string;
   refundText?: () => string;
+  releaseTimestamp?: Date;
   resultLog?: string;
-  setShowOverview?: (newView: string) => void;
+  setShowOverview?: (newView: "overview" | "advanced" | "progress") => void;
   showMetaMaskBtn?: boolean;
   showSignatures?: boolean;
   sourceAddress?: string;
@@ -74,7 +75,7 @@ export type OverviewProps = {
   sourceTokenInfo?: TokenInfo;
   sourceTokenLink?: string;
   sourceTxHash?: string;
-  STATUS?: IStatus;
+  status?: IStatus;
   targetFee?: string;
   targetFeeUSD?: string;
   targetSymbol?: string;
