@@ -183,7 +183,6 @@ export const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
 export const CCTP_MANUAL_APP_ID = "CCTP_MANUAL";
 export const CONNECT_APP_ID = "CONNECT";
 export const ETH_BRIDGE_APP_ID = "ETH_BRIDGE";
-export const FAST_TRANSFERS_APP_ID = "FAST_TRANSFERS";
 export const GATEWAY_APP_ID = "WORMCHAIN_GATEWAY_TRANSFER";
 export const GR_APP_ID = "GENERIC_RELAYER";
 export const MAYAN_APP_ID = "MAYAN";
@@ -193,8 +192,15 @@ export const NTT_APP_ID = "NATIVE_TOKEN_TRANSFER";
 export const OMNISWAP_APP_ID = "OMNISWAP";
 export const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
 export const PORTAL_NFT_APP_ID = "PORTAL_NFT_BRIDGE";
-export const SWAP_LAYER_APP_ID = "SWAP_LAYER";
 export const TBTC_APP_ID = "TBTC";
 export const USDT_TRANSFER_APP_ID = "USDT_TRANSFER";
-
 export const UNKNOWN_APP_ID = "UNKNOWN";
+
+// This two (fast transfers & swap layer) are being swapped to liquidity
+// layer and mayan shuttle. If changed in vaa-parser, we need to remove
+// patch logic by removing FAST_TRANSFER_APP_ID and SWAP_LAYER_APP_ID
+// in all their occurrences in the codebase.
+export const FAST_TRANSFERS_APP_ID = "FAST_TRANSFERS";
+export const SWAP_LAYER_APP_ID = "SWAP_LAYER";
+export const LIQUIDITY_LAYER_APP_ID = "WORMHOLE_LIQUIDITY_LAYER";
+export const MAYAN_SHUTTLE_APP_ID = "MAYAN_SHUTTLE";

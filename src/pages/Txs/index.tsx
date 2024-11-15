@@ -154,6 +154,7 @@ const Txs = () => {
     payloadType: params.payloadType,
     from: params.from,
     to: params.to,
+    filterRepeatedTxs: true,
   };
 
   const { refetch, isLoading: isLoadingOperations } = useQuery(
