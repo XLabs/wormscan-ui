@@ -282,6 +282,7 @@ export interface GetOperationsInput {
   vaaID?: string;
   from?: string;
   to?: string;
+  filterRepeatedTxs?: boolean;
 }
 
 export interface INFTInfo {
