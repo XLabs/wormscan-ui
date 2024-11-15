@@ -1201,6 +1201,7 @@ const Tx = () => {
         ) {
           data.content.standarizedProperties.appIds.push(C3_APP_ID);
         }
+        // ----
 
         // Add status logic
         const { fromChain, appIds } = data?.content?.standarizedProperties || {};

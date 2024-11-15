@@ -32,6 +32,8 @@ import {
   FAST_TRANSFERS_APP_ID,
   TBTC_URL,
   GR_URL,
+  MAYAN_SHUTTLE_APP_ID,
+  LIQUIDITY_LAYER_APP_ID,
 } from "src/consts";
 
 const appIds = [
@@ -39,25 +41,37 @@ const appIds = [
   CCTP_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
+  GATEWAY_APP_ID,
+  GR_APP_ID,
   MAYAN_APP_ID,
   MAYAN_MCTP_APP_ID,
   MAYAN_SWIFT_APP_ID,
-  OMNISWAP_APP_ID,
-  PORTAL_NFT_APP_ID,
-  PORTAL_APP_ID,
-  GR_APP_ID,
-  TBTC_APP_ID,
-  // UNKNOWN_APP_ID, // disabled until the backend is ready
-  USDT_TRANSFER_APP_ID,
-  GATEWAY_APP_ID,
   NTT_APP_ID,
+  OMNISWAP_APP_ID,
+  PORTAL_APP_ID,
+  PORTAL_NFT_APP_ID,
+  TBTC_APP_ID,
+  USDT_TRANSFER_APP_ID,
+  // UNKNOWN_APP_ID, // disabled until the backend is ready
 ];
 
-export const PROTOCOL_LIST: { label: string; value: string }[] = appIds.map(appId => ({
-  icon: <ProtocolIcon protocol={appId} />,
-  label: formatAppId(appId),
-  value: String(appId),
-}));
+export const PROTOCOL_LIST: { label: string; value: string }[] = [
+  ...appIds.map(appId => ({
+    icon: <ProtocolIcon protocol={appId} />,
+    label: formatAppId(appId),
+    value: String(appId),
+  })),
+  {
+    icon: <ProtocolIcon protocol={MAYAN_SHUTTLE_APP_ID} />,
+    label: "Mayan Shuttle",
+    value: SWAP_LAYER_APP_ID,
+  },
+  {
+    icon: <ProtocolIcon protocol={LIQUIDITY_LAYER_APP_ID} />,
+    label: "Wormhole Liquidity Layer",
+    value: FAST_TRANSFERS_APP_ID,
+  },
+].sort((a, b) => a.label.localeCompare(b.label));
 
 export const ChainFilterMainnet = [
   chainToChainId("Acala"),

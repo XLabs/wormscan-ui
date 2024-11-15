@@ -7,8 +7,10 @@ import {
   FAST_TRANSFERS_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
+  LIQUIDITY_LAYER_APP_ID,
   MAYAN_APP_ID,
   MAYAN_MCTP_APP_ID,
+  MAYAN_SHUTTLE_APP_ID,
   MAYAN_SWIFT_APP_ID,
   NTT_APP_ID,
   OMNISWAP_APP_ID,
@@ -265,6 +267,21 @@ const MayanIcon = ({ width }: { width: number }) => (
   </svg>
 );
 
+const WormholeLiquidityLayerIcon = ({ width }: { width: number }) => (
+  <svg
+    fill="none"
+    height={width / 1.2}
+    viewBox="0 0 64 64"
+    width={width / 1.2}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fill="#fff"
+      d="M49.6 43.757a10.263 10.263 0 0 1-8.903 5.153h-5.946V28.86l-8.582 14.902a10.264 10.264 0 0 1-8.903 5.152H11.36V19.325h11.878v20l11.512-19.99v-.01h11.874v20.082l12.474-21.673a2.737 2.737 0 0 0-.05-2.828C53.295 5.821 43.095-.17 31.505.004 13.832.279-.09 14.503 0 32.174.092 49.767 14.387 64 32 64c17.614 0 32-14.325 32-31.996 0-2.846-.376-5.606-1.077-8.237-.211-.798-1.275-.944-1.688-.234l-11.64 20.22.005.004Z"
+    />
+  </svg>
+);
+
 const StandardRelayerIcon = ({ width }: { width: number }) => (
   <svg
     fill="none"
@@ -496,8 +513,10 @@ const iconMap: Record<string, React.FC<{ width: number }>> = {
   [ETH_BRIDGE_APP_ID]: EthBridgeIcon,
   [GATEWAY_APP_ID]: WormholeGatewayIcon,
   [GR_APP_ID]: StandardRelayerIcon,
+  [LIQUIDITY_LAYER_APP_ID]: WormholeLiquidityLayerIcon,
   [MAYAN_APP_ID]: MayanIcon,
   [MAYAN_MCTP_APP_ID]: MayanIcon,
+  [MAYAN_SHUTTLE_APP_ID]: MayanIcon,
   [MAYAN_SWIFT_APP_ID]: MayanIcon,
   [NTT_APP_ID]: NTTIcon,
   [OMNISWAP_APP_ID]: OmniSwapIcon,
