@@ -132,6 +132,10 @@
           max-width: max-content;
           padding: 2px 8px;
 
+          @include desktop {
+            margin-left: 92px;
+          }
+
           &.negative {
             background-color: var(--color-error-15);
             color: var(--color-error-100);
