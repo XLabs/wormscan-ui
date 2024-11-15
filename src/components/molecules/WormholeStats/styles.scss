@@ -89,6 +89,10 @@
               }
             }
 
+            & .select__menu-list {
+              text-transform: capitalize;
+            }
+
             & .select__indicators {
               display: none;
             }

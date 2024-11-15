@@ -9,6 +9,7 @@ import { BlockchainIcon, Tooltip, NavLink } from "src/components/atoms";
 import { shortAddress, parseTx } from "src/utils/crypto";
 import { ChainId, chainIdToChain } from "@wormhole-foundation/sdk";
 import { formatNumber } from "src/utils/number";
+import { Environment } from "src/utils/environment";
 import { BREAKPOINTS, NTT_APP_ID } from "src/consts";
 import analytics from "src/analytics";
 
@@ -81,17 +82,7 @@ export const RecentTransactions = ({
       <div className="recent-transactions-title">
         <SwapVerticalIcon />
         <div>Recent Transactions</div>
-        <a
-          onClick={() => {
-            analytics.track("viewMore", {
-              network: environment.network,
-              selected: "NTT Token Recent Transactions",
-            });
-          }}
-          href={`#/txs?appId=${NTT_APP_ID}`}
-        >
-          View All
-        </a>
+        <ViewMore environment={environment}>View All</ViewMore>
       </div>
 
       {isDesktopDesign ? (
@@ -114,18 +105,7 @@ export const RecentTransactions = ({
           ) : recentTransactions?.length === 0 ? (
             <div className="recent-transactions-table-empty">
               No recent transaction found; take a look at&nbsp;
-              <a
-                onClick={() => {
-                  analytics.track("viewMore", {
-                    network: environment.network,
-                    selected: "NTT Token Recent Transactions",
-                  });
-                }}
-                href={`#/txs?appId=${NTT_APP_ID}`}
-              >
-                All Transactions
-              </a>
-              .
+              <ViewMore environment={environment}>All Transactions</ViewMore>.
             </div>
           ) : (
             recentTransactions?.map(data => (
@@ -212,18 +192,7 @@ export const RecentTransactions = ({
           ) : recentTransactions?.length === 0 ? (
             <div className="recent-transactions-table-empty">
               No recent transaction found; take a look at&nbsp;
-              <a
-                onClick={() => {
-                  analytics.track("viewMore", {
-                    network: environment.network,
-                    selected: "NTT Token Recent Transactions",
-                  });
-                }}
-                href={`#/txs?appId=${NTT_APP_ID}`}
-              >
-                All Transactions
-              </a>
-              .
+              <ViewMore environment={environment}>All Transactions</ViewMore>.
             </div>
           ) : (
             recentTransactions?.map(data => (
@@ -316,5 +285,29 @@ export const RecentTransactions = ({
         </div>
       )}
     </div>
+  );
+};
+
+const ViewMore = ({
+  environment,
+  children,
+}: {
+  environment: Environment;
+  children: React.ReactNode;
+}) => {
+  return (
+    <a
+      onClick={() => {
+        window.scrollTo(0, 0);
+
+        analytics.track("viewMore", {
+          network: environment.network,
+          selected: "NTT Token Recent Transactions",
+        });
+      }}
+      href={`#/txs?appId=${NTT_APP_ID}`}
+    >
+      {children}
+    </a>
   );
 };

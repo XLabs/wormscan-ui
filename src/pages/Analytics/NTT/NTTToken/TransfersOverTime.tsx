@@ -94,7 +94,7 @@ export const TransfersOverTime = ({
 
     return [
       {
-        name: "W Token Transfers",
+        name: `${symbol} Token Transfers`,
         color: "var(--color-lime)",
         totalValue: transfers.reduce((acc, item) => acc + +item.value, 0),
         data: transfers.map(item => ({
@@ -104,7 +104,7 @@ export const TransfersOverTime = ({
         })),
       },
     ];
-  }, [timeSpan, transfers]);
+  }, [symbol, timeSpan, transfers]);
 
   const formatDate = (date: Date) => {
     if (timeSpan === "1h") {
@@ -227,7 +227,7 @@ export const TransfersOverTime = ({
                   </span>
                   <p>
                     {by === "tx" ? "" : "$"}
-                    {series?.[0]?.totalValue && formatNumber(series[0].totalValue, 0)}
+                    {series?.[0]?.totalValue ? formatNumber(series[0].totalValue, 0) : 0}
                   </p>
                 </div>
               </div>
