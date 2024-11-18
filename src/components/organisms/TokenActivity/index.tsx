@@ -223,7 +223,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
       {openFilters && !isDesktop && <div className="token-activity-bg" />}
 
       <h3 className="token-activity-title">
-        <ActivityIcon /> Cross-Chain Token Activity
+        <ActivityIcon /> Top 10 Token Transferred (All Time)
         <div className="token-activity-title-fullscreen" ref={fullscreenBtnRef}>
           <FullscreenIcon width={20} />
         </div>
@@ -411,7 +411,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
 
         <div className="token-activity-container-content">
           <div className="token-activity-container-content-list">
-            <div className="token-activity-container-content-list-title">
+            <div className="token-activity-container-content-list-title" style={{ opacity: 0 }}>
               Top 10 Transferred Tokens
               <span>(All Time)</span>
             </div>

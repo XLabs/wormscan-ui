@@ -39,7 +39,7 @@ describe("Home Page", () => {
     });
   });
 
-  describe("Cross-chain activity", () => {
+  describe("Cross-chain Transfers", () => {
     test("check buttons/endpoints for volume and transactions", async ({ page }) => {
       const crossChainCard = page.getByTestId("cross-chain-card");
       const volumeButton = crossChainCard.getByLabel("Volume");
