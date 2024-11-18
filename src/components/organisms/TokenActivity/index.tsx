@@ -223,7 +223,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
       {openFilters && !isDesktop && <div className="token-activity-bg" />}
 
       <h3 className="token-activity-title">
-        <ActivityIcon /> Top 10 Token Transferred (All Time)
+        <ActivityIcon /> Top 10 Tokens Transferred (All Time)
         <div className="token-activity-title-fullscreen" ref={fullscreenBtnRef}>
           <FullscreenIcon width={20} />
         </div>
