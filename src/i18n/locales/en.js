@@ -48,7 +48,7 @@ export default {
           dayVolumeTime: "24H",
         },
         crossChain: {
-          title: "Cross-Chain Activity",
+          title: "Cross-Chain Transfers",
           download: "Download",
           volume: "Volume",
           count: "Transfers",

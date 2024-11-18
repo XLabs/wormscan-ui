@@ -120,7 +120,7 @@ const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
       createDownloadLink(
         csvContent,
         "text/csv",
-        `Cross-chain activity - ${selectedTimeRange.label}.csv`,
+        `Cross-chain Transfers - ${selectedTimeRange.label}.csv`,
       );
     } else if (downloadAs === "png") {
       const rows = csvData.map((row: ICsvRow) => [
@@ -182,7 +182,7 @@ const CrossChainChart = ({ isHomePage = false }: { isHomePage?: boolean }) => {
           createDownloadLink(
             blob,
             "image/png",
-            `Cross-chain activity - ${selectedTimeRange.label}.png`,
+            `Cross-chain Transfers - ${selectedTimeRange.label}.png`,
           );
         } catch (error) {
           console.log("Error creating blob", error);

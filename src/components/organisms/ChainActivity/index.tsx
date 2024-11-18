@@ -727,7 +727,7 @@ const ChainActivity = () => {
       {openFilters && <div className="chain-activity-bg" onClick={handleFiltersOpened} />}
 
       <h2 className="chain-activity-title">
-        <AnalyticsIcon width={24} /> Chains Activity{" "}
+        <AnalyticsIcon width={24} /> Chains Transfers{" "}
         <div className="chain-activity-title-fullscreen" ref={fullscreenBtnRef}>
           <FullscreenIcon width={20} />
         </div>
