@@ -210,7 +210,11 @@ export class GuardianNetwork {
   }
 
   async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
-    return await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
+    const response = await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
+
+    return response.filter(
+      item => item.protocol !== "swap_layer" && item.protocol !== "fast_transfers",
+    );
   }
 
   async getProtocolActivity({
