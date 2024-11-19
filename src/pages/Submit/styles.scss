@@ -27,7 +27,6 @@
 
   &-finished-parsing {
     display: flex;
-    // background-color: var(--color-success-15);
     margin-top: 12px;
     justify-content: center;
     align-items: center;
@@ -172,7 +171,6 @@
       &-options {
         display: flex;
         flex-direction: column;
-        // justify-content: center;
       }
     }
 
@@ -299,7 +297,6 @@
   }
 
   &-switch-size-text {
-    // background-color: var(--color-white-10);
     margin-left: 12px;
     padding: 4px 2px;
 
@@ -323,7 +320,6 @@
       width: 100%;
       margin-left: 12px;
       margin-bottom: 12px;
-      // text-align: center;
       color: var(--color-gray-500);
 
       & > p {
@@ -384,7 +380,6 @@
 
     &-container {
       @include centered-column;
-      // align-items: center;
       gap: 6px;
       width: 100%;
 
@@ -414,7 +409,6 @@
     &-title {
       margin: 12px 0px;
       color: var(--color-gray-400);
-      // text-align: center;
     }
 
     &-container {
@@ -431,7 +425,6 @@
 
       & > input {
         height: 30px;
-        // text-align: center;
 
         &:disabled {
           margin-top: 4px;

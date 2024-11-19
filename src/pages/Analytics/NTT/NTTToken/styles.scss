@@ -116,7 +116,6 @@
         @include desktop {
           @include centered-row;
           justify-content: flex-start;
-          // justify-content: space-around;
         }
 
         &-item {
@@ -139,10 +138,6 @@
 
             &:nth-last-child(-n + 2) {
               flex-basis: unset;
-            }
-
-            &:last-child {
-              // margin-right: auto;
             }
           }
 
