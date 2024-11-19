@@ -104,6 +104,7 @@ export const RecentTransactions = ({
 
   const parsedRecentTxsData =
     recentTransactions?.map(data => ({
+      txHashString: data.sourceChain.transaction.txHash,
       status: (
         <div className="recent-transactions-table-item">
           <h4>STATUS</h4>
@@ -226,9 +227,7 @@ export const RecentTransactions = ({
           isLoading={isLoading}
           numberOfColumns={6}
           numberOfRows={7}
-          onRowClick={r => {
-            console.log(r);
-          }}
+          onRowClick={tx => (tx.txHash ? navigate(`/tx/${tx.txHashString}`) : null)}
         />
       </div>
     </div>
