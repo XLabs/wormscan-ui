@@ -31,7 +31,7 @@ export const COLUMNS_NTT: Column<IRowToken>[] | any = [
   { Header: "TOKEN", accessor: "token", sortType: sortBySymbol },
   { Header: "PRICE", accessor: "price", sortType: sortByNumber("priceNumber") },
   {
-    Header: "24H PRICE VARIATION%",
+    Header: "24H PRICE VARIATION",
     accessor: "priceVariation",
     sortType: sortByNumber("priceVariationNumber"),
   },
@@ -41,7 +41,7 @@ export const COLUMNS_NTT: Column<IRowToken>[] | any = [
     sortType: sortByNumber("circulatingSupplyNumber"),
   },
   { Header: "MARKET CAP", accessor: "marketCap", sortType: sortByNumber("marketCapNumber") },
-  { Header: "24H VOLUME", accessor: "volume", sortType: sortByNumber("volumeNumber") },
+  // { Header: "24H VOLUME", accessor: "volume", sortType: sortByNumber("volumeNumber") },
 ];
 
 export const SORT_TRANSFERS_NTT = [
@@ -50,7 +50,7 @@ export const SORT_TRANSFERS_NTT = [
   { label: "24H Price Variation", value: "priceVariation" },
   { label: "Circulating Supply", value: "circulatingSupply" },
   { label: "Market Cap", value: "marketCap" },
-  { label: "24H Volume", value: "volume" },
+  // { label: "24H Volume", value: "volume" },
 ];
 
 export const SORT_LOW_HIGH_LIST_NTT = [

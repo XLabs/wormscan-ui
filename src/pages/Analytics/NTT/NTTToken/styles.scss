@@ -111,15 +111,12 @@
       &-container {
         @include centered-column;
         flex-wrap: wrap;
-        gap: 24px 10px;
+        gap: 24px 16px;
 
-        @include tablet {
+        @include desktop {
           @include centered-row;
-          gap: 24px 20px;
-        }
-
-        @include bigDesktop {
-          gap: 24px 30px;
+          justify-content: flex-start;
+          // justify-content: space-around;
         }
 
         &-item {
@@ -134,19 +131,24 @@
 
           @include desktop {
             gap: 12px;
+            max-width: max-content;
 
             &:first-child {
-              flex: 6;
+              order: 3;
             }
 
             &:nth-last-child(-n + 2) {
               flex-basis: unset;
             }
+
+            &:last-child {
+              // margin-right: auto;
+            }
           }
 
           &-up {
             @include text-roboto-body-400;
-            color: var(--color-gray-500);
+            color: var(--color-gray-400);
           }
 
           &-down {
@@ -157,7 +159,7 @@
             color: var(--color-white);
             gap: 12px;
             height: 44px;
-            padding: 12px;
+            padding: 0 16px;
 
             &.price {
               position: relative;
@@ -173,7 +175,7 @@
                 @include centered-row;
                 height: 100%;
                 justify-content: center;
-                min-width: 40px;
+                padding: 0 12px;
                 width: 100%;
 
                 &:hover {
@@ -221,13 +223,6 @@
               justify-content: center;
               padding: 10px;
 
-              @media only screen and (min-width: 400px) {
-                &-arrow {
-                  height: 24px;
-                  width: 24px;
-                }
-              }
-
               svg {
                 color: var(--color-gray-400);
               }
@@ -245,6 +240,8 @@
             }
 
             &-tooltip {
+              width: min-content;
+
               &-container {
                 display: grid;
                 gap: 8px;
@@ -312,7 +309,7 @@
 
         &-label {
           @include text-roboto-body-400;
-          color: var(--color-gray-500);
+          color: var(--color-gray-400);
           text-transform: uppercase;
           text-wrap: balance;
 
@@ -519,156 +516,37 @@
   }
 
   &-table {
-    @include centered-column;
-    &-head,
-    &-item {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      padding: 12px 16px;
-    }
+    overflow-x: auto;
 
-    &-head {
-      @include text-heading6;
-      background-color: var(--color-gray-950);
-      border-radius: 16px;
-      color: var(--color-gray-500);
+    & > a {
+      color: var(--color-gray-400);
     }
 
     &-item {
-      border-bottom: 1px solid var(--color-gray-900);
-      cursor: pointer;
-      width: 100%;
-
-      &:hover {
-        background-color: var(--color-white-05);
-      }
-    }
-
-    &-loading {
-      @include centered-column;
-      width: 100%;
-      padding: 18px 16px;
-      gap: 36px;
-      border-bottom: 1px solid var(--color-gray-900);
-
-      .loading {
-        height: 30px;
-      }
-    }
-
-    &-empty {
-      @include text-roboto-body-400;
-      color: var(--color-gray-500);
-      display: inline;
-      margin: 0 auto;
-      padding: 16px;
-      text-wrap: pretty;
-
-      & > a {
-        @include button-ghost;
-        color: var(--color-gray-500);
-        display: inline;
-      }
-    }
-
-    &-head-row,
-    &-item-row {
       @include centered-row;
-      gap: 10px;
 
-      &:nth-child(1) {
-        flex: 1;
-      }
-      &:nth-child(2) {
-        flex: 2;
-      }
-      &:nth-child(3) {
-        flex: 2;
-      }
-      &:nth-child(4) {
-        flex: 2;
-      }
-      &:nth-child(5) {
-        flex: 1.5;
-      }
-      &:nth-child(6) {
-        flex: 0.85;
-        text-align: right;
-        justify-content: flex-end;
-      }
-    }
+      & > h4 {
+        @include text-heading6;
+        color: var(--color-gray-400);
+        margin-right: auto;
 
-    &-item-row {
-      @include text-roboto-body-500;
-      padding-top: 8px;
-      padding-bottom: 8px;
-
-      .token-row {
-        @include centered-row;
-        gap: 4px;
-
-        .usd {
-          color: var(--color-gray-400);
+        @include desktop {
+          display: none;
         }
       }
 
-      .link-container {
+      &-container {
         @include centered-row;
-        align-items: center;
+        @include text-roboto-body-400;
         gap: 0 8px;
 
-        a {
+        & > a {
           @include button-ghost;
         }
-      }
 
-      svg {
-        color: var(--color-gray-400);
-      }
-    }
-  }
-
-  &-mobile {
-    @include centered-column;
-    gap: 12px;
-
-    &-container {
-      @include centered-column;
-      background-color: var(--color-gray-950);
-      border-radius: 12px;
-      border: 1px solid var(--color-gray-900);
-      padding: 0 16px;
-      position: relative;
-    }
-
-    &-item {
-      @include centered-row;
-      border-bottom: 1px solid var(--color-gray-900);
-      justify-content: space-between;
-      min-height: 57px;
-      padding: 16px 0;
-      width: 100%;
-
-      &:first-child {
-        border: none;
-        min-height: 0;
-        padding-bottom: 8px;
-      }
-
-      &:last-child {
-        border: none;
-      }
-
-      &-btn {
-        @include button-secondary;
-        justify-content: center;
-        width: 100%;
-      }
-
-      .title {
-        @include text-heading6;
-        color: var(--color-gray-500);
+        & .copy-to-clipboard svg {
+          color: var(--color-gray-400);
+        }
 
         .status-badge-status {
           background-color: transparent;
@@ -679,42 +557,26 @@
             color: var(--color-white);
           }
         }
-      }
 
-      .content {
-        @include centered-row;
-        @include text-roboto-body-400;
-        color: var(--color-white);
-        gap: 8px;
-        max-width: 60%;
-        text-align: right;
+        &.amount {
+          @include text-roboto-body-500;
+          gap: 0 4px;
 
-        .time {
-          color: var(--color-gray-400);
-        }
-
-        .token-row {
-          @include centered-row;
-          gap: 4px;
-
-          .usd {
+          & > .usd {
             color: var(--color-gray-400);
           }
         }
 
-        .link-container {
-          @include centered-row;
-          align-items: flex-end;
-          gap: 8px;
-
-          a {
-            @include button-ghost;
-          }
+        &.time {
+          justify-content: flex-end;
+          margin-left: auto;
         }
+      }
 
-        & .copy-to-clipboard {
-          color: var(--color-gray-400);
-        }
+      &-btn {
+        @include button-secondary;
+        justify-content: center;
+        width: 100%;
       }
     }
   }
@@ -844,7 +706,7 @@
         @include text-heading6;
         background-color: var(--color-gray-950);
         border-radius: 16px;
-        color: var(--color-gray-500);
+        color: var(--color-gray-400);
         padding: 12px 16px;
 
         &-row {
@@ -860,7 +722,7 @@
       &-error {
         @include centered-row;
         @include text-roboto-body-400;
-        color: var(--color-gray-500);
+        color: var(--color-gray-400);
         justify-content: center;
         padding: 16px;
       }
@@ -927,7 +789,7 @@
 
         .title {
           @include text-heading6;
-          color: var(--color-gray-500);
+          color: var(--color-gray-400);
         }
 
         .content {
@@ -986,7 +848,7 @@
 
       background-color: var(--color-gray-950);
       border-radius: 16px;
-      color: var(--color-gray-500);
+      color: var(--color-gray-400);
       padding: 12px 16px;
 
       &-row {
@@ -1006,7 +868,7 @@
     &-error {
       @include centered-row;
       @include text-roboto-body-400;
-      color: var(--color-gray-500);
+      color: var(--color-gray-400);
       justify-content: center;
       padding: 16px;
     }
@@ -1104,7 +966,7 @@
 
         background-color: var(--color-gray-950);
         border-radius: 16px;
-        color: var(--color-gray-500);
+        color: var(--color-gray-400);
         padding: 12px 16px;
 
         &-row {
@@ -1124,7 +986,7 @@
       &-error {
         @include centered-row;
         @include text-roboto-body-400;
-        color: var(--color-gray-500);
+        color: var(--color-gray-400);
         justify-content: center;
         padding: 16px;
       }

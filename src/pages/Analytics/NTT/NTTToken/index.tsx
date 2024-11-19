@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
+import { chainToChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BaseLayout } from "src/layouts/BaseLayout";
@@ -103,13 +104,14 @@ const NTTToken = () => {
           },
         });
 
-        const filteredTransactions = isUSDCe
-          ? data.filter(
-              tx =>
-                tx.content?.standarizedProperties?.tokenAddress.toUpperCase() ===
-                TOKEN_ADDRESS_WORMHOLE_BRIDGED_USDC_FANTOM,
-            )
-          : data.filter(tx => tx.data?.symbol.toUpperCase() === symbol.toUpperCase());
+        const filteredTransactions = data.filter(
+          tx =>
+            tx.data?.symbol.toUpperCase() === symbol.toUpperCase() ||
+            (isUSDCe &&
+              tx.content?.standarizedProperties?.fromChain === chainToChainId("Ethereum") &&
+              tx.content?.standarizedProperties?.toChain === chainToChainId("Fantom") &&
+              tx.data?.symbol.toUpperCase() === "USDC"),
+        );
 
         const transactionsWithStatus = filteredTransactions.map(tx => {
           const { emitterChain } = tx;
@@ -367,7 +369,7 @@ const NTTToken = () => {
               { label: "General Information", value: "general-info" },
               { label: "Transfers Over Time", value: "transfers-over-time" },
               { label: "Top Transfers", value: "top-transfers" },
-              { label: "Top Holders", value: "top-holders" },
+              ...(!isUSDCe ? [{ label: "Top Holders", value: "top-holders" }] : []),
               { label: "Top Addresses", value: "top-addresses" },
             ]}
             onValueChange={value => {

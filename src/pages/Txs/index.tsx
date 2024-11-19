@@ -392,12 +392,16 @@ const Txs = () => {
                 txHashId: parseTxHash,
                 statusString: status,
                 status: (
-                  <StatusBadge
-                    key={`${tx.sequence} ${status}`}
-                    className={statusChanged ? "appear" : ""}
-                    size="responsive"
-                    status={status}
-                  />
+                  <div>
+                    <h4>STATUS</h4>
+
+                    <StatusBadge
+                      key={`${tx.sequence} ${status}`}
+                      className={statusChanged ? "appear" : ""}
+                      size="responsive"
+                      status={status}
+                    />
+                  </div>
                 ),
                 txHash: (
                   <div className="tx-hash">
@@ -484,7 +488,7 @@ const Txs = () => {
                   </div>
                 ),
                 from: (
-                  <div className="tx-chains">
+                  <div className={`tx-chains from ${toChain && targetAddress ? "exists-to" : ""}`}>
                     <h4>FROM</h4>
 
                     <div className="tx-chains-container">
@@ -561,8 +565,8 @@ const Txs = () => {
                   </div>
                 ),
                 to: (
-                  <div className="tx-chains">
-                    <h4>{"TO"}</h4>
+                  <div className={`tx-chains to ${toChain && targetAddress ? "exists-to" : ""}`}>
+                    <h4>TO</h4>
 
                     {toChain && targetAddress ? (
                       <div className="tx-chains-container">
@@ -696,6 +700,8 @@ const Txs = () => {
                 ),
                 time: (
                   <div className="tx-time">
+                    <h4>TIME</h4>
+
                     {timestampDate ? timeAgo(timestampDate) : <div className="not-found">-</div>}
                   </div>
                 ),

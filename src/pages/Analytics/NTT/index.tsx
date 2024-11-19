@@ -50,11 +50,7 @@ const NTT = () => {
         if (dataTokensList?.length > 0) {
           const transformedData = dataTokensList
             .filter(item => {
-              return (
-                item.circulating_supply !== "0" &&
-                item.market_cap !== "0" &&
-                item.coingecko_id !== "usd-coin"
-              );
+              return item.circulating_supply !== "0" && item.market_cap !== "0";
             })
             .map(item => ({
               coingecko_id: item.coingecko_id,
@@ -84,7 +80,7 @@ const NTT = () => {
               ),
               priceVariation: (
                 <div className="ntt-page-tokens-list-table-item">
-                  <h4>24H PRICE VARIATION%</h4>
+                  <h4>24H PRICE VARIATION</h4>
                   <div
                     className={`price-variation ${
                       item.price_change_percentage_24h

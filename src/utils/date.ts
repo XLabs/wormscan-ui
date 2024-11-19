@@ -7,6 +7,18 @@ export const minutesBetweenDates = (startDate: Date, endDate: Date) => {
 export const timeAgo = (date: Date) => {
   const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
 
+  // if the date is more than 23:59 hours ago, return the formatted date
+  if (seconds > 86400) {
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    }).format(date);
+  }
   let interval = Math.floor(seconds / 31536000);
   if (interval > 1) {
     return interval + " years ago";

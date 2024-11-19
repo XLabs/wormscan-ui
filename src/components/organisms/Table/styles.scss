@@ -78,15 +78,6 @@
         padding: 16px 0;
         margin: 0 16px;
 
-        &:first-child {
-          border: none;
-          padding-bottom: 8px;
-
-          @include desktop {
-            padding-bottom: 0;
-          }
-        }
-
         &:last-child {
           border: none;
           text-align: end;
@@ -232,5 +223,5 @@
   @include text-roboto-body-400;
   color: var(--color-gray-400);
   justify-content: center;
-  margin-top: 12px;
+  margin: 16px;
 }

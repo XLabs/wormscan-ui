@@ -122,7 +122,7 @@ const Information = ({
         goNextPage={() => goNextPage(currentPage)}
         goPage={isTxsFiltered ? null : goPage}
         disabled={isPaginationLoading}
-        disableNextButton={parsedTxsData?.length <= 0 || parsedTxsData?.length < PAGE_SIZE}
+        disableNextButton={parsedTxsData?.length <= 0}
         className={className}
       />
     );

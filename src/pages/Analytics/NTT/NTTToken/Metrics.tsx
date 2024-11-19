@@ -33,7 +33,7 @@ export const Metrics = ({ isError, isLoading, summary }: IMetricsProps) => {
 
             <div className="summary-metrics-container-item">
               <div className="summary-metrics-container-item-label">
-                Fully diluted valuation (FDV)
+                Fully diluted valuation
                 <Tooltip tooltip="FDV=Current Price x Total Supply" type="info">
                   <div className="summary-metrics-container-item-label-icon">
                     <InfoCircleIcon />

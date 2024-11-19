@@ -103,6 +103,12 @@
         }
       }
 
+      & td:last-child {
+        & > .ntt-page-tokens-list-table-item {
+          justify-content: flex-end;
+        }
+      }
+
       &-item {
         @include centered-row;
         @include text-heading5;
@@ -133,7 +139,7 @@
           padding: 2px 8px;
 
           @include desktop {
-            margin-left: 92px;
+            margin-left: 84px;
           }
 
           &.negative {
@@ -153,10 +159,6 @@
           & svg {
             margin-right: 8px;
           }
-        }
-
-        &.volume {
-          justify-content: flex-end;
         }
 
         &.view-details {
