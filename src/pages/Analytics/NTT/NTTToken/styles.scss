@@ -304,7 +304,7 @@
         width: 100%;
 
         &-label {
-          @include text-roboto-body-400;
+          @include text-heading6;
           color: var(--color-gray-400);
           text-transform: uppercase;
           text-wrap: balance;
@@ -312,7 +312,7 @@
           &-icon {
             display: inline-block;
             height: 12px;
-            transform: translateY(-5px);
+            transform: translateY(-4.5px);
 
             & > svg {
               display: block;
