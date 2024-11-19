@@ -260,14 +260,49 @@ export class GuardianNetwork {
   async getProtocolsStats(): Promise<ProtocolsStatsOutput[]> {
     const response = await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
 
-    // liquidity layer patch
-    const responseProcessed = response?.map(item => {
-      if (item.protocol === "fast_transfers") {
-        item.protocol = "wormhole_liquidity_layer";
-      }
+    // --- liquidity layer patch start ---
+    // (merge swap_layer and fast_transfers and then rename to wormhole_liquidity_layer)
+    const responseProcessed = response
+      ?.map(item => {
+        // find swap_layer item
+        if (item.protocol === "swap_layer") {
+          // Find the fast_transfers item to merge data into
+          const fastTransfersItem = response.find(i => i.protocol === "fast_transfers");
+          if (fastTransfersItem) {
+            // Add swap_layer volumes to fast_transfers
+            fastTransfersItem.last_24_hour_volume += item.last_24_hour_volume;
+            fastTransfersItem.total_messages += item.total_messages;
+            fastTransfersItem.total_value_transferred += item.total_value_transferred;
+            fastTransfersItem.last_day_messages += item.last_day_messages;
 
-      return item;
-    });
+            // Recalculate percentages
+            fastTransfersItem.last_day_diff_percentage =
+              (
+                ((fastTransfersItem.last_day_messages + item.last_day_messages) /
+                  (fastTransfersItem.total_messages + item.total_messages)) *
+                100
+              ).toFixed(2) + "%";
+
+            fastTransfersItem.last_day_diff_volume_percentage =
+              (
+                ((fastTransfersItem.last_24_hour_volume + item.last_24_hour_volume) /
+                  (fastTransfersItem.total_value_transferred + item.total_value_transferred)) *
+                100
+              ).toFixed(2) + "%";
+          }
+          // Remove the swap_layer item since we merged it
+          return null;
+        }
+
+        // change name
+        if (item.protocol === "fast_transfers") {
+          item.protocol = "wormhole_liquidity_layer";
+        }
+
+        return item;
+      })
+      .filter(item => item !== null);
+    // --- liquidity layer patch end ---
 
     return responseProcessed;
   }
