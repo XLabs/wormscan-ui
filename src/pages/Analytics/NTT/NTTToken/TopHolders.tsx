@@ -50,7 +50,7 @@ export const TopHolders = ({ isError, isLoading, topHolders }: TopHoldersProps) 
                 <div className="loading" />
               </div>
             ))
-          ) : topHolders ? (
+          ) : topHolders?.length > 0 ? (
             topHolders.map((item, idx) => (
               <div key={`item-${idx}`} className="top-holders-table-item">
                 <div className="top-holders-table-item-row">{idx + 1}</div>
@@ -101,7 +101,7 @@ export const TopHolders = ({ isError, isLoading, topHolders }: TopHoldersProps) 
                 <div className="loading" />
               </div>
             ))
-          ) : topHolders ? (
+          ) : topHolders?.length > 0 ? (
             topHolders.map((item, idx) => (
               <div key={`item-${idx}`} className="top-holders-mobile-container">
                 <div className="top-holders-mobile-container-item">

@@ -574,6 +574,11 @@
         width: 100%;
       }
     }
+
+    & .table-body-empty > a {
+      @include button-ghost;
+      color: var(--color-gray-400);
+    }
   }
 }
 
