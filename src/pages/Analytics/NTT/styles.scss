@@ -32,7 +32,7 @@
 
     &-item {
       @include centered-column;
-      gap: 12px 0;
+      gap: 8px 0;
       min-width: max-content;
       width: 180px;
 
@@ -42,8 +42,8 @@
       }
 
       &-value {
-        @include text-roboto-heading-500;
         color: var(--color-white);
+        @include text-heading4;
       }
     }
   }

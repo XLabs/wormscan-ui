@@ -234,7 +234,6 @@ const ContractsList = ({
             type="info"
             className="summary-top-content-container-item-chain-tooltip"
             side="bottom"
-            maxWidth
             tooltip={
               <div className="summary-top-content-container-item-chain-tooltip-container">
                 {Object.entries(summary.platforms)
