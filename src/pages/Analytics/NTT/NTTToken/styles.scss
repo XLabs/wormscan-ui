@@ -311,7 +311,8 @@
 
           &-icon {
             display: inline-block;
-            height: 16px;
+            height: 12px;
+            transform: translateY(-5px);
 
             & > svg {
               display: block;
@@ -320,10 +321,10 @@
         }
 
         &-value {
-          @include text-roboto-heading-500;
           color: var(--color-white);
-          white-space: nowrap;
           margin-top: auto;
+          white-space: nowrap;
+          @include text-heading4;
         }
       }
     }
@@ -708,7 +709,7 @@
         background-color: var(--color-gray-950);
         border-radius: 16px;
         color: var(--color-gray-400);
-        padding: 12px 16px;
+        padding: 10px 16px;
 
         &-row {
           width: 35%;
@@ -850,7 +851,7 @@
       background-color: var(--color-gray-950);
       border-radius: 16px;
       color: var(--color-gray-400);
-      padding: 12px 16px;
+      padding: 10px 16px;
 
       &-row {
         width: 23.25%;
@@ -968,7 +969,7 @@
         background-color: var(--color-gray-950);
         border-radius: 16px;
         color: var(--color-gray-400);
-        padding: 12px 16px;
+        padding: 10px 16px;
 
         &-row {
           width: 14%;
