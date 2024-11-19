@@ -109,7 +109,10 @@ const NTT = () => {
           ),
           viewDetails: (
             <div className="ntt-page-tokens-list-table-item view-details">
-              <NavLink to={`/analytics/ntt/${item.coingecko_id}/${item.symbol}`}>
+              <NavLink
+                onClick={() => window.scrollTo(0, 0)}
+                to={`/analytics/ntt/${item.coingecko_id}/${item.symbol}`}
+              >
                 View details
               </NavLink>
             </div>

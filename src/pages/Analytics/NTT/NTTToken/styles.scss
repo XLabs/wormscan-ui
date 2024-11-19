@@ -577,9 +577,17 @@
       }
     }
 
-    & .table-body-empty > a {
-      @include button-ghost;
-      color: var(--color-gray-400);
+    & .table-body-empty {
+      display: inline-block;
+      text-align: center;
+      text-wrap: balance;
+      width: 100%;
+
+      & > a {
+        @include button-ghost;
+        color: var(--color-gray-400);
+        display: inline-block;
+      }
     }
   }
 }
