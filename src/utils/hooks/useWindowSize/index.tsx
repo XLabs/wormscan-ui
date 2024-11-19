@@ -7,8 +7,8 @@ interface Size {
 
 function useWindowSize(): Size {
   const [windowSize, setWindowSize] = useState<Size>({
-    width: screen.width || 0,
-    height: screen.height || 0,
+    width: typeof window !== "undefined" ? window.innerWidth : 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 0,
   });
 
   useEffect(() => {

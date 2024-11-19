@@ -66,7 +66,7 @@ export const Summary = ({ isError, isLoading, summary, coingecko_id }: Props) =>
     data: dataTokenSummary,
     isFetching: isFetchingTokenPrice,
     isError: isErrorTokenSummary,
-  } = useQuery(["tokenList", isMainnet], () => getClient().nttApi.getNttSummary({ coingecko_id }), {
+  } = useQuery(["nttTokenSummary"], () => getClient().nttApi.getNttSummary({ coingecko_id }), {
     enabled: isMainnet,
     refetchInterval: 40000,
   });

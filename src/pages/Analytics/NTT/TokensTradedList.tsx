@@ -73,7 +73,7 @@ export const TokensTradedList = ({ data, isLoading, isError }: Props) => {
         <div className="ntt-page-tokens-list-table">
           <Table
             columns={columns}
-            data={data}
+            data={data?.length > 0 ? data : []}
             emptyMessage="There are no transactions."
             hasSort={true}
             isLoading={isLoading}
