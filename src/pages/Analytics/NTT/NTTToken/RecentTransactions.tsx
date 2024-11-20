@@ -227,7 +227,11 @@ export const RecentTransactions = ({
           isLoading={isLoading}
           numberOfColumns={6}
           numberOfRows={7}
-          onRowClick={tx => (tx.txHash ? navigate(`/tx/${tx.txHashString}`) : null)}
+          onRowClick={tx => {
+            if (isDesktop) {
+              return tx.txHash ? navigate(`/tx/${tx.txHashString}`) : null;
+            }
+          }}
         />
       </div>
     </div>
