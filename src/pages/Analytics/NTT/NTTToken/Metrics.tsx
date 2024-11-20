@@ -25,7 +25,10 @@ export const Metrics = ({ isError, isLoading, summary }: IMetricsProps) => {
         ) : (
           <>
             <div className="summary-metrics-container-item">
-              <div className="summary-metrics-container-item-label">Total value transferred</div>
+              <div className="summary-metrics-container-item-label">
+                Total value transferred
+                <MetricsTooltip text="Total USD value of all transfers made using this token." />
+              </div>
               <h3 className="summary-metrics-container-item-value">
                 ${isError ? " -" : renderValue(summary?.totalValueTokenTransferred)}
               </h3>
@@ -34,11 +37,7 @@ export const Metrics = ({ isError, isLoading, summary }: IMetricsProps) => {
             <div className="summary-metrics-container-item">
               <div className="summary-metrics-container-item-label">
                 Fully diluted valuation
-                <Tooltip tooltip="FDV=Current Price x Total Supply" type="info">
-                  <div className="summary-metrics-container-item-label-icon">
-                    <InfoCircleIcon />
-                  </div>
-                </Tooltip>
+                <MetricsTooltip text="Current price x Total Supply. Theoretical market value if the entire supply was circulating." />
               </div>
               <h3 className="summary-metrics-container-item-value">
                 {isError ? " -" : renderValue(summary?.fullyDilutedValuation)}
@@ -46,21 +45,30 @@ export const Metrics = ({ isError, isLoading, summary }: IMetricsProps) => {
             </div>
 
             <div className="summary-metrics-container-item">
-              <div className="summary-metrics-container-item-label">Market Cap</div>
+              <div className="summary-metrics-container-item-label">
+                Market Cap
+                <MetricsTooltip text="Current price x Circulating Supply. The current value of circulating tokens in USD." />
+              </div>
               <h3 className="summary-metrics-container-item-value">
                 ${isError ? " -" : renderValue(summary?.marketCap)}
               </h3>
             </div>
 
             <div className="summary-metrics-container-item">
-              <div className="summary-metrics-container-item-label">Circulating Supply</div>
+              <div className="summary-metrics-container-item-label">
+                Circulating Supply
+                <MetricsTooltip text="The number of tokens currently circulating in the market and available to the public." />
+              </div>
               <h3 className="summary-metrics-container-item-value">
                 {isError ? " -" : renderValue(summary?.circulatingSupply)}
               </h3>
             </div>
 
             <div className="summary-metrics-container-item">
-              <div className="summary-metrics-container-item-label">Total token transfers</div>
+              <div className="summary-metrics-container-item-label">
+                Total token transfers
+                <MetricsTooltip text="Total number of transactions involving this token." />
+              </div>
               <h3 className="summary-metrics-container-item-value">
                 {isError ? " -" : renderValue(summary?.totalTokenTransferred)}
               </h3>
@@ -71,3 +79,11 @@ export const Metrics = ({ isError, isLoading, summary }: IMetricsProps) => {
     </div>
   );
 };
+
+const MetricsTooltip = ({ text }: { text: string }) => (
+  <Tooltip tooltip={text} type="info">
+    <div className="summary-metrics-container-item-label-icon">
+      <InfoCircleIcon />
+    </div>
+  </Tooltip>
+);

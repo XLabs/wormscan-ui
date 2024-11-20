@@ -27,6 +27,8 @@
       @include centered-row;
       justify-content: space-between;
       max-height: 84px;
+      overflow-x: auto;
+      overflow-y: hidden;
       padding: 16px 32px;
     }
 
@@ -39,6 +41,16 @@
       &-label {
         @include text-heading6;
         color: var(--color-gray-400);
+
+        &-icon {
+          display: inline-block;
+          height: 12px;
+          transform: translateY(-4.5px);
+
+          & > svg {
+            display: block;
+          }
+        }
       }
 
       &-value {
