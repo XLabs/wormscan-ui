@@ -53,9 +53,9 @@ export const Metrics = ({ isError, isLoading, summary }: IMetricsProps) => {
             </div>
 
             <div className="summary-metrics-container-item">
-              <div className="summary-metrics-container-item-label">Total Supply</div>
+              <div className="summary-metrics-container-item-label">Circulating Supply</div>
               <h3 className="summary-metrics-container-item-value">
-                {isError ? " -" : renderValue(summary?.totalSupply)}
+                {isError ? " -" : renderValue(summary?.circulatingSupply)}
               </h3>
             </div>
 
