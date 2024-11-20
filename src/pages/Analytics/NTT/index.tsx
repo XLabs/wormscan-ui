@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 import { useQuery } from "react-query";
 import analytics from "src/analytics";
 import { getClient } from "src/api/Client";
@@ -20,112 +19,108 @@ const NTT = () => {
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "Mainnet";
-  const { symbol, coingecko_id } = useParams();
 
   const {
     data: dataStats,
     isLoading: isLoadingStats,
     isError: isErrorStats,
-  } = useQuery(["stats", isMainnet], () =>
-    getClient()
-      .guardianNetwork.getProtocolsStats()
-      .then(stats => {
-        const statsFiltered = stats.filter(
-          item => item.protocol === "native_token_transfer" || item.protocol === NTT_APP_ID,
-        );
+  } = useQuery(
+    ["nttPageStats"],
+    () =>
+      getClient()
+        .guardianNetwork.getProtocolsStats()
+        .then(stats => {
+          const statsFiltered = stats.filter(
+            item => item.protocol === "native_token_transfer" || item.protocol === NTT_APP_ID,
+          );
 
-        return statsFiltered[0];
-      }),
+          return statsFiltered[0];
+        }),
+    { enabled: isMainnet },
   );
 
-  const [tokensList, setTokensList] = useState([]);
-  const { isFetching: isFetchingTokensList, isError: isErrorTokensList } = useQuery(
-    ["tokenList", isMainnet],
+  const {
+    data: tokensList,
+    isFetching: isFetchingTokensList,
+    isError: isErrorTokensList,
+  } = useQuery(
+    ["nttPageTokenList"],
     async () => {
       const dataTokensList = await getClient().nttApi.getNttTokenList();
-      return dataTokensList;
+      return dataTokensList
+        ?.filter(item => item.circulating_supply !== "0" && item.market_cap !== "0")
+        .map(item => ({
+          coingecko_id: item.coingecko_id,
+          symbol: item.symbol,
+          priceNumber: +item.price,
+          priceVariationNumber: +item.price_change_percentage_24h,
+          circulatingSupplyNumber: +item.circulating_supply,
+          marketCapNumber: +item.market_cap,
+          volumeNumber: +item.volume_24h,
+          token: (
+            <div className="ntt-page-tokens-list-table-item token">
+              <img
+                src={item?.image?.small}
+                alt={`${item.symbol} icon`}
+                height="24"
+                width="24"
+                className="top-asset-list-row-item-to-icon"
+                loading="lazy"
+              />
+              {item.symbol}
+            </div>
+          ),
+          price: (
+            <div className="ntt-page-tokens-list-table-item">
+              ${formatNumber(+(+item.price).toFixed(4))}
+            </div>
+          ),
+          priceVariation: (
+            <div className="ntt-page-tokens-list-table-item">
+              <h4>24H PRICE VARIATION</h4>
+              <div
+                className={`price-variation ${
+                  item.price_change_percentage_24h
+                    ? +item.price_change_percentage_24h > 0
+                      ? "positive"
+                      : "negative"
+                    : ""
+                }`}
+              >
+                {+item.price_change_percentage_24h > 0 && "+"}
+                {(+item.price_change_percentage_24h).toFixed(4)}
+              </div>
+            </div>
+          ),
+          circulatingSupply: (
+            <div className="ntt-page-tokens-list-table-item">
+              <h4>CIRCULATING SUPPLY</h4>${formatNumber(+item.circulating_supply, 0)}
+            </div>
+          ),
+          marketCap: (
+            <div className="ntt-page-tokens-list-table-item">
+              <h4>MARKET CAP</h4>${formatNumber(+item.market_cap, 0)}
+            </div>
+          ),
+          volume: (
+            <div className="ntt-page-tokens-list-table-item volume">
+              <h4>24H VOLUME</h4>${formatNumber(+item.volume_24h, 0)}
+            </div>
+          ),
+          viewDetails: (
+            <div className="ntt-page-tokens-list-table-item view-details">
+              <NavLink
+                onClick={() => window.scrollTo(0, 0)}
+                to={`/analytics/ntt/${item.coingecko_id}/${item.symbol}`}
+              >
+                View details
+              </NavLink>
+            </div>
+          ),
+        }));
     },
     {
-      onSuccess: dataTokensList => {
-        if (dataTokensList?.length > 0) {
-          const transformedData = dataTokensList
-            .filter(item => {
-              return (
-                item.circulating_supply !== "0" &&
-                item.market_cap !== "0" &&
-                item.coingecko_id !== "usd-coin"
-              );
-            })
-            .map(item => ({
-              coingecko_id: item.coingecko_id,
-              symbol: item.symbol,
-              priceNumber: +item.price,
-              priceVariationNumber: +item.price_change_percentage_24h,
-              circulatingSupplyNumber: +item.circulating_supply,
-              marketCapNumber: +item.market_cap,
-              volumeNumber: +item.volume_24h,
-              token: (
-                <div className="ntt-page-tokens-list-table-item token">
-                  <img
-                    src={item?.image?.small}
-                    alt={`${item.symbol} icon`}
-                    height="24"
-                    width="24"
-                    className="top-asset-list-row-item-to-icon"
-                    loading="lazy"
-                  />
-                  {item.symbol}
-                </div>
-              ),
-              price: (
-                <div className="ntt-page-tokens-list-table-item">
-                  ${formatNumber(+(+item.price).toFixed(4))}
-                </div>
-              ),
-              priceVariation: (
-                <div className="ntt-page-tokens-list-table-item">
-                  <h4>24H PRICE VARIATION%</h4>
-                  <div
-                    className={`price-variation ${
-                      item.price_change_percentage_24h
-                        ? +item.price_change_percentage_24h > 0
-                          ? "positive"
-                          : "negative"
-                        : ""
-                    }`}
-                  >
-                    {+item.price_change_percentage_24h > 0 && "+"}
-                    {(+item.price_change_percentage_24h).toFixed(4)}
-                  </div>
-                </div>
-              ),
-              circulatingSupply: (
-                <div className="ntt-page-tokens-list-table-item">
-                  <h4>CIRCULATING SUPPLY</h4>${formatNumber(+item.circulating_supply, 0)}
-                </div>
-              ),
-              marketCap: (
-                <div className="ntt-page-tokens-list-table-item">
-                  <h4>MARKET CAP</h4>${formatNumber(+item.market_cap, 0)}
-                </div>
-              ),
-              volume: (
-                <div className="ntt-page-tokens-list-table-item volume">
-                  <h4>24H VOLUME</h4>${formatNumber(+item.volume_24h, 0)}
-                </div>
-              ),
-              viewDetails: (
-                <div className="ntt-page-tokens-list-table-item view-details">
-                  <NavLink to={`/analytics/ntt/${item.coingecko_id}/${item.symbol}`}>
-                    View details
-                  </NavLink>
-                </div>
-              ),
-            }));
-          setTokensList(transformedData);
-        }
-      },
-      enabled: !coingecko_id && !symbol,
+      enabled: isMainnet,
     },
   );
 

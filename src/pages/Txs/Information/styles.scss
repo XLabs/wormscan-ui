@@ -31,19 +31,21 @@
       @include text-roboto-body-500;
       color: var(--color-white);
 
-      &:nth-last-child(2) {
-        position: absolute;
-        right: 0;
-        top: 0;
+      &:has(.from):has(.exists-to) {
         border-bottom: 0;
+        padding-bottom: 0;
 
-        @include desktop {
-          position: relative;
+        & > .from {
+          align-items: start;
         }
       }
 
-      &:nth-last-child(3) {
-        border-bottom: 0;
+      &:has(.to):has(.exists-to) {
+        padding-top: 8px;
+
+        @include desktop {
+          padding-top: 0;
+        }
       }
 
       & > div {
@@ -94,7 +96,6 @@
 
       .tx-chains {
         @include centered-row;
-        align-items: start;
         flex-wrap: wrap;
         gap: 8px;
         height: auto;
@@ -103,11 +104,14 @@
         &-container {
           @include centered-column;
           gap: 8px;
+          max-width: 188px;
+          min-width: max-content;
+          width: 100%;
 
           @include desktop {
             @include centered-row;
             justify-content: space-between;
-            width: 100%;
+            max-width: unset;
           }
 
           &-arrow {
@@ -115,6 +119,7 @@
 
             @include desktop {
               flex-direction: column-reverse;
+              margin: 0 auto;
             }
 
             & > svg {
@@ -122,7 +127,6 @@
               rotate: 90deg;
 
               @include desktop {
-                margin: 0 12px;
                 rotate: 0deg;
 
                 &.is-address {
@@ -169,7 +173,14 @@
 
           &-item {
             @include centered-row;
-            gap: 0 12px;
+            justify-content: space-between;
+
+            @include desktop {
+              gap: 0 12px;
+              justify-content: flex-start;
+              min-width: max-content;
+              width: 194px;
+            }
 
             &-box {
               @include centered-column;

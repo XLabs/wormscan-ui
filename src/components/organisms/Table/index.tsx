@@ -17,10 +17,11 @@ type Props<T extends object> = {
   className?: string;
   columns: Column<T>[];
   data: T[];
-  emptyMessage?: string;
+  emptyMessage?: string | JSX.Element;
   hasSort?: boolean;
   isLoading?: boolean;
   numberOfColumns?: number;
+  numberOfRows?: number;
   onRowClick?: (row: any) => void;
   sortBy?: { id: string; desc: boolean }[];
   trackTxsSortBy?: boolean;
@@ -38,6 +39,7 @@ const Table = <T extends object>({
   hasSort = false,
   isLoading = false,
   numberOfColumns = 7,
+  numberOfRows = 50,
   onRowClick,
   sortBy = [],
   trackTxsSortBy = false,
@@ -126,7 +128,7 @@ const Table = <T extends object>({
         </thead>
         {isLoading ? (
           <tbody>
-            {[...Array(50)].map((_, index) => (
+            {[...Array(numberOfRows)].map((_, index) => (
               <tr key={index}>
                 <td className="table-row-loading" colSpan={numberOfColumns}>
                   <span className="loading-animation"></span>

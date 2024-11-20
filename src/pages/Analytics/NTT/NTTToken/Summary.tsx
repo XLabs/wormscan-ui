@@ -4,7 +4,6 @@ import { Chain, ChainId, chainToChainId, Network } from "@wormhole-foundation/sd
 import { useEnvironment } from "src/context/EnvironmentContext";
 import {
   ArrowRightIcon,
-  ArrowUpRightIcon,
   DiscordIcon,
   GithubIcon,
   InfoCircleIcon,
@@ -67,7 +66,7 @@ export const Summary = ({ isError, isLoading, summary, coingecko_id }: Props) =>
     data: dataTokenSummary,
     isFetching: isFetchingTokenPrice,
     isError: isErrorTokenSummary,
-  } = useQuery(["tokenList", isMainnet], () => getClient().nttApi.getNttSummary({ coingecko_id }), {
+  } = useQuery(["nttTokenSummary"], () => getClient().nttApi.getNttSummary({ coingecko_id }), {
     enabled: isMainnet,
     refetchInterval: 40000,
   });
@@ -138,7 +137,7 @@ export const Summary = ({ isError, isLoading, summary, coingecko_id }: Props) =>
                     ) : (
                       <a className="link" href={websiteLink} rel="noreferrer" target="_blank">
                         <span>{websiteLink}</span>
-                        <LinkIcon width={24} />
+                        <LinkIcon />
                       </a>
                     )}
                   </div>
@@ -260,10 +259,7 @@ const ContractsList = ({
             <div className="summary-top-content-container-item-chain-contract">
               <div className="summary-top-content-container-item-chain-contract-more">
                 +{Object.keys(summary.platforms).length - MAX_CONTRACTS}
-                <InfoCircleIcon
-                  className="summary-top-content-container-item-chain-contract-arrow"
-                  width={20}
-                />
+                <InfoCircleIcon />
               </div>
             </div>
           </Tooltip>
@@ -292,10 +288,7 @@ const ChainItem = ({
       target="_blank"
     >
       <BlockchainIcon chainId={chainId} network={network} />
-      <ArrowUpRightIcon
-        className="summary-top-content-container-item-chain-contract-arrow"
-        width={20}
-      />
+      <LinkIcon />
     </a>
   );
 };

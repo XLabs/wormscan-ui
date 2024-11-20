@@ -23,27 +23,38 @@
     margin-bottom: 40px;
     padding: 16px;
 
-    @include desktop {
+    @media screen and (min-width: 1200px) {
       @include centered-row;
       justify-content: space-between;
       max-height: 84px;
+      overflow: hidden;
       padding: 16px 32px;
     }
 
     &-item {
       @include centered-column;
-      gap: 12px 0;
+      gap: 8px 0;
       min-width: max-content;
       width: 180px;
 
       &-label {
         @include text-heading6;
         color: var(--color-gray-400);
+
+        &-icon {
+          display: inline-block;
+          height: 12px;
+          transform: translateY(-4.5px);
+
+          & > svg {
+            display: block;
+          }
+        }
       }
 
       &-value {
-        @include text-roboto-heading-500;
         color: var(--color-white);
+        @include text-heading4;
       }
     }
   }
@@ -103,6 +114,12 @@
         }
       }
 
+      & td:last-child {
+        & > .ntt-page-tokens-list-table-item {
+          justify-content: flex-end;
+        }
+      }
+
       &-item {
         @include centered-row;
         @include text-heading5;
@@ -133,7 +150,7 @@
           padding: 2px 8px;
 
           @include desktop {
-            margin-left: 92px;
+            margin-left: 84px;
           }
 
           &.negative {
@@ -153,10 +170,6 @@
           & svg {
             margin-right: 8px;
           }
-        }
-
-        &.volume {
-          justify-content: flex-end;
         }
 
         &.view-details {

@@ -23,8 +23,7 @@
 
   &-container {
     display: grid;
-    row-gap: 36px;
-    column-gap: 20px;
+    gap: 36px 0;
     grid-template-columns: repeat(2, 1fr);
     padding-bottom: 40px;
     position: relative;
