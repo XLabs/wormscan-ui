@@ -29,7 +29,7 @@ export const Stats = ({ data, isLoading, isError }: Props) => {
           </div>
           <div className="ntt-page-stats-item">
             <div className="ntt-page-stats-item-label">
-              24H TRANSFERRED VOLUME
+              24H VOLUME
               <StatsTooltip text="USD volume transferred via NTT in the last 24 hours." />
             </div>
             <div className="ntt-page-stats-item-value">
