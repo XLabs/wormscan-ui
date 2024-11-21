@@ -78,17 +78,19 @@ const NTT = () => {
           priceVariation: (
             <div className="ntt-page-tokens-list-table-item">
               <h4>24H PRICE VARIATION</h4>
-              <div
-                className={`price-variation ${
-                  item.price_change_percentage_24h
-                    ? +item.price_change_percentage_24h > 0
-                      ? "positive"
-                      : "negative"
-                    : ""
-                }`}
-              >
-                {+item.price_change_percentage_24h > 0 && "+"}
-                {(+item.price_change_percentage_24h).toFixed(4)}%
+              <div className="price-variation">
+                <div
+                  className={`price-variation-container ${
+                    item.price_change_percentage_24h
+                      ? +item.price_change_percentage_24h > 0
+                        ? "positive"
+                        : "negative"
+                      : ""
+                  }`}
+                >
+                  {+item.price_change_percentage_24h > 0 && "+"}
+                  {formatNumber(+item.price_change_percentage_24h, 2)}%
+                </div>
               </div>
             </div>
           ),
