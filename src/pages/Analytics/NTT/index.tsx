@@ -48,7 +48,12 @@ const NTT = () => {
     async () => {
       const dataTokensList = await getClient().nttApi.getNttTokenList();
       return dataTokensList
-        ?.filter(item => item.circulating_supply !== "0" && item.market_cap !== "0")
+        ?.filter(
+          item =>
+            item.circulating_supply !== "0" &&
+            item.market_cap !== "0" &&
+            item.coingecko_id !== "usd-coin",
+        )
         .map(item => ({
           coingecko_id: item.coingecko_id,
           symbol: item.symbol,
