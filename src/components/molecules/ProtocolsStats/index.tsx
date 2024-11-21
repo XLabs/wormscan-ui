@@ -151,14 +151,12 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                   className={`protocols-stats-container-element ${
                     isDesktop && item.protocol === NTT_APP_ID ? "ntt" : ""
                   }`}
-                  onClick={
-                    isDesktop && item.protocol === NTT_APP_ID
-                      ? () => {
-                          window.scrollTo(0, 0);
-                          navigate("/analytics/ntt");
-                        }
-                      : undefined
-                  }
+                  onClick={() => {
+                    if (isDesktop && item.protocol === NTT_APP_ID) {
+                      window.scrollTo(0, 0);
+                      navigate("/analytics/ntt");
+                    }
+                  }}
                   key={item.protocol}
                 >
                   <div className="protocols-stats-container-element-item">
