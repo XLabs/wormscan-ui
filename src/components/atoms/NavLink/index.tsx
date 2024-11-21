@@ -2,7 +2,7 @@ import { NavLink as RouterLink, NavLinkProps, useSearchParams } from "react-rout
 import { Network } from "@wormhole-foundation/sdk";
 import { parseTo } from "src/utils/route";
 
-const NavLink = (props: NavLinkProps) => {
+const NavLink = (props: NavLinkProps | any) => {
   const { to, onClick } = props;
   const goTop = () => window.scrollTo(0, 0);
   const [searchParams] = useSearchParams();
@@ -12,6 +12,8 @@ const NavLink = (props: NavLinkProps) => {
     onClick && onClick(e);
     goTop();
   };
+
+  if (!to) return <div className={props.className}>{props.children}</div>;
 
   return (
     <RouterLink className="navlink" {...props} to={parseTo(to, network)} onClick={handleOnClick}>

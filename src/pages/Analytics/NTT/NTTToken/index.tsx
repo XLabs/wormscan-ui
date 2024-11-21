@@ -45,7 +45,7 @@ const NTTToken = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeView, setActiveView] = useState(searchParams.get("view") || "general-info");
 
-  const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last month", value: "1m" });
+  const [timeRange, setTimeRange] = useState<TimeRange>({ label: "Last week", value: "1w" });
   const [by, setBy] = useState<ByType>("notional");
 
   const isUSDCe = coingecko_id === "wormhole-bridged-usdc-fantom";

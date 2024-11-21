@@ -146,7 +146,13 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
               if (i >= numberOfProtocols) return null;
 
               return (
-                <div className="protocols-stats-container-element" key={item.protocol}>
+                <NavLink
+                  className={`protocols-stats-container-element ${
+                    isDesktop && item.protocol === NTT_APP_ID ? "ntt" : ""
+                  }`}
+                  to={isDesktop && item.protocol === NTT_APP_ID ? "/analytics/ntt" : ""}
+                  key={item.protocol}
+                >
                   <div className="protocols-stats-container-element-item">
                     <a
                       className="protocols-stats-container-element-item-link"
@@ -318,7 +324,26 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                       </Tooltip>
                     </div>
                   </div>
-                </div>
+
+                  {!isDesktop && item.protocol === NTT_APP_ID && (
+                    <div className="protocols-stats-container-element-item">
+                      <p className="protocols-stats-container-element-item-value">
+                        <NavLink
+                          className="protocols-stats-container-element-item-value-link"
+                          to="/analytics/ntt"
+                          onClick={() => {
+                            analytics.track("viewMore", {
+                              network: currentNetwork,
+                              selected: "Protocols Stats - NTT",
+                            });
+                          }}
+                        >
+                          View More
+                        </NavLink>
+                      </p>
+                    </div>
+                  )}
+                </NavLink>
               );
             })
           )}

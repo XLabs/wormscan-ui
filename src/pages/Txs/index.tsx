@@ -435,7 +435,7 @@ const Txs = () => {
                     <h4>SOURCE CHAIN</h4>
 
                     <div className="tx-chains-container">
-                      <div className="tx-chains-container-item">
+                      <div className="tx-chains-container-item align-end">
                         <Tooltip
                           tooltip={getChainName({ chainId: fromChain, network: currentNetwork })}
                           type="info"
@@ -618,7 +618,7 @@ const Txs = () => {
                     <h4>TOKEN NAME</h4>
 
                     <div className="tx-chains-container">
-                      <div className="tx-chains-container-item">
+                      <div className="tx-chains-container-item align-end">
                         {tokenName &&
                           (sourceTokenLink ? (
                             <a
@@ -642,7 +642,7 @@ const Txs = () => {
 
                     <div className="tx-chains-container">
                       {sourceAddress && (
-                        <div className="tx-chains-container-item">
+                        <div className="tx-chains-container-item align-end">
                           <div className="tx-chains-container-item-box">
                             <div className="tx-chains-container-item-box-address">
                               <a
