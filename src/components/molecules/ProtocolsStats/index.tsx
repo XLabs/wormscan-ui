@@ -90,7 +90,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
       <h3 className="protocols-stats-title">
         <Cube3DIcon width={24} />
         {numberOfProtocols
-          ? `TOP ${numberOfProtocols} Protocols by ${isMainnet ? "Volume" : "Transfers"}`
+          ? `Top ${numberOfProtocols} Protocols by ${isMainnet ? "Volume" : "Transfers"}`
           : "Protocols Stats"}
 
         {numberOfProtocols && (
@@ -334,11 +334,11 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                           onClick={() => {
                             analytics.track("viewMore", {
                               network: currentNetwork,
-                              selected: "Protocols Stats - NTT",
+                              selected: "Protocols Stats - NTT Details",
                             });
                           }}
                         >
-                          View More
+                          NTT Details
                         </NavLink>
                       </p>
                     </div>

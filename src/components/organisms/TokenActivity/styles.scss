@@ -20,9 +20,9 @@
 
   &-title {
     @include centered-row;
+    @include text-roboto-subheading-500;
     color: var(--color-white);
-    font-size: 16px;
-    font-weight: 500;
+    flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 24px;
 
@@ -38,6 +38,16 @@
     & > a {
       @include button-ghost;
       margin-left: auto;
+    }
+
+    & > span {
+      @include text-heading6;
+      color: var(--color-gray-400);
+      display: none;
+
+      @media (min-width: 460px) {
+        display: block;
+      }
     }
   }
 
@@ -264,11 +274,6 @@
             color: var(--color-white);
             margin-bottom: 24px;
             gap: 0 8px;
-
-            & > span {
-              @include text-heading6;
-              color: var(--color-gray-400);
-            }
           }
         }
 
