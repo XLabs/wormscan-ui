@@ -24,7 +24,7 @@ import { Cube3DIcon, InfoCircleIcon, LinkIcon } from "src/icons/generic";
 import { BlockchainIcon, Loader, NavLink, ProtocolIcon, Tooltip } from "src/components/atoms";
 import { ErrorPlaceholder } from "src/components/molecules";
 import { chainsSupportedByProtocol, protocolLinksByProtocol } from "src/utils/filterUtils";
-import { useWindowSize } from "src/utils/hooks";
+import { useNavigateCustom, useWindowSize } from "src/utils/hooks";
 import { getChainName } from "src/utils/wormhole";
 import { formatNumber } from "src/utils/number";
 import { formatAppId } from "src/utils/crypto";
@@ -53,6 +53,7 @@ const protocolMapping: Record<string, string> = {
 };
 
 const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) => {
+  const navigate = useNavigateCustom();
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "Mainnet";
@@ -90,7 +91,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
       <h3 className="protocols-stats-title">
         <Cube3DIcon width={24} />
         {numberOfProtocols
-          ? `TOP ${numberOfProtocols} Protocols by ${isMainnet ? "Volume" : "Transfers"}`
+          ? `Top ${numberOfProtocols} Protocols by ${isMainnet ? "Volume" : "Transfers"}`
           : "Protocols Stats"}
 
         {numberOfProtocols && (
@@ -146,11 +147,23 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
               if (i >= numberOfProtocols) return null;
 
               return (
-                <div className="protocols-stats-container-element" key={item.protocol}>
+                <div
+                  className={`protocols-stats-container-element ${
+                    isDesktop && item.protocol === NTT_APP_ID ? "ntt" : ""
+                  }`}
+                  onClick={() => {
+                    if (isDesktop && item.protocol === NTT_APP_ID) {
+                      window.scrollTo(0, 0);
+                      navigate("/analytics/ntt");
+                    }
+                  }}
+                  key={item.protocol}
+                >
                   <div className="protocols-stats-container-element-item">
                     <a
                       className="protocols-stats-container-element-item-link"
                       href={protocolLinksByProtocol[item.protocol.toUpperCase()]}
+                      onClick={e => e.stopPropagation()}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -318,6 +331,25 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                       </Tooltip>
                     </div>
                   </div>
+
+                  {!isDesktop && item.protocol === NTT_APP_ID && (
+                    <div className="protocols-stats-container-element-item">
+                      <p className="protocols-stats-container-element-item-value">
+                        <NavLink
+                          className="protocols-stats-container-element-item-value-link"
+                          to="/analytics/ntt"
+                          onClick={() => {
+                            analytics.track("viewMore", {
+                              network: currentNetwork,
+                              selected: "Protocols Stats - NTT Details",
+                            });
+                          }}
+                        >
+                          NTT Details
+                        </NavLink>
+                      </p>
+                    </div>
+                  )}
                 </div>
               );
             })
