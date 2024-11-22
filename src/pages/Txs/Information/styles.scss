@@ -175,6 +175,15 @@
             @include centered-row;
             justify-content: space-between;
 
+            &.align-end {
+              gap: 0 12px;
+              justify-content: flex-end;
+
+              @include desktop {
+                justify-content: flex-start;
+              }
+            }
+
             @include desktop {
               gap: 0 12px;
               justify-content: flex-start;

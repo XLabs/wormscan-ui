@@ -141,34 +141,39 @@
         }
 
         & .price-variation {
-          @include text-heading6;
-          align-items: center;
-          border-radius: 12px;
-          color: var(--color-gray-400);
-          display: flex;
-          max-width: max-content;
-          padding: 2px 8px;
+          @include centered-row;
+          justify-content: flex-end;
 
           @include desktop {
-            margin-left: 84px;
+            width: 152px;
           }
 
-          &.negative {
-            background-color: var(--color-error-15);
-            color: var(--color-error-100);
-          }
+          &-container {
+            @include text-heading6;
+            align-items: center;
+            border-radius: 12px;
+            color: var(--color-gray-400);
+            display: flex;
+            max-width: max-content;
+            padding: 2px 8px;
 
-          &.positive {
-            background-color: var(--color-success-10);
-            color: var(--color-success-100);
+            &.negative {
+              background-color: var(--color-error-15);
+              color: var(--color-error-100);
+            }
+
+            &.positive {
+              background-color: var(--color-success-10);
+              color: var(--color-success-100);
+
+              & svg {
+                transform: rotate(180deg);
+              }
+            }
 
             & svg {
-              transform: rotate(180deg);
+              margin-right: 8px;
             }
-          }
-
-          & svg {
-            margin-right: 8px;
           }
         }
 

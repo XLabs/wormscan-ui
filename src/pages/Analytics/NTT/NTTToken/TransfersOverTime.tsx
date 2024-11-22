@@ -80,7 +80,7 @@ export const TransfersOverTime = ({
       });
     }
   };
-  const [chartSelected, setChartSelected] = useState<"area" | "bar">("area");
+  const [chartSelected, setChartSelected] = useState<"area" | "bar">("bar");
   const chartRef = useRef(null);
 
   useEffect(() => {

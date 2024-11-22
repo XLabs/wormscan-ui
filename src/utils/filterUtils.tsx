@@ -34,6 +34,8 @@ import {
   GR_URL,
   MAYAN_SHUTTLE_APP_ID,
   LIQUIDITY_LAYER_APP_ID,
+  SYNONYM_APP_ID,
+  SYNONYM_URL,
 } from "src/consts";
 
 const appIds = [
@@ -52,6 +54,7 @@ const appIds = [
   PORTAL_NFT_APP_ID,
   TBTC_APP_ID,
   USDT_TRANSFER_APP_ID,
+  SYNONYM_APP_ID,
   // UNKNOWN_APP_ID, // disabled until the backend is ready
 ];
 
@@ -336,6 +339,7 @@ export const protocolLinksByProtocol: Record<string, string> = {
   [OMNISWAP_APP_ID]: OMNISWAP_URL,
   [PORTAL_APP_ID]: PORTAL_BRIDGE_URL,
   [PORTAL_NFT_APP_ID]: PORTAL_BRIDGE_URL,
+  [SYNONYM_APP_ID]: SYNONYM_URL,
   [TBTC_APP_ID]: TBTC_URL,
   [USDT_TRANSFER_APP_ID]: PORTAL_BRIDGE_URL,
 };
