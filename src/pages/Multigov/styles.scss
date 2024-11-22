@@ -1,0 +1,87 @@
+@use "src/styles/globals.scss" as *;
+
+.multigov {
+  margin-bottom: 80px;
+
+  &-link {
+    @include button-ghost;
+    display: inline-flex;
+    margin-left: 4px;
+  }
+
+  &-header {
+    display: flex;
+
+    background-color: var(--color-gray-950);
+    color: var(--color-gray-400);
+    border-radius: 16px;
+    padding: 24px;
+    padding-left: 32px;
+    padding-right: 32px;
+    margin-bottom: 32px;
+
+    flex-direction: column;
+    gap: 24px;
+
+    @include desktop {
+      flex-direction: row;
+      gap: 0;
+    }
+
+    &-left {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      width: 100%;
+      @include desktop {
+        width: 50%;
+      }
+
+      &-title {
+        @include centered-row;
+        gap: 8px;
+        color: var(--color-white);
+        font-weight: 500;
+
+        svg {
+          color: var(--color-gray-400);
+        }
+      }
+
+      &-supported {
+        @include centered-row;
+        gap: 8px;
+        color: var(--color-gray-400);
+      }
+    }
+
+    &-right {
+      display: flex;
+      align-items: center;
+      width: 100%;
+
+      @include desktop {
+        width: 50%;
+      }
+    }
+  }
+
+  &-title {
+    @include centered-row;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    & > svg {
+      color: var(--color-gray-600);
+    }
+
+    &-text {
+      @include text-roboto-subheading-500;
+    }
+  }
+
+  &-table {
+    margin-top: 48px;
+  }
+}

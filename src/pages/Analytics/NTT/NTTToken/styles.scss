@@ -592,65 +592,6 @@
   }
 }
 
-.community-banner {
-  @include centered-column;
-  background: linear-gradient(180deg, rgba(122, 191, 255, 0.12) 37%, rgba(122, 191, 255, 0) 85%);
-  align-items: center;
-  border-radius: 16px;
-  margin-bottom: 48px;
-  padding: 32px 16px 0 16px;
-  gap: 32px 16px;
-
-  @include desktop {
-    @include centered-row;
-    background: linear-gradient(270deg, rgba(122, 191, 255, 0.12) 25%, rgba(122, 191, 255, 0) 100%);
-    border-bottom: 1px solid var(--color-gray-900);
-    justify-content: space-evenly;
-    margin-bottom: 80px;
-    padding: 0 16px;
-  }
-
-  & > svg {
-    min-width: 150px;
-  }
-
-  &-text {
-    @include centered-column;
-    max-width: 552px;
-    padding: 16px 0;
-
-    &-title {
-      @include text-roboto-heading-500;
-      color: var(--color-plum);
-      margin-bottom: 24px;
-      text-align: center;
-
-      @include desktop {
-        font-size: 30px;
-        text-align: start;
-      }
-    }
-
-    &-description {
-      @include text-roboto-body-large-400;
-      color: var(--color-gray-100);
-      text-align: center;
-
-      @include desktop {
-        text-align: start;
-      }
-    }
-  }
-
-  &-btn {
-    @include button-tertiary;
-
-    & > svg {
-      opacity: 0.6;
-    }
-  }
-}
-
 .bychain {
   @include centered-column;
   gap: 36px;

@@ -1,8 +1,9 @@
 import { BREAKPOINTS } from "src/consts";
 import { useWindowSize } from "src/utils/hooks";
 import Checkbox2 from "src/icons/generic/Checkbox2";
+import "./styles.scss";
 
-export const CommunityBanner = () => {
+const CommunityBanner = () => {
   const { width } = useWindowSize();
   const isDesktop = width >= BREAKPOINTS.desktop;
 
@@ -202,9 +203,16 @@ export const CommunityBanner = () => {
         </p>
       </div>
 
-      <button className="community-banner-btn">
+      <a
+        className="community-banner-btn"
+        href="https://www.tally.xyz/gov/wormhole"
+        target="_blank"
+        rel="noreferrer"
+      >
         <Checkbox2 /> Vote now!
-      </button>
+      </a>
     </div>
   );
 };
+
+export default CommunityBanner;

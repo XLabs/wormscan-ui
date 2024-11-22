@@ -218,6 +218,11 @@ const Header = ({
               </NavigationMenu.List>
             </NavigationMenu.Root>
 
+            <NavLink to="/multigov" aria-label="Multigov" className="navlink new">
+              Multigov
+              <div className="new-governor">NEW</div>
+            </NavLink>
+
             <NavigationMenu.Root delayDuration={0}>
               <NavigationMenu.List className="dropdown-menu">
                 <NavigationMenu.Item>
@@ -369,6 +374,11 @@ const Header = ({
         >
           <NavLink to="/governor" aria-label="Governor">
             Governor
+          </NavLink>
+
+          <NavLink to="/multigov" aria-label="Multigov" className="navlink new">
+            Multigov
+            <div className="new-governor mobile">NEW</div>
           </NavLink>
 
           <div className="header-container-mobile-menu-dev-tools-title">Developers</div>

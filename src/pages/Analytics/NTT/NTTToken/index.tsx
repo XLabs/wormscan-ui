@@ -5,7 +5,7 @@ import { chainToChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { ToggleGroup } from "src/components/atoms";
+import { CommunityBanner, ToggleGroup } from "src/components/atoms";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import {
   canWeGetDestinationTx,
@@ -438,6 +438,7 @@ const NTTToken = () => {
         )}
 
         {/* TODO: show when Multigov is available {symbol === "W" && <CommunityBanner />} */}
+        {symbol === "W" && <CommunityBanner />}
       </div>
     </BaseLayout>
   );

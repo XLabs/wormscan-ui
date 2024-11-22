@@ -38,6 +38,54 @@
     }
   }
 
+  & .new {
+    position: relative;
+
+    &-governor {
+      @include centered-row;
+      background-color: var(--color-plum);
+      border-radius: 2px;
+      color: var(--color-black);
+      height: 14px;
+      width: 29px;
+      justify-content: center;
+      position: absolute;
+      top: -14px;
+      right: -10px;
+
+      &::before {
+        background-color: var(--color-plum);
+        bottom: -1.5px;
+        content: "";
+        height: 3px;
+        position: absolute;
+        rotate: 45deg;
+        width: 3px;
+      }
+
+      &.mobile {
+        position: relative;
+        top: 0;
+        left: 3px;
+        width: 32px;
+        font-size: 14px;
+        width: 36px;
+
+        &::before {
+          background-color: var(--color-plum);
+          left: -4px;
+          top: 25%;
+
+          content: "";
+          height: 6px;
+          position: absolute;
+          rotate: 45deg;
+          width: 6px;
+        }
+      }
+    }
+  }
+
   &-banner {
     bottom: 0;
     left: 0;

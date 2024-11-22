@@ -3,6 +3,7 @@ export { default as BannerMessage } from "./BannerMessage";
 export { default as BlockchainIcon } from "./BlockchainIcon";
 export { default as Checkbox } from "./Checkbox";
 export { default as Chip } from "./Chip";
+export { default as CommunityBanner } from "./CommunityBanner";
 export { default as CopyContent } from "./CopyContent";
 export { default as Counter } from "./Counter";
 export { default as Fullscreenable } from "./Fullscreenable";
