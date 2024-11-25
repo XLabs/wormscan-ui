@@ -21,6 +21,7 @@ import { formatNumber, numberToSuffix } from "src/utils/number";
 import {
   ActivityIcon,
   AnalyticsIcon,
+  ArrowRightIcon,
   CrossIcon,
   FilterListIcon,
   FullscreenIcon,
@@ -34,6 +35,7 @@ import {
   getNextDate,
   startOfDayUTC,
   startOfMonthUTC,
+  toLocaleDate,
 } from "src/utils/date";
 import { ChainFilterMainnet, ChainFilterTestnet } from "src/utils/filterUtils";
 import {
@@ -119,6 +121,10 @@ const ChainActivity = () => {
 
   const [lastBtnSelected, setLastBtnSelected] = useState<TSelectedPeriod>("year");
   const [openFilters, setOpenFilters] = useState(false);
+
+  const timeRangeData = series?.[0]?.data || [];
+  const fromDateFormatted = toLocaleDate(timeRangeData[0]?.x);
+  const toDateFormatted = toLocaleDate(timeRangeData[timeRangeData.length - 1]?.x);
 
   useLockBodyScroll({
     isLocked: !isDesktop && openFilters,
@@ -899,52 +905,33 @@ const ChainActivity = () => {
               <div className="chain-activity-chart-top-filters-legends-container">
                 <span>Source: </span>
 
-                {metricSelected === "transactions" ? (
-                  <div className="chain-activity-chart-top-filters-legends-container-total">
-                    <span>
-                      {lastBtnSelected === "24h"
-                        ? "Daily"
-                        : lastBtnSelected === "week"
-                        ? "Weekly"
-                        : lastBtnSelected === "month"
-                        ? "Monthly"
-                        : lastBtnSelected === "year"
-                        ? "Yearly"
-                        : lastBtnSelected === "custom"
-                        ? ""
-                        : "All Time"}{" "}
-                      Total Transfers:{" "}
-                    </span>
-                    <p>
-                      {showAllSourceChains
+                <div className="chain-activity-chart-top-filters-legends-container-total">
+                  <span>
+                    {lastBtnSelected === "24h"
+                      ? "Daily"
+                      : lastBtnSelected === "week"
+                      ? "Weekly"
+                      : lastBtnSelected === "month"
+                      ? "Monthly"
+                      : lastBtnSelected === "year"
+                      ? "Yearly"
+                      : lastBtnSelected === "custom"
+                      ? ""
+                      : "All Time"}{" "}
+                    Total {metricSelected === "transactions" ? "Transfers" : "Volume"}:{" "}
+                  </span>
+                  <p>
+                    {metricSelected === "transactions"
+                      ? showAllSourceChains
                         ? formatNumber(allMessagesNumber, 0)
-                        : formatNumber(messagesNumber, 0)}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="chain-activity-chart-top-filters-legends-container-total">
-                    <span>
-                      {lastBtnSelected === "24h"
-                        ? "Daily"
-                        : lastBtnSelected === "week"
-                        ? "Weekly"
-                        : lastBtnSelected === "month"
-                        ? "Monthly"
-                        : lastBtnSelected === "year"
-                        ? "Yearly"
-                        : lastBtnSelected === "custom"
-                        ? ""
-                        : "All Time"}{" "}
-                      Total Volume:{" "}
-                    </span>
-                    <p>
-                      $
-                      {showAllSourceChains
-                        ? formatNumber(allVolumeNumber, 0)
-                        : formatNumber(volumeNumber, 0)}
-                    </p>
-                  </div>
-                )}
+                        : formatNumber(messagesNumber, 0)
+                      : `${
+                          showAllSourceChains
+                            ? formatNumber(allVolumeNumber, 0)
+                            : formatNumber(volumeNumber, 0)
+                        }`}
+                  </p>
+                </div>
               </div>
 
               <div className="chain-activity-chart-top-filters-legends-target">
@@ -962,6 +949,16 @@ const ChainActivity = () => {
                         );
                       })
                     : "All Chains"}
+                </div>
+
+                <div className="chain-activity-chart-top-filters-legends-target-range">
+                  {fromDateFormatted && toDateFormatted && (
+                    <>
+                      {fromDateFormatted}
+                      <ArrowRightIcon />
+                      {toDateFormatted}
+                    </>
+                  )}
                 </div>
               </div>
             </div>

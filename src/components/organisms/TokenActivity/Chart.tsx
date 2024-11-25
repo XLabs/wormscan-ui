@@ -6,9 +6,16 @@ import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { TokensSymbolActivityOutput } from "src/api/guardian-network/types";
 import { useWindowSize } from "src/utils/hooks";
-import { ActivityIcon, AnalyticsIcon, LinearIcon, LogarithmicIcon } from "src/icons/generic";
+import {
+  ActivityIcon,
+  AnalyticsIcon,
+  ArrowRightIcon,
+  LinearIcon,
+  LogarithmicIcon,
+} from "src/icons/generic";
 import { formatNumber } from "src/utils/number";
 import "./styles.scss";
+import { toLocaleDate } from "src/utils/date";
 
 type Props = {
   data: TokensSymbolActivityOutput;
@@ -67,9 +74,23 @@ export const Chart = ({
       }))
     : null;
 
+  const fromDateFormatted = toLocaleDate(dataTransformed?.[0]?.from);
+  const toDateFormatted = toLocaleDate(dataTransformed?.[dataTransformed.length - 1]?.to);
+
   return (
     <div className="token-activity-chart" ref={chartRef}>
-      <div className="token-activity-chart-title">Token Activity</div>
+      <div className="token-activity-chart-title">
+        Token Activity{" "}
+        <div className="token-activity-chart-title-range">
+          {fromDateFormatted && toDateFormatted && (
+            <>
+              {fromDateFormatted}
+              <ArrowRightIcon />
+              {toDateFormatted}
+            </>
+          )}
+        </div>
+      </div>
 
       <div className="token-activity-chart-graph">
         {isError ? (
@@ -136,7 +157,7 @@ export const Chart = ({
             </div>
 
             <ReactApexChart
-              key={chartSelected}
+              key={chartSelected + token.token_symbol + metricSelected}
               type={chartSelected}
               height={isDesktop ? 630 : 415}
               width="100%"

@@ -120,7 +120,11 @@
         cursor: pointer;
 
         &:hover {
-          background-color: var(--color-white-05);
+          background-color: var(--color-gray-975);
+
+          & .protocols-stats-container-element-item-value-chains-chain {
+            border-color: var(--color-gray-975);
+          }
         }
       }
 
@@ -281,7 +285,6 @@
 
             &-chain {
               background-color: var(--color-gray-900);
-              filter: grayscale(1);
               margin-right: -7px;
               border: 2px solid var(--color-gray-950);
 

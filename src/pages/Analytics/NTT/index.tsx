@@ -101,7 +101,8 @@ const NTT = () => {
           ),
           circulatingSupply: (
             <div className="ntt-page-tokens-list-table-item">
-              <h4>CIRCULATING SUPPLY</h4>${formatNumber(+item.circulating_supply, 0)}
+              <h4>CIRCULATING SUPPLY</h4>
+              {formatNumber(+item.circulating_supply, 0)}
             </div>
           ),
           marketCap: (
