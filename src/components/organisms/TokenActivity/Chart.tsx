@@ -14,8 +14,8 @@ import {
   LogarithmicIcon,
 } from "src/icons/generic";
 import { formatNumber } from "src/utils/number";
-import "./styles.scss";
 import { toLocaleDate } from "src/utils/date";
+import "./styles.scss";
 
 type Props = {
   data: TokensSymbolActivityOutput;
