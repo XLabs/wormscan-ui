@@ -124,7 +124,7 @@ const ChainActivity = () => {
 
   const timeRangeData = series?.[0]?.data || [];
   const fromDateFormatted = toLocaleDate(timeRangeData[0]?.x);
-  const toDateFormatted = toLocaleDate(timeRangeData[timeRangeData.length - 1]?.x);
+  const toDateFormatted = toLocaleDate(timeRangeData[timeRangeData.length - 1]?.to);
 
   useLockBodyScroll({
     isLocked: !isDesktop && openFilters,
