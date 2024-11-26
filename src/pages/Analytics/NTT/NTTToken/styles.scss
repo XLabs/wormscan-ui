@@ -374,11 +374,11 @@
     }
 
     &-legends {
-      @include centered-row;
+      @include centered-column;
       @include text-roboto-body-400;
-      align-items: start;
+      align-items: flex-end;
       color: var(--color-white);
-      justify-content: flex-end;
+      gap: 4px 0;
       white-space: nowrap;
 
       &-total {
@@ -386,6 +386,7 @@
         gap: 12px;
 
         & > span {
+          @include centered-row;
           @include text-roboto-body-400;
           color: var(--color-gray-500);
         }

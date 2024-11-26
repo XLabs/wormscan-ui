@@ -14,7 +14,12 @@ import {
 import { Fullscreenable, Loader, Select, ToggleGroup } from "src/components/atoms";
 import { ErrorPlaceholder, WormholeScanBrand } from "src/components/molecules";
 import { useLockBodyScroll, useWindowSize } from "src/utils/hooks";
-import { firstDataAvailableDate, getISODateZeroed, todayISOString } from "src/utils/date";
+import {
+  firstDataAvailableDate,
+  getISODateZeroed,
+  todayISOString,
+  toLocaleDate,
+} from "src/utils/date";
 import { grayColors } from "src/utils/chainActivityUtils";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { PROTOCOL_LIST } from "src/utils/filterUtils";
@@ -24,6 +29,7 @@ import { getClient } from "src/api/Client";
 import {
   ActivityIcon,
   AnalyticsIcon,
+  ArrowRightIcon,
   CrossIcon,
   Cube3DIcon,
   FilterListIcon,
@@ -110,6 +116,10 @@ const ProtocolsActivity = () => {
     timespan: RANGE_LIST[0].timespan as "1h" | "1d" | "1mo",
     appId: "",
   });
+
+  const timeRangeData = data[0]?.time_range_data || [];
+  const fromDateFormatted = toLocaleDate(timeRangeData[0]?.from);
+  const toDateFormatted = toLocaleDate(timeRangeData[timeRangeData.length - 1]?.to);
 
   const series = useMemo(() => {
     if (data.length === 0) {
@@ -523,6 +533,16 @@ const ProtocolsActivity = () => {
                     )}
                   </div>
                 )}
+
+                <div className="protocols-activity-container-chart-header-total-txt">
+                  {fromDateFormatted && toDateFormatted && (
+                    <>
+                      {fromDateFormatted}
+                      <ArrowRightIcon />
+                      {toDateFormatted}
+                    </>
+                  )}
+                </div>
               </div>
 
               {chartSelected === "area" && !someZeroValue && (
@@ -537,7 +557,7 @@ const ProtocolsActivity = () => {
               )}
 
               <ReactApexChart
-                key={chartSelected}
+                key={chartSelected + metricSelected}
                 series={series}
                 type={chartSelected}
                 height={isDesktop ? 360 : 300}

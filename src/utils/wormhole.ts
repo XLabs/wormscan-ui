@@ -23,6 +23,7 @@ import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KujiraIcon from "src/icons/blockchains/kujira.svg";
 import LineaIcon from "src/icons/blockchains/linea.svg";
 import MantleIcon from "src/icons/blockchains/mantle.svg";
+import MonadIcon from "src/icons/blockchains/monad.svg";
 import MoonbeamIcon from "src/icons/blockchains/moonbeam.svg";
 import NearIcon from "src/icons/blockchains/near.svg";
 import NeonIcon from "src/icons/blockchains/neon.svg";
@@ -70,6 +71,7 @@ import KlaytnColorlessIcon from "src/icons/blockchains/colorless/klaytn.svg";
 import KujiraColorlessIcon from "src/icons/blockchains/colorless/kujira.svg";
 import LineaColorlessIcon from "src/icons/blockchains/colorless/linea.svg";
 import MantleColorlessIcon from "src/icons/blockchains/colorless/mantle.svg";
+import MonadColorlessIcon from "src/icons/blockchains/colorless/monad.svg";
 import MoonbeamColorlessIcon from "src/icons/blockchains/colorless/moonbeam.svg";
 import NearColorlessIcon from "src/icons/blockchains/colorless/near.svg";
 import NeonColorlessIcon from "src/icons/blockchains/colorless/neon.svg";
@@ -146,6 +148,21 @@ const WORMHOLE_CHAINS: any = {
     name: "PythNet",
     icon: PythIcon,
     colorlessIcon: PythColorlessIcon,
+    explorer: {
+      Testnet: "",
+      Devnet: "",
+      Mainnet: "",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return "";
+      if (base === "token") return "";
+      return "";
+    },
+  },
+  [chainToChainId("MonadDevnet")]: {
+    name: "MonadDevnet",
+    icon: MonadIcon,
+    colorlessIcon: MonadColorlessIcon,
     explorer: {
       Testnet: "",
       Devnet: "",
