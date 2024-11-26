@@ -132,3 +132,6 @@ export const getNextDate = (date: string, timespan: "1h" | "1d" | "1mo"): string
     ? addOneMonth(baseDate).toISOString()
     : new Date(baseDate.setFullYear(baseDate.getFullYear() + 1)).toISOString();
 };
+
+export const toLocaleDate = (date: Date | string) =>
+  date ? new Date(date).toLocaleDateString() : null;

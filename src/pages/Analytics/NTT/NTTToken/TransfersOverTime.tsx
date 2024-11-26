@@ -7,13 +7,14 @@ import { BREAKPOINTS } from "src/consts";
 import {
   ActivityIcon,
   AnalyticsIcon,
+  ArrowRightIcon,
   FullscreenIcon,
   LinearIcon,
   LogarithmicIcon,
 } from "src/icons/generic";
 import { useWindowSize } from "src/utils/hooks";
 import { formatNumber } from "src/utils/number";
-import { getNextDate } from "src/utils/date";
+import { getNextDate, toLocaleDate } from "src/utils/date";
 import { changePathOpacity, formatterYAxis, updatePathStyles } from "src/utils/apexChartUtils";
 import { TimeRange, ByType } from "./index";
 import analytics from "src/analytics";
@@ -122,6 +123,10 @@ export const TransfersOverTime = ({
 
   const fullscreenBtnRef = useRef(null);
 
+  const timeRangeData = series?.[0]?.data || [];
+  const fromDateFormatted = toLocaleDate(timeRangeData[0]?.x);
+  const toDateFormatted = toLocaleDate(timeRangeData[timeRangeData.length - 1]?.to);
+
   return (
     <Fullscreenable
       className="transfers-over-time"
@@ -229,6 +234,18 @@ export const TransfersOverTime = ({
                     {by === "tx" ? "" : "$"}
                     {series?.[0]?.totalValue ? formatNumber(series[0].totalValue, 0) : 0}
                   </p>
+                </div>
+
+                <div className="transfers-over-time-filters-legends-total">
+                  <span>
+                    {fromDateFormatted && toDateFormatted && (
+                      <>
+                        {fromDateFormatted}
+                        <ArrowRightIcon />
+                        {toDateFormatted}
+                      </>
+                    )}
+                  </span>
                 </div>
               </div>
 

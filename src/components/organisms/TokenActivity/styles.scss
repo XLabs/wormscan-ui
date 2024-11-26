@@ -387,10 +387,17 @@
       display: none;
 
       @include desktop {
+        @include centered-row;
         @include text-roboto-subheading-500;
         color: var(--color-white);
-        display: block;
+        justify-content: space-between;
         margin-bottom: 24px;
+
+        &-range {
+          @include centered-row;
+          @include text-roboto-body-400;
+          color: var(--color-gray-500);
+        }
       }
     }
 

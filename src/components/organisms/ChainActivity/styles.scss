@@ -340,6 +340,13 @@
                 overflow: auto;
                 gap: 12px;
               }
+
+              &-range {
+                @include centered-row;
+                @include text-roboto-body-400;
+                color: var(--color-gray-500);
+                margin-left: auto;
+              }
             }
           }
         }

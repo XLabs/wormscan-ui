@@ -210,11 +210,11 @@
     }
 
     &-chart {
-      min-height: 359px;
+      min-height: 363px;
       position: relative;
 
       @include desktop {
-        min-height: 419px;
+        min-height: 423px;
       }
 
       & .loader {
@@ -226,18 +226,21 @@
       }
 
       &-header {
-        @include centered-row;
-        height: 20px;
-        justify-content: flex-end;
+        @include centered-column;
+        align-items: flex-end;
+        min-height: 24px;
         margin-top: 24px;
+        gap: 4px 0;
 
         &-total-txt {
+          @include centered-row;
           @include text-roboto-body-400;
           color: var(--color-gray-500);
 
           & > span {
             @include text-heading5;
             color: var(--color-white);
+            margin-left: 4px;
           }
         }
       }
