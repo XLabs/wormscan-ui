@@ -9,6 +9,7 @@ import {
   ALL_BRIDGE_APP_ID,
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
+  CONNECT_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
   MAYAN_MCTP_APP_ID,
@@ -93,6 +94,9 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
 };
 
 export const formatAppId = (appId: string) => {
+  if (appId === CONNECT_APP_ID) {
+    return "Relayer";
+  }
   if (appId === PORTAL_APP_ID) {
     return "Portal";
   }
