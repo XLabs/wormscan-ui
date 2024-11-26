@@ -157,7 +157,7 @@ export const Chart = ({
             </div>
 
             <ReactApexChart
-              key={chartSelected + token.token_symbol + metricSelected}
+              key={chartSelected + token?.token_symbol + metricSelected}
               type={chartSelected}
               height={isDesktop ? 630 : 415}
               width="100%"
