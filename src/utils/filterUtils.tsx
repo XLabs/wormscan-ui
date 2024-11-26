@@ -39,9 +39,9 @@ import {
 } from "src/consts";
 
 const appIds = [
-  C3_APP_ID,
+  // C3_APP_ID,
   CCTP_APP_ID,
-  CONNECT_APP_ID,
+  // CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
@@ -132,6 +132,7 @@ export const ChainFilterTestnet = [
   chainToChainId("Karura"),
   chainToChainId("Klaytn"),
   chainToChainId("Mantle"),
+  chainToChainId("MonadDevnet"),
   chainToChainId("Moonbeam"),
   // chainToChainId("Polygon"),
   chainToChainId("Near"),

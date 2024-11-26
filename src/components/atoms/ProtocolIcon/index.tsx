@@ -530,7 +530,7 @@ const iconMap: Record<string, React.FC<{ width: number }>> = {
   [ALL_BRIDGE_APP_ID]: AllbridgeIcon,
   [C3_APP_ID]: C3Icon,
   [CCTP_APP_ID]: CCTPIcon,
-  [CONNECT_APP_ID]: ConnectIcon,
+  [CONNECT_APP_ID]: PortalIcon,
   [ETH_BRIDGE_APP_ID]: EthBridgeIcon,
   [GATEWAY_APP_ID]: WormholeGatewayIcon,
   [GR_APP_ID]: StandardRelayerIcon,
