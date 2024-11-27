@@ -16,37 +16,16 @@ import { Table } from "src/components/organisms";
 import { getMultigovProposals } from "src/utils/cryptoToolkit";
 import { formatNumber } from "src/utils/number";
 import { formatDate } from "src/utils/date";
+import { BREAKPOINTS } from "src/consts";
+import { useWindowSize } from "src/utils/hooks";
 import "./styles.scss";
-
-const columnsProposals: Column[] | any = [
-  {
-    Header: "DESCRIPTION",
-    accessor: "description",
-  },
-  {
-    Header: "POSITIVE",
-    accessor: "positive",
-  },
-  {
-    Header: "NEGATIVE",
-    accessor: "negative",
-  },
-  {
-    Header: "TOTAL VOTES",
-    accessor: "totalVotes",
-  },
-];
-
-const statusMap: any = {
-  defeated: "Failed",
-  executed: "Executed",
-  pendingexecution: "Active",
-  succeeded: "Passed",
-};
 
 const Multigov = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeView, setActiveView] = useState(searchParams.get("view") || "all");
+
+  const { width } = useWindowSize();
+  const isDesktop = width >= BREAKPOINTS.desktop;
 
   const {
     isLoading,
@@ -127,18 +106,25 @@ const Multigov = () => {
           </div>
         ),
         positive: (
-          <div className="multigov-proposal-positive">
+          <div className="multigov-proposal-votes">
+            {!isDesktop && <p>POSITIVE</p>}
             <ThumbsUpIcon width={24} />
-            {formatNumber(positiveVotes)}
+            <span className="multigov-proposal-votes-positive">{formatNumber(positiveVotes)}</span>
           </div>
         ),
         negative: (
-          <div className="multigov-proposal-negative">
+          <div className="multigov-proposal-votes">
+            {!isDesktop && <p>NEGATIVE</p>}
             <ThumbsDownIcon width={24} />
-            {formatNumber(negativeVotes)}
+            <span className="multigov-proposal-votes-negative">{formatNumber(negativeVotes)}</span>
           </div>
         ),
-        totalVotes: formatNumber(positiveVotes + negativeVotes),
+        totalVotes: (
+          <div className="multigov-proposal-votes total">
+            {!isDesktop && <p>TOTAL VOTES</p>}
+            <span>{formatNumber(positiveVotes + negativeVotes)}</span>
+          </div>
+        ),
       };
     });
 
@@ -268,3 +254,29 @@ const Multigov = () => {
 };
 
 export default Multigov;
+
+const columnsProposals: Column[] | any = [
+  {
+    Header: "DESCRIPTION",
+    accessor: "description",
+  },
+  {
+    Header: "POSITIVE",
+    accessor: "positive",
+  },
+  {
+    Header: "NEGATIVE",
+    accessor: "negative",
+  },
+  {
+    Header: "TOTAL VOTES",
+    accessor: "totalVotes",
+  },
+];
+
+const statusMap: any = {
+  defeated: "Failed",
+  executed: "Executed",
+  pendingexecution: "Active",
+  succeeded: "Passed",
+};
