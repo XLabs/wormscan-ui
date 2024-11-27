@@ -63,24 +63,26 @@ export const daysAgoDate = (daysAgo: number) => {
   return new Date(today.getTime() - Number(daysAgo) * 24 * 60 * 60 * 1000);
 };
 
-export const formatDate = (date: string | number | Date): string => {
+export const formatDate = (date: string | number | Date, showMinutes: boolean = true): string => {
   if (!date) return;
 
   const dateObject = new Date(date);
   if (isNaN(dateObject.getTime())) return;
 
-  const formattedDate = dateObject
-    .toLocaleString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    ...(showMinutes && {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
-    })
-    .replace("24:", "0:");
+    }),
+  };
 
-  return formattedDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ");
+  const formattedDate = dateObject.toLocaleString("en-US", options).replace("24:", "0:");
+
+  return showMinutes ? formattedDate.replace(/(.+),\s(.+),\s/g, "$1, $2 at ") : formattedDate;
 };
 
 export const startOfDayUTC = (date: Date) => {

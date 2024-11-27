@@ -1,12 +1,22 @@
+import { useState } from "react";
+import { chainToChainId } from "@wormhole-foundation/sdk";
+import { useSearchParams } from "react-router-dom";
+import { Column } from "react-table";
+import { useQuery } from "react-query";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { BlockchainIcon, CommunityBanner, NavLink, ToggleGroup } from "src/components/atoms";
-import { StaticsIncreaseIcon } from "src/icons/generic";
-import { chainToChainId } from "@wormhole-foundation/sdk";
-import "./styles.scss";
-import { useSearchParams } from "react-router-dom";
-import { useState } from "react";
+import {
+  ClockIcon,
+  NewTabIcon,
+  StaticsIncreaseIcon,
+  ThumbsDownIcon,
+  ThumbsUpIcon,
+} from "src/icons/generic";
 import { Table } from "src/components/organisms";
-import { Column } from "react-table";
+import { getMultigovProposals } from "src/utils/cryptoToolkit";
+import { formatNumber } from "src/utils/number";
+import { formatDate } from "src/utils/date";
+import "./styles.scss";
 
 const columnsProposals: Column[] | any = [
   {
@@ -27,9 +37,110 @@ const columnsProposals: Column[] | any = [
   },
 ];
 
+const statusMap: any = {
+  defeated: "Failed",
+  executed: "Executed",
+  pendingexecution: "Active",
+  succeeded: "Passed",
+};
+
 const Multigov = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeView, setActiveView] = useState(searchParams.get("view") || "all");
+
+  const {
+    isLoading,
+    isError,
+    data: proposalsResponse,
+  } = useQuery("proposals", () => getMultigovProposals(), {});
+
+  const proposals = proposalsResponse?.data?.proposals;
+
+  const filterProposals = (proposals: any[]) => {
+    if (activeView === "all") return proposals;
+
+    const statusMapping = {
+      active: "pendingexecution",
+      passed: "succeeded",
+      executed: "executed",
+      failed: "defeated",
+      cancelled: "cancelled",
+      quorumNotMet: "defeated", // Assuming quorum not met maps to defeated
+    };
+
+    const targetStatus = statusMapping[activeView as keyof typeof statusMapping];
+    return proposals.filter(proposal => proposal.status === targetStatus);
+  };
+
+  const parsedProposals =
+    proposals &&
+    filterProposals(proposals.nodes).map(proposal => {
+      const voteStats = proposal.voteStats?.reduce((acc: any, curr: any) => {
+        acc[curr.type] = Number(BigInt(curr.votesCount) / BigInt(10 ** 18));
+        return acc;
+      }, {});
+
+      const proposalName = proposal.metadata?.description?.split("\n")[0].replace(/^# /, "");
+      const positiveVotes = voteStats?.for + voteStats?.pendingfor;
+      const negativeVotes = voteStats?.against + voteStats?.pendingagainst;
+
+      const status = statusMap[proposal.status];
+
+      return {
+        description: (
+          <div className="multigov-proposal-description">
+            <a
+              href={`https://staging.tally.xyz/gov/multigov-test-11-19/proposal/${proposal.onchainId}`}
+              className="multigov-proposal-description-name"
+            >
+              {proposalName}
+            </a>
+            <div className="multigov-proposal-description-middle">
+              <div>
+                <span className="multigov-proposal-description-key">DATE: </span>
+                <span className="multigov-proposal-description-value">
+                  {formatDate(proposal.start?.timestamp, false)}
+                </span>
+              </div>
+
+              {/* <div>
+                <span className="multigov-proposal-description-key">TO: </span>
+                <span className="multigov-proposal-description-value">Dec 14, 2024</span>
+              </div> */}
+
+              {status === "Active" && (
+                <div className="multigov-proposal-description-time-left">
+                  <ClockIcon width={16} />
+                  <span>1 month left</span>
+                </div>
+              )}
+
+              <div className={`multigov-proposal-description-status ${status}`}>{status}</div>
+            </div>
+            <div className="multigov-proposal-description-network">
+              <span className="multigov-proposal-description-key">NETWORK: </span>
+              <span className="multigov-proposal-description-value">
+                {" "}
+                {proposal.governor?.name}
+              </span>
+            </div>
+          </div>
+        ),
+        positive: (
+          <div className="multigov-proposal-positive">
+            <ThumbsUpIcon width={24} />
+            {formatNumber(positiveVotes)}
+          </div>
+        ),
+        negative: (
+          <div className="multigov-proposal-negative">
+            <ThumbsDownIcon width={24} />
+            {formatNumber(negativeVotes)}
+          </div>
+        ),
+        totalVotes: formatNumber(positiveVotes + negativeVotes),
+      };
+    });
 
   return (
     <BaseLayout>
@@ -124,9 +235,11 @@ const Multigov = () => {
         <Table
           className="multigov-table"
           columns={columnsProposals}
-          data={[]}
-          emptyMessage={<>No proposals found</>}
-          isLoading={false}
+          data={parsedProposals || []}
+          emptyMessage={
+            <>{isError ? "Something went wrong fetching proposals" : "No proposals found"}</>
+          }
+          isLoading={isLoading}
           numberOfColumns={4}
           numberOfRows={7}
           onRowClick={data => {
@@ -134,9 +247,16 @@ const Multigov = () => {
           }}
         />
 
-        <br />
-        <br />
-        <br />
+        <div className="multigov-more-proposals">
+          <a
+            href="https://staging.tally.xyz/gov/multigov-test-11-19/proposals"
+            target="_blank"
+            rel="noreferrer"
+          >
+            More proposals
+            <NewTabIcon width={24} />
+          </a>
+        </div>
 
         <CommunityBanner />
       </section>

@@ -1,8 +1,6 @@
 @use "src/styles/globals.scss" as *;
 
 .multigov {
-  margin-bottom: 80px;
-
   &-link {
     @include button-ghost;
     display: inline-flex;
@@ -83,5 +81,108 @@
 
   &-table {
     margin-top: 48px;
+  }
+
+  &-proposal {
+    &-description {
+      @include centered-column;
+      gap: 10px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+
+      &-name {
+        color: var(--color-white);
+      }
+
+      &-middle {
+        @include centered-row;
+        gap: 16px;
+      }
+
+      &-network {
+        @include text-roboto-body-400;
+      }
+
+      &-key {
+        color: var(--color-gray-400);
+      }
+
+      &-value {
+        color: var(--color-white);
+      }
+
+      &-time-left {
+        @include centered-row;
+        gap: 2px;
+        color: var(--color-gray-400);
+      }
+
+      &-status {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--color-black);
+
+        &.Failed {
+          padding: 4px 8px;
+          border-radius: 8px;
+          background-color: var(--color-error-100);
+        }
+
+        &.Active {
+          padding: 4px 8px;
+          border-radius: 8px;
+          background-color: var(--color-success-100);
+        }
+
+        &.Executed {
+          padding: 4px 8px;
+          border-radius: 8px;
+          background-color: var(--color-plum-600);
+        }
+      }
+    }
+
+    &-positive {
+      @include centered-row;
+      gap: 8px;
+
+      color: var(--color-success-100);
+      text-decoration: underline;
+      text-decoration-color: var(--color-success-100);
+      text-underline-offset: 2px;
+      text-decoration-thickness: 2px;
+
+      svg {
+        color: var(--color-gray-500);
+      }
+    }
+
+    &-negative {
+      @include centered-row;
+      gap: 8px;
+
+      color: var(--color-error-100);
+      text-decoration: underline;
+      text-decoration-color: var(--color-error-100);
+      text-underline-offset: 2px;
+      text-decoration-thickness: 2px;
+
+      svg {
+        color: var(--color-gray-500);
+      }
+    }
+  }
+
+  &-more-proposals {
+    @include centered-row;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+
+    a {
+      @include button-ghost;
+      gap: 4px;
+    }
   }
 }
