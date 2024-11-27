@@ -243,7 +243,10 @@ const Multigov = () => {
           numberOfColumns={4}
           numberOfRows={7}
           onRowClick={data => {
-            console.log(data);
+            const descriptionAnchor = data?.description?.props?.children[0];
+            if (descriptionAnchor) {
+              window.open(descriptionAnchor.props.href, "_blank");
+            }
           }}
         />
 
