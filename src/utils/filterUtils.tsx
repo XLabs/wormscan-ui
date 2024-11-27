@@ -64,16 +64,16 @@ export const PROTOCOL_LIST: { label: string; value: string }[] = [
     label: formatAppId(appId),
     value: String(appId),
   })),
-  {
-    icon: <ProtocolIcon protocol={MAYAN_SHUTTLE_APP_ID} />,
-    label: "Mayan Shuttle",
-    value: SWAP_LAYER_APP_ID,
-  },
-  {
-    icon: <ProtocolIcon protocol={LIQUIDITY_LAYER_APP_ID} />,
-    label: "Wormhole Liquidity Layer",
-    value: FAST_TRANSFERS_APP_ID,
-  },
+  // {
+  //   icon: <ProtocolIcon protocol={MAYAN_SHUTTLE_APP_ID} />,
+  //   label: "Mayan Shuttle",
+  //   value: SWAP_LAYER_APP_ID,
+  // },
+  // {
+  //   icon: <ProtocolIcon protocol={LIQUIDITY_LAYER_APP_ID} />,
+  //   label: "Wormhole Liquidity Layer",
+  //   value: FAST_TRANSFERS_APP_ID,
+  // },
 ].sort((a, b) => a.label.localeCompare(b.label));
 
 export const ChainFilterMainnet = [
@@ -132,7 +132,7 @@ export const ChainFilterTestnet = [
   chainToChainId("Karura"),
   chainToChainId("Klaytn"),
   chainToChainId("Mantle"),
-  chainToChainId("MonadDevnet"),
+  // chainToChainId("MonadDevnet"),
   chainToChainId("Moonbeam"),
   // chainToChainId("Polygon"),
   chainToChainId("Near"),

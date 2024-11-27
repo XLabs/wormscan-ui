@@ -1,6 +1,6 @@
 {
   "name": "wormscan-ui",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "private": true,
   "source": "src/index.html",
   "@parcel/resolver-default": {
