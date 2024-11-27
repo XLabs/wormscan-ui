@@ -438,7 +438,6 @@ const NTTToken = () => {
         )}
 
         {/* TODO: show when Multigov is available {symbol === "W" && <CommunityBanner />} */}
-        {symbol === "W" && <CommunityBanner />}
       </div>
     </BaseLayout>
   );
