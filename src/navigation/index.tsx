@@ -15,6 +15,7 @@ const NotFound = lazy(() => import("../pages/NotFound"));
 const VaaParser = lazy(() => import("../pages/VaaParser"));
 const Submit = lazy(() => import("../pages/Submit"));
 const Governor = lazy(() => import("../pages/Governor"));
+const Multigov = lazy(() => import("../pages/Multigov"));
 const ApiDoc = lazy(() => import("../pages/ApiDoc"));
 const NTT = lazy(() => import("../pages/Analytics/NTT"));
 const NTTToken = lazy(() => import("../pages/Analytics/NTT/NTTToken"));
@@ -53,6 +54,7 @@ const Navigation = () => {
                 <Route path="/analytics/chains" element={<Chains />} />
                 <Route path="/analytics/protocols" element={<Protocols />} />
                 <Route path="/governor" element={<Governor />} />
+                <Route path="/multigov" element={<Multigov />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>

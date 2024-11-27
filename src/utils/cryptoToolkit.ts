@@ -28,6 +28,30 @@ interface ISolanaCctpResponse {
   timestamp: Date;
 }
 
+interface IMultigovProposalsResponse {
+  data: {
+    proposals: {
+      nodes: {
+        metadata: {
+          description: string;
+        };
+        voteStats: {
+          type: string;
+          votesCount: string;
+        }[];
+        status: "defeated" | "executed" | "pendingexecution" | "succeeded";
+        onchainId: string;
+        governor?: {
+          name: string;
+        };
+        start?: {
+          timestamp: string | number;
+        };
+      }[];
+    };
+  };
+}
+
 interface IGeckoTokenInfoResponse {
   id: string;
   type: string;
@@ -93,6 +117,22 @@ export const sendProtocolSubmission = async (body: any): Promise<string> => {
 
     const protocolResponse = await sendProtocolResp.text();
     return protocolResponse ? protocolResponse : null;
+  } catch (e) {
+    return null;
+  }
+};
+
+export const getMultigovProposals = async (): Promise<IMultigovProposalsResponse> => {
+  try {
+    const multigovResp = await fetch(`${BFF_URL}/getMultigovProposals`);
+
+    if (!multigovResp.ok) {
+      return null;
+    }
+
+    const multigov = (await multigovResp.json()) as IMultigovProposalsResponse;
+
+    return multigov ? multigov : null;
   } catch (e) {
     return null;
   }

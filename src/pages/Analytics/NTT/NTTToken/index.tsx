@@ -5,7 +5,7 @@ import { chainToChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { BaseLayout } from "src/layouts/BaseLayout";
-import { ToggleGroup } from "src/components/atoms";
+import { CommunityBanner, ToggleGroup } from "src/components/atoms";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
 import {
   canWeGetDestinationTx,

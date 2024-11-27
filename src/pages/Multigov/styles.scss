@@ -1,0 +1,188 @@
+@use "src/styles/globals.scss" as *;
+
+.multigov {
+  &-link {
+    @include button-ghost;
+    display: inline-flex;
+    margin-left: 4px;
+  }
+
+  &-header {
+    display: flex;
+
+    background-color: var(--color-gray-950);
+    color: var(--color-gray-400);
+    border-radius: 16px;
+    padding: 24px;
+    padding-left: 32px;
+    padding-right: 32px;
+    margin-bottom: 32px;
+
+    flex-direction: column;
+    gap: 24px;
+
+    @include desktop {
+      flex-direction: row;
+      gap: 0;
+    }
+
+    &-left {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      width: 100%;
+      @include desktop {
+        width: 50%;
+      }
+
+      &-title {
+        @include centered-row;
+        gap: 8px;
+        color: var(--color-white);
+        font-weight: 500;
+
+        svg {
+          color: var(--color-gray-400);
+        }
+      }
+
+      &-supported {
+        @include centered-row;
+        gap: 8px;
+        color: var(--color-gray-400);
+      }
+    }
+
+    &-right {
+      display: flex;
+      align-items: center;
+      width: 100%;
+
+      @include desktop {
+        width: 50%;
+      }
+    }
+  }
+
+  &-title {
+    @include centered-row;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    & > svg {
+      color: var(--color-gray-600);
+    }
+
+    &-text {
+      @include text-roboto-subheading-500;
+    }
+  }
+
+  &-table {
+    margin-top: 48px;
+  }
+
+  &-proposal {
+    &-description {
+      @include centered-column;
+      gap: 10px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+
+      &-name {
+        color: var(--color-white);
+      }
+
+      &-middle {
+        @include centered-row;
+        gap: 16px;
+      }
+
+      &-network {
+        @include text-roboto-body-400;
+      }
+
+      &-key {
+        color: var(--color-gray-400);
+      }
+
+      &-value {
+        color: var(--color-white);
+      }
+
+      &-time-left {
+        @include centered-row;
+        gap: 2px;
+        color: var(--color-gray-400);
+      }
+
+      &-status {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--color-black);
+
+        &.Failed {
+          padding: 4px 8px;
+          border-radius: 8px;
+          background-color: var(--color-error-100);
+        }
+
+        &.Active {
+          padding: 4px 8px;
+          border-radius: 8px;
+          background-color: var(--color-success-100);
+        }
+
+        &.Executed {
+          padding: 4px 8px;
+          border-radius: 8px;
+          background-color: var(--color-plum-600);
+        }
+      }
+    }
+
+    &-positive {
+      @include centered-row;
+      gap: 8px;
+
+      color: var(--color-success-100);
+      text-decoration: underline;
+      text-decoration-color: var(--color-success-100);
+      text-underline-offset: 2px;
+      text-decoration-thickness: 2px;
+
+      svg {
+        color: var(--color-gray-500);
+      }
+    }
+
+    &-negative {
+      @include centered-row;
+      gap: 8px;
+
+      color: var(--color-error-100);
+      text-decoration: underline;
+      text-decoration-color: var(--color-error-100);
+      text-underline-offset: 2px;
+      text-decoration-thickness: 2px;
+
+      svg {
+        color: var(--color-gray-500);
+      }
+    }
+  }
+
+  &-more-proposals {
+    @include centered-row;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+
+    a {
+      @include button-ghost;
+      gap: 4px;
+    }
+  }
+}
