@@ -49,7 +49,6 @@ import {
   C3_APP_ID,
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
-  CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
@@ -58,7 +57,6 @@ import {
   NTT_APP_ID,
   PORTAL_APP_ID,
   PORTAL_NFT_APP_ID,
-  UNKNOWN_APP_ID,
   USDT_TRANSFER_APP_ID,
   canWeGetDestinationTx,
   getGuardianSet,
@@ -1247,23 +1245,6 @@ const Tx = () => {
 
         // Add status logic
         const { fromChain, appIds } = data?.content?.standarizedProperties || {};
-        const payloadType = data?.content?.payload?.payloadType;
-        const isTransferWithPayload = payloadType === 3;
-
-        const isCCTP = appIds?.includes(CCTP_APP_ID);
-        const isConnect = appIds?.includes(CONNECT_APP_ID);
-        const isPortal = appIds?.includes(PORTAL_APP_ID);
-        const isTBTC = !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
-        const hasAnotherApp = !!(
-          appIds &&
-          appIds.filter(
-            appId =>
-              appId !== CONNECT_APP_ID &&
-              appId !== PORTAL_APP_ID &&
-              appId !== UNKNOWN_APP_ID &&
-              !appId.toLowerCase().includes("tbtc"),
-          )?.length
-        );
 
         const limitDataForChain = chainLimitsData
           ? chainLimitsData.find(
@@ -1280,16 +1261,13 @@ const Tx = () => {
           : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
           ? "external_tx"
           : vaa
-          ? isConnect || isPortal || isCCTP
-            ? (canWeGetDestinationTx(data?.content?.standarizedProperties?.toChain) &&
-                !hasAnotherApp &&
-                (!isTransferWithPayload ||
-                  (isTransferWithPayload && isConnect) ||
-                  (isTransferWithPayload && isTBTC))) ||
-              isCCTP
-              ? "pending_redeem"
-              : "vaa_emitted"
-            : "vaa_emitted"
+          ? canWeGetDestinationTx({
+              appIds,
+              network: environment.network,
+              targetChain: data?.content?.standarizedProperties?.toChain,
+            })
+            ? "pending_redeem"
+            : "completed"
           : isBigTransaction || isDailyLimitExceeded
           ? "in_governors"
           : "in_progress";

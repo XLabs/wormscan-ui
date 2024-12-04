@@ -336,16 +336,13 @@ const Txs = () => {
                 : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
                 ? "external_tx"
                 : tx.vaa?.raw
-                ? isConnect || isPortal || isCCTP
-                  ? (canWeGetDestinationTx(toChain) &&
-                      !hasAnotherApp &&
-                      (!isTransferWithPayload ||
-                        (isTransferWithPayload && isConnect) ||
-                        (isTransferWithPayload && isTBTC))) ||
-                    isCCTP
-                    ? "pending_redeem"
-                    : "vaa_emitted"
-                  : "vaa_emitted"
+                ? canWeGetDestinationTx({
+                    appIds,
+                    network: currentNetwork,
+                    targetChain: tx?.content?.standarizedProperties?.toChain,
+                  })
+                  ? "pending_redeem"
+                  : "completed"
                 : isBigTransaction || isDailyLimitExceeded
                 ? "in_governors"
                 : "in_progress";

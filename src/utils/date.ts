@@ -135,3 +135,20 @@ export const getNextDate = (date: string, timespan: "1h" | "1d" | "1mo"): string
 
 export const toLocaleDate = (date: Date | string) =>
   date ? new Date(date).toLocaleDateString() : null;
+
+export const getRemainingTime = (releaseTimestamp: Date | string) => {
+  if (!releaseTimestamp) return "No release date provided";
+
+  const releaseDate = new Date(releaseTimestamp);
+  const currentDate = new Date();
+  const diffInMilliseconds = releaseDate.getTime() - currentDate.getTime();
+
+  if (diffInMilliseconds <= 0) return "Time's up";
+
+  const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
+  const diffInMinutes = Math.floor((diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+
+  return `${diffInHours > 0 ? `${diffInHours}h, ` : ""}${
+    diffInMinutes > 0 ? `${diffInMinutes}m` : ""
+  }`;
+};

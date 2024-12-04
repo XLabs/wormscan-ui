@@ -81,6 +81,7 @@ export type OverviewProps = {
   targetSymbol?: string;
   targetTokenInfo?: TokenInfo;
   targetTokenLink?: string;
+  targetTxHash?: string;
   targetTxTimestamp?: number;
   toChain?: ChainId;
   tokenAmount?: string;
