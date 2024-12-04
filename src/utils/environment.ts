@@ -73,6 +73,7 @@ const TESTNET_RPCS = {
   blast: "https://sepolia.blast.io",
   xlayer: "https://xlayertestrpc.okx.com",
   snaxchain: "https://testnet.snaxchain.io/",
+  monad_devnet: `${process.env.WORMSCAN_BFF_URL}/monadRpcCall`,
 };
 
 export type Environment = {
@@ -133,6 +134,7 @@ export const testnetNativeCurrencies: { [key: string]: string } = {
   [chainIdToChain(10005)]: "ETH",
   [chainIdToChain(10006)]: "ETH",
   [chainIdToChain(10007)]: "MATIC",
+  [chainIdToChain(10008)]: "MON",
 };
 
 export const mainnetNativeCurrencies: { [key: string]: string } = {
@@ -226,6 +228,14 @@ export const testnetEnv: Environment = {
       evmNetworkId: 80002, // https://chainlist.org/chain/80002
       nativeCurrencyDecimals: 18,
       rpcUrl: TESTNET_RPCS.polygon_sepolia || "",
+    },
+    {
+      chainId: 10008 as ChainId,
+      chainName: "MonadDevnet",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 20143, // https://chainlist.org/chain/20143
+      nativeCurrencyDecimals: 18,
+      rpcUrl: TESTNET_RPCS.monad_devnet || "",
     },
     {
       chainId: 4 as ChainId,

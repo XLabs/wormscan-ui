@@ -184,8 +184,9 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
           ariaLabel="Select type"
           className="filters-top-toggle"
           items={[
-            { label: "All", value: "0", ariaLabel: "All" },
-            { label: "Transfers", value: "1,3", ariaLabel: "Transfers" },
+            { label: "Transfers", value: "0", ariaLabel: "All Transfers" },
+            // { label: "All", value: "0", ariaLabel: "All" },
+            // { label: "Transfers", value: "1,3", ariaLabel: "Transfers" },
             { label: "Attestation", value: "2", ariaLabel: "Attestation" },
           ]}
           onValueChange={value => {
