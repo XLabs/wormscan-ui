@@ -77,6 +77,19 @@ export const getGeckoTokenInfo = async (
   }
 };
 
+export const getCoinMarketCapTokenInfo = async (symbol: string): Promise<any> => {
+  try {
+    const coinMarketCapTokenInfoRequest = await fetchWithTimeout(
+      `${BFF_URL}/getCoinMarketCapTokenInfo?symbol=${symbol}`,
+    );
+
+    const coinMarketCapTokenInfoResponse = await coinMarketCapTokenInfoRequest.json();
+    return coinMarketCapTokenInfoResponse;
+  } catch (e) {
+    return null;
+  }
+};
+
 export const sendProtocolSubmission = async (body: any): Promise<string> => {
   try {
     const sendProtocolResp = await fetch(`${BFF_URL}/submitProtocol`, {

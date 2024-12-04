@@ -32,6 +32,7 @@ const chainNameMap: Record<string, Chain> = {
   "optimistic-ethereum": "Optimism",
   "polygon-pos": "Polygon",
   "binance-smart-chain": "Bsc",
+  "neon-evm": "Neon",
 };
 
 const chainNameMapUnsupported: Record<string, number> = {
