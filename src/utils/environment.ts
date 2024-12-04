@@ -43,7 +43,7 @@ const MAINNET_RPCS = {
   mantle: "https://rpc.mantle.xyz",
   near: "https://rpc.mainnet.near.org",
   oasis: "https://emerald.oasis.dev",
-  optimism: "https://endpoints.omniatech.io/v1/op/mainnet/public",
+  optimism: "https://1rpc.io/op",
   polygon: "https://1rpc.io/matic",
   scroll: "https://rpc.ankr.com/scroll",
   solana: process.env.SOLANA_RPC ?? "https://api.mainnet-beta.solana.com",
