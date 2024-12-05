@@ -137,7 +137,7 @@ export const toLocaleDate = (date: Date | string) =>
   date ? new Date(date).toLocaleDateString() : null;
 
 export const getRemainingTime = (releaseTimestamp: Date | string) => {
-  if (!releaseTimestamp) return "No release date provided";
+  if (!releaseTimestamp) return null;
 
   const releaseDate = new Date(releaseTimestamp);
   const currentDate = new Date();
