@@ -383,7 +383,7 @@ const Overview = ({
           </div>
         </div>
 
-        {(isBigTransaction || isDailyLimitExceeded) && (
+        {status === "in_governors" && (
           <div className="tx-overview-section-row">
             <h4 className="tx-overview-section-row-title">
               <Tooltip
