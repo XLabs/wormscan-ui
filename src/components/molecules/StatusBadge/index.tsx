@@ -45,7 +45,7 @@ export default StatusBadge;
 
 const StatusInGovernorsSmall = () => (
   <Tooltip side="top" type="onlyContent" tooltip={<StatusInGovernors />}>
-    <div className="status-badge-small progress">
+    <div className="status-badge-small governor">
       <ClockIcon width={24} />
     </div>
   </Tooltip>
@@ -73,7 +73,7 @@ const StatusExternalTxSmall = () => (
 );
 const StatusPendingRedeemSmall = () => (
   <Tooltip side="top" type="onlyContent" tooltip={<StatusPendingRedeem />}>
-    <div className="status-badge-small progress">
+    <div className="status-badge-small pending">
       <ClockIcon width={24} />
     </div>
   </Tooltip>
@@ -89,9 +89,9 @@ const StatusCompletedSmall = () => (
 // ------
 
 const StatusInGovernors = () => (
-  <Chip className="status-badge-status" color="progress">
+  <Chip className="status-badge-status" color="governor">
     <ClockIcon width={24} />
-    <p>In governor</p>
+    <p>Delayed</p>
   </Chip>
 );
 const StatusInProgress = () => (
@@ -123,7 +123,7 @@ const StatusPendingRedeem = () => (
     type="info"
   >
     <div>
-      <Chip className="status-badge-status" color="progress">
+      <Chip className="status-badge-status" color="pending">
         <ClockIcon width={24} />
         <p>Pending execution</p>
       </Chip>
