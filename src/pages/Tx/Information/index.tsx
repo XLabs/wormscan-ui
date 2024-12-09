@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { ChainId, chainIdToChain, platformToChains } from "@wormhole-foundation/sdk";
+import {
+  ChainId,
+  chainIdToChain,
+  chainToChainId,
+  platformToChains,
+} from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import analytics from "src/analytics";
 import {
@@ -163,7 +168,7 @@ const Information = ({
 
   const fromChain = (isGatewaySource ? gatewayInfo?.originChainId : fromChainOrig) as ChainId;
   const toChain: ChainId = parsedPayload?.["gateway_transfer"]?.chain
-    ? parsedPayload?.["gateway_transfer"].chain
+    ? chainToChainId(parsedPayload?.["gateway_transfer"].chain)
     : stdToChain || data?.targetChain?.chainId || 0;
 
   const parsedOriginAddress = isGatewaySource
@@ -461,6 +466,7 @@ const Information = ({
     targetSymbol,
     targetTokenInfo,
     targetTokenLink,
+    targetTxHash: data?.targetChain?.transaction?.txHash,
     toChain: extraRawInfoToChainId || toChain,
     tokenAmount,
     totalGuardiansNeeded,
