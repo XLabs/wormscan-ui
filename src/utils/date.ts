@@ -143,7 +143,7 @@ export const getRemainingTime = (releaseTimestamp: Date | string) => {
   const currentDate = new Date();
   const diffInMilliseconds = releaseDate.getTime() - currentDate.getTime();
 
-  if (diffInMilliseconds <= 0) return "Time's up";
+  if (diffInMilliseconds <= 0) return "0m";
 
   const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
   const diffInMinutes = Math.floor((diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
