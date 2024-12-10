@@ -167,6 +167,8 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
   });
 
   useEffect(() => {
+    if (showFilters) return;
+
     setCheckedState(getParsedCheckedState(params));
 
     setStartDate(params.from ? new Date(params.from) : null);
