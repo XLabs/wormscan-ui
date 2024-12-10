@@ -54,7 +54,7 @@ const ApiDoc = () => {
                 operationId: "tokens-symbol-volume",
                 parameters: [
                   {
-                    type: "number",
+                    type: "integer",
                     description: "Limit, default is 10.",
                     name: "limit",
                     in: "query",
@@ -112,14 +112,14 @@ const ApiDoc = () => {
                     required: true,
                   },
                   {
-                    type: "number",
+                    type: "integer",
                     description: "Source chain",
                     name: "sourceChain",
                     in: "query",
                     required: false,
                   },
                   {
-                    type: "number",
+                    type: "integer",
                     description: "Target chain",
                     name: "targetChain",
                     in: "query",
@@ -206,7 +206,7 @@ const ApiDoc = () => {
           ],
           "/api/v1/governor/enqueued_vaas/{chain}": [
             {
-              type: "number",
+              type: "integer",
               description: "Blockchain ID",
               name: "chain",
               in: "path",
@@ -215,7 +215,7 @@ const ApiDoc = () => {
           ],
           "/api/v1/governor/notional/available/{chain}": [
             {
-              type: "number",
+              type: "integer",
               description: "Blockchain ID",
               name: "chain",
               in: "path",
@@ -233,7 +233,7 @@ const ApiDoc = () => {
           ],
           "/api/v1/observations/{chain}": [
             {
-              type: "number",
+              type: "integer",
               description: "Blockchain ID",
               name: "chain",
               in: "path",
@@ -242,7 +242,7 @@ const ApiDoc = () => {
           ],
           "/api/v1/observations/{chain}/{emitter}": [
             {
-              type: "number",
+              type: "integer",
               description: "Blockchain ID",
               name: "chain",
               in: "path",
@@ -258,7 +258,7 @@ const ApiDoc = () => {
           ],
           "/api/v1/observations/{chain}/{emitter}/{sequence}": [
             {
-              type: "number",
+              type: "integer",
               description: "Blockchain ID",
               name: "chain",
               in: "path",
@@ -272,7 +272,7 @@ const ApiDoc = () => {
               required: true,
             },
             {
-              type: "number",
+              type: "integer",
               description: "Sequence",
               name: "sequence",
               in: "path",
@@ -281,7 +281,7 @@ const ApiDoc = () => {
           ],
           "/api/v1/observations/{chain}/{emitter}/{sequence}/{signer}/{hash}": [
             {
-              type: "number",
+              type: "integer",
               description: "Blockchain ID",
               name: "chain",
               in: "path",
@@ -295,7 +295,7 @@ const ApiDoc = () => {
               required: true,
             },
             {
-              type: "number",
+              type: "integer",
               description: "Sequence",
               name: "sequence",
               in: "path",
@@ -318,7 +318,7 @@ const ApiDoc = () => {
           ],
           "/api/v1/relays/{chain}/{emitter}/{sequence}": [
             {
-              type: "number",
+              type: "integer",
               description: "Blockchain ID",
               name: "chain",
               in: "path",
@@ -332,7 +332,7 @@ const ApiDoc = () => {
               required: true,
             },
             {
-              type: "number",
+              type: "integer",
               description: "Sequence",
               name: "sequence",
               in: "path",
@@ -341,13 +341,24 @@ const ApiDoc = () => {
           ],
         };
 
-        data.paths = Object.entries(pathsToAddInfo).reduce((acc, [path, newParameters]) => {
-          if (data.paths[path] && data.paths[path].get) {
-            const existingParameters = data.paths[path].get.parameters || [];
-            data.paths[path].get.parameters = [...existingParameters, ...newParameters];
-          }
-          return data.paths;
-        }, data.paths);
+        const updatedPaths = Object.entries(pathsToAddInfo).reduce(
+          (acc, [path, newParameters]) => {
+            if (acc[path]?.get) {
+              const existingParameters = acc[path].get.parameters || [];
+              const existingNames = new Set(
+                existingParameters.map((param: { name: string }) => param.name),
+              );
+              const uniqueParameters = newParameters.filter(
+                param => !existingNames.has(param.name),
+              );
+              acc[path].get.parameters = [...existingParameters, ...uniqueParameters];
+            }
+            return acc;
+          },
+          { ...data.paths },
+        );
+
+        data.paths = updatedPaths;
 
         setSwaggerSpec(data);
       } catch (error) {
