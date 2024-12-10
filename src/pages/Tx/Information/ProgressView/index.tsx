@@ -150,7 +150,12 @@ const ProgressView = ({
               </div>
 
               <div className="progress-text">
-                <div className="progress-text-p">Executed in the Destination Chain</div>
+                <div className="progress-text-p">
+                  Executed in{" "}
+                  {!!toChain
+                    ? getChainName({ chainId: toChain, network: currentNetwork })
+                    : "the Destination Chain"}
+                </div>
               </div>
             </div>
           )}
