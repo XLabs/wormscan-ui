@@ -24,6 +24,11 @@
       padding: 12px 16px;
     }
 
+    &.right,
+    &.left {
+      margin: 0;
+    }
+
     &.max-width {
       max-width: 287px;
     }

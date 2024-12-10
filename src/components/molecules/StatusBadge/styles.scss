@@ -12,7 +12,9 @@
     min-width: max-content;
     text-transform: uppercase;
 
-    &.progress {
+    &.progress,
+    &.governor,
+    &.pending {
       background-color: var(--color-alert-10);
       color: var(--color-alert-100);
 
@@ -44,7 +46,9 @@
     border-radius: 40px;
     margin: auto;
 
-    &.progress {
+    &.progress,
+    &.governor,
+    &.pending {
       & > svg {
         color: var(--color-alert-100) !important;
       }

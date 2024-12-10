@@ -13,7 +13,6 @@ import {
 } from "src/consts";
 import {
   ArrowRightIcon,
-  ArrowUpRightIcon,
   ChevronDownIcon,
   CopyIcon,
   InfoCircleIcon,
@@ -23,7 +22,7 @@ import { filterAppIds, formatAppId, formatUnits, parseTx, shortAddress } from "s
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
 import { addressesInfoState } from "src/utils/recoilStates";
 import { TruncateText } from "src/utils/string";
-import { formatDate } from "src/utils/date";
+import { formatDate, getRemainingTime } from "src/utils/date";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 import { formatNumber } from "src/utils/number";
 import { useWindowSize } from "src/utils/hooks";
@@ -158,14 +157,7 @@ const Overview = ({
     };
   }, [lineValueWidth]);
 
-  const releaseDate = releaseTimestamp ? new Date(releaseTimestamp) : null;
-  const currentDate = new Date();
-  const diffInMilliseconds = releaseDate?.getTime() - currentDate.getTime();
-  const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
-  const diffInMinutes = Math.floor((diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
-  const remainingTime = `${diffInHours <= 0 ? "" : `${diffInHours}h, `}${
-    diffInMinutes <= 0 ? "" : `${diffInMinutes}m`
-  } left`;
+  const remainingTime = getRemainingTime(releaseTimestamp);
 
   return (
     <div className="tx-overview">
@@ -270,7 +262,7 @@ const Overview = ({
               type="info"
               tooltip={
                 <div className="tx-overview-section-row-info-tooltip-content">
-                  <p>Current state of the transaction</p>
+                  <p>Current state of the transaction.</p>
                 </div>
               }
               className="tx-overview-section-row-info-tooltip"
@@ -285,27 +277,6 @@ const Overview = ({
               <div className="text">
                 <StatusBadge status={status} />
 
-                <button
-                  className="tx-overview-section-row-info-steps"
-                  onClick={() => {
-                    setShowOverview("progress");
-                  }}
-                >
-                  {status === "in_progress"
-                    ? "1"
-                    : status === "in_governors" || status === "vaa_emitted"
-                    ? "2"
-                    : status === "pending_redeem" || status === "external_tx"
-                    ? "3"
-                    : status === "completed"
-                    ? isJustGenericRelayer
-                      ? "3"
-                      : "4"
-                    : "5"}
-                  /{status === "in_governors" ? "5" : isJustGenericRelayer ? "3" : "4"}
-                  <p className="desktop">Steps Complete</p> <ArrowUpRightIcon width={24} />
-                </button>
-
                 {(!hasVAA || isUnknownPayloadType) && (
                   <div className="tx-overview-section-row-info-alert">
                     <div className="desktop">
@@ -315,7 +286,7 @@ const Overview = ({
                           : "The VAA for this transaction has not been issued yet"
                         : "VAA comes from another multiverse, we don’t have more details about it"}
                     </div>
-                    {!(isDesktop && hasVAA) && (
+                    {!(isDesktop && hasVAA) && !isBigTransaction && !isDailyLimitExceeded && (
                       <Tooltip
                         className="tx-overview-section-row-info-alert-tooltip"
                         side="bottom"
@@ -385,44 +356,12 @@ const Overview = ({
                                     </>
                                   )}
 
-                                  {isBigTransaction && currentNetwork === "Mainnet" ? (
+                                  {isLatestBlockHigherThanVaaEmitBlock && (
                                     <div>
-                                      <h5>BIG TRANSACTION</h5>
-                                      <div>
-                                        This transaction will take 24 hours to process, as it
-                                        exceeds the Wormhole network&apos;s temporary transaction
-                                        limit of ${formatNumber(transactionLimit, 0)} on{" "}
-                                        {getChainName({
-                                          chainId: fromChain,
-                                          network: currentNetwork,
-                                        })}{" "}
-                                        for security reasons. <LearnMoreLink /> about this temporary
-                                        security measure.
-                                      </div>
+                                      Since the latest block number is higher than this
+                                      transaction&apos;s, there might be an extra delay. You can
+                                      contact support on <DiscordSupportLink />.
                                     </div>
-                                  ) : isDailyLimitExceeded && currentNetwork === "Mainnet" ? (
-                                    <div>
-                                      <h5>DAILY LIMIT EXCEEDED</h5>
-                                      <div>
-                                        This transaction will take up to 24 hours to process as
-                                        Wormhole has reached the daily limit for source Blockchain{" "}
-                                        {getChainName({
-                                          chainId: fromChain,
-                                          network: currentNetwork,
-                                        })}
-                                        . This is a normal and temporary security feature by the
-                                        Wormhole network. <LearnMoreLink /> about this security
-                                        measure.
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    isLatestBlockHigherThanVaaEmitBlock && (
-                                      <div>
-                                        Since the latest block number is higher than this
-                                        transaction&apos;s, there might be an extra delay. You can
-                                        contact support on <DiscordSupportLink />.
-                                      </div>
-                                    )
                                   )}
                                 </>
                               )
@@ -443,6 +382,96 @@ const Overview = ({
             </div>
           </div>
         </div>
+
+        {status === "in_governors" && (
+          <div className="tx-overview-section-row">
+            <h4 className="tx-overview-section-row-title">
+              <Tooltip
+                type="info"
+                tooltip={
+                  <div className="tx-overview-section-row-info-tooltip-content">
+                    <p>This transaction takes 24 hours to process.</p>
+                  </div>
+                }
+                className="tx-overview-section-row-info-tooltip"
+              >
+                <span>
+                  <InfoCircleIcon /> Delayed
+                </span>
+              </Tooltip>
+            </h4>
+            <div className="tx-overview-section-row-info">
+              <div className="tx-overview-section-row-info-container">
+                <div className="text">
+                  {(!hasVAA || isUnknownPayloadType) && (
+                    <div className="tx-overview-section-row-info-alert">
+                      {!hasVAA && isBigTransaction && currentNetwork === "Mainnet" ? (
+                        <div>BIG TRANSACTION</div>
+                      ) : (
+                        isDailyLimitExceeded &&
+                        currentNetwork === "Mainnet" && <div>DAILY LIMIT EXCEEDED</div>
+                      )}
+
+                      {!(isDesktop && hasVAA) && (
+                        <Tooltip
+                          className="tx-overview-section-row-info-alert-tooltip"
+                          side="bottom"
+                          type="info"
+                          tooltip={
+                            <div className="tx-overview-section-row-info-alert-tooltip-content">
+                              {!hasVAA && (
+                                <>
+                                  {isBigTransaction && currentNetwork === "Mainnet" ? (
+                                    <div>
+                                      <h5>BIG TRANSACTION</h5>
+                                      <div>
+                                        This transaction will take 24 hours to process, as it
+                                        exceeds the Wormhole network&apos;s temporary transaction
+                                        limit of ${formatNumber(transactionLimit, 0)} on{" "}
+                                        {getChainName({
+                                          chainId: fromChain,
+                                          network: currentNetwork,
+                                        })}{" "}
+                                        for security reasons. <LearnMoreLink /> about this temporary
+                                        security measure.
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    isDailyLimitExceeded &&
+                                    currentNetwork === "Mainnet" && (
+                                      <div>
+                                        <h5>DAILY LIMIT EXCEEDED</h5>
+                                        <div>
+                                          This transaction will take up to 24 hours to process as
+                                          Wormhole has reached the daily limit for source Blockchain{" "}
+                                          {getChainName({
+                                            chainId: fromChain,
+                                            network: currentNetwork,
+                                          })}
+                                          . This is a normal and temporary security feature by the
+                                          Wormhole network. <LearnMoreLink /> about this security
+                                          measure.
+                                        </div>
+                                      </div>
+                                    )
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          }
+                        >
+                          <div className="tx-overview-section-row-info-alert-tooltip-icon">
+                            <InfoCircleIcon />
+                          </div>
+                        </Tooltip>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="tx-overview-section-row">
           <h4 className="tx-overview-section-row-title">
@@ -486,7 +515,7 @@ const Overview = ({
             </h4>
             <div className="tx-overview-section-row-info">
               <div className="tx-overview-section-row-info-container">
-                <div className="text">{releaseTimestamp ? `${remainingTime}` : "N/A"}</div>
+                <div className="text">{releaseTimestamp ? `${remainingTime} left` : "N/A"}</div>
               </div>
             </div>
           </div>
@@ -611,7 +640,7 @@ const Overview = ({
                       The Action field indicates the type of Wormhole messages linked with Mayan.
                     </p>
                   ) : (
-                    <p>The type of transaction</p>
+                    <p>The type of transaction.</p>
                   )}
                 </div>
               }

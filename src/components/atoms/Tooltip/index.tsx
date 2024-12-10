@@ -100,7 +100,9 @@ const Tooltip = ({
         <TooltipPrimitive.Portal className="tooltip">
           <TooltipPrimitive.Content
             ref={tooltipRef}
-            className={`tooltip-container ${type} ${maxWidth ? "max-width" : ""} ${className}`}
+            className={`tooltip-container ${type} ${side} ${
+              maxWidth ? "max-width" : ""
+            } ${className}`}
             sideOffset={8}
             side={side}
           >
