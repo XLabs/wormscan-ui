@@ -16,6 +16,7 @@ import FTM from "src/icons/tokens/FTM.svg";
 import GLMR from "src/icons/tokens/GLMR.svg";
 import HXRO from "src/icons/tokens/HXRO.svg";
 import IDIA from "src/icons/tokens/IDIA.svg";
+import LOVELY from "src/icons/tokens/LOVELY.webp";
 import LUNA from "src/icons/tokens/LUNA.svg";
 import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KUJI from "src/icons/tokens/KUJI.svg";
@@ -32,6 +33,7 @@ import SUI from "src/icons/tokens/SUI.svg";
 import tBTC from "src/icons/tokens/tBTC.svg";
 import TRUMP from "src/icons/tokens/TRUMP.webp";
 import USDC from "src/icons/tokens/USDC.svg";
+import USDS from "src/icons/tokens/USDS.webp";
 import USDT from "src/icons/tokens/USDT.svg";
 import UST from "src/icons/tokens/UST.svg";
 import W from "src/icons/tokens/W.svg";
@@ -65,6 +67,7 @@ const iconTokens = {
   IDIA,
   KLAY: KlaytnIcon,
   KUJI,
+  LOVELY,
   LUNA,
   MATIC,
   OPTIMISM,
@@ -83,6 +86,7 @@ const iconTokens = {
   USDCbs: USDC,
   USDCpo: USDC,
   USDCso: USDC,
+  USDS,
   USDT,
   UST,
   W,
