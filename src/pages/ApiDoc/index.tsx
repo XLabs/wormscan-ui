@@ -194,6 +194,161 @@ const ApiDoc = () => {
           }
         });
 
+        const pathsToAddInfo = {
+          "/api/v1/governor/config/{guardian_address}": [
+            {
+              type: "string",
+              description: "Guardian address",
+              name: "guardian_address",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/governor/enqueued_vaas/{chain}": [
+            {
+              type: "number",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/governor/notional/available/{chain}": [
+            {
+              type: "number",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/governor/status/{guardian_address}": [
+            {
+              type: "string",
+              description: "Guardian address",
+              name: "guardian_address",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/observations/{chain}": [
+            {
+              type: "number",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/observations/{chain}/{emitter}": [
+            {
+              type: "number",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "string",
+              description: "Emitter address",
+              name: "emitter",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/observations/{chain}/{emitter}/{sequence}": [
+            {
+              type: "number",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "string",
+              description: "Emitter address",
+              name: "emitter",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "number",
+              description: "Sequence",
+              name: "sequence",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/observations/{chain}/{emitter}/{sequence}/{signer}/{hash}": [
+            {
+              type: "number",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "string",
+              description: "Emitter address",
+              name: "emitter",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "number",
+              description: "Sequence",
+              name: "sequence",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "string",
+              description: "Signer address",
+              name: "signer",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "string",
+              description: "Hash",
+              name: "hash",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/relays/{chain}/{emitter}/{sequence}": [
+            {
+              type: "number",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "string",
+              description: "Emitter address",
+              name: "emitter",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "number",
+              description: "Sequence",
+              name: "sequence",
+              in: "path",
+              required: true,
+            },
+          ],
+        };
+
+        data.paths = Object.entries(pathsToAddInfo).reduce((acc, [path, newParameters]) => {
+          if (data.paths[path] && data.paths[path].get) {
+            const existingParameters = data.paths[path].get.parameters || [];
+            data.paths[path].get.parameters = [...existingParameters, ...newParameters];
+          }
+          return data.paths;
+        }, data.paths);
+
         setSwaggerSpec(data);
       } catch (error) {
         console.error("Error fetching Swagger spec:", error);
