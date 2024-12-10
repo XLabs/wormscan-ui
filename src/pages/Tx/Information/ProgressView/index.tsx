@@ -63,7 +63,7 @@ const ProgressView = ({
                     {SOURCE_SYMBOL} {amountSentUSD && `($${amountSentUSD}) `}
                   </>
                 )}
-                {getChainName({ chainId: fromChain, network: currentNetwork })}{" "}
+                from {getChainName({ chainId: fromChain, network: currentNetwork })}{" "}
                 {!!toChain && ` to ${getChainName({ chainId: toChain, network: currentNetwork })}`}
               </div>
             </div>

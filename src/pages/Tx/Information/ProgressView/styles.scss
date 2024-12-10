@@ -83,6 +83,7 @@
         &-p {
           @include text-roboto-body-500;
           color: var(--color-white);
+          text-wrap: pretty;
 
           & > a {
             @include button-ghost;
@@ -144,7 +145,7 @@
         }
 
         & .progress-text {
-          & > p {
+          &-p {
             color: var(--color-gray-400);
           }
 
