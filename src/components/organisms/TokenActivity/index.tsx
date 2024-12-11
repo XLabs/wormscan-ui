@@ -77,9 +77,9 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   const [rowSelected, setRowSelected] = useState<number>(0);
 
   const [filters, setFiltersState] = useState({
-    from: getISODateZeroed(1),
+    from: getISODateZeroed(7),
     to: todayISOString,
-    timespan: "1h",
+    timespan: "1d",
     sourceChain: [],
     targetChain: [],
     symbol: { label: "USDC", value: "USDC" },
