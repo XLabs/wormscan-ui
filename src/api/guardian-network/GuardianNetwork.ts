@@ -145,8 +145,14 @@ export class GuardianNetwork {
 
   async getTokensSymbolVolume({
     limit,
+    timeRange,
   }: TokensSymbolVolumeInput): Promise<TokensSymbolVolumeOutput[]> {
-    const url = limit ? `/tokens-symbol-volume?limit=${limit}` : "/tokens-symbol-volume";
+    const params = new URLSearchParams();
+
+    if (limit) params.append("limit", limit.toString());
+    if (timeRange) params.append("timeRange", timeRange);
+
+    const url = `/tokens-symbol-volume?${params.toString()}`;
     const payload = await this._client.doGet<TokensSymbolVolumeOutput[]>(url);
     return payload;
   }

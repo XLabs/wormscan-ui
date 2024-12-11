@@ -16,11 +16,12 @@ import FTM from "src/icons/tokens/FTM.svg";
 import GLMR from "src/icons/tokens/GLMR.svg";
 import HXRO from "src/icons/tokens/HXRO.svg";
 import IDIA from "src/icons/tokens/IDIA.svg";
-import LOVELY from "src/icons/tokens/LOVELY.webp";
-import LUNA from "src/icons/tokens/LUNA.svg";
 import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KUJI from "src/icons/tokens/KUJI.svg";
+import LOVELY from "src/icons/tokens/LOVELY.webp";
+import LUNA from "src/icons/tokens/LUNA.svg";
 import MATIC from "src/icons/tokens/MATIC.svg";
+import NST from "src/icons/tokens/NST.webp";
 import OPTIMISM from "src/icons/tokens/OPTIMISM.svg";
 import OSMO from "src/icons/tokens/OSMO.svg";
 import PENDLE from "src/icons/tokens/PENDLE.svg";
@@ -29,6 +30,7 @@ import RNDR from "src/icons/tokens/RNDR.svg";
 import SDEX from "src/icons/tokens/SDEX.svg";
 import SEI from "src/icons/tokens/SEI.svg";
 import SOL from "src/icons/tokens/SOL.svg";
+import SPX6900 from "src/icons/tokens/SPX6900.webp";
 import SUI from "src/icons/tokens/SUI.svg";
 import tBTC from "src/icons/tokens/tBTC.svg";
 import TRUMP from "src/icons/tokens/TRUMP.webp";
@@ -44,6 +46,7 @@ import WETH from "src/icons/tokens/WETH.svg";
 import WFTM from "src/icons/tokens/WFTM.svg";
 import WMATIC from "src/icons/tokens/WMATIC.svg";
 import WSTETH from "src/icons/tokens/WSTETH.svg";
+import XBG from "src/icons/tokens/XBG.svg";
 import noIconToken from "src/icons/tokens/noIcon.svg";
 
 const iconTokens = {
@@ -70,6 +73,7 @@ const iconTokens = {
   LOVELY,
   LUNA,
   MATIC,
+  NST,
   OPTIMISM,
   OSMO,
   PENDLE,
@@ -78,6 +82,7 @@ const iconTokens = {
   SDEX,
   SEI,
   SOL,
+  SPX6900,
   SUI,
   tBTC,
   TRUMP,
@@ -86,6 +91,7 @@ const iconTokens = {
   USDCbs: USDC,
   USDCpo: USDC,
   USDCso: USDC,
+  "USDC.e": USDC,
   USDS,
   USDT,
   UST,
@@ -101,6 +107,7 @@ const iconTokens = {
   WMATIC,
   WSTETH,
   wstETH: WSTETH,
+  XBG,
 } as { [K in string]: SVGAElement };
 
 export const getTokenIcon = (token: string, nullIfMissing = false) => {
