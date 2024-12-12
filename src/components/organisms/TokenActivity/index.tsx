@@ -122,7 +122,6 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   }));
 
   const {
-    isLoading: isLoadingList,
     isFetching: isFetchingList,
     isError: isErrorList,
     data: dataList,
@@ -433,7 +432,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
 
             {isErrorList ? (
               <ErrorPlaceholder />
-            ) : isLoadingList ? (
+            ) : isFetchingList ? (
               <div className="token-activity-container-content-list-loader">
                 {Array.from({ length: 10 }).map((_, i) => (
                   <div className="token-activity-container-content-list-loader-row" key={i} />
