@@ -122,26 +122,40 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   }));
 
   const {
-    isLoading: isLoadingList,
     isFetching: isFetchingList,
     isError: isErrorList,
     data: dataList,
-  } = useQuery(["tokensSymbolVolume", currentNetwork, selectedTopAssetTimeRange], async () => {
-    const response = await getClient().guardianNetwork.getTokensSymbolVolume({
-      limit: 10,
-      timeRange: selectedTopAssetTimeRange?.timeRange as "7d" | "14d" | "30d" | "90d",
-    });
-
-    if (response.length > 0 && filters.symbol.value !== response[0].symbol) {
-      setFilters({
-        ...filters,
-        symbol: { label: response[0].symbol, value: response[0].symbol },
+  } = useQuery(
+    ["tokensSymbolVolume", currentNetwork, selectedTopAssetTimeRange],
+    async () => {
+      const response = await getClient().guardianNetwork.getTokensSymbolVolume({
+        limit: 10,
+        timeRange: selectedTopAssetTimeRange?.timeRange as "7d" | "14d" | "30d" | "90d",
       });
-    }
+      return response;
+    },
+    {
+      onSuccess: response => {
+        const updateFiltersAndSelection = (index: number) => {
+          const newSymbol = response[index]?.symbol;
+          if (rowSelected !== index) setRowSelected(index);
+          if (filters.symbol.value !== newSymbol) {
+            setFilters({
+              ...filters,
+              symbol: {
+                label: newSymbol,
+                value: newSymbol,
+              },
+            });
+          }
+        };
 
-    setRowSelected(0);
-    return response;
-  });
+        // find the index of the current symbol in the response, or use the first symbol if not found
+        const symbolIndex = response.findIndex(item => item.symbol === filters.symbol.value);
+        updateFiltersAndSelection(symbolIndex === -1 ? 0 : symbolIndex);
+      },
+    },
+  );
 
   const {
     isLoading: isLoadingChart,
@@ -418,7 +432,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
 
             {isErrorList ? (
               <ErrorPlaceholder />
-            ) : isLoadingList ? (
+            ) : isFetchingList ? (
               <div className="token-activity-container-content-list-loader">
                 {Array.from({ length: 10 }).map((_, i) => (
                   <div className="token-activity-container-content-list-loader-row" key={i} />
