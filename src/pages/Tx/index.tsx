@@ -548,7 +548,6 @@ const Tx = () => {
             parsedEmitterAddress = emitterAddress.toNative(emitterChain).toString();
           } catch (error) {
             console.error("Error converting emitter address to native:", error);
-            parsedEmitterAddress = "";
           }
           const parsedHash = Buffer.from(hash).toString("hex");
           const parsedSequence = Number(sequence);
