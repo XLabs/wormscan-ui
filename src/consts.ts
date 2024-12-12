@@ -240,6 +240,7 @@ const targetChainsSupportedMainnet: { [key: string]: ChainId[] } = {
     chainToChainId("Sui"),
     chainToChainId("Terra"),
     chainToChainId("Terra2"),
+    chainToChainId("Worldchain"),
     chainToChainId("Wormchain"),
     chainToChainId("Xlayer"),
     chainToChainId("Xpla"),
@@ -377,6 +378,7 @@ const targetChainsSupportedTestnet: { [key: string]: ChainId[] } = {
     chainToChainId("Berachain"),
     chainToChainId("Unichain"),
     chainToChainId("MonadDevnet"),
+    chainToChainId("Worldchain"),
   ],
   [CCTP_APP_ID]: [
     chainToChainId("Sepolia"),
