@@ -332,7 +332,7 @@ const Governor = () => {
     } else {
       setSelectedSortBy(SORT_DASHBOARD_BY_LIST[2]);
       setSelectedSortLowHigh(SORT_LOW_HIGH_LIST[1]);
-      setSortBy([{ id: SORT_DASHBOARD_BY_LIST[2].value, desc: false }]);
+      setSortBy([{ id: SORT_DASHBOARD_BY_LIST[2].value, desc: true }]);
     }
     setOpenSortBy(false);
   };
