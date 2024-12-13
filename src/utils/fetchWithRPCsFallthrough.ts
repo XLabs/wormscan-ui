@@ -591,6 +591,7 @@ export const getCctpDomain = (dom: number) => {
   if (dom === 5) return chainToChainId("Solana");
   if (dom === 6) return chainToChainId("Base");
   if (dom === 7) return chainToChainId("Polygon");
+  if (dom === 8) return chainToChainId("Sui");
   return null;
 };
 

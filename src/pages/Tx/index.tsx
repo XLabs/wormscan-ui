@@ -34,6 +34,7 @@ import { getChainName } from "src/utils/wormhole";
 import {
   getAlgorandTokenInfo,
   getSolanaCctp,
+  getSuiCctp,
   tryGetAddressInfo,
   tryGetWrappedToken,
 } from "src/utils/cryptoToolkit";
@@ -377,6 +378,12 @@ const Tx = () => {
 
               setErrorCode(undefined);
               setIsLoading(false);
+            })
+            .catch(() => (cancelRequests.current = false));
+
+          getSuiCctp(network, txHash)
+            .then(resp => {
+              console.log("resp", resp);
             })
             .catch(() => (cancelRequests.current = false));
         }

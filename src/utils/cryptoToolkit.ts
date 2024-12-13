@@ -18,7 +18,7 @@ interface IAlgorandTokenResponse {
   symbol?: string;
 }
 
-interface ISolanaCctpResponse {
+interface ISolanaSuiCctpResponse {
   amount: string;
   contractAddress: string;
   destinationDomain: number;
@@ -194,8 +194,21 @@ export const getSolanaCctp = async (network: Network, txHash: string) => {
       `${BFF_URL}/getSolanaCctp?network=${network}&txHash=${txHash}`,
     );
 
-    const solanaCctpResponse = (await solanaCctpRequest.json()) as ISolanaCctpResponse | null;
+    const solanaCctpResponse = (await solanaCctpRequest.json()) as ISolanaSuiCctpResponse | null;
     return solanaCctpResponse;
+  } catch (e) {
+    return null;
+  }
+};
+
+export const getSuiCctp = async (network: Network, txHash: string) => {
+  try {
+    const suiCctpRequest = await fetchWithTimeout(
+      `${BFF_URL}/getSuiCctp?network=${network}&txHash=${txHash}`,
+    );
+
+    const suiCctpResponse = (await suiCctpRequest.json()) as ISolanaSuiCctpResponse | null;
+    return suiCctpResponse;
   } catch (e) {
     return null;
   }
