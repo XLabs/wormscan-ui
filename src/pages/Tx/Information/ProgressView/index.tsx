@@ -63,7 +63,7 @@ const ProgressView = ({
                     {SOURCE_SYMBOL} {amountSentUSD && `($${amountSentUSD}) `}
                   </>
                 )}
-                {getChainName({ chainId: fromChain, network: currentNetwork })}{" "}
+                from {getChainName({ chainId: fromChain, network: currentNetwork })}{" "}
                 {!!toChain && ` to ${getChainName({ chainId: toChain, network: currentNetwork })}`}
               </div>
             </div>
@@ -150,7 +150,12 @@ const ProgressView = ({
               </div>
 
               <div className="progress-text">
-                <div className="progress-text-p">Executed in the Destination Chain</div>
+                <div className="progress-text-p">
+                  Executed in{" "}
+                  {!!toChain
+                    ? getChainName({ chainId: toChain, network: currentNetwork })
+                    : "the Destination Chain"}
+                </div>
               </div>
             </div>
           )}

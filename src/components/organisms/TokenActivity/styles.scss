@@ -39,16 +39,6 @@
       @include button-ghost;
       margin-left: auto;
     }
-
-    & > span {
-      @include text-heading6;
-      color: var(--color-gray-400);
-      display: none;
-
-      @media (min-width: 460px) {
-        display: block;
-      }
-    }
   }
 
   &-container {
@@ -424,27 +414,6 @@
 
       @include desktop {
         gap: 0 36px;
-      }
-
-      &-box {
-        @include centered-column;
-        gap: 4px 12px;
-
-        @include desktop {
-          @include centered-row;
-          flex-wrap: wrap;
-          justify-content: flex-start;
-        }
-
-        &-key {
-          @include text-roboto-body-400;
-          color: var(--color-gray-400);
-        }
-
-        &-value {
-          @include text-roboto-body-500;
-          color: var(--color-white);
-        }
       }
 
       &-toggles {

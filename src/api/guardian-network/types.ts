@@ -45,6 +45,7 @@ export type VAACount = {
 
 export interface TokensSymbolVolumeInput {
   limit: number;
+  timeRange: "7d" | "14d" | "30d" | "90d";
 }
 
 export interface TokensSymbolVolumeOutput {

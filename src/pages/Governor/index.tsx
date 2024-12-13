@@ -77,10 +77,10 @@ const Governor = () => {
   const [dataTransactions, setDataTransactions] = useState([]);
   const [openSortBy, setOpenSortBy] = useState(false);
   const [selectedSortBy, setSelectedSortBy] = useState(
-    showTransactions ? SORT_TRANSACTIONS_BY_LIST[4] : SORT_DASHBOARD_BY_LIST[3],
+    showTransactions ? SORT_TRANSACTIONS_BY_LIST[4] : SORT_DASHBOARD_BY_LIST[2],
   );
   const [selectedSortLowHigh, setSelectedSortLowHigh] = useState(
-    showTransactions ? SORT_LOW_HIGH_LIST[0] : SORT_LOW_HIGH_LIST[0],
+    showTransactions ? SORT_LOW_HIGH_LIST[0] : SORT_LOW_HIGH_LIST[1],
   );
   const [sortBy, setSortBy] = useState<{ id: string; desc: boolean }[]>([
     { id: selectedSortBy.value, desc: selectedSortLowHigh.value },
@@ -330,9 +330,9 @@ const Governor = () => {
       setSelectedSortLowHigh(SORT_LOW_HIGH_LIST[0]);
       setSortBy([{ id: SORT_TRANSACTIONS_BY_LIST[4].value, desc: false }]);
     } else {
-      setSelectedSortBy(SORT_DASHBOARD_BY_LIST[3]);
-      setSelectedSortLowHigh(SORT_LOW_HIGH_LIST[0]);
-      setSortBy([{ id: SORT_DASHBOARD_BY_LIST[3].value, desc: false }]);
+      setSelectedSortBy(SORT_DASHBOARD_BY_LIST[2]);
+      setSelectedSortLowHigh(SORT_LOW_HIGH_LIST[1]);
+      setSortBy([{ id: SORT_DASHBOARD_BY_LIST[2].value, desc: true }]);
     }
     setOpenSortBy(false);
   };
