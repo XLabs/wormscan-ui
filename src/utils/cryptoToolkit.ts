@@ -18,7 +18,7 @@ interface IAlgorandTokenResponse {
   symbol?: string;
 }
 
-interface ISolanaSuiCctpResponse {
+export interface ISolanaSuiCctpResponse {
   amount: string;
   contractAddress: string;
   destinationDomain: number;
