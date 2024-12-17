@@ -58,6 +58,7 @@ const Select = ({
   value,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(keepOpen);
+  const [inputValue, setInputValue] = useState("");
   const ref = useRef<HTMLDivElement>(null);
 
   const handleOutsideClick = () => {
@@ -86,8 +87,8 @@ const Select = ({
           <div className="select-searchable-menu">
             <SelectPrimitive
               aria-label={ariaLabel}
-              autoFocus
               backspaceRemovesValue={false}
+              blurInputOnSelect
               className="select"
               classNamePrefix="select"
               components={{
@@ -140,6 +141,12 @@ const Select = ({
               onChange={v => {
                 onValueChange(v);
                 if (closeOnSelect) setIsOpen(false);
+              }}
+              onInputChange={newValue => setInputValue(newValue)}
+              onKeyDown={e => {
+                if (e.key === "Enter" && !inputValue.trim()) {
+                  e.preventDefault();
+                }
               }}
               options={items}
               placeholder="Search"
