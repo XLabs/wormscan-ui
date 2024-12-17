@@ -325,7 +325,6 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
               </div>
             }
             type="searchable"
-            // onin
             value={checkedState.sourceChain}
           />
 
