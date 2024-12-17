@@ -75,15 +75,15 @@ const Txs = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const params: IParams = {
-    page: searchParams.get("page") || null,
-    address: searchParams.get("address") || null,
-    appId: searchParams.get("appId") || null,
-    exclusiveAppId: searchParams.get("exclusiveAppId") || null,
-    sourceChain: searchParams.get("sourceChain") || null,
-    targetChain: searchParams.get("targetChain") || null,
-    payloadType: searchParams.get("payloadType") || null,
-    from: searchParams.get("from") || null,
-    to: searchParams.get("to") || null,
+    page: searchParams.get("page") || "",
+    address: searchParams.get("address") || "",
+    appId: searchParams.get("appId") || "",
+    exclusiveAppId: searchParams.get("exclusiveAppId") || "",
+    sourceChain: searchParams.get("sourceChain") || "",
+    targetChain: searchParams.get("targetChain") || "",
+    payloadType: searchParams.get("payloadType") || "",
+    from: searchParams.get("from") || "",
+    to: searchParams.get("to") || "",
   };
 
   useEffect(() => {
