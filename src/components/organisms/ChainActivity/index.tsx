@@ -780,6 +780,7 @@ const ChainActivity = () => {
               startDateDisplayed={startDateDisplayed}
               endDateDisplayed={endDateDisplayed}
               isDesktop={isDesktop}
+              showDateRange
             />
 
             <Select
@@ -949,16 +950,6 @@ const ChainActivity = () => {
                         );
                       })
                     : "All Chains"}
-                </div>
-
-                <div className="chain-activity-chart-top-filters-legends-target-range">
-                  {fromDateFormatted && toDateFormatted && (
-                    <>
-                      {fromDateFormatted}
-                      <ArrowRightIcon />
-                      {toDateFormatted}
-                    </>
-                  )}
                 </div>
               </div>
             </div>
