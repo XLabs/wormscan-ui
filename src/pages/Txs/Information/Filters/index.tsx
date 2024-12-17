@@ -177,6 +177,23 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
     setEndDateDisplayed(params.to ? new Date(params.to) : null);
   }, [params]);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter" && showFilters) {
+        event.preventDefault();
+
+        if (!disableApplyButton) {
+          applyFilters();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [applyFilters, disableApplyButton, showFilters]);
+
   return (
     <div className="filters">
       {showFilters && !isDesktop && <div className="filters-bg" />}
@@ -308,6 +325,7 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
               </div>
             }
             type="searchable"
+            // onin
             value={checkedState.sourceChain}
           />
 

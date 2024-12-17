@@ -86,8 +86,8 @@ const Select = ({
           <div className="select-searchable-menu">
             <SelectPrimitive
               aria-label={ariaLabel}
-              autoFocus
               backspaceRemovesValue={false}
+              blurInputOnSelect
               className="select"
               classNamePrefix="select"
               components={{

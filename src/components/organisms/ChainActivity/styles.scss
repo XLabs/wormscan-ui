@@ -87,6 +87,10 @@
         top: 0px;
         transform: scale(0.94);
 
+        @media only screen and (max-width: 1240px) {
+          right: 88px;
+        }
+
         &.is-testnet {
           right: 192px;
         }
@@ -273,7 +277,7 @@
 
             & > span {
               @include desktop {
-                @media screen and (max-width: 1260px) {
+                @media screen and (max-width: 1310px) {
                   display: none;
                 }
               }
@@ -340,13 +344,6 @@
                 overflow: auto;
                 gap: 12px;
               }
-
-              &-range {
-                @include centered-row;
-                @include text-roboto-body-400;
-                color: var(--color-gray-500);
-                margin-left: auto;
-              }
             }
           }
         }
@@ -396,9 +393,8 @@
             @include desktop {
               height: 36px;
 
-              @media only screen and (max-width: 1100px) {
-                font-size: 12px;
-                width: 40px;
+              @media only screen and (max-width: 1240px) {
+                padding-right: 140px;
               }
             }
           }
