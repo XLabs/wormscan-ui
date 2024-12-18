@@ -585,13 +585,16 @@ const Tx = () => {
             observations = await getClient().guardianNetwork.getObservationForTxHash(txHash);
           } else {
             const [a, b, c] = VAAId.split("/");
-            observations = await getClient().guardianNetwork.getObservation({
-              chainId: +a,
-              emmiter: b,
-              specific: {
-                sequence: +c,
+            observations = await getClient().guardianNetwork.getObservation(
+              {
+                chainId: +a,
+                emmiter: b,
+                specific: {
+                  sequence: +c,
+                },
               },
-            });
+              { pageSize: 20, page: 0, sortOrder: Order.ASC },
+            );
           }
 
           if (!!observations?.length) {
