@@ -187,6 +187,7 @@ export const chainsSupportedByProtocol: Record<string, ChainId[]> = {
     chainToChainId("Optimism"),
     chainToChainId("Polygon"),
     chainToChainId("Solana"),
+    chainToChainId("Sui"),
   ],
   [CONNECT_APP_ID]: [
     chainToChainId("Aptos"),
