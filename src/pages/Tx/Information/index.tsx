@@ -169,6 +169,8 @@ const Information = ({
   const fromChain = (isGatewaySource ? gatewayInfo?.originChainId : fromChainOrig) as ChainId;
   const toChain: ChainId = parsedPayload?.["gateway_transfer"]?.chain
     ? chainToChainId(parsedPayload?.["gateway_transfer"].chain)
+      ? chainToChainId(parsedPayload?.["gateway_transfer"].chain)
+      : parsedPayload?.["gateway_transfer"].chain
     : stdToChain || data?.targetChain?.chainId || 0;
 
   const parsedOriginAddress = isGatewaySource
