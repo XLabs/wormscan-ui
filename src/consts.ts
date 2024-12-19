@@ -166,6 +166,10 @@ export const canWeGetDestinationTx = ({
     return targetChainsSupportedMainnet[OMNISWAP_APP_ID].includes(targetChain);
   }
 
+  if (appIds?.includes(GATEWAY_APP_ID)) {
+    return targetChainsSupportedMainnet[GATEWAY_APP_ID].includes(targetChain);
+  }
+
   return appIds?.some(appId => {
     const supportedChains =
       network === "Mainnet"
@@ -245,6 +249,7 @@ const targetChainsSupportedMainnet: { [key: string]: ChainId[] } = {
     chainToChainId("Xlayer"),
     chainToChainId("Xpla"),
   ],
+  [GATEWAY_APP_ID]: [],
   [CCTP_APP_ID]: [
     chainToChainId("Arbitrum"),
     chainToChainId("Avalanche"),
