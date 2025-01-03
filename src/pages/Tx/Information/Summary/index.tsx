@@ -55,14 +55,14 @@ const Summary = ({
       />
 
       <div className="tx-information-summary-info">
-        {status !== "completed" && (
+        {/* {status !== "completed" && (
           <GetRedeem
             canTryToGetRedeem={canTryToGetRedeem}
             foundRedeem={foundRedeem}
             getRedeem={getRedeem}
             loadingRedeem={loadingRedeem}
           />
-        )}
+        )} */}
 
         {showVerifyRedemption && (
           <VerifyRedemption
