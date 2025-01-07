@@ -149,7 +149,7 @@ const Information = ({
               : [
                   ...columns,
                   {
-                    Header: "VIEW DETAILS",
+                    Header: "View Details",
                     accessor: "viewDetails",
                   },
                 ]

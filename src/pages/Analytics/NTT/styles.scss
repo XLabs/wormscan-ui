@@ -103,7 +103,7 @@
     &-table {
       overflow-x: auto;
 
-      & td:nth-child(2) {
+      & td:nth-child(6) {
         border: none;
         position: absolute;
         top: 0;
@@ -140,128 +140,12 @@
           gap: 0 12px;
         }
 
-        & .price-variation {
-          @include centered-row;
-          justify-content: flex-end;
-
-          @include desktop {
-            width: 152px;
-          }
-
-          &-container {
-            @include text-heading6;
-            align-items: center;
-            border-radius: 12px;
-            color: var(--color-gray-400);
-            display: flex;
-            max-width: max-content;
-            padding: 2px 8px;
-
-            &.negative {
-              background-color: var(--color-error-15);
-              color: var(--color-error-100);
-            }
-
-            &.positive {
-              background-color: var(--color-success-10);
-              color: var(--color-success-100);
-
-              & svg {
-                transform: rotate(180deg);
-              }
-            }
-
-            & svg {
-              margin-right: 8px;
-            }
-          }
-        }
-
         &.view-details {
           & > a {
             @include button-secondary;
             justify-content: center;
             width: 100%;
           }
-        }
-      }
-    }
-
-    &-mobile-filters {
-      @include centered-column;
-      background-color: var(--color-gray-950);
-      border-radius: 40px 40px 0 0;
-      border: 1px solid var(--color-gray-900);
-      border-bottom: none;
-      display: flex;
-      gap: 16px;
-      inset: 120vh 0 0 0;
-      justify-content: flex-start;
-      padding: 20px;
-      position: fixed;
-      transition: inset 0.3s ease;
-      width: 100%;
-      z-index: 99;
-
-      @include desktop {
-        display: none;
-      }
-
-      &.open {
-        inset: max(16px, calc(100% - 472px)) 0 0 0;
-      }
-
-      &-top {
-        @include centered-row;
-        @include text-roboto-subheading-500;
-        justify-content: center;
-
-        &-btn {
-          @include button-secondary;
-          height: 24px;
-          padding: 0;
-          width: 24px;
-          position: absolute;
-          right: 20px;
-          top: 20px;
-        }
-      }
-
-      &-select {
-        height: 48px;
-
-        & > .select__control {
-          height: inherit;
-          justify-content: space-between;
-        }
-      }
-
-      &-btns {
-        @include centered-column;
-        gap: 16px;
-        margin-top: auto;
-
-        &-apply {
-          @include button-primary;
-          height: 48px;
-          justify-content: center;
-        }
-
-        &-reset {
-          @include button-ghost;
-          height: 48px;
-          justify-content: center;
-        }
-      }
-
-      &-overlay {
-        background-color: var(--color-black-50);
-        inset: 0;
-        position: fixed;
-        z-index: 88;
-
-        @include desktop {
-          display: none;
         }
       }
     }
