@@ -167,7 +167,7 @@ export const canWeGetDestinationTx = ({
   }
 
   if (appIds?.includes(GATEWAY_APP_ID)) {
-    return targetChainsSupportedMainnet[GATEWAY_APP_ID].includes(targetChain);
+    return targetChainsSupportedMainnet[PORTAL_APP_ID].includes(targetChain);
   }
 
   return appIds?.some(appId => {
@@ -385,6 +385,7 @@ const targetChainsSupportedTestnet: { [key: string]: ChainId[] } = {
     chainToChainId("MonadDevnet"),
     chainToChainId("Worldchain"),
   ],
+  [GATEWAY_APP_ID]: [],
   [CCTP_APP_ID]: [
     chainToChainId("Sepolia"),
     chainToChainId("PolygonSepolia"),
