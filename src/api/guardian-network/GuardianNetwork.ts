@@ -358,7 +358,9 @@ export class GuardianNetwork {
   }
 
   async getObservationForTxHash(txHash: string): Promise<Observation[]> {
-    const payload = await this._client.doGet<[]>(`/observations?txHash=${txHash}`);
+    const payload = await this._client.doGet<[]>(
+      `/observations?txHash=${txHash}&pageSize=20&page=0&sortOrder=ASC`,
+    );
     return payload || [];
   }
 

@@ -34,6 +34,8 @@ import { getChainName } from "src/utils/wormhole";
 import {
   getAlgorandTokenInfo,
   getSolanaCctp,
+  getSuiCctp,
+  ISolanaSuiCctpResponse,
   tryGetAddressInfo,
   tryGetWrappedToken,
 } from "src/utils/cryptoToolkit";
@@ -323,8 +325,18 @@ const Tx = () => {
         }
         // second error, if hash is solana-like, check if its manual cctp
         if (errCount === 1 && canBeSolanaTxHash) {
-          getSolanaCctp(network, txHash)
-            .then(resp => {
+          Promise.all([
+            getSolanaCctp(network, txHash).catch(() => null),
+            getSuiCctp(network, txHash).catch(() => null),
+          ]).then(([solanaResp, suiResp]) => {
+            const resp: ISolanaSuiCctpResponse = solanaResp || suiResp;
+            const chain = solanaResp
+              ? chainToChainId("Solana")
+              : suiResp
+              ? chainToChainId("Sui")
+              : null;
+
+            if (resp && chain) {
               cancelRequests.current = true;
               const toChain = getCctpDomain(resp.destinationDomain);
 
@@ -334,7 +346,7 @@ const Tx = () => {
                     hex: resp.contractAddress,
                     native: resp.contractAddress,
                   },
-                  emitterChain: 1,
+                  emitterChain: chain,
                   id: null,
                   content: {
                     payload: null,
@@ -343,13 +355,13 @@ const Tx = () => {
                       appIds: [CCTP_MANUAL_APP_ID],
                       fee: "0",
                       feeAddress: "",
-                      feeChain: 1,
+                      feeChain: chain,
                       fromAddress: resp.sourceAddress,
-                      fromChain: 1,
+                      fromChain: chain,
                       toAddress: resp.targetAddress,
                       toChain: toChain,
                       tokenAddress: resp.sourceTokenAddress,
-                      tokenChain: 1,
+                      tokenChain: chain,
                       overwriteTargetTokenAddress: getUsdcAddress(network, toChain),
                       overwriteTargetTokenChain: toChain,
                     },
@@ -362,7 +374,7 @@ const Tx = () => {
                   status: "external_tx",
                   sequence: "",
                   sourceChain: {
-                    chainId: 1,
+                    chainId: chain,
                     timestamp: new Date(resp.timestamp),
                     from: resp.sourceAddress,
                     status: undefined,
@@ -377,8 +389,10 @@ const Tx = () => {
 
               setErrorCode(undefined);
               setIsLoading(false);
-            })
-            .catch(() => (cancelRequests.current = false));
+            } else {
+              cancelRequests.current = false;
+            }
+          });
         }
 
         if (errCount === 2) {
@@ -571,13 +585,16 @@ const Tx = () => {
             observations = await getClient().guardianNetwork.getObservationForTxHash(txHash);
           } else {
             const [a, b, c] = VAAId.split("/");
-            observations = await getClient().guardianNetwork.getObservation({
-              chainId: +a,
-              emmiter: b,
-              specific: {
-                sequence: +c,
+            observations = await getClient().guardianNetwork.getObservation(
+              {
+                chainId: +a,
+                emmiter: b,
+                specific: {
+                  sequence: +c,
+                },
               },
-            });
+              { pageSize: 20, page: 0, sortOrder: Order.ASC },
+            );
           }
 
           if (!!observations?.length) {
