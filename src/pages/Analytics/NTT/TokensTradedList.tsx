@@ -38,7 +38,7 @@ export const TokensTradedList = ({ data, isLoading, isError }: Props) => {
             emptyMessage="There are no transactions."
             isLoading={isLoading}
             defaultSortBy={{
-              id: "volume",
+              id: "fullyDilutedValuation",
               desc: true,
             }}
             onRowClick={v => {

@@ -57,11 +57,11 @@ const NTT = () => {
         .map(item => ({
           coingecko_id: item.coingecko_id,
           symbol: item.symbol,
-          priceNumber: +item.price,
-          circulatingSupplyNumber: +item.circulating_supply,
-          volumeNumber: +item.volume_24h,
-          tvtNumber: +item.total_value_transferred,
           fullyDilutedNumber: +item.fully_diluted_valuation,
+          circulatingSupplyNumber: +item.circulating_supply,
+          tvtNumber: +item.total_value_transferred,
+          volumeNumber: +item.volume_24h,
+          priceNumber: +item.price,
           token: (
             <div className="ntt-page-tokens-list-table-item token">
               <img
@@ -75,16 +75,6 @@ const NTT = () => {
               {item.symbol}
             </div>
           ),
-          tvt: (
-            <div className="ntt-page-tokens-list-table-item">
-              <h4>TOTAL VALUE TRANSFERRED</h4>${formatNumber(+item.total_value_transferred, 0)}
-            </div>
-          ),
-          volume: (
-            <div className="ntt-page-tokens-list-table-item volume">
-              <h4>24H VOLUME</h4>${formatNumber(+item.volume_24h, 0)}
-            </div>
-          ),
           fullyDilutedValuation: (
             <div className="ntt-page-tokens-list-table-item">
               <h4>FULLY DILUTED VALUATION</h4>${formatNumber(+item.fully_diluted_valuation, 0)}
@@ -94,6 +84,16 @@ const NTT = () => {
             <div className="ntt-page-tokens-list-table-item">
               <h4>CIRCULATING SUPPLY</h4>
               {formatNumber(+item.circulating_supply, 0)}
+            </div>
+          ),
+          tvt: (
+            <div className="ntt-page-tokens-list-table-item">
+              <h4>TOTAL VALUE TRANSFERRED</h4>${formatNumber(+item.total_value_transferred, 0)}
+            </div>
+          ),
+          volume: (
+            <div className="ntt-page-tokens-list-table-item volume">
+              <h4>24H VOLUME</h4>${formatNumber(+item.volume_24h, 0)}
             </div>
           ),
           price: (
