@@ -29,8 +29,6 @@ const sortByNumber = (key: keyof IRowToken) => (rowA: Row<IRowToken>, rowB: Row<
 
 export const COLUMNS_NTT: Column<IRowToken>[] | any = [
   { Header: "Token", accessor: "token", sortType: sortBySymbol },
-  { Header: "Total Value Transferred", accessor: "tvt", sortType: sortByNumber("tvtNumber") },
-  { Header: "24h Volume", accessor: "volume", sortType: sortByNumber("volumeNumber") },
   {
     Header: "Fully Diluted Valuation",
     accessor: "fullyDilutedValuation",
@@ -41,5 +39,7 @@ export const COLUMNS_NTT: Column<IRowToken>[] | any = [
     accessor: "circulatingSupply",
     sortType: sortByNumber("circulatingSupplyNumber"),
   },
+  { Header: "Total Value Transferred", accessor: "tvt", sortType: sortByNumber("tvtNumber") },
+  { Header: "24h Volume", accessor: "volume", sortType: sortByNumber("volumeNumber") },
   { Header: "Price", accessor: "price", sortType: sortByNumber("priceNumber") },
 ];
