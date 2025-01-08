@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect } from "react";
+import { CSSProperties, Fragment, useEffect, useState } from "react";
 import {
   useTable,
   Column,
@@ -8,22 +8,24 @@ import {
   UseSortByOptions,
   TableInstance,
 } from "react-table";
-import { SortByIcon } from "src/icons/generic";
-import "./styles.scss";
+import { CrossIcon, FilterListIcon, SortByIcon } from "src/icons/generic";
 import analytics from "src/analytics";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { Select } from "src/components/atoms";
+import { useLockBodyScroll, useWindowSize } from "src/utils/hooks";
+import { BREAKPOINTS } from "src/consts";
+import "./styles.scss";
 
 type Props<T extends object> = {
   className?: string;
   columns: Column<T>[];
   data: T[];
+  defaultSortBy?: { id: string; desc: boolean };
   emptyMessage?: string | JSX.Element;
-  hasSort?: boolean;
   isLoading?: boolean;
   numberOfColumns?: number;
   numberOfRows?: number;
   onRowClick?: (row: any) => void;
-  sortBy?: { id: string; desc: boolean }[];
   trackTxsSortBy?: boolean;
 };
 
@@ -35,16 +37,19 @@ const Table = <T extends object>({
   className,
   columns,
   data,
+  defaultSortBy,
   emptyMessage = "No items found.",
-  hasSort = false,
   isLoading = false,
   numberOfColumns = 7,
   numberOfRows = 50,
   onRowClick,
-  sortBy = [],
   trackTxsSortBy = false,
 }: Props<T>) => {
   const { environment } = useEnvironment();
+  const [openSortBy, setOpenSortBy] = useState(false);
+  const [currentSortBy, setCurrentSortBy] = useState(defaultSortBy);
+  const { width } = useWindowSize();
+  const isDesktop = width >= BREAKPOINTS.desktop;
 
   const {
     getTableProps,
@@ -57,23 +62,155 @@ const Table = <T extends object>({
     {
       columns,
       data,
-      initialState: { sortBy } as Partial<TableState<T>>,
+      initialState: { sortBy: defaultSortBy ? [defaultSortBy] : [] } as Partial<TableState<T>>,
       disableSortRemove: true,
     } as UseTableOptions<T> & UseSortByOptions<T>,
     useSortBy,
   );
 
   useEffect(() => {
-    if (sortBy.length > 0) {
-      setSortBy(sortBy);
+    const sortedColumn = headerGroups.flatMap(group =>
+      // @ts-expect-error Property 'isSorted' exists at runtime but TypeScript doesn't know about it
+      group.headers.filter(col => col.isSorted),
+    )[0];
+
+    if (sortedColumn) {
+      setCurrentSortBy({
+        id: sortedColumn.id,
+        // @ts-expect-error Property 'isSortedDesc' exists at runtime but TypeScript doesn't know about it
+        desc: sortedColumn.isSortedDesc || false,
+      });
     }
-  }, [sortBy, setSortBy, environment.network]);
+  }, [headerGroups]);
+
+  const handleReset = () => {
+    setSortBy([defaultSortBy]);
+    setCurrentSortBy(defaultSortBy);
+    setOpenSortBy(false);
+  };
+
+  useLockBodyScroll({ isLocked: !isDesktop && openSortBy });
 
   return (
     <>
+      {defaultSortBy && (
+        <>
+          <div
+            className={`table-mobile-filters-overlay ${openSortBy ? "open" : ""}`}
+            onClick={() => setOpenSortBy(false)}
+          />
+
+          <button
+            aria-expanded={openSortBy}
+            aria-label="Sort by"
+            className="table-sort-by-btn"
+            onClick={() => setOpenSortBy(!openSortBy)}
+          >
+            <FilterListIcon width={24} />
+          </button>
+
+          <div className={`table-mobile-filters ${openSortBy ? "open" : ""}`}>
+            <div className="table-mobile-filters-top">
+              <h4>Sort by</h4>
+              <button
+                className="table-mobile-filters-top-btn"
+                onClick={() => setOpenSortBy(false)}
+                aria-label="Close sort options"
+              >
+                <CrossIcon width={24} />
+              </button>
+            </div>
+
+            {headerGroups.map((headerGroup, index) => {
+              return (
+                <Fragment key={index}>
+                  <Select
+                    ariaLabel="Sort column"
+                    className="table-mobile-filters-select"
+                    items={headerGroup.headers
+                      .filter(
+                        (column: any) => column.render("Header").toString() !== "View Details",
+                      )
+                      .map((column: any) => ({
+                        value: column.id,
+                        label: column.render("Header").toString(),
+                      }))}
+                    menuFixed
+                    menuListStyles={{ maxHeight: "unset" }}
+                    name="Sort column"
+                    onValueChange={selected => {
+                      const selectedColumn = headerGroup.headers.find(
+                        (col: any) => col.id === selected.value,
+                      );
+
+                      if (selectedColumn) {
+                        setCurrentSortBy(prev => ({
+                          id: selected.value,
+                          desc: prev.desc,
+                        }));
+                        // @ts-expect-error Property 'toggleSortBy' exists at runtime but TypeScript doesn't know about it
+                        selectedColumn.toggleSortBy(currentSortBy.desc);
+                      }
+                    }}
+                    optionStyles={{ padding: 16 }}
+                    value={{
+                      value: currentSortBy.id,
+                      label:
+                        headerGroup.headers
+                          .find((column: any) => column.id === currentSortBy.id)
+                          ?.render("Header") || "Sort",
+                    }}
+                  />
+
+                  <Select
+                    ariaLabel="Sort order"
+                    className="table-mobile-filters-select"
+                    items={[
+                      { value: false, label: "Low to High" },
+                      { value: true, label: "High to Low" },
+                    ]}
+                    menuFixed
+                    menuListStyles={{ maxHeight: "unset" }}
+                    name="Sort order"
+                    onValueChange={selected => {
+                      setCurrentSortBy(prev => ({ ...prev, desc: selected.value }));
+
+                      const column = headerGroup.headers.find(
+                        (col: any) => col.id === currentSortBy.id,
+                      );
+                      if (column) {
+                        // @ts-expect-error Property 'toggleSortBy' exists at runtime but TypeScript doesn't know about it
+                        column.toggleSortBy(selected.value);
+                      }
+                    }}
+                    optionStyles={{ padding: 16 }}
+                    value={{
+                      value: currentSortBy.desc,
+                      label: currentSortBy.desc ? "High to Low" : "Low to High",
+                    }}
+                  />
+                </Fragment>
+              );
+            })}
+
+            <div className="table-mobile-filters-btns">
+              <button
+                className="table-mobile-filters-btns-apply"
+                onClick={() => setOpenSortBy(false)}
+              >
+                Apply
+              </button>
+              <button className="table-mobile-filters-btns-reset" onClick={handleReset}>
+                Reset
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
       <table
         {...getTableProps()}
-        className={`table ${hasSort ? "table-sortable" : ""} ${
+        className={`table ${defaultSortBy ? "table-sortable" : ""} ${
           onRowClick ? "table-clickable" : ""
         } ${className}`}
       >
@@ -86,7 +223,6 @@ const Table = <T extends object>({
                 if (trackTxsSortBy) {
                   setTimeout(() => {
                     const sortedColumn = headerGroup.headers.find((header: any) => header.isSorted);
-
                     analytics.track("txsSortBy", {
                       network: environment.network,
                       selected: sortedColumn?.id,
@@ -99,7 +235,7 @@ const Table = <T extends object>({
             >
               {headerGroup.headers.map((column: any, index) => {
                 const style: CSSProperties = column.style as CSSProperties;
-                const sortIcon = hasSort && (
+                const sortIcon = defaultSortBy && (
                   <span className="table-head-th-container-arrow">
                     <SortByIcon
                       sortBy={column.isSorted ? (column.isSortedDesc ? "DSC" : "ASC") : null}
@@ -110,14 +246,14 @@ const Table = <T extends object>({
                 return (
                   <th
                     key={index}
-                    {...column.getHeaderProps(hasSort ? column.getSortByToggleProps() : {})}
+                    {...column.getHeaderProps(defaultSortBy ? column.getSortByToggleProps() : {})}
                     style={{
                       ...style,
                       color: column.isSorted ? "var(--color-white)" : "var(--color-gray-400)",
                     }}
                   >
                     <div className="table-head-th-container">
-                      {column.render("Header")}
+                      {column.render("Header")} {column?.Tooltip && column.Tooltip}
                       {sortIcon}
                     </div>
                   </th>

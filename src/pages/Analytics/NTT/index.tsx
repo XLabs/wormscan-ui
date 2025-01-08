@@ -58,10 +58,10 @@ const NTT = () => {
           coingecko_id: item.coingecko_id,
           symbol: item.symbol,
           priceNumber: +item.price,
-          priceVariationNumber: +item.price_change_percentage_24h,
           circulatingSupplyNumber: +item.circulating_supply,
-          marketCapNumber: +item.market_cap,
           volumeNumber: +item.volume_24h,
+          tvtNumber: +item.total_value_transferred,
+          fullyDilutedNumber: +item.fully_diluted_valuation,
           token: (
             <div className="ntt-page-tokens-list-table-item token">
               <img
@@ -75,28 +75,19 @@ const NTT = () => {
               {item.symbol}
             </div>
           ),
-          price: (
+          tvt: (
             <div className="ntt-page-tokens-list-table-item">
-              ${formatNumber(+(+item.price).toFixed(4))}
+              <h4>TOTAL VALUE TRANSFERRED</h4>${formatNumber(+item.total_value_transferred, 0)}
             </div>
           ),
-          priceVariation: (
+          volume: (
+            <div className="ntt-page-tokens-list-table-item volume">
+              <h4>24H VOLUME</h4>${formatNumber(+item.volume_24h, 0)}
+            </div>
+          ),
+          fullyDilutedValuation: (
             <div className="ntt-page-tokens-list-table-item">
-              <h4>24H PRICE VARIATION</h4>
-              <div className="price-variation">
-                <div
-                  className={`price-variation-container ${
-                    item.price_change_percentage_24h
-                      ? +item.price_change_percentage_24h > 0
-                        ? "positive"
-                        : "negative"
-                      : ""
-                  }`}
-                >
-                  {+item.price_change_percentage_24h > 0 && "+"}
-                  {formatNumber(+item.price_change_percentage_24h, 2)}%
-                </div>
-              </div>
+              <h4>FULLY DILUTED VALUATION</h4>${formatNumber(+item.fully_diluted_valuation, 0)}
             </div>
           ),
           circulatingSupply: (
@@ -105,14 +96,9 @@ const NTT = () => {
               {formatNumber(+item.circulating_supply, 0)}
             </div>
           ),
-          marketCap: (
+          price: (
             <div className="ntt-page-tokens-list-table-item">
-              <h4>MARKET CAP</h4>${formatNumber(+item.market_cap, 0)}
-            </div>
-          ),
-          volume: (
-            <div className="ntt-page-tokens-list-table-item volume">
-              <h4>24H VOLUME</h4>${formatNumber(+item.volume_24h, 0)}
+              ${formatNumber(+(+item.price).toFixed(4))}
             </div>
           ),
           viewDetails: (

@@ -63,10 +63,12 @@ const NTTToken = () => {
 
   const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(
     ["getLimit"],
-    () => {
-      return getClient()
-        .governor.getLimit()
-        .catch(() => null);
+    async () => {
+      try {
+        return await getClient().governor.getLimit();
+      } catch {
+        return null;
+      }
     },
     {
       enabled: isMainnet,

@@ -212,7 +212,7 @@ export const RecentTransactions = ({
               : [
                   ...columnsRecentTransactions,
                   {
-                    Header: "VIEW DETAILS",
+                    Header: "View Details",
                     accessor: "viewDetails",
                   },
                 ]

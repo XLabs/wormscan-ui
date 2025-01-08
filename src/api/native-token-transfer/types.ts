@@ -99,6 +99,7 @@ export type GetListResult = {
   price_change_percentage_24h: string;
   volume_24h: string;
   total_value_locked: string;
+  total_value_transferred: string;
   market_cap: string;
   circulating_supply: string;
   image: {

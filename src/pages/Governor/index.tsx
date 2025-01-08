@@ -9,7 +9,6 @@ import {
   BlockchainIcon,
   GovernorHeader,
   NavLink,
-  Select,
   ToggleGroup,
   Tooltip,
 } from "src/components/atoms";
@@ -26,14 +25,9 @@ import {
   IDataTransaction,
   IRowDashboard,
   IRowTransaction,
-  ISelectSortBy,
-  ISelectSortLowHigh,
   MinRemainingBar,
   RemainingTxLimitTooltip,
   SingleTxLimitTooltip,
-  SORT_DASHBOARD_BY_LIST,
-  SORT_LOW_HIGH_LIST,
-  SORT_TRANSACTIONS_BY_LIST,
 } from "src/utils/governorUtils";
 import { ChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
@@ -76,15 +70,6 @@ const Governor = () => {
   const [dataDashboard, setDataDashboard] = useState([]);
   const [dataTransactions, setDataTransactions] = useState([]);
   const [openSortBy, setOpenSortBy] = useState(false);
-  const [selectedSortBy, setSelectedSortBy] = useState(
-    showTransactions ? SORT_TRANSACTIONS_BY_LIST[4] : SORT_DASHBOARD_BY_LIST[2],
-  );
-  const [selectedSortLowHigh, setSelectedSortLowHigh] = useState(
-    showTransactions ? SORT_LOW_HIGH_LIST[0] : SORT_LOW_HIGH_LIST[1],
-  );
-  const [sortBy, setSortBy] = useState<{ id: string; desc: boolean }[]>([
-    { id: selectedSortBy.value, desc: selectedSortLowHigh.value },
-  ]);
   const { environment } = useEnvironment();
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "Mainnet";
@@ -92,26 +77,6 @@ const Governor = () => {
   const isDesktop = width >= BREAKPOINTS.desktop;
   const navigate = useNavigateCustom();
   useLockBodyScroll({ isLocked: !isDesktop && openSortBy });
-
-  const handleSelectedSortBy = (value: ISelectSortBy) => {
-    setSelectedSortBy(value);
-    setSortBy([{ id: value.value, desc: selectedSortLowHigh.value }]);
-    analytics.track("txsSortBy", {
-      network: currentNetwork,
-      selected: value.value,
-      selectedType: selectedSortLowHigh.value ? "desc" : "asc",
-    });
-  };
-
-  const handleSelectedSortLowHigh = (value: ISelectSortLowHigh) => {
-    setSelectedSortLowHigh(value);
-    setSortBy([{ id: selectedSortBy.value, desc: value.value }]);
-    analytics.track("txsSortBy", {
-      network: currentNetwork,
-      selected: selectedSortBy.value,
-      selectedType: value.value ? "desc" : "asc",
-    });
-  };
 
   const onRowClick = (row: IRowTransaction) => {
     if (isDesktop) {
@@ -324,19 +289,6 @@ const Governor = () => {
     enabled: showTransactions && isLoadingTransactions && dataDashboard?.length > 0,
   });
 
-  const handleReset = (showTxs: boolean) => {
-    if (showTxs) {
-      setSelectedSortBy(SORT_TRANSACTIONS_BY_LIST[4]);
-      setSelectedSortLowHigh(SORT_LOW_HIGH_LIST[0]);
-      setSortBy([{ id: SORT_TRANSACTIONS_BY_LIST[4].value, desc: false }]);
-    } else {
-      setSelectedSortBy(SORT_DASHBOARD_BY_LIST[2]);
-      setSelectedSortLowHigh(SORT_LOW_HIGH_LIST[1]);
-      setSortBy([{ id: SORT_DASHBOARD_BY_LIST[2].value, desc: true }]);
-    }
-    setOpenSortBy(false);
-  };
-
   return (
     <BaseLayout>
       <section className="governor">
@@ -357,18 +309,9 @@ const Governor = () => {
                 ]}
                 onValueChange={value => {
                   setShowTransactions(value === "txs");
-                  handleReset(value === "txs");
                 }}
                 value={showTransactions ? "txs" : "dashboard"}
               />
-
-              <button
-                className="sort-by-btn"
-                aria-label="Sort by"
-                onClick={() => setOpenSortBy(!openSortBy)}
-              >
-                <FilterListIcon width={24} />
-              </button>
             </div>
           </div>
 
@@ -386,16 +329,15 @@ const Governor = () => {
                       : [
                           ...columnsTransactions,
                           {
-                            Header: "VIEW DETAILS",
+                            Header: "View Details",
                             accessor: "viewDetails",
                           },
                         ]
                   }
                   data={dataTransactions}
                   emptyMessage="There are no transactions queued in the governors."
-                  hasSort={true}
+                  defaultSortBy={{ id: "releaseTime", desc: false }}
                   isLoading={isLoadingTransactions}
-                  sortBy={sortBy}
                   onRowClick={onRowClick}
                 />
               )
@@ -409,76 +351,13 @@ const Governor = () => {
                 columns={columnsDashboard}
                 data={dataDashboard}
                 emptyMessage="There is no data to display."
-                hasSort={true}
+                defaultSortBy={{ id: "dailyLimit", desc: true }}
                 isLoading={isLoadingDashboard}
-                sortBy={sortBy}
                 trackTxsSortBy={true}
               />
             )}
           </div>
         </div>
-
-        <div
-          className={`governor-mobile-filters ${
-            openSortBy ? (showTransactions ? "open-txs" : "open-dashboard") : ""
-          }`}
-        >
-          <div className="governor-mobile-filters-top">
-            <h4>Sort by</h4>
-
-            <button
-              className="governor-mobile-filters-top-btn"
-              onClick={() => setOpenSortBy(false)}
-            >
-              <CrossIcon width={24} />
-            </button>
-          </div>
-
-          <Select
-            ariaLabel="Select sort by"
-            className="governor-mobile-filters-select"
-            items={showTransactions ? SORT_TRANSACTIONS_BY_LIST : SORT_DASHBOARD_BY_LIST}
-            menuFixed={true}
-            name="topAssetTimeRange"
-            onValueChange={(value: ISelectSortBy) => handleSelectedSortBy(value)}
-            optionStyles={{ padding: 16 }}
-            value={selectedSortBy}
-          />
-
-          <Select
-            ariaLabel="Select sort low to high"
-            className="governor-mobile-filters-select"
-            items={SORT_LOW_HIGH_LIST}
-            menuFixed={true}
-            name="topAssetTimeRange"
-            onValueChange={(value: ISelectSortLowHigh) => handleSelectedSortLowHigh(value)}
-            optionStyles={{ padding: 16 }}
-            value={selectedSortLowHigh}
-          />
-
-          <div className="governor-mobile-filters-btns">
-            <button
-              className="governor-mobile-filters-btns-apply"
-              onClick={() => setOpenSortBy(false)}
-            >
-              Apply
-            </button>
-
-            <button
-              className="governor-mobile-filters-btns-reset"
-              onClick={() => handleReset(showTransactions)}
-            >
-              Reset
-            </button>
-          </div>
-        </div>
-
-        {openSortBy && (
-          <div
-            className="governor-mobile-filters-overlay"
-            onClick={() => setOpenSortBy(false)}
-          ></div>
-        )}
       </section>
     </BaseLayout>
   );
