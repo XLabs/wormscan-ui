@@ -77,10 +77,7 @@ const NTT = () => {
           ),
           tvt: (
             <div className="ntt-page-tokens-list-table-item">
-              <h4>TOTAL VALUE TRANSFERRED</h4>
-              {item?.total_value_transferred
-                ? `$${formatNumber(+item.total_value_transferred, 0)}`
-                : "-"}
+              <h4>TOTAL VALUE TRANSFERRED</h4>${formatNumber(+item.total_value_transferred, 0)}
             </div>
           ),
           volume: (

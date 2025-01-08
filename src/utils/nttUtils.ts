@@ -1,18 +1,20 @@
 import { Column, Row } from "react-table";
 
 export interface IRowToken {
-  coingecko_id: string;
   symbol: string;
-  priceNumber: number;
-  circulatingSupplyNumber: number;
-  volumeNumber: number;
-  token: React.ReactNode;
-  price: React.ReactNode;
-  circulatingSupply: React.ReactNode;
-  volume: React.ReactNode;
-  viewDetails: React.ReactNode;
-  fullyDilutedNumber: number;
+  coingecko_id: string;
   tvtNumber: number;
+  volumeNumber: number;
+  circulatingSupplyNumber: number;
+  fullyDilutedNumber: number;
+  priceNumber: number;
+  token: React.ReactNode;
+  tvt: React.ReactNode;
+  volume: React.ReactNode;
+  circulatingSupply: React.ReactNode;
+  fullyDilutedValuation: React.ReactNode;
+  price: React.ReactNode;
+  viewDetails: React.ReactNode;
 }
 
 const sortBySymbol = (rowA: Row<IRowToken>, rowB: Row<IRowToken>) => {

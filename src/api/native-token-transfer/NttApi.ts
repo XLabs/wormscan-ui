@@ -59,6 +59,11 @@ export class NttApi {
 
     const tokenListWithFallback = await Promise.all(
       tokenListResponse.map(async item => {
+        if (!item?.total_value_transferred) {
+          const summary = await this.getNttTVT({ coingecko_id: item.coingecko_id });
+          item.total_value_transferred = summary.totalValueTokenTransferred || "0";
+        }
+
         if (item.circulating_supply === "0" || item.market_cap === "0") {
           const symbol = item.symbol.toUpperCase();
 
@@ -74,8 +79,6 @@ export class NttApi {
             coinMarketCapTokenInfo?.data[symbol]?.[0]?.self_reported_market_cap ||
             coinMarketCapTokenInfo?.data[symbol]?.[0]?.quote?.USD?.market_cap ||
             0;
-
-          return item;
         }
 
         return item;
@@ -83,6 +86,17 @@ export class NttApi {
     );
 
     return tokenListWithFallback;
+  }
+
+  async getNttTVT({ coingecko_id }: GetSummary): Promise<{ totalValueTokenTransferred: string }> {
+    const summaryResponse = await this._client.doGet<GetSummaryResult>(
+      "/native-token-transfer/summary",
+      {
+        coingecko_id,
+      },
+    );
+
+    return { totalValueTokenTransferred: summaryResponse.totalValueTokenTransferred };
   }
 
   async getNttSummary({ coingecko_id }: GetSummary): Promise<GetSummaryResult> {
