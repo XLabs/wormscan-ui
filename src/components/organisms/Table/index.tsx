@@ -86,6 +86,7 @@ const Table = <T extends object>({
   const handleReset = () => {
     setSortBy([defaultSortBy]);
     setCurrentSortBy(defaultSortBy);
+    setOpenSortBy(false);
   };
 
   useLockBodyScroll({ isLocked: !isDesktop && openSortBy });
