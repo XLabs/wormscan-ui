@@ -1,5 +1,4 @@
 export const formatNumber = (value: number, decimals?: number) => {
-  console.log(value, decimals);
   if (isNaN(value)) {
     return "-";
   }
