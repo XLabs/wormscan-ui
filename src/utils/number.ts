@@ -1,4 +1,9 @@
 export const formatNumber = (value: number, decimals?: number) => {
+  console.log(value, decimals);
+  if (isNaN(value)) {
+    return "-";
+  }
+
   if (decimals !== undefined) {
     return value.toLocaleString(undefined, {
       minimumFractionDigits: decimals,
