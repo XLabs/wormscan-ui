@@ -40,6 +40,6 @@ export const COLUMNS_NTT: Column<IRowToken>[] | any = [
     sortType: sortByNumber("circulatingSupplyNumber"),
   },
   { Header: "Total Value Transferred", accessor: "tvt", sortType: sortByNumber("tvtNumber") },
-  { Header: "24h Volume", accessor: "volume", sortType: sortByNumber("volumeNumber") },
+  // { Header: "24h Volume", accessor: "volume", sortType: sortByNumber("volumeNumber") },
   { Header: "Price", accessor: "price", sortType: sortByNumber("priceNumber") },
 ];

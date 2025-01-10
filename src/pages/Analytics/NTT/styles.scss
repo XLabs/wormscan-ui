@@ -103,7 +103,7 @@
     &-table {
       overflow-x: auto;
 
-      & td:nth-child(6) {
+      & td:nth-last-child(2) {
         border: none;
         position: absolute;
         top: 0;
