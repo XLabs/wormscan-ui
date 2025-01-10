@@ -54,7 +54,7 @@ const NTT = () => {
           symbol: item.symbol,
           fullyDilutedNumber: +item.fully_diluted_valuation,
           circulatingSupplyNumber: +item.circulating_supply,
-          tvtNumber: +item.total_value_transferred,
+          tvtNumber: +item.total_value_transferred || 0,
           volumeNumber: +item.volume_24h,
           priceNumber: +item.price,
           token: (
