@@ -35,7 +35,8 @@ import {
   getAlgorandTokenInfo,
   getSolanaCctp,
   getSuiCctp,
-  ISolanaSuiCctpResponse,
+  getAptosCctp,
+  IManualCctpResponse,
   tryGetAddressInfo,
   tryGetWrappedToken,
 } from "src/utils/cryptoToolkit";
@@ -311,8 +312,10 @@ const Tx = () => {
         }
       },
       enabled: isTxHashSearch && !errorCode,
-      retryDelay: errCount => 5000 * (errCount + 1),
+      retryDelay: errCount =>
+        errCount === 0 ? 2500 : errCount === 1 || errCount === 2 ? 5000 : 10000,
       retry: errCount => {
+        console.log("retrying!!", { errCount, cancel: cancelRequests.current });
         // if request was cancelled, dont retry
         if (cancelRequests.current) return false;
 
@@ -324,16 +327,33 @@ const Tx = () => {
           setShouldTryToGetRpcInfo(true);
         }
         // second error, if hash is solana-like, check if its manual cctp
-        if (errCount === 1 && canBeSolanaTxHash) {
-          Promise.all([
-            getSolanaCctp(network, txHash).catch(() => null),
-            getSuiCctp(network, txHash).catch(() => null),
-          ]).then(([solanaResp, suiResp]) => {
-            const resp: ISolanaSuiCctpResponse = solanaResp || suiResp;
-            const chain = solanaResp
+        if ((errCount === 1 && canBeSolanaTxHash) || (errCount === 2 && isEvmTxHash)) {
+          (async () => {
+            let solanaResponse: IManualCctpResponse | null;
+            let suiResponse: IManualCctpResponse | null;
+            let aptosResponse: IManualCctpResponse | null;
+
+            if (canBeSolanaTxHash) {
+              solanaResponse = await getSolanaCctp(network, txHash).catch(() => null);
+              suiResponse = solanaResponse
+                ? null
+                : await getSuiCctp(network, txHash).catch(() => null);
+              aptosResponse = null;
+            }
+
+            if (isEvmTxHash) {
+              solanaResponse = null;
+              suiResponse = null;
+              aptosResponse = await getAptosCctp(network, txHash).catch(() => null);
+            }
+
+            const resp: IManualCctpResponse = solanaResponse || suiResponse || aptosResponse;
+            const chain = solanaResponse
               ? chainToChainId("Solana")
-              : suiResp
+              : suiResponse
               ? chainToChainId("Sui")
+              : aptosResponse
+              ? chainToChainId("Aptos")
               : null;
 
             if (resp && chain) {
@@ -392,7 +412,7 @@ const Tx = () => {
             } else {
               cancelRequests.current = false;
             }
-          });
+          })();
         }
 
         if (errCount === 2) {

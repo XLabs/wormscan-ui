@@ -171,7 +171,16 @@ const WORMHOLE_CHAINS: any = {
       if (base === "address")
         return this.explorer?.[network] + "/account/" + value + "?network=" + network;
       if (base === "token")
-        return this.explorer?.[network] + "/token/" + value + "?network=" + network;
+        return (
+          this.explorer?.[network] +
+          (value === "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b" ||
+          value === "0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832" // USDC for CCTP Manual
+            ? "/fungible_asset/"
+            : "/token/") +
+          value +
+          "?network=" +
+          network
+        );
       return this.explorer?.[network] + "/txn/" + value + "?network=" + network;
     },
   },
