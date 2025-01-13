@@ -18,7 +18,7 @@ interface IAlgorandTokenResponse {
   symbol?: string;
 }
 
-export interface ISolanaSuiCctpResponse {
+export interface IManualCctpResponse {
   amount: string;
   contractAddress: string;
   destinationDomain: number;
@@ -194,7 +194,7 @@ export const getSolanaCctp = async (network: Network, txHash: string) => {
       `${BFF_URL}/getSolanaCctp?network=${network}&txHash=${txHash}`,
     );
 
-    const solanaCctpResponse = (await solanaCctpRequest.json()) as ISolanaSuiCctpResponse | null;
+    const solanaCctpResponse = (await solanaCctpRequest.json()) as IManualCctpResponse | null;
     return solanaCctpResponse;
   } catch (e) {
     return null;
@@ -207,8 +207,21 @@ export const getSuiCctp = async (network: Network, txHash: string) => {
       `${BFF_URL}/getSuiCctp?network=${network}&txHash=${txHash}`,
     );
 
-    const suiCctpResponse = (await suiCctpRequest.json()) as ISolanaSuiCctpResponse | null;
+    const suiCctpResponse = (await suiCctpRequest.json()) as IManualCctpResponse | null;
     return suiCctpResponse;
+  } catch (e) {
+    return null;
+  }
+};
+
+export const getAptosCctp = async (network: Network, txHash: string) => {
+  try {
+    const aptosCctpRequest = await fetchWithTimeout(
+      `${BFF_URL}/getAptosCctp?network=${network}&txHash=${txHash}`,
+    );
+
+    const aptosCctpResponse = (await aptosCctpRequest.json()) as IManualCctpResponse | null;
+    return aptosCctpResponse;
   } catch (e) {
     return null;
   }
