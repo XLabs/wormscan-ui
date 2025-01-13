@@ -722,17 +722,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/react@npm:^0.26.2":
-  version: 0.26.25
-  resolution: "@floating-ui/react@npm:0.26.25"
+"@floating-ui/react@npm:^0.27.0":
+  version: 0.27.3
+  resolution: "@floating-ui/react@npm:0.27.3"
   dependencies:
     "@floating-ui/react-dom": ^2.1.2
-    "@floating-ui/utils": ^0.2.8
+    "@floating-ui/utils": ^0.2.9
     tabbable: ^6.0.0
   peerDependencies:
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-  checksum: 1a917862a0649749642e2e8cf3c9dcaad97e8645adca78bcfbaad373f11e47251e7a565c59c92b27955b30f85ebf5e1bfeeb7876c65a971c13fddc3d10b52065
+    react: ">=17.0.0"
+    react-dom: ">=17.0.0"
+  checksum: 34a6283df3ae232546903dcdb69a5d2d13706a7ceb7b3779bb3b9b1ef042ad7241fe5d3899fd7c6713a0e890b86b56285f89a45de4344828877085a262f29713
   languageName: node
   linkType: hard
 
@@ -740,6 +740,13 @@ __metadata:
   version: 0.2.8
   resolution: "@floating-ui/utils@npm:0.2.8"
   checksum: deb98bba017c4e073c7ad5740d4dec33a4d3e0942d412e677ac0504f3dade15a68fc6fd164d43c93c0bb0bcc5dc5015c1f4080dfb1a6161140fe660624f7c875
+  languageName: node
+  linkType: hard
+
+"@floating-ui/utils@npm:^0.2.9":
+  version: 0.2.9
+  resolution: "@floating-ui/utils@npm:0.2.9"
+  checksum: d518b80cec5a323e54a069a1dd99a20f8221a4853ed98ac16c75275a0cc22f75de4f8ac5b121b4f8990bd45da7ad1fb015b9a1e4bac27bb1cd62444af84e9784
   languageName: node
   linkType: hard
 
@@ -3842,14 +3849,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-datepicker@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "@types/react-datepicker@npm:6.2.0"
+"@types/react-datepicker@npm:7.0.0":
+  version: 7.0.0
+  resolution: "@types/react-datepicker@npm:7.0.0"
   dependencies:
-    "@floating-ui/react": ^0.26.2
-    "@types/react": "*"
-    date-fns: ^3.3.1
-  checksum: 3276a99c3df11bf3ac1ced172f5fd95e03f155f7a6c56d4f0d78f9aef7fcf30211347a18f61b5847c28fec936383830d6786997a96d7f344ad48e2fee4827dc1
+    react-datepicker: "*"
+  checksum: b73d822abb0410bf9046e14844304f31e2d680c44a510dd757ef4be4861aa0a8943863ef7c427f361f42a630c982ba39fb1882b9532506a5c89d47fe099a2df1
   languageName: node
   linkType: hard
 
@@ -5455,7 +5460,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clsx@npm:^2.1.0":
+"clsx@npm:^2.1.0, clsx@npm:^2.1.1":
   version: 2.1.1
   resolution: "clsx@npm:2.1.1"
   checksum: acd3e1ab9d8a433ecb3cc2f6a05ab95fe50b4a3cfc5ba47abb6cbf3754585fcb87b84e90c822a1f256c4198e3b41c7f6c391577ffc8678ad587fc0976b24fd57
@@ -5788,7 +5793,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^3.3.1":
+"date-fns@npm:^3.6.0":
   version: 3.6.0
   resolution: "date-fns@npm:3.6.0"
   checksum: 0daa1e9a436cf99f9f2ae9232b55e11f3dd46132bee10987164f3eebd29f245b2e066d7d7db40782627411ecf18551d8f4c9fcdf2226e48bb66545407d448ab7
@@ -9876,19 +9881,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-datepicker@npm:^6.9.0":
-  version: 6.9.0
-  resolution: "react-datepicker@npm:6.9.0"
+"react-datepicker@npm:*, react-datepicker@npm:7.6.0":
+  version: 7.6.0
+  resolution: "react-datepicker@npm:7.6.0"
   dependencies:
-    "@floating-ui/react": ^0.26.2
-    clsx: ^2.1.0
-    date-fns: ^3.3.1
-    prop-types: ^15.7.2
-    react-onclickoutside: ^6.13.0
+    "@floating-ui/react": ^0.27.0
+    clsx: ^2.1.1
+    date-fns: ^3.6.0
   peerDependencies:
-    react: ^16.9.0 || ^17 || ^18
-    react-dom: ^16.9.0 || ^17 || ^18
-  checksum: ca37d16cb3476da3f68d1bc536550439b9f3f31d3b18c441771e6d16ea6064a582e7b722090b520252fc3794791838b52048007861898d056c87757eb5df5493
+    react: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
+    react-dom: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
+  checksum: 45ff4616812ca90401c121b0196fdd481ca55c28d21535fd74f06ee21bbe0edeaa2632dc85d82a58e870559281862a1840164a429f771b8456348c6ce315b4a4
   languageName: node
   linkType: hard
 
@@ -10049,16 +10052,6 @@ __metadata:
   peerDependencies:
     react: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
   checksum: 11f1008199fe192952026b88dd1504e36ac11a518ff5dca505bb350c3048eb1e1fe46e5a600d15d5a891b2e4e83cffc7f603211c2eca40041cfa15e35d6dc633
-  languageName: node
-  linkType: hard
-
-"react-onclickoutside@npm:^6.13.0":
-  version: 6.13.1
-  resolution: "react-onclickoutside@npm:6.13.1"
-  peerDependencies:
-    react: ^15.5.x || ^16.x || ^17.x || ^18.x
-    react-dom: ^15.5.x || ^16.x || ^17.x || ^18.x
-  checksum: 6c5727bfcd6e0ecc1fd83ac865a23382b7784aa54e3d0cb67520a53f9d02a1d312b9493d150fb8fa2f912b6cf4b23b228809c2513096ef6e53c7553162c048c7
   languageName: node
   linkType: hard
 
@@ -12130,7 +12123,7 @@ __metadata:
     "@radix-ui/react-tooltip": 1.0.5
     "@types/node": ^18.13.0
     "@types/react": ^18.0.27
-    "@types/react-datepicker": ^6.2.0
+    "@types/react-datepicker": 7.0.0
     "@types/react-dom": ^18.0.10
     "@types/react-dropzone": ^5.1.0
     "@types/react-table": ^7.7.20
@@ -12161,7 +12154,7 @@ __metadata:
     querystring-es3: ^0.2.1
     react: 18.2.0
     react-apexcharts: ^1.4.1
-    react-datepicker: ^6.9.0
+    react-datepicker: 7.6.0
     react-dom: 18.2.0
     react-draggable: 4.4.5
     react-dropzone: ^14.2.3
