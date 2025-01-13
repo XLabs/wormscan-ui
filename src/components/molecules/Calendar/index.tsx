@@ -133,7 +133,7 @@ const Calendar = ({
           }`}
         >
           <ReactDatePicker
-            {...({ swapRange: true } as any)}
+            swapRange
             selected={startDate}
             onChange={(dates: [Date | null, Date | null]) => {
               const [start, end] = dates;
@@ -166,6 +166,7 @@ const Calendar = ({
             monthsShown={isDesktop ? 2 : 1}
             showMonthDropdown
             showYearDropdown
+            focusSelectedMonth
           />
 
           <div className="calendar-custom-box-date-calendar-btns">
