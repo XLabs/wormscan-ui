@@ -315,7 +315,6 @@ const Tx = () => {
       retryDelay: errCount =>
         errCount === 0 ? 2500 : errCount === 1 || errCount === 2 ? 5000 : 10000,
       retry: errCount => {
-        console.log("retrying!!", { errCount, cancel: cancelRequests.current });
         // if request was cancelled, dont retry
         if (cancelRequests.current) return false;
 
