@@ -529,6 +529,8 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             ? mintRecipient
             : toChain === chainToChainId("Solana")
             ? hexToBase58(mintRecipient)
+            : toChain === chainToChainId("Aptos")
+            ? mintRecipient
             : "0x" + mintRecipient.substring(26);
 
         return {
@@ -570,23 +572,6 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
 }
 
 // CCTP UTILS -----
-interface CircleRelayerPayload {
-  amount: string;
-  appIds: Array<string>;
-  feeAmount: string;
-  fromAddressBytes: Buffer;
-  fromDomain: number;
-  mintRecipientBuff: Buffer;
-  nonce: string;
-  payload: Buffer;
-  payloadId: number;
-  toAddress: string;
-  toDomain: number;
-  tokenAddress: string;
-  toNativeAmount: string;
-  version: number;
-}
-
 export const getCctpDomain = (dom: number) => {
   if (dom === 0) return chainToChainId("Ethereum");
   if (dom === 1) return chainToChainId("Avalanche");
