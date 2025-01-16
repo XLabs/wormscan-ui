@@ -293,7 +293,7 @@ const VaaParser = () => {
         const parsedSequence = Number(sequence);
         const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
           index,
-          signature: Buffer.from(signature).toString("hex"),
+          signature: "0x" + Buffer.from(encoding.b64.decode(signature)).toString("hex"),
           name: getGuardianName(guardianSet, index),
         }));
 
@@ -312,6 +312,9 @@ const VaaParser = () => {
       } catch (e) {
         setResultRaw(null);
       }
+    },
+    onError: _err => {
+      setResult(null);
     },
     onSuccess: data => {
       // add guardian names to guardianSignatures
@@ -565,7 +568,7 @@ const VaaParser = () => {
                       <Loader />
                     ) : (
                       <>
-                        {(!result || !resultRaw) && (
+                        {!resultRaw && (
                           <div className="devtools-page-alert">
                             <div className="devtools-page-alert-info">
                               <InfoCircleIcon />
