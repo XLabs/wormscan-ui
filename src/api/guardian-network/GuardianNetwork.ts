@@ -103,6 +103,7 @@ export class GuardianNetwork {
 
         // If this is first element or has different txHash than previous, keep it
         if (
+          !current?.sourceChain?.transaction?.txHash ||
           !lastElement ||
           lastElement?.sourceChain?.transaction?.txHash !==
             current?.sourceChain?.transaction?.txHash
