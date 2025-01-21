@@ -327,10 +327,10 @@ const Information = ({
   const [loadingRedeem, setLoadingRedeem] = useState(false);
   const [foundRedeem, setFoundRedeem] = useState<null | boolean>(null);
 
-  const date_10_min_before = new Date(new Date().getTime() - 10 * 60000);
+  const date_15_min_before = new Date(new Date().getTime() - 15 * 60000);
   const canTryToGetRedeem =
     (status === "external_tx" ||
-      (status === "pending_redeem" && new Date(timestamp) < date_10_min_before)) &&
+      (status === "pending_redeem" && new Date(timestamp) < date_15_min_before)) &&
     (platformToChains("Evm").includes(chainIdToChain(toChain) as any) ||
       toChain === 1 ||
       toChain === 21) &&
