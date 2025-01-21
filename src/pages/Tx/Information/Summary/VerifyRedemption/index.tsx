@@ -4,6 +4,7 @@ import "./styles.scss";
 import { ChainId } from "@wormhole-foundation/sdk";
 
 interface Props {
+  asText?: string;
   canTryToGetRedeem: boolean;
   fromChain: ChainId | number;
   isJustPortalUnknown: boolean;
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export const VerifyRedemption = ({
+  asText,
   canTryToGetRedeem,
   fromChain,
   isJustPortalUnknown,
@@ -42,6 +44,24 @@ export const VerifyRedemption = ({
       canTryToGetRedeem ? 5000 : 0,
     );
   }, [canTryToGetRedeem, vaa]);
+
+  if (asText)
+    return (
+      <a
+        className="verify-redemption-text"
+        href={
+          isJustPortalUnknown
+            ? vaa && hex
+              ? `https://www.portalbridge.com/#/redeem?vaa=${hex}`
+              : `https://www.portalbridge.com/#/redeem?sourceChain=${fromChain}&transactionId=${txHash}`
+            : `https://portalbridge.com/?sourceChain=${fromChain}&txHash=${txHash}`
+        }
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {asText}
+      </a>
+    );
 
   if (!shouldShow) return null;
 

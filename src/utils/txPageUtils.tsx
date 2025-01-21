@@ -43,6 +43,7 @@ export type OverviewProps = {
   isDuplicated?: boolean;
   isGatewaySource?: boolean;
   isJustGenericRelayer?: boolean;
+  isJustPortalUnknown?: boolean;
   isLatestBlockHigherThanVaaEmitBlock?: boolean;
   isMayanOnly?: boolean;
   isUnknownApp?: boolean;
@@ -67,6 +68,7 @@ export type OverviewProps = {
   setShowOverview?: (newView: "overview" | "advanced" | "progress") => void;
   showMetaMaskBtn?: boolean;
   showSignatures?: boolean;
+  showVerifyRedemption?: boolean;
   sourceAddress?: string;
   sourceFee?: string;
   sourceFeeUSD?: string;
@@ -75,6 +77,7 @@ export type OverviewProps = {
   sourceTokenInfo?: TokenInfo;
   sourceTokenLink?: string;
   sourceTxHash?: string;
+  startDate: Date | string;
   status?: IStatus;
   targetFee?: string;
   targetFeeUSD?: string;
@@ -89,6 +92,7 @@ export type OverviewProps = {
   transactionLimit?: number;
   txHash?: string;
   txIndex?: number;
+  vaa?: string;
   VAAId?: string;
 };
 
