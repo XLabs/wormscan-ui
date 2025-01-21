@@ -2,6 +2,7 @@ import { CheckCircle2, ClockIcon } from "src/icons/generic";
 import { getChainName } from "src/utils/wormhole";
 import { OverviewProps } from "src/utils/txPageUtils";
 import { getRemainingTime } from "src/utils/date";
+import { VerifyRedemption } from "../Summary/VerifyRedemption";
 import "./styles.scss";
 
 const ProgressView = ({
@@ -12,17 +13,22 @@ const ProgressView = ({
   fromChain,
   isAttestation,
   isJustGenericRelayer,
+  isJustPortalUnknown,
   isMayanOnly,
   nftInfo,
   originDateParsed,
   payloadType,
   releaseTimestamp,
+  showVerifyRedemption,
   sourceSymbol,
   sourceTokenInfo,
+  startDate,
   status,
   targetTxHash,
   toChain,
   tokenAmount,
+  txHash,
+  vaa,
 }: OverviewProps) => {
   const SOURCE_SYMBOL = sourceTokenInfo?.tokenSymbol || sourceSymbol;
 
@@ -186,6 +192,30 @@ const ProgressView = ({
             </div>
           </div>
         )}
+
+        {/* Resume transaction or show message in Progress View, only after 24 hours of pending */}
+        {status === "pending_redeem" &&
+          startDate &&
+          new Date().getTime() - new Date(startDate).getTime() >= 24 * 60 * 60 * 1000 &&
+          (showVerifyRedemption ? (
+            <span>
+              It has been more than 24 hours that this execution is pending on the destination
+              chain. You can resume your transaction{" "}
+              <VerifyRedemption
+                canTryToGetRedeem={true}
+                fromChain={fromChain}
+                isJustPortalUnknown={isJustPortalUnknown}
+                txHash={txHash}
+                vaa={vaa}
+                asText="HERE"
+              />
+            </span>
+          ) : (
+            <span>
+              We could not retrieve information about the executing transaction on the destination
+              chain at this time
+            </span>
+          ))}
       </div>
     </div>
   );

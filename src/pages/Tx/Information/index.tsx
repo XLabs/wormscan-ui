@@ -327,11 +327,10 @@ const Information = ({
   const [loadingRedeem, setLoadingRedeem] = useState(false);
   const [foundRedeem, setFoundRedeem] = useState<null | boolean>(null);
 
-  const date_30_min_before = new Date(new Date().getTime() - 30 * 60000);
+  const date_15_min_before = new Date(new Date().getTime() - 15 * 60000);
   const canTryToGetRedeem =
     (status === "external_tx" ||
-      status === "vaa_emitted" ||
-      (status === "pending_redeem" && new Date(timestamp) < date_30_min_before)) &&
+      (status === "pending_redeem" && new Date(timestamp) < date_15_min_before)) &&
     (platformToChains("Evm").includes(chainIdToChain(toChain) as any) ||
       toChain === 1 ||
       toChain === 21) &&
@@ -417,6 +416,9 @@ const Information = ({
 
   const isLatestBlockHigherThanVaaEmitBlock = lastFinalizedBlock > currentBlock;
 
+  const showVerifyRedemption =
+    status === "pending_redeem" && (isJustPortalUnknown || isConnect || isGateway);
+
   const overviewAndDetailProps = {
     action,
     amountSent,
@@ -456,12 +458,14 @@ const Information = ({
     setShowOverview,
     showMetaMaskBtn,
     showSignatures: !(appIds && appIds.includes(CCTP_MANUAL_APP_ID)),
+    showVerifyRedemption,
     sourceFee,
     sourceFeeUSD,
     sourceSymbol,
     sourceTokenChain,
     sourceTokenInfo,
     sourceTokenLink,
+    startDate,
     status,
     targetFee,
     targetFeeUSD,
@@ -485,13 +489,13 @@ const Information = ({
         foundRedeem={foundRedeem}
         fromChain={fromChain}
         getRedeem={getRedeem}
-        isConnect={isConnect}
-        isGateway={isGateway}
         isJustPortalUnknown={isJustPortalUnknown}
         loadingRedeem={loadingRedeem}
         setShowOverview={setShowOverview}
         showOverview={showOverview}
+        showVerifyRedemption={showVerifyRedemption}
         status={status}
+        startDate={startDate}
         txHash={data?.sourceChain?.transaction?.txHash}
         vaa={vaa?.raw}
       />
@@ -503,7 +507,14 @@ const Information = ({
         {showOverview === "advanced" && (
           <AdvancedView data={data} extraRawInfo={extraRawInfo} txIndex={txIndex} />
         )}
-        {showOverview === "progress" && <ProgressView {...overviewAndDetailProps} />}
+        {showOverview === "progress" && (
+          <ProgressView
+            {...overviewAndDetailProps}
+            isJustPortalUnknown={isJustPortalUnknown}
+            txHash={data?.sourceChain?.transaction?.txHash}
+            vaa={vaa?.raw}
+          />
+        )}
       </div>
     </section>
   );
