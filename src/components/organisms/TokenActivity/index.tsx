@@ -82,7 +82,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
     timespan: "1d",
     sourceChain: [],
     targetChain: [],
-    symbol: { label: "USDC", value: "USDC" },
+    symbol: { label: "", value: "" },
   });
 
   const setFilters = (newFilters: typeof filters, timeRange?: string) => {
