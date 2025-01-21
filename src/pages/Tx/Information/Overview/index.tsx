@@ -277,14 +277,12 @@ const Overview = ({
               <div className="text">
                 <StatusBadge status={status} />
 
-                {(!hasVAA || isUnknownPayloadType) && (
+                {!hasVAA && (
                   <div className="tx-overview-section-row-info-alert">
                     <div className="desktop">
-                      {!hasVAA
-                        ? appIds && appIds.includes(CCTP_MANUAL_APP_ID)
-                          ? "This transaction is processed by Circle's CCTP and therefore information might be incomplete"
-                          : "The VAA for this transaction has not been issued yet"
-                        : "VAA comes from another multiverse, we don’t have more details about it"}
+                      {appIds && appIds.includes(CCTP_MANUAL_APP_ID)
+                        ? "This transaction is processed by Circle's CCTP and therefore information might be incomplete"
+                        : "The VAA for this transaction has not been issued yet"}
                     </div>
                     {!(isDesktop && hasVAA) && !isBigTransaction && !isDailyLimitExceeded && (
                       <Tooltip
@@ -293,80 +291,76 @@ const Overview = ({
                         type="info"
                         tooltip={
                           <div className="tx-overview-section-row-info-alert-tooltip-content">
-                            {!hasVAA ? (
-                              appIds && appIds.includes(CCTP_MANUAL_APP_ID) ? (
-                                <p>
-                                  This transaction is processed by Circle&apos;s CCTP and therefore
-                                  information might be incomplete.
+                            {appIds && appIds.includes(CCTP_MANUAL_APP_ID) ? (
+                              <p>
+                                This transaction is processed by Circle&apos;s CCTP and therefore
+                                information might be incomplete.
+                              </p>
+                            ) : (
+                              <>
+                                <p className="mobile">
+                                  The VAA for this transaction has not been issued yet.
                                 </p>
-                              ) : (
-                                <>
-                                  <p className="mobile">
-                                    The VAA for this transaction has not been issued yet.
-                                  </p>
-                                  {!isLatestBlockHigherThanVaaEmitBlock &&
-                                    !isBigTransaction &&
-                                    !isDailyLimitExceeded && (
-                                      <p>
-                                        Waiting for finality on{" "}
-                                        {getChainName({
-                                          chainId: fromChain,
-                                          network: currentNetwork,
-                                        })}{" "}
-                                        which may take up to 15 minutes.
-                                      </p>
-                                    )}
-                                  {lastFinalizedBlock && currentBlock && (
-                                    <>
-                                      <div>
-                                        <h5>LAST FINALIZED BLOCK NUMBER</h5>
-                                        <span>
-                                          <a
-                                            className="tx-information-alerts-unknown-payload-type-link"
-                                            href={getExplorerLink({
-                                              network: currentNetwork,
-                                              chainId: fromChain,
-                                              value: lastFinalizedBlock.toString(),
-                                              base: "block",
-                                            })}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                          >
-                                            {lastFinalizedBlock}
-                                          </a>
-                                        </span>
-                                      </div>
-
-                                      <div>
-                                        <h5>THIS BLOCK NUMBER</h5>
+                                {!isLatestBlockHigherThanVaaEmitBlock &&
+                                  !isBigTransaction &&
+                                  !isDailyLimitExceeded && (
+                                    <p>
+                                      Waiting for finality on{" "}
+                                      {getChainName({
+                                        chainId: fromChain,
+                                        network: currentNetwork,
+                                      })}{" "}
+                                      which may take up to 15 minutes.
+                                    </p>
+                                  )}
+                                {lastFinalizedBlock && currentBlock && (
+                                  <>
+                                    <div>
+                                      <h5>LAST FINALIZED BLOCK NUMBER</h5>
+                                      <span>
                                         <a
                                           className="tx-information-alerts-unknown-payload-type-link"
                                           href={getExplorerLink({
                                             network: currentNetwork,
                                             chainId: fromChain,
-                                            value: currentBlock.toString(),
+                                            value: lastFinalizedBlock.toString(),
                                             base: "block",
                                           })}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                         >
-                                          {currentBlock}
+                                          {lastFinalizedBlock}
                                         </a>
-                                      </div>
-                                    </>
-                                  )}
-
-                                  {isLatestBlockHigherThanVaaEmitBlock && (
-                                    <div>
-                                      Since the latest block number is higher than this
-                                      transaction&apos;s, there might be an extra delay. You can
-                                      contact support on <DiscordSupportLink />.
+                                      </span>
                                     </div>
-                                  )}
-                                </>
-                              )
-                            ) : (
-                              "This VAA comes from another multiverse, we don't have more details about it."
+
+                                    <div>
+                                      <h5>THIS BLOCK NUMBER</h5>
+                                      <a
+                                        className="tx-information-alerts-unknown-payload-type-link"
+                                        href={getExplorerLink({
+                                          network: currentNetwork,
+                                          chainId: fromChain,
+                                          value: currentBlock.toString(),
+                                          base: "block",
+                                        })}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        {currentBlock}
+                                      </a>
+                                    </div>
+                                  </>
+                                )}
+
+                                {isLatestBlockHigherThanVaaEmitBlock && (
+                                  <div>
+                                    Since the latest block number is higher than this
+                                    transaction&apos;s, there might be an extra delay. You can
+                                    contact support on <DiscordSupportLink />.
+                                  </div>
+                                )}
+                              </>
                             )}
                           </div>
                         }
@@ -1450,7 +1444,7 @@ const Overview = ({
         </div>
       )}
 
-      {appIds?.length > 0 && (
+      {(appIds?.length > 0 || isUnknownPayloadType) && (
         <div className="tx-overview-section">
           <div className="tx-overview-section-row">
             <h4 className="tx-overview-section-row-title">
@@ -1470,12 +1464,16 @@ const Overview = ({
             </h4>
             <div className="tx-overview-section-row-info">
               <div className="tx-overview-section-row-info-container protocols">
-                {filterAppIds(appIds).map((appId, i) => (
-                  <div className="text" key={i}>
-                    <ProtocolIcon protocol={appId} width={24} />
-                    {formatAppId(appId)}
-                  </div>
-                ))}
+                {isUnknownPayloadType ? (
+                  <div className="text">This VAA&apos;s protocol could not be identified</div>
+                ) : (
+                  filterAppIds(appIds).map((appId, i) => (
+                    <div className="text" key={i}>
+                      <ProtocolIcon protocol={appId} width={24} />
+                      {formatAppId(appId)}
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -1652,7 +1650,7 @@ const Overview = ({
               tooltip={
                 <div>
                   <p>Number of guardian signatures obtained.</p>
-                  <p>It’s mandatory to have at least 13 signs for Mainnet.</p>
+                  <p>It&apos;s mandatory to have at least 13 signs for Mainnet.</p>
                 </div>
               }
             >
