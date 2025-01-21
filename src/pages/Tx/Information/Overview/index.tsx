@@ -211,6 +211,54 @@ const Overview = ({
         </div>
       </div>
 
+      {parsedRedeemTx && (
+        <div className="tx-overview-section">
+          <div className="tx-overview-section-row">
+            <h4 className="tx-overview-section-row-title">
+              <Tooltip
+                type="info"
+                tooltip={
+                  <div>
+                    <p>
+                      Identifier of the transaction on the destination chain to complete the
+                      operation.
+                    </p>
+                  </div>
+                }
+              >
+                <span>
+                  <InfoCircleIcon /> Executed Tx Hash
+                </span>
+              </Tooltip>
+            </h4>
+            <div className="tx-overview-section-row-info">
+              <div className="tx-overview-section-row-info-container">
+                <div className="text">
+                  <a
+                    href={getExplorerLink({
+                      network: currentNetwork,
+                      chainId: toChain,
+                      value: parsedRedeemTx,
+                      isNativeAddress: true,
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <TruncateText
+                      containerWidth={lineValueWidth}
+                      text={parsedRedeemTx.toUpperCase()}
+                    />
+                  </a>
+                  <CopyToClipboard toCopy={parsedRedeemTx}>
+                    <CopyIcon width={24} />
+                  </CopyToClipboard>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {gatewayInfo?.originTxHash && (
         <div className="tx-overview-section">
           <div className="tx-overview-section-row">
@@ -1685,54 +1733,6 @@ const Overview = ({
           </div>
         </div>
       </div>
-
-      {parsedRedeemTx && (
-        <div className="tx-overview-section">
-          <div className="tx-overview-section-row">
-            <h4 className="tx-overview-section-row-title">
-              <Tooltip
-                type="info"
-                tooltip={
-                  <div>
-                    <p>
-                      Identifier of the transaction on the destination chain to complete the
-                      operation.
-                    </p>
-                  </div>
-                }
-              >
-                <span>
-                  <InfoCircleIcon /> Executed Tx Hash
-                </span>
-              </Tooltip>
-            </h4>
-            <div className="tx-overview-section-row-info">
-              <div className="tx-overview-section-row-info-container">
-                <div className="text">
-                  <a
-                    href={getExplorerLink({
-                      network: currentNetwork,
-                      chainId: toChain,
-                      value: parsedRedeemTx,
-                      isNativeAddress: true,
-                    })}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <TruncateText
-                      containerWidth={lineValueWidth}
-                      text={parsedRedeemTx.toUpperCase()}
-                    />
-                  </a>
-                  <CopyToClipboard toCopy={parsedRedeemTx}>
-                    <CopyIcon width={24} />
-                  </CopyToClipboard>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
