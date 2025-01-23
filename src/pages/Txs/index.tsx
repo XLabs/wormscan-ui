@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
+import { useRecoilState } from "recoil";
 import { useEnvironment } from "src/context/EnvironmentContext";
-import { usePreviousPath } from "src/context/PreviousPathContext";
 import { BlockchainIcon, NavLink, ProtocolIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import { SearchNotFound } from "src/components/organisms";
@@ -29,8 +29,8 @@ import {
   canWeGetDestinationTx,
   txType,
 } from "src/consts";
-import { useLocalStorage } from "src/utils/hooks";
 import { formatNumber } from "src/utils/number";
+import { liveModeState } from "src/utils/recoilStates";
 import { Top } from "./Top";
 
 export interface TransactionOutput {
@@ -108,8 +108,7 @@ const Txs = () => {
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
   const [parsedTxsData, setParsedTxsData] = useState<TransactionOutput[] | undefined>(undefined);
 
-  const { prevPath } = usePreviousPath();
-  const [liveMode, setLiveMode] = useLocalStorage<boolean>("liveMode", true);
+  const [liveMode, setLiveMode] = useRecoilState(liveModeState);
   const showLiveMode = !params.address && !params.from && !params.to;
   const [lastUpdatedList, setLastUpdatedList] =
     useState<{ txHash: string; status: string }[]>(null);
@@ -129,11 +128,14 @@ const Txs = () => {
   );
 
   useEffect(() => {
-    if (!prevPath?.startsWith("/tx/")) {
-      setLiveMode(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    return () => {
+      const nextHash = window.location.hash;
+
+      if (!nextHash.startsWith("#/tx/")) {
+        setLiveMode(true);
+      }
+    };
+  }, [setLiveMode]);
 
   useEffect(() => {
     setErrorCode(undefined);

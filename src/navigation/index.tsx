@@ -3,7 +3,6 @@ import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { Loader } from "src/components/atoms";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { EnvironmentProvider } from "src/context/EnvironmentContext";
-import { PreviousPathProvider } from "src/context/PreviousPathContext";
 import { AnalyticsLinkTracker } from "src/utils/analyticsLinkTracker";
 import ErrorBoundary from "src/utils/errorBoundary";
 
@@ -28,38 +27,36 @@ const Navigation = () => {
     <Router>
       <AnalyticsLinkTracker>
         <EnvironmentProvider>
-          <PreviousPathProvider>
-            <ErrorBoundary>
-              <Suspense
-                fallback={
-                  <BaseLayout>
-                    <Loader />
-                  </BaseLayout>
-                }
-              >
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/txs" element={<Txs />} />
-                  <Route path="/tx/:txHash" element={<Tx />} />
-                  <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
-                  <Route path="/terms-of-use" element={<TermsOfUse />} />
-                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                  <Route path="/developers/submit" element={<Submit />} />
-                  <Route path="/developers/submit/*" element={<Submit />} />
-                  <Route path="/developers/vaa-parser" element={<VaaParser />} />
-                  <Route path="/developers/vaa-parser/*" element={<VaaParser />} />
-                  <Route path="/developers/api-doc" element={<ApiDoc />} />
-                  <Route path="/analytics/ntt" element={<NTT />} />
-                  <Route path="/analytics/ntt/:coingecko_id/:symbol" element={<NTTToken />} />
-                  <Route path="/analytics/tokens" element={<Tokens />} />
-                  <Route path="/analytics/chains" element={<Chains />} />
-                  <Route path="/analytics/protocols" element={<Protocols />} />
-                  <Route path="/governor" element={<Governor />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-            </ErrorBoundary>
-          </PreviousPathProvider>
+          <ErrorBoundary>
+            <Suspense
+              fallback={
+                <BaseLayout>
+                  <Loader />
+                </BaseLayout>
+              }
+            >
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/txs" element={<Txs />} />
+                <Route path="/tx/:txHash" element={<Tx />} />
+                <Route path="/tx/:chainId/:emitter/:seq" element={<Tx />} />
+                <Route path="/terms-of-use" element={<TermsOfUse />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/developers/submit" element={<Submit />} />
+                <Route path="/developers/submit/*" element={<Submit />} />
+                <Route path="/developers/vaa-parser" element={<VaaParser />} />
+                <Route path="/developers/vaa-parser/*" element={<VaaParser />} />
+                <Route path="/developers/api-doc" element={<ApiDoc />} />
+                <Route path="/analytics/ntt" element={<NTT />} />
+                <Route path="/analytics/ntt/:coingecko_id/:symbol" element={<NTTToken />} />
+                <Route path="/analytics/tokens" element={<Tokens />} />
+                <Route path="/analytics/chains" element={<Chains />} />
+                <Route path="/analytics/protocols" element={<Protocols />} />
+                <Route path="/governor" element={<Governor />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
         </EnvironmentProvider>
       </AnalyticsLinkTracker>
     </Router>
