@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { useEnvironment } from "src/context/EnvironmentContext";
+import { usePreviousPath } from "src/context/PreviousPathContext";
 import { BlockchainIcon, NavLink, ProtocolIcon, Tooltip } from "src/components/atoms";
 import { CopyToClipboard, StatusBadge } from "src/components/molecules";
 import { SearchNotFound } from "src/components/organisms";
@@ -107,6 +108,7 @@ const Txs = () => {
   const [addressChainId, setAddressChainId] = useState<ChainId | undefined>(undefined);
   const [parsedTxsData, setParsedTxsData] = useState<TransactionOutput[] | undefined>(undefined);
 
+  const { prevPath } = usePreviousPath();
   const [liveMode, setLiveMode] = useLocalStorage<boolean>("liveMode", true);
   const showLiveMode = !params.address && !params.from && !params.to;
   const [lastUpdatedList, setLastUpdatedList] =
@@ -125,6 +127,13 @@ const Txs = () => {
     },
     [setSearchParams],
   );
+
+  useEffect(() => {
+    if (!prevPath?.startsWith("/tx/")) {
+      setLiveMode(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setErrorCode(undefined);
