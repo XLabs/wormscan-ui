@@ -586,7 +586,7 @@ const Tx = () => {
           const parsedSequence = Number(sequence);
           const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
             index,
-            signature: Buffer.from(signature).toString("hex"),
+            signature: "0x" + Buffer.from(encoding.b64.decode(signature)).toString("hex"),
             name: guardianSetList?.[index]?.name,
           }));
 

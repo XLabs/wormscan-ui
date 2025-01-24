@@ -145,6 +145,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
             data?.length > 0 &&
             data?.map((item, i) => {
               if (i >= numberOfProtocols) return null;
+              if (item.protocol === "WORMHOLE_LIQUIDITY_LAYER") return null;
 
               return (
                 <div
