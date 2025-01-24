@@ -1,6 +1,11 @@
 import { atom } from "recoil";
 import { IArkhamResponse } from "./arkham";
 
+export const liveModeState = atom<boolean>({
+  key: "liveMode",
+  default: true,
+});
+
 export const loadPageState = atom({
   key: "loadPageState",
   default: false,

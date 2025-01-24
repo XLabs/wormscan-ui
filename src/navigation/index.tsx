@@ -5,6 +5,7 @@ import { BaseLayout } from "src/layouts/BaseLayout";
 import { EnvironmentProvider } from "src/context/EnvironmentContext";
 import { AnalyticsLinkTracker } from "src/utils/analyticsLinkTracker";
 import ErrorBoundary from "src/utils/errorBoundary";
+import LiveModeUpdater from "src/utils/liveModeUpdater";
 
 const Home = lazy(() => import("../pages/Home"));
 const Tx = lazy(() => import("../pages/Tx"));
@@ -27,6 +28,7 @@ const Navigation = () => {
     <Router>
       <AnalyticsLinkTracker>
         <EnvironmentProvider>
+          <LiveModeUpdater />
           <ErrorBoundary>
             <Suspense
               fallback={
