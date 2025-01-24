@@ -128,16 +128,6 @@ const Txs = () => {
   );
 
   useEffect(() => {
-    return () => {
-      const nextHash = window.location.hash;
-
-      if (!nextHash.startsWith("#/tx/")) {
-        setLiveMode(true);
-      }
-    };
-  }, [setLiveMode]);
-
-  useEffect(() => {
     setErrorCode(undefined);
   }, [params.address]);
 
