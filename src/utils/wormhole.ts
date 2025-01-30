@@ -27,6 +27,7 @@ import MonadIcon from "src/icons/blockchains/monad.svg";
 import MoonbeamIcon from "src/icons/blockchains/moonbeam.svg";
 import NearIcon from "src/icons/blockchains/near.svg";
 import NeonIcon from "src/icons/blockchains/neon.svg";
+import NobleIcon from "src/icons/blockchains/noble.svg";
 import OasisIcon from "src/icons/blockchains/oasis.svg";
 import OptimismIcon from "src/icons/blockchains/optimism.svg";
 import OsmosisIcon from "src/icons/blockchains/osmosis.svg";
@@ -76,6 +77,7 @@ import MonadColorlessIcon from "src/icons/blockchains/colorless/monad.svg";
 import MoonbeamColorlessIcon from "src/icons/blockchains/colorless/moonbeam.svg";
 import NearColorlessIcon from "src/icons/blockchains/colorless/near.svg";
 import NeonColorlessIcon from "src/icons/blockchains/colorless/neon.svg";
+import NobleColorlessIcon from "src/icons/blockchains/colorless/noble.svg";
 import NoColorlessIcon from "src/icons/blockchains/colorless/noIcon.svg";
 import OasisColorlessIcon from "src/icons/blockchains/colorless/oasis.svg";
 import OptimismColorlessIcon from "src/icons/blockchains/colorless/optimism.svg";
@@ -603,6 +605,21 @@ const WORMHOLE_CHAINS: any = {
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
       if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [chainToChainId("Noble")]: {
+    name: "Noble",
+    icon: NobleIcon,
+    colorlessIcon: NobleColorlessIcon,
+    explorer: {
+      Devnet: "", // NOTE: Noble doesn't have a public devnet.
+      Testnet: "https://www.mintscan.io/noble-testnet",
+      Mainnet: "https://www.mintscan.io/noble",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
       if (base === "block") return this.explorer?.[network] + "/block/" + value;
       return this.explorer?.[network] + "/tx/" + value;
     },
