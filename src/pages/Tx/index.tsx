@@ -928,7 +928,8 @@ const Tx = () => {
 
               if (nttInfo?.targetTokenAddress) {
                 data.content.standarizedProperties.wrappedTokenAddress = nttInfo.targetTokenAddress;
-                data.content.standarizedProperties.wrappedTokenSymbol = targetTokenInfo.symbol;
+                data.content.standarizedProperties.wrappedTokenSymbol =
+                  nttInfo.targetTokenSymbol || targetTokenInfo.symbol;
               }
             }
           }

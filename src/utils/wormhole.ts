@@ -620,6 +620,12 @@ const WORMHOLE_CHAINS: any = {
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") {
+        if (value.length <= 6) {
+          return this.explorer?.[network] + "/assets/native/" + btoa(value);
+        }
+        return this.explorer?.[network] + "/token/" + value;
+      }
       if (base === "block") return this.explorer?.[network] + "/block/" + value;
       return this.explorer?.[network] + "/tx/" + value;
     },
