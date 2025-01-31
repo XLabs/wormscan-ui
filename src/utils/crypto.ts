@@ -62,7 +62,7 @@ export const parseAddress = ({
             .map(a => toChainId(a))
             .includes(chainId)
     ) {
-      let raw = encoding.bech32.decodeToBytes(value);
+      const raw = encoding.bech32.decodeToBytes(value);
       if (raw.bytes.slice(0, 12).every(item => item === 0)) {
         parsedValue = encoding.bech32.encodeFromBytes(raw.prefix, raw.bytes.slice(12));
       }
