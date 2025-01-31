@@ -133,6 +133,7 @@ export const ChainFilterTestnet = [
   chainToChainId("Karura"),
   chainToChainId("Klaytn"),
   chainToChainId("Mantle"),
+  chainToChainId("Monad"),
   chainToChainId("MonadDevnet"),
   chainToChainId("Moonbeam"),
   // chainToChainId("Polygon"),

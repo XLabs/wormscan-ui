@@ -545,6 +545,22 @@ const WORMHOLE_CHAINS: any = {
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
+  [chainToChainId("Monad")]: {
+    name: "Monad",
+    icon: MonadIcon,
+    colorlessIcon: MonadColorlessIcon,
+    explorer: {
+      Testnet: "https://testnet.monadexplorer.com",
+      Devnet: "https://testnet.monadexplorer.com",
+      Mainnet: "https://monadexplorer.com",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
   [chainToChainId("MonadDevnet")]: {
     name: "MonadDevnet",
     icon: MonadIcon,
