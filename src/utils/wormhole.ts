@@ -552,7 +552,7 @@ const WORMHOLE_CHAINS: any = {
     explorer: {
       Testnet: "https://testnet.monadexplorer.com",
       Devnet: "https://testnet.monadexplorer.com",
-      Mainnet: "https://monad.xyz",
+      Mainnet: "https://monadexplorer.com",
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
