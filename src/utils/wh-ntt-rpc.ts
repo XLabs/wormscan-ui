@@ -17,6 +17,12 @@ const NTT_MANAGER_TOKENS = {
       tokenAddress: "3dQTr7ror2QPKQ3GbBCokJUmjErGg8kTJzdnYjNfvi3Z",
       symbol: "", // same as source
     },
+
+    // NOBLE MANAGERS
+    noble1qqqqqqqqqqqqqqqqqqqzapv4q6az98qc87yct420uussjglmn09qvcl7xx: {
+      tokenAddress: "uusdn",
+      symbol: "USDN",
+    },
   },
   Testnet: {
     // SOLANA MANAGERS
