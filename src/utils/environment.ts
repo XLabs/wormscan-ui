@@ -129,6 +129,7 @@ export const testnetNativeCurrencies: { [key: string]: string } = {
   [chainIdToChain(40)]: "SEI",
   [chainIdToChain(43)]: "ETH",
   [chainIdToChain(45)]: "ETH",
+  [chainIdToChain(48)]: "MON",
   [chainIdToChain(10002)]: "ETH",
   [chainIdToChain(10003)]: "ETH",
   [chainIdToChain(10004)]: "ETH",
@@ -176,6 +177,7 @@ export const mainnetNativeCurrencies: { [key: string]: string } = {
   [chainIdToChain(40)]: "SEI",
   [chainIdToChain(43)]: "ETH",
   [chainIdToChain(45)]: "ETH",
+  [chainIdToChain(48)]: "MON",
 };
 
 export const testnetDefaultDeliveryProviderContractAddress =

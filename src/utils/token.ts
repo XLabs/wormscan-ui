@@ -20,6 +20,7 @@ import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KUJI from "src/icons/tokens/KUJI.svg";
 import LOVELY from "src/icons/tokens/LOVELY.webp";
 import LUNA from "src/icons/tokens/LUNA.svg";
+import MON from "src/icons/tokens/MON.svg";
 import MATIC from "src/icons/tokens/MATIC.svg";
 import NST from "src/icons/tokens/NST.webp";
 import OPTIMISM from "src/icons/tokens/OPTIMISM.svg";
@@ -73,6 +74,7 @@ const iconTokens = {
   LOVELY,
   LUNA,
   MATIC,
+  MON,
   NST,
   OPTIMISM,
   OSMO,
