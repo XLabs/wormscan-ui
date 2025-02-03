@@ -547,6 +547,7 @@ const WORMHOLE_CHAINS: any = {
   },
   [chainToChainId("Monad")]: {
     name: "Monad",
+    nameTestnet: "Monad Testnet",
     icon: MonadIcon,
     colorlessIcon: MonadColorlessIcon,
     explorer: {
