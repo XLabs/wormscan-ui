@@ -232,6 +232,7 @@ const targetChainsSupportedMainnet: { [key: string]: ChainId[] } = {
     chainToChainId("Karura"),
     chainToChainId("Klaytn"),
     chainToChainId("Mantle"),
+    chainToChainId("Monad"),
     chainToChainId("Moonbeam"),
     chainToChainId("Near"),
     chainToChainId("Oasis"),
@@ -315,6 +316,7 @@ const targetChainsSupportedMainnet: { [key: string]: ChainId[] } = {
     chainToChainId("Celo"),
     chainToChainId("Ethereum"),
     chainToChainId("Fantom"),
+    chainToChainId("Monad"),
     chainToChainId("Moonbeam"),
     chainToChainId("Optimism"),
     chainToChainId("Polygon"),
@@ -322,6 +324,7 @@ const targetChainsSupportedMainnet: { [key: string]: ChainId[] } = {
   ],
   [NTT_APP_ID]: [
     chainToChainId("Arbitrum"),
+    // chainToChainId("Bsc"), TODO: Uncomment when BSC is supported
     chainToChainId("Base"),
     chainToChainId("Ethereum"),
     chainToChainId("Fantom"),
@@ -382,6 +385,7 @@ const targetChainsSupportedTestnet: { [key: string]: ChainId[] } = {
     chainToChainId("Snaxchain"),
     chainToChainId("Berachain"),
     chainToChainId("Unichain"),
+    chainToChainId("Monad"),
     chainToChainId("MonadDevnet"),
     chainToChainId("Worldchain"),
   ],
@@ -418,6 +422,7 @@ const targetChainsSupportedTestnet: { [key: string]: ChainId[] } = {
     chainToChainId("Sepolia"),
     chainToChainId("Celo"),
     chainToChainId("Moonbeam"),
+    chainToChainId("Monad"),
     chainToChainId("MonadDevnet"),
   ],
   [NTT_APP_ID]: [

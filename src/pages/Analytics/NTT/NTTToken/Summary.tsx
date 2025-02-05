@@ -191,7 +191,7 @@ const ContractsList = ({
   summary: GetSummaryResult;
   environment: Environment;
 }) => {
-  const platforms = Object.entries(summary.platforms).filter(([chain]) =>
+  const platforms = Object.entries(summary?.platforms || {}).filter(([chain]) =>
     [
       "solana",
       "ethereum",

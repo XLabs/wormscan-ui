@@ -167,10 +167,6 @@
           justify-content: space-between;
           max-height: calc(100svh - 49px);
           padding: 24px 0;
-
-          @include desktop {
-            padding: 0;
-          }
         }
       }
 

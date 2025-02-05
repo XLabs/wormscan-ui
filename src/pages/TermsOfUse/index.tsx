@@ -64,6 +64,12 @@ const TermsOfUse = () => {
     };
   }, [activeSection]);
 
+  const handleShowContents = () => {
+    if (!isDesktop) {
+      setShowContentsMobile(!showContentsMobile);
+    }
+  };
+
   return (
     <BaseLayout showTopHeader={isDesktop}>
       <div className="terms-of-use">
@@ -628,11 +634,12 @@ const TermsOfUse = () => {
         </div>
 
         <div className="terms-of-use-aside">
-          <div className={`terms-of-use-aside-container ${showContentsMobile ? "show" : ""}`}>
-            <h3
-              className="terms-of-use-aside-container-title"
-              onClick={() => setShowContentsMobile(!showContentsMobile)}
-            >
+          <div
+            className={`terms-of-use-aside-container ${
+              !isDesktop && showContentsMobile ? "show" : ""
+            }`}
+          >
+            <h3 className="terms-of-use-aside-container-title" onClick={handleShowContents}>
               <span className="terms-of-use-aside-container-title-mobile">
                 {t(tableOfContents.find(item => item.id === activeSection)?.text) ||
                   t("termsOfUse.page.header.list.title")}

@@ -556,7 +556,11 @@ const Tx = () => {
 
         // Check if its generic relayer tx without vaa and go with RPCs
         // TODO: handle generic relayer no-vaa txns without RPCs
-        if (data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID) && !data?.vaa?.raw) {
+        if (
+          !data?.content?.standarizedProperties?.appIds?.includes(NTT_APP_ID) &&
+          data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID) &&
+          !data?.vaa?.raw
+        ) {
           setShouldTryToGetRpcInfo(true);
         }
         // ---
@@ -924,7 +928,8 @@ const Tx = () => {
 
               if (nttInfo?.targetTokenAddress) {
                 data.content.standarizedProperties.wrappedTokenAddress = nttInfo.targetTokenAddress;
-                data.content.standarizedProperties.wrappedTokenSymbol = targetTokenInfo.symbol;
+                data.content.standarizedProperties.wrappedTokenSymbol =
+                  nttInfo.targetTokenSymbol || targetTokenInfo.symbol;
               }
             }
           }
