@@ -29,6 +29,7 @@ const ProgressView = ({
   tokenAmount,
   txHash,
   vaa,
+  setShowRedeemModal,
 }: OverviewProps) => {
   const SOURCE_SYMBOL = sourceTokenInfo?.tokenSymbol || sourceSymbol;
 
@@ -208,6 +209,7 @@ const ProgressView = ({
                 txHash={txHash}
                 vaa={vaa}
                 asText="HERE"
+                setShowModal={setShowRedeemModal}
               />
             </span>
           ) : (

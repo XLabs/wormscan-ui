@@ -19,6 +19,7 @@ type Props = {
   status: IStatus;
   txHash: string;
   vaa: string;
+  setShowRedeemModal: (showModal: boolean) => void;
 };
 
 const Summary = ({
@@ -35,7 +36,13 @@ const Summary = ({
   status,
   txHash,
   vaa,
+  setShowRedeemModal,
 }: Props) => {
+  // const showVerifyRedemption =
+  //   status === "pending_redeem" &&
+  //   (isJustPortalUnknown || isConnect) /* || isGateway */ &&
+  //   (foundRedeem === false || (!canTryToGetRedeem && !foundRedeem));
+
   return (
     <div className="tx-information-summary">
       <ToggleGroup
@@ -70,6 +77,7 @@ const Summary = ({
               isJustPortalUnknown={isJustPortalUnknown}
               txHash={txHash}
               vaa={vaa}
+              setShowModal={setShowRedeemModal}
             />
           )}
       </div>

@@ -10,6 +10,7 @@ interface Props {
   isJustPortalUnknown: boolean;
   txHash: string;
   vaa: string;
+  setShowModal: (showModal: boolean) => void;
 }
 
 export const VerifyRedemption = ({
@@ -19,6 +20,7 @@ export const VerifyRedemption = ({
   isJustPortalUnknown,
   txHash,
   vaa,
+  setShowModal,
 }: Props) => {
   const [shouldShow, setShouldShow] = useState(false);
   const [hex, setHex] = useState("");
@@ -49,15 +51,16 @@ export const VerifyRedemption = ({
     return (
       <a
         className="verify-redemption-text"
-        href={
-          isJustPortalUnknown
-            ? vaa && hex
-              ? `https://www.portalbridge.com/#/redeem?vaa=${hex}`
-              : `https://www.portalbridge.com/#/redeem?sourceChain=${fromChain}&transactionId=${txHash}`
-            : `https://portalbridge.com/?sourceChain=${fromChain}&txHash=${txHash}`
-        }
-        target="_blank"
-        rel="noopener noreferrer"
+        // href={
+        //   isJustPortalUnknown
+        //     ? vaa && hex
+        //       ? `https://www.portalbridge.com/#/redeem?vaa=${hex}`
+        //       : `https://www.portalbridge.com/#/redeem?sourceChain=${fromChain}&transactionId=${txHash}`
+        //     : `https://portalbridge.com/?sourceChain=${fromChain}&txHash=${txHash}`
+        // }
+        // target="_blank"
+        // rel="noopener noreferrer"
+        onClick={() => setShowModal(true)}
       >
         {asText}
       </a>
@@ -73,15 +76,16 @@ export const VerifyRedemption = ({
     >
       <a
         className="verify-redemption"
-        href={
-          isJustPortalUnknown
-            ? vaa && hex
-              ? `https://www.portalbridge.com/#/redeem?vaa=${hex}`
-              : `https://www.portalbridge.com/#/redeem?sourceChain=${fromChain}&transactionId=${txHash}`
-            : `https://portalbridge.com/?sourceChain=${fromChain}&txHash=${txHash}`
-        }
-        target="_blank"
-        rel="noopener noreferrer"
+        // href={
+        //   isJustPortalUnknown
+        //     ? vaa && hex
+        //       ? `https://www.portalbridge.com/#/redeem?vaa=${hex}`
+        //       : `https://www.portalbridge.com/#/redeem?sourceChain=${fromChain}&transactionId=${txHash}`
+        //     : `https://portalbridge.com/?sourceChain=${fromChain}&txHash=${txHash}`
+        // }
+        // target="_blank"
+        // rel="noopener noreferrer"
+        onClick={() => setShowModal(true)}
       >
         <p>Resume Transaction</p>
       </a>

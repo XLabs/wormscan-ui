@@ -35,6 +35,9 @@ import Overview from "./Overview";
 import AdvancedView from "./AdvancedView";
 import ProgressView from "./ProgressView";
 import Summary from "./Summary";
+import { Modal } from "src/components/atoms";
+import { Redeem } from "./Summary/Redeem";
+import RedeemModal from "./Summary/Redeem/RedeemModal";
 import "./styles.scss";
 
 interface Props {
@@ -482,6 +485,21 @@ const Information = ({
     VAAId,
   };
 
+  const [showRedeemModal, setShowRedeemModal] = useState(false);
+
+  const RedeemModalComponent = () => (
+    <RedeemModal
+      currentNetwork={currentNetwork}
+      fromChain={fromChain}
+      parsedDestinationAddress={parsedDestinationAddress}
+      parsedOriginAddress={parsedOriginAddress}
+      toChain={toChain}
+      sourceTokenLink={sourceTokenLink}
+      sourceSymbol={sourceSymbol}
+      amountSent={amountSent}
+    />
+  );
+
   return (
     <section className="tx-information">
       <Summary
@@ -498,6 +516,7 @@ const Information = ({
         startDate={startDate}
         txHash={data?.sourceChain?.transaction?.txHash}
         vaa={vaa?.raw}
+        setShowRedeemModal={setShowRedeemModal}
       />
 
       <div className="tx-information-content">
@@ -513,8 +532,21 @@ const Information = ({
             isJustPortalUnknown={isJustPortalUnknown}
             txHash={data?.sourceChain?.transaction?.txHash}
             vaa={vaa?.raw}
+            showRedeemModal={showRedeemModal}
+            setShowRedeemModal={setShowRedeemModal}
           />
         )}
+
+        <Modal shouldShow={showRedeemModal} setShouldShow={setShowRedeemModal}>
+          {showRedeemModal && (
+            <Redeem
+              txHash={data?.sourceChain?.transaction?.txHash}
+              sourceChain={fromChain as ChainId}
+              CustomComponent={RedeemModalComponent}
+              network={currentNetwork}
+            />
+          )}
+        </Modal>
       </div>
     </section>
   );
