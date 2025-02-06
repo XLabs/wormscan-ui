@@ -143,6 +143,7 @@ export const ChainFilterTestnet = [
   chainToChainId("OptimismSepolia"),
   chainToChainId("Scroll"),
   chainToChainId("Sei"),
+  chainToChainId("Seievm"),
   chainToChainId("Sepolia"),
   chainToChainId("Snaxchain"),
   chainToChainId("Solana"),
