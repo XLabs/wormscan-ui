@@ -79,7 +79,10 @@ export class GuardianNetwork {
       if (data?.content?.standarizedProperties?.appIds?.includes(FAST_TRANSFERS_APP_ID)) {
         // AppID patch
         if (data?.content?.standarizedProperties?.appIds?.includes(SWAP_LAYER_APP_ID)) {
-          data.content.standarizedProperties.appIds = [MAYAN_SHUTTLE_APP_ID];
+          data.content.standarizedProperties.appIds = [
+            MAYAN_SHUTTLE_APP_ID,
+            LIQUIDITY_LAYER_APP_ID,
+          ];
         } else {
           data.content.standarizedProperties.appIds = [LIQUIDITY_LAYER_APP_ID];
         }

@@ -423,6 +423,11 @@ export interface GetOperationsOutput {
     fee?: string;
     gasTokenNotional?: string;
     feeUSD?: string;
+    balanceChanges?: {
+      amount: string;
+      recipient: string;
+      tokenAddress: string;
+    }[];
   };
   data: {
     symbol: string;
