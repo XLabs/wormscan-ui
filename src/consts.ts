@@ -324,7 +324,7 @@ const targetChainsSupportedMainnet: { [key: string]: ChainId[] } = {
   ],
   [NTT_APP_ID]: [
     chainToChainId("Arbitrum"),
-    // chainToChainId("Bsc"), TODO: Uncomment when BSC is supported
+    chainToChainId("Bsc"),
     chainToChainId("Base"),
     chainToChainId("Ethereum"),
     chainToChainId("Fantom"),
