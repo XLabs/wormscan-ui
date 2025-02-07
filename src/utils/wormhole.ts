@@ -962,8 +962,8 @@ const WORMHOLE_CHAINS: any = {
     icon: WormChainIcon,
     colorlessIcon: WormChainColorlessIcon,
     explorer: {
-      Testnet: "",
       Devnet: "",
+      Testnet: "https://gatewayexplorer.testnet.wormholescan.io/wormhole",
       Mainnet: "https://bigdipper.live/wormhole",
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
@@ -1171,11 +1171,19 @@ export const getExplorerLink = ({
   }
 
   if (
-    chainId === chainToChainId("Kujira") ||
     chainId === chainToChainId("Evmos") ||
+    chainId === chainToChainId("Kujira") ||
+    chainId === chainToChainId("Noble") ||
     chainId === chainToChainId("Osmosis")
   ) {
     parsedValue = parsedValue.startsWith("0x") ? parsedValue.replace("0x", "") : parsedValue;
+    return (
+      WORMHOLE_CHAINS[chainToChainId("Wormchain")]?.getExplorerBaseURL({
+        network,
+        value: parsedValue,
+        base,
+      }) || ""
+    );
   }
 
   return WORMHOLE_CHAINS[chainId]?.getExplorerBaseURL({ network, value: parsedValue, base }) || "";
