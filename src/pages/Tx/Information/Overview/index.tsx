@@ -283,7 +283,7 @@ const Overview = ({
               <div className="tx-overview-section-row-info-container">
                 <div className="text">
                   <a
-                    href={`${BIGDIPPER_TRANSACTIONS}/${
+                    href={`${BIGDIPPER_TRANSACTIONS[currentNetwork]}/${
                       parseTxHashUpperCase.startsWith("0X")
                         ? parseTxHashUpperCase.substring(2)
                         : parseTxHashUpperCase

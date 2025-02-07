@@ -8,6 +8,7 @@ import {
   GATEWAY_APP_ID,
   GR_APP_ID,
   LIQUIDITY_LAYER_APP_ID,
+  M_PORTAL_APP_ID,
   MAYAN_APP_ID,
   MAYAN_MCTP_APP_ID,
   MAYAN_SHUTTLE_APP_ID,
@@ -237,6 +238,29 @@ const EthBridgeIcon = ({ width }: { width: number }) => (
         <rect width="19.2" height="19.2" fill="white" transform="translate(4.3999 4.40625)" />
       </clipPath>
     </defs>
+  </svg>
+);
+
+const MPortalIcon = ({ width }: { width: number }) => (
+  <svg width={width} height={width} viewBox="0 0 500 500" fill="none" version="1.1">
+    <defs id="defs1" />
+    <rect
+      width="500"
+      height="500"
+      fill="white"
+      id="rect1"
+      style={{ fill: "#1a1a1a" }}
+      x="0"
+      y="0"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="m 220.0393,203.76542 v -20.39153 l 29.47409,-61.17051 h 22.67197 l 29.4741,61.17051 v 20.39153 h -22.67197 v -15.17908 l -17.91236,-37.60908 h -0.4515 l -17.91102,37.60908 v 15.17908 z m 153.25882,79.29917 c -23.35056,0 -42.62281,-18.57879 -42.62281,-41.0088 v -76.80514 c 0,-22.65574 19.27225,-40.78034 42.62281,-40.78034 h 19.04516 c 23.57901,0 42.62281,18.1246 42.62281,40.78034 v 76.80514 c 0,22.43001 -19.0438,41.0088 -42.62281,41.0088 z m -20.17659,-41.0088 c 0,9.96934 9.29345,18.1273 20.17659,18.1273 h 19.04516 c 2.94687,0 5.89508,-0.68129 8.38911,-1.81543 l -47.61086,-77.48373 z m 8.16202,-91.53137 51.23767,83.60186 v -68.87563 c 0,-10.19508 -8.84061,-18.1246 -20.17794,-18.1246 h -19.04516 c -4.53385,0 -8.61486,1.35989 -12.01457,3.39837 z M 76.745763,124.47031 V 283.06459 H 99.41773 V 169.32896 l 27.8871,54.37514 h 12.24303 l 27.88576,-54.37514 v 113.73563 h 22.67333 V 124.47031 h -24.03186 l -32.64942,63.66318 -32.64805,-63.66318 z"
+      fill="#000D0A"
+      id="path1"
+      style={{ fill: "#ffffff", strokeWidth: "1.35178" }}
+    />
   </svg>
 );
 
@@ -535,6 +559,7 @@ const iconMap: Record<string, React.FC<{ width: number }>> = {
   [GATEWAY_APP_ID]: WormholeGatewayIcon,
   [GR_APP_ID]: StandardRelayerIcon,
   [LIQUIDITY_LAYER_APP_ID]: WormholeLiquidityLayerIcon,
+  [M_PORTAL_APP_ID]: MPortalIcon,
   [MAYAN_APP_ID]: MayanIcon,
   [MAYAN_MCTP_APP_ID]: MayanIcon,
   [MAYAN_SHUTTLE_APP_ID]: MayanIcon,
