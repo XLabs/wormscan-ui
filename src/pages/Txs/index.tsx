@@ -137,7 +137,7 @@ const Txs = () => {
   const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(["getLimit"], () =>
     getClient()
       .governor.getLimit()
-      .catch(() => null),
+      .catch((): null => null),
   );
 
   const getOperationsInput: GetOperationsInput = {
@@ -565,7 +565,7 @@ const Txs = () => {
                   <div className={`tx-chains to ${toChain && targetAddress ? "exists-to" : ""}`}>
                     <h4>TO</h4>
 
-                    {toChain && targetAddress ? (
+                    {toChain ? (
                       <div className="tx-chains-container">
                         <div className="tx-chains-container-item">
                           <Tooltip
@@ -581,28 +581,30 @@ const Txs = () => {
                             </div>
                           </Tooltip>
 
-                          <div className="tx-chains-container-item-box">
-                            <div className="tx-chains-container-item-box-address">
-                              <a
-                                href={getExplorerLink({
-                                  network: currentNetwork,
-                                  chainId: toChain,
-                                  value: targetAddress,
-                                  base: "address",
-                                  isNativeAddress: true,
-                                })}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={stopPropagation}
-                              >
-                                {shortAddress(targetAddress).toUpperCase()}
-                              </a>
+                          {targetAddress && (
+                            <div className="tx-chains-container-item-box">
+                              <div className="tx-chains-container-item-box-address">
+                                <a
+                                  href={getExplorerLink({
+                                    network: currentNetwork,
+                                    chainId: toChain,
+                                    value: targetAddress,
+                                    base: "address",
+                                    isNativeAddress: true,
+                                  })}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={stopPropagation}
+                                >
+                                  {shortAddress(targetAddress).toUpperCase()}
+                                </a>
 
-                              <CopyToClipboard toCopy={targetAddress}>
-                                <CopyIcon />
-                              </CopyToClipboard>
+                                <CopyToClipboard toCopy={targetAddress}>
+                                  <CopyIcon />
+                                </CopyToClipboard>
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       </div>
                     ) : (

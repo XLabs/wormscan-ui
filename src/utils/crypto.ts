@@ -91,6 +91,14 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
 
   try {
     if (
+      platformToChains("Cosmwasm")
+        .map(a => toChainId(a))
+        .includes(chainId)
+    ) {
+      parsedValue = parsedValue.toUpperCase();
+    }
+
+    if (
       platformToChains("Evm")
         .map(a => toChainId(a))
         .includes(chainId)

@@ -644,7 +644,9 @@ const WORMHOLE_CHAINS: any = {
         return this.explorer?.[network] + "/assets/ibc/" + btoa(value.replace("ibc/", ""));
       }
       if (base === "block") return this.explorer?.[network] + "/block/" + value;
-      return this.explorer?.[network] + "/tx/" + value;
+      return (
+        WORMHOLE_CHAINS[chainToChainId("Wormchain")].explorer[network] + "/transactions/" + value
+      );
     },
   },
   [chainToChainId("Oasis")]: {
@@ -702,8 +704,8 @@ const WORMHOLE_CHAINS: any = {
     icon: OsmosisIcon,
     colorlessIcon: OsmosisColorlessIcon,
     explorer: {
-      Testnet: "https://Testnet.mintscan.io/osmosis-Testnet",
-      Devnet: "https://Testnet.mintscan.io/osmosis-Testnet",
+      Testnet: "https://www.mintscan.io/osmosis-testnet/",
+      Devnet: "https://www.mintscan.io/osmosis-testnet/",
       Mainnet: "https://www.mintscan.io/osmosis",
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
@@ -962,8 +964,8 @@ const WORMHOLE_CHAINS: any = {
     icon: WormChainIcon,
     colorlessIcon: WormChainColorlessIcon,
     explorer: {
-      Testnet: "",
-      Devnet: "",
+      Testnet: "https://gatewayexplorer.testnet.wormholescan.io/wormhole",
+      Devnet: "https://gatewayexplorer.testnet.wormholescan.io/wormhole",
       Mainnet: "https://bigdipper.live/wormhole",
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
@@ -1173,7 +1175,8 @@ export const getExplorerLink = ({
   if (
     chainId === chainToChainId("Kujira") ||
     chainId === chainToChainId("Evmos") ||
-    chainId === chainToChainId("Osmosis")
+    chainId === chainToChainId("Osmosis") ||
+    chainId === chainToChainId("Noble")
   ) {
     parsedValue = parsedValue.startsWith("0x") ? parsedValue.replace("0x", "") : parsedValue;
   }
