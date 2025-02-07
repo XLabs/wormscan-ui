@@ -800,6 +800,22 @@ const WORMHOLE_CHAINS: any = {
       return this.explorer?.[network] + "/txs/" + value;
     },
   },
+  [chainToChainId("Seievm")]: {
+    name: "Seievm",
+    icon: SeiIcon,
+    colorlessIcon: SeiColorlessIcon,
+    explorer: {
+      Testnet: "https://testnet.seistream.app",
+      Devnet: "https://devnet.seistream.app",
+      Mainnet: "https://seistream.app",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/account/" + value;
+      if (base === "token") return this.explorer?.[network] + "/contracts/" + value;
+      if (base === "block") return this.explorer?.[network] + "/blocks/" + value;
+      return this.explorer?.[network] + "/transactions/" + value;
+    },
+  },
   [chainToChainId("Sepolia")]: {
     name: "Sepolia",
     icon: EthereumIcon,
