@@ -872,40 +872,20 @@ const Overview = ({
 
                 <div className="tx-overview-section-row-info-container-value">
                   <div className="text">
-                    {Number(fee) ? (
+                    {!isAttestation ? redeemedAmount : ""}{" "}
+                    {TARGET_SYMBOL ? (
                       <>
-                        {!isAttestation ? redeemedAmount : ""}{" "}
-                        {TARGET_SYMBOL &&
-                          (targetTokenLink ? (
-                            <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
-                              {TARGET_SYMBOL}
-                            </a>
-                          ) : (
-                            <span>{TARGET_SYMBOL}</span>
-                          ))}
+                        {targetTokenLink ? (
+                          <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
+                            {TARGET_SYMBOL}
+                          </a>
+                        ) : (
+                          <span>{TARGET_SYMBOL}</span>
+                        )}
                       </>
                     ) : (
-                      tokenAmount && (
-                        <>
-                          {!isAttestation ? amountSent : ""}{" "}
-                          {TARGET_SYMBOL ? (
-                            <>
-                              {targetTokenLink ? (
-                                <a href={targetTokenLink} target="_blank" rel="noopener noreferrer">
-                                  {TARGET_SYMBOL}
-                                </a>
-                              ) : (
-                                <span>{TARGET_SYMBOL}</span>
-                              )}
-                              <span>{amountSentUSD && `($${amountSentUSD})`}</span>
-                            </>
-                          ) : (
-                            "N/A"
-                          )}
-                        </>
-                      )
+                      "N/A"
                     )}
-
                     {targetTokenInfo?.tokenImage &&
                     targetTokenInfo.tokenImage !== "missing.png" &&
                     targetTokenInfo.tokenImage !== "missing_large.png" &&
@@ -930,7 +910,6 @@ const Overview = ({
                         network={currentNetwork}
                       />
                     )}
-
                     {!!showMetaMaskBtn && (
                       <AddToMetaMaskBtn
                         className="tx-overview-metamask"
