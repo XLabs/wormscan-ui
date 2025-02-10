@@ -599,15 +599,15 @@ const WORMHOLE_CHAINS: any = {
     icon: NearIcon,
     colorlessIcon: NearColorlessIcon,
     explorer: {
-      Testnet: "https://explorer.Testnet.near.org",
-      Devnet: "https://explorer.Testnet.near.org",
-      Mainnet: "https://explorer.near.org",
+      Testnet: "https://testnet.nearblocks.io",
+      Devnet: "https://testnet.nearblocks.io",
+      Mainnet: "https://nearblocks.io",
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
       if (base === "token") return this.explorer?.[network] + "/token/" + value;
-      if (base === "block") return this.explorer?.[network] + "/block/" + value;
-      return this.explorer?.[network] + "/transactions/" + value;
+      if (base === "block") return this.explorer?.[network] + "/blocks/" + value;
+      return this.explorer?.[network] + "/txns/" + value;
     },
   },
   [chainToChainId("Neon")]: {
