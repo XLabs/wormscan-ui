@@ -9,6 +9,7 @@ import {
   chainToChainId,
   toChainId,
   chainIdToChain,
+  UniversalAddress,
 } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
@@ -728,6 +729,44 @@ const Tx = () => {
                 data.content.standarizedProperties.overwriteRedeemAmount = String(
                   +receivedAmount / 10 ** targetToken.tokenDecimals,
                 );
+              }
+            }
+          }
+        }
+
+        if (data?.content?.standarizedProperties?.appIds?.includes(LIQUIDITY_LAYER_APP_ID)) {
+          if (
+            data.content.payload?.payload?.payloadId === 1 &&
+            data.content.payload?.payload?.parsedRedeemerMessage?.outputToken?.address
+          ) {
+            const outputTokenAddress =
+              data.content.payload?.payload?.parsedRedeemerMessage?.outputToken?.address;
+
+            const targetTokenAddress = new UniversalAddress(outputTokenAddress)
+              .toNative(chainIdToChain(data.content.standarizedProperties?.toChain))
+              ?.toString();
+
+            const targetTokenInfo = await getTokenInformation(
+              data.content.standarizedProperties?.toChain,
+              environment,
+              targetTokenAddress,
+            );
+
+            if (targetTokenInfo) {
+              data.content.standarizedProperties.overwriteTargetTokenAddress = targetTokenAddress;
+              data.content.standarizedProperties.overwriteTargetSymbol = targetTokenInfo.symbol;
+              data.content.standarizedProperties.overwriteTargetTokenChain =
+                data.content.standarizedProperties?.toChain;
+
+              if (
+                targetTokenInfo.tokenDecimals &&
+                data.content.payload?.payload?.parsedRedeemerMessage?.outputToken?.swap?.limitAmount
+              ) {
+                data.content.standarizedProperties.overwriteRedeemAmount = `${
+                  +data.content.payload?.payload?.parsedRedeemerMessage?.outputToken?.swap
+                    ?.limitAmount /
+                  10 ** targetTokenInfo.tokenDecimals
+                }`;
               }
             }
           }

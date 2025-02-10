@@ -99,6 +99,7 @@ const Overview = ({
   resultLog,
   setShowOverview,
   showMetaMaskBtn,
+  showMinReceivedTooltip,
   showSignatures,
   sourceAddress,
   sourceFee,
@@ -909,6 +910,23 @@ const Overview = ({
                         chainId={toChain ? toChain : 0}
                         network={currentNetwork}
                       />
+                    )}
+                    {showMinReceivedTooltip && (
+                      <Tooltip
+                        type="info"
+                        tooltip={
+                          <div>
+                            <p>
+                              This is the minimum amount of tokens that will be received. Actual
+                              value can be higher
+                            </p>
+                          </div>
+                        }
+                      >
+                        <span>
+                          <InfoCircleIcon />
+                        </span>
+                      </Tooltip>
                     )}
                     {!!showMetaMaskBtn && (
                       <AddToMetaMaskBtn
