@@ -450,7 +450,7 @@ const Information = ({
     parsedDestinationAddress,
     parsedEmitterAddress,
     parsedOriginAddress,
-    parsedPayload,
+    parsedPayload: parsedPayload ?? payload,
     parsedRedeemTx,
     payloadType,
     redeemedAmount,
