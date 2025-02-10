@@ -39,6 +39,7 @@ import {
   IManualCctpResponse,
   tryGetAddressInfo,
   tryGetWrappedToken,
+  getLiquidityLayerTokenInfo,
 } from "src/utils/cryptoToolkit";
 import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import { useRecoilState } from "recoil";
@@ -56,7 +57,9 @@ import {
   GATEWAY_APP_ID,
   GR_APP_ID,
   IStatus,
+  LIQUIDITY_LAYER_APP_ID,
   MAYAN_MCTP_APP_ID,
+  MAYAN_SHUTTLE_APP_ID,
   NTT_APP_ID,
   PORTAL_APP_ID,
   PORTAL_NFT_APP_ID,
@@ -71,6 +74,7 @@ import { BlockSection } from "src/components/molecules";
 import "./styles.scss";
 import { mainnetNativeCurrencies, testnetNativeCurrencies } from "src/utils/environment";
 import getMayanMctpInfo from "src/utils/mayan";
+import { formatNumber } from "src/utils/number";
 
 const Tx = () => {
   useEffect(() => {
@@ -122,7 +126,7 @@ const Tx = () => {
   const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(["getLimit"], () =>
     getClient()
       .governor.getLimit()
-      .catch(() => null),
+      .catch((): null => null),
   );
 
   const cancelRequests = useRef(false);
@@ -275,7 +279,7 @@ const Tx = () => {
           }
           return null;
         })
-        .catch(() => {
+        .catch((): null => {
           return null;
         });
 
@@ -294,7 +298,7 @@ const Tx = () => {
           }
           return null;
         })
-        .catch(() => {
+        .catch((): null => {
           return null;
         });
 
@@ -331,19 +335,18 @@ const Tx = () => {
             let solanaResponse: IManualCctpResponse | null;
             let suiResponse: IManualCctpResponse | null;
             let aptosResponse: IManualCctpResponse | null;
-
             if (canBeSolanaTxHash) {
-              solanaResponse = await getSolanaCctp(network, txHash).catch(() => null);
+              solanaResponse = await getSolanaCctp(network, txHash).catch((): null => null);
               suiResponse = solanaResponse
                 ? null
-                : await getSuiCctp(network, txHash).catch(() => null);
+                : await getSuiCctp(network, txHash).catch((): null => null);
               aptosResponse = null;
             }
 
             if (isEvmTxHash) {
               solanaResponse = null;
               suiResponse = null;
-              aptosResponse = await getAptosCctp(network, txHash).catch(() => null);
+              aptosResponse = await getAptosCctp(network, txHash).catch((): null => null);
             }
 
             const resp: IManualCctpResponse = solanaResponse || suiResponse || aptosResponse;
@@ -664,6 +667,69 @@ const Tx = () => {
               network,
               data.content?.standarizedProperties?.toChain as ChainId,
             );
+          }
+        }
+        // ----
+
+        // check Wormhole Liquidity Layer
+        if (
+          data?.content?.standarizedProperties?.appIds?.includes(LIQUIDITY_LAYER_APP_ID) &&
+          data.content.payload?.payloadId === 11
+        ) {
+          const liquidityLayerTokenInfo = await getLiquidityLayerTokenInfo(
+            network,
+            data.sourceChain?.transaction?.txHash,
+            data.sourceChain?.chainId,
+          );
+
+          if (liquidityLayerTokenInfo) {
+            if (liquidityLayerTokenInfo.type === "SwapAndForwardedEth") {
+              data.data = {
+                symbol:
+                  network === "Testnet"
+                    ? testnetNativeCurrencies[chainIdToChain(data.sourceChain?.chainId)]
+                    : mainnetNativeCurrencies[chainIdToChain(data.sourceChain?.chainId)],
+                tokenAmount: String(+liquidityLayerTokenInfo.amountIn / 10 ** 18),
+                usdAmount: "",
+              };
+            }
+
+            if (
+              liquidityLayerTokenInfo.type === "ForwardedERC20" ||
+              liquidityLayerTokenInfo.type === "SwapAndForwardedERC20"
+            ) {
+              data.data = {
+                symbol: liquidityLayerTokenInfo.symbol,
+                tokenAmount: String(
+                  +liquidityLayerTokenInfo.amountIn / 10 ** liquidityLayerTokenInfo.decimals,
+                ),
+                usdAmount: "",
+              };
+
+              data.content.standarizedProperties.tokenAddress = liquidityLayerTokenInfo.token;
+              data.content.standarizedProperties.tokenChain = data.sourceChain?.chainId;
+            }
+
+            if (data.targetChain?.balanceChanges?.length) {
+              const receivedAmount = data.targetChain?.balanceChanges[0]?.amount;
+              const receivedToken = data.targetChain?.balanceChanges[0]?.tokenAddress;
+
+              const targetToken = await getTokenInformation(
+                data.targetChain?.chainId,
+                environment,
+                receivedToken,
+              );
+
+              if (receivedAmount && targetToken) {
+                data.content.standarizedProperties.overwriteTargetTokenAddress = receivedToken;
+                data.content.standarizedProperties.overwriteTargetSymbol = targetToken.symbol;
+                data.content.standarizedProperties.overwriteTargetTokenChain =
+                  data.targetChain?.chainId;
+                data.content.standarizedProperties.overwriteRedeemAmount = String(
+                  +receivedAmount / 10 ** targetToken.tokenDecimals,
+                );
+              }
+            }
           }
         }
         // ----
@@ -1191,13 +1257,17 @@ const Tx = () => {
               data.content.standarizedProperties.overwriteTargetSymbol = targetSymbol;
 
             if (formattedFinalUserAmount)
-              data.content.standarizedProperties.overwriteRedeemAmount = formattedFinalUserAmount;
+              data.content.standarizedProperties.overwriteRedeemAmount = formatNumber(
+                +formattedFinalUserAmount,
+                7,
+              );
+
             data.content.standarizedProperties.overwriteFee = formattedRelayerFee;
           }
         }
         // ----
 
-        // check Mayan
+        // check Mayan MCTP
         if (data?.content?.standarizedProperties?.appIds?.includes(MAYAN_MCTP_APP_ID)) {
           if (data?.content?.payload?.action === 1 || data?.content?.payload?.action === 3) {
             try {

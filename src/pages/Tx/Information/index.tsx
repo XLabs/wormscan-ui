@@ -116,7 +116,6 @@ const Information = ({
 
   const fee = standarizedProperties?.overwriteFee || standarizedProperties?.fee || "";
   const {
-    amount,
     appIds,
     fromAddress: stdFromAddress,
     fromChain: stdFromChain,
@@ -192,10 +191,11 @@ const Information = ({
     chainId: toChain as ChainId,
   });
 
+  const amount = standarizedProperties?.amount || payload?.amount;
   const amountSent = formatNumber(Number(tokenAmount)) || formatNumber(formatUnits(+amount));
   const amountSentUSD = +usdAmount ? formatNumber(+usdAmount, 2) : "";
   const redeemedAmount = standarizedProperties?.overwriteRedeemAmount
-    ? formatNumber(+standarizedProperties?.overwriteRedeemAmount, 7)
+    ? standarizedProperties?.overwriteRedeemAmount
     : hasVAA || !isRPC
     ? formatNumber(formatUnits(+amount - +fee))
     : formatNumber(+amount - +fee);
@@ -338,7 +338,7 @@ const Information = ({
     !!toAddress &&
     !!(wrappedTokenAddress && tokenEffectiveAddress) &&
     !!timestamp &&
-    !!payload?.amount &&
+    !!amount &&
     !!data?.sourceChain?.transaction?.txHash &&
     !data?.targetChain?.transaction?.txHash;
 
@@ -352,7 +352,7 @@ const Information = ({
       toAddress,
       wrappedTokenAddress && tokenEffectiveAddress,
       timestamp,
-      payload?.amount,
+      amount,
       data?.sourceChain?.transaction?.txHash,
       +VAAId?.split("/")?.pop() || 0, //sequence
     );
