@@ -67,6 +67,7 @@ export type OverviewProps = {
   resultLog?: string;
   setShowOverview?: (newView: "overview" | "advanced" | "progress") => void;
   showMetaMaskBtn?: boolean;
+  showMinReceivedTooltip?: boolean;
   showSignatures?: boolean;
   showVerifyRedemption?: boolean;
   sourceAddress?: string;
