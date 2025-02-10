@@ -742,13 +742,9 @@ const Tx = () => {
             const outputTokenAddress =
               data.content.payload?.payload?.parsedRedeemerMessage?.outputToken?.address;
 
-            console.log({ outputTokenAddress });
-
             const targetTokenAddress = new UniversalAddress(outputTokenAddress)
               .toNative(chainIdToChain(data.content.standarizedProperties?.toChain))
               ?.toString();
-
-            console.log({ targetTokenAddress });
 
             const targetTokenInfo = await getTokenInformation(
               data.content.standarizedProperties?.toChain,
