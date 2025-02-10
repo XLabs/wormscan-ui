@@ -316,7 +316,7 @@ export interface GetOperationsOutput {
       fee?: string;
       fromAddress?: string | null;
       parsedPayload?: any;
-      payload?: string;
+      payload?: any;
       payloadId?: number;
       payloadType?: number;
       toAddress?: string;

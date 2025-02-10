@@ -15,6 +15,7 @@ import {
   ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
+  LIQUIDITY_LAYER_APP_ID,
   MAYAN_APP_ID,
   PORTAL_APP_ID,
   txType,
@@ -36,6 +37,7 @@ import AdvancedView from "./AdvancedView";
 import ProgressView from "./ProgressView";
 import Summary from "./Summary";
 import "./styles.scss";
+import { OverviewProps } from "src/utils/txPageUtils";
 
 interface Props {
   blockData: GetBlockData;
@@ -419,7 +421,12 @@ const Information = ({
   const showVerifyRedemption =
     status === "pending_redeem" && (isJustPortalUnknown || isConnect || isGateway);
 
-  const overviewAndDetailProps = {
+  const showMinReceivedTooltip = !!(
+    data.content?.standarizedProperties?.appIds?.includes(LIQUIDITY_LAYER_APP_ID) &&
+    data.content?.payload?.payload?.parsedRedeemerMessage?.outputToken?.swap?.limitAmount
+  );
+
+  const overviewAndDetailProps: OverviewProps = {
     action,
     amountSent,
     amountSentUSD,
@@ -459,6 +466,7 @@ const Information = ({
     showMetaMaskBtn,
     showSignatures: !(appIds && appIds.includes(CCTP_MANUAL_APP_ID)),
     showVerifyRedemption,
+    showMinReceivedTooltip,
     sourceFee,
     sourceFeeUSD,
     sourceSymbol,
