@@ -5,7 +5,7 @@ import WormholeConnect, {
   MayanRouteWH,
   nttRoutes,
   WormholeConnectConfig,
-} from "@wormhole-foundation/wormhole-connect";
+} from "@xlabs/wormhole-connect";
 import { useEffect, useState } from "react";
 import { ChainId, chainIdToChain, Network } from "@wormhole-foundation/sdk";
 import { Loader } from "src/components/atoms";

@@ -75,7 +75,7 @@
     "@wormhole-foundation/sdk": "^1.4.5",
     "@wormhole-foundation/sdk-solana": "^1.4.5",
     "@wormhole-foundation/sdk-solana-core": "^1.4.5",
-    "@wormhole-foundation/wormhole-connect": "file:.yalc/@wormhole-foundation/wormhole-connect",
+    "@xlabs/wormhole-connect": "^1.0.0-fork.2-development",
     "analytics": "^0.8.9",
     "apexcharts": "^3.49.1",
     "axios": "^1.4.0",
