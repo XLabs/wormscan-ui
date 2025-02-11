@@ -43,7 +43,7 @@ const MAINNET_RPCS = {
   mantle: "https://rpc.mantle.xyz",
   near: "https://rpc.mainnet.near.org",
   oasis: "https://emerald.oasis.dev",
-  optimism: "https://endpoints.omniatech.io/v1/op/mainnet/public",
+  optimism: "https://1rpc.io/op",
   polygon: "https://1rpc.io/matic",
   scroll: "https://rpc.ankr.com/scroll",
   solana: process.env.SOLANA_RPC ?? "https://api.mainnet-beta.solana.com",
@@ -73,6 +73,7 @@ const TESTNET_RPCS = {
   blast: "https://sepolia.blast.io",
   xlayer: "https://xlayertestrpc.okx.com",
   snaxchain: "https://testnet.snaxchain.io/",
+  monad_devnet: `${process.env.WORMSCAN_BFF_URL}/monadRpcCall`,
 };
 
 export type Environment = {
@@ -127,12 +128,15 @@ export const testnetNativeCurrencies: { [key: string]: string } = {
   [chainIdToChain(39)]: "BERA",
   [chainIdToChain(40)]: "SEI",
   [chainIdToChain(43)]: "ETH",
+  [chainIdToChain(45)]: "ETH",
+  [chainIdToChain(48)]: "MON",
   [chainIdToChain(10002)]: "ETH",
   [chainIdToChain(10003)]: "ETH",
   [chainIdToChain(10004)]: "ETH",
   [chainIdToChain(10005)]: "ETH",
   [chainIdToChain(10006)]: "ETH",
   [chainIdToChain(10007)]: "MATIC",
+  [chainIdToChain(10008)]: "MON",
 };
 
 export const mainnetNativeCurrencies: { [key: string]: string } = {
@@ -172,6 +176,8 @@ export const mainnetNativeCurrencies: { [key: string]: string } = {
   [chainIdToChain(39)]: "BERA",
   [chainIdToChain(40)]: "SEI",
   [chainIdToChain(43)]: "ETH",
+  [chainIdToChain(45)]: "ETH",
+  [chainIdToChain(48)]: "MON",
 };
 
 export const testnetDefaultDeliveryProviderContractAddress =
@@ -226,6 +232,14 @@ export const testnetEnv: Environment = {
       evmNetworkId: 80002, // https://chainlist.org/chain/80002
       nativeCurrencyDecimals: 18,
       rpcUrl: TESTNET_RPCS.polygon_sepolia || "",
+    },
+    {
+      chainId: 10008 as ChainId,
+      chainName: "MonadDevnet",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 20143, // https://chainlist.org/chain/20143
+      nativeCurrencyDecimals: 18,
+      rpcUrl: TESTNET_RPCS.monad_devnet || "",
     },
     {
       chainId: 4 as ChainId,

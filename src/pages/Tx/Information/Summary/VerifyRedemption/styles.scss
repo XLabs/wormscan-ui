@@ -2,4 +2,9 @@
 
 .verify-redemption {
   @include button-primary;
+
+  &-text {
+    @include button-ghost;
+    display: inline-flex;
+  }
 }

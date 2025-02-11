@@ -75,15 +75,15 @@ const Txs = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const params: IParams = {
-    page: searchParams.get("page") || null,
-    address: searchParams.get("address") || null,
-    appId: searchParams.get("appId") || null,
-    exclusiveAppId: searchParams.get("exclusiveAppId") || null,
-    sourceChain: searchParams.get("sourceChain") || null,
-    targetChain: searchParams.get("targetChain") || null,
-    payloadType: searchParams.get("payloadType") || null,
-    from: searchParams.get("from") || null,
-    to: searchParams.get("to") || null,
+    page: searchParams.get("page") || "",
+    address: searchParams.get("address") || "",
+    appId: searchParams.get("appId") || "",
+    exclusiveAppId: searchParams.get("exclusiveAppId") || "",
+    sourceChain: searchParams.get("sourceChain") || "",
+    targetChain: searchParams.get("targetChain") || "",
+    payloadType: searchParams.get("payloadType") || "",
+    from: searchParams.get("from") || "",
+    to: searchParams.get("to") || "",
   };
 
   useEffect(() => {
@@ -137,7 +137,7 @@ const Txs = () => {
   const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(["getLimit"], () =>
     getClient()
       .governor.getLimit()
-      .catch(() => null),
+      .catch((): null => null),
   );
 
   const getOperationsInput: GetOperationsInput = {
@@ -336,16 +336,13 @@ const Txs = () => {
                 : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
                 ? "external_tx"
                 : tx.vaa?.raw
-                ? isConnect || isPortal || isCCTP
-                  ? (canWeGetDestinationTx(toChain) &&
-                      !hasAnotherApp &&
-                      (!isTransferWithPayload ||
-                        (isTransferWithPayload && isConnect) ||
-                        (isTransferWithPayload && isTBTC))) ||
-                    isCCTP
-                    ? "pending_redeem"
-                    : "vaa_emitted"
-                  : "vaa_emitted"
+                ? canWeGetDestinationTx({
+                    appIds,
+                    network: currentNetwork,
+                    targetChain: tx?.content?.standarizedProperties?.toChain,
+                  })
+                  ? "pending_redeem"
+                  : "completed"
                 : isBigTransaction || isDailyLimitExceeded
                 ? "in_governors"
                 : "in_progress";
@@ -568,7 +565,7 @@ const Txs = () => {
                   <div className={`tx-chains to ${toChain && targetAddress ? "exists-to" : ""}`}>
                     <h4>TO</h4>
 
-                    {toChain && targetAddress ? (
+                    {toChain ? (
                       <div className="tx-chains-container">
                         <div className="tx-chains-container-item">
                           <Tooltip
@@ -584,28 +581,30 @@ const Txs = () => {
                             </div>
                           </Tooltip>
 
-                          <div className="tx-chains-container-item-box">
-                            <div className="tx-chains-container-item-box-address">
-                              <a
-                                href={getExplorerLink({
-                                  network: currentNetwork,
-                                  chainId: toChain,
-                                  value: targetAddress,
-                                  base: "address",
-                                  isNativeAddress: true,
-                                })}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={stopPropagation}
-                              >
-                                {shortAddress(targetAddress).toUpperCase()}
-                              </a>
+                          {targetAddress && (
+                            <div className="tx-chains-container-item-box">
+                              <div className="tx-chains-container-item-box-address">
+                                <a
+                                  href={getExplorerLink({
+                                    network: currentNetwork,
+                                    chainId: toChain,
+                                    value: targetAddress,
+                                    base: "address",
+                                    isNativeAddress: true,
+                                  })}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={stopPropagation}
+                                >
+                                  {shortAddress(targetAddress).toUpperCase()}
+                                </a>
 
-                              <CopyToClipboard toCopy={targetAddress}>
-                                <CopyIcon />
-                              </CopyToClipboard>
+                                <CopyToClipboard toCopy={targetAddress}>
+                                  <CopyIcon />
+                                </CopyToClipboard>
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       </div>
                     ) : (

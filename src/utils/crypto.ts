@@ -1,6 +1,7 @@
 import {
   ChainId,
   chainIdToChain,
+  encoding,
   platformToChains,
   toChainId,
   toNative,
@@ -57,6 +58,19 @@ export const parseAddress = ({
     if (
       anyChain
         ? true
+        : platformToChains("Cosmwasm")
+            .map(a => toChainId(a))
+            .includes(chainId)
+    ) {
+      const raw = encoding.bech32.decodeToBytes(value);
+      if (raw.bytes.slice(0, 12).every(item => item === 0)) {
+        parsedValue = encoding.bech32.encodeFromBytes(raw.prefix, raw.bytes.slice(12));
+      }
+    }
+
+    if (
+      anyChain
+        ? true
         : platformToChains("Evm")
             .map(a => toChainId(a))
             .includes(chainId)
@@ -76,6 +90,14 @@ export const parseTx = ({ value, chainId }: { value: string; chainId: ChainId })
   let parsedValue = value;
 
   try {
+    if (
+      platformToChains("Cosmwasm")
+        .map(a => toChainId(a))
+        .includes(chainId)
+    ) {
+      parsedValue = parsedValue.toUpperCase();
+    }
+
     if (
       platformToChains("Evm")
         .map(a => toChainId(a))

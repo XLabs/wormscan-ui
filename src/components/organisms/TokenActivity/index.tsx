@@ -41,13 +41,10 @@ const SCALE_CHART_LIST = [
 ];
 
 const RANGE_LIST = [
-  { label: "Last 24 hours", value: getISODateZeroed(1), timespan: "1h", shortLabel: "24H" },
-  { label: "Last 7 days", value: getISODateZeroed(7), timespan: "1d", shortLabel: "7D" },
-  { label: "Last 15 days", value: getISODateZeroed(15), timespan: "1d", shortLabel: "15D" },
-  { label: "Last 30 days", value: getISODateZeroed(30), timespan: "1d", shortLabel: "30D" },
-  // TODO: add when the endpoint supports it
-  // { label: "Last 365 days", value: getISODateZeroed(365), timespan: "1mo", shortLabel: "365D" },
-  // { label: "All Time", value: firstDataAvailableDate, timespan: "1mo", shortLabel: "All" },
+  { label: "Last 7 days", value: getISODateZeroed(7), timespan: "1d", timeRange: "7d" },
+  { label: "Last 14 days", value: getISODateZeroed(14), timespan: "1d", timeRange: "14d" },
+  { label: "Last 30 days", value: getISODateZeroed(30), timespan: "1d", timeRange: "30d" },
+  { label: "Last 90 days", value: getISODateZeroed(90), timespan: "1d", timeRange: "90d" },
 ];
 
 const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
@@ -80,12 +77,12 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   const [rowSelected, setRowSelected] = useState<number>(0);
 
   const [filters, setFiltersState] = useState({
-    from: getISODateZeroed(1),
+    from: getISODateZeroed(7),
     to: todayISOString,
-    timespan: "1h",
+    timespan: "1d",
     sourceChain: [],
     targetChain: [],
-    symbol: { label: "USDC", value: "USDC" },
+    symbol: { label: "", value: "" },
   });
 
   const setFilters = (newFilters: typeof filters, timeRange?: string) => {
@@ -125,27 +122,40 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   }));
 
   const {
-    isLoading: isLoadingList,
+    isFetching: isFetchingList,
     isError: isErrorList,
     data: dataList,
-  } = useQuery(["tokensSymbolVolume", currentNetwork], async () => {
-    const response = await getClient().guardianNetwork.getTokensSymbolVolume({
-      limit: isMainnet ? 16 : 10,
-    });
-
-    const excludedSymbols = ["UST", "LUNA", "stETH", "XCN", "sAVAX", "FTX Token"];
-    const filteredResponse = response.filter(token => !excludedSymbols.includes(token.symbol));
-
-    if (filters.symbol.value !== filteredResponse[0].symbol) {
-      setFilters({
-        ...filters,
-        symbol: { label: filteredResponse[0].symbol, value: filteredResponse[0].symbol },
+  } = useQuery(
+    ["tokensSymbolVolume", currentNetwork, selectedTopAssetTimeRange],
+    async () => {
+      const response = await getClient().guardianNetwork.getTokensSymbolVolume({
+        limit: 10,
+        timeRange: selectedTopAssetTimeRange?.timeRange as "7d" | "14d" | "30d" | "90d",
       });
-    }
+      return response;
+    },
+    {
+      onSuccess: response => {
+        const updateFiltersAndSelection = (index: number) => {
+          const newSymbol = response[index]?.symbol;
+          if (rowSelected !== index) setRowSelected(index);
+          if (filters.symbol.value !== newSymbol) {
+            setFilters({
+              ...filters,
+              symbol: {
+                label: newSymbol,
+                value: newSymbol,
+              },
+            });
+          }
+        };
 
-    setRowSelected(0);
-    return filteredResponse;
-  });
+        // find the index of the current symbol in the response, or use the first symbol if not found
+        const symbolIndex = response.findIndex(item => item.symbol === filters.symbol.value);
+        updateFiltersAndSelection(symbolIndex === -1 ? 0 : symbolIndex);
+      },
+    },
+  );
 
   const {
     isLoading: isLoadingChart,
@@ -170,6 +180,9 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
         sourceChain: sourceChains,
         targetChain: targetChains,
       }),
+    {
+      enabled: !!dataList && dataList.length > 0 && !isFetchingList,
+    },
   );
 
   const applyFilters = () => {
@@ -223,7 +236,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
       {openFilters && !isDesktop && <div className="token-activity-bg" />}
 
       <h3 className="token-activity-title">
-        <ActivityIcon /> Top 10 Tokens Transferred <span>(All Time)</span>
+        <ActivityIcon /> Top 10 Tokens Transferred
         <div className="token-activity-title-fullscreen" ref={fullscreenBtnRef}>
           <FullscreenIcon width={20} />
         </div>
@@ -419,7 +432,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
 
             {isErrorList ? (
               <ErrorPlaceholder />
-            ) : isLoadingList ? (
+            ) : isFetchingList ? (
               <div className="token-activity-container-content-list-loader">
                 {Array.from({ length: 10 }).map((_, i) => (
                   <div className="token-activity-container-content-list-loader-row" key={i} />
@@ -460,7 +473,6 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
                       isError={isErrorChart}
                       isLoading={isLoadingChart}
                       metricSelected={metricSelected}
-                      rangeShortLabel={selectedTopAssetTimeRange.shortLabel}
                       rowSelected={rowSelected}
                       setScaleSelected={setScaleSelected}
                       scaleSelected={scaleSelected}
@@ -480,7 +492,6 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
               isError={isErrorChart}
               isLoading={isLoadingChart}
               metricSelected={metricSelected}
-              rangeShortLabel={selectedTopAssetTimeRange.shortLabel}
               rowSelected={rowSelected}
               setScaleSelected={setScaleSelected}
               scaleSelected={scaleSelected}

@@ -54,7 +54,7 @@ const ApiDoc = () => {
                 operationId: "tokens-symbol-volume",
                 parameters: [
                   {
-                    type: "number",
+                    type: "integer",
                     description: "Limit, default is 10.",
                     name: "limit",
                     in: "query",
@@ -112,14 +112,14 @@ const ApiDoc = () => {
                     required: true,
                   },
                   {
-                    type: "number",
+                    type: "integer",
                     description: "Source chain",
                     name: "sourceChain",
                     in: "query",
                     required: false,
                   },
                   {
-                    type: "number",
+                    type: "integer",
                     description: "Target chain",
                     name: "targetChain",
                     in: "query",
@@ -193,6 +193,172 @@ const ApiDoc = () => {
             });
           }
         });
+
+        const pathsToAddInfo = {
+          "/api/v1/governor/config/{guardian_address}": [
+            {
+              type: "string",
+              description: "Guardian address",
+              name: "guardian_address",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/governor/enqueued_vaas/{chain}": [
+            {
+              type: "integer",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/governor/notional/available/{chain}": [
+            {
+              type: "integer",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/governor/status/{guardian_address}": [
+            {
+              type: "string",
+              description: "Guardian address",
+              name: "guardian_address",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/observations/{chain}": [
+            {
+              type: "integer",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/observations/{chain}/{emitter}": [
+            {
+              type: "integer",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "string",
+              description: "Emitter address",
+              name: "emitter",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/observations/{chain}/{emitter}/{sequence}": [
+            {
+              type: "integer",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "string",
+              description: "Emitter address",
+              name: "emitter",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "integer",
+              description: "Sequence",
+              name: "sequence",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/observations/{chain}/{emitter}/{sequence}/{signer}/{hash}": [
+            {
+              type: "integer",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "string",
+              description: "Emitter address",
+              name: "emitter",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "integer",
+              description: "Sequence",
+              name: "sequence",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "string",
+              description: "Signer address",
+              name: "signer",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "string",
+              description: "Hash",
+              name: "hash",
+              in: "path",
+              required: true,
+            },
+          ],
+          "/api/v1/relays/{chain}/{emitter}/{sequence}": [
+            {
+              type: "integer",
+              description: "Blockchain ID",
+              name: "chain",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "string",
+              description: "Emitter address",
+              name: "emitter",
+              in: "path",
+              required: true,
+            },
+            {
+              type: "integer",
+              description: "Sequence",
+              name: "sequence",
+              in: "path",
+              required: true,
+            },
+          ],
+        };
+
+        const updatedPaths = Object.entries(pathsToAddInfo).reduce(
+          (acc, [path, newParameters]) => {
+            if (acc[path]?.get) {
+              const existingParameters = acc[path].get.parameters || [];
+              const existingNames = new Set(
+                existingParameters.map((param: { name: string }) => param.name),
+              );
+              const uniqueParameters = newParameters.filter(
+                param => !existingNames.has(param.name),
+              );
+              acc[path].get.parameters = [...existingParameters, ...uniqueParameters];
+            }
+            return acc;
+          },
+          { ...data.paths },
+        );
+
+        data.paths = updatedPaths;
 
         setSwaggerSpec(data);
       } catch (error) {

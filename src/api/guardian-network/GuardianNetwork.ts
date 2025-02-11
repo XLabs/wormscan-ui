@@ -79,7 +79,10 @@ export class GuardianNetwork {
       if (data?.content?.standarizedProperties?.appIds?.includes(FAST_TRANSFERS_APP_ID)) {
         // AppID patch
         if (data?.content?.standarizedProperties?.appIds?.includes(SWAP_LAYER_APP_ID)) {
-          data.content.standarizedProperties.appIds = [MAYAN_SHUTTLE_APP_ID];
+          data.content.standarizedProperties.appIds = [
+            MAYAN_SHUTTLE_APP_ID,
+            LIQUIDITY_LAYER_APP_ID,
+          ];
         } else {
           data.content.standarizedProperties.appIds = [LIQUIDITY_LAYER_APP_ID];
         }
@@ -103,6 +106,7 @@ export class GuardianNetwork {
 
         // If this is first element or has different txHash than previous, keep it
         if (
+          !current?.sourceChain?.transaction?.txHash ||
           !lastElement ||
           lastElement?.sourceChain?.transaction?.txHash !==
             current?.sourceChain?.transaction?.txHash
@@ -145,8 +149,14 @@ export class GuardianNetwork {
 
   async getTokensSymbolVolume({
     limit,
+    timeRange,
   }: TokensSymbolVolumeInput): Promise<TokensSymbolVolumeOutput[]> {
-    const url = limit ? `/tokens-symbol-volume?limit=${limit}` : "/tokens-symbol-volume";
+    const params = new URLSearchParams();
+
+    if (limit) params.append("limit", limit.toString());
+    if (timeRange) params.append("timeRange", timeRange);
+
+    const url = `/tokens-symbol-volume?${params.toString()}`;
     const payload = await this._client.doGet<TokensSymbolVolumeOutput[]>(url);
     return payload;
   }
@@ -352,7 +362,9 @@ export class GuardianNetwork {
   }
 
   async getObservationForTxHash(txHash: string): Promise<Observation[]> {
-    const payload = await this._client.doGet<[]>(`/observations?txHash=${txHash}`);
+    const payload = await this._client.doGet<[]>(
+      `/observations?txHash=${txHash}&pageSize=20&page=0&sortOrder=ASC`,
+    );
     return payload || [];
   }
 

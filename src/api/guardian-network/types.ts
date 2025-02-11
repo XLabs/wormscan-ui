@@ -45,6 +45,7 @@ export type VAACount = {
 
 export interface TokensSymbolVolumeInput {
   limit: number;
+  timeRange: "7d" | "14d" | "30d" | "90d";
 }
 
 export interface TokensSymbolVolumeOutput {
@@ -315,7 +316,7 @@ export interface GetOperationsOutput {
       fee?: string;
       fromAddress?: string | null;
       parsedPayload?: any;
-      payload?: string;
+      payload?: any;
       payloadId?: number;
       payloadType?: number;
       toAddress?: string;
@@ -422,6 +423,11 @@ export interface GetOperationsOutput {
     fee?: string;
     gasTokenNotional?: string;
     feeUSD?: string;
+    balanceChanges?: {
+      amount: string;
+      recipient: string;
+      tokenAddress: string;
+    }[];
   };
   data: {
     symbol: string;

@@ -133,46 +133,33 @@ export const MinRemainingBar = ({ percentage, color }: { percentage: number; col
 
 export const columnsDashboard: Column[] | any = [
   {
-    Header: "CHAIN",
+    Header: "Chain",
     accessor: "chain",
     sortType: (rowA: Row<IRowDashboard>, rowB: Row<IRowDashboard>) => {
       const a = rowA.original.chainName.toUpperCase();
       const b = rowB.original.chainName.toUpperCase();
-
       return a.localeCompare(b);
     },
   },
   {
-    Header: (
-      <>
-        SINGLE TRANSACTION LIMIT
-        <SingleTxLimitTooltip />
-      </>
-    ),
+    Header: "Single Transaction Limit",
+    Tooltip: <SingleTxLimitTooltip />,
     accessor: "singleTransactionLimit",
     sortType: (rowA: Row<IRowDashboard>, rowB: Row<IRowDashboard>) => {
       return rowA.original.maxTransactionSize - rowB.original.maxTransactionSize;
     },
   },
   {
-    Header: (
-      <>
-        DAILY LIMIT
-        <DailyLimitTooltip />
-      </>
-    ),
+    Header: "Daily Limit",
+    Tooltip: <DailyLimitTooltip />,
     accessor: "dailyLimit",
     sortType: (rowA: Row<IRowDashboard>, rowB: Row<IRowDashboard>) => {
       return rowA.original.notionalLimit - rowB.original.notionalLimit;
     },
   },
   {
-    Header: (
-      <>
-        REMAINING TRANSACTION LIMIT
-        <RemainingTxLimitTooltip />
-      </>
-    ),
+    Header: "Remaining Transaction Limit",
+    Tooltip: <RemainingTxLimitTooltip />,
     accessor: "remainingTransactionLimit",
     sortType: (rowA: Row<IRowDashboard>, rowB: Row<IRowDashboard>) => {
       return rowA.original.availableNotional - rowB.original.availableNotional;
@@ -182,7 +169,7 @@ export const columnsDashboard: Column[] | any = [
 
 export const columnsTransactions: Column[] | any = [
   {
-    Header: "CHAIN",
+    Header: "Chain",
     accessor: "chain",
     sortType: (rowA: Row<IRowTransaction>, rowB: Row<IRowTransaction>) => {
       const a = rowA.original.chainName.toUpperCase();
@@ -192,7 +179,7 @@ export const columnsTransactions: Column[] | any = [
     },
   },
   {
-    Header: "TX HASH",
+    Header: "Tx Hash",
     accessor: "txHash",
     sortType: (rowA: Row<IRowTransaction>, rowB: Row<IRowTransaction>) => {
       const a = rowA.original.parseTxHash.toUpperCase();
@@ -202,14 +189,14 @@ export const columnsTransactions: Column[] | any = [
     },
   },
   {
-    Header: "AMOUNT",
+    Header: "Amount",
     accessor: "amount",
     sortType: (rowA: Row<IRowTransaction>, rowB: Row<IRowTransaction>) => {
       return +rowA.original.usdAmount - +rowB.original.usdAmount;
     },
   },
   {
-    Header: "STATUS",
+    Header: "Status",
     accessor: "status",
     sortType: (rowA: Row<IRowTransaction>, rowB: Row<IRowTransaction>) => {
       const a = rowA.original.formatedStatus.toUpperCase();
@@ -219,7 +206,7 @@ export const columnsTransactions: Column[] | any = [
     },
   },
   {
-    Header: "RELEASE TIME",
+    Header: "Release Time",
     accessor: "releaseTime",
     sortType: (rowA: Row<IRowTransaction>, rowB: Row<IRowTransaction>) => {
       const a = new Date(rowA.original.releaseDate);
@@ -228,24 +215,4 @@ export const columnsTransactions: Column[] | any = [
       return a.getTime() - b.getTime();
     },
   },
-];
-
-export const SORT_DASHBOARD_BY_LIST = [
-  { label: "Chain", value: "chain" },
-  { label: "Single Transaction Limit", value: "singleTransactionLimit" },
-  { label: "Daily Limit", value: "dailyLimit" },
-  { label: "Remaining Transaction Limit", value: "remainingTransactionLimit" },
-];
-
-export const SORT_TRANSACTIONS_BY_LIST = [
-  { label: "Chain", value: "chain" },
-  { label: "Tx Hash", value: "txHash" },
-  { label: "Amount", value: "amount" },
-  { label: "Status", value: "status" },
-  { label: "Release Time", value: "releaseTime" },
-];
-
-export const SORT_LOW_HIGH_LIST = [
-  { label: "Low to High", value: false },
-  { label: "High to Low", value: true },
 ];

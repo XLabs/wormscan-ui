@@ -162,7 +162,9 @@ export const RecentTransactions = ({
                       +data?.content?.payload?.nttMessage?.trimmedAmount?.amount / 1000000,
               )}
             </span>
-            <img src={tokenIcon} alt={`${data?.data?.symbol} Token`} width="16" height="16" />
+            {tokenIcon && (
+              <img src={tokenIcon} alt={`${data?.data?.symbol} Token`} width="16" height="16" />
+            )}
             {data?.data?.usdAmount && (
               <span className="usd">(${formatNumber(+data?.data?.usdAmount, 2)})</span>
             )}
@@ -212,7 +214,7 @@ export const RecentTransactions = ({
               : [
                   ...columnsRecentTransactions,
                   {
-                    Header: "VIEW DETAILS",
+                    Header: "View Details",
                     accessor: "viewDetails",
                   },
                 ]

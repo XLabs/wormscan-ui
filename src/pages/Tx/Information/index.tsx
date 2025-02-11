@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { ChainId, chainIdToChain, platformToChains } from "@wormhole-foundation/sdk";
+import {
+  ChainId,
+  chainIdToChain,
+  chainToChainId,
+  platformToChains,
+} from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import analytics from "src/analytics";
 import {
@@ -10,6 +15,7 @@ import {
   ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
+  LIQUIDITY_LAYER_APP_ID,
   MAYAN_APP_ID,
   PORTAL_APP_ID,
   txType,
@@ -31,6 +37,7 @@ import AdvancedView from "./AdvancedView";
 import ProgressView from "./ProgressView";
 import Summary from "./Summary";
 import "./styles.scss";
+import { OverviewProps } from "src/utils/txPageUtils";
 
 interface Props {
   blockData: GetBlockData;
@@ -111,7 +118,6 @@ const Information = ({
 
   const fee = standarizedProperties?.overwriteFee || standarizedProperties?.fee || "";
   const {
-    amount,
     appIds,
     fromAddress: stdFromAddress,
     fromChain: stdFromChain,
@@ -163,7 +169,9 @@ const Information = ({
 
   const fromChain = (isGatewaySource ? gatewayInfo?.originChainId : fromChainOrig) as ChainId;
   const toChain: ChainId = parsedPayload?.["gateway_transfer"]?.chain
-    ? parsedPayload?.["gateway_transfer"].chain
+    ? chainToChainId(parsedPayload?.["gateway_transfer"].chain)
+      ? chainToChainId(parsedPayload?.["gateway_transfer"].chain)
+      : parsedPayload?.["gateway_transfer"].chain
     : stdToChain || data?.targetChain?.chainId || 0;
 
   const parsedOriginAddress = isGatewaySource
@@ -185,10 +193,11 @@ const Information = ({
     chainId: toChain as ChainId,
   });
 
+  const amount = standarizedProperties?.amount || payload?.amount;
   const amountSent = formatNumber(Number(tokenAmount)) || formatNumber(formatUnits(+amount));
   const amountSentUSD = +usdAmount ? formatNumber(+usdAmount, 2) : "";
   const redeemedAmount = standarizedProperties?.overwriteRedeemAmount
-    ? formatNumber(+standarizedProperties?.overwriteRedeemAmount, 7)
+    ? standarizedProperties?.overwriteRedeemAmount
     : hasVAA || !isRPC
     ? formatNumber(formatUnits(+amount - +fee))
     : formatNumber(+amount - +fee);
@@ -320,11 +329,10 @@ const Information = ({
   const [loadingRedeem, setLoadingRedeem] = useState(false);
   const [foundRedeem, setFoundRedeem] = useState<null | boolean>(null);
 
-  const date_30_min_before = new Date(new Date().getTime() - 30 * 60000);
+  const date_15_min_before = new Date(new Date().getTime() - 15 * 60000);
   const canTryToGetRedeem =
     (status === "external_tx" ||
-      status === "vaa_emitted" ||
-      (status === "pending_redeem" && new Date(timestamp) < date_30_min_before)) &&
+      (status === "pending_redeem" && new Date(timestamp) < date_15_min_before)) &&
     (platformToChains("Evm").includes(chainIdToChain(toChain) as any) ||
       toChain === 1 ||
       toChain === 21) &&
@@ -332,7 +340,7 @@ const Information = ({
     !!toAddress &&
     !!(wrappedTokenAddress && tokenEffectiveAddress) &&
     !!timestamp &&
-    !!payload?.amount &&
+    !!amount &&
     !!data?.sourceChain?.transaction?.txHash &&
     !data?.targetChain?.transaction?.txHash;
 
@@ -346,7 +354,7 @@ const Information = ({
       toAddress,
       wrappedTokenAddress && tokenEffectiveAddress,
       timestamp,
-      payload?.amount,
+      amount,
       data?.sourceChain?.transaction?.txHash,
       +VAAId?.split("/")?.pop() || 0, //sequence
     );
@@ -410,7 +418,15 @@ const Information = ({
 
   const isLatestBlockHigherThanVaaEmitBlock = lastFinalizedBlock > currentBlock;
 
-  const overviewAndDetailProps = {
+  const showVerifyRedemption =
+    status === "pending_redeem" && (isJustPortalUnknown || isConnect || isGateway);
+
+  const showMinReceivedTooltip = !!(
+    data.content?.standarizedProperties?.appIds?.includes(LIQUIDITY_LAYER_APP_ID) &&
+    data.content?.payload?.payload?.parsedRedeemerMessage?.outputToken?.swap?.limitAmount
+  );
+
+  const overviewAndDetailProps: OverviewProps = {
     action,
     amountSent,
     amountSentUSD,
@@ -449,18 +465,22 @@ const Information = ({
     setShowOverview,
     showMetaMaskBtn,
     showSignatures: !(appIds && appIds.includes(CCTP_MANUAL_APP_ID)),
+    showVerifyRedemption,
+    showMinReceivedTooltip,
     sourceFee,
     sourceFeeUSD,
     sourceSymbol,
     sourceTokenChain,
     sourceTokenInfo,
     sourceTokenLink,
+    startDate,
     status,
     targetFee,
     targetFeeUSD,
     targetSymbol,
     targetTokenInfo,
     targetTokenLink,
+    targetTxHash: data?.targetChain?.transaction?.txHash,
     toChain: extraRawInfoToChainId || toChain,
     tokenAmount,
     totalGuardiansNeeded,
@@ -477,13 +497,13 @@ const Information = ({
         foundRedeem={foundRedeem}
         fromChain={fromChain}
         getRedeem={getRedeem}
-        isConnect={isConnect}
-        isGateway={isGateway}
         isJustPortalUnknown={isJustPortalUnknown}
         loadingRedeem={loadingRedeem}
         setShowOverview={setShowOverview}
         showOverview={showOverview}
+        showVerifyRedemption={showVerifyRedemption}
         status={status}
+        startDate={startDate}
         txHash={data?.sourceChain?.transaction?.txHash}
         vaa={vaa?.raw}
       />
@@ -495,7 +515,14 @@ const Information = ({
         {showOverview === "advanced" && (
           <AdvancedView data={data} extraRawInfo={extraRawInfo} txIndex={txIndex} />
         )}
-        {showOverview === "progress" && <ProgressView {...overviewAndDetailProps} />}
+        {showOverview === "progress" && (
+          <ProgressView
+            {...overviewAndDetailProps}
+            isJustPortalUnknown={isJustPortalUnknown}
+            txHash={data?.sourceChain?.transaction?.txHash}
+            vaa={vaa?.raw}
+          />
+        )}
       </div>
     </section>
   );

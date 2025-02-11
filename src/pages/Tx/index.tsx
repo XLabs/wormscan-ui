@@ -9,6 +9,7 @@ import {
   chainToChainId,
   toChainId,
   chainIdToChain,
+  UniversalAddress,
 } from "@wormhole-foundation/sdk";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Loader } from "src/components/atoms";
@@ -34,8 +35,12 @@ import { getChainName } from "src/utils/wormhole";
 import {
   getAlgorandTokenInfo,
   getSolanaCctp,
+  getSuiCctp,
+  getAptosCctp,
+  IManualCctpResponse,
   tryGetAddressInfo,
   tryGetWrappedToken,
+  getLiquidityLayerTokenInfo,
 } from "src/utils/cryptoToolkit";
 import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import { useRecoilState } from "recoil";
@@ -49,16 +54,16 @@ import {
   C3_APP_ID,
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
-  CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
   IStatus,
+  LIQUIDITY_LAYER_APP_ID,
   MAYAN_MCTP_APP_ID,
+  MAYAN_SHUTTLE_APP_ID,
   NTT_APP_ID,
   PORTAL_APP_ID,
   PORTAL_NFT_APP_ID,
-  UNKNOWN_APP_ID,
   USDT_TRANSFER_APP_ID,
   canWeGetDestinationTx,
   getGuardianSet,
@@ -70,6 +75,7 @@ import { BlockSection } from "src/components/molecules";
 import "./styles.scss";
 import { mainnetNativeCurrencies, testnetNativeCurrencies } from "src/utils/environment";
 import getMayanMctpInfo from "src/utils/mayan";
+import { formatNumber } from "src/utils/number";
 
 const Tx = () => {
   useEffect(() => {
@@ -121,7 +127,7 @@ const Tx = () => {
   const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(["getLimit"], () =>
     getClient()
       .governor.getLimit()
-      .catch(() => null),
+      .catch((): null => null),
   );
 
   const cancelRequests = useRef(false);
@@ -274,7 +280,7 @@ const Tx = () => {
           }
           return null;
         })
-        .catch(() => {
+        .catch((): null => {
           return null;
         });
 
@@ -293,7 +299,7 @@ const Tx = () => {
           }
           return null;
         })
-        .catch(() => {
+        .catch((): null => {
           return null;
         });
 
@@ -311,7 +317,8 @@ const Tx = () => {
         }
       },
       enabled: isTxHashSearch && !errorCode,
-      retryDelay: errCount => 5000 * (errCount + 1),
+      retryDelay: errCount =>
+        errCount === 0 ? 2500 : errCount === 1 || errCount === 2 ? 5000 : 10000,
       retry: errCount => {
         // if request was cancelled, dont retry
         if (cancelRequests.current) return false;
@@ -324,9 +331,35 @@ const Tx = () => {
           setShouldTryToGetRpcInfo(true);
         }
         // second error, if hash is solana-like, check if its manual cctp
-        if (errCount === 1 && canBeSolanaTxHash) {
-          getSolanaCctp(network, txHash)
-            .then(resp => {
+        if ((errCount === 1 && canBeSolanaTxHash) || (errCount === 2 && isEvmTxHash)) {
+          (async () => {
+            let solanaResponse: IManualCctpResponse | null;
+            let suiResponse: IManualCctpResponse | null;
+            let aptosResponse: IManualCctpResponse | null;
+            if (canBeSolanaTxHash) {
+              solanaResponse = await getSolanaCctp(network, txHash).catch((): null => null);
+              suiResponse = solanaResponse
+                ? null
+                : await getSuiCctp(network, txHash).catch((): null => null);
+              aptosResponse = null;
+            }
+
+            if (isEvmTxHash) {
+              solanaResponse = null;
+              suiResponse = null;
+              aptosResponse = await getAptosCctp(network, txHash).catch((): null => null);
+            }
+
+            const resp: IManualCctpResponse = solanaResponse || suiResponse || aptosResponse;
+            const chain = solanaResponse
+              ? chainToChainId("Solana")
+              : suiResponse
+              ? chainToChainId("Sui")
+              : aptosResponse
+              ? chainToChainId("Aptos")
+              : null;
+
+            if (resp && chain) {
               cancelRequests.current = true;
               const toChain = getCctpDomain(resp.destinationDomain);
 
@@ -336,7 +369,7 @@ const Tx = () => {
                     hex: resp.contractAddress,
                     native: resp.contractAddress,
                   },
-                  emitterChain: 1,
+                  emitterChain: chain,
                   id: null,
                   content: {
                     payload: null,
@@ -345,13 +378,13 @@ const Tx = () => {
                       appIds: [CCTP_MANUAL_APP_ID],
                       fee: "0",
                       feeAddress: "",
-                      feeChain: 1,
+                      feeChain: chain,
                       fromAddress: resp.sourceAddress,
-                      fromChain: 1,
+                      fromChain: chain,
                       toAddress: resp.targetAddress,
                       toChain: toChain,
                       tokenAddress: resp.sourceTokenAddress,
-                      tokenChain: 1,
+                      tokenChain: chain,
                       overwriteTargetTokenAddress: getUsdcAddress(network, toChain),
                       overwriteTargetTokenChain: toChain,
                     },
@@ -364,7 +397,7 @@ const Tx = () => {
                   status: "external_tx",
                   sequence: "",
                   sourceChain: {
-                    chainId: 1,
+                    chainId: chain,
                     timestamp: new Date(resp.timestamp),
                     from: resp.sourceAddress,
                     status: undefined,
@@ -379,8 +412,10 @@ const Tx = () => {
 
               setErrorCode(undefined);
               setIsLoading(false);
-            })
-            .catch(() => (cancelRequests.current = false));
+            } else {
+              cancelRequests.current = false;
+            }
+          })();
         }
 
         if (errCount === 2) {
@@ -525,7 +560,11 @@ const Tx = () => {
 
         // Check if its generic relayer tx without vaa and go with RPCs
         // TODO: handle generic relayer no-vaa txns without RPCs
-        if (data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID) && !data?.vaa?.raw) {
+        if (
+          !data?.content?.standarizedProperties?.appIds?.includes(NTT_APP_ID) &&
+          data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID) &&
+          !data?.vaa?.raw
+        ) {
           setShouldTryToGetRpcInfo(true);
         }
         // ---
@@ -545,12 +584,17 @@ const Tx = () => {
           }));
 
           const { emitterAddress, hash, sequence, emitterChain } = parsedVaa || {};
-          const parsedEmitterAddress = emitterAddress.toNative(emitterChain).toString();
+          let parsedEmitterAddress = "";
+          try {
+            parsedEmitterAddress = emitterAddress.toNative(emitterChain).toString();
+          } catch (error) {
+            console.error("Error converting emitter address to native:", error);
+          }
           const parsedHash = Buffer.from(hash).toString("hex");
           const parsedSequence = Number(sequence);
           const parsedGuardianSignatures = guardianSignatures?.map(({ index, signature }) => ({
             index,
-            signature: Buffer.from(signature).toString("hex"),
+            signature: "0x" + Buffer.from(encoding.b64.decode(signature)).toString("hex"),
             name: guardianSetList?.[index]?.name,
           }));
 
@@ -568,13 +612,16 @@ const Tx = () => {
             observations = await getClient().guardianNetwork.getObservationForTxHash(txHash);
           } else {
             const [a, b, c] = VAAId.split("/");
-            observations = await getClient().guardianNetwork.getObservation({
-              chainId: +a,
-              emmiter: b,
-              specific: {
-                sequence: +c,
+            observations = await getClient().guardianNetwork.getObservation(
+              {
+                chainId: +a,
+                emmiter: b,
+                specific: {
+                  sequence: +c,
+                },
               },
-            });
+              { pageSize: 20, page: 0, sortOrder: Order.ASC },
+            );
           }
 
           if (!!observations?.length) {
@@ -621,6 +668,107 @@ const Tx = () => {
               network,
               data.content?.standarizedProperties?.toChain as ChainId,
             );
+          }
+        }
+        // ----
+
+        // check Wormhole Liquidity Layer
+        if (
+          data?.content?.standarizedProperties?.appIds?.includes(LIQUIDITY_LAYER_APP_ID) &&
+          data.content.payload?.payloadId === 11
+        ) {
+          const liquidityLayerTokenInfo = await getLiquidityLayerTokenInfo(
+            network,
+            data.sourceChain?.transaction?.txHash,
+            data.sourceChain?.chainId,
+          );
+
+          if (liquidityLayerTokenInfo) {
+            if (liquidityLayerTokenInfo.type === "SwapAndForwardedEth") {
+              data.data = {
+                symbol:
+                  network === "Testnet"
+                    ? testnetNativeCurrencies[chainIdToChain(data.sourceChain?.chainId)]
+                    : mainnetNativeCurrencies[chainIdToChain(data.sourceChain?.chainId)],
+                tokenAmount: String(+liquidityLayerTokenInfo.amountIn / 10 ** 18),
+                usdAmount: "",
+              };
+            }
+
+            if (
+              liquidityLayerTokenInfo.type === "ForwardedERC20" ||
+              liquidityLayerTokenInfo.type === "SwapAndForwardedERC20"
+            ) {
+              data.data = {
+                symbol: liquidityLayerTokenInfo.symbol,
+                tokenAmount: String(
+                  +liquidityLayerTokenInfo.amountIn / 10 ** liquidityLayerTokenInfo.decimals,
+                ),
+                usdAmount: "",
+              };
+
+              data.content.standarizedProperties.tokenAddress = liquidityLayerTokenInfo.token;
+              data.content.standarizedProperties.tokenChain = data.sourceChain?.chainId;
+            }
+
+            if (data.targetChain?.balanceChanges?.length) {
+              const receivedAmount = data.targetChain?.balanceChanges[0]?.amount;
+              const receivedToken = data.targetChain?.balanceChanges[0]?.tokenAddress;
+
+              const targetToken = await getTokenInformation(
+                data.targetChain?.chainId,
+                environment,
+                receivedToken,
+              );
+
+              if (receivedAmount && targetToken) {
+                data.content.standarizedProperties.overwriteTargetTokenAddress = receivedToken;
+                data.content.standarizedProperties.overwriteTargetSymbol = targetToken.symbol;
+                data.content.standarizedProperties.overwriteTargetTokenChain =
+                  data.targetChain?.chainId;
+                data.content.standarizedProperties.overwriteRedeemAmount = String(
+                  +receivedAmount / 10 ** targetToken.tokenDecimals,
+                );
+              }
+            }
+          }
+        }
+
+        if (data?.content?.standarizedProperties?.appIds?.includes(LIQUIDITY_LAYER_APP_ID)) {
+          if (
+            data.content.payload?.payload?.payloadId === 1 &&
+            data.content.payload?.payload?.parsedRedeemerMessage?.outputToken?.address
+          ) {
+            const outputTokenAddress =
+              data.content.payload?.payload?.parsedRedeemerMessage?.outputToken?.address;
+
+            const targetTokenAddress = new UniversalAddress(outputTokenAddress)
+              .toNative(chainIdToChain(data.content.standarizedProperties?.toChain))
+              ?.toString();
+
+            const targetTokenInfo = await getTokenInformation(
+              data.content.standarizedProperties?.toChain,
+              environment,
+              targetTokenAddress,
+            );
+
+            if (targetTokenInfo) {
+              data.content.standarizedProperties.overwriteTargetTokenAddress = targetTokenAddress;
+              data.content.standarizedProperties.overwriteTargetSymbol = targetTokenInfo.symbol;
+              data.content.standarizedProperties.overwriteTargetTokenChain =
+                data.content.standarizedProperties?.toChain;
+
+              if (
+                targetTokenInfo.tokenDecimals &&
+                data.content.payload?.payload?.parsedRedeemerMessage?.outputToken?.swap?.limitAmount
+              ) {
+                data.content.standarizedProperties.overwriteRedeemAmount = `${
+                  +data.content.payload?.payload?.parsedRedeemerMessage?.outputToken?.swap
+                    ?.limitAmount /
+                  10 ** targetTokenInfo.tokenDecimals
+                }`;
+              }
+            }
           }
         }
         // ----
@@ -885,7 +1033,8 @@ const Tx = () => {
 
               if (nttInfo?.targetTokenAddress) {
                 data.content.standarizedProperties.wrappedTokenAddress = nttInfo.targetTokenAddress;
-                data.content.standarizedProperties.wrappedTokenSymbol = targetTokenInfo.symbol;
+                data.content.standarizedProperties.wrappedTokenSymbol =
+                  nttInfo.targetTokenSymbol || targetTokenInfo.symbol;
               }
             }
           }
@@ -1147,13 +1296,17 @@ const Tx = () => {
               data.content.standarizedProperties.overwriteTargetSymbol = targetSymbol;
 
             if (formattedFinalUserAmount)
-              data.content.standarizedProperties.overwriteRedeemAmount = formattedFinalUserAmount;
+              data.content.standarizedProperties.overwriteRedeemAmount = formatNumber(
+                +formattedFinalUserAmount,
+                7,
+              );
+
             data.content.standarizedProperties.overwriteFee = formattedRelayerFee;
           }
         }
         // ----
 
-        // check Mayan
+        // check Mayan MCTP
         if (data?.content?.standarizedProperties?.appIds?.includes(MAYAN_MCTP_APP_ID)) {
           if (data?.content?.payload?.action === 1 || data?.content?.payload?.action === 3) {
             try {
@@ -1247,23 +1400,6 @@ const Tx = () => {
 
         // Add status logic
         const { fromChain, appIds } = data?.content?.standarizedProperties || {};
-        const payloadType = data?.content?.payload?.payloadType;
-        const isTransferWithPayload = payloadType === 3;
-
-        const isCCTP = appIds?.includes(CCTP_APP_ID);
-        const isConnect = appIds?.includes(CONNECT_APP_ID);
-        const isPortal = appIds?.includes(PORTAL_APP_ID);
-        const isTBTC = !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
-        const hasAnotherApp = !!(
-          appIds &&
-          appIds.filter(
-            appId =>
-              appId !== CONNECT_APP_ID &&
-              appId !== PORTAL_APP_ID &&
-              appId !== UNKNOWN_APP_ID &&
-              !appId.toLowerCase().includes("tbtc"),
-          )?.length
-        );
 
         const limitDataForChain = chainLimitsData
           ? chainLimitsData.find(
@@ -1280,16 +1416,13 @@ const Tx = () => {
           : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
           ? "external_tx"
           : vaa
-          ? isConnect || isPortal || isCCTP
-            ? (canWeGetDestinationTx(data?.content?.standarizedProperties?.toChain) &&
-                !hasAnotherApp &&
-                (!isTransferWithPayload ||
-                  (isTransferWithPayload && isConnect) ||
-                  (isTransferWithPayload && isTBTC))) ||
-              isCCTP
-              ? "pending_redeem"
-              : "vaa_emitted"
-            : "vaa_emitted"
+          ? canWeGetDestinationTx({
+              appIds,
+              network: environment.network,
+              targetChain: data?.content?.standarizedProperties?.toChain,
+            })
+            ? "pending_redeem"
+            : "completed"
           : isBigTransaction || isDailyLimitExceeded
           ? "in_governors"
           : "in_progress";

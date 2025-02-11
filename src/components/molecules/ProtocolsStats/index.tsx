@@ -145,6 +145,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
             data?.length > 0 &&
             data?.map((item, i) => {
               if (i >= numberOfProtocols) return null;
+              if (item.protocol === "WORMHOLE_LIQUIDITY_LAYER") return null;
 
               return (
                 <div
@@ -273,7 +274,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                         maxWidth={false}
                         tooltip={
                           <div className="protocols-stats-container-element-item-value-tooltip">
-                            {chainsSupportedByProtocol[item.protocol].map(chainId => {
+                            {chainsSupportedByProtocol?.[item.protocol]?.map(chainId => {
                               return (
                                 <div
                                   className="protocols-stats-container-element-item-value-tooltip-content"
@@ -294,7 +295,7 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
                         }
                       >
                         <div className="protocols-stats-container-element-item-value-chains">
-                          {chainsSupportedByProtocol[item.protocol].map((chainId, i) => {
+                          {chainsSupportedByProtocol?.[item.protocol]?.map((chainId, i) => {
                             const maxVisibleChains = isDesktop ? 7 : 4;
                             const maxChainsLimit = isDesktop ? 8 : 5;
 

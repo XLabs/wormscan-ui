@@ -14,6 +14,7 @@ import {
   GetTransferByTimeResult,
   GetListResult,
 } from "./types";
+import { getCoinMarketCapTokenInfo } from "src/utils/cryptoToolkit";
 
 export class NttApi {
   constructor(private readonly _client: APIClient) {}
@@ -52,13 +53,86 @@ export class NttApi {
   }
 
   async getNttTokenList(): Promise<GetListResult[]> {
-    return await this._client.doGet<GetListResult[]>("/native-token-transfer/token-list");
+    const tokenListResponse = await this._client.doGet<GetListResult[]>(
+      "/native-token-transfer/token-list",
+    );
+
+    const tokenListWithFallback = await Promise.all(
+      tokenListResponse.map(async item => {
+        if (!item?.total_value_transferred) {
+          try {
+            const summary = await this.getNttTVT({ coingecko_id: item.coingecko_id });
+            item.total_value_transferred = summary.totalValueTokenTransferred || "0";
+          } catch (error) {
+            console.log("Failed to get total value transferred for token", item.symbol);
+          }
+        }
+
+        if (item.circulating_supply === "0") {
+          const symbol = item.symbol.toUpperCase();
+
+          const coinMarketCapTokenInfo = await getCoinMarketCapTokenInfo(symbol);
+
+          item.circulating_supply =
+            coinMarketCapTokenInfo?.data[symbol]?.[0]?.circulating_supply ||
+            coinMarketCapTokenInfo?.data[symbol]?.[0]?.self_reported_circulating_supply ||
+            0;
+        }
+
+        return item;
+      }),
+    );
+
+    return tokenListWithFallback;
+  }
+
+  async getNttTVT({ coingecko_id }: GetSummary): Promise<{ totalValueTokenTransferred: string }> {
+    const summaryResponse = await this._client.doGet<GetSummaryResult>(
+      "/native-token-transfer/summary",
+      {
+        coingecko_id,
+      },
+    );
+
+    return { totalValueTokenTransferred: summaryResponse.totalValueTokenTransferred };
   }
 
   async getNttSummary({ coingecko_id }: GetSummary): Promise<GetSummaryResult> {
-    return await this._client.doGet<GetSummaryResult>("/native-token-transfer/summary", {
-      coingecko_id,
-    });
+    const summaryResponse = await this._client.doGet<GetSummaryResult>(
+      "/native-token-transfer/summary",
+      {
+        coingecko_id,
+      },
+    );
+
+    if (summaryResponse.circulatingSupply === "0") {
+      const coinMarketCapTokenInfo = await getCoinMarketCapTokenInfo(
+        summaryResponse.symbol.toUpperCase(),
+      );
+
+      summaryResponse.circulatingSupply =
+        coinMarketCapTokenInfo?.data[summaryResponse.symbol.toUpperCase()]?.[0]
+          ?.circulating_supply ||
+        coinMarketCapTokenInfo?.data[summaryResponse.symbol.toUpperCase()]?.[0]
+          ?.self_reported_circulating_supply ||
+        0;
+    }
+
+    if (summaryResponse.marketCap === "0") {
+      const coinMarketCapTokenInfo = await getCoinMarketCapTokenInfo(
+        summaryResponse.symbol.toUpperCase(),
+      );
+
+      summaryResponse.marketCap =
+        coinMarketCapTokenInfo?.data[summaryResponse.symbol.toUpperCase()]?.[0]?.market_cap ||
+        coinMarketCapTokenInfo?.data[summaryResponse.symbol.toUpperCase()]?.[0]
+          ?.self_reported_market_cap ||
+        coinMarketCapTokenInfo?.data[summaryResponse.symbol.toUpperCase()]?.[0]?.quote?.USD
+          ?.market_cap ||
+        0;
+    }
+
+    return summaryResponse;
   }
 
   async getNttTopHolder({ coingecko_id }: GetTopHolder): Promise<GetTopHolderResult> {

@@ -1,4 +1,4 @@
-import { chainToChainId, ChainId } from "@wormhole-foundation/sdk";
+import { chainToChainId, ChainId, Network } from "@wormhole-foundation/sdk";
 
 export const BREAKPOINTS = {
   mobile: 320,
@@ -152,23 +152,32 @@ export const XLABS_URL = "https://www.xlabs.xyz";
 
 // if toChain is on this list we should be able to get destinationTx.
 // (contract-watcher for token bridge & connect txs)
-export const canWeGetDestinationTx = (toChain: any) =>
-  [
-    chainToChainId("Aptos"),
-    chainToChainId("Avalanche"),
-    chainToChainId("Base"),
-    chainToChainId("Bsc"),
-    chainToChainId("Celo"),
-    chainToChainId("Ethereum"),
-    chainToChainId("Fantom"),
-    chainToChainId("Moonbeam"),
-    chainToChainId("Oasis"),
-    chainToChainId("Polygon"),
-    chainToChainId("Terra"),
-    // chainToChainId("Arbitrum") // should be supported, but BE having problems
-    // chainToChainId("Optimism") // should be supported, but BE having problems
-    // chainToChainId("Solana"),  // should be supported, but BE having problems
-  ].includes(toChain);
+
+export const canWeGetDestinationTx = ({
+  appIds,
+  network,
+  targetChain,
+}: {
+  appIds: string[];
+  network: Network;
+  targetChain: ChainId;
+}): boolean => {
+  if (appIds?.includes(OMNISWAP_APP_ID)) {
+    return targetChainsSupportedMainnet[OMNISWAP_APP_ID].includes(targetChain);
+  }
+
+  if (appIds?.includes(GATEWAY_APP_ID)) {
+    return targetChainsSupportedMainnet[PORTAL_APP_ID].includes(targetChain);
+  }
+
+  return appIds?.some(appId => {
+    const supportedChains =
+      network === "Mainnet"
+        ? targetChainsSupportedMainnet[appId]
+        : targetChainsSupportedTestnet[appId];
+    return supportedChains ? supportedChains.includes(targetChain) : false;
+  });
+};
 
 export type IStatus =
   | "external_tx"
@@ -186,6 +195,7 @@ export const CONNECT_APP_ID = "CONNECT";
 export const ETH_BRIDGE_APP_ID = "ETH_BRIDGE";
 export const GATEWAY_APP_ID = "WORMCHAIN_GATEWAY_TRANSFER";
 export const GR_APP_ID = "GENERIC_RELAYER";
+export const M_PORTAL_APP_ID = "M_PORTAL";
 export const MAYAN_APP_ID = "MAYAN";
 export const MAYAN_MCTP_APP_ID = "MAYAN_MCTP";
 export const MAYAN_SWIFT_APP_ID = "MAYAN_SWIFT";
@@ -206,3 +216,238 @@ export const FAST_TRANSFERS_APP_ID = "FAST_TRANSFERS";
 export const SWAP_LAYER_APP_ID = "SWAP_LAYER";
 export const LIQUIDITY_LAYER_APP_ID = "WORMHOLE_LIQUIDITY_LAYER";
 export const MAYAN_SHUTTLE_APP_ID = "MAYAN_SHUTTLE";
+
+const targetChainsSupportedMainnet: { [key: string]: ChainId[] } = {
+  [PORTAL_APP_ID]: [
+    chainToChainId("Acala"),
+    chainToChainId("Algorand"),
+    chainToChainId("Aptos"),
+    chainToChainId("Arbitrum"),
+    chainToChainId("Avalanche"),
+    chainToChainId("Base"),
+    chainToChainId("Blast"),
+    chainToChainId("Bsc"),
+    chainToChainId("Celo"),
+    chainToChainId("Ethereum"),
+    chainToChainId("Fantom"),
+    chainToChainId("Karura"),
+    chainToChainId("Klaytn"),
+    chainToChainId("Mantle"),
+    chainToChainId("Monad"),
+    chainToChainId("Moonbeam"),
+    chainToChainId("Near"),
+    chainToChainId("Oasis"),
+    chainToChainId("Optimism"),
+    chainToChainId("Polygon"),
+    chainToChainId("Scroll"),
+    chainToChainId("Sei"),
+    chainToChainId("Snaxchain"),
+    chainToChainId("Solana"),
+    chainToChainId("Sui"),
+    chainToChainId("Terra"),
+    chainToChainId("Terra2"),
+    chainToChainId("Worldchain"),
+    chainToChainId("Wormchain"),
+    chainToChainId("Xlayer"),
+    chainToChainId("Xpla"),
+  ],
+  [GATEWAY_APP_ID]: [],
+  [CCTP_APP_ID]: [
+    chainToChainId("Arbitrum"),
+    chainToChainId("Avalanche"),
+    chainToChainId("Base"),
+    chainToChainId("Ethereum"),
+    chainToChainId("Optimism"),
+    chainToChainId("Polygon"),
+  ],
+  [CONNECT_APP_ID]: [
+    chainToChainId("Avalanche"),
+    chainToChainId("Bsc"),
+    chainToChainId("Celo"),
+    chainToChainId("Ethereum"),
+    chainToChainId("Fantom"),
+    chainToChainId("Moonbeam"),
+    chainToChainId("Polygon"),
+  ],
+  [TBTC_APP_ID]: [
+    chainToChainId("Arbitrum"),
+    chainToChainId("Base"),
+    chainToChainId("Optimism"),
+    chainToChainId("Polygon"),
+  ],
+  [OMNISWAP_APP_ID]: [
+    chainToChainId("Bsc"),
+    chainToChainId("Polygon"),
+    chainToChainId("Ethereum"),
+    chainToChainId("Avalanche"),
+  ],
+  [MAYAN_APP_ID]: [
+    chainToChainId("Arbitrum"),
+    chainToChainId("Avalanche"),
+    chainToChainId("Bsc"),
+    chainToChainId("Ethereum"),
+    chainToChainId("Polygon"),
+  ],
+  // [MAYAN_MCTP_APP_ID]: [
+  //   chainToChainId("Arbitrum"),
+  //   chainToChainId("Avalanche"),
+  //   chainToChainId("Bsc"),
+  //   chainToChainId("Ethereum"),
+  //   chainToChainId("Polygon"),
+  // ],
+  // [MAYAN_SWIFT_APP_ID]: [
+  //   chainToChainId("Arbitrum"),
+  //   chainToChainId("Avalanche"),
+  //   chainToChainId("Bsc"),
+  //   chainToChainId("Ethereum"),
+  //   chainToChainId("Polygon"),
+  // ],
+  // [MAYAN_SHUTTLE_APP_ID]: [
+  //   chainToChainId("Arbitrum"),
+  //   chainToChainId("Avalanche"),
+  //   chainToChainId("Bsc"),
+  //   chainToChainId("Ethereum"),
+  //   chainToChainId("Polygon"),
+  // ],
+  [GR_APP_ID]: [
+    chainToChainId("Arbitrum"),
+    chainToChainId("Avalanche"),
+    chainToChainId("Base"),
+    chainToChainId("Bsc"),
+    chainToChainId("Celo"),
+    chainToChainId("Ethereum"),
+    chainToChainId("Fantom"),
+    chainToChainId("Monad"),
+    chainToChainId("Moonbeam"),
+    chainToChainId("Optimism"),
+    chainToChainId("Polygon"),
+    chainToChainId("Snaxchain"),
+  ],
+  [NTT_APP_ID]: [
+    chainToChainId("Arbitrum"),
+    chainToChainId("Bsc"),
+    chainToChainId("Base"),
+    chainToChainId("Ethereum"),
+    chainToChainId("Fantom"),
+    chainToChainId("Optimism"),
+    chainToChainId("Solana"),
+  ],
+  [PORTAL_NFT_APP_ID]: [
+    chainToChainId("Bsc"),
+    chainToChainId("Solana"),
+    chainToChainId("Aptos"),
+    chainToChainId("Arbitrum"),
+    chainToChainId("Avalanche"),
+    chainToChainId("Base"),
+    chainToChainId("Celo"),
+    chainToChainId("Ethereum"),
+    chainToChainId("Fantom"),
+    chainToChainId("Moonbeam"),
+    chainToChainId("Oasis"),
+    chainToChainId("Optimism"),
+    chainToChainId("Polygon"),
+  ],
+  [ETH_BRIDGE_APP_ID]: [
+    chainToChainId("Arbitrum"),
+    chainToChainId("Optimism"),
+    chainToChainId("Base"),
+    chainToChainId("Bsc"),
+    chainToChainId("Polygon"),
+    chainToChainId("Ethereum"),
+    chainToChainId("Avalanche"),
+  ],
+};
+
+const targetChainsSupportedTestnet: { [key: string]: ChainId[] } = {
+  [PORTAL_APP_ID]: [
+    chainToChainId("Solana"),
+    chainToChainId("OptimismSepolia"),
+    chainToChainId("Karura"),
+    chainToChainId("ArbitrumSepolia"),
+    chainToChainId("Sui"),
+    chainToChainId("Sepolia"),
+    chainToChainId("Bsc"),
+    chainToChainId("Mantle"),
+    chainToChainId("Xlayer"),
+    chainToChainId("Wormchain"),
+    chainToChainId("Fantom"),
+    chainToChainId("Avalanche"),
+    chainToChainId("Base"),
+    chainToChainId("PolygonSepolia"),
+    chainToChainId("Klaytn"),
+    chainToChainId("Algorand"),
+    chainToChainId("Oasis"),
+    chainToChainId("Moonbeam"),
+    chainToChainId("Celo"),
+    chainToChainId("Aptos"),
+    chainToChainId("Scroll"),
+    chainToChainId("Blast"),
+    chainToChainId("Holesky"),
+    chainToChainId("Snaxchain"),
+    chainToChainId("Berachain"),
+    chainToChainId("Unichain"),
+    chainToChainId("Monad"),
+    chainToChainId("MonadDevnet"),
+    chainToChainId("Worldchain"),
+  ],
+  [GATEWAY_APP_ID]: [],
+  [CCTP_APP_ID]: [
+    chainToChainId("Sepolia"),
+    chainToChainId("PolygonSepolia"),
+    chainToChainId("ArbitrumSepolia"),
+    chainToChainId("OptimismSepolia"),
+    chainToChainId("BaseSepolia"),
+    chainToChainId("Avalanche"),
+  ],
+  [CONNECT_APP_ID]: [
+    chainToChainId("Celo"),
+    chainToChainId("Sepolia"),
+    chainToChainId("Moonbeam"),
+    chainToChainId("Bsc"),
+    chainToChainId("PolygonSepolia"),
+    chainToChainId("Fantom"),
+    chainToChainId("Avalanche"),
+  ],
+  [TBTC_APP_ID]: [
+    chainToChainId("ArbitrumSepolia"),
+    chainToChainId("OptimismSepolia"),
+    chainToChainId("BaseSepolia"),
+  ],
+  [GR_APP_ID]: [
+    chainToChainId("Bsc"),
+    chainToChainId("PolygonSepolia"),
+    chainToChainId("Avalanche"),
+    chainToChainId("BaseSepolia"),
+    chainToChainId("ArbitrumSepolia"),
+    chainToChainId("OptimismSepolia"),
+    chainToChainId("Sepolia"),
+    chainToChainId("Celo"),
+    chainToChainId("Moonbeam"),
+    chainToChainId("Monad"),
+    chainToChainId("MonadDevnet"),
+  ],
+  [NTT_APP_ID]: [
+    chainToChainId("Solana"),
+    chainToChainId("OptimismSepolia"),
+    chainToChainId("ArbitrumSepolia"),
+    chainToChainId("BaseSepolia"),
+    chainToChainId("Sepolia"),
+    chainToChainId("Fantom"),
+  ],
+  [PORTAL_NFT_APP_ID]: [
+    chainToChainId("Bsc"),
+    chainToChainId("Solana"),
+    chainToChainId("Aptos"),
+    chainToChainId("ArbitrumSepolia"),
+    chainToChainId("Avalanche"),
+    chainToChainId("BaseSepolia"),
+    chainToChainId("Celo"),
+    chainToChainId("Sepolia"),
+    chainToChainId("Holesky"),
+    chainToChainId("Fantom"),
+    chainToChainId("Moonbeam"),
+    chainToChainId("Oasis"),
+    chainToChainId("OptimismSepolia"),
+    chainToChainId("PolygonSepolia"),
+  ],
+};

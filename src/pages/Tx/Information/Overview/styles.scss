@@ -332,16 +332,6 @@
           max-width: unset;
         }
 
-        &-steps {
-          @include button-secondary;
-          gap: 4px;
-          padding: 0 8px 0 12px;
-
-          & > svg {
-            color: var(--color-white-60);
-          }
-        }
-
         &-alert {
           @include button-secondary-non-interactable;
           background-color: transparent;

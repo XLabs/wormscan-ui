@@ -7,16 +7,7 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { CommunityBanner, ToggleGroup } from "src/components/atoms";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
-import {
-  canWeGetDestinationTx,
-  CCTP_APP_ID,
-  CCTP_MANUAL_APP_ID,
-  CONNECT_APP_ID,
-  IStatus,
-  NTT_APP_ID,
-  PORTAL_APP_ID,
-  UNKNOWN_APP_ID,
-} from "src/consts";
+import { canWeGetDestinationTx, CCTP_MANUAL_APP_ID, IStatus, NTT_APP_ID } from "src/consts";
 import { ChainLimit, Order } from "src/api";
 import { ETH_LIMIT } from "src/pages/Txs";
 import analytics from "src/analytics";
@@ -72,10 +63,12 @@ const NTTToken = () => {
 
   const { data: chainLimitsData, isLoading: isLoadingLimits } = useQuery(
     ["getLimit"],
-    () => {
-      return getClient()
-        .governor.getLimit()
-        .catch(() => null);
+    async () => {
+      try {
+        return await getClient().governor.getLimit();
+      } catch {
+        return null;
+      }
     },
     {
       enabled: isMainnet,
@@ -139,21 +132,6 @@ const NTTToken = () => {
           // -----
 
           // --- Status Logic
-          const isCCTP = appIds?.includes(CCTP_APP_ID);
-          const isConnect = appIds?.includes(CONNECT_APP_ID);
-          const isPortal = appIds?.includes(PORTAL_APP_ID);
-          const isTBTC = !!appIds?.find(appId => appId.toLowerCase().includes("tbtc"));
-          const isTransferWithPayload = false;
-          const hasAnotherApp = !!(
-            appIds &&
-            appIds.filter(
-              appId =>
-                appId !== CONNECT_APP_ID &&
-                appId !== PORTAL_APP_ID &&
-                appId !== UNKNOWN_APP_ID &&
-                !appId.toLowerCase().includes("tbtc"),
-            )?.length
-          );
 
           const limitDataForChain = chainLimitsData
             ? chainLimitsData.find((data: ChainLimit) => data.chainId === fromChain)
@@ -168,16 +146,13 @@ const NTTToken = () => {
             : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
             ? "external_tx"
             : tx.vaa?.raw
-            ? isConnect || isPortal || isCCTP
-              ? (canWeGetDestinationTx(toChain) &&
-                  !hasAnotherApp &&
-                  (!isTransferWithPayload ||
-                    (isTransferWithPayload && isConnect) ||
-                    (isTransferWithPayload && isTBTC))) ||
-                isCCTP
-                ? "pending_redeem"
-                : "vaa_emitted"
-              : "vaa_emitted"
+            ? canWeGetDestinationTx({
+                appIds,
+                network: currentNetwork,
+                targetChain: toChain,
+              })
+              ? "pending_redeem"
+              : "completed"
             : isBigTransaction || isDailyLimitExceeded
             ? "in_governors"
             : "in_progress";

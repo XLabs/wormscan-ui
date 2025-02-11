@@ -32,6 +32,7 @@ const chainNameMap: Record<string, Chain> = {
   "optimistic-ethereum": "Optimism",
   "polygon-pos": "Polygon",
   "binance-smart-chain": "Bsc",
+  "neon-evm": "Neon",
 };
 
 const chainNameMapUnsupported: Record<string, number> = {
@@ -189,56 +190,66 @@ const ContractsList = ({
 }: {
   summary: GetSummaryResult;
   environment: Environment;
-}) => (
-  <div className="summary-top-content-container-item-chain">
-    {summary?.platforms ? (
-      <div className="summary-top-content-container-item-chain">
-        {Object.entries(summary.platforms).map(([chain, contract], index) => {
-          // show MAX_CONTRACTS contracts
-          if (index < MAX_CONTRACTS) {
-            const chainCapitalized = (chain.charAt(0).toUpperCase() + chain.slice(1)) as Chain;
-            const chainId = chainToChainId(chainNameMap[chain] || chainCapitalized);
-            const chainIdUnsupported = chainNameMapUnsupported[chain];
+}) => {
+  const platforms = Object.entries(summary?.platforms || {}).filter(([chain]) =>
+    [
+      "solana",
+      "ethereum",
+      "optimism",
+      "optimistic-ethereum",
+      "base",
+      "arbitrum-one",
+      "arbitrum",
+      "polygon-pos",
+      "binance-smart-chain",
+    ].includes(chain),
+  );
 
-            return (
-              <ChainItem
-                key={index}
-                chainId={(chainIdUnsupported || chainId) as ChainId}
-                network={environment.network}
-                value={contract}
-              />
-            );
-          }
-          // show the fourth contract directly if there are only 4 contracts in total without a tooltip
-          if (
-            index === MAX_CONTRACTS &&
-            Object.keys(summary.platforms).length === MAX_CONTRACTS + 1
-          ) {
-            const chainCapitalized = (chain.charAt(0).toUpperCase() + chain.slice(1)) as Chain;
-            const chainId = chainToChainId(chainNameMap[chain] || chainCapitalized);
-            const chainIdUnsupported = chainNameMapUnsupported[chain];
+  return (
+    <div className="summary-top-content-container-item-chain">
+      {summary?.platforms ? (
+        <div className="summary-top-content-container-item-chain">
+          {platforms.map(([chain, contract], index) => {
+            // show MAX_CONTRACTS contracts
+            if (index < MAX_CONTRACTS) {
+              const chainCapitalized = (chain.charAt(0).toUpperCase() + chain.slice(1)) as Chain;
+              const chainId = chainToChainId(chainNameMap[chain] || chainCapitalized);
+              const chainIdUnsupported = chainNameMapUnsupported[chain];
 
-            return (
-              <ChainItem
-                key={index}
-                chainId={(chainIdUnsupported || chainId) as ChainId}
-                network={environment.network}
-                value={contract}
-              />
-            );
-          }
-          return null;
-        })}
-        {Object.keys(summary.platforms).length > MAX_CONTRACTS + 1 && (
-          <Tooltip
-            type="info"
-            className="summary-top-content-container-item-chain-tooltip"
-            side="bottom"
-            tooltip={
-              <div className="summary-top-content-container-item-chain-tooltip-container">
-                {Object.entries(summary.platforms)
-                  .slice(MAX_CONTRACTS)
-                  .map(([chain, contract], i) => {
+              return (
+                <ChainItem
+                  key={index}
+                  chainId={(chainIdUnsupported || chainId) as ChainId}
+                  network={environment.network}
+                  value={contract}
+                />
+              );
+            }
+            // show the fourth contract directly if there are only 4 contracts in total without a tooltip
+            if (index === MAX_CONTRACTS && platforms.length === MAX_CONTRACTS + 1) {
+              const chainCapitalized = (chain.charAt(0).toUpperCase() + chain.slice(1)) as Chain;
+              const chainId = chainToChainId(chainNameMap[chain] || chainCapitalized);
+              const chainIdUnsupported = chainNameMapUnsupported[chain];
+
+              return (
+                <ChainItem
+                  key={index}
+                  chainId={(chainIdUnsupported || chainId) as ChainId}
+                  network={environment.network}
+                  value={contract}
+                />
+              );
+            }
+            return null;
+          })}
+          {platforms.length > MAX_CONTRACTS + 1 && (
+            <Tooltip
+              type="info"
+              className="summary-top-content-container-item-chain-tooltip"
+              side="bottom"
+              tooltip={
+                <div className="summary-top-content-container-item-chain-tooltip-container">
+                  {platforms.slice(MAX_CONTRACTS).map(([chain, contract], i) => {
                     const chainCapitalized = (chain.charAt(0).toUpperCase() +
                       chain.slice(1)) as Chain;
                     const chainId = chainToChainId(chainNameMap[chain] || chainCapitalized);
@@ -253,23 +264,24 @@ const ContractsList = ({
                       />
                     );
                   })}
+                </div>
+              }
+            >
+              <div className="summary-top-content-container-item-chain-contract">
+                <div className="summary-top-content-container-item-chain-contract-more">
+                  +{platforms.length - MAX_CONTRACTS}
+                  <InfoCircleIcon />
+                </div>
               </div>
-            }
-          >
-            <div className="summary-top-content-container-item-chain-contract">
-              <div className="summary-top-content-container-item-chain-contract-more">
-                +{Object.keys(summary.platforms).length - MAX_CONTRACTS}
-                <InfoCircleIcon />
-              </div>
-            </div>
-          </Tooltip>
-        )}
-      </div>
-    ) : (
-      "N/A"
-    )}
-  </div>
-);
+            </Tooltip>
+          )}
+        </div>
+      ) : (
+        "N/A"
+      )}
+    </div>
+  );
+};
 
 const ChainItem = ({
   chainId,

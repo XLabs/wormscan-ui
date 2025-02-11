@@ -525,7 +525,13 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
 
         const toChain = getCctpDomain(destinationDomain);
         const toAddress =
-          toChain === 1 ? hexToBase58(mintRecipient) : "0x" + mintRecipient.substring(26);
+          toChain === chainToChainId("Sui")
+            ? mintRecipient
+            : toChain === chainToChainId("Solana")
+            ? hexToBase58(mintRecipient)
+            : toChain === chainToChainId("Aptos")
+            ? mintRecipient
+            : "0x" + mintRecipient.substring(26);
 
         return {
           amount: "" + formatUnits(amount.toString(), 6),
@@ -566,23 +572,6 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
 }
 
 // CCTP UTILS -----
-interface CircleRelayerPayload {
-  amount: string;
-  appIds: Array<string>;
-  feeAmount: string;
-  fromAddressBytes: Buffer;
-  fromDomain: number;
-  mintRecipientBuff: Buffer;
-  nonce: string;
-  payload: Buffer;
-  payloadId: number;
-  toAddress: string;
-  toDomain: number;
-  tokenAddress: string;
-  toNativeAmount: string;
-  version: number;
-}
-
 export const getCctpDomain = (dom: number) => {
   if (dom === 0) return chainToChainId("Ethereum");
   if (dom === 1) return chainToChainId("Avalanche");
@@ -591,6 +580,8 @@ export const getCctpDomain = (dom: number) => {
   if (dom === 5) return chainToChainId("Solana");
   if (dom === 6) return chainToChainId("Base");
   if (dom === 7) return chainToChainId("Polygon");
+  if (dom === 8) return chainToChainId("Sui");
+  if (dom === 9) return chainToChainId("Aptos");
   return null;
 };
 
@@ -603,6 +594,10 @@ export const getUsdcAddress = (network: Network, chain: ChainId) => {
     if (chain === chainToChainId("Solana")) return "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
     if (chain === chainToChainId("Base")) return "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
     if (chain === chainToChainId("Polygon")) return "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359";
+    if (chain === chainToChainId("Aptos"))
+      return "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b";
+    if (chain === chainToChainId("Sui"))
+      return "0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC";
   } else {
     if (chain === chainToChainId("Ethereum")) return "0x07865c6e87b9f70255377e024ace6630c1eaa37f";
     if (chain === chainToChainId("Avalanche")) return "0x5425890298aed601595a70ab815c96711a31bc65";
@@ -611,6 +606,10 @@ export const getUsdcAddress = (network: Network, chain: ChainId) => {
     if (chain === chainToChainId("Solana")) return "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU";
     if (chain === chainToChainId("Base")) return "0xf175520c52418dfe19c8098071a252da48cd1c19";
     if (chain === chainToChainId("Polygon")) return "0x9999f7fea5938fd3b1e26a12c3f2fb024e194f97";
+    if (chain === chainToChainId("Aptos"))
+      return "0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832";
+    if (chain === chainToChainId("Sui"))
+      return "0xa1ec7fc00a6f40db9693ad1415d0c193ad3906494428cf252621037bd7117e29::usdc::USDC";
   }
   return null;
 };

@@ -1,19 +1,19 @@
 import { Column, Row } from "react-table";
 
 export interface IRowToken {
-  coingecko_id: string;
   symbol: string;
-  priceNumber: number;
-  priceVariationNumber: number;
-  circulatingSupplyNumber: number;
-  marketCapNumber: number;
+  coingecko_id: string;
+  tvtNumber: number;
   volumeNumber: number;
+  circulatingSupplyNumber: number;
+  fullyDilutedNumber: number;
+  priceNumber: number;
   token: React.ReactNode;
-  price: React.ReactNode;
-  priceVariation: React.ReactNode;
-  circulatingSupply: React.ReactNode;
-  marketCap: React.ReactNode;
+  tvt: React.ReactNode;
   volume: React.ReactNode;
+  circulatingSupply: React.ReactNode;
+  fullyDilutedValuation: React.ReactNode;
+  price: React.ReactNode;
   viewDetails: React.ReactNode;
 }
 
@@ -28,38 +28,18 @@ const sortByNumber = (key: keyof IRowToken) => (rowA: Row<IRowToken>, rowB: Row<
 };
 
 export const COLUMNS_NTT: Column<IRowToken>[] | any = [
-  { Header: "TOKEN", accessor: "token", sortType: sortBySymbol },
-  { Header: "PRICE", accessor: "price", sortType: sortByNumber("priceNumber") },
+  { Header: "Token", accessor: "token", sortType: sortBySymbol },
   {
-    Header: "24H PRICE VARIATION",
-    accessor: "priceVariation",
-    sortType: sortByNumber("priceVariationNumber"),
+    Header: "Fully Diluted Valuation",
+    accessor: "fullyDilutedValuation",
+    sortType: sortByNumber("fullyDilutedNumber"),
   },
   {
-    Header: "CIRCULATING SUPPLY",
+    Header: "Circulating Supply",
     accessor: "circulatingSupply",
     sortType: sortByNumber("circulatingSupplyNumber"),
   },
-  { Header: "MARKET CAP", accessor: "marketCap", sortType: sortByNumber("marketCapNumber") },
-  // { Header: "24H VOLUME", accessor: "volume", sortType: sortByNumber("volumeNumber") },
+  { Header: "Total Value Transferred", accessor: "tvt", sortType: sortByNumber("tvtNumber") },
+  // { Header: "24h Volume", accessor: "volume", sortType: sortByNumber("volumeNumber") },
+  { Header: "Price", accessor: "price", sortType: sortByNumber("priceNumber") },
 ];
-
-export const SORT_TRANSFERS_NTT = [
-  { label: "Token", value: "token" },
-  { label: "Price", value: "price" },
-  { label: "24H Price Variation", value: "priceVariation" },
-  { label: "Circulating Supply", value: "circulatingSupply" },
-  { label: "Market Cap", value: "marketCap" },
-  // { label: "24H Volume", value: "volume" },
-];
-
-export const SORT_LOW_HIGH_LIST_NTT = [
-  { label: "Low to High", value: false },
-  { label: "High to Low", value: true },
-];
-
-export const initialSortStateNtt = {
-  selectedSortBy: SORT_TRANSFERS_NTT[4],
-  selectedSortLowHigh: SORT_LOW_HIGH_LIST_NTT[1],
-  sortBy: [{ id: SORT_TRANSFERS_NTT[4].value, desc: SORT_LOW_HIGH_LIST_NTT[1].value }],
-};

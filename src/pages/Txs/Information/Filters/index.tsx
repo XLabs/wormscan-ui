@@ -167,6 +167,8 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
   });
 
   useEffect(() => {
+    if (showFilters) return;
+
     setCheckedState(getParsedCheckedState(params));
 
     setStartDate(params.from ? new Date(params.from) : null);
@@ -174,6 +176,23 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
     setStartDateDisplayed(params.from ? new Date(params.from) : null);
     setEndDateDisplayed(params.to ? new Date(params.to) : null);
   }, [params]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter" && showFilters) {
+        event.preventDefault();
+
+        if (!disableApplyButton) {
+          applyFilters();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [applyFilters, disableApplyButton, showFilters]);
 
   return (
     <div className="filters">
@@ -184,8 +203,9 @@ const Filters = ({ params, setIsPaginationLoading }: Props) => {
           ariaLabel="Select type"
           className="filters-top-toggle"
           items={[
-            { label: "All", value: "0", ariaLabel: "All" },
-            { label: "Transfers", value: "1,3", ariaLabel: "Transfers" },
+            { label: "Transfers", value: "0", ariaLabel: "All Transfers" },
+            // { label: "All", value: "0", ariaLabel: "All" },
+            // { label: "Transfers", value: "1,3", ariaLabel: "Transfers" },
             { label: "Attestation", value: "2", ariaLabel: "Attestation" },
           ]}
           onValueChange={value => {

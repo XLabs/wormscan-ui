@@ -10,12 +10,12 @@ type Props = {
   foundRedeem: boolean;
   fromChain: ChainId | number;
   getRedeem: () => Promise<void>;
-  isConnect: boolean;
-  isGateway: boolean;
   isJustPortalUnknown: boolean;
   loadingRedeem: boolean;
   setShowOverview: (view: "overview" | "advanced" | "progress") => void;
   showOverview: string;
+  showVerifyRedemption: boolean;
+  startDate: Date | string;
   status: IStatus;
   txHash: string;
   vaa: string;
@@ -26,21 +26,16 @@ const Summary = ({
   foundRedeem,
   fromChain,
   getRedeem,
-  isConnect,
-  isGateway,
   isJustPortalUnknown,
   loadingRedeem,
   setShowOverview,
   showOverview,
+  showVerifyRedemption,
+  startDate,
   status,
   txHash,
   vaa,
 }: Props) => {
-  const showVerifyRedemption =
-    status === "vaa_emitted" &&
-    (isJustPortalUnknown || isConnect || isGateway) &&
-    (foundRedeem === false || (!canTryToGetRedeem && !foundRedeem));
-
   return (
     <div className="tx-information-summary">
       <ToggleGroup
@@ -64,15 +59,19 @@ const Summary = ({
           />
         )}
 
-        {showVerifyRedemption && (
-          <VerifyRedemption
-            canTryToGetRedeem={canTryToGetRedeem}
-            fromChain={fromChain}
-            isJustPortalUnknown={isJustPortalUnknown}
-            txHash={txHash}
-            vaa={vaa}
-          />
-        )}
+        {/* Resume Transaction button, only after 15 minutes */}
+        {showVerifyRedemption &&
+          startDate &&
+          new Date().getTime() - new Date(startDate).getTime() >= 15 * 60 * 1000 &&
+          (foundRedeem === false || (!canTryToGetRedeem && !foundRedeem)) && (
+            <VerifyRedemption
+              canTryToGetRedeem={canTryToGetRedeem}
+              fromChain={fromChain}
+              isJustPortalUnknown={isJustPortalUnknown}
+              txHash={txHash}
+              vaa={vaa}
+            />
+          )}
       </div>
     </div>
   );

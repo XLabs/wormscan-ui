@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { useLocation } from "react-router-dom";
 import { Column } from "react-table";
-import { IParams, PAGE_SIZE, TransactionOutput } from "..";
+import { IParams, TransactionOutput } from "..";
 import { Table } from "src/components/organisms";
 import { Pagination } from "src/components/atoms";
 import { useNavigateCustom, useWindowSize } from "src/utils/hooks";
@@ -149,7 +149,7 @@ const Information = ({
               : [
                   ...columns,
                   {
-                    Header: "VIEW DETAILS",
+                    Header: "View Details",
                     accessor: "viewDetails",
                   },
                 ]

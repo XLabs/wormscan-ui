@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import ReactApexChart from "react-apexcharts";
 import { BREAKPOINTS } from "src/consts";
 import { Loader, ToggleGroup } from "src/components/atoms";
@@ -26,7 +26,6 @@ type Props = {
   filters: {
     timespan: string;
   };
-  rangeShortLabel: string | "24H" | "7D" | "30D" | "365D" | "All";
   setScaleSelected: (value: "linear" | "logarithmic", track: boolean) => void;
   scaleSelected: "linear" | "logarithmic";
   chartSelected: "area" | "bar";
@@ -49,7 +48,6 @@ export const Chart = ({
   isError,
   isLoading,
   metricSelected,
-  rangeShortLabel,
   setScaleSelected,
   scaleSelected,
   chartSelected,
@@ -102,39 +100,6 @@ export const Chart = ({
             <WormholeScanBrand />
 
             <div className="token-activity-chart-top">
-              <div className="token-activity-chart-top-box">
-                <span className="token-activity-chart-top-box-key">
-                  {rangeShortLabel}{" "}
-                  {metricSelected === "volume"
-                    ? isDesktop
-                      ? "Total Volume"
-                      : "Vol"
-                    : "Total Transfers"}
-                  :
-                </span>
-                <span className="token-activity-chart-top-box-value">
-                  {dataTransformed &&
-                    (metricSelected === "volume"
-                      ? `$${formatNumber(token.total_value_transferred)}`
-                      : formatNumber(token.total_messages))}
-                </span>
-              </div>
-
-              <div className="token-activity-chart-top-box">
-                <span className="token-activity-chart-top-box-key">
-                  {filters.timespan === "1h" ? "Hourly" : "Daily"} Average:
-                </span>
-                <span className="token-activity-chart-top-box-value">
-                  {dataTransformed &&
-                    (metricSelected === "volume"
-                      ? `$${formatNumber(
-                          token.total_value_transferred / token.time_range_data.length,
-                          0,
-                        )}`
-                      : formatNumber(token.total_messages / token.time_range_data.length, 0))}
-                </span>
-              </div>
-
               <div className="token-activity-chart-top-toggles">
                 {isDesktop && chartSelected === "area" && metricSelected === "volume" && (
                   <ToggleGroup

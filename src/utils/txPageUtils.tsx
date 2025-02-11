@@ -43,6 +43,7 @@ export type OverviewProps = {
   isDuplicated?: boolean;
   isGatewaySource?: boolean;
   isJustGenericRelayer?: boolean;
+  isJustPortalUnknown?: boolean;
   isLatestBlockHigherThanVaaEmitBlock?: boolean;
   isMayanOnly?: boolean;
   isUnknownApp?: boolean;
@@ -66,7 +67,9 @@ export type OverviewProps = {
   resultLog?: string;
   setShowOverview?: (newView: "overview" | "advanced" | "progress") => void;
   showMetaMaskBtn?: boolean;
+  showMinReceivedTooltip?: boolean;
   showSignatures?: boolean;
+  showVerifyRedemption?: boolean;
   sourceAddress?: string;
   sourceFee?: string;
   sourceFeeUSD?: string;
@@ -75,12 +78,14 @@ export type OverviewProps = {
   sourceTokenInfo?: TokenInfo;
   sourceTokenLink?: string;
   sourceTxHash?: string;
+  startDate: Date | string;
   status?: IStatus;
   targetFee?: string;
   targetFeeUSD?: string;
   targetSymbol?: string;
   targetTokenInfo?: TokenInfo;
   targetTokenLink?: string;
+  targetTxHash?: string;
   targetTxTimestamp?: number;
   toChain?: ChainId;
   tokenAmount?: string;
@@ -88,10 +93,15 @@ export type OverviewProps = {
   transactionLimit?: number;
   txHash?: string;
   txIndex?: number;
+  vaa?: string;
   VAAId?: string;
 };
 
-export const BIGDIPPER_TRANSACTIONS = "https://bigdipper.live/wormhole/transactions";
+export const BIGDIPPER_TRANSACTIONS = {
+  Mainnet: "https://bigdipper.live/wormhole/transactions",
+  Testnet: "https://gatewayexplorer.testnet.wormholescan.io/wormhole",
+  Devnet: "https://gatewayexplorer.testnet.wormholescan.io/wormhole",
+};
 
 export const extractPageName = (url: string) => {
   const domain = url.split("//")[1].split("/")[0];
