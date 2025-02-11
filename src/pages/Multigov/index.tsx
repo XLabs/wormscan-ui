@@ -90,8 +90,10 @@ const Multigov = () => {
         description: (
           <div className="multigov-proposal-description">
             <a
-              href={`https://staging.tally.xyz/gov/multigov-test-11-19/proposal/${proposal.onchainId}`}
+              href={`https://staging.tally.xyz/gov/multigov/proposal/${proposal.onchainId}`}
               className="multigov-proposal-description-name"
+              target="_blank"
+              rel="noreferrer"
             >
               {proposalName}
             </a>
@@ -252,7 +254,7 @@ const Multigov = () => {
 
         <div className="multigov-more-proposals">
           <a
-            href="https://staging.tally.xyz/gov/multigov-test-11-19/proposals"
+            href="https://staging.tally.xyz/gov/multigov/proposals"
             target="_blank"
             rel="noreferrer"
           >
