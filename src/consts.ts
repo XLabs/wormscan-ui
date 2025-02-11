@@ -195,6 +195,7 @@ export const CONNECT_APP_ID = "CONNECT";
 export const ETH_BRIDGE_APP_ID = "ETH_BRIDGE";
 export const GATEWAY_APP_ID = "WORMCHAIN_GATEWAY_TRANSFER";
 export const GR_APP_ID = "GENERIC_RELAYER";
+export const M_PORTAL_APP_ID = "M_PORTAL";
 export const MAYAN_APP_ID = "MAYAN";
 export const MAYAN_MCTP_APP_ID = "MAYAN_MCTP";
 export const MAYAN_SWIFT_APP_ID = "MAYAN_SWIFT";
@@ -324,6 +325,7 @@ const targetChainsSupportedMainnet: { [key: string]: ChainId[] } = {
   ],
   [NTT_APP_ID]: [
     chainToChainId("Arbitrum"),
+    chainToChainId("Bsc"),
     chainToChainId("Base"),
     chainToChainId("Ethereum"),
     chainToChainId("Fantom"),

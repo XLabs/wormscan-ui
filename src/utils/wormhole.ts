@@ -547,6 +547,7 @@ const WORMHOLE_CHAINS: any = {
   },
   [chainToChainId("Monad")]: {
     name: "Monad",
+    nameTestnet: "Monad Testnet",
     icon: MonadIcon,
     colorlessIcon: MonadColorlessIcon,
     explorer: {
@@ -598,15 +599,15 @@ const WORMHOLE_CHAINS: any = {
     icon: NearIcon,
     colorlessIcon: NearColorlessIcon,
     explorer: {
-      Testnet: "https://explorer.Testnet.near.org",
-      Devnet: "https://explorer.Testnet.near.org",
-      Mainnet: "https://explorer.near.org",
+      Testnet: "https://testnet.nearblocks.io",
+      Devnet: "https://testnet.nearblocks.io",
+      Mainnet: "https://nearblocks.io",
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return this.explorer?.[network] + "/accounts/" + value;
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
       if (base === "token") return this.explorer?.[network] + "/token/" + value;
-      if (base === "block") return this.explorer?.[network] + "/block/" + value;
-      return this.explorer?.[network] + "/transactions/" + value;
+      if (base === "block") return this.explorer?.[network] + "/blocks/" + value;
+      return this.explorer?.[network] + "/txns/" + value;
     },
   },
   [chainToChainId("Neon")]: {
@@ -643,7 +644,9 @@ const WORMHOLE_CHAINS: any = {
         return this.explorer?.[network] + "/assets/ibc/" + btoa(value.replace("ibc/", ""));
       }
       if (base === "block") return this.explorer?.[network] + "/block/" + value;
-      return this.explorer?.[network] + "/tx/" + value;
+      return (
+        WORMHOLE_CHAINS[chainToChainId("Wormchain")].explorer[network] + "/transactions/" + value
+      );
     },
   },
   [chainToChainId("Oasis")]: {
@@ -701,8 +704,8 @@ const WORMHOLE_CHAINS: any = {
     icon: OsmosisIcon,
     colorlessIcon: OsmosisColorlessIcon,
     explorer: {
-      Testnet: "https://Testnet.mintscan.io/osmosis-Testnet",
-      Devnet: "https://Testnet.mintscan.io/osmosis-Testnet",
+      Testnet: "https://www.mintscan.io/osmosis-testnet/",
+      Devnet: "https://www.mintscan.io/osmosis-testnet/",
       Mainnet: "https://www.mintscan.io/osmosis",
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
@@ -797,6 +800,22 @@ const WORMHOLE_CHAINS: any = {
       if (base === "token") return this.explorer?.[network] + "/contracts/" + value;
       if (base === "block") return this.explorer?.[network] + "/blocks/" + value;
       return this.explorer?.[network] + "/txs/" + value;
+    },
+  },
+  [chainToChainId("Seievm")]: {
+    name: "Seievm",
+    icon: SeiIcon,
+    colorlessIcon: SeiColorlessIcon,
+    explorer: {
+      Testnet: "https://testnet.seistream.app",
+      Devnet: "https://devnet.seistream.app",
+      Mainnet: "https://seistream.app",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/account/" + value;
+      if (base === "token") return this.explorer?.[network] + "/contracts/" + value;
+      if (base === "block") return this.explorer?.[network] + "/blocks/" + value;
+      return this.explorer?.[network] + "/transactions/" + value;
     },
   },
   [chainToChainId("Sepolia")]: {
@@ -945,8 +964,8 @@ const WORMHOLE_CHAINS: any = {
     icon: WormChainIcon,
     colorlessIcon: WormChainColorlessIcon,
     explorer: {
-      Testnet: "",
-      Devnet: "",
+      Testnet: "https://gatewayexplorer.testnet.wormholescan.io/wormhole",
+      Devnet: "https://gatewayexplorer.testnet.wormholescan.io/wormhole",
       Mainnet: "https://bigdipper.live/wormhole",
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
@@ -1156,7 +1175,8 @@ export const getExplorerLink = ({
   if (
     chainId === chainToChainId("Kujira") ||
     chainId === chainToChainId("Evmos") ||
-    chainId === chainToChainId("Osmosis")
+    chainId === chainToChainId("Osmosis") ||
+    chainId === chainToChainId("Noble")
   ) {
     parsedValue = parsedValue.startsWith("0x") ? parsedValue.replace("0x", "") : parsedValue;
   }

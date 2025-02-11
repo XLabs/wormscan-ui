@@ -57,6 +57,23 @@ interface IGeckoTokenInfoResponse {
   };
 }
 
+interface ILiquidityLayerTokenInfoResponse {
+  type:
+    | "ForwardedERC20"
+    | "SwapAndForwardedERC20"
+    | "SwapAndForwardedEth"
+    | "SwapAndForwardedERC20";
+  token?: string;
+  amountIn?: string;
+  swapProtocol?: string;
+  middleToken?: string;
+  middleAmount?: string;
+  mayanProtocol?: string;
+  mayanData?: string;
+  symbol?: string;
+  decimals?: number;
+}
+
 const BFF_URL = process.env.WORMSCAN_BFF_URL;
 
 export const getGeckoTokenInfo = async (
@@ -72,6 +89,24 @@ export const getGeckoTokenInfo = async (
       ?.data as IGeckoTokenInfoResponse;
 
     return geckoTokenInfoResponse;
+  } catch (e) {
+    return null;
+  }
+};
+
+export const getLiquidityLayerTokenInfo = async (
+  network: Network,
+  txHash: string,
+  chainId: ChainId,
+) => {
+  try {
+    const liquidityLayerTokenInfoRequest = await fetchWithTimeout(
+      `${BFF_URL}/fastTransfers/getInfo?network=${network}&txHash=${txHash}&chainId=${chainId}`,
+    );
+
+    const liquidityLayerTokenInfoResponse =
+      (await liquidityLayerTokenInfoRequest.json()) as ILiquidityLayerTokenInfoResponse;
+    return liquidityLayerTokenInfoResponse;
   } catch (e) {
     return null;
   }

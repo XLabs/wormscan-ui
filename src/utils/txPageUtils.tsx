@@ -67,6 +67,7 @@ export type OverviewProps = {
   resultLog?: string;
   setShowOverview?: (newView: "overview" | "advanced" | "progress") => void;
   showMetaMaskBtn?: boolean;
+  showMinReceivedTooltip?: boolean;
   showSignatures?: boolean;
   showVerifyRedemption?: boolean;
   sourceAddress?: string;
@@ -99,7 +100,11 @@ export type OverviewProps = {
   setShowRedeemModal?: (showModal: boolean) => void;
 };
 
-export const BIGDIPPER_TRANSACTIONS = "https://bigdipper.live/wormhole/transactions";
+export const BIGDIPPER_TRANSACTIONS = {
+  Mainnet: "https://bigdipper.live/wormhole/transactions",
+  Testnet: "https://gatewayexplorer.testnet.wormholescan.io/wormhole",
+  Devnet: "https://gatewayexplorer.testnet.wormholescan.io/wormhole",
+};
 
 export const extractPageName = (url: string) => {
   const domain = url.split("//")[1].split("/")[0];

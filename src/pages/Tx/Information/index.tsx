@@ -15,6 +15,7 @@ import {
   ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
+  LIQUIDITY_LAYER_APP_ID,
   MAYAN_APP_ID,
   PORTAL_APP_ID,
   txType,
@@ -39,6 +40,7 @@ import { Modal } from "src/components/atoms";
 import { Redeem } from "./Summary/Redeem";
 import RedeemModal from "./Summary/Redeem/RedeemModal";
 import "./styles.scss";
+import { OverviewProps } from "src/utils/txPageUtils";
 
 interface Props {
   blockData: GetBlockData;
@@ -119,7 +121,6 @@ const Information = ({
 
   const fee = standarizedProperties?.overwriteFee || standarizedProperties?.fee || "";
   const {
-    amount,
     appIds,
     fromAddress: stdFromAddress,
     fromChain: stdFromChain,
@@ -195,10 +196,11 @@ const Information = ({
     chainId: toChain as ChainId,
   });
 
+  const amount = standarizedProperties?.amount || payload?.amount;
   const amountSent = formatNumber(Number(tokenAmount)) || formatNumber(formatUnits(+amount));
   const amountSentUSD = +usdAmount ? formatNumber(+usdAmount, 2) : "";
   const redeemedAmount = standarizedProperties?.overwriteRedeemAmount
-    ? formatNumber(+standarizedProperties?.overwriteRedeemAmount, 7)
+    ? standarizedProperties?.overwriteRedeemAmount
     : hasVAA || !isRPC
     ? formatNumber(formatUnits(+amount - +fee))
     : formatNumber(+amount - +fee);
@@ -341,7 +343,7 @@ const Information = ({
     !!toAddress &&
     !!(wrappedTokenAddress && tokenEffectiveAddress) &&
     !!timestamp &&
-    !!payload?.amount &&
+    !!amount &&
     !!data?.sourceChain?.transaction?.txHash &&
     !data?.targetChain?.transaction?.txHash;
 
@@ -355,7 +357,7 @@ const Information = ({
       toAddress,
       wrappedTokenAddress && tokenEffectiveAddress,
       timestamp,
-      payload?.amount,
+      amount,
       data?.sourceChain?.transaction?.txHash,
       +VAAId?.split("/")?.pop() || 0, //sequence
     );
@@ -422,7 +424,12 @@ const Information = ({
   const showVerifyRedemption =
     status === "pending_redeem" && (isJustPortalUnknown || isConnect || isGateway);
 
-  const overviewAndDetailProps = {
+  const showMinReceivedTooltip = !!(
+    data.content?.standarizedProperties?.appIds?.includes(LIQUIDITY_LAYER_APP_ID) &&
+    data.content?.payload?.payload?.parsedRedeemerMessage?.outputToken?.swap?.limitAmount
+  );
+
+  const overviewAndDetailProps: OverviewProps = {
     action,
     amountSent,
     amountSentUSD,
@@ -462,6 +469,7 @@ const Information = ({
     showMetaMaskBtn,
     showSignatures: !(appIds && appIds.includes(CCTP_MANUAL_APP_ID)),
     showVerifyRedemption,
+    showMinReceivedTooltip,
     sourceFee,
     sourceFeeUSD,
     sourceSymbol,

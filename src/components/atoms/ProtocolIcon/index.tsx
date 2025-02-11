@@ -8,6 +8,7 @@ import {
   GATEWAY_APP_ID,
   GR_APP_ID,
   LIQUIDITY_LAYER_APP_ID,
+  M_PORTAL_APP_ID,
   MAYAN_APP_ID,
   MAYAN_MCTP_APP_ID,
   MAYAN_SHUTTLE_APP_ID,
@@ -237,6 +238,21 @@ const EthBridgeIcon = ({ width }: { width: number }) => (
         <rect width="19.2" height="19.2" fill="white" transform="translate(4.3999 4.40625)" />
       </clipPath>
     </defs>
+  </svg>
+);
+
+const MPortalIcon = ({ width }: { width: number }) => (
+  <svg width={width} height={width} viewBox="0 0 500 500" fill="none" version="1.1">
+    <defs id="defs1" />
+    <rect width="500" height="500" fill="#000d0a" id="rect1" x="0" y="0" />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M 214.95437,253.83721 V 234.1693 l 28.42817,-58.99981 h 21.86743 l 28.42818,58.99981 v 19.66791 H 271.81072 V 239.19677 L 254.53399,202.9223 h -0.43547 l -17.27542,36.27447 v 14.64044 z m 147.82025,76.48514 c -22.52193,0 -41.11029,-17.9195 -41.11029,-39.55355 v -74.07962 c 0,-21.85178 18.58836,-39.33321 41.11029,-39.33321 h 18.36932 c 22.74228,0 41.11029,17.48143 41.11029,39.33321 v 74.07962 c 0,21.63405 -18.36801,39.55355 -41.11029,39.55355 z m -19.4606,-39.55355 c 0,9.61557 8.96367,17.48404 19.4606,17.48404 h 18.36932 c 2.8423,0 5.6859,-0.65712 8.09142,-1.75102 l -45.92134,-74.73413 z m 7.87238,-88.28328 49.41945,80.63516 v -66.4315 c 0,-9.8333 -8.52689,-17.48143 -19.46191,-17.48143 h -18.36932 c -4.37296,0 -8.30915,1.31163 -11.58822,3.27777 z M 76.745763,177.35597 v 152.96638 h 21.86743 V 220.62276 l 26.897507,52.44558 h 11.80856 l 26.89621,-52.44558 V 330.32235 H 186.0842 V 177.35597 H 162.90514 L 131.41433,238.76 99.924823,177.35597 Z"
+      fill="#ffffff"
+      id="path1"
+      style={{ strokeWidth: "1.30381" }}
+    />
   </svg>
 );
 
@@ -535,6 +551,7 @@ const iconMap: Record<string, React.FC<{ width: number }>> = {
   [GATEWAY_APP_ID]: WormholeGatewayIcon,
   [GR_APP_ID]: StandardRelayerIcon,
   [LIQUIDITY_LAYER_APP_ID]: WormholeLiquidityLayerIcon,
+  [M_PORTAL_APP_ID]: MPortalIcon,
   [MAYAN_APP_ID]: MayanIcon,
   [MAYAN_MCTP_APP_ID]: MayanIcon,
   [MAYAN_SHUTTLE_APP_ID]: MayanIcon,
