@@ -75,6 +75,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
   const [metricSelected, setMetricSelected] = useState<"volume" | "transactions">("volume");
   const [openFilters, setOpenFilters] = useState(false);
   const [rowSelected, setRowSelected] = useState<number>(0);
+  const [tokenSelectedByUser, setTokenSelectedByUser] = useState(false);
 
   const [filters, setFiltersState] = useState({
     from: getISODateZeroed(7),
@@ -150,9 +151,9 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
           }
         };
 
-        // find the index of the current symbol in the response, or use the first symbol if not found
+        // find the index of the selected symbol in the response, or use the first symbol if not found or not selected by the user
         const symbolIndex = response.findIndex(item => item.symbol === filters.symbol.value);
-        updateFiltersAndSelection(symbolIndex === -1 ? 0 : symbolIndex);
+        updateFiltersAndSelection(!tokenSelectedByUser || symbolIndex === -1 ? 0 : symbolIndex);
       },
     },
   );
@@ -207,6 +208,7 @@ const TokenActivity = ({ isHomePage = false }: { isHomePage?: boolean }) => {
       },
     });
     setRowSelected(!isDesktop && rowIndex === rowSelected ? -1 : rowIndex);
+    setTokenSelectedByUser(true);
   };
 
   useEffect(() => {
