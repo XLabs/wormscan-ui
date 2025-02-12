@@ -517,9 +517,7 @@ const Information = ({
       <Summary
         canTryToGetRedeem={canTryToGetRedeem}
         foundRedeem={foundRedeem}
-        fromChain={fromChain}
         getRedeem={getRedeem}
-        isJustPortalUnknown={isJustPortalUnknown}
         loadingRedeem={loadingRedeem}
         setShowOverview={setShowOverview}
         showOverview={showOverview}
@@ -541,8 +539,6 @@ const Information = ({
         {showOverview === "progress" && (
           <ProgressView
             {...overviewAndDetailProps}
-            isJustPortalUnknown={isJustPortalUnknown}
-            txHash={data?.sourceChain?.transaction?.txHash}
             vaa={vaa?.raw}
             showRedeemModal={showRedeemModal}
             setShowRedeemModal={setShowRedeemModal}

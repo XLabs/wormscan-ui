@@ -60,9 +60,8 @@ export const Redeem = ({ txHash, sourceChain, CustomComponent, network }: Props)
       },
       routes: [...DEFAULT_ROUTES, MayanRouteWH as any, MayanRouteMCTP, MayanRouteSWIFT],
       eventHandler: event => {
-        console.log({ event });
         if (event.type === "load") {
-          console.log("load event");
+          console.log("Connect loaded", { event });
         }
       },
     };

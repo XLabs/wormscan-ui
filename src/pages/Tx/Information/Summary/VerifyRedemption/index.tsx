@@ -1,27 +1,15 @@
 import { useEffect, useState } from "react";
 import { Tooltip } from "src/components/atoms";
 import "./styles.scss";
-import { ChainId } from "@wormhole-foundation/sdk";
 
 interface Props {
   asText?: string;
   canTryToGetRedeem: boolean;
-  fromChain: ChainId | number;
-  isJustPortalUnknown: boolean;
-  txHash: string;
   vaa: string;
   setShowModal: (showModal: boolean) => void;
 }
 
-export const VerifyRedemption = ({
-  asText,
-  canTryToGetRedeem,
-  fromChain,
-  isJustPortalUnknown,
-  txHash,
-  vaa,
-  setShowModal,
-}: Props) => {
+export const VerifyRedemption = ({ asText, canTryToGetRedeem, vaa, setShowModal }: Props) => {
   const [shouldShow, setShouldShow] = useState(false);
   const [hex, setHex] = useState("");
 
@@ -49,19 +37,7 @@ export const VerifyRedemption = ({
 
   if (asText)
     return (
-      <a
-        className="verify-redemption-text"
-        // href={
-        //   isJustPortalUnknown
-        //     ? vaa && hex
-        //       ? `https://www.portalbridge.com/#/redeem?vaa=${hex}`
-        //       : `https://www.portalbridge.com/#/redeem?sourceChain=${fromChain}&transactionId=${txHash}`
-        //     : `https://portalbridge.com/?sourceChain=${fromChain}&txHash=${txHash}`
-        // }
-        // target="_blank"
-        // rel="noopener noreferrer"
-        onClick={() => setShowModal(true)}
-      >
+      <a className="verify-redemption-text" onClick={() => setShowModal(true)}>
         {asText}
       </a>
     );
@@ -74,19 +50,7 @@ export const VerifyRedemption = ({
       type="info"
       maxWidth={false}
     >
-      <a
-        className="verify-redemption"
-        // href={
-        //   isJustPortalUnknown
-        //     ? vaa && hex
-        //       ? `https://www.portalbridge.com/#/redeem?vaa=${hex}`
-        //       : `https://www.portalbridge.com/#/redeem?sourceChain=${fromChain}&transactionId=${txHash}`
-        //     : `https://portalbridge.com/?sourceChain=${fromChain}&txHash=${txHash}`
-        // }
-        // target="_blank"
-        // rel="noopener noreferrer"
-        onClick={() => setShowModal(true)}
-      >
+      <a className="verify-redemption" onClick={() => setShowModal(true)}>
         <p>Resume Transaction</p>
       </a>
     </Tooltip>
