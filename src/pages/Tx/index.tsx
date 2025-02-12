@@ -245,6 +245,7 @@ const Tx = () => {
   useEffect(() => {
     setErrorCode(undefined);
     setIsLoading(true);
+    cancelRequests.current = false; // Reset the cancel flag for new searches
   }, [txHash, chainId, emitter, seq]);
 
   const showSearchNotFound = (err: Error) => {

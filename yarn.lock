@@ -221,13 +221,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aptos-labs/aptos-client@npm:^0.1.0, @aptos-labs/aptos-client@npm:^0.1.1":
+"@aptos-labs/aptos-client@npm:^0.1.0":
   version: 0.1.1
   resolution: "@aptos-labs/aptos-client@npm:0.1.1"
   dependencies:
     axios: 1.7.4
     got: ^11.8.6
   checksum: 230050a63ae2125c334dd87d7b72fd04c30700e0ef14d5e342d56390d23c18be742a68e6e49aa92d9a5d191da5b8b80623ec94400b565185861f38251c013a3a
+  languageName: node
+  linkType: hard
+
+"@aptos-labs/aptos-client@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@aptos-labs/aptos-client@npm:1.0.0"
+  peerDependencies:
+    axios: ^1.7.7
+    got: ^11.8.6
+  checksum: d732e2544c14b4c03456fc0e45baa0344e7649284545e2dc09a2001f22f44b4670eeeca08166cc10fdd99b421ff21c0ca25d4a77ff746046c438e1bfa6807cc7
   languageName: node
   linkType: hard
 
@@ -248,11 +258,11 @@ __metadata:
   linkType: hard
 
 "@aptos-labs/ts-sdk@npm:^1.26.0, @aptos-labs/ts-sdk@npm:^1.33.1, @aptos-labs/ts-sdk@npm:^1.9.1":
-  version: 1.34.0
-  resolution: "@aptos-labs/ts-sdk@npm:1.34.0"
+  version: 1.35.0
+  resolution: "@aptos-labs/ts-sdk@npm:1.35.0"
   dependencies:
     "@aptos-labs/aptos-cli": ^1.0.2
-    "@aptos-labs/aptos-client": ^0.1.1
+    "@aptos-labs/aptos-client": ^1.0.0
     "@aptos-labs/script-composer-pack": ^0.0.9
     "@noble/curves": ^1.4.0
     "@noble/hashes": ^1.4.0
@@ -263,7 +273,7 @@ __metadata:
     js-base64: ^3.7.7
     jwt-decode: ^4.0.0
     poseidon-lite: ^0.2.0
-  checksum: 9ee20a0c1f15b654aa97a53783a485a1829a26e119fffc2b0ac2c70d4b99167ff631574152467f638424f98a0d0233076c5eb96295234fa55960c30ce013734a
+  checksum: 782e3726fbbe7021e776016744acac0345c171f7bdcf702c6e325bb52d72a97c4ef9f196e17c575a1b700231a2bc9927ab020a71af74e2cebc66de37d32626da
   languageName: node
   linkType: hard
 
@@ -6722,303 +6732,303 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-ast@npm:^1.0.0-beta.11":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-ast@npm:1.0.0-beta.11"
+"@swagger-api/apidom-ast@npm:^1.0.0-beta.12":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-ast@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-error": ^1.0.0-beta.11
+    "@swagger-api/apidom-error": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
     unraw: ^3.0.0
-  checksum: 13ac091d9f66bc66d64fcce49b77e8205dc2abc1f5888e396e36b321aad60a974e0deb308f0dbcbd771d7871f8f23fe0cc3169d4d76d7b0b980bf2543c72c445
+  checksum: 6c4d38097356881f4a7cff0707c0e209eaa4a5d28aad8a974f252d724bc2e1da661ad79845be727f8120103f4051191940d66742d313892a87b665ae2b5839d7
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-core@npm:>=1.0.0-beta.11 <1.0.0-rc.0, @swagger-api/apidom-core@npm:^1.0.0-beta.11":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-core@npm:1.0.0-beta.11"
+"@swagger-api/apidom-core@npm:>=1.0.0-beta.11 <1.0.0-rc.0, @swagger-api/apidom-core@npm:^1.0.0-beta.12":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-core@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-ast": ^1.0.0-beta.11
-    "@swagger-api/apidom-error": ^1.0.0-beta.11
+    "@swagger-api/apidom-ast": ^1.0.0-beta.12
+    "@swagger-api/apidom-error": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     minim: ~0.23.8
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
     short-unique-id: ^5.0.2
     ts-mixer: ^6.0.3
-  checksum: b788539ae8ac576b0238e16f30ce88ec2aafdae4cfcb4aa09c077e3e4e9907320fbe2a0709561608ee0ec590a884982e43a0d50690914eabb8e69ac7798743ac
+  checksum: 63b882fe5c2dca8398d643fa67cd23e9f3328f9e588c18ee6538df33a95fb10d791835e6cbddf94a0f8327ea9524e9d5a6e16fdfa3a2bfc9e5a12fcc23f75ece
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-error@npm:>=1.0.0-beta.11 <1.0.0-rc.0, @swagger-api/apidom-error@npm:^1.0.0-beta.11, @swagger-api/apidom-error@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-error@npm:1.0.0-beta.11"
+"@swagger-api/apidom-error@npm:>=1.0.0-beta.11 <1.0.0-rc.0, @swagger-api/apidom-error@npm:^1.0.0-beta.12, @swagger-api/apidom-error@npm:^1.0.0-beta.3 <1.0.0-rc.0":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-error@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-  checksum: d7e88dd56fb39c533b26384ea530cd3da38cf2855a18c22a0dd1770ecacd1989c9c6ec33efcebb226eb211ef0d0b0e962f68cde1071bcbd92a7f1d0bb87a3486
+  checksum: a0f666008dc8e2e0452c7a8b95f6e4fedefecbbce0b0f6f345b7ee865ebdbafd82118dcc87e5e36afada512a0bfff2cba6dd516690049820eebe7a42a1d86c58
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-json-pointer@npm:>=1.0.0-beta.11 <1.0.0-rc.0, @swagger-api/apidom-json-pointer@npm:^1.0.0-beta.11, @swagger-api/apidom-json-pointer@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-json-pointer@npm:1.0.0-beta.11"
+"@swagger-api/apidom-json-pointer@npm:>=1.0.0-beta.11 <1.0.0-rc.0, @swagger-api/apidom-json-pointer@npm:^1.0.0-beta.12, @swagger-api/apidom-json-pointer@npm:^1.0.0-beta.3 <1.0.0-rc.0":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-json-pointer@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-error": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-error": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
-  checksum: b313d83c2e7fc7c4d93482f72fff987a2cf1e25835f1999c8e96ce3ff66f292cb878a93433e841dcb9aadf511288a52afdfeeced702426041dbafecbbcaf4c72
+  checksum: f447d2d0a036e187824c6769fbcf1784494876c2a2e4017c2bf6f577ec701170d59c0ad755531aa003221e76cce8c2beb5cc2702212ddd01f839fb4bdd3b068a
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-ns-api-design-systems@npm:^1.0.0-beta.11":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-ns-api-design-systems@npm:1.0.0-beta.11"
+"@swagger-api/apidom-ns-api-design-systems@npm:^1.0.0-beta.12":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-ns-api-design-systems@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-error": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-openapi-3-1": ^1.0.0-beta.11
-    "@types/ramda": ~0.30.0
-    ramda: ~0.30.0
-    ramda-adjunct: ^5.0.0
-    ts-mixer: ^6.0.3
-  checksum: dbc27e61c610d668f8578f7de0ea6e1c3295716c2587566196865cc6b065582e9a2e8f526c8ad704aeef267b0e3dfb68a12e8901c449e2ade4b83abed1a0966c
-  languageName: node
-  linkType: hard
-
-"@swagger-api/apidom-ns-asyncapi-2@npm:^1.0.0-beta.11, @swagger-api/apidom-ns-asyncapi-2@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-ns-asyncapi-2@npm:1.0.0-beta.11"
-  dependencies:
-    "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-json-schema-draft-7": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-error": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-openapi-3-1": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
     ts-mixer: ^6.0.3
-  checksum: 8f18d9f9f1e7168569bab85a42303569fd38e15bdafbd4bda3665a4ca2536b0bd5574f7ce36f03d40837ee1826ea942fe77964ef5b1de0a1bef09975f5ee8ac2
+  checksum: 1a615d42bff9f26c28fd39d4a734089247089942837975b27e5216cff28abf53704f5d4a3d11bebc5b1802dc6628c8595032d173adcb198729967bddf91158d5
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-ns-json-schema-2019-09@npm:^1.0.0-beta.11":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-ns-json-schema-2019-09@npm:1.0.0-beta.11"
+"@swagger-api/apidom-ns-asyncapi-2@npm:^1.0.0-beta.12, @swagger-api/apidom-ns-asyncapi-2@npm:^1.0.0-beta.3 <1.0.0-rc.0":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-ns-asyncapi-2@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-error": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-json-schema-draft-7": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-json-schema-draft-7": ^1.0.0-beta.12
+    "@types/ramda": ~0.30.0
+    ramda: ~0.30.0
+    ramda-adjunct: ^5.0.0
+    ts-mixer: ^6.0.3
+  checksum: 18982dbe400aede27383fa80efd3d8f57f481ab75abce524a48f817276641c51ff754e6b91133294a08ddc8b0abfa65ce7ad3337b17d815e387aadc0e35a967b
+  languageName: node
+  linkType: hard
+
+"@swagger-api/apidom-ns-json-schema-2019-09@npm:^1.0.0-beta.12":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-ns-json-schema-2019-09@npm:1.0.0-beta.12"
+  dependencies:
+    "@babel/runtime-corejs3": ^7.20.7
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-error": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-json-schema-draft-7": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
     ts-mixer: ^6.0.4
-  checksum: 305fe890b962945c5504769e45b6bd50acdf814aba7ff9a0ffc904a6428648824b047e1556a27e0a32316a930c60613cbfa4bb3f91bf311b1153e6ef5e1de044
+  checksum: 603cc52b4585ad943f9f1dd89d0582ed2c1e7cf18713bce7c87d8755b1df216f08d80a3cfdfc818ce4d4bcb85b170b519744193a470075b6053b20ee1cb40e7a
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-ns-json-schema-2020-12@npm:^1.0.0-beta.11":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-ns-json-schema-2020-12@npm:1.0.0-beta.11"
+"@swagger-api/apidom-ns-json-schema-2020-12@npm:^1.0.0-beta.12":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-ns-json-schema-2020-12@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-error": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-json-schema-2019-09": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-error": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-json-schema-2019-09": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
     ts-mixer: ^6.0.4
-  checksum: c26acbfc2d067ad619a7743d1cbde9b3baa27a739722ae396288851b58df4204936cfb4241fde336e066fcb8e3d7ec0dd7568669b2df47351a40e7f68ed2258c
+  checksum: 229fa454004331378f8e527ac0987457bb9e3a4897c036774ccb2efb0d5e71c3e26ca127ece673586d1fb10d3277120cd83ee1f3bbfe9a51a7d96eda4c372b48
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-ns-json-schema-draft-4@npm:^1.0.0-beta.11":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-ns-json-schema-draft-4@npm:1.0.0-beta.11"
+"@swagger-api/apidom-ns-json-schema-draft-4@npm:^1.0.0-beta.12":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-ns-json-schema-draft-4@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-ast": ^1.0.0-beta.11
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
+    "@swagger-api/apidom-ast": ^1.0.0-beta.12
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
     ts-mixer: ^6.0.4
-  checksum: bcabb70bdd2730fc54acf69e3dd8d346524a177666d34cb7909759fc03bdc6b6777525d91e1e412b42659d59500884d1ffddca689558f4f73b3f8d114ebb7dc2
+  checksum: d439f29b62dee7048daccf43f39e1997e72ca904ffcb586010063bae528baccd08f9f4a7aafc09ff5f5732926e1600a8478d5fe2eb77bb51c5cc3d0597256ca3
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-ns-json-schema-draft-6@npm:^1.0.0-beta.11":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-ns-json-schema-draft-6@npm:1.0.0-beta.11"
+"@swagger-api/apidom-ns-json-schema-draft-6@npm:^1.0.0-beta.12":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-ns-json-schema-draft-6@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-error": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-json-schema-draft-4": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-error": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-json-schema-draft-4": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
     ts-mixer: ^6.0.4
-  checksum: fefd496cea79b6ee952a6f98f7c2938b0ccbe46b5402d0cdfa9287929c841e7dfeaab73d5d0dfa6482e3a56017ea05c0a714d635b33c562b572244feea308412
+  checksum: e473353583ba456e3e9e56f2501b0197afd6063b55fdd7344f4996ffa3ea495fb3e4eec76640b073d925a76dc4c1172d1c4f0401fb1804c83514688287171a88
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-ns-json-schema-draft-7@npm:^1.0.0-beta.11":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-ns-json-schema-draft-7@npm:1.0.0-beta.11"
+"@swagger-api/apidom-ns-json-schema-draft-7@npm:^1.0.0-beta.12":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-ns-json-schema-draft-7@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-error": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-json-schema-draft-6": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-error": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-json-schema-draft-6": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
     ts-mixer: ^6.0.4
-  checksum: 34252171f05d88efab652f318a3baa1f3d28eab731c5bfc426226b1830a5312af20e78e7907b9ab8c8a6ac2be78e946caccede14ee03b026c1048ec18b87f5e1
+  checksum: 6bde0fab85b1311a625b47a7da600f0009d8d191c2ef5173f74becc8ae07bf5915e1fd5d91b6869ce929bd21914739474664b4fa0826e7fe45433b53d975e877
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-ns-openapi-2@npm:^1.0.0-beta.11, @swagger-api/apidom-ns-openapi-2@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-ns-openapi-2@npm:1.0.0-beta.11"
+"@swagger-api/apidom-ns-openapi-2@npm:^1.0.0-beta.12, @swagger-api/apidom-ns-openapi-2@npm:^1.0.0-beta.3 <1.0.0-rc.0":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-ns-openapi-2@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-error": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-json-schema-draft-4": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-error": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-json-schema-draft-4": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
     ts-mixer: ^6.0.3
-  checksum: c701ab7e892daefd3720a3351efbb027defa80437ce92e067a12faf801c887abe39c1ce9f73f3625df30db0ba62ec6af680648ee5958d50610f19f0cad0cc24a
+  checksum: 8294452272494326290d06e1967998aef16eb5b34fc2d190e19247f8905205c8600731cae18127dd84c9ecc69c616f50af32f93ca85d2145c7af93875f20555b
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-ns-openapi-3-0@npm:^1.0.0-beta.11, @swagger-api/apidom-ns-openapi-3-0@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-ns-openapi-3-0@npm:1.0.0-beta.11"
+"@swagger-api/apidom-ns-openapi-3-0@npm:^1.0.0-beta.12, @swagger-api/apidom-ns-openapi-3-0@npm:^1.0.0-beta.3 <1.0.0-rc.0":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-ns-openapi-3-0@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-error": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-json-schema-draft-4": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-error": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-json-schema-draft-4": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
     ts-mixer: ^6.0.3
-  checksum: 1a28904f81d9f14b4b111f651ce2d0357fcebf4712538734174ea527538ab21c8a80902f747c39515ad26a77929fad1557cf0ab3e58038b1d2497c45c1c8e458
+  checksum: 934a8a1e020cf7f3ee277d6e46e548058bc95ae134f4b536d6552c715cbb56d0e7545ef611a2c6a7b86ed5f25b35c30671984cdb7e8fa60ed089ab394bab7348
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-ns-openapi-3-1@npm:>=1.0.0-beta.11 <1.0.0-rc.0, @swagger-api/apidom-ns-openapi-3-1@npm:^1.0.0-beta.11, @swagger-api/apidom-ns-openapi-3-1@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-ns-openapi-3-1@npm:1.0.0-beta.11"
+"@swagger-api/apidom-ns-openapi-3-1@npm:>=1.0.0-beta.11 <1.0.0-rc.0, @swagger-api/apidom-ns-openapi-3-1@npm:^1.0.0-beta.12, @swagger-api/apidom-ns-openapi-3-1@npm:^1.0.0-beta.3 <1.0.0-rc.0":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-ns-openapi-3-1@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-ast": ^1.0.0-beta.11
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-json-pointer": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-json-schema-2020-12": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-openapi-3-0": ^1.0.0-beta.11
+    "@swagger-api/apidom-ast": ^1.0.0-beta.12
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-json-pointer": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-json-schema-2020-12": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-openapi-3-0": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
     ts-mixer: ^6.0.3
-  checksum: f8ebd3f29029113b498a86ec123cf95e8a61c94402b4c1a7194c0ae6947f5b4370723821976a0fbdc57dab55bc12a66f63b7339e734ed13f742267586cb4b10a
+  checksum: cef277e7fb019ccfc453e20694c112da458339e7946632fc3d1f2b13c5ff9d1e876409d6e9f8d14a3b18c66b3285d56a628887864cd4c504db28c825754b9e60
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-ns-workflows-1@npm:^1.0.0-beta.11, @swagger-api/apidom-ns-workflows-1@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-ns-workflows-1@npm:1.0.0-beta.11"
+"@swagger-api/apidom-ns-workflows-1@npm:^1.0.0-beta.12, @swagger-api/apidom-ns-workflows-1@npm:^1.0.0-beta.3 <1.0.0-rc.0":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-ns-workflows-1@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-json-schema-2020-12": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-json-schema-2020-12": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
     ts-mixer: ^6.0.3
-  checksum: 19e56de28d9c8dab739bd0b16d8b37b86a4ecbe3c6b678a21191f846bd9f87b1a5cfd949bbaa90fb6418d75d005cb94f21c7445e9a4406e6731fe8ed9a2f601f
+  checksum: 80999eed032b2d1bdedfd4e0e296eb2e70648fa3180025cdb0a568786706a640be9c465692b2be31bbb8fec665f0af23c49bdc1981ee4f89e8b33fb703eefdce
   languageName: node
   linkType: hard
 
 "@swagger-api/apidom-parser-adapter-api-design-systems-json@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-api-design-systems-json@npm:1.0.0-beta.11"
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-api-design-systems-json@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-api-design-systems": ^1.0.0-beta.11
-    "@swagger-api/apidom-parser-adapter-json": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-api-design-systems": ^1.0.0-beta.12
+    "@swagger-api/apidom-parser-adapter-json": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
-  checksum: 8a0692769d9496506760ca9c05f8a081a8f614d48a392698b89ec5a0b0ce24b1967283c65df006ed683211913109a64a768fe896137df084f31a6fe180a0cbf6
+  checksum: a1c768ffd8ac6144e3fc3d61b96ea6f1cd6070a00074f51f9ebc0f93bb4b0c23e41d32333034d9d94aa2b9a3f80096e47e2a3c82b3217df59e01f55ff03ade14
   languageName: node
   linkType: hard
 
 "@swagger-api/apidom-parser-adapter-api-design-systems-yaml@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-api-design-systems-yaml@npm:1.0.0-beta.11"
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-api-design-systems-yaml@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-api-design-systems": ^1.0.0-beta.11
-    "@swagger-api/apidom-parser-adapter-yaml-1-2": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-api-design-systems": ^1.0.0-beta.12
+    "@swagger-api/apidom-parser-adapter-yaml-1-2": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
-  checksum: 1c3c4a2528d3d54e4248f6e2c0e3af75d3380be3bba9879777c69bcfeacc7186667594e77c37eaf513fce9082e478f450780dacf0248276787234119ba4fcb8c
+  checksum: a6956d88946fed4cabb88c8e486ac52cabfc3f0115f05497bfde1be41c37129ff2beafed5394abb9519c93d2a4c08c7836331c05ff5b9c0fb32cf57675f76855
   languageName: node
   linkType: hard
 
 "@swagger-api/apidom-parser-adapter-asyncapi-json-2@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-asyncapi-json-2@npm:1.0.0-beta.11"
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-asyncapi-json-2@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-asyncapi-2": ^1.0.0-beta.11
-    "@swagger-api/apidom-parser-adapter-json": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-asyncapi-2": ^1.0.0-beta.12
+    "@swagger-api/apidom-parser-adapter-json": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
-  checksum: c4cc027bfa4791197fd5d357a0bdbdcb7a25f8a5f6103454c2153afba0bca0d38d7ed70488e054e23b55858bdcf2bba07d4d3b424d20ecb9a1ffbc0821a0535d
+  checksum: b6f923a5cb153ab4975b5a6e5f25b0938f267dbdce4670e34816760adeec5ffdf0c8a1a463c95ee7f96890c89909c3aff6eccf02814bc57270cc13587c7602fb
   languageName: node
   linkType: hard
 
 "@swagger-api/apidom-parser-adapter-asyncapi-yaml-2@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-asyncapi-yaml-2@npm:1.0.0-beta.11"
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-asyncapi-yaml-2@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-asyncapi-2": ^1.0.0-beta.11
-    "@swagger-api/apidom-parser-adapter-yaml-1-2": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-asyncapi-2": ^1.0.0-beta.12
+    "@swagger-api/apidom-parser-adapter-yaml-1-2": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
-  checksum: d7da214e7f89167b527ec8e042a13bf7e83460f82bda36b5d3f32600730fd7fb73daa0149d3d9271eb2e48edb61f304047a805e1b954fcc7ccc7f31acbf1fe1e
+  checksum: f7b0b85c8f59ece35e932e60743c54059944c0432ba177fcc9208204ce6d812325ba4b4eddbf4c6c15f3f50147d3eb33389fc682fa8cdf24813c1c1cc1286c10
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-parser-adapter-json@npm:^1.0.0-beta.11, @swagger-api/apidom-parser-adapter-json@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-json@npm:1.0.0-beta.11"
+"@swagger-api/apidom-parser-adapter-json@npm:^1.0.0-beta.12, @swagger-api/apidom-parser-adapter-json@npm:^1.0.0-beta.3 <1.0.0-rc.0":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-json@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-ast": ^1.0.0-beta.11
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-error": ^1.0.0-beta.11
+    "@swagger-api/apidom-ast": ^1.0.0-beta.12
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-error": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     node-gyp: latest
     ramda: ~0.30.0
@@ -7026,138 +7036,138 @@ __metadata:
     tree-sitter: =0.22.1
     tree-sitter-json: =0.24.8
     web-tree-sitter: =0.24.5
-  checksum: 0a4b31611d1bd49b83d64d30035f1a48465a504403140d150392ebb41cd59a2773677e5e9c6a042d4ba8fc000354c59e507a6ec9bc6e031f1cce9af1e51f2808
+  checksum: 9607ee0868f7ca7cdca1afe5ad81fbe42bc3e51bdbfaca13ff9ccc40a34813b1086e4d6e4e3098f2a1516808e33ce772411920635420905a01c5c879875a8434
   languageName: node
   linkType: hard
 
 "@swagger-api/apidom-parser-adapter-openapi-json-2@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-openapi-json-2@npm:1.0.0-beta.11"
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-openapi-json-2@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-openapi-2": ^1.0.0-beta.11
-    "@swagger-api/apidom-parser-adapter-json": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-openapi-2": ^1.0.0-beta.12
+    "@swagger-api/apidom-parser-adapter-json": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
-  checksum: 39dc4bf679146c89455c171469059a84898a63c5868d15aa36af4aef35802c7a731ffbeae4933dc7768e9dd2af0e4bd270c29fd41306ef78e6992b47de3da3e7
+  checksum: bcdbcd63a97bdec29cfae9c76fecb367b44e5005b71aaf0661ea2778d8576147e43b12a776ba80d9ccaba3da004e9089f69d1170a887ac667c143207759cf686
   languageName: node
   linkType: hard
 
 "@swagger-api/apidom-parser-adapter-openapi-json-3-0@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-openapi-json-3-0@npm:1.0.0-beta.11"
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-openapi-json-3-0@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-openapi-3-0": ^1.0.0-beta.11
-    "@swagger-api/apidom-parser-adapter-json": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-openapi-3-0": ^1.0.0-beta.12
+    "@swagger-api/apidom-parser-adapter-json": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
-  checksum: 91a56b07887a4215c5f0cfe8d754b68f2cd71f49071bba46438123e7168d418c9423fdaaab30266789c5609f07612613846e87ccb18ca79b8912fb95797fa5ae
+  checksum: afa5e1aced209d283ce9441e8932391b5b46dce528bbe227b5e86c07b56d6c241cc3c87d9a86fde2171da4ac78468ba4adbfb3cdc0c9ad70438c1c62ad9415f0
   languageName: node
   linkType: hard
 
 "@swagger-api/apidom-parser-adapter-openapi-json-3-1@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-openapi-json-3-1@npm:1.0.0-beta.11"
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-openapi-json-3-1@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-openapi-3-1": ^1.0.0-beta.11
-    "@swagger-api/apidom-parser-adapter-json": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-openapi-3-1": ^1.0.0-beta.12
+    "@swagger-api/apidom-parser-adapter-json": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
-  checksum: b67de13c56ffabc69d0daa7e07f36793014731b90fa3672d6d46c26ccc472451ed8c2556da8a04ff578ed1ad4c1f3d6ed4fc83a554e6095e6ee001d2f9c200b0
+  checksum: 01d0f93e75758f7e04dc8c7345501e1dd79ee6f747070857db8e7c8a17591a57ba3c62640a68b1d12f8ead1c233734f9e2fe7f800fb942daca6cc1b2fa4b7fc5
   languageName: node
   linkType: hard
 
 "@swagger-api/apidom-parser-adapter-openapi-yaml-2@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-openapi-yaml-2@npm:1.0.0-beta.11"
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-openapi-yaml-2@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-openapi-2": ^1.0.0-beta.11
-    "@swagger-api/apidom-parser-adapter-yaml-1-2": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-openapi-2": ^1.0.0-beta.12
+    "@swagger-api/apidom-parser-adapter-yaml-1-2": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
-  checksum: 4494f2dc184e720d67818d4f87df5da2034a4a596f7c9e3e8307159598ca6ea75547ce988f0b42b0c980178c259410a1893688e4faf2cd4093240b8775bba67e
+  checksum: 0aaecaeb1f090d16862ad02b6d1b34dc7df51e938328541ecb7a61cc3097ca72545f74c202bc7e1edd59131b6388868af4b36a3f39a9b49fa09cd11ec0c0831c
   languageName: node
   linkType: hard
 
 "@swagger-api/apidom-parser-adapter-openapi-yaml-3-0@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-openapi-yaml-3-0@npm:1.0.0-beta.11"
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-openapi-yaml-3-0@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-openapi-3-0": ^1.0.0-beta.11
-    "@swagger-api/apidom-parser-adapter-yaml-1-2": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-openapi-3-0": ^1.0.0-beta.12
+    "@swagger-api/apidom-parser-adapter-yaml-1-2": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
-  checksum: ec02b2cddd2fdf164fa467f62f7472010540347c9cf43cc73e91ed811dac230dfdf69db5b11197f1566f6e8ef70f3f48553d9fb6b1dd23ff20c8c80ae0cfaa5b
+  checksum: 8f6e34beb5475d4a96e61958b16bc5b3c038d1f4e949446aeb9e01dec931310ea9fa6b69b2a9aa78fcc8b9b4e1d8e73613df75ba2c5cdb430a4b4f3bede2fa70
   languageName: node
   linkType: hard
 
 "@swagger-api/apidom-parser-adapter-openapi-yaml-3-1@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-openapi-yaml-3-1@npm:1.0.0-beta.11"
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-openapi-yaml-3-1@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-openapi-3-1": ^1.0.0-beta.11
-    "@swagger-api/apidom-parser-adapter-yaml-1-2": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-openapi-3-1": ^1.0.0-beta.12
+    "@swagger-api/apidom-parser-adapter-yaml-1-2": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
-  checksum: 4d8a45b63119a6e7cd836fc4aa1bf00155b8a00ee68488920b14265168dd92a64cf99d8a45a5cf6232301f096d78ccb2a1471173405f7b28371e8c2055feef88
+  checksum: 6814aba6df9cc631d2a3d702411a0787d616c1d13e52b40368462c422b94e7c4f7d53466370006e6f4da67db6c5a798d8286e9db04ba11ffb998e02c793cb528
   languageName: node
   linkType: hard
 
 "@swagger-api/apidom-parser-adapter-workflows-json-1@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-workflows-json-1@npm:1.0.0-beta.11"
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-workflows-json-1@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-workflows-1": ^1.0.0-beta.11
-    "@swagger-api/apidom-parser-adapter-json": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-workflows-1": ^1.0.0-beta.12
+    "@swagger-api/apidom-parser-adapter-json": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
-  checksum: 7a01ed3f2aaada974b6230aa018dc160e33c68327fc88e623813ec5388e5e8c781e89c1df7b7f0d25dd44723d4bdf5c8e3a38f1ca979500fee06e21a02747212
+  checksum: 67a0ac59417a193db454bbc730555264411f8ae7fd24670f102b901a566c03f3970bf50be7d38866f7f896f79689e3119bb0f0802621b05b75ff60e3bc9c4d06
   languageName: node
   linkType: hard
 
 "@swagger-api/apidom-parser-adapter-workflows-yaml-1@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-workflows-yaml-1@npm:1.0.0-beta.11"
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-workflows-yaml-1@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-ns-workflows-1": ^1.0.0-beta.11
-    "@swagger-api/apidom-parser-adapter-yaml-1-2": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-ns-workflows-1": ^1.0.0-beta.12
+    "@swagger-api/apidom-parser-adapter-yaml-1-2": ^1.0.0-beta.12
     "@types/ramda": ~0.30.0
     ramda: ~0.30.0
     ramda-adjunct: ^5.0.0
-  checksum: 75a3a23815a1b1bb72b44a244390a93b796f89ef1645c49155f657223a6f7c35d1b87508deb331a1cc583bb5a75dcc35360238cfc2a37655ea4aceac406fabf7
+  checksum: f47ccaa7b8094f715a3f1b1b42f89f3fb998d378803e6024be6a6b5bfcf67c229b673f68d0c5fa6717a03467a799b71d7daa66178a5063bf7ded1b7195d3bdc1
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-parser-adapter-yaml-1-2@npm:^1.0.0-beta.11, @swagger-api/apidom-parser-adapter-yaml-1-2@npm:^1.0.0-beta.3 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-parser-adapter-yaml-1-2@npm:1.0.0-beta.11"
+"@swagger-api/apidom-parser-adapter-yaml-1-2@npm:^1.0.0-beta.12, @swagger-api/apidom-parser-adapter-yaml-1-2@npm:^1.0.0-beta.3 <1.0.0-rc.0":
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-parser-adapter-yaml-1-2@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-ast": ^1.0.0-beta.11
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
-    "@swagger-api/apidom-error": ^1.0.0-beta.11
+    "@swagger-api/apidom-ast": ^1.0.0-beta.12
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
+    "@swagger-api/apidom-error": ^1.0.0-beta.12
     "@tree-sitter-grammars/tree-sitter-yaml": =0.7.0
     "@types/ramda": ~0.30.0
     node-gyp: latest
@@ -7165,16 +7175,16 @@ __metadata:
     ramda-adjunct: ^5.0.0
     tree-sitter: =0.22.1
     web-tree-sitter: =0.24.5
-  checksum: f700f7993a25279ba2ea5326525052ed2bd73a700d094ed28d288067cfa4868716f27e2223a26109f8b4611ec16704fe8e4adaeb3ef0f8551e65e27a4a11570f
+  checksum: 64f713ea6758ebf16ed72817cef0d5f477f62b557ede9cf7be9648a23e5084382882d020c3674d88603bbf6717a0da6509b96353d9e2cf70e6860ad6b764f3c3
   languageName: node
   linkType: hard
 
 "@swagger-api/apidom-reference@npm:>=1.0.0-beta.11 <1.0.0-rc.0":
-  version: 1.0.0-beta.11
-  resolution: "@swagger-api/apidom-reference@npm:1.0.0-beta.11"
+  version: 1.0.0-beta.12
+  resolution: "@swagger-api/apidom-reference@npm:1.0.0-beta.12"
   dependencies:
     "@babel/runtime-corejs3": ^7.20.7
-    "@swagger-api/apidom-core": ^1.0.0-beta.11
+    "@swagger-api/apidom-core": ^1.0.0-beta.12
     "@swagger-api/apidom-error": ^1.0.0-beta.3 <1.0.0-rc.0
     "@swagger-api/apidom-json-pointer": ^1.0.0-beta.3 <1.0.0-rc.0
     "@swagger-api/apidom-ns-asyncapi-2": ^1.0.0-beta.3 <1.0.0-rc.0
@@ -7245,7 +7255,7 @@ __metadata:
       optional: true
     "@swagger-api/apidom-parser-adapter-yaml-1-2":
       optional: true
-  checksum: d819286ce0e676989ee88f989f7fbad91ce9ec2aeb2f1b698d7cc26d656d90d1c54bfb89b51feb868d93179d6747c0ce9fcab2f3b239cde6fe0112973dff8774
+  checksum: df8e0badff558214280e0e378edf50818cb8e8aa5dc93ad19e6d413d62a7bc190a9e83782db2227029686db5b560f742f3c31e53defffade50c145bc2e91ba7d
   languageName: node
   linkType: hard
 
@@ -9092,13 +9102,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-algorand-core@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-algorand-core@npm:1.6.0"
+"@wormhole-foundation/sdk-algorand-core@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-algorand-core@npm:1.7.0"
   dependencies:
-    "@wormhole-foundation/sdk-algorand": 1.6.0
-    "@wormhole-foundation/sdk-connect": 1.6.0
-  checksum: ad6d18fa1b9bdbfa34aeeec4d3ebee047aefd4ffcae1f0c6a2575030e1954f6b60998fdea2382e201584046f09a251f403975835f6b6355c03e8506a5f8f1bf1
+    "@wormhole-foundation/sdk-algorand": 1.7.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
+  checksum: e006895f8b1f93acb1d685817e1d27bcf620f40e20031280f5acae442e40f8765f56225db12db2ecaf976353347907f906e0da7bd9f0237289cfc8f715b26643
   languageName: node
   linkType: hard
 
@@ -9113,14 +9123,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-algorand-tokenbridge@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-algorand-tokenbridge@npm:1.6.0"
+"@wormhole-foundation/sdk-algorand-tokenbridge@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-algorand-tokenbridge@npm:1.7.0"
   dependencies:
-    "@wormhole-foundation/sdk-algorand": 1.6.0
-    "@wormhole-foundation/sdk-algorand-core": 1.6.0
-    "@wormhole-foundation/sdk-connect": 1.6.0
-  checksum: 8223bf4df6159e24f938841955ad7f79d0023362f8a54aca983249c579acd9019951b5e3e79d448c683304762490ca3a2cbf8fa163f7e74067e401c73474a04c
+    "@wormhole-foundation/sdk-algorand": 1.7.0
+    "@wormhole-foundation/sdk-algorand-core": 1.7.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
+  checksum: bff1e140ae89683bc4bb215ba89afebec8d4e8e10acd7d3b44404f6e1221c589f5992e02194e90d43ba2a9873f135eb45bb0ec132b1e868855ee6836664f1aa7
   languageName: node
   linkType: hard
 
@@ -9134,13 +9144,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-algorand@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-algorand@npm:1.6.0"
+"@wormhole-foundation/sdk-algorand@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-algorand@npm:1.7.0"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 1.6.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
     algosdk: 2.7.0
-  checksum: 1a4fb64c156e347ba8d8f29573ae6ff070b258661bc69dc867be9263007ee4cb0fc9e3bf17aea6faa8a790986f63f9dc2d1b0f9b5201d3708880ab4733fc7681
+  checksum: 288cf8fd5d930cccc73ec4c0527d32ff1b6123a303de5277d10db6f0e78741f470d913105950868d277846b76a310793ace4a2b3d7dc6fbc24ec4212ec6a9f0d
   languageName: node
   linkType: hard
 
@@ -9155,14 +9165,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-aptos-cctp@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-aptos-cctp@npm:1.6.0"
+"@wormhole-foundation/sdk-aptos-cctp@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-aptos-cctp@npm:1.7.0"
   dependencies:
     "@aptos-labs/ts-sdk": ^1.33.1
-    "@wormhole-foundation/sdk-aptos": 1.6.0
-    "@wormhole-foundation/sdk-connect": 1.6.0
-  checksum: 25beba73ae52de94dd1a8a18d8b536c0c009d8b85fe0f107a4a65e1a97cbda50d9ce583b8d953d4c32dbc6667bcc3d2f99aed29a8b5b6f3c73de4297d2926adf
+    "@wormhole-foundation/sdk-aptos": 1.7.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
+  checksum: 1a2a6e00e45364774e2b41b706105e44ef00564a167629010c4c70ce459106a1009106783e09a3adcb5aea050e90112ccbd088c9c199b071e99d4ad9fb9fcb6e
   languageName: node
   linkType: hard
 
@@ -9176,13 +9186,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-aptos-core@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-aptos-core@npm:1.6.0"
+"@wormhole-foundation/sdk-aptos-core@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-aptos-core@npm:1.7.0"
   dependencies:
-    "@wormhole-foundation/sdk-aptos": 1.6.0
-    "@wormhole-foundation/sdk-connect": 1.6.0
-  checksum: c0633bbfdcf4c370090df9d6295fa1ba144730b67a2864cbe27571138f4b4ce58ee60be30f92292fd7455f3412c1e929be88d839593699730ad7e12c80b93421
+    "@wormhole-foundation/sdk-aptos": 1.7.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
+  checksum: e15c132753ad8dcd6e656bd8848730a5d39871af2e511c481c992968e7ed5565ec88f7b18d9b94a841bd3a75d4993a4b59b13e3f65fa0cbed10dd2c2aefff022
   languageName: node
   linkType: hard
 
@@ -9196,13 +9206,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-aptos-tokenbridge@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-aptos-tokenbridge@npm:1.6.0"
+"@wormhole-foundation/sdk-aptos-tokenbridge@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-aptos-tokenbridge@npm:1.7.0"
   dependencies:
-    "@wormhole-foundation/sdk-aptos": 1.6.0
-    "@wormhole-foundation/sdk-connect": 1.6.0
-  checksum: 2619c7192a73e768f5cb4ac3ba4ed6b7886bc195e7649e202915208a40e7def4f5a39e8bffd523ed65609abede1b3574729797763e31b3f3c6845e6c4712fb25
+    "@wormhole-foundation/sdk-aptos": 1.7.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
+  checksum: d4dd9dc91db5580a4a03e80302c15020dd765b781c2cc8e9d46af49dea49f24a9b0714f85581cf68997cca38931f7f74a0bce10cc01a908de3396a852ed9b5fd
   languageName: node
   linkType: hard
 
@@ -9216,13 +9226,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-aptos@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-aptos@npm:1.6.0"
+"@wormhole-foundation/sdk-aptos@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-aptos@npm:1.7.0"
   dependencies:
     "@aptos-labs/ts-sdk": ^1.33.1
-    "@wormhole-foundation/sdk-connect": 1.6.0
-  checksum: 355c5ad9342b619c554ca2b00fd656659e74dddc64c573e2a1edc4ed2e28f258f980b15f126ab7261d7fc873bbc653149015d4fe24872499b7be3583f93b1faa
+    "@wormhole-foundation/sdk-connect": 1.7.0
+  checksum: c59578257ee58479a5479950aa3907c648f87d9cc7af59e4ebb321930a3fe4569c8c383bda1feb1a9367b9ab94bf631836bf1ddbeb274653561245316f5436f7
   languageName: node
   linkType: hard
 
@@ -9236,13 +9246,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-base@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-base@npm:1.6.0"
+"@wormhole-foundation/sdk-base@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-base@npm:1.7.0"
   dependencies:
     "@scure/base": ^1.1.3
     binary-layout: ^1.0.3
-  checksum: 86f4fc786ed4b4565c761ddf4cd9b422502d453351c6fb38dff316795e31a2b26ca3f06227b7c60ea9d3226014d2ebea7b4755f009292b2f5b1260bc4ceed59b
+  checksum: a667fc573cb6d2d11de9ae356b8129a3286ccd2f9b3481aecfcef2371e8dab4fea3f4e3d062024a4dbe66dea1aa3ff70202837a63fde1c2440ac29ae5b3583a0
   languageName: node
   linkType: hard
 
@@ -9257,14 +9267,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-connect@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-connect@npm:1.6.0"
+"@wormhole-foundation/sdk-connect@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-connect@npm:1.7.0"
   dependencies:
-    "@wormhole-foundation/sdk-base": 1.6.0
-    "@wormhole-foundation/sdk-definitions": 1.6.0
+    "@wormhole-foundation/sdk-base": 1.7.0
+    "@wormhole-foundation/sdk-definitions": 1.7.0
     axios: ^1.4.0
-  checksum: d0c263bc2ae54bc2169505f74b8f6e9a381412d4e0f3341277df3e20872fdf9392c344b97845ee75ddefb455fec3985ce26eb7f0deb9914dee1d18a5eaeed1c8
+  checksum: 9f37e9f826db471e47cd35a9976234cd086880c2d1f4624bfe50ba8114aadd7ce19f65f88e7b8b637573eada7f5f27080602f1b81f9226971b6f656545a75a88
   languageName: node
   linkType: hard
 
@@ -9281,16 +9291,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-cosmwasm-core@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-cosmwasm-core@npm:1.6.0"
+"@wormhole-foundation/sdk-cosmwasm-core@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-cosmwasm-core@npm:1.7.0"
   dependencies:
     "@cosmjs/cosmwasm-stargate": ^0.32.0
     "@cosmjs/stargate": ^0.32.0
     "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-cosmwasm": 1.6.0
-  checksum: 8fc6d91ba96f5a0063a70a65d41c2f138d0ba96befb221e63facb3e5aaebffede068f4bbdcd9f0ddf4584d9a4d66469134116061085845d4900d3d2b1c819ac5
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-cosmwasm": 1.7.0
+  checksum: d02ec25cbe8c1da95cba084bb24679f096a68129599ab906668f7af9e3d359792c2f55b180911b3293f4d7f0642f3a4a9e8b0609da42491eddb82893c4f0dd16
   languageName: node
   linkType: hard
 
@@ -9309,18 +9319,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-cosmwasm-ibc@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-cosmwasm-ibc@npm:1.6.0"
+"@wormhole-foundation/sdk-cosmwasm-ibc@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-cosmwasm-ibc@npm:1.7.0"
   dependencies:
     "@cosmjs/cosmwasm-stargate": ^0.32.0
     "@cosmjs/stargate": ^0.32.0
     "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-cosmwasm": 1.6.0
-    "@wormhole-foundation/sdk-cosmwasm-core": 1.6.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-cosmwasm": 1.7.0
+    "@wormhole-foundation/sdk-cosmwasm-core": 1.7.0
     cosmjs-types: ^0.9.0
-  checksum: 96e47770113c6a8c572441cefd8cfcd5e70e83cb2c540006d6f042293d50e5d1520e2f28efed0b0f4d2ebe03dccf69e5520acaec198029432dd2e603c1aed4f0
+  checksum: ec079dc288483e189db0a39385b921a55dcf08bd313b4c14d1a91bbd940efdd002cbee3f76d1fee117958283cac2ed0bed3fb172ca56ae19efbea75895bc96dd
   languageName: node
   linkType: hard
 
@@ -9336,15 +9346,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:1.6.0"
+"@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:1.7.0"
   dependencies:
     "@cosmjs/cosmwasm-stargate": ^0.32.0
     "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-cosmwasm": 1.6.0
-  checksum: 387e6928bccc1133b1ea3aac6d1d6193d514d3b4a10a7a327c14fbed761c4dc7fccd882af85ba5ebc62037bdcd443e495c6bab882878282a32bad8821eb815cd
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-cosmwasm": 1.7.0
+  checksum: be5c02f555cd656029671de20bff8b54fcb3d580e162f5aba1225bb9b182e2b59670239096663fb9851752193026873be8785750ed8746a9623b5f1c793d2308
   languageName: node
   linkType: hard
 
@@ -9362,17 +9372,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-cosmwasm@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-cosmwasm@npm:1.6.0"
+"@wormhole-foundation/sdk-cosmwasm@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-cosmwasm@npm:1.7.0"
   dependencies:
     "@cosmjs/cosmwasm-stargate": ^0.32.0
     "@cosmjs/proto-signing": ^0.32.0
     "@cosmjs/stargate": ^0.32.0
     "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 1.6.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
     cosmjs-types: ^0.9.0
-  checksum: e157ed537de50f592c0c8caf1d4bf2ecc7123c10cac7d840070d0efc8ce3c57a3423771f28345476b890d37d552745ad345178809c0108eda6e93445c573998c
+  checksum: 76dcf93b606f1f195dcaf9411c76dd7862a388960936b17dbc4e43ef62e23ca7404fc22be33e688ab33438c96b919a6fb0610dc8845b4c9b2660a56c984832d6
   languageName: node
   linkType: hard
 
@@ -9397,14 +9407,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-definitions@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-definitions@npm:1.6.0"
+"@wormhole-foundation/sdk-definitions@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-definitions@npm:1.7.0"
   dependencies:
     "@noble/curves": ^1.4.0
     "@noble/hashes": ^1.3.1
-    "@wormhole-foundation/sdk-base": 1.6.0
-  checksum: 7eed1dc46e3dc970ae283556d5aea417cdce17c439746fa2613c3a1e56924e4d904703d6a00f1ebde393f6a61af97d471cf711dae8fa5146954dd5a6a7a18d04
+    "@wormhole-foundation/sdk-base": 1.7.0
+  checksum: cd9219d8fe4af6cdef85017199860c6c21ee1d2b13e2426e0a1cc279949b9bf9acbd0a849547df8debe0129fd99578c279432ea21949e38fa359f0b743296545
   languageName: node
   linkType: hard
 
@@ -9419,14 +9429,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm-cctp@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-evm-cctp@npm:1.6.0"
+"@wormhole-foundation/sdk-evm-cctp@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-evm-cctp@npm:1.7.0"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-evm": 1.6.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-evm": 1.7.0
     ethers: ^6.5.1
-  checksum: 7e053347990b81820998afe2deef48fa489e3eb6877b4155a6715a317fabd255abd674a5fc072781fa4387ae15dce9778e1c0862578720f8139f6b9c08bd7ce6
+  checksum: cf151831b05f50e0a0dfbd3460cbcde6d11dad8173b8c33b7fe8c5f50d3b99dae0c893a2bc3db4c47d4fc76b268e3d23f2d0cf2c705e68e774e59a840566cf67
   languageName: node
   linkType: hard
 
@@ -9441,14 +9451,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm-core@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-evm-core@npm:1.6.0"
+"@wormhole-foundation/sdk-evm-core@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-evm-core@npm:1.7.0"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-evm": 1.6.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-evm": 1.7.0
     ethers: ^6.5.1
-  checksum: 59e18fc9ea310bdd17d89fb268e5db872116adfa504c5994d8d24d3da465719599d6fc0958709867e683c81f0644a3b5f57dd035b47f4b6da7c438ebe4ea0f29
+  checksum: 9780378caa191ba8351d26fbb575cf5840083d7e9e55aa632186b6b59be67f28c9327eb2916d57523eba224dd0cd94bbf1d8263fe805e6eb5701b246fe7f614f
   languageName: node
   linkType: hard
 
@@ -9480,16 +9490,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm-portico@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-evm-portico@npm:1.6.0"
+"@wormhole-foundation/sdk-evm-portico@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-evm-portico@npm:1.7.0"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-evm": 1.6.0
-    "@wormhole-foundation/sdk-evm-core": 1.6.0
-    "@wormhole-foundation/sdk-evm-tokenbridge": 1.6.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-evm": 1.7.0
+    "@wormhole-foundation/sdk-evm-core": 1.7.0
+    "@wormhole-foundation/sdk-evm-tokenbridge": 1.7.0
     ethers: ^6.5.1
-  checksum: 911ca57b1acab01895f3efbbf2eb0a6e11ed6287b49c1ba317a170e4b73365961e9bd1a2414c02c2bad66995c7834e29b66a5ad8c77161ca311e50d713752778
+  checksum: 230c98106e01dfb42aae3df09d3408fe1287d883da48372570a14922401322c9696f0b67a6d1394be05da6172db2c2a66397b3721b1543a977a8b8ada5fd1cce
   languageName: node
   linkType: hard
 
@@ -9505,15 +9515,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm-tokenbridge@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-evm-tokenbridge@npm:1.6.0"
+"@wormhole-foundation/sdk-evm-tokenbridge@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-evm-tokenbridge@npm:1.7.0"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-evm": 1.6.0
-    "@wormhole-foundation/sdk-evm-core": 1.6.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-evm": 1.7.0
+    "@wormhole-foundation/sdk-evm-core": 1.7.0
     ethers: ^6.5.1
-  checksum: f420c88c07f5f5ae6621a1fd52970bae741148bf9ee25209b986eb97535e538937110f87fb28cb8875a3d86eb0cac50db105d10146915b8fe29be96c3cb28eba
+  checksum: 51b2f4115e2d0a2249ccfb83cb0965244fbbe01cf5f3c488ad9f7f648a7a040dc038956cda23226144add8894e29748d5401d39096566022161fac92d3d28319
   languageName: node
   linkType: hard
 
@@ -9527,22 +9537,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-evm@npm:1.6.0"
+"@wormhole-foundation/sdk-evm@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-evm@npm:1.7.0"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 1.6.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
     ethers: ^6.5.1
-  checksum: c44482009b37a135a25f21f8fcb75c36b99ae6e407cc2236c72b9dfb5807b7013af9aa55a1a41359323d05dad194ade8afc3a4db5d02538c3e33df67a93498f6
+  checksum: d82c5b6a91e3aff1e6a7815940b8b14507c73abc8048b526847704d360616b73d0affb3d50f0f1712196ee4fb24a66c262de42f1131bab26e9785500bea778c0
   languageName: node
   linkType: hard
 
 "@wormhole-foundation/sdk-icons@npm:^1.0.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-icons@npm:1.6.0"
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-icons@npm:1.7.0"
   dependencies:
-    "@wormhole-foundation/sdk-base": 1.6.0
-  checksum: f6558fe61a4dc0d419ac1d804da1af213cc0915207ae5d8544f46aaeb57e62698eea5d84e64669d1c955fafa11ac26199567b7e6242e0146dd3545690c57f93a
+    "@wormhole-foundation/sdk-base": 1.7.0
+  checksum: 5b451034dae114af8eaa594b8ade01aa641d193b31170b3d309ecff85614857e25b99dce467b29f6b9e7de1515b423e6310ac305bff7c688e9892591f58e133f
   languageName: node
   linkType: hard
 
@@ -9572,16 +9582,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-solana-cctp@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-solana-cctp@npm:1.6.0"
+"@wormhole-foundation/sdk-solana-cctp@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-solana-cctp@npm:1.7.0"
   dependencies:
     "@coral-xyz/anchor": 0.29.0
     "@solana/spl-token": 0.3.9
     "@solana/web3.js": ^1.95.8
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-solana": 1.6.0
-  checksum: bd4ceb62e0c4ac43d3d0b4ea521aab411e4ab24bb9e9cb061afadc87c86c5476b2a46504c01448815712cecafdc13f068d309dd1c6717c4dd5faf8c3e75a8075
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-solana": 1.7.0
+  checksum: 34bfddcfb88ff49cbb604642670148f1a364c7558a93633ba6cb56864a34fb002feee4b79108d994902ce285fc31c3c303ede57b37cb195944ff9e45ad796b3d
   languageName: node
   linkType: hard
 
@@ -9598,16 +9608,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-solana-core@npm:1.6.0, @wormhole-foundation/sdk-solana-core@npm:^1.4.5":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-solana-core@npm:1.6.0"
+"@wormhole-foundation/sdk-solana-core@npm:1.7.0, @wormhole-foundation/sdk-solana-core@npm:^1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-solana-core@npm:1.7.0"
   dependencies:
     "@coral-xyz/anchor": 0.29.0
     "@coral-xyz/borsh": 0.29.0
     "@solana/web3.js": ^1.95.8
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-solana": 1.6.0
-  checksum: cf173c53074b06889f049a9f4964ba9fdd16f3a489edce82ea7c8e34bbee5c3df980868c7d5f2ae92f4a76972e5810bfe711e234fd7d0d1fe745068a663d1a67
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-solana": 1.7.0
+  checksum: 17d4de462165a15fe95b1458fe05a835be437f097977169f98eadce408d2441b4d08eceb22bab4dbd4be2cc7e9ad2226366f32d6b10a7dec0c245579e8cc4a5d
   languageName: node
   linkType: hard
 
@@ -9644,17 +9654,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-solana-tokenbridge@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-solana-tokenbridge@npm:1.6.0"
+"@wormhole-foundation/sdk-solana-tokenbridge@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-solana-tokenbridge@npm:1.7.0"
   dependencies:
     "@coral-xyz/anchor": 0.29.0
     "@solana/spl-token": 0.3.9
     "@solana/web3.js": ^1.95.8
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-solana": 1.6.0
-    "@wormhole-foundation/sdk-solana-core": 1.6.0
-  checksum: 7acba255b206271ac0049040599d3b5c83f513bcd4d6b9256b4d56307d18ce91a0bb71d0152eaac1180a6c2bf1f9866ec963e2cfcf2a639e5b63a1fc308d548d
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-solana": 1.7.0
+    "@wormhole-foundation/sdk-solana-core": 1.7.0
+  checksum: 9fe7ff0bcd8eb21e82aa9ce5d112139d35e2f789b16ea92303c6de62a57764c5ede38d7b16a74d88953e707d32615eeb14762cf187db33c0994feee8a09de0f0
   languageName: node
   linkType: hard
 
@@ -9672,17 +9682,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-solana@npm:1.6.0, @wormhole-foundation/sdk-solana@npm:^1.4.5":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-solana@npm:1.6.0"
+"@wormhole-foundation/sdk-solana@npm:1.7.0, @wormhole-foundation/sdk-solana@npm:^1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-solana@npm:1.7.0"
   dependencies:
     "@coral-xyz/anchor": 0.29.0
     "@coral-xyz/borsh": 0.29.0
     "@solana/spl-token": 0.3.9
     "@solana/web3.js": ^1.95.8
-    "@wormhole-foundation/sdk-connect": 1.6.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
     rpc-websockets: ^7.10.0
-  checksum: ec458724c4b9cd9a715485174f7795518e0f30681be80b2d7ff26de3255be6539ab26575bca7e06825879af1414a8511257cd4e8fc8dda9d1702620ae6f4b0d0
+  checksum: 4010328da43de558bf1f985bafdba0416f92acd3d99b84aaebcaedaf05d82d9040f40e1a00e5910712f091b01071891bb67be399da5481b813b0427ec69a9f7c
   languageName: node
   linkType: hard
 
@@ -9697,14 +9707,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-sui-cctp@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-sui-cctp@npm:1.6.0"
+"@wormhole-foundation/sdk-sui-cctp@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-sui-cctp@npm:1.7.0"
   dependencies:
     "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-sui": 1.6.0
-  checksum: c81dba09f9ba09ddc0e17ba0bdada72e9900c883bf40a1826b7636d733cb3f80de9913de81bfccf0e2d6fac8e26cd5f2567adfdaa9f8135fa0797f69627193e6
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-sui": 1.7.0
+  checksum: 5b56a1f63227f8a632e995dd9243bcb6c9fb51c479ab56f60bca155d21d08fdaba0ade555b559f04c78385f456092441a6bea0bc5b8de2424b00d5db1cb0c031
   languageName: node
   linkType: hard
 
@@ -9719,14 +9729,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-sui-core@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-sui-core@npm:1.6.0"
+"@wormhole-foundation/sdk-sui-core@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-sui-core@npm:1.7.0"
   dependencies:
     "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-sui": 1.6.0
-  checksum: b2ff2d1c3b1eedd82b0a21a1555f63a4aae3784d1c8ee1b0915edbdd867dd02e8978e9a64a4debca532e96357729bfceed6d7da234ef30dd971f3d60d201c45b
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-sui": 1.7.0
+  checksum: 216a389a27f12f7521f7e2b736dac9c3068c05c4648727e7f7bec043f0606262ff814fc7ed02e94820c83491ace7bab078692414f6a94833427b5e961561108d
   languageName: node
   linkType: hard
 
@@ -9742,15 +9752,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-sui-tokenbridge@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-sui-tokenbridge@npm:1.6.0"
+"@wormhole-foundation/sdk-sui-tokenbridge@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-sui-tokenbridge@npm:1.7.0"
   dependencies:
     "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-sui": 1.6.0
-    "@wormhole-foundation/sdk-sui-core": 1.6.0
-  checksum: a57f3739afdb7420fa4d1310356b1ca3375fb59b20f37caf09b1510295f69199acfd814736450b55c8c8101db37c7e9b44132241a61dfb73d4736a6a73d905a9
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-sui": 1.7.0
+    "@wormhole-foundation/sdk-sui-core": 1.7.0
+  checksum: 6745ec8575c17a350b721a2a668232fc7a3b042973131e8f00d25dcbd91df96d0ccc03d2bcf03315c6c7fa609d4d8b29ae4e2d3d331a5d28444bb1ccd1dde788
   languageName: node
   linkType: hard
 
@@ -9764,13 +9774,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-sui@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk-sui@npm:1.6.0"
+"@wormhole-foundation/sdk-sui@npm:1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk-sui@npm:1.7.0"
   dependencies:
     "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 1.6.0
-  checksum: 75b418abf12dc42c5e5c8994bac04677f4ed1b5723e8b0f54b9aee55dc326f0b5742e7444b4df6df85e62b141551a06e9b5d2d9f217b6e3e8126f14cbba1a6bb
+    "@wormhole-foundation/sdk-connect": 1.7.0
+  checksum: 77689c9400f121a61c838e5c24cff3f3d745b2195d2c71ac3eb27af967769a0d4bf0b409c8848391c1a427c1581e9c71e6dd1f771d6438ac0141d145bab10d2c
   languageName: node
   linkType: hard
 
@@ -9809,38 +9819,38 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk@npm:^1.4.5":
-  version: 1.6.0
-  resolution: "@wormhole-foundation/sdk@npm:1.6.0"
+"@wormhole-foundation/sdk@npm:^1.7.0":
+  version: 1.7.0
+  resolution: "@wormhole-foundation/sdk@npm:1.7.0"
   dependencies:
-    "@wormhole-foundation/sdk-algorand": 1.6.0
-    "@wormhole-foundation/sdk-algorand-core": 1.6.0
-    "@wormhole-foundation/sdk-algorand-tokenbridge": 1.6.0
-    "@wormhole-foundation/sdk-aptos": 1.6.0
-    "@wormhole-foundation/sdk-aptos-cctp": 1.6.0
-    "@wormhole-foundation/sdk-aptos-core": 1.6.0
-    "@wormhole-foundation/sdk-aptos-tokenbridge": 1.6.0
-    "@wormhole-foundation/sdk-base": 1.6.0
-    "@wormhole-foundation/sdk-connect": 1.6.0
-    "@wormhole-foundation/sdk-cosmwasm": 1.6.0
-    "@wormhole-foundation/sdk-cosmwasm-core": 1.6.0
-    "@wormhole-foundation/sdk-cosmwasm-ibc": 1.6.0
-    "@wormhole-foundation/sdk-cosmwasm-tokenbridge": 1.6.0
-    "@wormhole-foundation/sdk-definitions": 1.6.0
-    "@wormhole-foundation/sdk-evm": 1.6.0
-    "@wormhole-foundation/sdk-evm-cctp": 1.6.0
-    "@wormhole-foundation/sdk-evm-core": 1.6.0
-    "@wormhole-foundation/sdk-evm-portico": 1.6.0
-    "@wormhole-foundation/sdk-evm-tokenbridge": 1.6.0
-    "@wormhole-foundation/sdk-solana": 1.6.0
-    "@wormhole-foundation/sdk-solana-cctp": 1.6.0
-    "@wormhole-foundation/sdk-solana-core": 1.6.0
-    "@wormhole-foundation/sdk-solana-tokenbridge": 1.6.0
-    "@wormhole-foundation/sdk-sui": 1.6.0
-    "@wormhole-foundation/sdk-sui-cctp": 1.6.0
-    "@wormhole-foundation/sdk-sui-core": 1.6.0
-    "@wormhole-foundation/sdk-sui-tokenbridge": 1.6.0
-  checksum: f83f16fe13e31e017aa5a66539276358fb74d2a6bca581eeec01e81b2074d15e8e05dd0256af3a762e10045163e518bf9d71990b16f456b657a2c1ecaa5ae170
+    "@wormhole-foundation/sdk-algorand": 1.7.0
+    "@wormhole-foundation/sdk-algorand-core": 1.7.0
+    "@wormhole-foundation/sdk-algorand-tokenbridge": 1.7.0
+    "@wormhole-foundation/sdk-aptos": 1.7.0
+    "@wormhole-foundation/sdk-aptos-cctp": 1.7.0
+    "@wormhole-foundation/sdk-aptos-core": 1.7.0
+    "@wormhole-foundation/sdk-aptos-tokenbridge": 1.7.0
+    "@wormhole-foundation/sdk-base": 1.7.0
+    "@wormhole-foundation/sdk-connect": 1.7.0
+    "@wormhole-foundation/sdk-cosmwasm": 1.7.0
+    "@wormhole-foundation/sdk-cosmwasm-core": 1.7.0
+    "@wormhole-foundation/sdk-cosmwasm-ibc": 1.7.0
+    "@wormhole-foundation/sdk-cosmwasm-tokenbridge": 1.7.0
+    "@wormhole-foundation/sdk-definitions": 1.7.0
+    "@wormhole-foundation/sdk-evm": 1.7.0
+    "@wormhole-foundation/sdk-evm-cctp": 1.7.0
+    "@wormhole-foundation/sdk-evm-core": 1.7.0
+    "@wormhole-foundation/sdk-evm-portico": 1.7.0
+    "@wormhole-foundation/sdk-evm-tokenbridge": 1.7.0
+    "@wormhole-foundation/sdk-solana": 1.7.0
+    "@wormhole-foundation/sdk-solana-cctp": 1.7.0
+    "@wormhole-foundation/sdk-solana-core": 1.7.0
+    "@wormhole-foundation/sdk-solana-tokenbridge": 1.7.0
+    "@wormhole-foundation/sdk-sui": 1.7.0
+    "@wormhole-foundation/sdk-sui-cctp": 1.7.0
+    "@wormhole-foundation/sdk-sui-core": 1.7.0
+    "@wormhole-foundation/sdk-sui-tokenbridge": 1.7.0
+  checksum: 0962f6c5c3531eff45db6bb439e85899dafc6b73dd08d20fe4d7ef72d2c4339278f50ce33e49a8d57114ed2f4cfd15978d75cf02426b46c3f0e5e9307c3f08d7
   languageName: node
   linkType: hard
 
@@ -12368,11 +12378,11 @@ __metadata:
   linkType: hard
 
 "es-shim-unscopables@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "es-shim-unscopables@npm:1.0.2"
+  version: 1.1.0
+  resolution: "es-shim-unscopables@npm:1.1.0"
   dependencies:
-    hasown: ^2.0.0
-  checksum: 432bd527c62065da09ed1d37a3f8e623c423683285e6188108286f4a1e8e164a5bcbfbc0051557c7d14633cd2a41ce24c7048e6bbb66a985413fd32f1be72626
+    hasown: ^2.0.2
+  checksum: 33cfb1ebcb2f869f0bf528be1a8660b4fe8b6cec8fc641f330e508db2284b58ee2980fad6d0828882d22858c759c0806076427a3673b6daa60f753e3b558ee15
   languageName: node
   linkType: hard
 
@@ -13503,7 +13513,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hasown@npm:^2.0.0, hasown@npm:^2.0.2":
+"hasown@npm:^2.0.2":
   version: 2.0.2
   resolution: "hasown@npm:2.0.2"
   dependencies:
@@ -19903,8 +19913,8 @@ __metadata:
   linkType: hard
 
 "viem@npm:^2.1.1":
-  version: 2.23.1
-  resolution: "viem@npm:2.23.1"
+  version: 2.23.2
+  resolution: "viem@npm:2.23.2"
   dependencies:
     "@noble/curves": 1.8.1
     "@noble/hashes": 1.7.1
@@ -19919,7 +19929,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: c15cc0eb5c44acdfe37c948126591aa4784c927960b020e7b0614211bdaf40aa54befac47a827f987bb61d918549ba04b8b5478e5c9a313e6424ea2d942d4728
+  checksum: 4ee79122e4d484c3f5585ced9a2ddeaa935fd13779010ef8869c39c70f78eab2af0408c765543088e052fd8c3c46d8e79225d64b68563b096d8de558daf6d115
   languageName: node
   linkType: hard
 
@@ -20171,9 +20181,9 @@ __metadata:
     "@types/swagger-ui-react": ^4.18.3
     "@typescript-eslint/eslint-plugin": latest
     "@typescript-eslint/parser": latest
-    "@wormhole-foundation/sdk": ^1.4.5
-    "@wormhole-foundation/sdk-solana": ^1.4.5
-    "@wormhole-foundation/sdk-solana-core": ^1.4.5
+    "@wormhole-foundation/sdk": ^1.7.0
+    "@wormhole-foundation/sdk-solana": ^1.7.0
+    "@wormhole-foundation/sdk-solana-core": ^1.7.0
     "@xlabs/wormhole-connect": ^1.0.0-fork.2-development
     analytics: ^0.8.9
     apexcharts: ^3.49.1

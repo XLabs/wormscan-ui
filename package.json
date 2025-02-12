@@ -1,6 +1,6 @@
 {
   "name": "wormscan-ui",
-  "version": "2.0.14",
+  "version": "2.0.15",
   "private": true,
   "source": "src/index.html",
   "@parcel/resolver-default": {
@@ -72,9 +72,9 @@
     "@radix-ui/react-toggle-group": "1.0.2",
     "@radix-ui/react-tooltip": "1.0.5",
     "@types/swagger-ui-react": "^4.18.3",
-    "@wormhole-foundation/sdk": "^1.4.5",
-    "@wormhole-foundation/sdk-solana": "^1.4.5",
-    "@wormhole-foundation/sdk-solana-core": "^1.4.5",
+    "@wormhole-foundation/sdk": "^1.7.0",
+    "@wormhole-foundation/sdk-solana": "^1.7.0",
+    "@wormhole-foundation/sdk-solana-core": "^1.7.0",
     "@xlabs/wormhole-connect": "^1.0.0-fork.2-development",
     "analytics": "^0.8.9",
     "apexcharts": "^3.49.1",

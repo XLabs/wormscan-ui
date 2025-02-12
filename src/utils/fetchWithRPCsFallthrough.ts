@@ -91,7 +91,7 @@ async function hitAllSlowChains(
             return null;
           }
         })
-        .catch(_err => {
+        .catch((_err): null => {
           console.log(`tx is not from chain ${chain}`);
           return null;
         });
@@ -138,7 +138,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
     const timestamp = Number(BigInt(block.timestamp)) * 1000;
     const tokenList = await getClient()
       .governor.getTokenList()
-      .catch(() => null);
+      .catch((): null => null);
 
     let fromAddress = result.receipt.from;
     let parsedFromAddress = parseAddress({
@@ -562,7 +562,7 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
           toNativeAmount: null,
           blockNumber: null,
           lastFinalizedBlock: null,
-        };
+        } as any;
       });
 
     return !!manualCctpData.length ? manualCctpData : null;
@@ -582,6 +582,7 @@ export const getCctpDomain = (dom: number) => {
   if (dom === 7) return chainToChainId("Polygon");
   if (dom === 8) return chainToChainId("Sui");
   if (dom === 9) return chainToChainId("Aptos");
+  if (dom === 10) return chainToChainId("Unichain");
   return null;
 };
 
@@ -598,6 +599,7 @@ export const getUsdcAddress = (network: Network, chain: ChainId) => {
       return "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b";
     if (chain === chainToChainId("Sui"))
       return "0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC";
+    if (chain === chainToChainId("Unichain")) return "0x078d782b760474a361dda0af3839290b0ef57ad6";
   } else {
     if (chain === chainToChainId("Ethereum")) return "0x07865c6e87b9f70255377e024ace6630c1eaa37f";
     if (chain === chainToChainId("Avalanche")) return "0x5425890298aed601595a70ab815c96711a31bc65";
@@ -610,6 +612,7 @@ export const getUsdcAddress = (network: Network, chain: ChainId) => {
       return "0x69091fbab5f7d635ee7ac5098cf0c1efbe31d68fec0f2cd565e8d168daf52832";
     if (chain === chainToChainId("Sui"))
       return "0xa1ec7fc00a6f40db9693ad1415d0c193ad3906494428cf252621037bd7117e29::usdc::USDC";
+    if (chain === chainToChainId("Unichain")) return "0x31d0220469e10c4E71834a79b1f276d740d3768F";
   }
   return null;
 };

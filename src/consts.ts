@@ -387,7 +387,6 @@ const targetChainsSupportedTestnet: { [key: string]: ChainId[] } = {
     chainToChainId("Berachain"),
     chainToChainId("Unichain"),
     chainToChainId("Monad"),
-    chainToChainId("MonadDevnet"),
     chainToChainId("Worldchain"),
   ],
   [GATEWAY_APP_ID]: [],
@@ -424,7 +423,6 @@ const targetChainsSupportedTestnet: { [key: string]: ChainId[] } = {
     chainToChainId("Celo"),
     chainToChainId("Moonbeam"),
     chainToChainId("Monad"),
-    chainToChainId("MonadDevnet"),
   ],
   [NTT_APP_ID]: [
     chainToChainId("Solana"),
