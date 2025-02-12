@@ -11,6 +11,7 @@ export const SLOW_FINALITY_CHAINS_MAINNET = [
   chainToChainId("Base"),
   chainToChainId("Celo"),
   chainToChainId("Xlayer"),
+  chainToChainId("Unichain"),
 ];
 
 export const SLOW_FINALITY_CHAINS_TESTNET = [
@@ -22,6 +23,7 @@ export const SLOW_FINALITY_CHAINS_TESTNET = [
   chainToChainId("PolygonSepolia"),
   chainToChainId("Celo"),
   chainToChainId("Xlayer"),
+  chainToChainId("Unichain"),
 ];
 
 const MAINNET_RPCS = {
@@ -53,6 +55,7 @@ const MAINNET_RPCS = {
   xpla: "https://dimension-lcd.xpla.dev",
   xlayer: "https://xlayerrpc.okx.com",
   snaxchain: "https://mainnet.snaxchain.io/",
+  unichain: "https://mainnet.unichain.org/",
 };
 
 const TESTNET_RPCS = {
@@ -74,6 +77,7 @@ const TESTNET_RPCS = {
   xlayer: "https://xlayertestrpc.okx.com",
   snaxchain: "https://testnet.snaxchain.io/",
   monad_devnet: `${process.env.WORMSCAN_BFF_URL}/monadRpcCall`,
+  unichain: "https://sepolia.unichain.org/",
 };
 
 export type Environment = {
@@ -128,6 +132,7 @@ export const testnetNativeCurrencies: { [key: string]: string } = {
   [chainIdToChain(39)]: "BERA",
   [chainIdToChain(40)]: "SEI",
   [chainIdToChain(43)]: "ETH",
+  [chainIdToChain(44)]: "ETH",
   [chainIdToChain(45)]: "ETH",
   [chainIdToChain(48)]: "MON",
   [chainIdToChain(10002)]: "ETH",
@@ -136,7 +141,6 @@ export const testnetNativeCurrencies: { [key: string]: string } = {
   [chainIdToChain(10005)]: "ETH",
   [chainIdToChain(10006)]: "ETH",
   [chainIdToChain(10007)]: "MATIC",
-  [chainIdToChain(10008)]: "MON",
 };
 
 export const mainnetNativeCurrencies: { [key: string]: string } = {
@@ -176,6 +180,7 @@ export const mainnetNativeCurrencies: { [key: string]: string } = {
   [chainIdToChain(39)]: "BERA",
   [chainIdToChain(40)]: "SEI",
   [chainIdToChain(43)]: "ETH",
+  [chainIdToChain(44)]: "ETH",
   [chainIdToChain(45)]: "ETH",
   [chainIdToChain(48)]: "MON",
 };
@@ -232,14 +237,6 @@ export const testnetEnv: Environment = {
       evmNetworkId: 80002, // https://chainlist.org/chain/80002
       nativeCurrencyDecimals: 18,
       rpcUrl: TESTNET_RPCS.polygon_sepolia || "",
-    },
-    {
-      chainId: 10008 as ChainId,
-      chainName: "MonadDevnet",
-      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
-      evmNetworkId: 20143, // https://chainlist.org/chain/20143
-      nativeCurrencyDecimals: 18,
-      rpcUrl: TESTNET_RPCS.monad_devnet || "",
     },
     {
       chainId: 4 as ChainId,
@@ -328,6 +325,14 @@ export const testnetEnv: Environment = {
       evmNetworkId: 13001,
       nativeCurrencyDecimals: 18,
       rpcUrl: TESTNET_RPCS.snaxchain || "",
+    },
+    {
+      chainId: 44 as ChainId,
+      chainName: "Unichain",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 1301,
+      nativeCurrencyDecimals: 18,
+      rpcUrl: TESTNET_RPCS.unichain || "",
     },
   ],
   guardianRpcs: ["https://wormhole-v2-testnet-api.certus.one"],
@@ -474,6 +479,14 @@ export const mainnetEnv: Environment = {
       evmNetworkId: 2192,
       nativeCurrencyDecimals: 18,
       rpcUrl: MAINNET_RPCS.snaxchain || "",
+    },
+    {
+      chainId: 44 as ChainId,
+      chainName: "Unichain",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 130,
+      nativeCurrencyDecimals: 18,
+      rpcUrl: MAINNET_RPCS.unichain || "",
     },
   ],
   guardianRpcs: [
