@@ -13,7 +13,6 @@ const ProgressView = ({
   fromChain,
   isAttestation,
   isJustGenericRelayer,
-  isJustPortalUnknown,
   isMayanOnly,
   nftInfo,
   originDateParsed,
@@ -27,8 +26,8 @@ const ProgressView = ({
   targetTxHash,
   toChain,
   tokenAmount,
-  txHash,
   vaa,
+  setShowRedeemModal,
 }: OverviewProps) => {
   const SOURCE_SYMBOL = sourceTokenInfo?.tokenSymbol || sourceSymbol;
 
@@ -205,11 +204,9 @@ const ProgressView = ({
               chain. You can resume your transaction{" "}
               <VerifyRedemption
                 canTryToGetRedeem={true}
-                fromChain={fromChain}
-                isJustPortalUnknown={isJustPortalUnknown}
-                txHash={txHash}
                 vaa={vaa}
                 asText="HERE"
+                setShowModal={setShowRedeemModal}
               />
             </span>
           ) : (

@@ -1,0 +1,38 @@
+@use "src/styles/globals.scss" as *;
+
+.redeem-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  width: 100%;
+
+  background-color: var(--color-gray-800);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--color-gray-700);
+
+  &-address {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    margin-bottom: 16px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-gray-100);
+  }
+
+  &-amount {
+    display: flex;
+  }
+}

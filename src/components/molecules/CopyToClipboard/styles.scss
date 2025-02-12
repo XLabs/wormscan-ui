@@ -16,3 +16,7 @@
     color: inherit;
   }
 }
+
+[data-radix-popper-content-wrapper] {
+  z-index: 1000 !important;
+}

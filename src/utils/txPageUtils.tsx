@@ -95,6 +95,9 @@ export type OverviewProps = {
   txIndex?: number;
   vaa?: string;
   VAAId?: string;
+
+  showRedeemModal?: boolean;
+  setShowRedeemModal?: (showModal: boolean) => void;
 };
 
 export const BIGDIPPER_TRANSACTIONS = {

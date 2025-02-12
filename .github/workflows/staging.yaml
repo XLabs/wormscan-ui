@@ -31,12 +31,14 @@ jobs:
         run: |
           node --version
           yarn install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Static Website
         run: |
-         NODE_ENV=production yarn build
-         cp ./robots.txt ./dist/
-         cp ./src/og_image.png ./dist/
+          NODE_ENV=production yarn build
+          cp ./robots.txt ./dist/
+          cp ./src/og_image.png ./dist/
 
       - name: Configure AWS CLI + credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -55,4 +57,4 @@ jobs:
         run: |
           aws cloudfront create-invalidation \
             --distribution-id ${{ env.AWS_CF_DIST_ID }} \
-            --paths "/*" 
+            --paths "/*"

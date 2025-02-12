@@ -8,9 +8,7 @@ import "./styles.scss";
 type Props = {
   canTryToGetRedeem: boolean;
   foundRedeem: boolean;
-  fromChain: ChainId | number;
   getRedeem: () => Promise<void>;
-  isJustPortalUnknown: boolean;
   loadingRedeem: boolean;
   setShowOverview: (view: "overview" | "advanced" | "progress") => void;
   showOverview: string;
@@ -19,14 +17,13 @@ type Props = {
   status: IStatus;
   txHash: string;
   vaa: string;
+  setShowRedeemModal: (showModal: boolean) => void;
 };
 
 const Summary = ({
   canTryToGetRedeem,
   foundRedeem,
-  fromChain,
   getRedeem,
-  isJustPortalUnknown,
   loadingRedeem,
   setShowOverview,
   showOverview,
@@ -35,6 +32,7 @@ const Summary = ({
   status,
   txHash,
   vaa,
+  setShowRedeemModal,
 }: Props) => {
   return (
     <div className="tx-information-summary">
@@ -66,10 +64,8 @@ const Summary = ({
           (foundRedeem === false || (!canTryToGetRedeem && !foundRedeem)) && (
             <VerifyRedemption
               canTryToGetRedeem={canTryToGetRedeem}
-              fromChain={fromChain}
-              isJustPortalUnknown={isJustPortalUnknown}
-              txHash={txHash}
               vaa={vaa}
+              setShowModal={setShowRedeemModal}
             />
           )}
       </div>
