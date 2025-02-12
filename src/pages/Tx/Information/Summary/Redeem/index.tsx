@@ -84,18 +84,10 @@ export const Redeem = ({ txHash, sourceChain, CustomComponent, network }: Props)
       const fullConfig = {
         ...offlineConfig,
         routes: [...(offlineConfig.routes || []), ...nttRoutesConfig],
-
-        // uncomment this:
-        // ...allTokensConfig,
-
-        // delete this:
-        tokensConfig: tokensConfig,
-        // wrappedTokens: wrappedTokensConfig,
+        ...allTokensConfig,
       };
 
       setConfig(fullConfig);
-
-      console.log("fullConfig", fullConfig);
       setIsLoadingConnect(false);
     };
 
