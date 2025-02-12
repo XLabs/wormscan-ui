@@ -562,21 +562,6 @@ const WORMHOLE_CHAINS: any = {
       return this.explorer?.[network] + "/tx/" + value;
     },
   },
-  [chainToChainId("MonadDevnet")]: {
-    name: "MonadDevnet",
-    icon: MonadIcon,
-    colorlessIcon: MonadColorlessIcon,
-    explorer: {
-      Testnet: "",
-      Devnet: "",
-      Mainnet: "",
-    },
-    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
-      if (base === "address") return "";
-      if (base === "token") return "";
-      return "";
-    },
-  },
   [chainToChainId("Moonbeam")]: {
     name: "Moonbeam",
     nameTestnet: "Moonbase Alpha",
@@ -934,7 +919,7 @@ const WORMHOLE_CHAINS: any = {
     explorer: {
       Testnet: "https://unichain-sepolia.blockscout.com",
       Devnet: "https://unichain-sepolia.blockscout.com",
-      Mainnet: "https://unichain-sepolia.blockscout.com", // TODO: mainnet when exists
+      Mainnet: "https://uniscan.xyz",
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;

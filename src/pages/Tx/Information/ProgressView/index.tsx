@@ -110,19 +110,21 @@ const ProgressView = ({
           </div>
         )}
 
-        <div
-          className={`progress-item ${
-            status === "in_progress" || status === "in_governors" ? "disabled" : ""
-          }`}
-        >
-          <div className="progress-icon">
-            <CheckCircle2 />
-          </div>
+        {status !== "external_tx" && (
+          <div
+            className={`progress-item ${
+              status === "in_progress" || status === "in_governors" ? "disabled" : ""
+            }`}
+          >
+            <div className="progress-icon">
+              <CheckCircle2 />
+            </div>
 
-          <div className="progress-text">
-            <div className="progress-text-p">VAA signed by Wormhole guardians</div>
+            <div className="progress-text">
+              <div className="progress-text-p">VAA signed by Wormhole guardians</div>
+            </div>
           </div>
-        </div>
+        )}
 
         {(status === "pending_redeem" || (status === "completed" && targetTxHash)) &&
           !isJustGenericRelayer && (
