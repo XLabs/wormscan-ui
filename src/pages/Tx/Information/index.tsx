@@ -337,15 +337,19 @@ const Information = ({
     (status === "external_tx" ||
       (status === "pending_redeem" && new Date(timestamp) < date_15_min_before)) &&
     (platformToChains("Evm").includes(chainIdToChain(toChain) as any) ||
-      toChain === 1 ||
-      toChain === 21) &&
+      toChain === chainToChainId("Solana") ||
+      toChain === chainToChainId("Sui")) &&
     toChain === targetTokenChain &&
     !!toAddress &&
     !!(wrappedTokenAddress && tokenEffectiveAddress) &&
     !!timestamp &&
     !!amount &&
     !!data?.sourceChain?.transaction?.txHash &&
-    !data?.targetChain?.transaction?.txHash;
+    !data?.targetChain?.transaction?.txHash &&
+    // Portal: only transfer with payload
+    data.content?.standarizedProperties?.appIds?.includes(PORTAL_APP_ID)
+      ? data.content.payload.payloadType === 3
+      : true;
 
   const getRedeem = async () => {
     setLoadingRedeem(true);
