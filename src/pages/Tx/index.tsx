@@ -1489,6 +1489,12 @@ const Tx = () => {
         }
       }
 
+      apiTxData.sort((a, b) => {
+        if (a.sequence > b.sequence) return -1;
+        if (a.sequence < b.sequence) return 1;
+        return 0;
+      });
+
       setTxData(apiTxData);
       setIsLoading(false);
 
