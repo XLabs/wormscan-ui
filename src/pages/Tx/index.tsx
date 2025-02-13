@@ -72,10 +72,11 @@ import { ETH_LIMIT } from "../Txs";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 import { DeliveryLifecycleRecord, populateRelayerInfo } from "src/utils/genericRelayerVaaUtils";
 import { BlockSection } from "src/components/molecules";
-import "./styles.scss";
 import { mainnetNativeCurrencies, testnetNativeCurrencies } from "src/utils/environment";
 import getMayanMctpInfo from "src/utils/mayan";
 import { formatNumber } from "src/utils/number";
+import { stringifyWithStringBigInt } from "src/utils/object";
+import "./styles.scss";
 
 const Tx = () => {
   useEffect(() => {
@@ -113,6 +114,13 @@ const Tx = () => {
   const [blockData, setBlockData] = useState<GetBlockData>(null);
   const [failCount, setFailCount] = useState(0);
   const [shouldTryToGetRpcInfo, setShouldTryToGetRpcInfo] = useState(false);
+
+  const [txData, setTxData] = useState<GetOperationsOutput[]>([]);
+  const allStatus = txData?.map(data => data.status);
+
+  const isRefetching =
+    allStatus?.some(status => status !== "completed" && status !== "external_tx") || false;
+  console.log({ allStatus, isRefetching });
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | null = null;
@@ -456,6 +464,7 @@ const Tx = () => {
         }
         return true;
       },
+      refetchInterval: isRefetching ? 10000 : false,
     },
   );
 
@@ -537,6 +546,7 @@ const Tx = () => {
       },
       enabled: isVAAIdSearch && !errorCode,
       retry: false,
+      refetchInterval: isRefetching ? 10000 : false,
     },
   );
 
@@ -548,9 +558,6 @@ const Tx = () => {
       return null;
     }
   }, [isTxHashSearch, VAADataByTx, VAADataByVAAId]);
-
-  const VAADataTxHash = VAAData?.[0]?.sourceChain?.transaction?.txHash;
-  const [txData, setTxData] = useState<GetOperationsOutput[]>([]);
 
   const processVaaData = useCallback(
     async (apiTxData: GetOperationsOutput[]) => {
@@ -1608,8 +1615,16 @@ const Tx = () => {
     ],
   );
 
+  const prevVAADataRef = useRef<string | null>(null);
+
   useEffect(() => {
     if (!VAAData) return;
+
+    const currentVAADataStr = stringifyWithStringBigInt(VAAData);
+
+    if (currentVAADataStr === prevVAADataRef.current) return;
+
+    prevVAADataRef.current = currentVAADataStr;
     setErrorCode(undefined);
     processVaaData(VAAData);
   }, [VAAData, processVaaData]);
