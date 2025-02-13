@@ -84,6 +84,7 @@ export const ChainFilterMainnet = [
   chainToChainId("Aurora"),
   chainToChainId("Avalanche"),
   chainToChainId("Base"),
+  chainToChainId("Berachain"),
   chainToChainId("Blast"),
   chainToChainId("Bsc"),
   chainToChainId("Celo"),
@@ -106,6 +107,7 @@ export const ChainFilterMainnet = [
   chainToChainId("Sui"),
   chainToChainId("Terra"),
   chainToChainId("Terra2"),
+  chainToChainId("Unichain"),
   chainToChainId("Worldchain"),
   chainToChainId("Wormchain"),
   chainToChainId("Xlayer"),
@@ -114,27 +116,28 @@ export const ChainFilterMainnet = [
 
 export const ChainFilterTestnet = [
   chainToChainId("Acala"),
-  chainToChainId("Celo"),
+  chainToChainId("Celo"), // Alfajores
   chainToChainId("Algorand"),
-  chainToChainId("PolygonSepolia"),
+  chainToChainId("PolygonSepolia"), // Amoy
   chainToChainId("Aptos"),
   // chainToChainId("Arbitrum"),
   chainToChainId("ArbitrumSepolia"),
   chainToChainId("Aurora"),
   // chainToChainId("Base"),
   chainToChainId("BaseSepolia"),
+  chainToChainId("Berachain"),
   chainToChainId("Blast"),
   chainToChainId("Bsc"),
   chainToChainId("Fantom"),
-  chainToChainId("Avalanche"),
-  chainToChainId("Ethereum"),
+  chainToChainId("Avalanche"), // Fuji
+  chainToChainId("Ethereum"), // Goerli
   chainToChainId("Holesky"),
   chainToChainId("Injective"),
   chainToChainId("Karura"),
   chainToChainId("Klaytn"),
   chainToChainId("Mantle"),
   chainToChainId("Monad"),
-  chainToChainId("Moonbeam"),
+  chainToChainId("Moonbeam"), // Moonbase Alpha
   // chainToChainId("Polygon"),
   chainToChainId("Near"),
   chainToChainId("Neon"),
@@ -152,7 +155,7 @@ export const ChainFilterTestnet = [
   chainToChainId("Terra2"),
   chainToChainId("Unichain"),
   chainToChainId("Worldchain"),
-  chainToChainId("Wormchain"),
+  chainToChainId("Wormchain"), // WH Gateway
   chainToChainId("Xlayer"),
   chainToChainId("Xpla"),
 ];

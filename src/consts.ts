@@ -388,6 +388,7 @@ const targetChainsSupportedTestnet: { [key: string]: ChainId[] } = {
     chainToChainId("Unichain"),
     chainToChainId("Monad"),
     chainToChainId("Worldchain"),
+    chainToChainId("Seievm"),
   ],
   [GATEWAY_APP_ID]: [],
   [CCTP_APP_ID]: [
