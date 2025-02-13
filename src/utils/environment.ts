@@ -12,6 +12,7 @@ export const SLOW_FINALITY_CHAINS_MAINNET = [
   chainToChainId("Celo"),
   chainToChainId("Xlayer"),
   chainToChainId("Unichain"),
+  chainToChainId("Berachain"),
 ];
 
 export const SLOW_FINALITY_CHAINS_TESTNET = [
@@ -24,6 +25,7 @@ export const SLOW_FINALITY_CHAINS_TESTNET = [
   chainToChainId("Celo"),
   chainToChainId("Xlayer"),
   chainToChainId("Unichain"),
+  chainToChainId("Berachain"),
 ];
 
 const MAINNET_RPCS = {
@@ -56,6 +58,7 @@ const MAINNET_RPCS = {
   xlayer: "https://xlayerrpc.okx.com",
   snaxchain: "https://mainnet.snaxchain.io/",
   unichain: "https://mainnet.unichain.org/",
+  berachain: "https://rpc.berachain.com",
 };
 
 const TESTNET_RPCS = {
@@ -78,6 +81,7 @@ const TESTNET_RPCS = {
   snaxchain: "https://testnet.snaxchain.io/",
   monad_devnet: `${process.env.WORMSCAN_BFF_URL}/monadRpcCall`,
   unichain: "https://sepolia.unichain.org/",
+  berachain: "https://bartio.drpc.org",
 };
 
 export type Environment = {
@@ -295,6 +299,14 @@ export const testnetEnv: Environment = {
       rpcUrl: TESTNET_RPCS.scroll || "",
     },
     {
+      chainId: 35 as ChainId,
+      chainName: "Mantle",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 5001,
+      nativeCurrencyDecimals: 18,
+      rpcUrl: TESTNET_RPCS.mantle || "",
+    },
+    {
       chainId: 36 as ChainId,
       chainName: "BLAST",
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
@@ -311,12 +323,12 @@ export const testnetEnv: Environment = {
       rpcUrl: TESTNET_RPCS.xlayer || "",
     },
     {
-      chainId: 35 as ChainId,
-      chainName: "Mantle",
+      chainId: 39 as ChainId,
+      chainName: "Berachain",
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
-      evmNetworkId: 5001,
+      evmNetworkId: 80084,
       nativeCurrencyDecimals: 18,
-      rpcUrl: TESTNET_RPCS.mantle || "",
+      rpcUrl: TESTNET_RPCS.berachain || "",
     },
     {
       chainId: 43 as ChainId,
@@ -471,6 +483,14 @@ export const mainnetEnv: Environment = {
       evmNetworkId: 196,
       nativeCurrencyDecimals: 18,
       rpcUrl: MAINNET_RPCS.xlayer || "",
+    },
+    {
+      chainId: 39 as ChainId,
+      chainName: "Berachain",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 80094,
+      nativeCurrencyDecimals: 18,
+      rpcUrl: MAINNET_RPCS.berachain || "",
     },
     {
       chainId: 43 as ChainId,

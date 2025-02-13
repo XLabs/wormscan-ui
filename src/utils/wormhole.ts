@@ -7,6 +7,7 @@ import ArbitrumIcon from "src/icons/blockchains/arbitrum.svg";
 import AuroraIcon from "src/icons/blockchains/aurora.svg";
 import AvalancheIcon from "src/icons/blockchains/avax.svg";
 import BaseIcon from "src/icons/blockchains/base.svg";
+import BerachainIcon from "src/icons/blockchains/berachain.svg";
 import BlastIcon from "src/icons/blockchains/blast.svg";
 import BSCIcon from "src/icons/blockchains/bsc.svg";
 import BtcIcon from "src/icons/blockchains/btc.svg";
@@ -57,6 +58,7 @@ import ArbitrumColorlessIcon from "src/icons/blockchains/colorless/arbitrum.svg"
 import AuroraColorlessIcon from "src/icons/blockchains/colorless/aurora.svg";
 import AvalancheColorlessIcon from "src/icons/blockchains/colorless/avax.svg";
 import BaseColorlessIcon from "src/icons/blockchains/colorless/base.svg";
+import BerachainColorlessIcon from "src/icons/blockchains/colorless/berachain.svg";
 import BlastColorlessIcon from "src/icons/blockchains/colorless/blast.svg";
 import BSCColorlessIcon from "src/icons/blockchains/colorless/bsc.svg";
 import BtcColorlessIcon from "src/icons/blockchains/colorless/btc.svg";
@@ -280,6 +282,22 @@ const WORMHOLE_CHAINS: any = {
       Testnet: "https://sepolia.basescan.org",
       Devnet: "https://sepolia.basescan.org",
       Mainnet: "https://basescan.org",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
+    },
+  },
+  [chainToChainId("Berachain")]: {
+    name: "Berachain",
+    icon: BerachainIcon,
+    colorlessIcon: BerachainColorlessIcon,
+    explorer: {
+      Testnet: "https://bartio.beratrail.io",
+      Devnet: "https://bartio.beratrail.io",
+      Mainnet: "https://berascan.com",
     },
     getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
       if (base === "address") return this.explorer?.[network] + "/address/" + value;
