@@ -328,7 +328,7 @@ export const testnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 80084,
       nativeCurrencyDecimals: 18,
-      rpcUrl: TESTNET_RPCS.unichain || "",
+      rpcUrl: TESTNET_RPCS.berachain || "",
     },
     {
       chainId: 43 as ChainId,
@@ -490,7 +490,7 @@ export const mainnetEnv: Environment = {
       defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
       evmNetworkId: 80094,
       nativeCurrencyDecimals: 18,
-      rpcUrl: MAINNET_RPCS.xlayer || "",
+      rpcUrl: MAINNET_RPCS.berachain || "",
     },
     {
       chainId: 43 as ChainId,
