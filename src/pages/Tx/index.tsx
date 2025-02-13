@@ -120,7 +120,6 @@ const Tx = () => {
 
   const isRefetching =
     allStatus?.some(status => status !== "completed" && status !== "external_tx") || false;
-  console.log({ allStatus, isRefetching });
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | null = null;
