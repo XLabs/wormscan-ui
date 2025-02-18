@@ -167,7 +167,7 @@ export async function populateRelayerInfo(
   const sourceEthersProvider = getEthersProvider(
     getChainInfo(environment, sourceChainId as ChainId),
   );
-  if (output.sourceTxHash) {
+  if (output.sourceTxHash && sourceEthersProvider) {
     const getSourceReceipt = new Promise<any>(resolve =>
       sourceEthersProvider
         .getTransactionReceipt(output.sourceTxHash)
