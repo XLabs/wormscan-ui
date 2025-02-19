@@ -81,7 +81,7 @@ const TESTNET_RPCS = {
   snaxchain: "https://testnet.snaxchain.io/",
   monad_devnet: `${process.env.WORMSCAN_BFF_URL}/monadRpcCall`,
   unichain: "https://sepolia.unichain.org/",
-  berachain: "https://bartio.drpc.org",
+  berachain: "https://berachain-testnet-rpc.publicnode.com",
 };
 
 export type Environment = {
