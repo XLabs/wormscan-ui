@@ -382,7 +382,7 @@ const Tx = () => {
                   content: {
                     payload: null,
                     standarizedProperties: {
-                      amount: resp.amount,
+                      amount: String(+resp.amount * 10 ** 2),
                       appIds: [CCTP_MANUAL_APP_ID],
                       fee: "0",
                       feeAddress: "",

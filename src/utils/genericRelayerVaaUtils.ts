@@ -119,31 +119,33 @@ export async function populateRelayerInfo(
 
     const getTargetReceiptAndTimestamp = new Promise<typeof defaultResponse>(resolve =>
       targetEthersProvider
-        .getTransactionReceipt(targetTxHash)
-        .then(async receipt => {
-          try {
-            const block = await targetEthersProvider.getBlock(receipt.blockNumber);
-            resolve({
-              targetChainId: targetChain as ChainId,
-              targetTxHash: targetTxHash,
-              targetTxReceipt: receipt,
-              targetTxTimestamp: Number(BigInt(block.timestamp)),
-            });
-          } catch (err) {
-            console.log("failed to get timestamp for target tx", err);
-            console.log("(but got receipt correctly)");
-            resolve({
-              targetChainId: targetChain as ChainId,
-              targetTxHash: targetTxHash,
-              targetTxReceipt: receipt,
-              targetTxTimestamp: null as number,
-            });
-          }
-        })
-        .catch(e => {
-          console.log("error getting target tx receipt: " + e);
-          resolve(defaultResponse);
-        }),
+        ? targetEthersProvider
+            .getTransactionReceipt(targetTxHash)
+            .then(async receipt => {
+              try {
+                const block = await targetEthersProvider.getBlock(receipt.blockNumber);
+                resolve({
+                  targetChainId: targetChain as ChainId,
+                  targetTxHash: targetTxHash,
+                  targetTxReceipt: receipt,
+                  targetTxTimestamp: Number(BigInt(block.timestamp)),
+                });
+              } catch (err) {
+                console.log("failed to get timestamp for target tx", err);
+                console.log("(but got receipt correctly)");
+                resolve({
+                  targetChainId: targetChain as ChainId,
+                  targetTxHash: targetTxHash,
+                  targetTxReceipt: receipt,
+                  targetTxTimestamp: null as number,
+                });
+              }
+            })
+            .catch(e => {
+              console.log("error getting target tx receipt: " + e);
+              resolve(defaultResponse);
+            })
+        : resolve(defaultResponse),
     );
 
     const targetTxResponse = await callWithTimeout(
@@ -167,7 +169,7 @@ export async function populateRelayerInfo(
   const sourceEthersProvider = getEthersProvider(
     getChainInfo(environment, sourceChainId as ChainId),
   );
-  if (output.sourceTxHash) {
+  if (output.sourceTxHash && sourceEthersProvider) {
     const getSourceReceipt = new Promise<any>(resolve =>
       sourceEthersProvider
         .getTransactionReceipt(output.sourceTxHash)

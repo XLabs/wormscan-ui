@@ -81,7 +81,7 @@ const TESTNET_RPCS = {
   snaxchain: "https://testnet.snaxchain.io/",
   monad_devnet: `${process.env.WORMSCAN_BFF_URL}/monadRpcCall`,
   unichain: "https://sepolia.unichain.org/",
-  berachain: "https://bartio.drpc.org",
+  berachain: "https://berachain-testnet-rpc.publicnode.com",
 };
 
 export type Environment = {
@@ -346,6 +346,14 @@ export const testnetEnv: Environment = {
       nativeCurrencyDecimals: 18,
       rpcUrl: TESTNET_RPCS.unichain || "",
     },
+    {
+      chainId: 48 as ChainId,
+      chainName: "Monad Testnet",
+      defaultDeliveryProviderContractAddress: testnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 10143,
+      nativeCurrencyDecimals: 18,
+      rpcUrl: "", // ADD WHEN EXISTS
+    },
   ],
   guardianRpcs: ["https://wormhole-v2-testnet-api.certus.one"],
 };
@@ -508,6 +516,14 @@ export const mainnetEnv: Environment = {
       nativeCurrencyDecimals: 18,
       rpcUrl: MAINNET_RPCS.unichain || "",
     },
+    {
+      chainId: 48 as ChainId,
+      chainName: "Monad",
+      defaultDeliveryProviderContractAddress: mainnetDefaultDeliveryProviderContractAddress,
+      evmNetworkId: 143,
+      nativeCurrencyDecimals: 18,
+      rpcUrl: "", // ADD WHEN EXISTS
+    },
   ],
   guardianRpcs: [
     "https://wormhole-v2-mainnet-api.certus.one",
@@ -521,7 +537,7 @@ export const mainnetEnv: Environment = {
 export function getEthersProvider(chainInfo: ChainInfo) {
   const provider = new JsonRpcProvider(chainInfo.rpcUrl);
 
-  if (chainInfo?.rpcUrl) return provider;
+  if (chainInfo?.rpcUrl && provider) return provider;
 
   return null;
 }
