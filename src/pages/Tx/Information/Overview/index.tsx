@@ -8,6 +8,7 @@ import {
   BREAKPOINTS,
   CCTP_MANUAL_APP_ID,
   FOLKS_FINANCE_APP_ID,
+  M_PORTAL_APP_ID,
   MAYAN_MCTP_APP_ID,
   MAYAN_SWIFT_APP_ID,
   txType,
@@ -89,6 +90,7 @@ const Overview = ({
   parsedDestinationAddress,
   parsedEmitterAddress,
   parsedOriginAddress,
+  parsedPayload,
   parsedRedeemTx,
   parsedVaa,
   payloadType,
@@ -700,7 +702,7 @@ const Overview = ({
             </Tooltip>
           </h4>
           <div className="tx-overview-section-row-info details-info">
-            {txType[payloadType] && (
+            {txType[payloadType] && !appIds.includes(M_PORTAL_APP_ID) && (
               <div
                 className={`tx-overview-section-row-info-container span2 ${
                   !!showMetaMaskBtn ? "lg-mb-6" : ""
@@ -815,8 +817,15 @@ const Overview = ({
                 </div>
               </div>
             )}
+            {appIds.includes(M_PORTAL_APP_ID) && (
+              <div className="tx-overview-section-row-info-container">
+                <div className="tx-overview-section-row-info-container-key">SENT INDEX</div>
 
-            {parsedDestinationAddress && (
+                <div className="text">{parsedPayload.managerPayload.payload.index / 10 ** 12}</div>
+              </div>
+            )}
+
+            {parsedDestinationAddress && !appIds.includes(M_PORTAL_APP_ID) && (
               <div className="tx-overview-section-row-info-container">
                 <div className="tx-overview-section-row-info-container-key">TO</div>
 
