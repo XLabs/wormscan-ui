@@ -59,15 +59,6 @@ export class NttApi {
 
     const tokenListWithFallback = await Promise.all(
       tokenListResponse.map(async item => {
-        if (!item?.total_value_transferred) {
-          try {
-            const summary = await this.getNttTVT({ coingecko_id: item.coingecko_id });
-            item.total_value_transferred = summary.totalValueTokenTransferred || "0";
-          } catch (error) {
-            console.log("Failed to get total value transferred for token", item.symbol);
-          }
-        }
-
         if (item.circulating_supply === "0") {
           const symbol = item.symbol.toUpperCase();
 
@@ -84,17 +75,6 @@ export class NttApi {
     );
 
     return tokenListWithFallback;
-  }
-
-  async getNttTVT({ coingecko_id }: GetSummary): Promise<{ totalValueTokenTransferred: string }> {
-    const summaryResponse = await this._client.doGet<GetSummaryResult>(
-      "/native-token-transfer/summary",
-      {
-        coingecko_id,
-      },
-    );
-
-    return { totalValueTokenTransferred: summaryResponse.totalValueTokenTransferred };
   }
 
   async getNttSummary({ coingecko_id }: GetSummary): Promise<GetSummaryResult> {
