@@ -155,6 +155,7 @@ const Tx = () => {
           limitDataForChain?.availableNotional < Number(txData?.usdAmount);
 
         setIsRPC(true);
+        console.log({ VAAData });
         setTxData([
           {
             emitterAddress: {
@@ -565,6 +566,7 @@ const Tx = () => {
         if (
           !data?.content?.standarizedProperties?.appIds?.includes(NTT_APP_ID) &&
           data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID) &&
+          !data?.content?.standarizedProperties?.appIds?.includes(FOLKS_FINANCE_APP_ID) &&
           !data?.vaa?.raw
         ) {
           setShouldTryToGetRpcInfo(true);
