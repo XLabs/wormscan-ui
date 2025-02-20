@@ -36,6 +36,7 @@ import {
   LIQUIDITY_LAYER_APP_ID,
   SYNONYM_APP_ID,
   SYNONYM_URL,
+  FOLKS_FINANCE_APP_ID,
 } from "src/consts";
 
 const appIds = [
@@ -43,6 +44,7 @@ const appIds = [
   CCTP_APP_ID,
   // CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
+  FOLKS_FINANCE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
   MAYAN_APP_ID,

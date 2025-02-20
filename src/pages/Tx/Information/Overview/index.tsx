@@ -7,6 +7,7 @@ import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import {
   BREAKPOINTS,
   CCTP_MANUAL_APP_ID,
+  FOLKS_FINANCE_APP_ID,
   MAYAN_MCTP_APP_ID,
   MAYAN_SWIFT_APP_ID,
   txType,
@@ -677,10 +678,15 @@ const Overview = ({
               type="info"
               tooltip={
                 <div className="tx-overview-section-row-info-tooltip-content">
-                  {action &&
+                  {(action === 0 || !!action) &&
                   (appIds.includes(MAYAN_SWIFT_APP_ID) || appIds.includes(MAYAN_MCTP_APP_ID)) ? (
                     <p>
                       The Action field indicates the type of Wormhole messages linked with Mayan.
+                    </p>
+                  ) : appIds.includes(FOLKS_FINANCE_APP_ID) ? (
+                    <p>
+                      The Action field indicates the type of Wormhole messages linked with Folks
+                      Finance.
                     </p>
                   ) : (
                     <p>The type of transaction.</p>
@@ -1074,8 +1080,10 @@ const Overview = ({
               </div>
             )}
 
-            {action &&
-              (appIds.includes(MAYAN_SWIFT_APP_ID) || appIds.includes(MAYAN_MCTP_APP_ID)) && (
+            {(action === 0 || !!action) &&
+              (appIds.includes(MAYAN_SWIFT_APP_ID) ||
+                appIds.includes(MAYAN_MCTP_APP_ID) ||
+                appIds.includes(FOLKS_FINANCE_APP_ID)) && (
                 <div className="tx-overview-section-row-info-container span2">
                   <div className="tx-overview-section-row-info-container-key">ACTION</div>
 
@@ -1106,6 +1114,40 @@ const Overview = ({
                                 ? "Unlock Message: Unlocks fees on the source chain after completing an order on the destination chain."
                                 : action === 5
                                 ? "Refine Fee Message: Unlocks fees on the source chain if the gasdrop was paid by another party."
+                                : ""
+                              : appIds.includes(FOLKS_FINANCE_APP_ID)
+                              ? action === 0
+                                ? "Create Account"
+                                : action === 1
+                                ? "Invite Address"
+                                : action === 2
+                                ? "Accept Invite Address"
+                                : action === 3
+                                ? "Unregister Address"
+                                : action === 4
+                                ? "Add Delegate"
+                                : action === 5
+                                ? "Remove Delegate"
+                                : action === 6
+                                ? "Create Loan"
+                                : action === 7
+                                ? "Delete Loan"
+                                : action === 8
+                                ? "Create Loan And Deposit"
+                                : action === 9
+                                ? "Deposit"
+                                : action === 11
+                                ? "Withdraw"
+                                : action === 13
+                                ? "Borrow"
+                                : action === 14
+                                ? "Repay"
+                                : action === 15
+                                ? "Repay With Collateral"
+                                : action === 17
+                                ? "Switch Borrow Type"
+                                : action === 18
+                                ? "Send Token"
                                 : ""
                               : ""}
                           </p>
