@@ -155,7 +155,6 @@ const Tx = () => {
           limitDataForChain?.availableNotional < Number(txData?.usdAmount);
 
         setIsRPC(true);
-        console.log({ VAAData });
         setTxData([
           {
             emitterAddress: {
