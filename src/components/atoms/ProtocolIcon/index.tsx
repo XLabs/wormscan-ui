@@ -586,6 +586,6 @@ const iconMap: Record<string, React.FC<{ width: number }>> = {
   [USDT_TRANSFER_APP_ID]: USDTTransferIcon,
 };
 
-const genericIcons = [WORMHOLE_SETTLEMENTS_APP_ID];
+const genericIcons: string[] = [];
 
 export default ProtocolIcon;
