@@ -59,9 +59,8 @@ import {
   GATEWAY_APP_ID,
   GR_APP_ID,
   IStatus,
-  LIQUIDITY_LAYER_APP_ID,
   MAYAN_MCTP_APP_ID,
-  MAYAN_SHUTTLE_APP_ID,
+  WORMHOLE_SETTLEMENTS_APP_ID,
   NTT_APP_ID,
   PORTAL_APP_ID,
   PORTAL_NFT_APP_ID,
@@ -683,7 +682,7 @@ const Tx = () => {
 
         // check Wormhole Liquidity Layer
         if (
-          data?.content?.standarizedProperties?.appIds?.includes(LIQUIDITY_LAYER_APP_ID) &&
+          data?.content?.standarizedProperties?.appIds?.includes(WORMHOLE_SETTLEMENTS_APP_ID) &&
           data.content.payload?.payloadId === 11
         ) {
           const liquidityLayerTokenInfo = await getLiquidityLayerTokenInfo(
@@ -743,7 +742,7 @@ const Tx = () => {
           }
         }
 
-        if (data?.content?.standarizedProperties?.appIds?.includes(LIQUIDITY_LAYER_APP_ID)) {
+        if (data?.content?.standarizedProperties?.appIds?.includes(WORMHOLE_SETTLEMENTS_APP_ID)) {
           if (
             data.content.payload?.payload?.payloadId === 1 &&
             data.content.payload?.payload?.parsedRedeemerMessage?.outputToken?.address
