@@ -102,8 +102,8 @@ const ProgressView = ({
 
             <div className="progress-text">
               <div className="progress-text-p">
-                Held by Governor: this transaction should be released in{" "}
-                {releaseTimestamp ? `${remainingTime}` : "N/A"}.
+                Held by Governor
+                {remainingTime && `: this transaction should be released in ${remainingTime}`}
               </div>
             </div>
           </div>

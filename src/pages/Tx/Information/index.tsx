@@ -347,9 +347,9 @@ const Information = ({
     !!data?.sourceChain?.transaction?.txHash &&
     !data?.targetChain?.transaction?.txHash &&
     // Portal: only transfer with payload
-    data.content?.standarizedProperties?.appIds?.includes(PORTAL_APP_ID)
+    (data.content?.standarizedProperties?.appIds?.includes(PORTAL_APP_ID)
       ? data.content.payload.payloadType === 3
-      : true;
+      : true);
 
   const getRedeem = async () => {
     setLoadingRedeem(true);
