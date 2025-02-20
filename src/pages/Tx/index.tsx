@@ -55,6 +55,7 @@ import {
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
   ETH_BRIDGE_APP_ID,
+  FOLKS_FINANCE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
   IStatus,
@@ -570,6 +571,7 @@ const Tx = () => {
         if (
           !data?.content?.standarizedProperties?.appIds?.includes(NTT_APP_ID) &&
           data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID) &&
+          !data?.content?.standarizedProperties?.appIds?.includes(FOLKS_FINANCE_APP_ID) &&
           !data?.vaa?.raw
         ) {
           setShouldTryToGetRpcInfo(true);
@@ -996,6 +998,20 @@ const Tx = () => {
             console.error("standard relayer tx errored:", e);
           }
         }
+        // ----
+
+        // Check Folks Finance
+        if (data?.content?.standarizedProperties?.appIds?.includes(FOLKS_FINANCE_APP_ID)) {
+          const parsedPayload = data?.content?.payload?.parsedPayload;
+
+          if (parsedPayload?.action === 0 || !!parsedPayload?.action) {
+            data.content.payload = {
+              ...data.content.payload,
+              action: parsedPayload?.action,
+            };
+          }
+        }
+
         // ----
 
         // Check NTT
