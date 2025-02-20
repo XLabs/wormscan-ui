@@ -6,18 +6,17 @@ import {
   CCTP_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
-  FAST_TRANSFERS_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
-  LIQUIDITY_LAYER_APP_ID,
   MAYAN_APP_ID,
+  MAYAN_SHUTTLE_APP_ID,
   NTT_APP_ID,
   OMNISWAP_APP_ID,
   PORTAL_APP_ID,
-  SWAP_LAYER_APP_ID,
   TBTC_APP_ID,
   UNKNOWN_APP_ID,
   USDT_TRANSFER_APP_ID,
+  WORMHOLE_SETTLEMENTS_APP_ID,
 } from "src/consts";
 import { useEnvironment } from "src/context/EnvironmentContext";
 import { Cube3DIcon, InfoCircleIcon, LinkIcon } from "src/icons/generic";
@@ -39,14 +38,13 @@ const protocolMapping: Record<string, string> = {
   cctp: CCTP_APP_ID,
   connect: CONNECT_APP_ID,
   eth_bridge: ETH_BRIDGE_APP_ID,
-  fast_transfers: FAST_TRANSFERS_APP_ID,
-  liquidity_layer: LIQUIDITY_LAYER_APP_ID,
+  wormhole_settlements: WORMHOLE_SETTLEMENTS_APP_ID,
+  mayan_shuttle: MAYAN_SHUTTLE_APP_ID,
   mayan: MAYAN_APP_ID,
   native_token_transfer: NTT_APP_ID,
   omniswap: OMNISWAP_APP_ID,
   portal_token_bridge: PORTAL_APP_ID,
   standard_relayer: GR_APP_ID,
-  swap_layer: SWAP_LAYER_APP_ID,
   tbtc: TBTC_APP_ID,
   usdt_transfer: USDT_TRANSFER_APP_ID,
   wormchain_gateway_transfer: GATEWAY_APP_ID,
@@ -75,6 +73,10 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
             item =>
               item.protocol !== C3_APP_ID &&
               item.protocol !== CONNECT_APP_ID &&
+              item.protocol !== WORMHOLE_SETTLEMENTS_APP_ID &&
+              item.protocol !== MAYAN_SHUTTLE_APP_ID &&
+              item.protocol !== "SWAP_LAYER" &&
+              item.protocol !== "FAST_TRANSFERS" &&
               item.protocol !== "STABLE" &&
               item.protocol !== "WORMHOLE_GATEWAY_TRANSFER",
           )
@@ -145,7 +147,6 @@ const ProtocolsStats = ({ numberOfProtocols }: { numberOfProtocols?: number }) =
             data?.length > 0 &&
             data?.map((item, i) => {
               if (i >= numberOfProtocols) return null;
-              if (item.protocol === "WORMHOLE_LIQUIDITY_LAYER") return null;
 
               return (
                 <div

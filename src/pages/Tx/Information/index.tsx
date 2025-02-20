@@ -15,7 +15,7 @@ import {
   ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
-  LIQUIDITY_LAYER_APP_ID,
+  WORMHOLE_SETTLEMENTS_APP_ID,
   MAYAN_APP_ID,
   PORTAL_APP_ID,
   txType,
@@ -429,7 +429,7 @@ const Information = ({
     status === "pending_redeem" && (isJustPortalUnknown || isConnect || isGateway);
 
   const showMinReceivedTooltip = !!(
-    data.content?.standarizedProperties?.appIds?.includes(LIQUIDITY_LAYER_APP_ID) &&
+    data.content?.standarizedProperties?.appIds?.includes(WORMHOLE_SETTLEMENTS_APP_ID) &&
     data.content?.payload?.payload?.parsedRedeemerMessage?.outputToken?.swap?.limitAmount
   );
 

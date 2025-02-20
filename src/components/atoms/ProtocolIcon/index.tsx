@@ -4,11 +4,9 @@ import {
   CCTP_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
-  FAST_TRANSFERS_APP_ID,
   FOLKS_FINANCE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
-  LIQUIDITY_LAYER_APP_ID,
   M_PORTAL_APP_ID,
   MAYAN_APP_ID,
   MAYAN_MCTP_APP_ID,
@@ -21,6 +19,7 @@ import {
   SYNONYM_APP_ID,
   TBTC_APP_ID,
   USDT_TRANSFER_APP_ID,
+  WORMHOLE_SETTLEMENTS_APP_ID,
 } from "src/consts";
 
 const ProtocolIcon = ({ protocol, width = 28 }: { protocol: string; width?: number }) => {
@@ -572,7 +571,7 @@ const iconMap: Record<string, React.FC<{ width: number }>> = {
   [FOLKS_FINANCE_APP_ID]: FolksFinanceIcon,
   [GATEWAY_APP_ID]: WormholeGatewayIcon,
   [GR_APP_ID]: StandardRelayerIcon,
-  [LIQUIDITY_LAYER_APP_ID]: WormholeLiquidityLayerIcon,
+  [WORMHOLE_SETTLEMENTS_APP_ID]: WormholeLiquidityLayerIcon,
   [M_PORTAL_APP_ID]: MPortalIcon,
   [MAYAN_APP_ID]: MayanIcon,
   [MAYAN_MCTP_APP_ID]: MayanIcon,
@@ -587,6 +586,6 @@ const iconMap: Record<string, React.FC<{ width: number }>> = {
   [USDT_TRANSFER_APP_ID]: USDTTransferIcon,
 };
 
-const genericIcons = [FAST_TRANSFERS_APP_ID];
+const genericIcons = [WORMHOLE_SETTLEMENTS_APP_ID];
 
 export default ProtocolIcon;
