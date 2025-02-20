@@ -72,7 +72,9 @@ const Information = ({
   const currentNetwork = environment.network;
   const isMainnet = currentNetwork === "Mainnet";
 
-  const [showOverview, setShowOverviewState] = useState(searchParams.get("view") || "overview");
+  const [showOverview, setShowOverviewState] = useState<TView>(
+    (searchParams.get("view") as TView) || "overview",
+  );
   const setShowOverview = (view: TView) => {
     setShowOverviewState(view);
     setSearchParams(prev => {
@@ -83,7 +85,7 @@ const Information = ({
 
   useEffect(() => {
     if (!hasMultipleTxs) {
-      const view = searchParams.get("view") || "overview";
+      const view = (searchParams.get("view") as TView) || "overview";
       setShowOverviewState(view);
     }
   }, [hasMultipleTxs, isMainnet, searchParams]);
