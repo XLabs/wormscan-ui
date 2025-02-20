@@ -27,13 +27,7 @@ import {
   TokensSymbolVolumeOutput,
   VAACount,
 } from "./types";
-import {
-  CONNECT_APP_ID,
-  FAST_TRANSFERS_APP_ID,
-  LIQUIDITY_LAYER_APP_ID,
-  MAYAN_SHUTTLE_APP_ID,
-  SWAP_LAYER_APP_ID,
-} from "src/consts";
+import { CONNECT_APP_ID, WORMHOLE_SETTLEMENTS_APP_ID } from "src/consts";
 
 export class GuardianNetwork {
   constructor(private readonly _client: APIClient) {}
@@ -76,17 +70,7 @@ export class GuardianNetwork {
 
     // LIQUIDITY LAYER PATCH
     const resultProcessed = result.map(data => {
-      if (data?.content?.standarizedProperties?.appIds?.includes(FAST_TRANSFERS_APP_ID)) {
-        // AppID patch
-        if (data?.content?.standarizedProperties?.appIds?.includes(SWAP_LAYER_APP_ID)) {
-          data.content.standarizedProperties.appIds = [
-            MAYAN_SHUTTLE_APP_ID,
-            LIQUIDITY_LAYER_APP_ID,
-          ];
-        } else {
-          data.content.standarizedProperties.appIds = [LIQUIDITY_LAYER_APP_ID];
-        }
-
+      if (data?.content?.standarizedProperties?.appIds?.includes(WORMHOLE_SETTLEMENTS_APP_ID)) {
         // Fix for when user got a refund in another chain
         if (
           !!data?.targetChain?.chainId &&
@@ -271,42 +255,38 @@ export class GuardianNetwork {
     const response = await this._client.doGet<ProtocolsStatsOutput[]>("/protocols/stats");
 
     // --- liquidity layer patch start ---
-    // (merge swap_layer and fast_transfers and then rename to wormhole_liquidity_layer)
+    // (merge mayan_shuttle and wormhole_settlements)
     const responseProcessed = response
       ?.map(item => {
-        // find swap_layer item
-        if (item.protocol === "swap_layer") {
-          // Find the fast_transfers item to merge data into
-          const fastTransfersItem = response.find(i => i.protocol === "fast_transfers");
-          if (fastTransfersItem) {
-            // Add swap_layer volumes to fast_transfers
-            fastTransfersItem.last_24_hour_volume += item.last_24_hour_volume;
-            fastTransfersItem.total_messages += item.total_messages;
-            fastTransfersItem.total_value_transferred += item.total_value_transferred;
-            fastTransfersItem.last_day_messages += item.last_day_messages;
+        // find mayan_shuttle item
+        if (item.protocol === "mayan_shuttle") {
+          // Find the wormhole_settlements item to merge data into
+          const wormholeSettlementsItem = response.find(i => i.protocol === "wormhole_settlements");
+          if (wormholeSettlementsItem) {
+            // Add mayan shuttle volumes to wormhole settlements
+            wormholeSettlementsItem.last_24_hour_volume += item.last_24_hour_volume;
+            wormholeSettlementsItem.total_messages += item.total_messages;
+            wormholeSettlementsItem.total_value_transferred += item.total_value_transferred;
+            wormholeSettlementsItem.last_day_messages += item.last_day_messages;
 
             // Recalculate percentages
-            fastTransfersItem.last_day_diff_percentage =
+            wormholeSettlementsItem.last_day_diff_percentage =
               (
-                ((fastTransfersItem.last_day_messages + item.last_day_messages) /
-                  (fastTransfersItem.total_messages + item.total_messages)) *
+                ((wormholeSettlementsItem.last_day_messages + item.last_day_messages) /
+                  (wormholeSettlementsItem.total_messages + item.total_messages)) *
                 100
               ).toFixed(2) + "%";
 
-            fastTransfersItem.last_day_diff_volume_percentage =
+            wormholeSettlementsItem.last_day_diff_volume_percentage =
               (
-                ((fastTransfersItem.last_24_hour_volume + item.last_24_hour_volume) /
-                  (fastTransfersItem.total_value_transferred + item.total_value_transferred)) *
+                ((wormholeSettlementsItem.last_24_hour_volume + item.last_24_hour_volume) /
+                  (wormholeSettlementsItem.total_value_transferred +
+                    item.total_value_transferred)) *
                 100
               ).toFixed(2) + "%";
           }
-          // Remove the swap_layer item since we merged it
+          // Remove the mayan shuttle item since we merged it
           return null;
-        }
-
-        // change name
-        if (item.protocol === "fast_transfers") {
-          item.protocol = "wormhole_liquidity_layer";
         }
 
         return item;

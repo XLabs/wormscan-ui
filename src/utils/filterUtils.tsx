@@ -28,15 +28,13 @@ import {
   OMNISWAP_URL,
   C3_URL,
   GATEWAY_URL,
-  SWAP_LAYER_APP_ID,
-  FAST_TRANSFERS_APP_ID,
   TBTC_URL,
   GR_URL,
   MAYAN_SHUTTLE_APP_ID,
-  LIQUIDITY_LAYER_APP_ID,
   SYNONYM_APP_ID,
   SYNONYM_URL,
   FOLKS_FINANCE_APP_ID,
+  WORMHOLE_SETTLEMENTS_APP_ID,
 } from "src/consts";
 
 const appIds = [
@@ -66,16 +64,6 @@ export const PROTOCOL_LIST: { label: string; value: string }[] = [
     label: formatAppId(appId),
     value: String(appId),
   })),
-  // {
-  //   icon: <ProtocolIcon protocol={MAYAN_SHUTTLE_APP_ID} />,
-  //   label: "Mayan Shuttle",
-  //   value: SWAP_LAYER_APP_ID,
-  // },
-  // {
-  //   icon: <ProtocolIcon protocol={LIQUIDITY_LAYER_APP_ID} />,
-  //   label: "Wormhole Liquidity Layer",
-  //   value: FAST_TRANSFERS_APP_ID,
-  // },
 ].sort((a, b) => a.label.localeCompare(b.label));
 
 export const ChainFilterMainnet = [
@@ -227,7 +215,7 @@ export const chainsSupportedByProtocol: Record<string, ChainId[]> = {
     chainToChainId("Optimism"),
     chainToChainId("Polygon"),
   ],
-  [LIQUIDITY_LAYER_APP_ID]: [
+  [WORMHOLE_SETTLEMENTS_APP_ID]: [
     chainToChainId("Arbitrum"),
     chainToChainId("Bsc"),
     chainToChainId("Solana"),
@@ -315,7 +303,7 @@ export const chainsSupportedByProtocol: Record<string, ChainId[]> = {
     chainToChainId("Terra2"),
     chainToChainId("Xpla"),
   ],
-  [SWAP_LAYER_APP_ID]: [chainToChainId("Ethereum")],
+  [MAYAN_SHUTTLE_APP_ID]: [chainToChainId("Ethereum")],
   [TBTC_APP_ID]: [
     chainToChainId("Arbitrum"),
     chainToChainId("Base"),
