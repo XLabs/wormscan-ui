@@ -685,7 +685,7 @@ const Overview = ({
                     <p>
                       The Action field indicates the type of Wormhole messages linked with Mayan.
                     </p>
-                  ) : appIds.includes(FOLKS_FINANCE_APP_ID) ? (
+                  ) : appIds?.includes(FOLKS_FINANCE_APP_ID) ? (
                     <p>
                       The Action field indicates the type of Wormhole messages linked with Folks
                       Finance.
@@ -817,7 +817,7 @@ const Overview = ({
                 </div>
               </div>
             )}
-            {appIds.includes(M_PORTAL_APP_ID) && (
+            {appIds?.includes(M_PORTAL_APP_ID) && (
               <div className="tx-overview-section-row-info-container">
                 <div className="tx-overview-section-row-info-container-key">SENT INDEX</div>
 
