@@ -39,8 +39,11 @@ import Summary from "./Summary";
 import { Modal } from "src/components/atoms";
 import { Redeem } from "./Summary/Redeem";
 import RedeemModal from "./Summary/Redeem/RedeemModal";
-import "./styles.scss";
+import RedeemModalError from "./Summary/Redeem/RedeemModalError";
+import RedeemModalSuccess from "./Summary/Redeem/RedeemModalSuccess";
+import RedeemModalLoading from "./Summary/Redeem/RedeemModalLoading";
 import { OverviewProps } from "src/utils/txPageUtils";
+import "./styles.scss";
 
 interface Props {
   blockData: GetBlockData;
@@ -332,10 +335,10 @@ const Information = ({
   const [loadingRedeem, setLoadingRedeem] = useState(false);
   const [foundRedeem, setFoundRedeem] = useState<null | boolean>(null);
 
-  const date_15_min_before = new Date(new Date().getTime() - 15 * 60000);
+  const date_10_min_before = new Date(new Date().getTime() - 10 * 60000);
   const canTryToGetRedeem =
     (status === "external_tx" ||
-      (status === "pending_redeem" && new Date(timestamp) < date_15_min_before)) &&
+      (status === "pending_redeem" && new Date(timestamp) < date_10_min_before)) &&
     (platformToChains("Evm").includes(chainIdToChain(toChain) as any) ||
       toChain === chainToChainId("Solana") ||
       toChain === chainToChainId("Sui")) &&
@@ -551,6 +554,9 @@ const Information = ({
               txHash={data?.sourceChain?.transaction?.txHash}
               sourceChain={fromChain as ChainId}
               CustomComponent={RedeemModalComponent}
+              CustomError={RedeemModalError}
+              CustomSuccess={RedeemModalSuccess}
+              CustomLoading={RedeemModalLoading}
               network={currentNetwork}
             />
           )}

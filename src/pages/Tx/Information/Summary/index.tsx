@@ -57,10 +57,10 @@ const Summary = ({
           />
         )}
 
-        {/* Resume Transaction button, only after 15 minutes */}
+        {/* Resume Transaction button, only after 10 minutes */}
         {showVerifyRedemption &&
           startDate &&
-          new Date().getTime() - new Date(startDate).getTime() >= 15 * 60 * 1000 &&
+          new Date().getTime() - new Date(startDate).getTime() >= 10 * 60 * 1000 &&
           (foundRedeem === false || (!canTryToGetRedeem && !foundRedeem)) && (
             <VerifyRedemption
               canTryToGetRedeem={canTryToGetRedeem}
