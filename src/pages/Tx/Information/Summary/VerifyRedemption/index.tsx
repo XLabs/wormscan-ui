@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Tooltip } from "src/components/atoms";
+import { Chip, Tooltip } from "src/components/atoms";
+import { PlayIcon } from "src/icons/generic";
 import "./styles.scss";
 
 interface Props {
@@ -51,7 +52,10 @@ export const VerifyRedemption = ({ asText, canTryToGetRedeem, vaa, setShowModal 
       maxWidth={false}
     >
       <a className="verify-redemption" onClick={() => setShowModal(true)}>
-        <p>Resume Transaction</p>
+        <Chip className="status-badge-status" color="pending">
+          <PlayIcon width={24} />
+          <p style={{ paddingRight: 4 }}>Resume Transaction</p>
+        </Chip>
       </a>
     </Tooltip>
   );
