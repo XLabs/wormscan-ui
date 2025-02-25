@@ -41,6 +41,7 @@ const statusMap: any = {
   defeated: "Failed",
   executed: "Executed",
   pendingexecution: "Active",
+  active: "Active",
   succeeded: "Passed",
 };
 
@@ -60,7 +61,7 @@ const Multigov = () => {
     if (activeView === "all") return proposals;
 
     const statusMapping = {
-      active: "pendingexecution",
+      active: ["active", "pendingexecution"],
       passed: "succeeded",
       executed: "executed",
       failed: "defeated",
@@ -69,7 +70,7 @@ const Multigov = () => {
     };
 
     const targetStatus = statusMapping[activeView as keyof typeof statusMapping];
-    return proposals.filter(proposal => proposal.status === targetStatus);
+    return proposals.filter(proposal => targetStatus.includes(proposal.status));
   };
 
   const parsedProposals =
@@ -81,8 +82,8 @@ const Multigov = () => {
       }, {});
 
       const proposalName = proposal.metadata?.description?.split("\n")[0].replace(/^# /, "");
-      const positiveVotes = voteStats?.for + voteStats?.pendingfor;
-      const negativeVotes = voteStats?.against + voteStats?.pendingagainst;
+      const positiveVotes = voteStats?.for + voteStats?.pending_for;
+      const negativeVotes = voteStats?.against + voteStats?.pending_against;
 
       const status = statusMap[proposal.status];
 
@@ -220,7 +221,7 @@ const Multigov = () => {
             { label: "Active", value: "active" },
             { label: "Passed", value: "passed" },
             { label: "Executed", value: "executed" },
-            { label: "Quorum not met", value: "quorumNotMet" },
+            // { label: "Quorum not met", value: "quorumNotMet" },
             { label: "Failed", value: "failed" },
             { label: "Cancelled", value: "cancelled" },
           ]}

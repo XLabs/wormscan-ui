@@ -139,6 +139,12 @@
           border-radius: 8px;
           background-color: var(--color-plum-600);
         }
+
+        &.Passed {
+          background-color: var(--color-lime);
+          padding: 4px 8px;
+          border-radius: 8px;
+        }
       }
     }
 
