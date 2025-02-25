@@ -13,7 +13,6 @@ const ProgressView = ({
   fromChain,
   isAttestation,
   isJustGenericRelayer,
-  isJustPortalUnknown,
   isMayanOnly,
   nftInfo,
   originDateParsed,
@@ -27,8 +26,8 @@ const ProgressView = ({
   targetTxHash,
   toChain,
   tokenAmount,
-  txHash,
   vaa,
+  setShowRedeemModal,
 }: OverviewProps) => {
   const SOURCE_SYMBOL = sourceTokenInfo?.tokenSymbol || sourceSymbol;
 
@@ -103,26 +102,28 @@ const ProgressView = ({
 
             <div className="progress-text">
               <div className="progress-text-p">
-                Held by Governor: this transaction should be released in{" "}
-                {releaseTimestamp ? `${remainingTime}` : "N/A"}.
+                Held by Governor
+                {remainingTime && `: this transaction should be released in ${remainingTime}`}
               </div>
             </div>
           </div>
         )}
 
-        <div
-          className={`progress-item ${
-            status === "in_progress" || status === "in_governors" ? "disabled" : ""
-          }`}
-        >
-          <div className="progress-icon">
-            <CheckCircle2 />
-          </div>
+        {status !== "external_tx" && (
+          <div
+            className={`progress-item ${
+              status === "in_progress" || status === "in_governors" ? "disabled" : ""
+            }`}
+          >
+            <div className="progress-icon">
+              <CheckCircle2 />
+            </div>
 
-          <div className="progress-text">
-            <div className="progress-text-p">VAA signed by Wormhole guardians</div>
+            <div className="progress-text">
+              <div className="progress-text-p">VAA signed by Wormhole guardians</div>
+            </div>
           </div>
-        </div>
+        )}
 
         {(status === "pending_redeem" || (status === "completed" && targetTxHash)) &&
           !isJustGenericRelayer && (
@@ -203,11 +204,9 @@ const ProgressView = ({
               chain. You can resume your transaction{" "}
               <VerifyRedemption
                 canTryToGetRedeem={true}
-                fromChain={fromChain}
-                isJustPortalUnknown={isJustPortalUnknown}
-                txHash={txHash}
                 vaa={vaa}
                 asText="HERE"
+                setShowModal={setShowRedeemModal}
               />
             </span>
           ) : (

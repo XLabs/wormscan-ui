@@ -1,25 +1,16 @@
 import { useEffect, useState } from "react";
-import { Tooltip } from "src/components/atoms";
+import { Chip, Tooltip } from "src/components/atoms";
+import { PlayIcon } from "src/icons/generic";
 import "./styles.scss";
-import { ChainId } from "@wormhole-foundation/sdk";
 
 interface Props {
   asText?: string;
   canTryToGetRedeem: boolean;
-  fromChain: ChainId | number;
-  isJustPortalUnknown: boolean;
-  txHash: string;
   vaa: string;
+  setShowModal: (showModal: boolean) => void;
 }
 
-export const VerifyRedemption = ({
-  asText,
-  canTryToGetRedeem,
-  fromChain,
-  isJustPortalUnknown,
-  txHash,
-  vaa,
-}: Props) => {
+export const VerifyRedemption = ({ asText, canTryToGetRedeem, vaa, setShowModal }: Props) => {
   const [shouldShow, setShouldShow] = useState(false);
   const [hex, setHex] = useState("");
 
@@ -47,18 +38,7 @@ export const VerifyRedemption = ({
 
   if (asText)
     return (
-      <a
-        className="verify-redemption-text"
-        href={
-          isJustPortalUnknown
-            ? vaa && hex
-              ? `https://www.portalbridge.com/#/redeem?vaa=${hex}`
-              : `https://www.portalbridge.com/#/redeem?sourceChain=${fromChain}&transactionId=${txHash}`
-            : `https://portalbridge.com/?sourceChain=${fromChain}&txHash=${txHash}`
-        }
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a className="verify-redemption-text" onClick={() => setShowModal(true)}>
         {asText}
       </a>
     );
@@ -71,19 +51,11 @@ export const VerifyRedemption = ({
       type="info"
       maxWidth={false}
     >
-      <a
-        className="verify-redemption"
-        href={
-          isJustPortalUnknown
-            ? vaa && hex
-              ? `https://www.portalbridge.com/#/redeem?vaa=${hex}`
-              : `https://www.portalbridge.com/#/redeem?sourceChain=${fromChain}&transactionId=${txHash}`
-            : `https://portalbridge.com/?sourceChain=${fromChain}&txHash=${txHash}`
-        }
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <p>Resume Transaction</p>
+      <a className="verify-redemption" onClick={() => setShowModal(true)}>
+        <Chip className="status-badge-status" color="pending">
+          <PlayIcon width={24} />
+          <p style={{ paddingRight: 4 }}>Resume Transaction</p>
+        </Chip>
       </a>
     </Tooltip>
   );

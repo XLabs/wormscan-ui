@@ -28,14 +28,13 @@ import {
   OMNISWAP_URL,
   C3_URL,
   GATEWAY_URL,
-  SWAP_LAYER_APP_ID,
-  FAST_TRANSFERS_APP_ID,
   TBTC_URL,
   GR_URL,
   MAYAN_SHUTTLE_APP_ID,
-  LIQUIDITY_LAYER_APP_ID,
   SYNONYM_APP_ID,
   SYNONYM_URL,
+  FOLKS_FINANCE_APP_ID,
+  WORMHOLE_SETTLEMENTS_APP_ID,
 } from "src/consts";
 
 const appIds = [
@@ -43,6 +42,7 @@ const appIds = [
   CCTP_APP_ID,
   // CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
+  FOLKS_FINANCE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
   MAYAN_APP_ID,
@@ -64,16 +64,6 @@ export const PROTOCOL_LIST: { label: string; value: string }[] = [
     label: formatAppId(appId),
     value: String(appId),
   })),
-  // {
-  //   icon: <ProtocolIcon protocol={MAYAN_SHUTTLE_APP_ID} />,
-  //   label: "Mayan Shuttle",
-  //   value: SWAP_LAYER_APP_ID,
-  // },
-  // {
-  //   icon: <ProtocolIcon protocol={LIQUIDITY_LAYER_APP_ID} />,
-  //   label: "Wormhole Liquidity Layer",
-  //   value: FAST_TRANSFERS_APP_ID,
-  // },
 ].sort((a, b) => a.label.localeCompare(b.label));
 
 export const ChainFilterMainnet = [
@@ -84,6 +74,7 @@ export const ChainFilterMainnet = [
   chainToChainId("Aurora"),
   chainToChainId("Avalanche"),
   chainToChainId("Base"),
+  chainToChainId("Berachain"),
   chainToChainId("Blast"),
   chainToChainId("Bsc"),
   chainToChainId("Celo"),
@@ -106,6 +97,7 @@ export const ChainFilterMainnet = [
   chainToChainId("Sui"),
   chainToChainId("Terra"),
   chainToChainId("Terra2"),
+  chainToChainId("Unichain"),
   chainToChainId("Worldchain"),
   chainToChainId("Wormchain"),
   chainToChainId("Xlayer"),
@@ -114,27 +106,28 @@ export const ChainFilterMainnet = [
 
 export const ChainFilterTestnet = [
   chainToChainId("Acala"),
-  chainToChainId("Celo"),
+  chainToChainId("Celo"), // Alfajores
   chainToChainId("Algorand"),
-  chainToChainId("PolygonSepolia"),
+  chainToChainId("PolygonSepolia"), // Amoy
   chainToChainId("Aptos"),
   // chainToChainId("Arbitrum"),
   chainToChainId("ArbitrumSepolia"),
   chainToChainId("Aurora"),
   // chainToChainId("Base"),
   chainToChainId("BaseSepolia"),
+  chainToChainId("Berachain"),
   chainToChainId("Blast"),
   chainToChainId("Bsc"),
   chainToChainId("Fantom"),
-  chainToChainId("Avalanche"),
-  chainToChainId("Ethereum"),
+  chainToChainId("Avalanche"), // Fuji
+  chainToChainId("Ethereum"), // Goerli
   chainToChainId("Holesky"),
   chainToChainId("Injective"),
   chainToChainId("Karura"),
   chainToChainId("Klaytn"),
   chainToChainId("Mantle"),
   chainToChainId("Monad"),
-  chainToChainId("Moonbeam"),
+  chainToChainId("Moonbeam"), // Moonbase Alpha
   // chainToChainId("Polygon"),
   chainToChainId("Near"),
   chainToChainId("Neon"),
@@ -152,7 +145,7 @@ export const ChainFilterTestnet = [
   chainToChainId("Terra2"),
   chainToChainId("Unichain"),
   chainToChainId("Worldchain"),
-  chainToChainId("Wormchain"),
+  chainToChainId("Wormchain"), // WH Gateway
   chainToChainId("Xlayer"),
   chainToChainId("Xpla"),
 ];
@@ -222,7 +215,7 @@ export const chainsSupportedByProtocol: Record<string, ChainId[]> = {
     chainToChainId("Optimism"),
     chainToChainId("Polygon"),
   ],
-  [LIQUIDITY_LAYER_APP_ID]: [
+  [WORMHOLE_SETTLEMENTS_APP_ID]: [
     chainToChainId("Arbitrum"),
     chainToChainId("Bsc"),
     chainToChainId("Solana"),
@@ -310,7 +303,7 @@ export const chainsSupportedByProtocol: Record<string, ChainId[]> = {
     chainToChainId("Terra2"),
     chainToChainId("Xpla"),
   ],
-  [SWAP_LAYER_APP_ID]: [chainToChainId("Ethereum")],
+  [MAYAN_SHUTTLE_APP_ID]: [chainToChainId("Ethereum")],
   [TBTC_APP_ID]: [
     chainToChainId("Arbitrum"),
     chainToChainId("Base"),

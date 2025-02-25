@@ -3,6 +3,7 @@ import ARBITRUM from "src/icons/tokens/ARBITRUM.svg";
 import ATOM from "src/icons/tokens/ATOM.svg";
 import AVAX from "src/icons/tokens/AVAX.svg";
 import BASE from "src/icons/tokens/BASE.svg";
+import BERA from "src/icons/blockchains/berachain.svg";
 import BNB from "src/icons/tokens/BNB.svg";
 import Bonk from "src/icons/tokens/Bonk.svg";
 import BSC from "src/icons/tokens/BSC.svg";
@@ -57,6 +58,7 @@ const iconTokens = {
   AVAX,
   BASE,
   BNB,
+  BERA,
   Bonk,
   BSC,
   BUSD,

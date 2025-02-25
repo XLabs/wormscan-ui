@@ -1,4 +1,10 @@
-const WalletIcon = ({ width = 24 }: { width?: number }) => (
+const WalletIcon = ({
+  width = 24,
+  circleColor = "#333333",
+}: {
+  width?: number;
+  circleColor?: string;
+}) => (
   <svg
     fill="none"
     height={width}
@@ -6,7 +12,7 @@ const WalletIcon = ({ width = 24 }: { width?: number }) => (
     width={width}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <circle cx={12} cy={12} r={12} fill="#333333" />
+    <circle cx={12} cy={12} r={12} fill={circleColor} />
     <rect x={6} y={9} width={12} height={9} rx={2} stroke="currentColor" strokeWidth="1.5" />
     <path d="M14 13.5H15.5" stroke="currentColor" strokeWidth="1.5" />
     <path

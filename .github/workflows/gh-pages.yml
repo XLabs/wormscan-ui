@@ -18,8 +18,10 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: "16"
+          node-version: 18
           cache: yarn
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@xlabs"
 
       - name: Build and Deploy Github Page
         run: |
@@ -31,3 +33,5 @@ jobs:
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           yarn dlx push-dir --dir=dist --branch=gh-pages --cleanup --verbose
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

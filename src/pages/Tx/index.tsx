@@ -55,12 +55,12 @@ import {
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
   ETH_BRIDGE_APP_ID,
+  FOLKS_FINANCE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
   IStatus,
-  LIQUIDITY_LAYER_APP_ID,
   MAYAN_MCTP_APP_ID,
-  MAYAN_SHUTTLE_APP_ID,
+  WORMHOLE_SETTLEMENTS_APP_ID,
   NTT_APP_ID,
   PORTAL_APP_ID,
   PORTAL_NFT_APP_ID,
@@ -72,10 +72,11 @@ import { ETH_LIMIT } from "../Txs";
 import { ARKHAM_CHAIN_NAME } from "src/utils/arkham";
 import { DeliveryLifecycleRecord, populateRelayerInfo } from "src/utils/genericRelayerVaaUtils";
 import { BlockSection } from "src/components/molecules";
-import "./styles.scss";
 import { mainnetNativeCurrencies, testnetNativeCurrencies } from "src/utils/environment";
 import getMayanMctpInfo from "src/utils/mayan";
 import { formatNumber } from "src/utils/number";
+import { stringifyWithStringBigInt } from "src/utils/object";
+import "./styles.scss";
 
 const Tx = () => {
   useEffect(() => {
@@ -113,6 +114,12 @@ const Tx = () => {
   const [blockData, setBlockData] = useState<GetBlockData>(null);
   const [failCount, setFailCount] = useState(0);
   const [shouldTryToGetRpcInfo, setShouldTryToGetRpcInfo] = useState(false);
+
+  const [txData, setTxData] = useState<GetOperationsOutput[]>([]);
+  const allStatus = txData?.map(data => data.status);
+
+  const isRefetching =
+    allStatus?.some(status => status !== "completed" && status !== "external_tx") || false;
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | null = null;
@@ -245,6 +252,7 @@ const Tx = () => {
   useEffect(() => {
     setErrorCode(undefined);
     setIsLoading(true);
+    cancelRequests.current = false; // Reset the cancel flag for new searches
   }, [txHash, chainId, emitter, seq]);
 
   const showSearchNotFound = (err: Error) => {
@@ -374,7 +382,7 @@ const Tx = () => {
                   content: {
                     payload: null,
                     standarizedProperties: {
-                      amount: resp.amount,
+                      amount: String(+resp.amount * 10 ** 2),
                       appIds: [CCTP_MANUAL_APP_ID],
                       fee: "0",
                       feeAddress: "",
@@ -455,6 +463,7 @@ const Tx = () => {
         }
         return true;
       },
+      refetchInterval: isRefetching ? 10000 : false,
     },
   );
 
@@ -536,6 +545,7 @@ const Tx = () => {
       },
       enabled: isVAAIdSearch && !errorCode,
       retry: false,
+      refetchInterval: isRefetching ? 10000 : false,
     },
   );
 
@@ -547,9 +557,6 @@ const Tx = () => {
       return null;
     }
   }, [isTxHashSearch, VAADataByTx, VAADataByVAAId]);
-
-  const VAADataTxHash = VAAData?.[0]?.sourceChain?.transaction?.txHash;
-  const [txData, setTxData] = useState<GetOperationsOutput[]>([]);
 
   const processVaaData = useCallback(
     async (apiTxData: GetOperationsOutput[]) => {
@@ -563,6 +570,7 @@ const Tx = () => {
         if (
           !data?.content?.standarizedProperties?.appIds?.includes(NTT_APP_ID) &&
           data?.content?.standarizedProperties?.appIds?.includes(GR_APP_ID) &&
+          !data?.content?.standarizedProperties?.appIds?.includes(FOLKS_FINANCE_APP_ID) &&
           !data?.vaa?.raw
         ) {
           setShouldTryToGetRpcInfo(true);
@@ -674,7 +682,7 @@ const Tx = () => {
 
         // check Wormhole Liquidity Layer
         if (
-          data?.content?.standarizedProperties?.appIds?.includes(LIQUIDITY_LAYER_APP_ID) &&
+          data?.content?.standarizedProperties?.appIds?.includes(WORMHOLE_SETTLEMENTS_APP_ID) &&
           data.content.payload?.payloadId === 11
         ) {
           const liquidityLayerTokenInfo = await getLiquidityLayerTokenInfo(
@@ -734,7 +742,7 @@ const Tx = () => {
           }
         }
 
-        if (data?.content?.standarizedProperties?.appIds?.includes(LIQUIDITY_LAYER_APP_ID)) {
+        if (data?.content?.standarizedProperties?.appIds?.includes(WORMHOLE_SETTLEMENTS_APP_ID)) {
           if (
             data.content.payload?.payload?.payloadId === 1 &&
             data.content.payload?.payload?.parsedRedeemerMessage?.outputToken?.address
@@ -989,6 +997,20 @@ const Tx = () => {
             console.error("standard relayer tx errored:", e);
           }
         }
+        // ----
+
+        // Check Folks Finance
+        if (data?.content?.standarizedProperties?.appIds?.includes(FOLKS_FINANCE_APP_ID)) {
+          const parsedPayload = data?.content?.payload?.parsedPayload;
+
+          if (parsedPayload?.action === 0 || !!parsedPayload?.action) {
+            data.content.payload = {
+              ...data.content.payload,
+              action: parsedPayload?.action,
+            };
+          }
+        }
+
         // ----
 
         // Check NTT
@@ -1488,6 +1510,12 @@ const Tx = () => {
         }
       }
 
+      apiTxData.sort((a, b) => {
+        if (a.sequence > b.sequence) return -1;
+        if (a.sequence < b.sequence) return 1;
+        return 0;
+      });
+
       setTxData(apiTxData);
       setIsLoading(false);
 
@@ -1607,8 +1635,16 @@ const Tx = () => {
     ],
   );
 
+  const prevVAADataRef = useRef<string | null>(null);
+
   useEffect(() => {
     if (!VAAData) return;
+
+    const currentVAADataStr = stringifyWithStringBigInt(VAAData);
+
+    if (currentVAADataStr === prevVAADataRef.current) return;
+
+    prevVAADataRef.current = currentVAADataStr;
     setErrorCode(undefined);
     processVaaData(VAAData);
   }, [VAAData, processVaaData]);

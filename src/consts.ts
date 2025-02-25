@@ -193,11 +193,13 @@ export const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
 export const CCTP_MANUAL_APP_ID = "CCTP_MANUAL";
 export const CONNECT_APP_ID = "CONNECT";
 export const ETH_BRIDGE_APP_ID = "ETH_BRIDGE";
+export const FOLKS_FINANCE_APP_ID = "FOLKS_FINANCE";
 export const GATEWAY_APP_ID = "WORMCHAIN_GATEWAY_TRANSFER";
 export const GR_APP_ID = "GENERIC_RELAYER";
 export const M_PORTAL_APP_ID = "M_PORTAL";
 export const MAYAN_APP_ID = "MAYAN";
 export const MAYAN_MCTP_APP_ID = "MAYAN_MCTP";
+export const MAYAN_SHUTTLE_APP_ID = "MAYAN_SHUTTLE";
 export const MAYAN_SWIFT_APP_ID = "MAYAN_SWIFT";
 export const NTT_APP_ID = "NATIVE_TOKEN_TRANSFER";
 export const OMNISWAP_APP_ID = "OMNISWAP";
@@ -205,17 +207,9 @@ export const PORTAL_APP_ID = "PORTAL_TOKEN_BRIDGE";
 export const PORTAL_NFT_APP_ID = "PORTAL_NFT_BRIDGE";
 export const SYNONYM_APP_ID = "SYNONYM";
 export const TBTC_APP_ID = "TBTC";
-export const USDT_TRANSFER_APP_ID = "USDT_TRANSFER";
 export const UNKNOWN_APP_ID = "UNKNOWN";
-
-// This two (fast transfers & swap layer) are being swapped to liquidity
-// layer and mayan shuttle. If changed in vaa-parser, we need to remove
-// patch logic by removing FAST_TRANSFER_APP_ID and SWAP_LAYER_APP_ID
-// in all their occurrences in the codebase.
-export const FAST_TRANSFERS_APP_ID = "FAST_TRANSFERS";
-export const SWAP_LAYER_APP_ID = "SWAP_LAYER";
-export const LIQUIDITY_LAYER_APP_ID = "WORMHOLE_LIQUIDITY_LAYER";
-export const MAYAN_SHUTTLE_APP_ID = "MAYAN_SHUTTLE";
+export const USDT_TRANSFER_APP_ID = "USDT_TRANSFER";
+export const WORMHOLE_SETTLEMENTS_APP_ID = "WORMHOLE_SETTLEMENTS";
 
 const targetChainsSupportedMainnet: { [key: string]: ChainId[] } = {
   [PORTAL_APP_ID]: [
@@ -225,6 +219,7 @@ const targetChainsSupportedMainnet: { [key: string]: ChainId[] } = {
     chainToChainId("Arbitrum"),
     chainToChainId("Avalanche"),
     chainToChainId("Base"),
+    chainToChainId("Berachain"),
     chainToChainId("Blast"),
     chainToChainId("Bsc"),
     chainToChainId("Celo"),
@@ -246,6 +241,7 @@ const targetChainsSupportedMainnet: { [key: string]: ChainId[] } = {
     chainToChainId("Sui"),
     chainToChainId("Terra"),
     chainToChainId("Terra2"),
+    chainToChainId("Unichain"),
     chainToChainId("Worldchain"),
     chainToChainId("Wormchain"),
     chainToChainId("Xlayer"),
@@ -387,8 +383,8 @@ const targetChainsSupportedTestnet: { [key: string]: ChainId[] } = {
     chainToChainId("Berachain"),
     chainToChainId("Unichain"),
     chainToChainId("Monad"),
-    chainToChainId("MonadDevnet"),
     chainToChainId("Worldchain"),
+    chainToChainId("Seievm"),
   ],
   [GATEWAY_APP_ID]: [],
   [CCTP_APP_ID]: [
@@ -424,7 +420,6 @@ const targetChainsSupportedTestnet: { [key: string]: ChainId[] } = {
     chainToChainId("Celo"),
     chainToChainId("Moonbeam"),
     chainToChainId("Monad"),
-    chainToChainId("MonadDevnet"),
   ],
   [NTT_APP_ID]: [
     chainToChainId("Solana"),

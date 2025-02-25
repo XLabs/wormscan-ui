@@ -1,0 +1,59 @@
+@use "src/styles/globals.scss" as *;
+
+.redeem-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  width: 100%;
+
+  padding-top: 12px;
+  padding-bottom: 12px;
+
+  &-icon {
+    @include centered-row;
+    justify-content: center;
+    margin-bottom: 16px;
+    color: var(--color-plum-400);
+  }
+
+  &-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: var(--color-gray-400);
+    flex-wrap: wrap;
+    gap: 4px;
+
+    &-title {
+      width: 100%;
+      text-align: center;
+    }
+
+    &-info {
+      display: inline-flex;
+      gap: 6px;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  &-error {
+    &-icon {
+      @include centered-row;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: var(--color-error-100);
+    }
+  }
+
+  &-success {
+    &-icon {
+      @include centered-row;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: var(--color-success-100);
+    }
+  }
+}

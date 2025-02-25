@@ -11,6 +11,7 @@ export { default as GovernorHeader } from "./GovernorHeader";
 export { default as JsonText } from "./JsonText";
 export { default as Link } from "./Link";
 export { default as Loader } from "./Loader";
+export { default as Modal } from "./Modal";
 export { default as NavLink } from "./NavLink";
 export { default as Pagination } from "./Pagination";
 export { default as ProtocolIcon } from "./ProtocolIcon";

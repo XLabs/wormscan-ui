@@ -1,7 +1,7 @@
 @use "src/styles/globals.scss" as *;
 
 .verify-redemption {
-  @include button-primary;
+  cursor: pointer;
 
   &-text {
     @include button-ghost;

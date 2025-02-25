@@ -15,7 +15,7 @@ import {
   ETH_BRIDGE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
-  LIQUIDITY_LAYER_APP_ID,
+  WORMHOLE_SETTLEMENTS_APP_ID,
   MAYAN_APP_ID,
   PORTAL_APP_ID,
   txType,
@@ -36,8 +36,14 @@ import Overview from "./Overview";
 import AdvancedView from "./AdvancedView";
 import ProgressView from "./ProgressView";
 import Summary from "./Summary";
-import "./styles.scss";
+import { Modal } from "src/components/atoms";
+import { Redeem } from "./Summary/Redeem";
+import RedeemModal from "./Summary/Redeem/RedeemModal";
+import RedeemModalError from "./Summary/Redeem/RedeemModalError";
+import RedeemModalSuccess from "./Summary/Redeem/RedeemModalSuccess";
+import RedeemModalLoading from "./Summary/Redeem/RedeemModalLoading";
 import { OverviewProps } from "src/utils/txPageUtils";
+import "./styles.scss";
 
 interface Props {
   blockData: GetBlockData;
@@ -70,7 +76,7 @@ const Information = ({
   const isMainnet = currentNetwork === "Mainnet";
 
   const [showOverview, setShowOverviewState] = useState<TView>(
-    (searchParams.get("view") as TView) || (isMainnet ? "overview" : "advanced"),
+    (searchParams.get("view") as TView) || "overview",
   );
   const setShowOverview = (view: TView) => {
     setShowOverviewState(view);
@@ -82,7 +88,7 @@ const Information = ({
 
   useEffect(() => {
     if (!hasMultipleTxs) {
-      const view = (searchParams.get("view") || (isMainnet ? "overview" : "advanced")) as TView;
+      const view = (searchParams.get("view") as TView) || "overview";
       setShowOverviewState(view);
     }
   }, [hasMultipleTxs, isMainnet, searchParams]);
@@ -329,20 +335,24 @@ const Information = ({
   const [loadingRedeem, setLoadingRedeem] = useState(false);
   const [foundRedeem, setFoundRedeem] = useState<null | boolean>(null);
 
-  const date_15_min_before = new Date(new Date().getTime() - 15 * 60000);
+  const date_10_min_before = new Date(new Date().getTime() - 10 * 60000);
   const canTryToGetRedeem =
     (status === "external_tx" ||
-      (status === "pending_redeem" && new Date(timestamp) < date_15_min_before)) &&
+      (status === "pending_redeem" && new Date(timestamp) < date_10_min_before)) &&
     (platformToChains("Evm").includes(chainIdToChain(toChain) as any) ||
-      toChain === 1 ||
-      toChain === 21) &&
+      toChain === chainToChainId("Solana") ||
+      toChain === chainToChainId("Sui")) &&
     toChain === targetTokenChain &&
     !!toAddress &&
     !!(wrappedTokenAddress && tokenEffectiveAddress) &&
     !!timestamp &&
     !!amount &&
     !!data?.sourceChain?.transaction?.txHash &&
-    !data?.targetChain?.transaction?.txHash;
+    !data?.targetChain?.transaction?.txHash &&
+    // Portal: only transfer with payload
+    (data.content?.standarizedProperties?.appIds?.includes(PORTAL_APP_ID)
+      ? data.content.payload.payloadType === 3
+      : true);
 
   const getRedeem = async () => {
     setLoadingRedeem(true);
@@ -422,7 +432,7 @@ const Information = ({
     status === "pending_redeem" && (isJustPortalUnknown || isConnect || isGateway);
 
   const showMinReceivedTooltip = !!(
-    data.content?.standarizedProperties?.appIds?.includes(LIQUIDITY_LAYER_APP_ID) &&
+    data.content?.standarizedProperties?.appIds?.includes(WORMHOLE_SETTLEMENTS_APP_ID) &&
     data.content?.payload?.payload?.parsedRedeemerMessage?.outputToken?.swap?.limitAmount
   );
 
@@ -457,7 +467,7 @@ const Information = ({
     parsedDestinationAddress,
     parsedEmitterAddress,
     parsedOriginAddress,
-    parsedPayload,
+    parsedPayload: parsedPayload ?? payload,
     parsedRedeemTx,
     payloadType,
     redeemedAmount,
@@ -490,14 +500,27 @@ const Information = ({
     VAAId,
   };
 
+  const [showRedeemModal, setShowRedeemModal] = useState(false);
+
+  const RedeemModalComponent = () => (
+    <RedeemModal
+      currentNetwork={currentNetwork}
+      fromChain={fromChain}
+      parsedDestinationAddress={parsedDestinationAddress}
+      parsedOriginAddress={parsedOriginAddress}
+      toChain={toChain}
+      sourceTokenLink={sourceTokenLink}
+      sourceSymbol={sourceSymbol}
+      amountSent={amountSent}
+    />
+  );
+
   return (
     <section className="tx-information">
       <Summary
         canTryToGetRedeem={canTryToGetRedeem}
         foundRedeem={foundRedeem}
-        fromChain={fromChain}
         getRedeem={getRedeem}
-        isJustPortalUnknown={isJustPortalUnknown}
         loadingRedeem={loadingRedeem}
         setShowOverview={setShowOverview}
         showOverview={showOverview}
@@ -506,6 +529,7 @@ const Information = ({
         startDate={startDate}
         txHash={data?.sourceChain?.transaction?.txHash}
         vaa={vaa?.raw}
+        setShowRedeemModal={setShowRedeemModal}
       />
 
       <div className="tx-information-content">
@@ -518,11 +542,25 @@ const Information = ({
         {showOverview === "progress" && (
           <ProgressView
             {...overviewAndDetailProps}
-            isJustPortalUnknown={isJustPortalUnknown}
-            txHash={data?.sourceChain?.transaction?.txHash}
             vaa={vaa?.raw}
+            showRedeemModal={showRedeemModal}
+            setShowRedeemModal={setShowRedeemModal}
           />
         )}
+
+        <Modal shouldShow={showRedeemModal} setShouldShow={setShowRedeemModal}>
+          {showRedeemModal && (
+            <Redeem
+              txHash={data?.sourceChain?.transaction?.txHash}
+              sourceChain={fromChain as ChainId}
+              CustomComponent={RedeemModalComponent}
+              CustomError={RedeemModalError}
+              CustomSuccess={RedeemModalSuccess}
+              CustomLoading={RedeemModalLoading}
+              network={currentNetwork}
+            />
+          )}
+        </Modal>
       </div>
     </section>
   );
