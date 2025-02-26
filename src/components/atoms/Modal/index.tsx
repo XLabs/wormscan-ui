@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { CrossIcon } from "src/icons/generic";
 import "./styles.scss";
 
 interface ModalProps {
@@ -10,12 +11,18 @@ interface ModalProps {
 const Modal = ({ shouldShow, setShouldShow, children }: ModalProps) => {
   if (!shouldShow) return null;
 
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      setShouldShow(false);
+    }
+  };
+
   return (
-    <div className={"modal_overlay"}>
+    <div className={"modal_overlay"} onClick={handleOverlayClick}>
       <div className={"modal_content"}>
         {children}
         <button className={"modal_close"} onClick={() => setShouldShow(false)}>
-          X
+          <CrossIcon />
         </button>
       </div>
     </div>

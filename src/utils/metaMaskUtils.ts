@@ -371,6 +371,20 @@ export const METAMASK_CHAIN_PARAMETERS: {
     rpcUrls: ["https://endpoints.omniatech.io/v1/op/sepolia/public"],
     blockExplorerUrls: ["https://sepolia-optimism.etherscan.io/"],
   },
+  57073: {
+    chainId: "0xDEF1",
+    chainName: "Ink",
+    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://ink.drpc.org"],
+    blockExplorerUrls: ["https://explorer.inkonchain.com"],
+  },
+  763373: {
+    chainId: "0xBA5ED",
+    chainName: "Ink Sepolia",
+    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://ink-sepolia.drpc.org"],
+    blockExplorerUrls: ["https://explorer-sepolia.inkonchain.com"],
+  },
 };
 
 export const CHAIN_IDS: ChainIds = {
@@ -399,6 +413,7 @@ export const CHAIN_IDS: ChainIds = {
   SEPOLIA_NETWORK_CHAIN_ID: { Mainnet: 0, Testnet: 11155111, Devnet: 11155111 },
   SNAXCHAIN_NETWORK_CHAIN_ID: { Mainnet: 2192, Testnet: 13001, Devnet: 13001 },
   XLAYER_NETWORK_CHAIN_ID: { Mainnet: 196, Testnet: 195, Devnet: 195 },
+  INK_NETWORK_CHAIN_ID: { Mainnet: 57073, Testnet: 763373, Devnet: 763373 },
 };
 
 export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number | undefined => {
@@ -429,6 +444,7 @@ export const getEvmChainId = (chainId: ChainId, currentNetwork: Network): number
     [chainToChainId("Sepolia")]: CHAIN_IDS.SEPOLIA_NETWORK_CHAIN_ID[currentNetwork],
     [chainToChainId("Snaxchain")]: CHAIN_IDS.SNAXCHAIN_NETWORK_CHAIN_ID[currentNetwork],
     [chainToChainId("Xlayer")]: CHAIN_IDS.XLAYER_NETWORK_CHAIN_ID[currentNetwork],
+    [chainToChainId("Ink")]: CHAIN_IDS.INK_NETWORK_CHAIN_ID[currentNetwork],
   };
 
   const evmChainId = chainNetworks[chainId as keyof typeof chainNetworks];

@@ -6,14 +6,14 @@ __metadata:
   cacheKey: 8
 
 "@0no-co/graphql.web@npm:^1.0.5":
-  version: 1.0.13
-  resolution: "@0no-co/graphql.web@npm:1.0.13"
+  version: 1.1.1
+  resolution: "@0no-co/graphql.web@npm:1.1.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
   peerDependenciesMeta:
     graphql:
       optional: true
-  checksum: d5899f374618d73620c04f85fd5f90ea469b153b3d484c1f203042864530f3439c552a56944d2f3e7f8026b26b14d62d7a592d3b1670eb5386ee2d71833e3ae1
+  checksum: 42af588a80ce4526c09b664b614ce61a5a5f45f56a2fa177ba851d028bb95676bcfc8a3ad04dfeaaeda801de6af414b049a8a1e31c2dc809dca1db4ccf7cce90
   languageName: node
   linkType: hard
 
@@ -133,8 +133,8 @@ __metadata:
   linkType: hard
 
 "@apollo/client@npm:^3.11.10":
-  version: 3.12.11
-  resolution: "@apollo/client@npm:3.12.11"
+  version: 3.13.1
+  resolution: "@apollo/client@npm:3.13.1"
   dependencies:
     "@graphql-typed-document-node/core": ^3.1.1
     "@wry/caches": ^1.0.0
@@ -164,49 +164,49 @@ __metadata:
       optional: true
     subscriptions-transport-ws:
       optional: true
-  checksum: e3c315df50b6b5ba4872d5ffd3e7ce790a1c59e401bae76e77a4676a6604da3d550a41e48999e0fe3eda273cb7f011bf3d5829993583a702e7e0c686fbc181b4
+  checksum: a9968ec889c6beeb5718adea58e9ed4d0072c0bacf322ebf8a4bc644b732925f976a47a927b2845d43c8c452f2871e8af607aa7b8e4dab5eb2e5da9e2c801619
   languageName: node
   linkType: hard
 
 "@aptos-connect/wallet-adapter-plugin@npm:^2.3.2":
-  version: 2.3.4
-  resolution: "@aptos-connect/wallet-adapter-plugin@npm:2.3.4"
+  version: 2.4.1
+  resolution: "@aptos-connect/wallet-adapter-plugin@npm:2.4.1"
   dependencies:
-    "@aptos-connect/wallet-api": ^0.1.6
+    "@aptos-connect/wallet-api": ^0.1.9
     "@identity-connect/crypto": ^0.2.5
-    "@identity-connect/dapp-sdk": ^0.10.2
+    "@identity-connect/dapp-sdk": ^0.10.4
   peerDependencies:
     "@aptos-labs/ts-sdk": ^1.33.1
-    "@aptos-labs/wallet-standard": ^0.2.0
-  checksum: 8bb24ba27b68cc06f286876dd23446361a5427c877aa6710518d8e315cba3dcfa2fbac9066707a01737dc78a7c2a25422c62baa5b4cdf0038976daf3d9e6af7a
+    "@aptos-labs/wallet-standard": ^0.3.0
+  checksum: 3b1dfabeb672b6b990f218d705e99dd7f903deb43ade05d1ada753a8eff9ffc5189ce08a3d7849cb304077bea8f2f982d67fa835a06cff9835ae4bbf544f4f06
   languageName: node
   linkType: hard
 
-"@aptos-connect/wallet-api@npm:^0.1.6":
-  version: 0.1.6
-  resolution: "@aptos-connect/wallet-api@npm:0.1.6"
+"@aptos-connect/wallet-api@npm:^0.1.6, @aptos-connect/wallet-api@npm:^0.1.9":
+  version: 0.1.9
+  resolution: "@aptos-connect/wallet-api@npm:0.1.9"
   dependencies:
+    "@aptos-labs/wallet-standard": ^0.3.0
     "@identity-connect/api": ^0.7.0
   peerDependencies:
     "@aptos-labs/ts-sdk": ^1.33.1
-    "@aptos-labs/wallet-standard": ^0.2.0
     aptos: ^1.20.0
-  checksum: b9245ee814783fed7dc5911d831b1a6a5d0accbf2c443c466cbebcdc2b973cf4457afd43fc3a277c32e6f320f0eca013bce9aa577943aee46fdfa4a2d0d94972
+  checksum: d545f956bec10d98d7947df21ff64a2629521a74015ca44857cefa7f26992a51ce34c1ef5b01b83eff1c45f21b19c1e2cace6d00d5ba47cc63ce871a1d42ccbb
   languageName: node
   linkType: hard
 
-"@aptos-connect/web-transport@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "@aptos-connect/web-transport@npm:0.1.2"
+"@aptos-connect/web-transport@npm:^0.1.3":
+  version: 0.1.3
+  resolution: "@aptos-connect/web-transport@npm:0.1.3"
   dependencies:
-    "@aptos-connect/wallet-api": ^0.1.6
+    "@aptos-connect/wallet-api": ^0.1.9
     uuid: ^9.0.1
   peerDependencies:
     "@aptos-labs/ts-sdk": ^1.33.1
-    "@aptos-labs/wallet-standard": ^0.2.0
+    "@aptos-labs/wallet-standard": ^0.3.0
     "@telegram-apps/bridge": ^1.0.0
     aptos: ^1.20.0
-  checksum: 78cd4a91fbd5c8f04d005dc509ed50ad8ee02545231c01916854f53ca8e1b4b232d37d7f7db0eb024e9507b80f9739d29306a265e2a555c47dc70c9b1e9ca15e
+  checksum: 3eccbbfc7fda864816ed5f5e1d4a8a6b66e71cc7968c2f49e9f8e10a55c5c4f1eca24653ce1eaacd079677ca53250d38b498c9a9274c1b6591d59cccd51b8008
   languageName: node
   linkType: hard
 
@@ -318,8 +318,8 @@ __metadata:
   linkType: hard
 
 "@aptos-labs/wallet-adapter-core@npm:^4.23.0":
-  version: 4.24.0
-  resolution: "@aptos-labs/wallet-adapter-core@npm:4.24.0"
+  version: 4.25.0
+  resolution: "@aptos-labs/wallet-adapter-core@npm:4.25.0"
   dependencies:
     "@aptos-connect/wallet-adapter-plugin": ^2.3.2
     "@aptos-labs/wallet-standard": ^0.2.0
@@ -331,7 +331,7 @@ __metadata:
   peerDependencies:
     "@aptos-labs/ts-sdk": ^1.33.1
     aptos: ^1.21.0
-  checksum: 1741088e61af3dca71fdb6c2062851ccbc2ec5f9b95a78b959c955bed0c497c3004bba10f472a4fe25023df47ab959fbe9084d095762f716df7900ea96760948
+  checksum: f5c2ef308ab0c831363f0f5f851c0425ec68ed4f5954ddc86a260e52bf6e289d24e154949b3ce4ed2ec01dbf3a157eaa4161a461a821c0e88af2b7fc557dd051
   languageName: node
   linkType: hard
 
@@ -362,6 +362,16 @@ __metadata:
     "@aptos-labs/ts-sdk": ^1.17.0
     "@wallet-standard/core": ^1.0.3
   checksum: e916ccde156dac07a42e18f53792aa53e4e67e9673e9dccee9b41096cff298b4bc02310c56d4bceca695df526f29225d12b00cff390170237732a15df2ae4b19
+  languageName: node
+  linkType: hard
+
+"@aptos-labs/wallet-standard@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@aptos-labs/wallet-standard@npm:0.3.0"
+  peerDependencies:
+    "@aptos-labs/ts-sdk": ^1.17.0
+    "@wallet-standard/core": ^1.0.3
+  checksum: 8a36f6a9fd046730dd30cb177d1c1a6641949cb462d18717780200eb5e2d9bd5ea7a1cde10e7c071d221ed1b6afd5632fea64feccc1feb15f382825c436a0c10
   languageName: node
   linkType: hard
 
@@ -417,16 +427,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/generator@npm:^7.26.8":
-  version: 7.26.8
-  resolution: "@babel/generator@npm:7.26.8"
+"@babel/generator@npm:^7.26.9":
+  version: 7.26.9
+  resolution: "@babel/generator@npm:7.26.9"
   dependencies:
-    "@babel/parser": ^7.26.8
-    "@babel/types": ^7.26.8
+    "@babel/parser": ^7.26.9
+    "@babel/types": ^7.26.9
     "@jridgewell/gen-mapping": ^0.3.5
     "@jridgewell/trace-mapping": ^0.3.25
     jsesc: ^3.0.2
-  checksum: 15ef65699a556f1c75edba52109e65a597a3e16da2faf117d617e67b667983d5e3cd11399a1d6ff9ff1b0029f8e7c9513975884704b6c2d13bba3d780456823d
+  checksum: 57d034fb6c77dfd5e0c8ef368ff544e19cb6a27cb70d6ed5ff0552c618153dc6692d31e7d0f3a408e0fec3a519514b846c909316c3078290f3a3c1e463372eae
   languageName: node
   linkType: hard
 
@@ -440,19 +450,19 @@ __metadata:
   linkType: hard
 
 "@babel/helper-create-class-features-plugin@npm:^7.25.9":
-  version: 7.25.9
-  resolution: "@babel/helper-create-class-features-plugin@npm:7.25.9"
+  version: 7.26.9
+  resolution: "@babel/helper-create-class-features-plugin@npm:7.26.9"
   dependencies:
     "@babel/helper-annotate-as-pure": ^7.25.9
     "@babel/helper-member-expression-to-functions": ^7.25.9
     "@babel/helper-optimise-call-expression": ^7.25.9
-    "@babel/helper-replace-supers": ^7.25.9
+    "@babel/helper-replace-supers": ^7.26.5
     "@babel/helper-skip-transparent-expression-wrappers": ^7.25.9
-    "@babel/traverse": ^7.25.9
+    "@babel/traverse": ^7.26.9
     semver: ^6.3.1
   peerDependencies:
     "@babel/core": ^7.0.0
-  checksum: 91dd5f203ed04568c70b052e2f26dfaac7c146447196c00b8ecbb6d3d2f3b517abadb985d3321a19d143adaed6fe17f7f79f8f50e0c20e9d8ad83e1027b42424
+  checksum: d445a660d2cdd92e83c04a60f52a304e54e5cc338796b6add9dec00048f1ad12125f78145ab688d029569a9559ef64f8e0de86f456b9e2630ea46f664ffb8e45
   languageName: node
   linkType: hard
 
@@ -505,7 +515,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-replace-supers@npm:^7.25.9":
+"@babel/helper-replace-supers@npm:^7.26.5":
   version: 7.26.5
   resolution: "@babel/helper-replace-supers@npm:7.26.5"
   dependencies:
@@ -549,14 +559,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.26.8":
-  version: 7.26.8
-  resolution: "@babel/parser@npm:7.26.8"
+"@babel/parser@npm:^7.26.9":
+  version: 7.26.9
+  resolution: "@babel/parser@npm:7.26.9"
   dependencies:
-    "@babel/types": ^7.26.8
+    "@babel/types": ^7.26.9
   bin:
     parser: ./bin/babel-parser.js
-  checksum: 2ede62d2451eaf37f524f2048ca41994466c81bda1f5acec36fbd8931fe77bf365e2b2060972735165e40aec305e04af76dd4d8fa895bc08a250215b32356577
+  checksum: 2df965dbf3c67d19dc437412ceef23033b4d39b0dbd7cb498d8ab9ad9e1738338656ee72676199773b37d658edf9f4161cf255515234fed30695d74e73be5514
   languageName: node
   linkType: hard
 
@@ -624,58 +634,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime-corejs3@npm:^7.20.7, @babel/runtime-corejs3@npm:^7.22.15, @babel/runtime-corejs3@npm:^7.24.7":
-  version: 7.26.7
-  resolution: "@babel/runtime-corejs3@npm:7.26.7"
+"@babel/runtime-corejs3@npm:^7.20.7, @babel/runtime-corejs3@npm:^7.22.15, @babel/runtime-corejs3@npm:^7.26.9":
+  version: 7.26.9
+  resolution: "@babel/runtime-corejs3@npm:7.26.9"
   dependencies:
     core-js-pure: ^3.30.2
     regenerator-runtime: ^0.14.0
-  checksum: 4e996a89750c232d792a42a0aad417d2e698fefebb723eddc5fdc01733fd93cd1841f23b71d696e6628e54a268eebf6a1d43bdd4fa292c34c7ecc9f0dba4a21d
+  checksum: f4daeafe995659ebafeb57a5ed8399d8f4e0256cdc9107c9e2f1107b0aed50e93c3dbafb02265b1a707b9b6bbed515b25bf31e8df9a26c8790bc9c48208513a6
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
-  version: 7.26.7
-  resolution: "@babel/runtime@npm:7.26.7"
+"@babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.6, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.7":
+  version: 7.26.9
+  resolution: "@babel/runtime@npm:7.26.9"
   dependencies:
     regenerator-runtime: ^0.14.0
-  checksum: a1664a08f3f4854b895b540cca2f5f5c6c1993b5fb788c9615d70fc201e16bb254df8e0550c83eaf2749a14d87775e11a7c9ded6161203e9da7a4a323d546925
+  checksum: 838492d8a925092f9ccfbd82ec183a54f430af3a4ce88fb1337a4570629202d5123bad3097a5b8df53822504d12ccb29f45c0f6842e86094f0164f17a51eec92
   languageName: node
   linkType: hard
 
-"@babel/template@npm:^7.26.8":
-  version: 7.26.8
-  resolution: "@babel/template@npm:7.26.8"
+"@babel/template@npm:^7.26.9":
+  version: 7.26.9
+  resolution: "@babel/template@npm:7.26.9"
   dependencies:
     "@babel/code-frame": ^7.26.2
-    "@babel/parser": ^7.26.8
-    "@babel/types": ^7.26.8
-  checksum: dfa79b33d49b89b2466a660bf299a545dd5fd6680fbf9828d2deca9bd826eb861041a9f5a25a4a0dddf6e4905e6fafac18a6885bf2aeecac6f39407a221e630f
+    "@babel/parser": ^7.26.9
+    "@babel/types": ^7.26.9
+  checksum: 32259298c775e543ab994daff0c758b3d6a184349b146d6497aa46cec5907bc47a6bc09e7295a81a5eccfbd023d4811a9777cb5d698d582d09a87cabf5b576e7
   languageName: node
   linkType: hard
 
-"@babel/traverse@npm:^7.25.9, @babel/traverse@npm:^7.26.5":
-  version: 7.26.8
-  resolution: "@babel/traverse@npm:7.26.8"
+"@babel/traverse@npm:^7.25.9, @babel/traverse@npm:^7.26.5, @babel/traverse@npm:^7.26.9":
+  version: 7.26.9
+  resolution: "@babel/traverse@npm:7.26.9"
   dependencies:
     "@babel/code-frame": ^7.26.2
-    "@babel/generator": ^7.26.8
-    "@babel/parser": ^7.26.8
-    "@babel/template": ^7.26.8
-    "@babel/types": ^7.26.8
+    "@babel/generator": ^7.26.9
+    "@babel/parser": ^7.26.9
+    "@babel/template": ^7.26.9
+    "@babel/types": ^7.26.9
     debug: ^4.3.1
     globals: ^11.1.0
-  checksum: f8b2f4d9945932ac6b0a359c322628327514a3e1d356555923dc143f3376d3e01f8f7a56cccb717223fa7420426e077809701175b717d946c622d826a6df7c60
+  checksum: d42d3a5e61422d96467f517447b5e254edbd64e4dbf3e13b630704d1f49beaa5209246dc6f45ba53522293bd4760ff720496d2c1ef189ecce52e9e63d9a59aa8
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.25.9, @babel/types@npm:^7.26.8":
-  version: 7.26.8
-  resolution: "@babel/types@npm:7.26.8"
+"@babel/types@npm:^7.25.9, @babel/types@npm:^7.26.9":
+  version: 7.26.9
+  resolution: "@babel/types@npm:7.26.9"
   dependencies:
     "@babel/helper-string-parser": ^7.25.9
     "@babel/helper-validator-identifier": ^7.25.9
-  checksum: 8f0f3bac37cc93d4658df460dc24156c6f1466abca63ef111c9f03128df6c247c672ed89e779ababb41250627c78d8bfcfba616eecb01b6e4ddcfd8ded718996
+  checksum: cc124c149615deb30343a4c81ac5b0e3a68bdb4b1bd61a91a2859ee8e5e5f400f6ff65be4740f407c17bfc09baa9c777e7f8f765dccf3284963956b67ac95a38
   languageName: node
   linkType: hard
 
@@ -1755,12 +1765,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@identity-connect/dapp-sdk@npm:^0.10.2":
-  version: 0.10.3
-  resolution: "@identity-connect/dapp-sdk@npm:0.10.3"
+"@identity-connect/dapp-sdk@npm:^0.10.4":
+  version: 0.10.4
+  resolution: "@identity-connect/dapp-sdk@npm:0.10.4"
   dependencies:
-    "@aptos-connect/wallet-api": ^0.1.6
-    "@aptos-connect/web-transport": ^0.1.2
+    "@aptos-connect/wallet-api": ^0.1.9
+    "@aptos-connect/web-transport": ^0.1.3
     "@identity-connect/api": ^0.7.0
     "@identity-connect/crypto": ^0.2.5
     "@identity-connect/wallet-api": ^0.1.2
@@ -1768,8 +1778,8 @@ __metadata:
     uuid: ^9.0.1
   peerDependencies:
     "@aptos-labs/ts-sdk": ^1.33.1
-    "@aptos-labs/wallet-standard": ^0.2.0
-  checksum: 1611e9a940779391987b8497e337f29f3eb21cff965bac596e827dd049257f92c8324c3a04c7774682ecdeace0f5a6a058f9bd4042febe9ea83ba4c809cd7f6c
+    "@aptos-labs/wallet-standard": ^0.3.0
+  checksum: 3d24663b79155c23adbd9174f6da115048d3d872684f8e7b93abb55fb3b4b4967ee981b782d2d9c990b966a3efc49fede0824ddfd57c0f827c792a69bd909bc4
   languageName: node
   linkType: hard
 
@@ -1795,27 +1805,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@injectivelabs/core-proto-ts@npm:1.13.4":
-  version: 1.13.4
-  resolution: "@injectivelabs/core-proto-ts@npm:1.13.4"
+"@injectivelabs/core-proto-ts@npm:1.13.6":
+  version: 1.13.6
+  resolution: "@injectivelabs/core-proto-ts@npm:1.13.6"
   dependencies:
     "@injectivelabs/grpc-web": ^0.0.1
     google-protobuf: ^3.14.0
     protobufjs: ^7.0.0
     rxjs: ^7.4.0
-  checksum: fbf8f272ed346ef23d3f6149362d8134bb7190925e061cb47d3ab2b1c7efa1ed989909adeb8d19833577758d394630cc8b2ccec5ed5e849c17aac24677b90577
+  checksum: 59be02fa5257161733f519d1db7611c8b021e5ebb97850d44ba42417ab3fc1d5cb18df1cde330f497c69c44370c903aebfa938157d0d95063b5ada8ca54b6b39
   languageName: node
   linkType: hard
 
-"@injectivelabs/exceptions@npm:^1.14.40":
-  version: 1.14.40
-  resolution: "@injectivelabs/exceptions@npm:1.14.40"
+"@injectivelabs/exceptions@npm:^1.14.41":
+  version: 1.14.41
+  resolution: "@injectivelabs/exceptions@npm:1.14.41"
   dependencies:
     "@injectivelabs/grpc-web": ^0.0.1
-    "@injectivelabs/ts-types": ^1.14.40
+    "@injectivelabs/ts-types": ^1.14.41
     http-status-codes: ^2.2.0
     shx: ^0.3.2
-  checksum: 839c8f363e3a3c6a4474d393be0c4561a2baa7e22272c9bdc8aa5bf680c89c8ad8caedddd7eb4e6fb9d68e21cfdde28248f5dc14955ad0f44ef3ad0ae1bb7dbf
+  checksum: 5ae131444757ee7f4fceef7afa8810efd13a1eb7865f7d78d04e67d9ae2bf4aaf6404affec86c77de1ead57931121ebd08b26d542cab6114c09dc4e6b56c6802
   languageName: node
   linkType: hard
 
@@ -1848,15 +1858,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@injectivelabs/indexer-proto-ts@npm:1.13.5":
-  version: 1.13.5
-  resolution: "@injectivelabs/indexer-proto-ts@npm:1.13.5"
+"@injectivelabs/indexer-proto-ts@npm:1.13.6":
+  version: 1.13.6
+  resolution: "@injectivelabs/indexer-proto-ts@npm:1.13.6"
   dependencies:
     "@injectivelabs/grpc-web": ^0.0.1
     google-protobuf: ^3.14.0
     protobufjs: ^7.0.0
     rxjs: ^7.4.0
-  checksum: 562f712a070ea1a07db9cc73acaeeeec832f75e4aa53f5c2698fc71375e60f023e98a60e973634d55572af60ab58635806898a3db1aca34c3e3703a9a519bc58
+  checksum: 47aff0fca66f3791f4f40fc9d8ead230237886bc2c991c578872c713a29bdbdd770de33a8cd1ec055f601c7832787d60a50da98c2ad79b9a8b207f7f58d68a5e
   languageName: node
   linkType: hard
 
@@ -1872,33 +1882,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@injectivelabs/networks@npm:^1.14.40":
-  version: 1.14.40
-  resolution: "@injectivelabs/networks@npm:1.14.40"
+"@injectivelabs/networks@npm:^1.14.41":
+  version: 1.14.41
+  resolution: "@injectivelabs/networks@npm:1.14.41"
   dependencies:
-    "@injectivelabs/exceptions": ^1.14.40
-    "@injectivelabs/ts-types": ^1.14.40
-    "@injectivelabs/utils": ^1.14.40
+    "@injectivelabs/exceptions": ^1.14.41
+    "@injectivelabs/ts-types": ^1.14.41
+    "@injectivelabs/utils": ^1.14.41
     shx: ^0.3.2
-  checksum: 372ee635b67149455fab0de9b798a64b401add010d8e27e9b6f0cb5b3c645dc960dca67374775f8f091ec9f829c1c5d6e63d318c20a4afadbb051cded97588f2
+  checksum: 66737c8d1ec98858d8d0c11c40f6b5ee0391b20969bb59c0127d91b8104a1865fec852a6d28eff98b16373e614f6fbfcdfaab13ecfa0325b19cc45f0cf49b382
   languageName: node
   linkType: hard
 
-"@injectivelabs/olp-proto-ts@npm:1.13.1":
-  version: 1.13.1
-  resolution: "@injectivelabs/olp-proto-ts@npm:1.13.1"
+"@injectivelabs/olp-proto-ts@npm:1.13.3":
+  version: 1.13.3
+  resolution: "@injectivelabs/olp-proto-ts@npm:1.13.3"
   dependencies:
     "@injectivelabs/grpc-web": ^0.0.1
     google-protobuf: ^3.14.0
     protobufjs: ^7.0.0
     rxjs: ^7.4.0
-  checksum: f3f6df743f65ee7dab5fe825569f5c91244a8a42fa4bfc32697ef75e725b50926262c5d517e669561043ccf48a10f1b05fdf6dd47b8d42d974363278fa242071
+  checksum: 1868d8decd61f6ede0092fef4bb0ce26b3e099d3401499596956ebbc600a30449fdbe757f50235f7f533c6983d71fd66e75f03d6a61ba007d10b5f52a1d50ff9
   languageName: node
   linkType: hard
 
 "@injectivelabs/sdk-ts@npm:^1.14.13-beta.2":
-  version: 1.14.40
-  resolution: "@injectivelabs/sdk-ts@npm:1.14.40"
+  version: 1.14.41
+  resolution: "@injectivelabs/sdk-ts@npm:1.14.41"
   dependencies:
     "@apollo/client": ^3.11.10
     "@cosmjs/amino": ^0.32.3
@@ -1906,18 +1916,18 @@ __metadata:
     "@cosmjs/stargate": ^0.32.3
     "@ethersproject/bytes": ^5.7.0
     "@injectivelabs/abacus-proto-ts": 1.13.3
-    "@injectivelabs/core-proto-ts": 1.13.4
-    "@injectivelabs/exceptions": ^1.14.40
+    "@injectivelabs/core-proto-ts": 1.13.6
+    "@injectivelabs/exceptions": ^1.14.41
     "@injectivelabs/grpc-web": ^0.0.1
     "@injectivelabs/grpc-web-node-http-transport": ^0.0.2
     "@injectivelabs/grpc-web-react-native-transport": ^0.0.2
-    "@injectivelabs/indexer-proto-ts": 1.13.5
+    "@injectivelabs/indexer-proto-ts": 1.13.6
     "@injectivelabs/mito-proto-ts": 1.13.2
-    "@injectivelabs/networks": ^1.14.40
-    "@injectivelabs/olp-proto-ts": 1.13.1
-    "@injectivelabs/test-utils": ^1.14.40
-    "@injectivelabs/ts-types": ^1.14.40
-    "@injectivelabs/utils": ^1.14.40
+    "@injectivelabs/networks": ^1.14.41
+    "@injectivelabs/olp-proto-ts": 1.13.3
+    "@injectivelabs/test-utils": ^1.14.41
+    "@injectivelabs/ts-types": ^1.14.41
+    "@injectivelabs/utils": ^1.14.41
     "@metamask/eth-sig-util": ^4.0.0
     "@noble/curves": ^1.4.0
     axios: ^1.6.4
@@ -1934,49 +1944,49 @@ __metadata:
     secp256k1: ^4.0.3
     shx: ^0.3.2
     snakecase-keys: ^5.4.1
-  checksum: eaa8a84cf3cae37a488da27e60957ab6421ee09d1e49e88b47260004d9687cc55fb9db6fda9d63869fe6c5de0eae99c4850e8fe2ac67c52eafebb0cab2183cee
+  checksum: 8b569c4edf1d5999e2102315ae8dfc9717270e8ce88194501ae0b48ede84a97cabd0ca4b82954c698db4bb51ca2ae0b2de44eb17b9007a1489123fb88f5256a6
   languageName: node
   linkType: hard
 
-"@injectivelabs/test-utils@npm:^1.14.40":
-  version: 1.14.40
-  resolution: "@injectivelabs/test-utils@npm:1.14.40"
+"@injectivelabs/test-utils@npm:^1.14.41":
+  version: 1.14.41
+  resolution: "@injectivelabs/test-utils@npm:1.14.41"
   dependencies:
-    "@injectivelabs/exceptions": ^1.14.40
-    "@injectivelabs/networks": ^1.14.40
-    "@injectivelabs/ts-types": ^1.14.40
-    "@injectivelabs/utils": ^1.14.40
+    "@injectivelabs/exceptions": ^1.14.41
+    "@injectivelabs/networks": ^1.14.41
+    "@injectivelabs/ts-types": ^1.14.41
+    "@injectivelabs/utils": ^1.14.41
     axios: ^1.6.4
     bignumber.js: ^9.0.1
     shx: ^0.3.2
     snakecase-keys: ^5.1.2
     store2: ^2.12.0
-  checksum: c51e231e6cacd688b290cc8109afa77e138598216aea66d138102cd2705bd0adf7567bc55f1869c4fd5cebf8b8a76b3232067d1203a112d928b3b51d20bd4876
+  checksum: 937f0b15f48b681438ee25e81244fc526ff2575641109209eabd8775fc9e653c326bbca1c08b7b7b3c82222e39f11c3b0dc5c045642ffc20e1a9d49121fdc2a6
   languageName: node
   linkType: hard
 
-"@injectivelabs/ts-types@npm:^1.14.40":
-  version: 1.14.40
-  resolution: "@injectivelabs/ts-types@npm:1.14.40"
+"@injectivelabs/ts-types@npm:^1.14.41":
+  version: 1.14.41
+  resolution: "@injectivelabs/ts-types@npm:1.14.41"
   dependencies:
     shx: ^0.3.2
-  checksum: c0d74dd93f233b66b61f19fb88fbf7bb11ccda18e18111eed9480a08a016580fb47582a23e0ee104976dcf2ecb599d0e118caf985497f556f618791178c2f9fa
+  checksum: c3c2d8eecba0335c7df5ef98bccb7c6de493b6317992fd240e2c236c15e927fa75eac5347b1e9687aa8ffeba48d78ab07433dba10631727df82383f0ff8d2d5c
   languageName: node
   linkType: hard
 
-"@injectivelabs/utils@npm:^1.14.40":
-  version: 1.14.40
-  resolution: "@injectivelabs/utils@npm:1.14.40"
+"@injectivelabs/utils@npm:^1.14.41":
+  version: 1.14.41
+  resolution: "@injectivelabs/utils@npm:1.14.41"
   dependencies:
-    "@injectivelabs/exceptions": ^1.14.40
-    "@injectivelabs/ts-types": ^1.14.40
+    "@injectivelabs/exceptions": ^1.14.41
+    "@injectivelabs/ts-types": ^1.14.41
     axios: ^1.6.4
     bignumber.js: ^9.0.1
     http-status-codes: ^2.2.0
     shx: ^0.3.2
     snakecase-keys: ^5.1.2
     store2: ^2.12.0
-  checksum: 3678df3ab0900fc754d4c0dc8700bf42d99abfc292caaba7e37c27b307a83622dd1f0014f2976df6c26f857872b82e2ff3d8783facb449fccdad7552a9122c86
+  checksum: 31bb6cfc1330cf54a8d57418961870dc6646a8d0cd9b9659fcfe610e52fb198fba2c67f2567254d103f7627ad2d510caf1ab0ef8c863b08c849fdfca0460ef95
   languageName: node
   linkType: hard
 
@@ -2327,25 +2337,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mayanfinance/swap-sdk@npm:9.3.0":
-  version: 9.3.0
-  resolution: "@mayanfinance/swap-sdk@npm:9.3.0"
+"@mayanfinance/swap-sdk@npm:10.2.0":
+  version: 10.2.0
+  resolution: "@mayanfinance/swap-sdk@npm:10.2.0"
   dependencies:
+    "@mysten/sui": ^1.16.2
     "@solana/buffer-layout": ^4 || ^3
     "@solana/web3.js": ^1.87.6
+    bs58: ^6.0.0
     cross-fetch: ^3.1.5
     ethers: ^6
     js-sha256: ^0.9.0
     js-sha3: ^0.8.0
-  checksum: a30504d2398519788f32ab62d5d96cd2915a209fdddc4003633eeef7b91e9bf1a22db28523a125a56dc0b5f9e4f739c386bbab961a5d15bfa6ddfe7dc7cbc1f1
+  checksum: 2cef3af9df67a40f92267d56c4e47ebfbe7a132cdbcda6875869919338694a26f646e54671855d7432de877c1aac191b5e2f4cff1348e7e08f133c26b7c18a7f
   languageName: node
   linkType: hard
 
-"@mayanfinance/wormhole-sdk-route@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@mayanfinance/wormhole-sdk-route@npm:1.1.0"
+"@mayanfinance/wormhole-sdk-route@npm:1.5.0":
+  version: 1.5.0
+  resolution: "@mayanfinance/wormhole-sdk-route@npm:1.5.0"
   dependencies:
-    "@mayanfinance/swap-sdk": 9.3.0
+    "@mayanfinance/swap-sdk": 10.2.0
     axios: ^1.4.0
   peerDependencies:
     "@solana/web3.js": ^1.95.8
@@ -2353,7 +2365,7 @@ __metadata:
     "@wormhole-foundation/sdk-evm": ^1.0.0
     "@wormhole-foundation/sdk-solana": ^1.0.0
     ethers: ^6
-  checksum: 4634243a2d1b1288cbe3f8bedfefe0ba881eb281a18f68a1d81deb37dccd18d70446c1bf289ace48a3585755909e08ef82d8a1000a34103ab5ee5b39499ac7a3
+  checksum: 0094b328439e7d0f890e779c61312d1cfbd83223a9a181f744caac2ed54b256cf538b2cab20e32caa9d5ecc4d8df1381d6f4851af665a476870d6ce4f71711c8
   languageName: node
   linkType: hard
 
@@ -3089,6 +3101,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mysten/bcs@npm:1.4.0":
+  version: 1.4.0
+  resolution: "@mysten/bcs@npm:1.4.0"
+  dependencies:
+    bs58: ^6.0.0
+  checksum: 5d5dab729aa86873e493c52af9fa2b920db9468e588867f34e49dbdf7c33ec40afd86eb0ee6910dd3a300ca43b8e253d33e1137a8638a1560bc2a46d24166d54
+  languageName: node
+  linkType: hard
+
 "@mysten/sui.js@npm:0.39.0":
   version: 0.39.0
   resolution: "@mysten/sui.js@npm:0.39.0"
@@ -3181,6 +3202,27 @@ __metadata:
     superstruct: ^1.0.3
     tweetnacl: ^1.0.3
   checksum: d21a1d6b566069b5f84ab49f67842013a2e1109b828a241f92a6de5c0573378893848eb3f40f4d1411ee8ad1ca05730813bb8db0a49aebdaac282cd84bbdd76a
+  languageName: node
+  linkType: hard
+
+"@mysten/sui@npm:^1.16.2":
+  version: 1.21.2
+  resolution: "@mysten/sui@npm:1.21.2"
+  dependencies:
+    "@graphql-typed-document-node/core": ^3.2.0
+    "@mysten/bcs": 1.4.0
+    "@noble/curves": ^1.4.2
+    "@noble/hashes": ^1.4.0
+    "@scure/bip32": ^1.4.0
+    "@scure/bip39": ^1.3.0
+    "@suchipi/femver": ^1.0.0
+    bech32: ^2.0.0
+    gql.tada: ^1.8.2
+    graphql: ^16.9.0
+    jose: ^5.6.3
+    poseidon-lite: ^0.2.0
+    valibot: ^0.36.0
+  checksum: 1a7283fb68d2af4506e6106a472a235b5c8ef0c6cc147a7093f85832ede164b2c24907d0e9dedf2e0fd46e9849e7719c2847aa5087acfb8f9d1efe0daa30b616
   languageName: node
   linkType: hard
 
@@ -5144,23 +5186,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reduxjs/toolkit@npm:^1.9.1":
-  version: 1.9.7
-  resolution: "@reduxjs/toolkit@npm:1.9.7"
+"@reduxjs/toolkit@npm:^2.5.1":
+  version: 2.6.0
+  resolution: "@reduxjs/toolkit@npm:2.6.0"
   dependencies:
-    immer: ^9.0.21
-    redux: ^4.2.1
-    redux-thunk: ^2.4.2
-    reselect: ^4.1.8
+    immer: ^10.0.3
+    redux: ^5.0.1
+    redux-thunk: ^3.1.0
+    reselect: ^5.1.0
   peerDependencies:
-    react: ^16.9.0 || ^17.0.0 || ^18
-    react-redux: ^7.2.1 || ^8.0.2
+    react: ^16.9.0 || ^17.0.0 || ^18 || ^19
+    react-redux: ^7.2.1 || ^8.1.3 || ^9.0.0
   peerDependenciesMeta:
     react:
       optional: true
     react-redux:
       optional: true
-  checksum: ac25dec73a5d2df9fc7fbe98c14ccc73919e5ee1d6f251db0d2ec8f90273f92ef39c26716704bf56b5a40189f72d94b4526dc3a8c7ac3986f5daf44442bcc364
+  checksum: 47f447a4e4bd36ef867e1066e2bb2ffcf8469cfa2f1dfd5b04871e961da40465d92b3c287c76c9db88216b0bb8c35f3f91285690ac31b870074420dceaae5991
   languageName: node
   linkType: hard
 
@@ -6746,7 +6788,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-core@npm:>=1.0.0-beta.11 <1.0.0-rc.0, @swagger-api/apidom-core@npm:^1.0.0-beta.12":
+"@swagger-api/apidom-core@npm:>=1.0.0-beta.12 <1.0.0-rc.0, @swagger-api/apidom-core@npm:^1.0.0-beta.12":
   version: 1.0.0-beta.12
   resolution: "@swagger-api/apidom-core@npm:1.0.0-beta.12"
   dependencies:
@@ -6763,7 +6805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-error@npm:>=1.0.0-beta.11 <1.0.0-rc.0, @swagger-api/apidom-error@npm:^1.0.0-beta.12, @swagger-api/apidom-error@npm:^1.0.0-beta.3 <1.0.0-rc.0":
+"@swagger-api/apidom-error@npm:>=1.0.0-beta.12 <1.0.0-rc.0, @swagger-api/apidom-error@npm:^1.0.0-beta.12, @swagger-api/apidom-error@npm:^1.0.0-beta.3 <1.0.0-rc.0":
   version: 1.0.0-beta.12
   resolution: "@swagger-api/apidom-error@npm:1.0.0-beta.12"
   dependencies:
@@ -6772,7 +6814,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-json-pointer@npm:>=1.0.0-beta.11 <1.0.0-rc.0, @swagger-api/apidom-json-pointer@npm:^1.0.0-beta.12, @swagger-api/apidom-json-pointer@npm:^1.0.0-beta.3 <1.0.0-rc.0":
+"@swagger-api/apidom-json-pointer@npm:>=1.0.0-beta.12 <1.0.0-rc.0, @swagger-api/apidom-json-pointer@npm:^1.0.0-beta.12, @swagger-api/apidom-json-pointer@npm:^1.0.0-beta.3 <1.0.0-rc.0":
   version: 1.0.0-beta.12
   resolution: "@swagger-api/apidom-json-pointer@npm:1.0.0-beta.12"
   dependencies:
@@ -6928,7 +6970,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-ns-openapi-3-1@npm:>=1.0.0-beta.11 <1.0.0-rc.0, @swagger-api/apidom-ns-openapi-3-1@npm:^1.0.0-beta.12, @swagger-api/apidom-ns-openapi-3-1@npm:^1.0.0-beta.3 <1.0.0-rc.0":
+"@swagger-api/apidom-ns-openapi-3-1@npm:>=1.0.0-beta.12 <1.0.0-rc.0, @swagger-api/apidom-ns-openapi-3-1@npm:^1.0.0-beta.12, @swagger-api/apidom-ns-openapi-3-1@npm:^1.0.0-beta.3 <1.0.0-rc.0":
   version: 1.0.0-beta.12
   resolution: "@swagger-api/apidom-ns-openapi-3-1@npm:1.0.0-beta.12"
   dependencies:
@@ -7179,7 +7221,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swagger-api/apidom-reference@npm:>=1.0.0-beta.11 <1.0.0-rc.0":
+"@swagger-api/apidom-reference@npm:>=1.0.0-beta.12 <1.0.0-rc.0":
   version: 1.0.0-beta.12
   resolution: "@swagger-api/apidom-reference@npm:1.0.0-beta.12"
   dependencies:
@@ -7259,99 +7301,99 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swaggerexpert/cookie@npm:^1.4.1":
-  version: 1.4.1
-  resolution: "@swaggerexpert/cookie@npm:1.4.1"
+"@swaggerexpert/cookie@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@swaggerexpert/cookie@npm:2.0.2"
   dependencies:
     apg-lite: ^1.0.3
-  checksum: bf65dfe95cd4943e6740c2d9744460e81d137509ea95d2ab0a9e4e41b5533ed2ddaba96ffbd49d09088a8b39c4f4c71775b2d607243525209ba90b00d800d0bd
+  checksum: 4aa323ab2bd99e37c35236f56d31813f38f222da79edfe4da7f3dc91ae117895a411e78a23416a5f017e64474b7d5d37d2ed327ef73c63c2c49025380ecd7721
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-arm64@npm:1.10.15":
-  version: 1.10.15
-  resolution: "@swc/core-darwin-arm64@npm:1.10.15"
+"@swc/core-darwin-arm64@npm:1.10.18":
+  version: 1.10.18
+  resolution: "@swc/core-darwin-arm64@npm:1.10.18"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-x64@npm:1.10.15":
-  version: 1.10.15
-  resolution: "@swc/core-darwin-x64@npm:1.10.15"
+"@swc/core-darwin-x64@npm:1.10.18":
+  version: 1.10.18
+  resolution: "@swc/core-darwin-x64@npm:1.10.18"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm-gnueabihf@npm:1.10.15":
-  version: 1.10.15
-  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.10.15"
+"@swc/core-linux-arm-gnueabihf@npm:1.10.18":
+  version: 1.10.18
+  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.10.18"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-gnu@npm:1.10.15":
-  version: 1.10.15
-  resolution: "@swc/core-linux-arm64-gnu@npm:1.10.15"
+"@swc/core-linux-arm64-gnu@npm:1.10.18":
+  version: 1.10.18
+  resolution: "@swc/core-linux-arm64-gnu@npm:1.10.18"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-musl@npm:1.10.15":
-  version: 1.10.15
-  resolution: "@swc/core-linux-arm64-musl@npm:1.10.15"
+"@swc/core-linux-arm64-musl@npm:1.10.18":
+  version: 1.10.18
+  resolution: "@swc/core-linux-arm64-musl@npm:1.10.18"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-gnu@npm:1.10.15":
-  version: 1.10.15
-  resolution: "@swc/core-linux-x64-gnu@npm:1.10.15"
+"@swc/core-linux-x64-gnu@npm:1.10.18":
+  version: 1.10.18
+  resolution: "@swc/core-linux-x64-gnu@npm:1.10.18"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-musl@npm:1.10.15":
-  version: 1.10.15
-  resolution: "@swc/core-linux-x64-musl@npm:1.10.15"
+"@swc/core-linux-x64-musl@npm:1.10.18":
+  version: 1.10.18
+  resolution: "@swc/core-linux-x64-musl@npm:1.10.18"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@swc/core-win32-arm64-msvc@npm:1.10.15":
-  version: 1.10.15
-  resolution: "@swc/core-win32-arm64-msvc@npm:1.10.15"
+"@swc/core-win32-arm64-msvc@npm:1.10.18":
+  version: 1.10.18
+  resolution: "@swc/core-win32-arm64-msvc@npm:1.10.18"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-win32-ia32-msvc@npm:1.10.15":
-  version: 1.10.15
-  resolution: "@swc/core-win32-ia32-msvc@npm:1.10.15"
+"@swc/core-win32-ia32-msvc@npm:1.10.18":
+  version: 1.10.18
+  resolution: "@swc/core-win32-ia32-msvc@npm:1.10.18"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@swc/core-win32-x64-msvc@npm:1.10.15":
-  version: 1.10.15
-  resolution: "@swc/core-win32-x64-msvc@npm:1.10.15"
+"@swc/core-win32-x64-msvc@npm:1.10.18":
+  version: 1.10.18
+  resolution: "@swc/core-win32-x64-msvc@npm:1.10.18"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
 "@swc/core@npm:^1.7.26":
-  version: 1.10.15
-  resolution: "@swc/core@npm:1.10.15"
+  version: 1.10.18
+  resolution: "@swc/core@npm:1.10.18"
   dependencies:
-    "@swc/core-darwin-arm64": 1.10.15
-    "@swc/core-darwin-x64": 1.10.15
-    "@swc/core-linux-arm-gnueabihf": 1.10.15
-    "@swc/core-linux-arm64-gnu": 1.10.15
-    "@swc/core-linux-arm64-musl": 1.10.15
-    "@swc/core-linux-x64-gnu": 1.10.15
-    "@swc/core-linux-x64-musl": 1.10.15
-    "@swc/core-win32-arm64-msvc": 1.10.15
-    "@swc/core-win32-ia32-msvc": 1.10.15
-    "@swc/core-win32-x64-msvc": 1.10.15
+    "@swc/core-darwin-arm64": 1.10.18
+    "@swc/core-darwin-x64": 1.10.18
+    "@swc/core-linux-arm-gnueabihf": 1.10.18
+    "@swc/core-linux-arm64-gnu": 1.10.18
+    "@swc/core-linux-arm64-musl": 1.10.18
+    "@swc/core-linux-x64-gnu": 1.10.18
+    "@swc/core-linux-x64-musl": 1.10.18
+    "@swc/core-win32-arm64-msvc": 1.10.18
+    "@swc/core-win32-ia32-msvc": 1.10.18
+    "@swc/core-win32-x64-msvc": 1.10.18
     "@swc/counter": ^0.1.3
     "@swc/types": ^0.1.17
   peerDependencies:
@@ -7380,7 +7422,7 @@ __metadata:
   peerDependenciesMeta:
     "@swc/helpers":
       optional: true
-  checksum: ef7bef6e3b5f2bf8c04997e09360443511a22c0d1c4fc34aedc52b13a90ee54283bd185c8502cb74a397a88e6f041d020f2a2819113bfc20ece62b4cba2f4fda
+  checksum: ce4d136299afef3c324c59802037b37fc72aef783363d9b9456a5d9e4e6aba01a34b4d615c082d0c01a1fe4dc07ba197f81b55305890ac3bda74618917fe60eb
   languageName: node
   linkType: hard
 
@@ -7939,16 +7981,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:^3.3.1":
-  version: 3.3.6
-  resolution: "@types/hoist-non-react-statics@npm:3.3.6"
-  dependencies:
-    "@types/react": "*"
-    hoist-non-react-statics: ^3.3.0
-  checksum: f03e43bd081876c49584ffa0eb690d69991f258203efca44dcc30efdda49a50653ff06402917d1edc9cb7e2adebbe9e2d1d0e739bc99c1b5372103b1cc534e47
-  languageName: node
-  linkType: hard
-
 "@types/http-cache-semantics@npm:*":
   version: 4.0.4
   resolution: "@types/http-cache-semantics@npm:4.0.4"
@@ -7996,11 +8028,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*, @types/node@npm:>=13.7.0":
-  version: 22.13.1
-  resolution: "@types/node@npm:22.13.1"
+  version: 22.13.5
+  resolution: "@types/node@npm:22.13.5"
   dependencies:
     undici-types: ~6.20.0
-  checksum: a0759e4bedc3fe892c3ddef5fa9cb5251f9c5b24defc1a389438ea3b5b727c481c1a9bc94bae4ecc7426c89ad293cd66633d163da1ab14d74d358cbec9e1ce31
+  checksum: 8789d9bc3efd212819fd03f7bbd429901b076703e9852ccf4950c8c7cd300d5d5a05f273d0936cbaf28194485d2bd0c265a1a25390720e353a53359526c28fb3
   languageName: node
   linkType: hard
 
@@ -8021,11 +8053,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:^18.13.0":
-  version: 18.19.75
-  resolution: "@types/node@npm:18.19.75"
+  version: 18.19.76
+  resolution: "@types/node@npm:18.19.76"
   dependencies:
     undici-types: ~5.26.4
-  checksum: 8f780a51a2dc1d597b104a2c33a2ab175fda492defbaab2cbb5fd098124d867ebed7cda0eaf80309bba25fbd4e41b4a04c91b7f14b50547b4377a39ccf749a7c
+  checksum: 33b477bfff9ebc15721d0d94beacbedbc3c66892587cce758289682a07a2a77e69b536cc68bddf240b82ddcb426700b4e04fc6f1db6fcfb174a98c5ec6d9bbf5
   languageName: node
   linkType: hard
 
@@ -8107,11 +8139,11 @@ __metadata:
   linkType: hard
 
 "@types/react@npm:*":
-  version: 19.0.8
-  resolution: "@types/react@npm:19.0.8"
+  version: 19.0.10
+  resolution: "@types/react@npm:19.0.10"
   dependencies:
     csstype: ^3.0.2
-  checksum: 80dd2e7fa4b3e0ea2d883c21317563f4af1c4d90a6250c8bcbc052079304dc3335369267026004ed5d7cac09c7b0026e02e71ae5cca3150643507e353219fe47
+  checksum: e257e87bc3464825014523aecc700540a9da41c3c23136c03da9b2b7999251ac70ef9e594febdefeea6abe51da2475b42e5d96af6559d76f8d54bffc0b0ddacd
   languageName: node
   linkType: hard
 
@@ -8152,7 +8184,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/trusted-types@npm:^2.0.2":
+"@types/trusted-types@npm:^2.0.2, @types/trusted-types@npm:^2.0.7":
   version: 2.0.7
   resolution: "@types/trusted-types@npm:2.0.7"
   checksum: 8e4202766a65877efcf5d5a41b7dd458480b36195e580a3b1085ad21e948bc417d55d6f8af1fd2a7ad008015d4117d5fdfe432731157da3c68678487174e4ba3
@@ -8163,13 +8195,6 @@ __metadata:
   version: 2.0.11
   resolution: "@types/unist@npm:2.0.11"
   checksum: 6d436e832bc35c6dde9f056ac515ebf2b3384a1d7f63679d12358766f9b313368077402e9c1126a14d827f10370a5485e628bf61aa91117cf4fc882423191a4e
-  languageName: node
-  linkType: hard
-
-"@types/use-sync-external-store@npm:^0.0.3":
-  version: 0.0.3
-  resolution: "@types/use-sync-external-store@npm:0.0.3"
-  checksum: 161ddb8eec5dbe7279ac971531217e9af6b99f7783213566d2b502e2e2378ea19cf5e5ea4595039d730aa79d3d35c6567d48599f69773a02ffcff1776ec2a44e
   languageName: node
   linkType: hard
 
@@ -8220,14 +8245,14 @@ __metadata:
   linkType: hard
 
 "@typescript-eslint/eslint-plugin@npm:latest":
-  version: 8.24.0
-  resolution: "@typescript-eslint/eslint-plugin@npm:8.24.0"
+  version: 8.24.1
+  resolution: "@typescript-eslint/eslint-plugin@npm:8.24.1"
   dependencies:
     "@eslint-community/regexpp": ^4.10.0
-    "@typescript-eslint/scope-manager": 8.24.0
-    "@typescript-eslint/type-utils": 8.24.0
-    "@typescript-eslint/utils": 8.24.0
-    "@typescript-eslint/visitor-keys": 8.24.0
+    "@typescript-eslint/scope-manager": 8.24.1
+    "@typescript-eslint/type-utils": 8.24.1
+    "@typescript-eslint/utils": 8.24.1
+    "@typescript-eslint/visitor-keys": 8.24.1
     graphemer: ^1.4.0
     ignore: ^5.3.1
     natural-compare: ^1.4.0
@@ -8236,64 +8261,64 @@ __metadata:
     "@typescript-eslint/parser": ^8.0.0 || ^8.0.0-alpha.0
     eslint: ^8.57.0 || ^9.0.0
     typescript: ">=4.8.4 <5.8.0"
-  checksum: 761440236a38d51825ac22ab84fc2d054b307a1f2b7ad308bd12da2420f6d5844fdc4f44c0cd9dd30087ca2c7ecfca90b75744f119a1049b2e66533598a51900
+  checksum: 9627eb794d5e1ab57c8b201d9e658d24ee9b1f09f39f3d62cc3048a6373b5c8b2fe98c3a15365c0c5ce359fe15ed988a307be171083f317492ee9892683e3495
   languageName: node
   linkType: hard
 
 "@typescript-eslint/parser@npm:latest":
-  version: 8.24.0
-  resolution: "@typescript-eslint/parser@npm:8.24.0"
+  version: 8.24.1
+  resolution: "@typescript-eslint/parser@npm:8.24.1"
   dependencies:
-    "@typescript-eslint/scope-manager": 8.24.0
-    "@typescript-eslint/types": 8.24.0
-    "@typescript-eslint/typescript-estree": 8.24.0
-    "@typescript-eslint/visitor-keys": 8.24.0
+    "@typescript-eslint/scope-manager": 8.24.1
+    "@typescript-eslint/types": 8.24.1
+    "@typescript-eslint/typescript-estree": 8.24.1
+    "@typescript-eslint/visitor-keys": 8.24.1
     debug: ^4.3.4
   peerDependencies:
     eslint: ^8.57.0 || ^9.0.0
     typescript: ">=4.8.4 <5.8.0"
-  checksum: e9f53b152baaae042df3ca6faa55279d8219e03234688b96516bbe617ecb6fa037f137fb5b37417a5e7e67e388fc7d89c0333767b493c5f591f8e99bce9039d6
+  checksum: 859b78630ae8424bc9ba820d2ad7efa25cb0b258b4cad15b21eb1bea69fef438d041c53f25355f164cdd02ccdb7537e9ef9007e689c83d4768eef50d61cd1f20
   languageName: node
   linkType: hard
 
-"@typescript-eslint/scope-manager@npm:8.24.0":
-  version: 8.24.0
-  resolution: "@typescript-eslint/scope-manager@npm:8.24.0"
+"@typescript-eslint/scope-manager@npm:8.24.1":
+  version: 8.24.1
+  resolution: "@typescript-eslint/scope-manager@npm:8.24.1"
   dependencies:
-    "@typescript-eslint/types": 8.24.0
-    "@typescript-eslint/visitor-keys": 8.24.0
-  checksum: 1b24d972847458dd4b031e66006c534ae176d60806d3265f0d2a5686bdc3dec9c0353ea94373a855eaf7e9306304eef939781eda1a9b826633c835bceb0fce10
+    "@typescript-eslint/types": 8.24.1
+    "@typescript-eslint/visitor-keys": 8.24.1
+  checksum: 193c072cd068285151239dab593876a49ee92290dee6a7f60a187eca062c38675c27c522a5c63847383b7103749f9bb72f602fb5c21081bf61b9d4ef6f72609d
   languageName: node
   linkType: hard
 
-"@typescript-eslint/type-utils@npm:8.24.0":
-  version: 8.24.0
-  resolution: "@typescript-eslint/type-utils@npm:8.24.0"
+"@typescript-eslint/type-utils@npm:8.24.1":
+  version: 8.24.1
+  resolution: "@typescript-eslint/type-utils@npm:8.24.1"
   dependencies:
-    "@typescript-eslint/typescript-estree": 8.24.0
-    "@typescript-eslint/utils": 8.24.0
+    "@typescript-eslint/typescript-estree": 8.24.1
+    "@typescript-eslint/utils": 8.24.1
     debug: ^4.3.4
     ts-api-utils: ^2.0.1
   peerDependencies:
     eslint: ^8.57.0 || ^9.0.0
     typescript: ">=4.8.4 <5.8.0"
-  checksum: 81322b0ebc0c7ce1396732497403c3c0f18b8d5f74b697d9288becfd414ac3bf8f7886191f82ef32772ce60a382c793142870a17364f013f9344b1cf24fd6a65
+  checksum: 18a44318906445628a5743da74d97ffef6717225a9e691ab3e8bb9d1e3ac81605d419d18a73a249534f10acdf3c22fa996c46e0d96854684f368e44bb8ff1d9a
   languageName: node
   linkType: hard
 
-"@typescript-eslint/types@npm:8.24.0":
-  version: 8.24.0
-  resolution: "@typescript-eslint/types@npm:8.24.0"
-  checksum: 31548119787c7429107a0061f5c82a2ae2b29905fbb5e867f621cea0c00fbe35b3c5ee5961936127d11226461e2248b09c8467959c8c387caa72f15d21293814
+"@typescript-eslint/types@npm:8.24.1":
+  version: 8.24.1
+  resolution: "@typescript-eslint/types@npm:8.24.1"
+  checksum: 6304b153dee2ef23fd4e1ac82051a94d5024ca011c797c04b0ea3a2ad835dd01945bf6aaae83bd50de90d04b30b86ad70bb16c83e9ff316edb4b0f66834bb5fa
   languageName: node
   linkType: hard
 
-"@typescript-eslint/typescript-estree@npm:8.24.0":
-  version: 8.24.0
-  resolution: "@typescript-eslint/typescript-estree@npm:8.24.0"
+"@typescript-eslint/typescript-estree@npm:8.24.1":
+  version: 8.24.1
+  resolution: "@typescript-eslint/typescript-estree@npm:8.24.1"
   dependencies:
-    "@typescript-eslint/types": 8.24.0
-    "@typescript-eslint/visitor-keys": 8.24.0
+    "@typescript-eslint/types": 8.24.1
+    "@typescript-eslint/visitor-keys": 8.24.1
     debug: ^4.3.4
     fast-glob: ^3.3.2
     is-glob: ^4.0.3
@@ -8302,32 +8327,32 @@ __metadata:
     ts-api-utils: ^2.0.1
   peerDependencies:
     typescript: ">=4.8.4 <5.8.0"
-  checksum: 7415a35edc898f25443b9bbb8ec100cff54f8eafe6379348213e8958aa593981298252730b912da2a99c24e4784f23b4e32c6f56420857975bcb076e13467e00
+  checksum: 9a4055ebed660a124d3098274946f96f2976cabed4b60ba446ff247ee4cc8bc983be7a615f4cba68d1ac02129119f7c4ebe19751aeca0fbbfcecd7a2606d7aec
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:8.24.0":
-  version: 8.24.0
-  resolution: "@typescript-eslint/utils@npm:8.24.0"
+"@typescript-eslint/utils@npm:8.24.1":
+  version: 8.24.1
+  resolution: "@typescript-eslint/utils@npm:8.24.1"
   dependencies:
     "@eslint-community/eslint-utils": ^4.4.0
-    "@typescript-eslint/scope-manager": 8.24.0
-    "@typescript-eslint/types": 8.24.0
-    "@typescript-eslint/typescript-estree": 8.24.0
+    "@typescript-eslint/scope-manager": 8.24.1
+    "@typescript-eslint/types": 8.24.1
+    "@typescript-eslint/typescript-estree": 8.24.1
   peerDependencies:
     eslint: ^8.57.0 || ^9.0.0
     typescript: ">=4.8.4 <5.8.0"
-  checksum: de2897d1d2d878b86289d039a4f2b57c8f6ef88b1b48946697ca6422b10041a78f989cfa09b9b73106963bf1ed12a5081e14c3cfb6bb1b537fc8cd2b726ab73e
+  checksum: 87b62de9d03677eff4dfcb57e8d88962af904ce726942b9fe77942907498ef5c4d1ed0485d3427ae87ae45d4dbe1506ab03867c9e7fa7ea65404fc8d7a9bc7fe
   languageName: node
   linkType: hard
 
-"@typescript-eslint/visitor-keys@npm:8.24.0":
-  version: 8.24.0
-  resolution: "@typescript-eslint/visitor-keys@npm:8.24.0"
+"@typescript-eslint/visitor-keys@npm:8.24.1":
+  version: 8.24.1
+  resolution: "@typescript-eslint/visitor-keys@npm:8.24.1"
   dependencies:
-    "@typescript-eslint/types": 8.24.0
+    "@typescript-eslint/types": 8.24.1
     eslint-visitor-keys: ^4.2.0
-  checksum: c07ef21d5de644ca34802f95dc742cde75422210d80456e1e9d6f4a6cee21a1332af3bc90e62f2ca4f9e929eec9f0a25fda2043f2bdeb0acd3feab206f2a73af
+  checksum: 82b91cf090e374a1cb4c985b30f4dc04a58e737c61b1dd627cd027978fcb0d55cf3f264f45ac7e0b332e22cd0613977aded594935606b5f41f7a1b984263e90e
   languageName: node
   linkType: hard
 
@@ -8463,9 +8488,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/core@npm:2.18.0":
-  version: 2.18.0
-  resolution: "@walletconnect/core@npm:2.18.0"
+"@walletconnect/core@npm:2.18.1":
+  version: 2.18.1
+  resolution: "@walletconnect/core@npm:2.18.1"
   dependencies:
     "@walletconnect/heartbeat": 1.2.2
     "@walletconnect/jsonrpc-provider": 1.0.14
@@ -8478,13 +8503,13 @@ __metadata:
     "@walletconnect/relay-auth": 1.1.0
     "@walletconnect/safe-json": 1.0.2
     "@walletconnect/time": 1.0.2
-    "@walletconnect/types": 2.18.0
-    "@walletconnect/utils": 2.18.0
+    "@walletconnect/types": 2.18.1
+    "@walletconnect/utils": 2.18.1
     "@walletconnect/window-getters": 1.0.1
     events: 3.3.0
     lodash.isequal: 4.5.0
     uint8arrays: 3.1.0
-  checksum: b405b4b0d93521871e7b3a65a1b64575954e45d919bcc686933a04acb79cd73e852f0c59b9e671fd03b5a853e066be5e1708a6e262e67bbb7ced2e59098608d8
+  checksum: 33eebe3e9ead0a74f18e0485b1c2a2c8bf4ce6abdc3aef18480e4e0b90c5aef8cf825c2a67fc8f41d7f8b79d1b3443cfcd4b1751a17b5c0cb12e92d0c6232cc6
   languageName: node
   linkType: hard
 
@@ -8908,19 +8933,19 @@ __metadata:
   linkType: hard
 
 "@walletconnect/sign-client@npm:^2.7.2":
-  version: 2.18.0
-  resolution: "@walletconnect/sign-client@npm:2.18.0"
+  version: 2.18.1
+  resolution: "@walletconnect/sign-client@npm:2.18.1"
   dependencies:
-    "@walletconnect/core": 2.18.0
+    "@walletconnect/core": 2.18.1
     "@walletconnect/events": 1.0.1
     "@walletconnect/heartbeat": 1.2.2
     "@walletconnect/jsonrpc-utils": 1.0.8
     "@walletconnect/logger": 2.1.2
     "@walletconnect/time": 1.0.2
-    "@walletconnect/types": 2.18.0
-    "@walletconnect/utils": 2.18.0
+    "@walletconnect/types": 2.18.1
+    "@walletconnect/utils": 2.18.1
     events: 3.3.0
-  checksum: 006fa815b9dc07f3bbe977607a1d22ca2f335e49569c9cdb9f356d47dc33fccb1e00f7c28e625c8de48da9c7f9c0167ce096aa82424f28bafbd651295d374713
+  checksum: ea5ffb710e191f3952ddfbcc941dec3b38cfcf5095ed67bf70d5b8f3a1142e959a31bc5d60241d4bdf6826e762a1f8656b05290ebf09aaebfc436be9e6e709b9
   languageName: node
   linkType: hard
 
@@ -8947,9 +8972,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/types@npm:2.18.0":
-  version: 2.18.0
-  resolution: "@walletconnect/types@npm:2.18.0"
+"@walletconnect/types@npm:2.18.1":
+  version: 2.18.1
+  resolution: "@walletconnect/types@npm:2.18.1"
   dependencies:
     "@walletconnect/events": 1.0.1
     "@walletconnect/heartbeat": 1.2.2
@@ -8957,7 +8982,7 @@ __metadata:
     "@walletconnect/keyvaluestorage": 1.1.1
     "@walletconnect/logger": 2.1.2
     events: 3.3.0
-  checksum: 87f35365aad8743acbc9fc19cf3f3ffc9040815f1b8e8d65adf9a3bcff9044465d60b67bca25232495da3d6d589e25858f57f26be291f27bba6292f53710f326
+  checksum: a15f21c3da358ea8eaf785d44e2cc2f92759239f04294bd569e874b55be4404953123e74ec14aae111d65cf7b83569b549758dc85296e09037bb5a05dc9edfa2
   languageName: node
   linkType: hard
 
@@ -9007,9 +9032,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/utils@npm:2.18.0, @walletconnect/utils@npm:^2.4.5":
-  version: 2.18.0
-  resolution: "@walletconnect/utils@npm:2.18.0"
+"@walletconnect/utils@npm:2.18.1, @walletconnect/utils@npm:^2.4.5":
+  version: 2.18.1
+  resolution: "@walletconnect/utils@npm:2.18.1"
   dependencies:
     "@ethersproject/transactions": 5.7.0
     "@noble/ciphers": 1.2.1
@@ -9021,14 +9046,14 @@ __metadata:
     "@walletconnect/relay-auth": 1.1.0
     "@walletconnect/safe-json": 1.0.2
     "@walletconnect/time": 1.0.2
-    "@walletconnect/types": 2.18.0
+    "@walletconnect/types": 2.18.1
     "@walletconnect/window-getters": 1.0.1
     "@walletconnect/window-metadata": 1.0.1
     detect-browser: 5.3.0
     elliptic: 6.6.1
     query-string: 7.1.3
     uint8arrays: 3.1.0
-  checksum: 5f64ce8f77d91d078d88f6f3bb29aec6de052f384518ec8a498f89e234b8e5d5f7e88a4a067aa99facd40675f06c4180e4682e192acb51298452a935a12c4ee3
+  checksum: 164e0d4cf5033bb43df235b7cdcd796e05f15c06260b6c01d8934883989754af80928ccbb7a5d77d902666e10cff2561107c411e29c833bf8807529b0a98bbb4
   languageName: node
   linkType: hard
 
@@ -9099,297 +9124,160 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-algorand-core@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-algorand-core@npm:1.5.2"
+"@wormhole-foundation/sdk-algorand-core@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-algorand-core@npm:1.10.1-beta.0"
   dependencies:
-    "@wormhole-foundation/sdk-algorand": 1.5.2
-    "@wormhole-foundation/sdk-connect": 1.5.2
-  checksum: d7275c79e7718d9af7c1702ba227312f729fce867d1d264f9ebabcfd5a766278556164a3a4e4fa1e543f107296e275b73e70c1b9e43f1d0ed88fea429ec58b08
+    "@wormhole-foundation/sdk-algorand": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+  checksum: 64b56674f746442991469c31d2701b667ba24d0826becfd7924c2c225e2c83b32155f011e72c752b6be3421255d15e299437e5c7ae9df52329482d813e6f6db1
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-algorand-core@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-algorand-core@npm:1.7.0"
+"@wormhole-foundation/sdk-algorand-tokenbridge@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-algorand-tokenbridge@npm:1.10.1-beta.0"
   dependencies:
-    "@wormhole-foundation/sdk-algorand": 1.7.0
-    "@wormhole-foundation/sdk-connect": 1.7.0
-  checksum: e006895f8b1f93acb1d685817e1d27bcf620f40e20031280f5acae442e40f8765f56225db12db2ecaf976353347907f906e0da7bd9f0237289cfc8f715b26643
+    "@wormhole-foundation/sdk-algorand": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-algorand-core": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+  checksum: e81de42285055c6e78f22ba0d2dc5bef1d21977e09f7a4a987a5b036fd4bc8f0ebfc299b18842e0c5bee4ca41ed3554baf6469c8c6622a62f294e7796634c4aa
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-algorand-tokenbridge@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-algorand-tokenbridge@npm:1.5.2"
+"@wormhole-foundation/sdk-algorand@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-algorand@npm:1.10.1-beta.0"
   dependencies:
-    "@wormhole-foundation/sdk-algorand": 1.5.2
-    "@wormhole-foundation/sdk-algorand-core": 1.5.2
-    "@wormhole-foundation/sdk-connect": 1.5.2
-  checksum: 587977456c7e0df26967316bc32e0a76b7bf23c3ce00b6ba471933f039ff84f7e58ef6317fc2648cca700aa1271c431511a2f098b7b6c952abf389ce42258013
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-algorand-tokenbridge@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-algorand-tokenbridge@npm:1.7.0"
-  dependencies:
-    "@wormhole-foundation/sdk-algorand": 1.7.0
-    "@wormhole-foundation/sdk-algorand-core": 1.7.0
-    "@wormhole-foundation/sdk-connect": 1.7.0
-  checksum: bff1e140ae89683bc4bb215ba89afebec8d4e8e10acd7d3b44404f6e1221c589f5992e02194e90d43ba2a9873f135eb45bb0ec132b1e868855ee6836664f1aa7
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-algorand@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-algorand@npm:1.5.2"
-  dependencies:
-    "@wormhole-foundation/sdk-connect": 1.5.2
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
     algosdk: 2.7.0
-  checksum: 56587066bf4c9b6deecb9a45b059cc85fa4e0fe6d187091d47bf42042c3ee6483761ee8a219ff8c9258d44e33c1b4657af92adee292982d04e1db49e1d51833f
+  checksum: 98d103c478d620f6e3772832f6dc12bf02c927329339ba9e23298e8b8f15b911d5a8369382d3d116311a67e8edfb1fc429b15e30192831835d6420abb2660d68
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-algorand@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-algorand@npm:1.7.0"
-  dependencies:
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    algosdk: 2.7.0
-  checksum: 288cf8fd5d930cccc73ec4c0527d32ff1b6123a303de5277d10db6f0e78741f470d913105950868d277846b76a310793ace4a2b3d7dc6fbc24ec4212ec6a9f0d
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-aptos-cctp@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-aptos-cctp@npm:1.5.2"
+"@wormhole-foundation/sdk-aptos-cctp@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-aptos-cctp@npm:1.10.1-beta.0"
   dependencies:
     "@aptos-labs/ts-sdk": ^1.33.1
-    "@wormhole-foundation/sdk-aptos": 1.5.2
-    "@wormhole-foundation/sdk-connect": 1.5.2
-  checksum: 04e7c271088d2190d7be2e4c44cc0dde927a0d2003d645a1a2b466f708bcb7187743375df3c4f93b4f1e5e71b5ec88947a1afec79745ce5138e8a19c44fedac2
+    "@wormhole-foundation/sdk-aptos": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+  checksum: 5d6d7f6fbd24048c57cf98eb56e03d54a50762016c7c80f4956d8550d9188b9daf7ed4af6421b2cf489642a1b8a0f56de6bf6c9b1cfdb263d7fc473f155274c7
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-aptos-cctp@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-aptos-cctp@npm:1.7.0"
+"@wormhole-foundation/sdk-aptos-core@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-aptos-core@npm:1.10.1-beta.0"
+  dependencies:
+    "@wormhole-foundation/sdk-aptos": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+  checksum: 3630e946aa5751f471d413e42e93ff1387cd0800f884acea397009758003acaa5af1b7a751c4af3b7be0b4e1c23d9de5e1a2f2b4181e3811f11b1aa9dc363713
+  languageName: node
+  linkType: hard
+
+"@wormhole-foundation/sdk-aptos-tokenbridge@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-aptos-tokenbridge@npm:1.10.1-beta.0"
+  dependencies:
+    "@wormhole-foundation/sdk-aptos": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+  checksum: f6bca410fdb81813de90743f5fcac1ae52152a06bd419f11812a0b63e5d4a644613cf331bc0daddf2d767253ed4fb2ef451961b8794205e6764cc9fd36243202
+  languageName: node
+  linkType: hard
+
+"@wormhole-foundation/sdk-aptos@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-aptos@npm:1.10.1-beta.0"
   dependencies:
     "@aptos-labs/ts-sdk": ^1.33.1
-    "@wormhole-foundation/sdk-aptos": 1.7.0
-    "@wormhole-foundation/sdk-connect": 1.7.0
-  checksum: 1a2a6e00e45364774e2b41b706105e44ef00564a167629010c4c70ce459106a1009106783e09a3adcb5aea050e90112ccbd088c9c199b071e99d4ad9fb9fcb6e
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+  checksum: 1ec0e047406eda31f5f2d81d1d5dbf02ee64f9b884b964f9c4bd6c2c84aacd87430a3c9517d404379c61d0036ce91c2250357611ef37e0f144d61216698ccd2e
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-aptos-core@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-aptos-core@npm:1.5.2"
-  dependencies:
-    "@wormhole-foundation/sdk-aptos": 1.5.2
-    "@wormhole-foundation/sdk-connect": 1.5.2
-  checksum: c1e9dc32fc7c6a4f54460bccb25e2d8f0080a9065530bccc16a7730d8adf6cb2a1a68d877805d8317c57e838e75ad866a0df19bd9b6c7868e2c167ec572badfc
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-aptos-core@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-aptos-core@npm:1.7.0"
-  dependencies:
-    "@wormhole-foundation/sdk-aptos": 1.7.0
-    "@wormhole-foundation/sdk-connect": 1.7.0
-  checksum: e15c132753ad8dcd6e656bd8848730a5d39871af2e511c481c992968e7ed5565ec88f7b18d9b94a841bd3a75d4993a4b59b13e3f65fa0cbed10dd2c2aefff022
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-aptos-tokenbridge@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-aptos-tokenbridge@npm:1.5.2"
-  dependencies:
-    "@wormhole-foundation/sdk-aptos": 1.5.2
-    "@wormhole-foundation/sdk-connect": 1.5.2
-  checksum: 2c6e70042ca00eaac72f8db5378e97e3de01f19fdac5b205c49dc9336571140880fe310d7fdfb0ab8817566a1ba2d78d764f58b45b3c761e97a780b90d1ac7c3
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-aptos-tokenbridge@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-aptos-tokenbridge@npm:1.7.0"
-  dependencies:
-    "@wormhole-foundation/sdk-aptos": 1.7.0
-    "@wormhole-foundation/sdk-connect": 1.7.0
-  checksum: d4dd9dc91db5580a4a03e80302c15020dd765b781c2cc8e9d46af49dea49f24a9b0714f85581cf68997cca38931f7f74a0bce10cc01a908de3396a852ed9b5fd
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-aptos@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-aptos@npm:1.5.2"
-  dependencies:
-    "@aptos-labs/ts-sdk": ^1.33.1
-    "@wormhole-foundation/sdk-connect": 1.5.2
-  checksum: 6aa553d59b570a2eac308737243a14b6e30ec2b8c4696bd22d6714301a1781113fdc5c8b4958bdf88d0347a9bd49aeff247d923ca72c17e19f8bc73a62fd90c9
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-aptos@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-aptos@npm:1.7.0"
-  dependencies:
-    "@aptos-labs/ts-sdk": ^1.33.1
-    "@wormhole-foundation/sdk-connect": 1.7.0
-  checksum: c59578257ee58479a5479950aa3907c648f87d9cc7af59e4ebb321930a3fe4569c8c383bda1feb1a9367b9ab94bf631836bf1ddbeb274653561245316f5436f7
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-base@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-base@npm:1.5.2"
+"@wormhole-foundation/sdk-base@npm:1.10.0":
+  version: 1.10.0
+  resolution: "@wormhole-foundation/sdk-base@npm:1.10.0"
   dependencies:
     "@scure/base": ^1.1.3
     binary-layout: ^1.0.3
-  checksum: 9a4839b84e31859c4ea8402e00401532d0fb6fd719456bebe4e18af3646398d8710ca0fef0da77d8a96f9eb98c53d7e9df272f27843cdb521d0144fdcb5100a0
+  checksum: 48a7485ebfc43d9787b289a2c37debfe586746623c5e07cfea2ac95bea65eeccd54a482f0489cc2469362af2b309f8c8347187febad71907ef4580b57992829a
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-base@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-base@npm:1.7.0"
+"@wormhole-foundation/sdk-base@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-base@npm:1.10.1-beta.0"
   dependencies:
     "@scure/base": ^1.1.3
     binary-layout: ^1.0.3
-  checksum: a667fc573cb6d2d11de9ae356b8129a3286ccd2f9b3481aecfcef2371e8dab4fea3f4e3d062024a4dbe66dea1aa3ff70202837a63fde1c2440ac29ae5b3583a0
+  checksum: fbbf985cf6f8e100a425cebb26f41c7a1cc4606a9f6280bbae61e9dc7904ad80c8ac1d83d4a0681641028b43b2816333b370c42a31e9b55375644240b1cfb77d
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-connect@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-connect@npm:1.5.2"
+"@wormhole-foundation/sdk-connect@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-connect@npm:1.10.1-beta.0"
   dependencies:
-    "@wormhole-foundation/sdk-base": 1.5.2
-    "@wormhole-foundation/sdk-definitions": 1.5.2
+    "@wormhole-foundation/sdk-base": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-definitions": 1.10.1-beta.0
     axios: ^1.4.0
-  checksum: d19f91c04bdc7a7b9b4ff72e38b4d1068cb8b3c7614c92f2918ab1eac82956d73928843fff2ba3a6058a44326160496d6c1e5becc3730d7af9b5069046ca1bac
+  checksum: 96fb1f8387f70fae67e38675611747c80ad891152c514bc28df2a86be1125d8750416971a95ebd64ff841e394ec0da15027cc000d6af6be3d7619120c67488a5
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-connect@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-connect@npm:1.7.0"
-  dependencies:
-    "@wormhole-foundation/sdk-base": 1.7.0
-    "@wormhole-foundation/sdk-definitions": 1.7.0
-    axios: ^1.4.0
-  checksum: 9f37e9f826db471e47cd35a9976234cd086880c2d1f4624bfe50ba8114aadd7ce19f65f88e7b8b637573eada7f5f27080602f1b81f9226971b6f656545a75a88
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-cosmwasm-core@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-cosmwasm-core@npm:1.5.2"
+"@wormhole-foundation/sdk-cosmwasm-core@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-cosmwasm-core@npm:1.10.1-beta.0"
   dependencies:
     "@cosmjs/cosmwasm-stargate": ^0.32.0
     "@cosmjs/stargate": ^0.32.0
     "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-cosmwasm": 1.5.2
-  checksum: 4b12728a8e012d5135610789baa4948c8e4003b8f282cc39971d3082dfaa66de1c8199d4eb30779697e4eba5b7fa7925b970794cc824addfaed19e83ac17c47a
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-cosmwasm": 1.10.1-beta.0
+  checksum: 66d95942572c1e0dda67bdbcc066a2f19fce77dcb684115f86e323ed122a44fcc0c48bd84418bcbdcf67fb8546f20f3c04af450f57ea2c6e6eade684d88377f6
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-cosmwasm-core@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-cosmwasm-core@npm:1.7.0"
+"@wormhole-foundation/sdk-cosmwasm-ibc@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-cosmwasm-ibc@npm:1.10.1-beta.0"
   dependencies:
     "@cosmjs/cosmwasm-stargate": ^0.32.0
     "@cosmjs/stargate": ^0.32.0
     "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-cosmwasm": 1.7.0
-  checksum: d02ec25cbe8c1da95cba084bb24679f096a68129599ab906668f7af9e3d359792c2f55b180911b3293f4d7f0642f3a4a9e8b0609da42491eddb82893c4f0dd16
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-cosmwasm-ibc@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-cosmwasm-ibc@npm:1.5.2"
-  dependencies:
-    "@cosmjs/cosmwasm-stargate": ^0.32.0
-    "@cosmjs/stargate": ^0.32.0
-    "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-cosmwasm": 1.5.2
-    "@wormhole-foundation/sdk-cosmwasm-core": 1.5.2
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-cosmwasm": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-cosmwasm-core": 1.10.1-beta.0
     cosmjs-types: ^0.9.0
-  checksum: 1c555b5fa065e6c9f5070e3b03fc9a492df07c3d59294adeea64144b87149edac1360395c4c43bc44e966bf8a10cc1b6126f3db580501e0c559ffdaff92868bb
+  checksum: 094cf30a3d2f0125073caba713b850163f42850385be03b32c7cdda1741eaa84c67c5f661e5660f9148e655cf980a1934edec8af3f2ae37f21a69a8a8e6e0673
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-cosmwasm-ibc@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-cosmwasm-ibc@npm:1.7.0"
-  dependencies:
-    "@cosmjs/cosmwasm-stargate": ^0.32.0
-    "@cosmjs/stargate": ^0.32.0
-    "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-cosmwasm": 1.7.0
-    "@wormhole-foundation/sdk-cosmwasm-core": 1.7.0
-    cosmjs-types: ^0.9.0
-  checksum: ec079dc288483e189db0a39385b921a55dcf08bd313b4c14d1a91bbd940efdd002cbee3f76d1fee117958283cac2ed0bed3fb172ca56ae19efbea75895bc96dd
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:1.5.2"
+"@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:1.10.1-beta.0"
   dependencies:
     "@cosmjs/cosmwasm-stargate": ^0.32.0
     "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-cosmwasm": 1.5.2
-  checksum: beb482b6dbc5e5c61ddb5acc6f0beeb842819902ff86ccd60f8d81e099dffe85b85bf120cabf132385ae57ef183be9d13c73d077ac1bc7bcb30ac3c58174adb7
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-cosmwasm": 1.10.1-beta.0
+  checksum: bb50e209018b4bbf2be5b08e24331019d058c24510c49b39dc5f2f7bc827266340c52186ab48b88e001ddb4b98f0f76f9d1fed23c93c2b85df2ed26dcb9b6d71
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-cosmwasm-tokenbridge@npm:1.7.0"
-  dependencies:
-    "@cosmjs/cosmwasm-stargate": ^0.32.0
-    "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-cosmwasm": 1.7.0
-  checksum: be5c02f555cd656029671de20bff8b54fcb3d580e162f5aba1225bb9b182e2b59670239096663fb9851752193026873be8785750ed8746a9623b5f1c793d2308
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-cosmwasm@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-cosmwasm@npm:1.5.2"
+"@wormhole-foundation/sdk-cosmwasm@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-cosmwasm@npm:1.10.1-beta.0"
   dependencies:
     "@cosmjs/cosmwasm-stargate": ^0.32.0
     "@cosmjs/proto-signing": ^0.32.0
     "@cosmjs/stargate": ^0.32.0
     "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 1.5.2
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
     cosmjs-types: ^0.9.0
-  checksum: 2310a8cd0b13637d3270ae45e89bb49f5c78918c89cbac6b3cd42d56dc7386c0beb86a70c54c27a6dc902c87d77ef9b7ce3543d926a1470273229e5f5a277d6d
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-cosmwasm@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-cosmwasm@npm:1.7.0"
-  dependencies:
-    "@cosmjs/cosmwasm-stargate": ^0.32.0
-    "@cosmjs/proto-signing": ^0.32.0
-    "@cosmjs/stargate": ^0.32.0
-    "@injectivelabs/sdk-ts": ^1.14.13-beta.2
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    cosmjs-types: ^0.9.0
-  checksum: 76dcf93b606f1f195dcaf9411c76dd7862a388960936b17dbc4e43ef62e23ca7404fc22be33e688ab33438c96b919a6fb0610dc8845b4c9b2660a56c984832d6
+  checksum: 9e9b5c2f46a6e613704a32e7092afe9d6ab8ee254bbbb2bade144c1225fb3151442fbe7a927e2a19d0d08732d61ff7b05a68b5610655a68f81bc614acee11b4b
   languageName: node
   linkType: hard
 
@@ -9403,69 +9291,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-definitions@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-definitions@npm:1.5.2"
+"@wormhole-foundation/sdk-definitions@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-definitions@npm:1.10.1-beta.0"
   dependencies:
     "@noble/curves": ^1.4.0
     "@noble/hashes": ^1.3.1
-    "@wormhole-foundation/sdk-base": 1.5.2
-  checksum: 6faa2ed5dd00d330bf43884a96110d3b7d27629a3292869ab8f07f4bca68ee8202989e18ab25095fd05feccaf397c44ef656f36fd534396fd86428e9e43c0985
+    "@wormhole-foundation/sdk-base": 1.10.1-beta.0
+  checksum: e8aadac2a59312bc8adc5a0459458f5c3b25d3477077968cc4a2bbc293cbb2fc234938bd782af46e90bb0c8706076a6d4b4f7af80bce9aeb41ab75a6d207868c
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-definitions@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-definitions@npm:1.7.0"
+"@wormhole-foundation/sdk-evm-cctp@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-evm-cctp@npm:1.10.1-beta.0"
   dependencies:
-    "@noble/curves": ^1.4.0
-    "@noble/hashes": ^1.3.1
-    "@wormhole-foundation/sdk-base": 1.7.0
-  checksum: cd9219d8fe4af6cdef85017199860c6c21ee1d2b13e2426e0a1cc279949b9bf9acbd0a849547df8debe0129fd99578c279432ea21949e38fa359f0b743296545
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-evm-cctp@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-evm-cctp@npm:1.5.2"
-  dependencies:
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-evm": 1.5.2
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-evm": 1.10.1-beta.0
     ethers: ^6.5.1
-  checksum: 5f0af54219ccb2bfc98cde4c8c08ee6d27d2f1659382f82436675b6fbcb4999f5e30815ff2122fa37c9e65ae537c127e9c1d9b4346cf221bc95044f35a11e224
+  checksum: e12c7e778b1be541e29b3254ac116389fd42a97abfaa938aaec1595735aebc5b87c1289d8b145b096280fd73e0bea59b0f3bd8fbb589ba7e369d2e09a1089f6a
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm-cctp@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-evm-cctp@npm:1.7.0"
+"@wormhole-foundation/sdk-evm-core@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-evm-core@npm:1.10.1-beta.0"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-evm": 1.7.0
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-evm": 1.10.1-beta.0
     ethers: ^6.5.1
-  checksum: cf151831b05f50e0a0dfbd3460cbcde6d11dad8173b8c33b7fe8c5f50d3b99dae0c893a2bc3db4c47d4fc76b268e3d23f2d0cf2c705e68e774e59a840566cf67
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-evm-core@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-evm-core@npm:1.5.2"
-  dependencies:
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-evm": 1.5.2
-    ethers: ^6.5.1
-  checksum: 09426526b483699695f7c83e7e16cddb947ac3d1324520b361045bddaa9f48d7e3ec43dae37fa2b0cf43e942f5d8a6e0307f80dde7bc2fe52c56e928e1a5ad34
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-evm-core@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-evm-core@npm:1.7.0"
-  dependencies:
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-evm": 1.7.0
-    ethers: ^6.5.1
-  checksum: 9780378caa191ba8351d26fbb575cf5840083d7e9e55aa632186b6b59be67f28c9327eb2916d57523eba224dd0cd94bbf1d8263fe805e6eb5701b246fe7f614f
+  checksum: 2e60d1697eba71bffd8301c10428987795db086e06d94a3980825651175538468b289f86ccc183d4d66109ac4786374763716bb7fbad199d7cc6f7dd1b237267
   languageName: node
   linkType: hard
 
@@ -9484,82 +9339,47 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm-portico@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-evm-portico@npm:1.5.2"
+"@wormhole-foundation/sdk-evm-portico@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-evm-portico@npm:1.10.1-beta.0"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-evm": 1.5.2
-    "@wormhole-foundation/sdk-evm-core": 1.5.2
-    "@wormhole-foundation/sdk-evm-tokenbridge": 1.5.2
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-evm": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-evm-core": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-evm-tokenbridge": 1.10.1-beta.0
     ethers: ^6.5.1
-  checksum: f73d0504f5be6417d8f924360cfb5688484bb626cd295d080f92849f43cc608021c5eff51a865ed77aad32626f1713e75df6c3d95771405fa0936dfccbbe0e4f
+  checksum: e7c305cdbcea210ab9deda3681a45226e8ef5a8e9d47a307c033d87ac16532e1c67d8704cc3f4f54d7252361ac60dc91f770b1388b2be310cb60da06ce00999d
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm-portico@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-evm-portico@npm:1.7.0"
+"@wormhole-foundation/sdk-evm-tokenbridge@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-evm-tokenbridge@npm:1.10.1-beta.0"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-evm": 1.7.0
-    "@wormhole-foundation/sdk-evm-core": 1.7.0
-    "@wormhole-foundation/sdk-evm-tokenbridge": 1.7.0
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-evm": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-evm-core": 1.10.1-beta.0
     ethers: ^6.5.1
-  checksum: 230c98106e01dfb42aae3df09d3408fe1287d883da48372570a14922401322c9696f0b67a6d1394be05da6172db2c2a66397b3721b1543a977a8b8ada5fd1cce
+  checksum: d9e53a37e3e370964fc0c7867e437419d1f9524b09d9baa26281d579c6733e3bd2e42a97138eb1fc31f5a9c5ae4960d404070f8ad533926183d448065076f178
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-evm-tokenbridge@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-evm-tokenbridge@npm:1.5.2"
+"@wormhole-foundation/sdk-evm@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-evm@npm:1.10.1-beta.0"
   dependencies:
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-evm": 1.5.2
-    "@wormhole-foundation/sdk-evm-core": 1.5.2
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
     ethers: ^6.5.1
-  checksum: 3c3ad734d92e62357d91512a4b1e96d98621212beaa136f89d347497ab39e55461348906a57096a4a7b180781009decfeafad2539705deae25eb2259c34aeefc
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-evm-tokenbridge@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-evm-tokenbridge@npm:1.7.0"
-  dependencies:
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-evm": 1.7.0
-    "@wormhole-foundation/sdk-evm-core": 1.7.0
-    ethers: ^6.5.1
-  checksum: 51b2f4115e2d0a2249ccfb83cb0965244fbbe01cf5f3c488ad9f7f648a7a040dc038956cda23226144add8894e29748d5401d39096566022161fac92d3d28319
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-evm@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-evm@npm:1.5.2"
-  dependencies:
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    ethers: ^6.5.1
-  checksum: fb3f96ab1167529955f40769b113128ba52e5c10e82b94db461e79aa3b6e0c26f8fb887c63497c38c6403d816bd1383fbc070d00b01a873a3325f32a48104bc8
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-evm@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-evm@npm:1.7.0"
-  dependencies:
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    ethers: ^6.5.1
-  checksum: d82c5b6a91e3aff1e6a7815940b8b14507c73abc8048b526847704d360616b73d0affb3d50f0f1712196ee4fb24a66c262de42f1131bab26e9785500bea778c0
+  checksum: dd00192d56ed78eb0ddac4d388eb46195532a5d2b53b836ce4e28f0db90cb836e7af27aad41bc6b87df4b3a9fd70b31051b14fc04f96c3d1b4a3b890fd8a9a3d
   languageName: node
   linkType: hard
 
 "@wormhole-foundation/sdk-icons@npm:^1.0.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-icons@npm:1.7.0"
+  version: 1.10.0
+  resolution: "@wormhole-foundation/sdk-icons@npm:1.10.0"
   dependencies:
-    "@wormhole-foundation/sdk-base": 1.7.0
-  checksum: 5b451034dae114af8eaa594b8ade01aa641d193b31170b3d309ecff85614857e25b99dce467b29f6b9e7de1515b423e6310ac305bff7c688e9892591f58e133f
+    "@wormhole-foundation/sdk-base": 1.10.0
+  checksum: 049781059abf6d13c3ffef3dafe9389c98a916c01b6bafcd1173b1e4ddda12f9908d7f79c304dad4c0a77c2a67325d7cdf44ea07d5911bfcefadc2501a2838c6
   languageName: node
   linkType: hard
 
@@ -9576,55 +9396,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-solana-cctp@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-solana-cctp@npm:1.5.2"
+"@wormhole-foundation/sdk-solana-cctp@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-solana-cctp@npm:1.10.1-beta.0"
   dependencies:
     "@coral-xyz/anchor": 0.29.0
     "@solana/spl-token": 0.3.9
     "@solana/web3.js": ^1.95.8
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-solana": 1.5.2
-  checksum: 070131e50beb24c2a2427baa73d65873860dbb419c42745202250557017f395d584c8663b6674c4d791921821365a1e3bf4257f6ebc630851ef520d92eb5730a
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-solana": 1.10.1-beta.0
+  checksum: 848c39b69c87a10e4e416641c68991871849e2e0ca11c7bb169785b7774bbdc655192058f3005a69b413032ede880674e718efa9d306ed59e97e8a8755918467
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-solana-cctp@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-solana-cctp@npm:1.7.0"
-  dependencies:
-    "@coral-xyz/anchor": 0.29.0
-    "@solana/spl-token": 0.3.9
-    "@solana/web3.js": ^1.95.8
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-solana": 1.7.0
-  checksum: 34bfddcfb88ff49cbb604642670148f1a364c7558a93633ba6cb56864a34fb002feee4b79108d994902ce285fc31c3c303ede57b37cb195944ff9e45ad796b3d
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-solana-core@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-solana-core@npm:1.5.2"
+"@wormhole-foundation/sdk-solana-core@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-solana-core@npm:1.10.1-beta.0"
   dependencies:
     "@coral-xyz/anchor": 0.29.0
     "@coral-xyz/borsh": 0.29.0
     "@solana/web3.js": ^1.95.8
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-solana": 1.5.2
-  checksum: a384d4a53df4838315d1ff45da5e8b21b30b3f0a8433406dd444d7df6796c3df66cba04ad3b51dca454e155cd14b61c86ff31a5d984c868c4e6c067137cf9a5d
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-solana-core@npm:1.7.0, @wormhole-foundation/sdk-solana-core@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-solana-core@npm:1.7.0"
-  dependencies:
-    "@coral-xyz/anchor": 0.29.0
-    "@coral-xyz/borsh": 0.29.0
-    "@solana/web3.js": ^1.95.8
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-solana": 1.7.0
-  checksum: 17d4de462165a15fe95b1458fe05a835be437f097977169f98eadce408d2441b4d08eceb22bab4dbd4be2cc7e9ad2226366f32d6b10a7dec0c245579e8cc4a5d
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-solana": 1.10.1-beta.0
+  checksum: 18bf6d2c02c7d27140e67c95b4756a25bf96880c6ff9c6b78a87ac320a090cbb24696dbe3464559c6ca7749609f856df0469d5d8f639b7fe2cfd72b72fd6d30e
   languageName: node
   linkType: hard
 
@@ -9647,217 +9441,110 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-solana-tokenbridge@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-solana-tokenbridge@npm:1.5.2"
+"@wormhole-foundation/sdk-solana-tokenbridge@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-solana-tokenbridge@npm:1.10.1-beta.0"
   dependencies:
     "@coral-xyz/anchor": 0.29.0
     "@solana/spl-token": 0.3.9
     "@solana/web3.js": ^1.95.8
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-solana": 1.5.2
-    "@wormhole-foundation/sdk-solana-core": 1.5.2
-  checksum: 00cc001f71e1bfa7f559ee1028f039462f71cf98aacd236b2790fe7ef54147258edcbed0a7d4e8445e10547c8e35fd66cf39c57e655ededac5e989c4701b1702
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-solana": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-solana-core": 1.10.1-beta.0
+  checksum: ec3ec7e0fd37070c6806f9be061519a77c1107802c478e815e33017328639025efb3af946c420d9a1232805fd275b1b16f153503c10aeec817058f492b03c30f
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-solana-tokenbridge@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-solana-tokenbridge@npm:1.7.0"
-  dependencies:
-    "@coral-xyz/anchor": 0.29.0
-    "@solana/spl-token": 0.3.9
-    "@solana/web3.js": ^1.95.8
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-solana": 1.7.0
-    "@wormhole-foundation/sdk-solana-core": 1.7.0
-  checksum: 9fe7ff0bcd8eb21e82aa9ce5d112139d35e2f789b16ea92303c6de62a57764c5ede38d7b16a74d88953e707d32615eeb14762cf187db33c0994feee8a09de0f0
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-solana@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-solana@npm:1.5.2"
+"@wormhole-foundation/sdk-solana@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-solana@npm:1.10.1-beta.0"
   dependencies:
     "@coral-xyz/anchor": 0.29.0
     "@coral-xyz/borsh": 0.29.0
     "@solana/spl-token": 0.3.9
     "@solana/web3.js": ^1.95.8
-    "@wormhole-foundation/sdk-connect": 1.5.2
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
     rpc-websockets: ^7.10.0
-  checksum: dc6df743896b46de7e58de4403e11c22b43f978c8ff7ae176ac4fec5859ae74713b3a5e2e9642567cadf773c99091598a159ed405748f742cfdacf3e7938ed78
+  checksum: f1ac432fedda5264392369ce4c739589d31a0c8c22505c151bf943289cda4e12c1ba41b2459aa275a46ac1f8199f44438bda9b686602dcdd2c6dc08175c4be2c
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-solana@npm:1.7.0, @wormhole-foundation/sdk-solana@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-solana@npm:1.7.0"
-  dependencies:
-    "@coral-xyz/anchor": 0.29.0
-    "@coral-xyz/borsh": 0.29.0
-    "@solana/spl-token": 0.3.9
-    "@solana/web3.js": ^1.95.8
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    rpc-websockets: ^7.10.0
-  checksum: 4010328da43de558bf1f985bafdba0416f92acd3d99b84aaebcaedaf05d82d9040f40e1a00e5910712f091b01071891bb67be399da5481b813b0427ec69a9f7c
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-sui-cctp@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-sui-cctp@npm:1.5.2"
+"@wormhole-foundation/sdk-sui-cctp@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-sui-cctp@npm:1.10.1-beta.0"
   dependencies:
     "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-sui": 1.5.2
-  checksum: b70ca7a0501c95117e96afb59e6d2e5090c324dbcb51e37480665184beb5ec13f34b90b12b02a0818db247baa6dcbf906dbfd90443b0e25e8799b201126c02f7
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-sui": 1.10.1-beta.0
+  checksum: f001480ff4b1be42ca594178073495cf1b2750266112be12d0031575fca4058e5e25702683a853fd73aa75bdcdd93fdd8f901d061363e790e51c72b336a6a779
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-sui-cctp@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-sui-cctp@npm:1.7.0"
+"@wormhole-foundation/sdk-sui-core@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-sui-core@npm:1.10.1-beta.0"
   dependencies:
     "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-sui": 1.7.0
-  checksum: 5b56a1f63227f8a632e995dd9243bcb6c9fb51c479ab56f60bca155d21d08fdaba0ade555b559f04c78385f456092441a6bea0bc5b8de2424b00d5db1cb0c031
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-sui": 1.10.1-beta.0
+  checksum: ca5bd4b69d5cd0b7cbb0f9ecf4567f334b7d10bba50290aac6fcf4cbd7b5e317c2748d5c0814de9108f8471bae7a1fa148af3d8c93563158ea736514142d175c
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-sui-core@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-sui-core@npm:1.5.2"
+"@wormhole-foundation/sdk-sui-tokenbridge@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-sui-tokenbridge@npm:1.10.1-beta.0"
   dependencies:
     "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-sui": 1.5.2
-  checksum: 9cfd00f9777536f963dd8d7bf43bc69d5a90282b4e3467427f245e93c32804b0dd294c1aabc36e4fcf56240fc638dc12332915f0f9e199cfbabbefa3488beafc
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-sui": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-sui-core": 1.10.1-beta.0
+  checksum: 2dc15879cf3013ce4162507f58e2e3acbc1308344a2828d905b9a5f8ef5471bc36ed3efd048d94b75de50f331d81ee822f5b571ce8b9cde1afc3acc100e320ad
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-sui-core@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-sui-core@npm:1.7.0"
+"@wormhole-foundation/sdk-sui@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk-sui@npm:1.10.1-beta.0"
   dependencies:
     "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-sui": 1.7.0
-  checksum: 216a389a27f12f7521f7e2b736dac9c3068c05c4648727e7f7bec043f0606262ff814fc7ed02e94820c83491ace7bab078692414f6a94833427b5e961561108d
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+  checksum: b21760b37af505841bbb32a85c6f4b409bcd999682bc264133fc3e6a7160e27eb92e43c6382aa02621462aab2cd9db5498b1c0122206fa71cce92da10f08de2c
   languageName: node
   linkType: hard
 
-"@wormhole-foundation/sdk-sui-tokenbridge@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-sui-tokenbridge@npm:1.5.2"
+"@wormhole-foundation/sdk@npm:1.10.1-beta.0":
+  version: 1.10.1-beta.0
+  resolution: "@wormhole-foundation/sdk@npm:1.10.1-beta.0"
   dependencies:
-    "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-sui": 1.5.2
-    "@wormhole-foundation/sdk-sui-core": 1.5.2
-  checksum: a5427975f601d29ae3651ef1b7db8f4ffb76ff693ac19a7a6fa9f11abb0b4f854127fb5850941a6a823a6ab5b6207f20b5f863a38909bb053741435841ffed98
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-sui-tokenbridge@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-sui-tokenbridge@npm:1.7.0"
-  dependencies:
-    "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-sui": 1.7.0
-    "@wormhole-foundation/sdk-sui-core": 1.7.0
-  checksum: 6745ec8575c17a350b721a2a668232fc7a3b042973131e8f00d25dcbd91df96d0ccc03d2bcf03315c6c7fa609d4d8b29ae4e2d3d331a5d28444bb1ccd1dde788
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-sui@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk-sui@npm:1.5.2"
-  dependencies:
-    "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 1.5.2
-  checksum: 89d5aac8768d9fc610b4e9838614f4445fb500a6ba17dbb5cb8cfa4b50a089572eb6a29e608bb09887e787647d59be01ee5369d2a60635e37bed6dfcfdaba2e1
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk-sui@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk-sui@npm:1.7.0"
-  dependencies:
-    "@mysten/sui.js": ^0.50.1
-    "@wormhole-foundation/sdk-connect": 1.7.0
-  checksum: 77689c9400f121a61c838e5c24cff3f3d745b2195d2c71ac3eb27af967769a0d4bf0b409c8848391c1a427c1581e9c71e6dd1f771d6438ac0141d145bab10d2c
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk@npm:1.5.2":
-  version: 1.5.2
-  resolution: "@wormhole-foundation/sdk@npm:1.5.2"
-  dependencies:
-    "@wormhole-foundation/sdk-algorand": 1.5.2
-    "@wormhole-foundation/sdk-algorand-core": 1.5.2
-    "@wormhole-foundation/sdk-algorand-tokenbridge": 1.5.2
-    "@wormhole-foundation/sdk-aptos": 1.5.2
-    "@wormhole-foundation/sdk-aptos-cctp": 1.5.2
-    "@wormhole-foundation/sdk-aptos-core": 1.5.2
-    "@wormhole-foundation/sdk-aptos-tokenbridge": 1.5.2
-    "@wormhole-foundation/sdk-base": 1.5.2
-    "@wormhole-foundation/sdk-connect": 1.5.2
-    "@wormhole-foundation/sdk-cosmwasm": 1.5.2
-    "@wormhole-foundation/sdk-cosmwasm-core": 1.5.2
-    "@wormhole-foundation/sdk-cosmwasm-ibc": 1.5.2
-    "@wormhole-foundation/sdk-cosmwasm-tokenbridge": 1.5.2
-    "@wormhole-foundation/sdk-definitions": 1.5.2
-    "@wormhole-foundation/sdk-evm": 1.5.2
-    "@wormhole-foundation/sdk-evm-cctp": 1.5.2
-    "@wormhole-foundation/sdk-evm-core": 1.5.2
-    "@wormhole-foundation/sdk-evm-portico": 1.5.2
-    "@wormhole-foundation/sdk-evm-tokenbridge": 1.5.2
-    "@wormhole-foundation/sdk-solana": 1.5.2
-    "@wormhole-foundation/sdk-solana-cctp": 1.5.2
-    "@wormhole-foundation/sdk-solana-core": 1.5.2
-    "@wormhole-foundation/sdk-solana-tokenbridge": 1.5.2
-    "@wormhole-foundation/sdk-sui": 1.5.2
-    "@wormhole-foundation/sdk-sui-cctp": 1.5.2
-    "@wormhole-foundation/sdk-sui-core": 1.5.2
-    "@wormhole-foundation/sdk-sui-tokenbridge": 1.5.2
-  checksum: 254e855d772da1bcd4b8e8d6bfd11650d634996c1d4e6d2889b3a46199ce796623e4f413aa728dd6241306e06b5078249d1fe57091bf51af95ad611eb09173d6
-  languageName: node
-  linkType: hard
-
-"@wormhole-foundation/sdk@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "@wormhole-foundation/sdk@npm:1.7.0"
-  dependencies:
-    "@wormhole-foundation/sdk-algorand": 1.7.0
-    "@wormhole-foundation/sdk-algorand-core": 1.7.0
-    "@wormhole-foundation/sdk-algorand-tokenbridge": 1.7.0
-    "@wormhole-foundation/sdk-aptos": 1.7.0
-    "@wormhole-foundation/sdk-aptos-cctp": 1.7.0
-    "@wormhole-foundation/sdk-aptos-core": 1.7.0
-    "@wormhole-foundation/sdk-aptos-tokenbridge": 1.7.0
-    "@wormhole-foundation/sdk-base": 1.7.0
-    "@wormhole-foundation/sdk-connect": 1.7.0
-    "@wormhole-foundation/sdk-cosmwasm": 1.7.0
-    "@wormhole-foundation/sdk-cosmwasm-core": 1.7.0
-    "@wormhole-foundation/sdk-cosmwasm-ibc": 1.7.0
-    "@wormhole-foundation/sdk-cosmwasm-tokenbridge": 1.7.0
-    "@wormhole-foundation/sdk-definitions": 1.7.0
-    "@wormhole-foundation/sdk-evm": 1.7.0
-    "@wormhole-foundation/sdk-evm-cctp": 1.7.0
-    "@wormhole-foundation/sdk-evm-core": 1.7.0
-    "@wormhole-foundation/sdk-evm-portico": 1.7.0
-    "@wormhole-foundation/sdk-evm-tokenbridge": 1.7.0
-    "@wormhole-foundation/sdk-solana": 1.7.0
-    "@wormhole-foundation/sdk-solana-cctp": 1.7.0
-    "@wormhole-foundation/sdk-solana-core": 1.7.0
-    "@wormhole-foundation/sdk-solana-tokenbridge": 1.7.0
-    "@wormhole-foundation/sdk-sui": 1.7.0
-    "@wormhole-foundation/sdk-sui-cctp": 1.7.0
-    "@wormhole-foundation/sdk-sui-core": 1.7.0
-    "@wormhole-foundation/sdk-sui-tokenbridge": 1.7.0
-  checksum: 0962f6c5c3531eff45db6bb439e85899dafc6b73dd08d20fe4d7ef72d2c4339278f50ce33e49a8d57114ed2f4cfd15978d75cf02426b46c3f0e5e9307c3f08d7
+    "@wormhole-foundation/sdk-algorand": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-algorand-core": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-algorand-tokenbridge": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-aptos": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-aptos-cctp": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-aptos-core": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-aptos-tokenbridge": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-base": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-connect": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-cosmwasm": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-cosmwasm-core": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-cosmwasm-ibc": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-cosmwasm-tokenbridge": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-definitions": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-evm": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-evm-cctp": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-evm-core": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-evm-portico": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-evm-tokenbridge": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-solana": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-solana-cctp": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-solana-core": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-solana-tokenbridge": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-sui": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-sui-cctp": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-sui-core": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-sui-tokenbridge": 1.10.1-beta.0
+  checksum: 912baf42071a3cc6286b58f225a3956eba1c9a31b2427cedd5d5d56b4b0c9460835895a16e58ae3c903bb62f7be7c56405e80f8ef2295d6f8dbf5ed2570abc75
   languageName: node
   linkType: hard
 
@@ -9923,7 +9610,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xlabs-libs/wallet-aggregator-evm@npm:^0.0.2-alpha.5":
+"@xlabs-libs/wallet-aggregator-evm@npm:^0.0.2-alpha.6":
   version: 0.0.2-alpha.6
   resolution: "@xlabs-libs/wallet-aggregator-evm@npm:0.0.2-alpha.6"
   dependencies:
@@ -9964,9 +9651,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xlabs/wormhole-connect@npm:^1.0.0-fork.2-development":
-  version: 1.0.0-fork.2-development
-  resolution: "@xlabs/wormhole-connect@npm:1.0.0-fork.2-development::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40xlabs%2Fwormhole-connect%2F1.0.0-fork.2-development%2Fe4681b0cdae7fa2f1ffbe5c0a708a9832992bf64"
+"@xlabs/wormhole-connect@npm:1.0.0-fork.3-development":
+  version: 1.0.0-fork.3-development
+  resolution: "@xlabs/wormhole-connect@npm:1.0.0-fork.3-development::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40xlabs%2Fwormhole-connect%2F1.0.0-fork.3-development%2F3411089fd88aebe5c2cbc57d38378238525050d9"
   dependencies:
     "@aptos-labs/ts-sdk": ^1.33.1
     "@aptos-labs/wallet-adapter-core": ^4.23.0
@@ -9978,7 +9665,7 @@ __metadata:
     "@ledgerhq/hw-transport": 6.27.1
     "@ledgerhq/hw-transport-webhid": 6.27.1
     "@ledgerhq/logs": 6.12.0
-    "@mayanfinance/wormhole-sdk-route": 1.1.0
+    "@mayanfinance/wormhole-sdk-route": 1.5.0
     "@metaplex-foundation/mpl-token-metadata": ^3.3.0
     "@metaplex-foundation/umi": ^0.9.2
     "@metaplex-foundation/umi-bundle-defaults": ^0.9.2
@@ -9986,20 +9673,20 @@ __metadata:
     "@mui/material": ^5.11.4
     "@mysten/sui.js": ^0.32.2
     "@project-serum/anchor": ^0.26.0
-    "@reduxjs/toolkit": ^1.9.1
+    "@reduxjs/toolkit": ^2.5.1
     "@solana/spl-token": ^0.3.9
     "@solana/wallet-adapter-wallets": ^0.19.25
     "@solana/web3.js": ^1.95.8
-    "@wormhole-foundation/sdk": 1.5.2
-    "@wormhole-foundation/sdk-definitions": 1.5.2
+    "@wormhole-foundation/sdk": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-definitions": 1.10.1-beta.0
     "@wormhole-foundation/sdk-definitions-ntt": ^0.6.1
     "@wormhole-foundation/sdk-evm-ntt": ^0.6.1
     "@wormhole-foundation/sdk-icons": ^1.0.0
     "@wormhole-foundation/sdk-route-ntt": ^0.6.1
     "@wormhole-foundation/sdk-solana-ntt": ^0.6.1
     "@xlabs-libs/wallet-aggregator-aptos": ^1.0.0-alpha.2
-    "@xlabs-libs/wallet-aggregator-core": ^0.0.1-alpha.22
-    "@xlabs-libs/wallet-aggregator-evm": ^0.0.2-alpha.5
+    "@xlabs-libs/wallet-aggregator-core": ^0.0.1-alpha.23
+    "@xlabs-libs/wallet-aggregator-evm": ^0.0.2-alpha.6
     "@xlabs-libs/wallet-aggregator-solana": ^0.0.1-alpha.15
     "@xlabs-libs/wallet-aggregator-sui": ^0.0.1-alpha.11
     axios: 1.4.0
@@ -10007,10 +9694,8 @@ __metadata:
     ethers: ^6.4.2
     lz-string: ^1.5.0
     material-ui-popup-state: ^5.0.4
-    react: ^18.2.0
-    react-dom: ^18.2.0
     react-infinite-scroller: ^1.2.6
-    react-redux: ^8.0.5
+    react-redux: ^9.2.0
     react-timer-hook: ^3.0.7
     rpc-websockets: ^7.11.0
     sha3: ^2.1.4
@@ -10018,9 +9703,9 @@ __metadata:
     use-debounce: ^9.0.4
     web-vitals: ^2.1.4
   peerDependencies:
-    react: ^18.2.0
-    react-dom: ^18.2.0
-  checksum: 5e08f9f67f5c48a0bc9d018d68c8489f39493ad352efae0865c6f9b90cae35626af09b2ecb666bf67b8d44bc8d8e47b0d977f82ac1046c9d60069544f48f1556
+    react: ">=18.0.0"
+    react-dom: ">=18.0.0"
+  checksum: 6542b20a344c9be16a7b43bc667a6bd782306d3f01fd466e1d3bf1cb6e42c4775c3272ad474557a8ff8a32bfed24f225f2575e38c3606218d72b498d6b6b7f55
   languageName: node
   linkType: hard
 
@@ -11094,13 +10779,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"call-bind-apply-helpers@npm:^1.0.0, call-bind-apply-helpers@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "call-bind-apply-helpers@npm:1.0.1"
+"call-bind-apply-helpers@npm:^1.0.0, call-bind-apply-helpers@npm:^1.0.1, call-bind-apply-helpers@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "call-bind-apply-helpers@npm:1.0.2"
   dependencies:
     es-errors: ^1.3.0
     function-bind: ^1.1.2
-  checksum: 3c55343261bb387c58a4762d15ad9d42053659a62681ec5eb50690c6b52a4a666302a01d557133ce6533e8bd04530ee3b209f23dd06c9577a1925556f8fcccdf
+  checksum: b2863d74fcf2a6948221f65d95b91b4b2d90cfe8927650b506141e669f7d5de65cea191bf788838bc40d13846b7886c5bc5c84ab96c3adbcf88ad69a72fcdc6b
   languageName: node
   linkType: hard
 
@@ -11155,9 +10840,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001688":
-  version: 1.0.30001699
-  resolution: "caniuse-lite@npm:1.0.30001699"
-  checksum: 697172065537b0f33c428fe8561f4cba6796428dc8e3e56f78eee28404edfcbea70d48bb109ab6c6536de6da90e331058a2cb8ef3a15c58b2226c96ee558bc07
+  version: 1.0.30001700
+  resolution: "caniuse-lite@npm:1.0.30001700"
+  checksum: 0e5e1c8648efeae1a2bcf371c872a4e41d9508d58b47133558f78b99c3d58c4b6ce7688068ea872deffbfc7c3c2a117e756fc48e1de7ae6c5540f3c3a4441c7a
   languageName: node
   linkType: hard
 
@@ -11234,7 +10919,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chokidar@npm:^4.0.0":
+"chokidar@npm:^4.0.0, chokidar@npm:^4.0.3":
   version: 4.0.3
   resolution: "chokidar@npm:4.0.3"
   dependencies:
@@ -12048,10 +11733,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:=3.1.6":
-  version: 3.1.6
-  resolution: "dompurify@npm:3.1.6"
-  checksum: cc4fc4ccd9261fbceb2a1627a985c70af231274a26ddd3f643fd0616a0a44099bd9e4480940ce3655612063be4a1fe9f5e9309967526f8c0a99f931602323866
+"dompurify@npm:=3.2.4":
+  version: 3.2.4
+  resolution: "dompurify@npm:3.2.4"
+  dependencies:
+    "@types/trusted-types": ^2.0.7
+  dependenciesMeta:
+    "@types/trusted-types":
+      optional: true
+  checksum: 7a299cbbfe3b3d189e5fc77ab94ad312807e37fda1e24a927548b76a58a9c98137e612ce8d94a2f6cd3d3db59844f14fca477676b5eae6103568a82142771df6
   languageName: node
   linkType: hard
 
@@ -12169,9 +11859,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.5.73":
-  version: 1.5.97
-  resolution: "electron-to-chromium@npm:1.5.97"
-  checksum: e41173d90ab1c6b8d4767d7c2533f41545c8a37fbf288197137189773d0b630e00b7c54d0361c2f3357833dd41bfa79a6328cb739b34066abb708eae3c90c0fc
+  version: 1.5.103
+  resolution: "electron-to-chromium@npm:1.5.103"
+  checksum: 270f8e7861e8f6f9e5ff0c23bcf73a42644dfc8eaa0f700d572f5171841209572eea66a8be3017ff75993ffaa5d434d14a3bd0651f1d007ad4ae01f2b0b1e136
   languageName: node
   linkType: hard
 
@@ -12426,7 +12116,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es-object-atoms@npm:^1.0.0":
+"es-object-atoms@npm:^1.0.0, es-object-atoms@npm:^1.1.1":
   version: 1.1.1
   resolution: "es-object-atoms@npm:1.1.1"
   dependencies:
@@ -13082,9 +12772,9 @@ __metadata:
   linkType: hard
 
 "flatted@npm:^3.2.9":
-  version: 3.3.2
-  resolution: "flatted@npm:3.3.2"
-  checksum: ac3c159742e01d0e860a861164bcfd35bb567ccbebb8a0dd041e61cf3c64a435b917dd1e7ed1c380c2ebca85735fb16644485ec33665bc6aafc3b316aa1eed44
+  version: 3.3.3
+  resolution: "flatted@npm:3.3.3"
+  checksum: 8c96c02fbeadcf4e8ffd0fa24983241e27698b0781295622591fc13585e2f226609d95e422bcf2ef044146ffacb6b68b1f20871454eddf75ab3caa6ee5f4a1fe
   languageName: node
   linkType: hard
 
@@ -13129,13 +12819,14 @@ __metadata:
   linkType: hard
 
 "form-data@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "form-data@npm:4.0.1"
+  version: 4.0.2
+  resolution: "form-data@npm:4.0.2"
   dependencies:
     asynckit: ^0.4.0
     combined-stream: ^1.0.8
+    es-set-tostringtag: ^2.1.0
     mime-types: ^2.1.12
-  checksum: ccee458cd5baf234d6b57f349fe9cc5f9a2ea8fd1af5ecda501a18fd1572a6dd3bf08a49f00568afd995b6a65af34cb8dec083cf9d582c4e621836499498dd84
+  checksum: e887298b22c13c7c9c5a8ba3716f295a479a13ca78bfd855ef11cbce1bcf22bc0ae2062e94808e21d46e5c667664a1a1a8a7f57d7040193c1fefbfb11af58aab
   languageName: node
   linkType: hard
 
@@ -13243,20 +12934,20 @@ __metadata:
   linkType: hard
 
 "get-intrinsic@npm:^1.2.4, get-intrinsic@npm:^1.2.5, get-intrinsic@npm:^1.2.6, get-intrinsic@npm:^1.2.7":
-  version: 1.2.7
-  resolution: "get-intrinsic@npm:1.2.7"
+  version: 1.3.0
+  resolution: "get-intrinsic@npm:1.3.0"
   dependencies:
-    call-bind-apply-helpers: ^1.0.1
+    call-bind-apply-helpers: ^1.0.2
     es-define-property: ^1.0.1
     es-errors: ^1.3.0
-    es-object-atoms: ^1.0.0
+    es-object-atoms: ^1.1.1
     function-bind: ^1.1.2
-    get-proto: ^1.0.0
+    get-proto: ^1.0.1
     gopd: ^1.2.0
     has-symbols: ^1.1.0
     hasown: ^2.0.2
     math-intrinsics: ^1.1.0
-  checksum: a1597b3b432074f805b6a0ba1182130dd6517c0ea0c4eecc4b8834c803913e1ea62dfc412865be795b3dacb1555a21775b70cf9af7a18b1454ff3414e5442d4a
+  checksum: 301008e4482bb9a9cb49e132b88fee093bff373b4e6def8ba219b1e96b60158a6084f273ef5cafe832e42cd93462f4accb46a618d35fe59a2b507f2388c5b79d
   languageName: node
   linkType: hard
 
@@ -13430,7 +13121,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gql.tada@npm:^1.2.0":
+"gql.tada@npm:^1.2.0, gql.tada@npm:^1.8.2":
   version: 1.8.10
   resolution: "gql.tada@npm:1.8.10"
   dependencies:
@@ -13472,16 +13163,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:^15.5.0 || ^16.0.0 || ^17.0.0, graphql@npm:^16.3.0, graphql@npm:^16.8.1":
+"graphql@npm:^15.5.0 || ^16.0.0 || ^17.0.0, graphql@npm:^16.3.0, graphql@npm:^16.8.1, graphql@npm:^16.9.0":
   version: 16.10.0
   resolution: "graphql@npm:16.10.0"
   checksum: 969c2d1061d69ad6fe08a7fe642428212b0b8485a2f9b5d8650203eb6c3221479e81ec6a757708f849d84b85afcb3ebc5a8ff2f71778bb66c5e4850f051c170e
   languageName: node
   linkType: hard
 
-"h3@npm:^1.13.0":
-  version: 1.15.0
-  resolution: "h3@npm:1.15.0"
+"h3@npm:^1.15.0":
+  version: 1.15.1
+  resolution: "h3@npm:1.15.1"
   dependencies:
     cookie-es: ^1.2.2
     crossws: ^0.3.3
@@ -13489,11 +13180,10 @@ __metadata:
     destr: ^2.0.3
     iron-webcrypto: ^1.2.1
     node-mock-http: ^1.0.0
-    ohash: ^1.1.4
     radix3: ^1.1.2
     ufo: ^1.5.4
     uncrypto: ^0.1.3
-  checksum: 015f79f9303ca2f7e2ff73ba3e74c97febac9877e3ade5acd0ca4786e57701fcc4619644ec9e1c6aa6e2acb24c79dcdd2a18b5d0f49fcb4f9c52ec8fce51b0bb
+  checksum: 00fd54b61828c8818101ba7f8c8921e6f5971a72ff3e58b0d52af4a46d53de69fa24629a9d79595f7e4338e8c1699a2279c5bf08d60ac5047e026270b4adf75b
   languageName: node
   linkType: hard
 
@@ -13651,7 +13341,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hoist-non-react-statics@npm:^3.3.0, hoist-non-react-statics@npm:^3.3.1, hoist-non-react-statics@npm:^3.3.2":
+"hoist-non-react-statics@npm:^3.3.1, hoist-non-react-statics@npm:^3.3.2":
   version: 3.3.2
   resolution: "hoist-non-react-statics@npm:3.3.2"
   dependencies:
@@ -13884,10 +13574,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immer@npm:^9.0.21":
-  version: 9.0.21
-  resolution: "immer@npm:9.0.21"
-  checksum: 70e3c274165995352f6936695f0ef4723c52c92c92dd0e9afdfe008175af39fa28e76aafb3a2ca9d57d1fb8f796efc4dd1e1cc36f18d33fa5b74f3dfb0375432
+"immer@npm:^10.0.3":
+  version: 10.1.1
+  resolution: "immer@npm:10.1.1"
+  checksum: 07c67970b7d22aded73607193d84861bf786f07d47f7d7c98bb10016c7a88f6654ad78ae1e220b3c623695b133aabbf24f5eb8d9e8060cff11e89ccd81c9c10b
   languageName: node
   linkType: hard
 
@@ -14526,6 +14216,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jose@npm:^5.6.3":
+  version: 5.10.0
+  resolution: "jose@npm:5.10.0"
+  checksum: e80965ef3ab47baafac3517f53fa9c74b948b57690de524f51320c314cd545ef51ec7b18761605d58fb5965b7c5e12b2bb6ddae87a6ccf55e3f4ad077347d8d7
+  languageName: node
+  linkType: hard
+
 "js-base64@npm:^3.7.5, js-base64@npm:^3.7.7":
   version: 3.7.7
   resolution: "js-base64@npm:3.7.7"
@@ -15133,9 +14830,9 @@ __metadata:
   linkType: hard
 
 "long@npm:^5.0.0":
-  version: 5.3.0
-  resolution: "long@npm:5.3.0"
-  checksum: a05c01f0a4e135c9ea2b969c14377dafb7060df04e6269a06e8842509bfd5a13490c377f63b15efd0f8d04358c452017f9fc384c747b6a64da2c1c7617f53894
+  version: 5.3.1
+  resolution: "long@npm:5.3.1"
+  checksum: 2a44ed1408ce96d4480f1dc8c6833c5f9de8733c6fde3faf4754253e145ce62b99c8c448cd0fd0d6fb2fd1ed64bac23513974e252c5738115e92a7ffda295707
   languageName: node
   linkType: hard
 
@@ -15636,11 +15333,11 @@ __metadata:
   linkType: hard
 
 "nan@npm:^2.13.2":
-  version: 2.22.0
-  resolution: "nan@npm:2.22.0"
+  version: 2.22.1
+  resolution: "nan@npm:2.22.1"
   dependencies:
     node-gyp: latest
-  checksum: 222e3a090e326c72f6782d948f44ee9b81cfb2161d5fe53216f04426a273fd094deee9dcc6813096dd2397689a2b10c1a92d3885d2e73fd2488a51547beb2929
+  checksum: 984c07db9f94b7faf19c643d20a7bf66bb311e4c21d62204bb3a09310081550773441bacc928427c2438b9169e3dbd671cf0c8f1765eb4d87c5bd556d38af76b
   languageName: node
   linkType: hard
 
@@ -15746,11 +15443,11 @@ __metadata:
   linkType: hard
 
 "node-addon-api@npm:^8.0.0, node-addon-api@npm:^8.2.1, node-addon-api@npm:^8.2.2, node-addon-api@npm:^8.3.0":
-  version: 8.3.0
-  resolution: "node-addon-api@npm:8.3.0"
+  version: 8.3.1
+  resolution: "node-addon-api@npm:8.3.1"
   dependencies:
     node-gyp: latest
-  checksum: 87fd087f0887e91c5608ac3c99e3f374403074c9cff2c335b061b0c68a183e4cd561fb9a8b0a583f0145c9b7753180b2be0c232ef01bb97796ccf4486c87958a
+  checksum: 8d8566cdead5ffb866000fa1d2472833dfdaa2e5abc282c1aa29e0e6a4570e3978c6f00846bd62c96fde4b7e25972636472dc1a4dba2d5b07178c018929b9799
   languageName: node
   linkType: hard
 
@@ -15771,7 +15468,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch-native@npm:^1.6.4":
+"node-fetch-native@npm:^1.6.4, node-fetch-native@npm:^1.6.6":
   version: 1.6.6
   resolution: "node-fetch-native@npm:1.6.6"
   checksum: 1d8559b0828784d089c10bdaccdbfac35af41d8c93edfaf14b3aa7bb9fc1ea33a252a43f2dc31e95b7e8c6516794b227a532d9647483dea85e48beb93cbcfb83
@@ -16022,13 +15719,6 @@ __metadata:
     node-fetch-native: ^1.6.4
     ufo: ^1.5.4
   checksum: 005974d238b7212dc10b67ddb019eda9cf89ba781dfa8c2f31d8eea0782261d626ce7a36ac377deb71ec0f72f05a023e6d3cc31b7384fbbabdb328afbf1bf929
-  languageName: node
-  linkType: hard
-
-"ohash@npm:^1.1.4":
-  version: 1.1.4
-  resolution: "ohash@npm:1.1.4"
-  checksum: 8c63897941e67129ac81a15cfc2bb66a7b122200c9ee244e86d3d6b7aa7f5d9f7cb98d33dfc38b169c83b77c9babcc6f66ccbc90864d1f862f10ac8b72d80d66
   languageName: node
   linkType: hard
 
@@ -16605,13 +16295,13 @@ __metadata:
   linkType: hard
 
 "postcss@npm:^8.4.47":
-  version: 8.5.2
-  resolution: "postcss@npm:8.5.2"
+  version: 8.5.3
+  resolution: "postcss@npm:8.5.3"
   dependencies:
     nanoid: ^3.3.8
     picocolors: ^1.1.1
     source-map-js: ^1.2.1
-  checksum: 5097c458ce792d38bb93cb245f8603804b48087540b9d0e42d612f6d0bd7add4b47848cb9bc2a5ee388f70e45a1546fa7471b84697ab95aa8206aa3989fea611
+  checksum: da574620eb84ff60e65e1d8fc6bd5ad87a19101a23d0aba113c653434161543918229a0f673d89efb3b6d4906287eb04b957310dbcf4cbebacad9d1312711461
   languageName: node
   linkType: hard
 
@@ -16660,9 +16350,9 @@ __metadata:
   linkType: hard
 
 "preact@npm:^10.12.0, preact@npm:^10.16.0":
-  version: 10.25.4
-  resolution: "preact@npm:10.25.4"
-  checksum: 309f3128267c5bcac828c70a7a97fba0fdfed7b9ef2ece32a50bf94d257b5c825975df0648d9d5c79f90201d3a295cb2c9f511640aca37cb6879e509688b885a
+  version: 10.26.2
+  resolution: "preact@npm:10.26.2"
+  checksum: 6d477020951d9e08990da7307bc0ca7767291b0f8ec211faf0f755ef800855b0d7f8976b7d903b9c37d0dd192c800b8f2e3bfa29736f078e06e475c65f24753a
   languageName: node
   linkType: hard
 
@@ -17077,8 +16767,8 @@ __metadata:
   linkType: hard
 
 "react-datepicker@npm:*":
-  version: 8.0.0
-  resolution: "react-datepicker@npm:8.0.0"
+  version: 8.1.0
+  resolution: "react-datepicker@npm:8.1.0"
   dependencies:
     "@floating-ui/react": ^0.27.3
     clsx: ^2.1.1
@@ -17086,7 +16776,7 @@ __metadata:
   peerDependencies:
     react: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
     react-dom: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
-  checksum: 66d8e8815de6ce42fd983986cb99375748de68ba90189e841879c29a07d29d32f84338bd0f38d96773599cd09721ae29ea56dac60ebd860bbd5ece5ed88bd175
+  checksum: de996bac6e281597b611f74bec4065f3173caeb0d68d045e21e2952b86c555c6dd57733b771164018c47a9ea4a7aa74f92d2ccd29238ea28f3ae8267318fd2f2
   languageName: node
   linkType: hard
 
@@ -17142,7 +16832,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:>=16.8.0 <19, react-dom@npm:^18.2.0":
+"react-dom@npm:>=16.8.0 <19":
   version: 18.3.1
   resolution: "react-dom@npm:18.3.1"
   dependencies:
@@ -17168,15 +16858,15 @@ __metadata:
   linkType: hard
 
 "react-dropzone@npm:*, react-dropzone@npm:^14.2.3":
-  version: 14.3.5
-  resolution: "react-dropzone@npm:14.3.5"
+  version: 14.3.6
+  resolution: "react-dropzone@npm:14.3.6"
   dependencies:
     attr-accept: ^2.2.4
     file-selector: ^2.1.0
     prop-types: ^15.8.1
   peerDependencies:
     react: ">= 16.8 || 18.0.0"
-  checksum: 9eae7e91f1a786f74234c3a9fcf905691494531861d0c568f260abb770c35edaab7d1e43fe6cb413d77ae56ba286ac1c1606bade46ec15421fd41059f985f6ee
+  checksum: f8933b6503173ca1ac99acd506c60d3b04ab9c358d52b1db389d5f1a1916e4502d8699a95c9802380a9f6444dfd1d425fe68d81510a2228bef69e3852c9fb59a
   languageName: node
   linkType: hard
 
@@ -17267,13 +16957,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^18.0.0":
-  version: 18.3.1
-  resolution: "react-is@npm:18.3.1"
-  checksum: e20fe84c86ff172fc8d898251b7cc2c43645d108bf96d0b8edf39b98f9a2cae97b40520ee7ed8ee0085ccc94736c4886294456033304151c3f94978cec03df21
-  languageName: node
-  linkType: hard
-
 "react-is@npm:^19.0.0":
   version: 19.0.0
   resolution: "react-is@npm:19.0.0"
@@ -17357,39 +17040,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-redux@npm:^8.0.5":
-  version: 8.1.3
-  resolution: "react-redux@npm:8.1.3"
-  dependencies:
-    "@babel/runtime": ^7.12.1
-    "@types/hoist-non-react-statics": ^3.3.1
-    "@types/use-sync-external-store": ^0.0.3
-    hoist-non-react-statics: ^3.3.2
-    react-is: ^18.0.0
-    use-sync-external-store: ^1.0.0
-  peerDependencies:
-    "@types/react": ^16.8 || ^17.0 || ^18.0
-    "@types/react-dom": ^16.8 || ^17.0 || ^18.0
-    react: ^16.8 || ^17.0 || ^18.0
-    react-dom: ^16.8 || ^17.0 || ^18.0
-    react-native: ">=0.59"
-    redux: ^4 || ^5.0.0-beta.0
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-    "@types/react-dom":
-      optional: true
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-    redux:
-      optional: true
-  checksum: 192ea6f6053148ec80a4148ec607bc259403b937e515f616a1104ca5ab357e97e98b8245ed505a17afee67a72341d4a559eaca9607968b4a422aa9b44ba7eb89
-  languageName: node
-  linkType: hard
-
-"react-redux@npm:^9.1.2":
+"react-redux@npm:^9.1.2, react-redux@npm:^9.2.0":
   version: 9.2.0
   resolution: "react-redux@npm:9.2.0"
   dependencies:
@@ -17549,7 +17200,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:>=16.8.0 <19, react@npm:^18.2.0":
+"react@npm:>=16.8.0 <19":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:
@@ -17607,9 +17258,9 @@ __metadata:
   linkType: hard
 
 "readdirp@npm:^4.0.1":
-  version: 4.1.1
-  resolution: "readdirp@npm:4.1.1"
-  checksum: 9936aafa300958567a775d176a835331b4be3e61b2928d3a2887b8b0c6750fe7412a1dd4d9d1193641a674067b1be325ee9fc766c9060052665f0ae936619d90
+  version: 4.1.2
+  resolution: "readdirp@npm:4.1.2"
+  checksum: 3242ee125422cb7c0e12d51452e993f507e6ed3d8c490bc8bf3366c5cdd09167562224e429b13e9cb2b98d4b8b2b11dc100d3c73883aa92d657ade5a21ded004
   languageName: node
   linkType: hard
 
@@ -17670,21 +17321,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-thunk@npm:^2.4.2":
-  version: 2.4.2
-  resolution: "redux-thunk@npm:2.4.2"
+"redux-thunk@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "redux-thunk@npm:3.1.0"
   peerDependencies:
-    redux: ^4
-  checksum: c7f757f6c383b8ec26152c113e20087818d18ed3edf438aaad43539e9a6b77b427ade755c9595c4a163b6ad3063adf3497e5fe6a36c68884eb1f1cfb6f049a5c
-  languageName: node
-  linkType: hard
-
-"redux@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "redux@npm:4.2.1"
-  dependencies:
-    "@babel/runtime": ^7.9.2
-  checksum: f63b9060c3a1d930ae775252bb6e579b42415aee7a23c4114e21a0b4ba7ec12f0ec76936c00f546893f06e139819f0e2855e0d55ebfce34ca9c026241a6950dd
+    redux: ^5.0.0
+  checksum: bea96f8233975aad4c9f24ca1ffd08ac7ec91eaefc26e7ba9935544dc55d7f09ba2aa726676dab53dc79d0c91e8071f9729cddfea927f4c41839757d2ade0f50
   languageName: node
   linkType: hard
 
@@ -17805,14 +17447,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reselect@npm:^4.1.8":
-  version: 4.1.8
-  resolution: "reselect@npm:4.1.8"
-  checksum: a4ac87cedab198769a29be92bc221c32da76cfdad6911eda67b4d3e7136dca86208c3b210e31632eae31ebd2cded18596f0dd230d3ccc9e978df22f233b5583e
-  languageName: node
-  linkType: hard
-
-"reselect@npm:^5.1.1":
+"reselect@npm:^5.1.0, reselect@npm:^5.1.1":
   version: 5.1.1
   resolution: "reselect@npm:5.1.1"
   checksum: 5d32d48be29071ddda21a775945c2210cf4ca3fccde1c4a0e1582ac3bf99c431c6c2330ef7ca34eae4c06feea617e7cb2c275c4b33ccf9a930836dfc98b49b13
@@ -18071,8 +17706,8 @@ __metadata:
   linkType: hard
 
 "rpc-websockets@npm:^9.0.2":
-  version: 9.0.4
-  resolution: "rpc-websockets@npm:9.0.4"
+  version: 9.0.5
+  resolution: "rpc-websockets@npm:9.0.5"
   dependencies:
     "@swc/helpers": ^0.5.11
     "@types/uuid": ^8.3.4
@@ -18088,7 +17723,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: d5efe3a1e7fbd9858886342fb766c05ac69c645bfb3c39a907425163db33e237ae2a601b62e17451040584c06d8699152fb2311a7d6cded2a7e7d4e0e74f0c1a
+  checksum: f921a244185d9c12cd237e7a7d71a7b464799c6523da8717eacf8bf97f287185f8bc9dcc19f67349da0ceefc81fd820e1245689115e0097ef5bb76cfc88f6dec
   languageName: node
   linkType: hard
 
@@ -18120,11 +17755,11 @@ __metadata:
   linkType: hard
 
 "rxjs@npm:^7.4.0, rxjs@npm:^7.8.1":
-  version: 7.8.1
-  resolution: "rxjs@npm:7.8.1"
+  version: 7.8.2
+  resolution: "rxjs@npm:7.8.2"
   dependencies:
     tslib: ^2.1.0
-  checksum: de4b53db1063e618ec2eca0f7965d9137cabe98cf6be9272efe6c86b47c17b987383df8574861bcced18ebd590764125a901d5506082be84a8b8e364bf05f119
+  checksum: 2f233d7c832a6c255dabe0759014d7d9b1c9f1cb2f2f0d59690fd11c883c9826ea35a51740c06ab45b6ade0d9087bde9192f165cba20b6730d344b831ef80744
   languageName: node
   linkType: hard
 
@@ -18210,8 +17845,8 @@ __metadata:
   linkType: hard
 
 "sass@npm:^1.38.0":
-  version: 1.84.0
-  resolution: "sass@npm:1.84.0"
+  version: 1.85.0
+  resolution: "sass@npm:1.85.0"
   dependencies:
     "@parcel/watcher": ^2.4.1
     chokidar: ^4.0.0
@@ -18222,7 +17857,7 @@ __metadata:
       optional: true
   bin:
     sass: sass.js
-  checksum: fdaad6ac0c9fabedf944941086dd6e872a8a7ccc561199b4584adf70394bc41442180c719e756dea0935845b6719e43d196e4a489649506ddf0b6049cc24d4c2
+  checksum: 53c70831d1235f9ee40489a8bdde9b3304ba350df78417c4edaa8a8ac79426208054a69ac9b6d53c4dc5837362e552a92e3bcaa975a1a3e8975c0af9fbccfe1c
   languageName: node
   linkType: hard
 
@@ -19041,17 +18676,17 @@ __metadata:
   linkType: hard
 
 "swagger-client@npm:^3.34.0":
-  version: 3.34.0
-  resolution: "swagger-client@npm:3.34.0"
+  version: 3.34.1
+  resolution: "swagger-client@npm:3.34.1"
   dependencies:
     "@babel/runtime-corejs3": ^7.22.15
     "@scarf/scarf": =1.4.0
-    "@swagger-api/apidom-core": ">=1.0.0-beta.11 <1.0.0-rc.0"
-    "@swagger-api/apidom-error": ">=1.0.0-beta.11 <1.0.0-rc.0"
-    "@swagger-api/apidom-json-pointer": ">=1.0.0-beta.11 <1.0.0-rc.0"
-    "@swagger-api/apidom-ns-openapi-3-1": ">=1.0.0-beta.11 <1.0.0-rc.0"
-    "@swagger-api/apidom-reference": ">=1.0.0-beta.11 <1.0.0-rc.0"
-    "@swaggerexpert/cookie": ^1.4.1
+    "@swagger-api/apidom-core": ">=1.0.0-beta.12 <1.0.0-rc.0"
+    "@swagger-api/apidom-error": ">=1.0.0-beta.12 <1.0.0-rc.0"
+    "@swagger-api/apidom-json-pointer": ">=1.0.0-beta.12 <1.0.0-rc.0"
+    "@swagger-api/apidom-ns-openapi-3-1": ">=1.0.0-beta.12 <1.0.0-rc.0"
+    "@swagger-api/apidom-reference": ">=1.0.0-beta.12 <1.0.0-rc.0"
+    "@swaggerexpert/cookie": ^2.0.2
     deepmerge: ~4.3.0
     fast-json-patch: ^3.0.0-1
     js-yaml: ^4.1.0
@@ -19062,22 +18697,22 @@ __metadata:
     openapi-server-url-templating: ^1.2.0
     ramda: ^0.30.1
     ramda-adjunct: ^5.0.0
-  checksum: 277558141d54aa1db78cfe2aaddfac303cb4218128f8ad3c9b7e80d69e6574e898148682192464e5510aa58a60145d05bc3091293fdaaf8f3fdc6c8af1878b65
+  checksum: 69062712bcfb6244291c73e570a2ee0d3f54a9164f9b6d3c692423c8767af9de16b016b6dbaddbca488e9b2abfd779584dd774f1b74dbc90a96e105e81997e24
   languageName: node
   linkType: hard
 
 "swagger-ui-react@npm:^5.17.14":
-  version: 5.18.3
-  resolution: "swagger-ui-react@npm:5.18.3"
+  version: 5.19.0
+  resolution: "swagger-ui-react@npm:5.19.0"
   dependencies:
-    "@babel/runtime-corejs3": ^7.24.7
+    "@babel/runtime-corejs3": ^7.26.9
     "@braintree/sanitize-url": =7.0.4
     "@scarf/scarf": =1.4.0
     base64-js: ^1.5.1
     classnames: ^2.5.1
     css.escape: 1.5.1
     deep-extend: 0.6.0
-    dompurify: =3.1.6
+    dompurify: =3.2.4
     ieee754: ^1.2.1
     immutable: ^3.x.x
     js-file-download: ^0.4.12
@@ -19107,22 +18742,22 @@ __metadata:
   peerDependencies:
     react: ">=16.8.0 <19"
     react-dom: ">=16.8.0 <19"
-  checksum: f329063b6019591a9ceb681d94d9b13da8a8ff05daebfbd75b66f7c27bc2a219ca70c8ec2e724695e2d9c751d11b5662d92e6edf198e0b7b69727bf28e5e2ba3
+  checksum: d9ecd73681688d9a369098c15ab5ea218666f39d1be20871b52944d5f4629548fb8f6224b47e6f26fb4b50172aced8a129c0c9d6dd761582844ac4e838502d5f
   languageName: node
   linkType: hard
 
 "swagger-ui@npm:^5.17.14":
-  version: 5.18.3
-  resolution: "swagger-ui@npm:5.18.3"
+  version: 5.19.0
+  resolution: "swagger-ui@npm:5.19.0"
   dependencies:
-    "@babel/runtime-corejs3": ^7.24.7
+    "@babel/runtime-corejs3": ^7.26.9
     "@braintree/sanitize-url": =7.0.4
     "@scarf/scarf": =1.4.0
     base64-js: ^1.5.1
     classnames: ^2.5.1
     css.escape: 1.5.1
     deep-extend: 0.6.0
-    dompurify: =3.1.6
+    dompurify: =3.2.4
     ieee754: ^1.2.1
     immutable: ^3.x.x
     js-file-download: ^0.4.12
@@ -19151,7 +18786,7 @@ __metadata:
     xml: =1.0.1
     xml-but-prettier: ^1.0.1
     zenscroll: ^4.0.2
-  checksum: 0595e43191b41b52f5e6709264db888bcae50a25ecd999c043ed3b96cc0a1c44716662fba649812897eaf8606634bfe03b7bd82c61a021651df9923ea151c116
+  checksum: c4357ba7504cbd9529f6b28ad719843f11962c4d136852911565448eed90755246e5f3032a6b7e73a87b2ed8ece74eef3f81f718b392d6b61bc83e1d66574995
   languageName: node
   linkType: hard
 
@@ -19720,36 +19355,36 @@ __metadata:
   linkType: hard
 
 "unstorage@npm:^1.9.0":
-  version: 1.14.4
-  resolution: "unstorage@npm:1.14.4"
+  version: 1.15.0
+  resolution: "unstorage@npm:1.15.0"
   dependencies:
     anymatch: ^3.1.3
-    chokidar: ^3.6.0
+    chokidar: ^4.0.3
     destr: ^2.0.3
-    h3: ^1.13.0
+    h3: ^1.15.0
     lru-cache: ^10.4.3
-    node-fetch-native: ^1.6.4
+    node-fetch-native: ^1.6.6
     ofetch: ^1.4.1
     ufo: ^1.5.4
   peerDependencies:
     "@azure/app-configuration": ^1.8.0
     "@azure/cosmos": ^4.2.0
     "@azure/data-tables": ^13.3.0
-    "@azure/identity": ^4.5.0
+    "@azure/identity": ^4.6.0
     "@azure/keyvault-secrets": ^4.9.0
     "@azure/storage-blob": ^12.26.0
     "@capacitor/preferences": ^6.0.3
-    "@deno/kv": ">=0.8.4"
+    "@deno/kv": ">=0.9.0"
     "@netlify/blobs": ^6.5.0 || ^7.0.0 || ^8.1.0
     "@planetscale/database": ^1.19.0
     "@upstash/redis": ^1.34.3
-    "@vercel/blob": ">=0.27.0"
+    "@vercel/blob": ">=0.27.1"
     "@vercel/kv": ^1.0.1
     aws4fetch: ^1.0.20
     db0: ">=0.2.1"
     idb-keyval: ^6.2.1
     ioredis: ^5.4.2
-    uploadthing: ^7.4.1
+    uploadthing: ^7.4.4
   peerDependenciesMeta:
     "@azure/app-configuration":
       optional: true
@@ -19787,7 +19422,7 @@ __metadata:
       optional: true
     uploadthing:
       optional: true
-  checksum: 346b567e1bd242f0a19ca7a5d901ca28d46208da87d00c801c3bb1fe75cc5a1a7d1105b430a10212a68bf3a52696f31aefa43394e2bb97b9f1e8353a3a783c4e
+  checksum: 9d60830d284a50d49fe437ed5f2f4a9350c2a7b24ad670ed9852ec4c4e009a56ccfa362509fa8cc04f5de6d9a6fd005e763ef938ed6a7d4a5a2b13fc801aa12d
   languageName: node
   linkType: hard
 
@@ -19835,14 +19470,14 @@ __metadata:
   linkType: hard
 
 "usb@npm:^2.14.0":
-  version: 2.14.0
-  resolution: "usb@npm:2.14.0"
+  version: 2.15.0
+  resolution: "usb@npm:2.15.0"
   dependencies:
     "@types/w3c-web-usb": ^1.0.6
     node-addon-api: ^8.0.0
     node-gyp: latest
     node-gyp-build: ^4.5.0
-  checksum: e04a61943536db2d7041a1c27db23212dac9b14660bf0d103902a087d4265f9160771776811ed7ef9ff527b0d4844016288258723cfd4af530205c8ba29ab837
+  checksum: 89c967200470b1196a47f56369660b4616977d178a3c50bb78ac53e7caa06183bb529579ba11a550c71e75182d676a38ec0544fee23a176918a240f7e672a558
   languageName: node
   linkType: hard
 
@@ -19876,7 +19511,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:^1.0.0, use-sync-external-store@npm:^1.2.2, use-sync-external-store@npm:^1.4.0":
+"use-sync-external-store@npm:^1.2.2, use-sync-external-store@npm:^1.4.0":
   version: 1.4.0
   resolution: "use-sync-external-store@npm:1.4.0"
   peerDependencies:
@@ -19947,6 +19582,13 @@ __metadata:
     "@types/uuid": 8.3.4
     uuid: 8.3.2
   checksum: 25b3ce1d5860c7fb2232270f20d36c320e52817356cc0dfc88610965e6faced3e7050b3628be08ed08092dffc099288ed24ac0404a2869d59963a2be1939f476
+  languageName: node
+  linkType: hard
+
+"valibot@npm:^0.36.0":
+  version: 0.36.0
+  resolution: "valibot@npm:0.36.0"
+  checksum: 74a43d2b5261866c4bfb574e34861bef392289ba29770f781e3716c52fa792e323b6c2a3bf5d14ce56c1f2fcb98164045917502e8121f1c37e33a47ae27007bf
   languageName: node
   linkType: hard
 
@@ -20023,8 +19665,8 @@ __metadata:
   linkType: hard
 
 "viem@npm:^2.1.1":
-  version: 2.23.2
-  resolution: "viem@npm:2.23.2"
+  version: 2.23.5
+  resolution: "viem@npm:2.23.5"
   dependencies:
     "@noble/curves": 1.8.1
     "@noble/hashes": 1.7.1
@@ -20039,7 +19681,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 4ee79122e4d484c3f5585ced9a2ddeaa935fd13779010ef8869c39c70f78eab2af0408c765543088e052fd8c3c46d8e79225d64b68563b096d8de558daf6d115
+  checksum: eb8763ea8efec1ba983a44ad243ad7de5bfdec1b2da8ed7d293bbcbf7ac03c20103b4e0a4bbc99d2fe7d50358dc8bc7efd859b7604e13e406f22eb902e28806d
   languageName: node
   linkType: hard
 
@@ -20291,10 +19933,10 @@ __metadata:
     "@types/swagger-ui-react": ^4.18.3
     "@typescript-eslint/eslint-plugin": latest
     "@typescript-eslint/parser": latest
-    "@wormhole-foundation/sdk": ^1.7.0
-    "@wormhole-foundation/sdk-solana": ^1.7.0
-    "@wormhole-foundation/sdk-solana-core": ^1.7.0
-    "@xlabs/wormhole-connect": ^1.0.0-fork.2-development
+    "@wormhole-foundation/sdk": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-solana": 1.10.1-beta.0
+    "@wormhole-foundation/sdk-solana-core": 1.10.1-beta.0
+    "@xlabs/wormhole-connect": 1.0.0-fork.3-development
     analytics: ^0.8.9
     apexcharts: ^3.49.1
     assert: ^2.0.0
@@ -20437,7 +20079,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.18.0, ws@npm:^8.13.0, ws@npm:^8.18.0, ws@npm:^8.5.0":
+"ws@npm:8.18.0":
   version: 8.18.0
   resolution: "ws@npm:8.18.0"
   peerDependencies:
@@ -20464,6 +20106,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: f9bb062abf54cc8f02d94ca86dcd349c3945d63851f5d07a3a61c2fcb755b15a88e943a63cf580cbdb5b74436d67ef6b67f745b8f7c0814e411379138e1863cb
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.13.0, ws@npm:^8.18.0, ws@npm:^8.5.0":
+  version: 8.18.1
+  resolution: "ws@npm:8.18.1"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 4658357185d891bc45cc2d42a84f9e192d047e8476fb5cba25b604f7d75ca87ca0dd54cd0b2cc49aeee57c79045a741cb7d0b14501953ac60c790cd105c42f23
   languageName: node
   linkType: hard
 

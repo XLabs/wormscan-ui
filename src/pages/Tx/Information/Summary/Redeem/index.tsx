@@ -12,13 +12,24 @@ import { Loader } from "src/components/atoms";
 import { fetchTokensConfig } from "./fetchTokensConfig";
 
 type Props = {
-  txHash: string;
-  sourceChain: ChainId;
   CustomComponent?: () => JSX.Element;
+  CustomError?: (props: { error: string }) => JSX.Element;
+  CustomLoading?: (props: { shouldShowDisclaimer: boolean }) => JSX.Element;
+  CustomSuccess?: () => JSX.Element;
   network: Network;
+  sourceChain: ChainId;
+  txHash: string;
 };
 
-export const Redeem = ({ txHash, sourceChain, CustomComponent, network }: Props) => {
+export const Redeem = ({
+  CustomComponent,
+  CustomError,
+  CustomLoading,
+  CustomSuccess,
+  network,
+  sourceChain,
+  txHash,
+}: Props) => {
   const [isLoadingConnect, setIsLoadingConnect] = useState(true);
   const [config, setConfig] = useState<WormholeConnectConfig>(null);
 
@@ -32,7 +43,18 @@ export const Redeem = ({ txHash, sourceChain, CustomComponent, network }: Props)
           chainName: chainIdToChain(sourceChain),
           txHash: txHash,
           customTxDetails: () => <CustomComponent />,
-          customLoading: () => <Loader />,
+          customLoading: shouldShowDisclaimer => (
+            <CustomLoading shouldShowDisclaimer={shouldShowDisclaimer} />
+          ),
+          buttonStyles: {
+            backgroundColor: "var(--color-plum)",
+            borderRadius: "16px",
+            color: "var(--color-black)",
+            fontSize: "14px",
+            fontWeight: "600",
+          },
+          customError: error => <CustomError error={error} />,
+          customSuccess: () => <CustomSuccess />,
         },
       },
       chains: [

@@ -19,6 +19,7 @@ import EvmosIcon from "src/icons/blockchains/evmos.svg";
 import FantomIcon from "src/icons/blockchains/fantom.svg";
 import HederaIcon from "src/icons/blockchains/hedera.svg";
 import InjectiveIcon from "src/icons/blockchains/injective.svg";
+import InkIcon from "src/icons/blockchains/ink.svg";
 import KaruraIcon from "src/icons/blockchains/karura.svg";
 import KlaytnIcon from "src/icons/blockchains/klaytn.svg";
 import KujiraIcon from "src/icons/blockchains/kujira.svg";
@@ -70,6 +71,7 @@ import EvmosColorlessIcon from "src/icons/blockchains/colorless/evmos.svg";
 import FantomColorlessIcon from "src/icons/blockchains/colorless/fantom.svg";
 import HederaColorlessIcon from "src/icons/blockchains/colorless/hedera.svg";
 import InjectiveColorlessIcon from "src/icons/blockchains/colorless/injective.svg";
+import InkColorlessIcon from "src/icons/blockchains/colorless/ink.svg";
 import KaruraColorlessIcon from "src/icons/blockchains/colorless/karura.svg";
 import KlaytnColorlessIcon from "src/icons/blockchains/colorless/klaytn.svg";
 import KujiraColorlessIcon from "src/icons/blockchains/colorless/kujira.svg";
@@ -481,6 +483,22 @@ const WORMHOLE_CHAINS: any = {
         );
       if (base === "block") return this.explorer?.[network] + "/block/" + value;
       return this.explorer?.[network] + "/transaction/" + value;
+    },
+  },
+  [chainToChainId("Ink")]: {
+    name: "Ink",
+    icon: InkIcon,
+    colorlessIcon: InkColorlessIcon,
+    explorer: {
+      Testnet: "https://explorer-sepolia.inkonchain.com",
+      Devnet: "https://explorer-sepolia.inkonchain.com",
+      Mainnet: "https://explorer.inkonchain.com",
+    },
+    getExplorerBaseURL: function ({ network = "Mainnet", value, base }: ExplorerBaseURLInput) {
+      if (base === "address") return this.explorer?.[network] + "/address/" + value;
+      if (base === "token") return this.explorer?.[network] + "/token/" + value;
+      if (base === "block") return this.explorer?.[network] + "/block/" + value;
+      return this.explorer?.[network] + "/tx/" + value;
     },
   },
   [chainToChainId("Karura")]: {
