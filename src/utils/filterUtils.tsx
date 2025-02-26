@@ -81,7 +81,7 @@ export const ChainFilterMainnet = [
   chainToChainId("Ethereum"),
   chainToChainId("Fantom"),
   chainToChainId("Injective"),
-  // chainToChainId("Ink"),
+  chainToChainId("Ink"),
   chainToChainId("Karura"),
   chainToChainId("Klaytn"),
   chainToChainId("Mantle"),
@@ -124,7 +124,7 @@ export const ChainFilterTestnet = [
   chainToChainId("Ethereum"), // Goerli
   chainToChainId("Holesky"),
   chainToChainId("Injective"),
-  // chainToChainId("Ink"),
+  chainToChainId("Ink"),
   chainToChainId("Karura"),
   chainToChainId("Klaytn"),
   chainToChainId("Mantle"),
