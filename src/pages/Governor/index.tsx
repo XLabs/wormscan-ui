@@ -31,14 +31,7 @@ import {
 } from "src/utils/governorUtils";
 import { ChainId } from "@wormhole-foundation/sdk";
 import { getClient } from "src/api/Client";
-import {
-  ClockIcon,
-  CopyIcon,
-  CrossIcon,
-  FilterListIcon,
-  PieChartIcon,
-  StaticsIncreaseIcon,
-} from "src/icons/generic";
+import { ClockIcon, CopyIcon, PieChartIcon, StaticsIncreaseIcon } from "src/icons/generic";
 import { CopyToClipboard, ErrorPlaceholder } from "src/components/molecules";
 import { ETH_LIMIT } from "../Txs";
 import "./styles.scss";

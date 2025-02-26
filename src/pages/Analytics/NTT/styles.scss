@@ -76,20 +76,6 @@
       & > svg {
         color: var(--color-gray-400);
       }
-
-      & > .sort-by-btn {
-        @include button-secondary;
-        border-radius: 12px;
-        height: 36px;
-        justify-content: center;
-        margin-left: auto;
-        padding: 0;
-        width: 36px;
-
-        @include desktop {
-          display: none;
-        }
-      }
     }
 
     &-error {

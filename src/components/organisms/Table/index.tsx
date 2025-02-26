@@ -1,4 +1,5 @@
-import { CSSProperties, Fragment, useEffect, useState } from "react";
+import { CSSProperties, Fragment, useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   useTable,
   Column,
@@ -27,6 +28,10 @@ type Props<T extends object> = {
   numberOfRows?: number;
   onRowClick?: (row: any) => void;
   trackTxsSortBy?: boolean;
+  startIndex?: number;
+  endIndex?: number;
+  urlSorting?: boolean;
+  urlSortBy?: { id: string; desc: boolean };
 };
 
 type ExtendedTableInstance<T extends object> = TableInstance<T> & {
@@ -44,12 +49,17 @@ const Table = <T extends object>({
   numberOfRows = 50,
   onRowClick,
   trackTxsSortBy = false,
+  startIndex,
+  endIndex,
+  urlSorting = false,
+  urlSortBy,
 }: Props<T>) => {
   const { environment } = useEnvironment();
   const [openSortBy, setOpenSortBy] = useState(false);
-  const [currentSortBy, setCurrentSortBy] = useState(defaultSortBy);
+  const [currentSortBy, setCurrentSortBy] = useState(urlSortBy || defaultSortBy);
   const { width } = useWindowSize();
   const isDesktop = width >= BREAKPOINTS.desktop;
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const {
     getTableProps,
@@ -62,10 +72,29 @@ const Table = <T extends object>({
     {
       columns,
       data,
-      initialState: { sortBy: defaultSortBy ? [defaultSortBy] : [] } as Partial<TableState<T>>,
+      initialState: { sortBy: defaultSortBy ? [urlSortBy || defaultSortBy] : [] } as Partial<
+        TableState<T>
+      >,
       disableSortRemove: true,
     } as UseTableOptions<T> & UseSortByOptions<T>,
     useSortBy,
+  );
+
+  const updateURL = useCallback(
+    (sortBy: string, desc: boolean) => {
+      setSearchParams(prevParams => {
+        const newParams = new URLSearchParams(prevParams);
+        newParams.set("sortBy", sortBy);
+        newParams.set("order", desc ? "desc" : "asc");
+        if (newParams.has("page")) {
+          newParams.set("page", "1");
+        }
+        return newParams;
+      });
+
+      setSortBy([{ id: sortBy, desc }]);
+    },
+    [setSearchParams, setSortBy],
   );
 
   useEffect(() => {
@@ -84,12 +113,28 @@ const Table = <T extends object>({
   }, [headerGroups]);
 
   const handleReset = () => {
+    if (urlSorting) {
+      setSearchParams(prevParams => {
+        const newParams = new URLSearchParams(prevParams);
+        newParams.delete("sortBy");
+        newParams.delete("order");
+        newParams.set("page", "1");
+        return newParams;
+      });
+    }
+
     setSortBy([defaultSortBy]);
     setCurrentSortBy(defaultSortBy);
+
     setOpenSortBy(false);
   };
 
   useLockBodyScroll({ isLocked: !isDesktop && openSortBy });
+
+  const visibleRows =
+    startIndex !== undefined || endIndex !== undefined
+      ? rows.slice(startIndex ?? 0, endIndex ?? rows.length)
+      : rows;
 
   return (
     <>
@@ -150,6 +195,7 @@ const Table = <T extends object>({
                         }));
                         // @ts-expect-error Property 'toggleSortBy' exists at runtime but TypeScript doesn't know about it
                         selectedColumn.toggleSortBy(currentSortBy.desc);
+                        urlSorting && updateURL(selected.value, currentSortBy.desc);
                       }
                     }}
                     optionStyles={{ padding: 16 }}
@@ -181,6 +227,7 @@ const Table = <T extends object>({
                       if (column) {
                         // @ts-expect-error Property 'toggleSortBy' exists at runtime but TypeScript doesn't know about it
                         column.toggleSortBy(selected.value);
+                        urlSorting && updateURL(currentSortBy.id, selected.value);
                       }
                     }}
                     optionStyles={{ padding: 16 }}
@@ -231,6 +278,14 @@ const Table = <T extends object>({
                     });
                   }, 0);
                 }
+
+                if (urlSorting) {
+                  setTimeout(() => {
+                    const sortedColumn = headerGroup.headers.find((header: any) => header.isSorted);
+                    // @ts-expect-error Property 'isSortedDesc' exists at runtime but TypeScript doesn't know about it
+                    updateURL(sortedColumn.id, sortedColumn.isSortedDesc);
+                  }, 0);
+                }
               }}
             >
               {headerGroup.headers.map((column: any, index) => {
@@ -246,7 +301,17 @@ const Table = <T extends object>({
                 return (
                   <th
                     key={index}
-                    {...column.getHeaderProps(defaultSortBy ? column.getSortByToggleProps() : {})}
+                    {...column.getHeaderProps(
+                      defaultSortBy
+                        ? {
+                            ...column.getSortByToggleProps(),
+                            onClick: (e: any) => {
+                              e.preventDefault();
+                              column.toggleSortBy(column.isSorted ? !column.isSortedDesc : true);
+                            },
+                          }
+                        : {},
+                    )}
                     style={{
                       ...style,
                       color: column.isSorted ? "var(--color-white)" : "var(--color-gray-400)",
@@ -275,7 +340,7 @@ const Table = <T extends object>({
         ) : (
           rows?.length > 0 && (
             <tbody {...getTableBodyProps()}>
-              {rows.map((row, index) => {
+              {visibleRows.map((row, index) => {
                 prepareRow(row);
                 const justAppeared = (row?.original as any)?.justAppeared;
                 const txHash = (row?.original as any)?.txHashId;
