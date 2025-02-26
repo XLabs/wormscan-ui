@@ -26,16 +26,17 @@ interface Props {
 }
 
 // change the name that coingecko brings us to the one we use
-const chainNameMap: Record<string, Chain> = {
+export const chainNameMap: Record<string, Chain> = {
   "arbitrum-one": "Arbitrum",
   "near-protocol": "Near",
   "optimistic-ethereum": "Optimism",
   "polygon-pos": "Polygon",
   "binance-smart-chain": "Bsc",
   "neon-evm": "Neon",
+  "klay-token": "Klaytn",
 };
 
-const chainNameMapUnsupported: Record<string, number> = {
+export const chainNameMapUnsupported: Record<string, number> = {
   energi: 99949991,
   "hedera-hashgraph": 99949992,
   polkadot: 99949993,

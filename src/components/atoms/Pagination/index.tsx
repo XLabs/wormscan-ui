@@ -31,7 +31,7 @@ const Pagination = ({
   visiblePages = 5,
 }: IProps) => {
   const isFirstPage = currentPage === 1;
-  const isLastPage = currentPage === totalPages;
+  const isLastPage = currentPage >= totalPages;
 
   return (
     <div className={`pagination ${className}`} style={style}>
@@ -68,7 +68,7 @@ const Pagination = ({
         <button
           className="pagination-last-page"
           onClick={goLastPage}
-          disabled={disabled || true || isLastPage}
+          disabled={disabled || isLastPage}
         >
           &gt;&gt;
         </button>
