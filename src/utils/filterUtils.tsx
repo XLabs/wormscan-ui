@@ -55,6 +55,7 @@ const appIds = [
   TBTC_APP_ID,
   USDT_TRANSFER_APP_ID,
   SYNONYM_APP_ID,
+  WORMHOLE_SETTLEMENTS_APP_ID,
   // UNKNOWN_APP_ID, // disabled until the backend is ready
 ];
 
