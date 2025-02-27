@@ -39,6 +39,7 @@ export interface IArkhamResponse {
   ethereum?: IArkhamInfoByChain;
   optimism?: IArkhamInfoByChain;
   polygon?: IArkhamInfoByChain;
+  solana?: IArkhamInfoByChain;
   // bitcoin?: IArkhamInfoByChain;
   // tron?: IArkhamInfoByChain;
   // flare?: IArkhamInfoByChain;
@@ -52,6 +53,7 @@ export const ARKHAM_CHAIN_NAME: Partial<Record<ChainId, keyof IArkhamResponse>> 
   [chainToChainId("Ethereum")]: "ethereum",
   [chainToChainId("Optimism")]: "optimism",
   [chainToChainId("Polygon")]: "polygon",
+  [chainToChainId("Solana")]: "solana",
 };
 
 export interface IArkhamRelayerCheck {
