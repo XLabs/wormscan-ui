@@ -443,3 +443,15 @@ export interface GetOperationsOutput {
   releaseTimestamp?: Date;
 }
 [];
+
+export interface GetSecuredTokensByWormholeOutput {
+  symbol: string;
+  coingecko_id: string;
+  type: "PORTAL_TOKEN_BRIDGE" | "NATIVE_TOKEN_TRANSFER";
+  total_value_locked?: string; // only for PORTAL_TOKEN_BRIDGE
+  total_value_transferred: string;
+  fully_diluted_valuation?: string; // only for NATIVE_TOKEN_TRANSFER
+  platforms: {
+    [key: string]: string;
+  };
+}

@@ -1,0 +1,136 @@
+@use "src/styles/globals.scss" as *;
+
+.asset-secured {
+  &-title {
+    @include centered-row;
+    @include text-roboto-heading-500;
+    gap: 0 8px;
+    margin-bottom: 16px;
+  }
+
+  &-description {
+    @include text-roboto-body-400;
+    color: var(--color-gray-400);
+    margin-bottom: 56px;
+    max-width: 765px;
+  }
+
+  &-pagination {
+    margin-left: auto;
+  }
+
+  &-list {
+    &-header {
+      @include centered-column;
+      margin-bottom: 24px;
+      gap: 24px;
+
+      @include desktop {
+        @include centered-row;
+      }
+
+      &-title {
+        @include centered-row;
+        @include text-roboto-subheading-500;
+        color: var(--color-white);
+        gap: 0 8px;
+
+        & > svg {
+          color: var(--color-gray-400);
+        }
+      }
+    }
+
+    &-error {
+      @include centered-row;
+      @include text-roboto-body-400;
+      color: var(--color-gray-500);
+      justify-content: center;
+      padding: 16px;
+    }
+
+    &-table {
+      margin-bottom: 24px;
+      overflow-x: auto;
+
+      & td:last-child {
+        & > .asset-secured-list-table-item {
+          justify-content: flex-end;
+        }
+      }
+
+      & > .table-sort-by-btn {
+        transform: translateY(-112px);
+      }
+
+      &-item {
+        @include centered-row;
+        @include text-heading5;
+
+        & h4 {
+          @include text-heading6;
+          color: var(--color-gray-400);
+          margin-right: auto;
+
+          @include desktop {
+            display: none;
+          }
+        }
+
+        &.token {
+          @include centered-row;
+          @include text-roboto-body-500;
+          gap: 0 12px;
+        }
+
+        &-tooltip {
+          display: grid;
+          gap: 10px 24px;
+          grid-template-columns: 1fr 1fr;
+
+          &-link {
+            @include button-ghost;
+            @include centered-row;
+            gap: 10px;
+            white-space: nowrap;
+          }
+        }
+
+        &-chains {
+          @include centered-row;
+
+          @include desktop {
+            margin-left: auto;
+          }
+
+          &-chain {
+            background-color: var(--color-gray-900);
+            border: 2px solid var(--color-black);
+            margin-right: -7px;
+          }
+
+          &-more {
+            @include centered-row;
+            @include text-heading6;
+            background-color: var(--color-gray-800);
+            border-radius: 50%;
+            border: 2px solid var(--color-black);
+            color: var(--color-white);
+            height: 28px;
+            justify-content: center;
+            margin-right: -7px;
+            width: 28px;
+          }
+        }
+      }
+    }
+
+    &-bottom {
+      margin-bottom: 48px;
+
+      @include desktop {
+        margin-bottom: 96px;
+      }
+    }
+  }
+}
