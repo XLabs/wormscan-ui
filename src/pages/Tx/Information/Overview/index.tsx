@@ -7,6 +7,7 @@ import AddressInfoTooltip from "src/components/molecules/AddressInfoTooltip";
 import {
   BREAKPOINTS,
   CCTP_MANUAL_APP_ID,
+  CCTP_XR_APP_ID,
   FOLKS_FINANCE_APP_ID,
   M_PORTAL_APP_ID,
   MAYAN_MCTP_APP_ID,
@@ -92,8 +93,8 @@ const Overview = ({
   parsedOriginAddress,
   parsedPayload,
   parsedRedeemTx,
-  parsedVaa,
   payloadType,
+  proxyTransaction,
   receiverValueText,
   redeemedAmount,
   refundStatus,
@@ -104,7 +105,6 @@ const Overview = ({
   showMetaMaskBtn,
   showMinReceivedTooltip,
   showSignatures,
-  sourceAddress,
   sourceFee,
   sourceFeeUSD,
   sourceSymbol,
@@ -215,6 +215,53 @@ const Overview = ({
         </div>
       </div>
 
+      {!!proxyTransaction && (
+        <div className="tx-overview-section">
+          <div className="tx-overview-section-row">
+            <h4 className="tx-overview-section-row-title">
+              <Tooltip
+                type="info"
+                tooltip={
+                  <div>
+                    <p>
+                      Identifier of the transaction on the middle (proxy) chain to complete the
+                      operation.
+                    </p>
+                  </div>
+                }
+              >
+                <span>
+                  <InfoCircleIcon /> Proxy Transaction
+                </span>
+              </Tooltip>
+            </h4>
+            <div className="tx-overview-section-row-info">
+              <div className="tx-overview-section-row-info-container">
+                <div className="text">
+                  <a
+                    href={getExplorerLink({
+                      network: currentNetwork,
+                      chainId: proxyTransaction.chainId,
+                      value: proxyTransaction.redeemTxHash,
+                      base: "tx",
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <TruncateText
+                      containerWidth={lineValueWidth}
+                      text={proxyTransaction.redeemTxHash}
+                    />
+                  </a>
+                  <CopyToClipboard toCopy={proxyTransaction.redeemTxHash}>
+                    <CopyIcon width={24} />
+                  </CopyToClipboard>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {parsedRedeemTx && (
         <div className="tx-overview-section">
           <div className="tx-overview-section-row">
@@ -248,10 +295,7 @@ const Overview = ({
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <TruncateText
-                      containerWidth={lineValueWidth}
-                      text={parsedRedeemTx.toUpperCase()}
-                    />
+                    <TruncateText containerWidth={lineValueWidth} text={parsedRedeemTx} />
                   </a>
                   <CopyToClipboard toCopy={parsedRedeemTx}>
                     <CopyIcon width={24} />
@@ -332,8 +376,9 @@ const Overview = ({
                 {!hasVAA && (
                   <div className="tx-overview-section-row-info-alert">
                     <div className="desktop">
-                      {appIds && appIds.includes(CCTP_MANUAL_APP_ID)
-                        ? "This transaction is processed by Circle's CCTP and therefore information might be incomplete"
+                      {appIds &&
+                      (appIds.includes(CCTP_MANUAL_APP_ID) || appIds.includes(CCTP_XR_APP_ID))
+                        ? "Information might be incomplete"
                         : "The VAA for this transaction has not been issued yet"}
                     </div>
                     {!(isDesktop && hasVAA) && !isBigTransaction && !isDailyLimitExceeded && (
@@ -343,7 +388,9 @@ const Overview = ({
                         type="info"
                         tooltip={
                           <div className="tx-overview-section-row-info-alert-tooltip-content">
-                            {appIds && appIds.includes(CCTP_MANUAL_APP_ID) ? (
+                            {appIds &&
+                            (appIds.includes(CCTP_MANUAL_APP_ID) ||
+                              appIds.includes(CCTP_XR_APP_ID)) ? (
                               <p>
                                 This transaction is processed by Circle&apos;s CCTP and therefore
                                 information might be incomplete.
@@ -636,6 +683,31 @@ const Overview = ({
                   )}
                 </div>
               </div>
+
+              {!!proxyTransaction && (
+                <>
+                  <div className="tx-overview-section-row-info-container-arrow">
+                    <ArrowRightIcon width={24} />
+                  </div>
+
+                  <BlockchainIcon chainId={proxyTransaction.chainId} network={currentNetwork} />
+
+                  <div className="text">
+                    <a
+                      href={getExplorerLink({
+                        network: currentNetwork,
+                        chainId: proxyTransaction.chainId,
+                        value: proxyTransaction.contract,
+                        base: "address",
+                      })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {getChainName({ chainId: proxyTransaction.chainId, network: currentNetwork })}
+                    </a>
+                  </div>
+                </>
+              )}
 
               {!!toChain && (
                 <>

@@ -364,6 +364,9 @@ export interface GetOperationsOutput {
       uri?: string;
       tokenId?: number;
       nftInfo?: INFTInfo;
+
+      // --- CCTP ---
+      nonce?: string;
     };
     standarizedProperties: {
       appIds: string[];

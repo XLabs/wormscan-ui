@@ -2,6 +2,8 @@ import {
   ALL_BRIDGE_APP_ID,
   C3_APP_ID,
   CCTP_APP_ID,
+  CCTP_MANUAL_APP_ID,
+  CCTP_XR_APP_ID,
   CONNECT_APP_ID,
   ETH_BRIDGE_APP_ID,
   FOLKS_FINANCE_APP_ID,
@@ -304,7 +306,7 @@ const MayanIcon = ({ width }: { width: number }) => (
   </svg>
 );
 
-const WormholeLiquidityLayerIcon = ({ width }: { width: number }) => (
+const WormholeSettlementsIcon = ({ width }: { width: number }) => (
   <svg
     fill="none"
     height={width / 1.2}
@@ -566,12 +568,13 @@ const iconMap: Record<string, React.FC<{ width: number }>> = {
   [ALL_BRIDGE_APP_ID]: AllbridgeIcon,
   [C3_APP_ID]: C3Icon,
   [CCTP_APP_ID]: CCTPIcon,
+  [CCTP_MANUAL_APP_ID]: CCTPIcon,
+  [CCTP_XR_APP_ID]: CCTPIcon,
   [CONNECT_APP_ID]: PortalIcon,
   [ETH_BRIDGE_APP_ID]: EthBridgeIcon,
   [FOLKS_FINANCE_APP_ID]: FolksFinanceIcon,
   [GATEWAY_APP_ID]: WormholeGatewayIcon,
   [GR_APP_ID]: StandardRelayerIcon,
-  [WORMHOLE_SETTLEMENTS_APP_ID]: WormholeLiquidityLayerIcon,
   [M_PORTAL_APP_ID]: MPortalIcon,
   [MAYAN_APP_ID]: MayanIcon,
   [MAYAN_MCTP_APP_ID]: MayanIcon,
@@ -584,6 +587,7 @@ const iconMap: Record<string, React.FC<{ width: number }>> = {
   [SYNONYM_APP_ID]: SynonymIcon,
   [TBTC_APP_ID]: TbtcIcon,
   [USDT_TRANSFER_APP_ID]: USDTTransferIcon,
+  [WORMHOLE_SETTLEMENTS_APP_ID]: WormholeSettlementsIcon,
 };
 
 const genericIcons: string[] = [];

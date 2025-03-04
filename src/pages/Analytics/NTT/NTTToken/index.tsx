@@ -7,7 +7,13 @@ import { useEnvironment } from "src/context/EnvironmentContext";
 import { BaseLayout } from "src/layouts/BaseLayout";
 import { ToggleGroup } from "src/components/atoms";
 import { GetOperationsOutput } from "src/api/guardian-network/types";
-import { canWeGetDestinationTx, CCTP_MANUAL_APP_ID, IStatus, NTT_APP_ID } from "src/consts";
+import {
+  canWeGetDestinationTx,
+  CCTP_MANUAL_APP_ID,
+  CCTP_XR_APP_ID,
+  IStatus,
+  NTT_APP_ID,
+} from "src/consts";
 import { ChainLimit, Order } from "src/api";
 import { ETH_LIMIT } from "src/pages/Txs";
 import analytics from "src/analytics";
@@ -143,7 +149,7 @@ const NTTToken = () => {
 
           const status: IStatus = tx?.targetChain?.transaction?.txHash
             ? "completed"
-            : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
+            : appIds && (appIds.includes(CCTP_MANUAL_APP_ID) || appIds.includes(CCTP_XR_APP_ID))
             ? "external_tx"
             : tx.vaa?.raw
             ? canWeGetDestinationTx({

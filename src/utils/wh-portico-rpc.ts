@@ -25,8 +25,8 @@ export async function getPorticoInfo(
   const sourceTxHash = parseTx({ chainId: 2, value: data.sourceChain?.transaction?.txHash });
   const targetTxHash = parseTx({ chainId: 2, value: data.targetChain?.transaction?.txHash });
 
-  const sourceProvider = getEthersProvider(getChainInfo(env, sourceChain as ChainId));
-  const targetProvider = getEthersProvider(getChainInfo(env, targetChain as ChainId));
+  const sourceProvider = await getEthersProvider(getChainInfo(env, sourceChain as ChainId));
+  const targetProvider = await getEthersProvider(getChainInfo(env, targetChain as ChainId));
 
   try {
     let shouldShowSourceTokenUrl = true;

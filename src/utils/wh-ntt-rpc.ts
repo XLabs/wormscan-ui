@@ -57,7 +57,7 @@ export async function getNttInfo(env: Environment, data: GetOperationsOutput, pa
     console.log("ntt token not found in managers list, trying rpc");
 
     if (targetChain !== chainToChainId("Solana")) {
-      const contractProvider = getEthersProvider(getChainInfo(env, targetChain as ChainId));
+      const contractProvider = await getEthersProvider(getChainInfo(env, targetChain as ChainId));
       const tokenAbi = ["function token() view returns (address)"];
       const contract = new ethers.Contract(contractAddress, tokenAbi, contractProvider);
 

@@ -26,6 +26,7 @@ export const SLOW_FINALITY_CHAINS_TESTNET = [
   chainToChainId("Xlayer"),
   chainToChainId("Unichain"),
   chainToChainId("Berachain"),
+  chainToChainId("Avalanche"),
 ];
 
 const MAINNET_RPCS = {
@@ -554,10 +555,15 @@ export const mainnetEnv: Environment = {
   ],
 };
 
-export function getEthersProvider(chainInfo: ChainInfo) {
+export async function getEthersProvider(chainInfo: ChainInfo) {
   const provider = new JsonRpcProvider(chainInfo.rpcUrl);
 
-  if (chainInfo?.rpcUrl && provider) return provider;
+  try {
+    await provider._detectNetwork();
+    if (chainInfo?.rpcUrl && provider) return provider;
+  } catch (err) {
+    console.log(err);
+  }
 
   return null;
 }

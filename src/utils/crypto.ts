@@ -10,6 +10,7 @@ import {
   ALL_BRIDGE_APP_ID,
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
+  CCTP_XR_APP_ID,
   CONNECT_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
@@ -142,6 +143,9 @@ export const formatAppId = (appId: string) => {
   }
   if (appId === CCTP_MANUAL_APP_ID) {
     return "CCTP Manual";
+  }
+  if (appId === CCTP_XR_APP_ID) {
+    return "CCTPxR";
   }
   if (appId === CCTP_APP_ID) {
     return "CCTP Wormhole Integration";
