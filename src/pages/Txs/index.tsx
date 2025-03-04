@@ -20,6 +20,7 @@ import {
   C3_APP_ID,
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
+  CCTP_XR_APP_ID,
   CONNECT_APP_ID,
   IStatus,
   NTT_APP_ID,
@@ -333,7 +334,7 @@ const Txs = () => {
 
               const status: IStatus = tx?.targetChain?.transaction?.txHash
                 ? "completed"
-                : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
+                : appIds && (appIds.includes(CCTP_MANUAL_APP_ID) || appIds.includes(CCTP_XR_APP_ID))
                 ? "external_tx"
                 : tx.vaa?.raw
                 ? canWeGetDestinationTx({

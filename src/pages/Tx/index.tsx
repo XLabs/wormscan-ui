@@ -18,7 +18,7 @@ import { BaseLayout } from "src/layouts/BaseLayout";
 import { ethers } from "ethers";
 import {
   fetchWithRpcFallThrough,
-  getCctpDomain,
+  getChainFromDomain,
   getEvmBlockInfo,
   getTokenInformation,
   getUsdcAddress,
@@ -54,17 +54,18 @@ import {
   C3_APP_ID,
   CCTP_APP_ID,
   CCTP_MANUAL_APP_ID,
+  CCTP_XR_APP_ID,
   ETH_BRIDGE_APP_ID,
   FOLKS_FINANCE_APP_ID,
   GATEWAY_APP_ID,
   GR_APP_ID,
   IStatus,
   MAYAN_MCTP_APP_ID,
-  WORMHOLE_SETTLEMENTS_APP_ID,
   NTT_APP_ID,
   PORTAL_APP_ID,
   PORTAL_NFT_APP_ID,
   USDT_TRANSFER_APP_ID,
+  WORMHOLE_SETTLEMENTS_APP_ID,
   canWeGetDestinationTx,
   getGuardianSet,
 } from "src/consts";
@@ -184,6 +185,7 @@ const Tx = () => {
                 toChain: txData.toChain,
                 tokenAddress: txData.tokenAddress,
                 tokenChain: txData.tokenChain,
+                ...txData.payload,
               },
               standarizedProperties: {
                 amount: txData.amount,
@@ -369,7 +371,7 @@ const Tx = () => {
 
             if (resp && chain) {
               cancelRequests.current = true;
-              const toChain = getCctpDomain(resp.destinationDomain);
+              const toChain = getChainFromDomain(resp.destinationDomain, network);
 
               setTxData([
                 {
@@ -1435,7 +1437,7 @@ const Tx = () => {
 
         const status: IStatus = data?.targetChain?.transaction?.txHash
           ? "completed"
-          : appIds && appIds.includes(CCTP_MANUAL_APP_ID)
+          : appIds && (appIds.includes(CCTP_MANUAL_APP_ID) || appIds.includes(CCTP_XR_APP_ID))
           ? "external_tx"
           : vaa
           ? canWeGetDestinationTx({

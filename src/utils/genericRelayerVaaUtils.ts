@@ -107,7 +107,7 @@ export async function populateRelayerInfo(
   const targetTxHash = relayerEndpoint.data.toTxHash;
 
   if (targetTxHash) {
-    const targetEthersProvider = getEthersProvider(
+    const targetEthersProvider = await getEthersProvider(
       getChainInfo(environment, targetChain as ChainId),
     );
     const defaultResponse = {
@@ -166,7 +166,7 @@ export async function populateRelayerInfo(
   }
 
   // getting source receipt
-  const sourceEthersProvider = getEthersProvider(
+  const sourceEthersProvider = await getEthersProvider(
     getChainInfo(environment, sourceChainId as ChainId),
   );
   if (output.sourceTxHash && sourceEthersProvider) {

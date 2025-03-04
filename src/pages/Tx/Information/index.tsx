@@ -20,12 +20,13 @@ import {
   PORTAL_APP_ID,
   txType,
   UNKNOWN_APP_ID,
+  CCTP_XR_APP_ID,
 } from "src/consts";
 import { formatUnits, parseAddress, parseTx } from "src/utils/crypto";
 import { formatDate } from "src/utils/date";
 import { formatNumber } from "src/utils/number";
 import { getChainName, getExplorerLink } from "src/utils/wormhole";
-import { getGeckoTokenInfo, tryGetRedeemTxn } from "src/utils/cryptoToolkit";
+import { getGeckoTokenInfo, tryGetCctpRedeemTxn, tryGetRedeemTxn } from "src/utils/cryptoToolkit";
 import { getPorticoInfo } from "src/utils/wh-portico-rpc";
 import { showSourceTokenUrlState, showTargetTokenUrlState } from "src/utils/recoilStates";
 import { TokenInfo } from "src/utils/metaMaskUtils";
@@ -357,17 +358,26 @@ const Information = ({
   const getRedeem = async () => {
     setLoadingRedeem(true);
 
-    const redeem = await tryGetRedeemTxn(
-      currentNetwork,
-      fromChain as ChainId,
-      toChain,
-      toAddress,
-      wrappedTokenAddress && tokenEffectiveAddress,
-      timestamp,
-      amount,
-      data?.sourceChain?.transaction?.txHash,
-      +VAAId?.split("/")?.pop() || 0, //sequence
-    );
+    const redeem =
+      data.status === "external_tx"
+        ? await tryGetCctpRedeemTxn(
+            currentNetwork,
+            toChain,
+            timestamp,
+            data?.sourceChain?.transaction?.txHash,
+            data?.content?.payload?.nonce,
+          )
+        : await tryGetRedeemTxn(
+            currentNetwork,
+            fromChain as ChainId,
+            toChain,
+            toAddress,
+            wrappedTokenAddress && tokenEffectiveAddress,
+            timestamp,
+            amount,
+            data?.sourceChain?.transaction?.txHash,
+            data.sequence ? +data.sequence : +VAAId?.split("/")?.pop() || 0, //sequence
+          );
 
     if (redeem?.redeemTxHash) {
       const redeemTimestamp = new Date(
@@ -389,6 +399,24 @@ const Information = ({
 
       newData.status = "completed";
       newData.targetChain = newDestinationTx;
+      if (redeem.amount) {
+        newData.content.standarizedProperties.overwriteRedeemAmount = String(
+          +redeem.amount / 10 ** 6,
+        ); // usdc has 6 decimals
+      }
+      if (redeem.feeCollected) {
+        newData.content.standarizedProperties.overwriteFee = String(+redeem.feeCollected * 10 ** 2); // add 2 decimals (fee always 8)
+      }
+      if (redeem.toChain && redeem.toAddress) {
+        newData.content.standarizedProperties.toChain = redeem.toChain;
+        newData.content.standarizedProperties.toAddress = redeem.toAddress;
+      }
+      if (redeem.proxyTransaction) {
+        newData.content.payload.parsedPayload = {
+          ...newData.content.payload.parsedPayload,
+          proxyTransaction: redeem.proxyTransaction,
+        };
+      }
 
       if (newData?.content?.standarizedProperties?.appIds?.includes(ETH_BRIDGE_APP_ID)) {
         const { formattedFinalUserAmount, formattedRelayerFee } = await getPorticoInfo(
@@ -470,11 +498,15 @@ const Information = ({
     parsedPayload: parsedPayload ?? payload,
     parsedRedeemTx,
     payloadType,
+    proxyTransaction: data?.content?.payload?.parsedPayload?.proxyTransaction,
     redeemedAmount,
     releaseTimestamp: data?.releaseTimestamp,
     setShowOverview,
     showMetaMaskBtn,
-    showSignatures: !(appIds && appIds.includes(CCTP_MANUAL_APP_ID)),
+    showSignatures: !(
+      appIds &&
+      (appIds.includes(CCTP_MANUAL_APP_ID) || appIds.includes(CCTP_XR_APP_ID))
+    ),
     showVerifyRedemption,
     showMinReceivedTooltip,
     sourceFee,

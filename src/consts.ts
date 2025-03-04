@@ -191,6 +191,7 @@ export const ALL_BRIDGE_APP_ID = "ALL_BRIDGE";
 export const C3_APP_ID = "C3";
 export const CCTP_APP_ID = "CCTP_WORMHOLE_INTEGRATION";
 export const CCTP_MANUAL_APP_ID = "CCTP_MANUAL";
+export const CCTP_XR_APP_ID = "CCTP_XR";
 export const CONNECT_APP_ID = "CONNECT";
 export const ETH_BRIDGE_APP_ID = "ETH_BRIDGE";
 export const FOLKS_FINANCE_APP_ID = "FOLKS_FINANCE";

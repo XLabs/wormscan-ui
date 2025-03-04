@@ -10,6 +10,15 @@ interface IWrappedResponse {
 interface IRedeemResponse {
   redeemTxHash: string;
   timestamp: number;
+  amount?: string;
+  feeCollected?: string;
+  toChain?: ChainId;
+  toAddress?: string;
+  proxyTransaction?: {
+    redeemTxHash: string;
+    contract: string;
+    chainId: ChainId;
+  };
 }
 
 interface IAlgorandTokenResponse {
@@ -184,6 +193,25 @@ export const tryGetRedeemTxn = async (
 
     const redeemData = (await redeemTxn.json()) as IRedeemResponse;
     return redeemData?.redeemTxHash ? redeemData : null;
+  } catch (e) {
+    return null;
+  }
+};
+
+export const tryGetCctpRedeemTxn = async (
+  network: Network,
+  toChain: ChainId,
+  timestamp: string | Date,
+  txHash: string,
+  nonce: string,
+) => {
+  try {
+    const cctpRedeemTxnRequest = await fetch(
+      `${BFF_URL}/getCctpRedeemTxn?network=${network}&txHash=${txHash}&toChain=${toChain}&nonce=${nonce}&timestamp=${timestamp}`,
+    );
+
+    const cctpRedeemTxnResponse = (await cctpRedeemTxnRequest.json()) as IRedeemResponse | null;
+    return cctpRedeemTxnResponse?.redeemTxHash ? cctpRedeemTxnResponse : null;
   } catch (e) {
     return null;
   }

@@ -59,6 +59,11 @@ export type OverviewProps = {
   parsedRedeemTx?: string;
   parsedVaa?: any;
   payloadType?: number;
+  proxyTransaction?: {
+    redeemTxHash: string;
+    contract: string;
+    chainId: ChainId;
+  };
   receiverValueText?: () => string;
   redeemedAmount?: string;
   refundStatus?: string;

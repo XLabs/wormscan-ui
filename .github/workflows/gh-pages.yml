@@ -3,7 +3,7 @@ name: Build and deploy gh-pages
 on:
   push:
     branches:
-      - develop
+      - feat/add-cctpxr-support
 
 jobs:
   build_deploy_gh_page:
@@ -13,7 +13,7 @@ jobs:
       - name: Check out repos develop branch
         uses: actions/checkout@v4
         with:
-          ref: "develop"
+          ref: "feat/add-cctpxr-support"
 
       - name: Setup node
         uses: actions/setup-node@v4

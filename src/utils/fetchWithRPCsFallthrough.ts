@@ -14,8 +14,8 @@ import {
 } from "@wormhole-foundation/sdk";
 import { ethers_contracts } from "@wormhole-foundation/sdk-evm-core";
 import { ethers_contracts as circle_contracts } from "@wormhole-foundation/sdk-evm-cctp";
-import { Contract, TransactionReceipt, formatUnits as ethersFormatUnits } from "ethers";
-import { CCTP_MANUAL_APP_ID, GR_APP_ID, IStatus, getGuardianSet } from "src/consts";
+import { Contract, TransactionReceipt, ethers, formatUnits as ethersFormatUnits } from "ethers";
+import { CCTP_MANUAL_APP_ID, CCTP_XR_APP_ID, GR_APP_ID, IStatus, getGuardianSet } from "src/consts";
 import { Order, WormholeTokenList } from "src/api";
 import { getClient } from "src/api/Client";
 import {
@@ -50,6 +50,7 @@ interface RPCResponse {
   parsedFromAddress?: string;
   payloadAmount?: string;
   payloadType?: any;
+  payload?: any;
   sequence?: number;
   signaturesCount?: number;
   symbol?: string;
@@ -77,7 +78,7 @@ async function hitAllSlowChains(
     env.network === "Mainnet" ? SLOW_FINALITY_CHAINS_MAINNET : SLOW_FINALITY_CHAINS_TESTNET;
 
   for (const chain of SLOW_FINALITY_CHAINS) {
-    const ethersProvider = getEthersProvider(getChainInfo(env, chain as ChainId));
+    const ethersProvider = await getEthersProvider(getChainInfo(env, chain as ChainId));
 
     if (ethersProvider) {
       const thisPromise = ethersProvider
@@ -97,7 +98,7 @@ async function hitAllSlowChains(
         });
       allPromises.set(chain as ChainId, thisPromise);
     } else {
-      console.log("no ethers provider for", { chain, searchValue });
+      console.log("no ethers provider for", { chain: chainIdToChain(chain), searchValue });
     }
   }
 
@@ -124,16 +125,21 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
     // https://github.com/wormhole-foundation/wormhole/blob/main/ethereum/contracts/Implementation.sol#L12
     const LOG_MESSAGE_PUBLISHED_TOPIC =
       "0x6eb224fb001ed210e379b335e35efe88672a8ce935d981a6896b27ffdf52a3b2";
+
     const LOG_TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+
     const LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC =
       "0x2fa9ca894982930190727e75500a97d8dc500233a5065e0f3126c48fbe0343c0";
+
+    const LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC_V2 =
+      "0x0c8c1cbdc5190613ebd485511d4e2812cfa45eecb79d845893331fedad5130a5";
 
     const wrappedTokenAddress = result.receipt?.logs.findLast(
       l => l.topics[0] === LOG_TRANSFER_TOPIC,
     )?.address;
 
     // getting block to read the timestamp
-    const ethersProvider = getEthersProvider(getChainInfo(env, result.chainId as ChainId));
+    const ethersProvider = await getEthersProvider(getChainInfo(env, result.chainId as ChainId));
     const block = await ethersProvider.getBlock(result.receipt.blockNumber);
     const timestamp = Number(BigInt(block.timestamp)) * 1000;
     const tokenList = await getClient()
@@ -373,14 +379,17 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
             symbol: "USDC",
             timestamp,
             toAddress: circleInfo.toAddress,
-            toChain: getCctpDomain(circleInfo.toDomain),
+            toChain: getChainFromDomain(circleInfo.toDomain, env.network),
             tokenAddress: circleInfo.tokenAddress,
             tokenAmount: amount,
             tokenChain: result.chainId,
             toNativeAmount,
             txHash: searchValue,
             usdAmount,
-            wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(circleInfo.toDomain)),
+            wrappedTokenAddress: getUsdcAddress(
+              env.network,
+              getChainFromDomain(circleInfo.toDomain, env.network),
+            ),
           };
         }
         // GENERIC-RELAYER
@@ -509,60 +518,158 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
     // Check if receipt is from non-wormhole CCTP
     const manualCctpData: Promise<RPCResponse>[] = result.receipt?.logs
       .filter(
-        l => l.topics[0]?.toLowerCase() === LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC.toLowerCase(),
+        l =>
+          l.topics[0]?.toLowerCase() === LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC.toLowerCase() ||
+          l.topics[0]?.toLowerCase() === LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC_V2.toLowerCase(),
       )
       .map(async l => {
-        const { args } = circle_contracts.TokenMessenger__factory.createInterface().parseLog(l);
+        const isV1 =
+          l.topics[0]?.toLowerCase() === LOG_MANUAL_CCTP_DEPOSITFORBURN_TOPIC.toLowerCase();
 
-        const emitterAddress = l.address;
-        const emitterNattiveAddress = parseAddress({
-          chainId: result.chainId,
-          value: emitterAddress,
-        });
+        // CCTP V1
+        if (isV1) {
+          const { args } = circle_contracts.TokenMessenger__factory.createInterface().parseLog(l);
 
-        const { amount, burnToken, destinationDomain: domain, mintRecipient } = args;
-        const destinationDomain = Number(domain);
+          // Get all topics from the log
+          const nonce = l.topics[1];
+          // Convert hex nonce to decimal number
+          const nonceNumber = parseInt(nonce, 16);
 
-        const toChain = getCctpDomain(destinationDomain);
-        const toAddress =
-          toChain === chainToChainId("Sui")
-            ? mintRecipient
-            : toChain === chainToChainId("Solana")
-            ? hexToBase58(mintRecipient)
-            : toChain === chainToChainId("Aptos")
-            ? mintRecipient
-            : "0x" + mintRecipient.substring(26);
+          const emitterAddress = l.address;
+          const emitterNattiveAddress = parseAddress({
+            chainId: result.chainId,
+            value: emitterAddress,
+          });
 
-        return {
-          amount: "" + formatUnits(amount.toString(), 6),
-          appIds: [CCTP_MANUAL_APP_ID],
-          chain: result.chainId,
-          emitterAddress,
-          emitterNattiveAddress,
-          fee: "0",
-          fromAddress,
-          parsedFromAddress,
-          payloadAmount: amount.toString(),
-          symbol: "USDC",
-          timestamp,
-          toAddress,
-          toChain,
-          tokenAddress: burnToken,
-          tokenAmount: "" + formatUnits(amount.toString(), 6),
-          tokenChain: result.chainId,
-          txHash: searchValue,
-          usdAmount: "" + formatUnits(amount.toString(), 6),
-          wrappedTokenAddress: getUsdcAddress(env.network, getCctpDomain(destinationDomain)),
-          status: "external_tx" as IStatus,
+          const { amount, burnToken, destinationDomain: domain, mintRecipient } = args;
+          const destinationDomain = Number(domain);
 
-          // no data properties
-          id: null,
-          payloadType: null,
-          sequence: null,
-          toNativeAmount: null,
-          blockNumber: null,
-          lastFinalizedBlock: null,
-        } as any;
+          const toChain = getChainFromDomain(destinationDomain, env.network);
+          const toAddress =
+            toChain === chainToChainId("Sui")
+              ? mintRecipient
+              : toChain === chainToChainId("Solana")
+              ? hexToBase58(mintRecipient)
+              : toChain === chainToChainId("Aptos")
+              ? mintRecipient
+              : "0x" + mintRecipient.substring(26);
+
+          return {
+            amount: "" + formatUnits(amount.toString(), 6),
+            appIds: [CCTP_MANUAL_APP_ID],
+            chain: result.chainId,
+            emitterAddress,
+            emitterNattiveAddress,
+            fee: "0",
+            fromAddress,
+            parsedFromAddress,
+            payloadAmount: amount.toString(),
+            payload: {
+              nonce: nonceNumber.toString(),
+            },
+            symbol: "USDC",
+            timestamp,
+            toAddress,
+            toChain,
+            tokenAddress: burnToken,
+            tokenAmount: "" + formatUnits(amount.toString(), 6),
+            tokenChain: result.chainId,
+            txHash: searchValue,
+            usdAmount: "" + formatUnits(amount.toString(), 6),
+            wrappedTokenAddress: getUsdcAddress(
+              env.network,
+              getChainFromDomain(destinationDomain, env.network),
+            ),
+            status: "external_tx" as IStatus,
+
+            // no data properties
+            id: null,
+            sequence: "",
+            payloadType: null,
+            toNativeAmount: null,
+            blockNumber: null,
+            lastFinalizedBlock: null,
+          } as any;
+        }
+        // CCTP V2
+        else {
+          const depositForBurnAbi = [
+            "event DepositForBurn(address indexed burnToken, uint256 amount, address indexed depositor, bytes32 mintRecipient, uint32 domain, bytes32 destinationTokenMessenger, bytes32 destinationCaller, uint256 maxFee, uint32 indexed minFinalityThreshold, bytes hookData)",
+          ];
+          const iface = new ethers.Interface(depositForBurnAbi);
+
+          const parsedLog = iface.parseLog({
+            topics: l.topics,
+            data: l.data,
+          });
+
+          const emitterAddress = l.address;
+          const emitterNattiveAddress = parseAddress({
+            chainId: result.chainId,
+            value: emitterAddress,
+          });
+
+          const { burnToken, amount, mintRecipient, domain } = parsedLog.args;
+
+          const destinationDomain = Number(domain);
+
+          const toChain = getChainFromDomain(destinationDomain, env.network);
+          const toAddress =
+            toChain === chainToChainId("Sui")
+              ? mintRecipient
+              : toChain === chainToChainId("Solana")
+              ? hexToBase58(mintRecipient)
+              : toChain === chainToChainId("Aptos")
+              ? mintRecipient
+              : "0x" + mintRecipient.substring(26);
+
+          const circleMessage = await fetch(
+            `https://iris-api-sandbox.circle.com/v2/messages/${getDomainFromChain(
+              result.chainId,
+              env.network,
+            )}?transactionHash=${searchValue}`,
+          );
+          const circleMessageData = await circleMessage.json();
+          const nonce = circleMessageData?.messages?.[0]?.eventNonce;
+
+          return {
+            amount: "" + formatUnits(amount.toString(), 6),
+            appIds: [CCTP_XR_APP_ID],
+            chain: result.chainId,
+            emitterAddress,
+            emitterNattiveAddress,
+            fee: "0",
+            fromAddress,
+            parsedFromAddress,
+            extraRawInfo: parsedLog.args.toObject(true),
+            payload: {
+              nonce: nonce,
+            },
+            payloadAmount: amount.toString(),
+            symbol: "USDC",
+            timestamp,
+            toAddress,
+            toChain,
+            tokenAddress: burnToken,
+            tokenAmount: "" + formatUnits(amount.toString(), 6),
+            tokenChain: result.chainId,
+            txHash: searchValue,
+            usdAmount: "" + formatUnits(amount.toString(), 6),
+            wrappedTokenAddress: getUsdcAddress(
+              env.network,
+              getChainFromDomain(destinationDomain, env.network),
+            ),
+            status: "external_tx" as IStatus,
+
+            // no data properties
+            id: null,
+            payloadType: null,
+            sequence: null,
+            toNativeAmount: null,
+            blockNumber: null,
+            lastFinalizedBlock: null,
+          } as any;
+        }
       });
 
     return !!manualCctpData.length ? manualCctpData : null;
@@ -572,17 +679,36 @@ export async function fetchWithRpcFallThrough(env: Environment, searchValue: str
 }
 
 // CCTP UTILS -----
-export const getCctpDomain = (dom: number) => {
-  if (dom === 0) return chainToChainId("Ethereum");
+export const getChainFromDomain = (dom: number, network: Network) => {
+  if (dom === 0)
+    return network === "Mainnet" ? chainToChainId("Ethereum") : chainToChainId("Sepolia");
   if (dom === 1) return chainToChainId("Avalanche");
-  if (dom === 2) return chainToChainId("Optimism");
-  if (dom === 3) return chainToChainId("Arbitrum");
+  if (dom === 2)
+    return network === "Mainnet" ? chainToChainId("Optimism") : chainToChainId("OptimismSepolia");
+  if (dom === 3)
+    return network === "Mainnet" ? chainToChainId("Arbitrum") : chainToChainId("ArbitrumSepolia");
   if (dom === 5) return chainToChainId("Solana");
-  if (dom === 6) return chainToChainId("Base");
-  if (dom === 7) return chainToChainId("Polygon");
+  if (dom === 6)
+    return network === "Mainnet" ? chainToChainId("Base") : chainToChainId("BaseSepolia");
+  if (dom === 7)
+    return network === "Mainnet" ? chainToChainId("Polygon") : chainToChainId("PolygonSepolia");
   if (dom === 8) return chainToChainId("Sui");
   if (dom === 9) return chainToChainId("Aptos");
   if (dom === 10) return chainToChainId("Unichain");
+  return null;
+};
+
+export const getDomainFromChain = (chain: ChainId, network: Network) => {
+  if (chain === chainToChainId("Ethereum") || chain === chainToChainId("Sepolia")) return 0;
+  if (chain === chainToChainId("Avalanche")) return 1;
+  if (chain === chainToChainId("Optimism") || chain === chainToChainId("OptimismSepolia")) return 2;
+  if (chain === chainToChainId("Arbitrum") || chain === chainToChainId("ArbitrumSepolia")) return 3;
+  if (chain === chainToChainId("Solana")) return 5;
+  if (chain === chainToChainId("Base") || chain === chainToChainId("BaseSepolia")) return 6;
+  if (chain === chainToChainId("Polygon") || chain === chainToChainId("PolygonSepolia")) return 7;
+  if (chain === chainToChainId("Sui")) return 8;
+  if (chain === chainToChainId("Aptos")) return 9;
+  if (chain === chainToChainId("Unichain")) return 10;
   return null;
 };
 
@@ -601,6 +727,16 @@ export const getUsdcAddress = (network: Network, chain: ChainId) => {
       return "0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC";
     if (chain === chainToChainId("Unichain")) return "0x078d782b760474a361dda0af3839290b0ef57ad6";
   } else {
+    if (chain === chainToChainId("Sepolia")) return "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238";
+    if (chain === chainToChainId("BaseSepolia"))
+      return "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
+    if (chain === chainToChainId("PolygonSepolia"))
+      return "0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582";
+    if (chain === chainToChainId("ArbitrumSepolia"))
+      return "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d";
+    if (chain === chainToChainId("OptimismSepolia"))
+      return "0x5fd84259d66Cd46123540766Be93DFE6D43130D7";
+
     if (chain === chainToChainId("Ethereum")) return "0x07865c6e87b9f70255377e024ace6630c1eaa37f";
     if (chain === chainToChainId("Avalanche")) return "0x5425890298aed601595a70ab815c96711a31bc65";
     if (chain === chainToChainId("Arbitrum")) return "0xfd064a18f3bf249cf1f87fc203e90d8f650f2d63";
@@ -657,7 +793,7 @@ const getEvmTokenDetails = async (env: Environment, tokenChain: ChainId, tokenAd
   try {
     const addr = toNative(chainIdToChain(tokenChain), tokenAddress)?.toString();
 
-    const tokenEthersProvider = getEthersProvider(getChainInfo(env, tokenChain as ChainId));
+    const tokenEthersProvider = await getEthersProvider(getChainInfo(env, tokenChain as ChainId));
     const evmContract = new Contract(addr, tokenInterfaceAbi, tokenEthersProvider);
     const contract = evmContract;
 
@@ -738,7 +874,7 @@ export const getTokenInformation = async (
 };
 
 export async function getEvmBlockInfo(env: Environment, fromChain: ChainId, txHash: string) {
-  const ethersProvider = getEthersProvider(getChainInfo(env, fromChain));
+  const ethersProvider = await getEthersProvider(getChainInfo(env, fromChain));
 
   let lastFinalizedBlock;
   let currentBlock;
