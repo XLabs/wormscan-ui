@@ -22,11 +22,6 @@
     position: relative;
     width: 29px;
 
-    @include desktop {
-      position: absolute;
-      right: 8px;
-    }
-
     &::before {
       background-color: var(--color-plum);
       bottom: -1.5px;

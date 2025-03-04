@@ -3,10 +3,10 @@ import { Rectangle3DIcon2 } from "src/icons/generic";
 import { BREAKPOINTS } from "src/consts";
 import { Table } from "src/components/organisms";
 import { useNavigateCustom, useWindowSize } from "src/utils/hooks";
-import { COLUMNS_NTT, IRowToken } from "src/utils/nttUtils";
+import { COLUMNS_NTT, IRowTokenNTT } from "src/utils/tableUtils";
 
 interface Props {
-  data: IRowToken[];
+  data: IRowTokenNTT[];
   isLoading: boolean;
   isError: boolean;
 }
@@ -19,7 +19,7 @@ export const TokensTradedList = ({ data, isLoading, isError }: Props) => {
   const columns = useMemo(() => {
     return isDesktop
       ? COLUMNS_NTT
-      : [...COLUMNS_NTT, { Header: "View Details", accessor: "viewDetails" as keyof IRowToken }];
+      : [...COLUMNS_NTT, { Header: "View Details", accessor: "viewDetails" as keyof IRowTokenNTT }];
   }, [isDesktop]);
 
   return (

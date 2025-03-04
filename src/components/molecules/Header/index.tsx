@@ -197,9 +197,16 @@ const Header = ({
                   </NavigationMenu.Trigger>
 
                   <NavigationMenu.Content className="dropdown-menu-content">
+                    <NavLink
+                      to="/analytics/assets-secured-by-wormhole"
+                      aria-label="analytics assets secured by Wormhole"
+                    >
+                      <ProtocolIcon protocol={NTT_APP_ID} width={24} /> Assets Secured
+                      <div className="new-icon">NEW</div>
+                    </NavLink>
+
                     <NavLink to="/analytics/ntt" aria-label="analytics Wormhole NTT">
                       <ProtocolIcon protocol={NTT_APP_ID} width={24} /> NTT
-                      <div className="new-icon">NEW</div>
                     </NavLink>
 
                     <NavLink to="/analytics/tokens" aria-label="analytics tokens">
@@ -329,12 +336,20 @@ const Header = ({
           }`}
         >
           <NavLink
+            to="/analytics/assets-secured-by-wormhole"
+            aria-label="analytics assets secured by Wormhole"
+            onClick={closeAllMobileMenus}
+          >
+            <ProtocolIcon protocol={NTT_APP_ID} width={24} /> Assets Secured
+            <div className="new-icon">NEW</div>
+          </NavLink>
+
+          <NavLink
             to="/analytics/ntt"
             aria-label="analytics Wormhole NTT"
             onClick={closeAllMobileMenus}
           >
             <ProtocolIcon protocol={NTT_APP_ID} width={24} /> NTT
-            <div className="new-icon">NEW</div>
           </NavLink>
 
           <NavLink

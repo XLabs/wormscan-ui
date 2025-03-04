@@ -16,6 +16,7 @@ const VaaParser = lazy(() => import("../pages/VaaParser"));
 const Submit = lazy(() => import("../pages/Submit"));
 const Governor = lazy(() => import("../pages/Governor"));
 const ApiDoc = lazy(() => import("../pages/ApiDoc"));
+const AssetSecured = lazy(() => import("../pages/Analytics/AssetSecured"));
 const NTT = lazy(() => import("../pages/Analytics/NTT"));
 const NTTToken = lazy(() => import("../pages/Analytics/NTT/NTTToken"));
 const Tokens = lazy(() => import("../pages/Analytics/Tokens"));
@@ -47,6 +48,7 @@ const Navigation = () => {
                 <Route path="/developers/vaa-parser" element={<VaaParser />} />
                 <Route path="/developers/vaa-parser/*" element={<VaaParser />} />
                 <Route path="/developers/api-doc" element={<ApiDoc />} />
+                <Route path="/analytics/assets-secured-by-wormhole" element={<AssetSecured />} />
                 <Route path="/analytics/ntt" element={<NTT />} />
                 <Route path="/analytics/ntt/:coingecko_id/:symbol" element={<NTTToken />} />
                 <Route path="/analytics/tokens" element={<Tokens />} />

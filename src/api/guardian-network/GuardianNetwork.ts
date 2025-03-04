@@ -13,6 +13,7 @@ import {
   GetOperationsInput,
   GetOperationsOutput,
   GetParsedVaaOutput,
+  GetSecuredTokensByWormholeOutput,
   IChainActivity,
   IChainActivityInput,
   IProtocolActivity,
@@ -346,6 +347,12 @@ export class GuardianNetwork {
       `/observations?txHash=${txHash}&pageSize=20&page=0&sortOrder=ASC`,
     );
     return payload || [];
+  }
+
+  async getSecuredTokensByWormhole(): Promise<GetSecuredTokensByWormholeOutput[]> {
+    return await this._client.doGet<GetSecuredTokensByWormholeOutput[]>(
+      "/wormhole/assets/secured-tokens",
+    );
   }
 
   private _vaaSearchCriteriaToPathSegmentFilter(
